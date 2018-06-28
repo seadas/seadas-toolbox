@@ -1,0 +1,35 @@
+<module>
+    <manifestVersion>1.0.0</manifestVersion>
+    <symbolicName>seadas-bathymetry</symbolicName>
+    <version>1.0</version>
+    <name>Bathymetry</name>
+
+    <description>Generate a Bathymetry band for a loaded, navigated product</description>
+    <packaging>dir</packaging>
+
+    <vendor>NASA Ocean Biogeochemical Processing Group</vendor>
+    <contactAddress>NASA GSFC, Greenbelt, Maryland, MD, USA</contactAddress>
+    <copyright>(C) 2012 by NASA OBPG</copyright>
+    <url>https://oceancolor.gsfc.nasa.gov/</url>
+    <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
+    <funding>NASA GSFC</funding>
+
+    <changelog/>
+
+	<dependency>
+        <module>beam-gpf</module>
+    </dependency>
+	 <dependency>
+        <module>beam-visat</module>
+        <optional>true</optional>
+    </dependency>
+
+    <categories>Application,Processor</categories>
+
+    <extension point="beam-ui:helpSets">
+        <helpSet>
+            <parent>seadas-help</parent>
+            <path>doc/help/bathymetry.hs</path>
+        </helpSet>
+    </extension>
+</module>

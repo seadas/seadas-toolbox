@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <progressRegex>Processing scan .+?\((\d+) of (\d+)\)</progressRegex>
+        <hasGeoFile>true</hasGeoFile>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+            <primaryOption>geofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="help">
+            <name>-help</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print usage information</description>
+            <source>default</source>
+            <alias>-h</alias>
+            <alias>--help</alias>
+        </option>
+        <option type="help">
+            <name>-version</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print the version
+                information
+            </description>
+            <source>default</source>
+            <alias>--version</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>print
+                information about each option
+            </description>
+            <source>default</source>
+            <alias>--dump_options</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_paramfile</name>
+            <value/>
+            <type>string</type>
+            <description>print
+                information about each option to paramfile
+            </description>
+            <source>default</source>
+            <alias>--dump_options_paramfile</alias>
+        </option>
+        <option type="help">
+            <name>-dump_options_xmlfile</name>
+            <value>l1brsgen.xml</value>
+            <type>string</type>
+            <description>print
+                information about each option to XML file
+            </description>
+            <source>command line</source>
+            <alias>--dump_options_xmlfile</alias>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>processing version string</description>
+            <source>default</source>
+        </option>
+        <option type="string">
+            <name>suite</name>
+            <value></value>
+            <type>string</type>
+            <default>OC</default>
+            <description>product suite string for loading suite-specific defaults
+            </description>
+            <source>$OCSSWROOT/share/hmodisa/msl12_defaults.par</source>
+        </option>
+
+        <option type="ifile">
+            <name>ifile</name>
+            <value>/Users/Shared/ocssw/test/l2gen/A2002365234500.L1B_LAC</value>
+            <type>string</type>
+            <description>input L1 file name</description>
+            <source>command line</source>
+            <alias>ifile1</alias>
+        </option>
+        <option type="ifile">
+            <name>geofile</name>
+            <value/>
+            <type>string</type>
+            <description>input L1 geolocation file name (MODIS only)</description>
+            <source>default</source>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value></value>
+            <type>string</type>
+            <default>output</default>
+            <description>output L2 file #1 name, output vicarious L1B
+                for inverse mode
+                ofile[#] = additional output L2 file name
+            </description>
+            <source>default</source>
+            <alias>ofile1</alias>
+        </option>
+        <option type="int">
+            <name>resolution</name>
+            <value>-1</value>
+            <type>int</type>
+            <default>-1</default>
+            <description>processing resolution (MODIS only)</description>
+            <validValue>
+                <value>1000</value>
+                <description>1km resolution including aggregated 250 and 500m land bands</description>
+            </validValue>
+            <validValue>
+                <value>500</value>
+                <description>500m resolution including aggregated 250 land bands and
+                    replication for lower resolution bands
+                </description>
+            </validValue>
+            <validValue>
+                <value>250</value>
+                <description>250m resolution with replication for lower resolution bands</description>
+            </validValue>
+            <validValue>
+                <value>-1</value>
+                <description>standard ocean 1km processing</description>
+            </validValue>
+        </option>
+        <option type="int">
+            <name>spixl</name>
+            <value></value>
+            <type>int</type>
+            <default>1</default>
+            <description>start pixel number</description>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
+        </option>
+        <option type="int">
+            <name>epixl</name>
+            <value></value>
+            <type>int</type>
+            <default>-1</default>
+            <description>end pixel number (-1=the last pixel)</description>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
+        </option>
+        <option type="int">
+            <name>sline</name>
+            <value></value>
+            <type>int</type>
+            <default>1</default>
+            <description>start line number</description>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
+        </option>
+        <option type="int">
+            <name>eline</name>
+            <value></value>
+            <type>int</type>
+            <default>-1</default>
+            <description>end line number (-1=the last line)</description>
+            <source>$OCSSWROOT/share/hmodisa/l1img_defaults.par</source>
+        </option>
+        <option type="int">
+            <name>subsamp</name>
+            <value>10</value>
+            <type>int</type>
+            <default>-1</default>
+            <description>sub-sampling interval</description>
+            <source></source>
+        </option>
+        <option type="int">
+            <name>rgb</name>
+            <value></value>
+            <type>int</type>
+            <default>[1,1,1]</default>
+            <description>bands to use for red, green and blue</description>
+        </option>
+        <option type="boolean">
+            <name>atmocor</name>
+            <value>true</value>
+            <type>boolean</type>
+            <default></default>
+            <description>toggle atmospheric correction</description>
+        </option>
+        <option type="float">
+            <name>datamin</name>
+            <value>0.01</value>
+            <type>float</type>
+            <default>0.01</default>
+            <description>minimum value for data scaling
+                (default: see product_table)
+            </description>
+            <source>default</source>
+        </option>
+        <option type="float">
+            <name>datamax</name>
+            <value>0.9</value>
+            <type>float</type>
+            <default>0.9</default>
+            <description>maximum value for data scaling (default: see product_table)</description>
+            <source>default</source>
+        </option>
+        <option type="int">
+            <name>stype</name>
+            <value>0</value>
+            <type>int</type>
+            <default>0</default>
+            <description>scaling type: 0: log; 1: linear
+                (default: see product_table)
+            </description>
+            <source>default</source>
+            <validValue>
+                <value>0</value>
+                <description>log</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>linear</description>
+            </validValue>
+        </option>
+        <option type="string">
+            <name>oformat</name>
+            <value>hdf4</value>
+            <type>string</type>
+            <default>hdf4</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>hdf4</value>
+                    <description>output a HDF4 file</description>
+                </validValue>
+                <validValue>
+                    <value>bin</value>
+                    <description>output a flat binary file</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>output a PNG file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>output a netPBM PPM file</description>
+                </validValue>
+            </validValues>
+            <description>output file format</description>
+        </option>
+        <option type="string">
+            <name>oformat_depth</name>
+            <value>8bit</value>
+            <type>string</type>
+            <default>8bit</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>8bit</value>
+                    <description>output 8 bit color depth</description>
+                </validValue>
+                <validValue>
+                    <value>24bit</value>
+                    <description>output 24 bit color depth</description>
+                </validValue>
+            </validValues>
+            <description>output file color depth for HDF4 file</description>
+        </option>
+    </options>
+</paramInfo>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>infile</name>
+            <value></value>
+            <default></default>
+            <description>is either a L1B, L2, or GEO filename</description>
+            <source>command line</source>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
+            <usedAs>argument</usedAs>
+            <order>0</order>
+        </option>
+        <option type="int">
+            <name>SWlon</name>
+            <value></value>
+            <default></default>
+            <description>Longitude of southwest corner of the box to be extracted</description>
+            <usedAs>argument</usedAs>
+            <order>1</order>
+        </option>
+        <option type="int">
+            <name>SWlat</name>
+            <value></value>
+            <default></default>
+            <description>Latitude of southwest corner of the box to be extracted.</description>
+            <usedAs>argument</usedAs>
+            <order>2</order>
+        </option>
+        <option type="int">
+            <name>NElon</name>
+            <value></value>
+            <default></default>
+            <description>Longitude of northeast corner of the box to be extracted.</description>
+            <usedAs>argument</usedAs>
+            <order>3</order>
+        </option>
+        <option type="int">
+            <name>NElat</name>
+            <value></value>
+            <default></default>
+            <description>Latitude of northeast corner of the box to be extracted.</description>
+            <usedAs>argument</usedAs>
+            <order>4</order>
+        </option>
+        <option type="help">
+            <name>spixl</name>
+            <value></value>
+            <default></default>
+            <description>start pixel number</description>
+            <usedAs>argument</usedAs>
+            <order>5</order>
+        </option>
+        <option type="help">
+            <name>epixl</name>
+            <value></value>
+            <default></default>
+            <description>end pixel number (-1=the last pixel)</description>
+            <usedAs>argument</usedAs>
+            <order>6</order>
+        </option>
+        <option type="help">
+            <name>sline</name>
+            <value></value>
+            <default></default>
+            <description>start line number</description>
+            <usedAs>argument</usedAs>
+            <order>7</order>
+        </option>
+        <option type="help">
+            <name>eline</name>
+            <value></value>
+            <default></default>
+            <description>end line number (-1=the last line)</description>
+            <usedAs>argument</usedAs>
+            <order>8</order>
+        </option>
+
+    </options>
+</paramInfo>

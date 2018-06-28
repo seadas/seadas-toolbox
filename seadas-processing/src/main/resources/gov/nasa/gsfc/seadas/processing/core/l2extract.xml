@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>infile</name>
+            <value></value>
+            <value></value>
+            <default></default>
+            <description>input SEAWIFS L1A datafile</description>
+            <source>command line</source>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
+            <usedAs>argument</usedAs>
+            <order>0</order>
+        </option>
+        <option type="int">
+            <name>spixl</name>
+            <value></value>
+            <default></default>
+            <description>start pixel number (1-based)</description>
+            <usedAs>argument</usedAs>
+            <order>1</order>
+        </option>
+        <option type="int">
+            <name>epixl</name>
+            <value></value>
+            <default></default>
+            <description>end pixel number (1-based)</description>
+            <usedAs>argument</usedAs>
+            <order>2</order>
+        </option>
+        <option type="int">
+            <name>sline</name>
+            <value></value>
+            <default></default>
+            <description>start line (1-based)</description>
+            <usedAs>argument</usedAs>
+            <order>3</order>
+        </option>
+        <option type="int">
+            <name>eline</name>
+            <value></value>
+            <default></default>
+            <description>end line (1-based)</description>
+            <usedAs>argument</usedAs>
+            <order>4</order>
+        </option>
+        <option type="int">
+            <name>pix_sub</name>
+            <value>1</value>
+            <default></default>
+            <description>pixel subsampling rate</description>
+            <usedAs>argument</usedAs>
+            <order>5</order>
+        </option>
+        <option type="int">
+            <name>sc_sub</name>
+            <value>1</value>
+            <default></default>
+            <description>scan line subsampling rate</description>
+            <usedAs>argument</usedAs>
+            <order>6</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value></value>
+            <default></default>
+            <description>output L2 file name</description>
+            <usedAs>argument</usedAs>
+            <order>7</order>
+        </option>
+        <option type="string">
+            <name>prod_list</name>
+            <value></value>
+            <default></default>
+            <description>product list (optional)</description>
+            <usedAs>argument</usedAs>
+            <order>8</order>
+        </option>
+    </options>
+</paramInfo>

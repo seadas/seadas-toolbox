@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+
+    <folder name="Menu">
+        <folder name="SeaDAS">
+            <attr name="position" intvalue="700"/>
+            <folder name="OC Processing">
+                <attr name="position" intvalue="200"/>
+            </folder>
+            <folder name="Contour Lines">
+                <attr name="position" intvalue="300"/>
+            </folder>
+            <folder name="SeaDAS Reader">
+                <attr name="position" intvalue="400"/>
+            </folder>
+            <folder name="SeaDAS Watermask Operator">
+                <attr name="position" intvalue="500"/>
+            </folder>
+
+        </folder>
+    </folder>
+
+</filesystem>

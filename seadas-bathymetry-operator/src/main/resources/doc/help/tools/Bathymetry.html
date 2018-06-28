@@ -1,0 +1,123 @@
+<html>
+<head>
+    <title>SeaDAS Help - Bathymetry &amp; Elevation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Bathymetry &amp; Elevation
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<br>
+
+
+<table class="invisibletable">
+    <tr>
+        <td class="invisibletable" valign="top">
+            <img src="../images/bathymetry.png" border="0">
+        </td>
+
+        <td class="invisibletable" valign="top">
+
+            <p class="groupDetails">
+                The Bathymetry & Elevation tool creates a bathymetry mask based on user specified depth ranges. It also
+                creates a bathymetry band,
+                a topography band, and an elevation band. These bands are all in terms of elevation above sea-level, so
+                they
+                are primarily applicable to oceans, seas, bays, etc. The source data is at 2km resolution.
+            </p>
+
+            <p class="groupLocation">
+                Layers -> Bathymetry & Elevation <br>
+                Toolbar: Masks
+            </p>
+
+        </td>
+    </tr>
+</table>
+
+
+<br>
+<hr>
+<br>
+
+<p>
+    The following images illustrate bands and the bathymetry mask which can be created with this tool.
+    <br><br>
+
+</p>
+
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry01.png" border="0"> <br>
+            <!--<img src="images/Bathymetry01colorbar.png" border="0"> <br>-->
+            <i>Image 1. Bathymetry band </i>
+        </td>
+    </tr>
+</table>
+
+
+<br><br><br>
+
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry02.png" border="0"> <br>
+            <!--<img src="images/Bathymetry02colorbar.png" border="0"> <br>-->
+            <i>Image 2. Topography band </i>
+        </td>
+    </tr>
+</table>
+
+<br><br><br>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry03.png" border="0"> <br>
+            <i>Image 3. Bathymetry band with bathymetry mask (in black) visible <br>Depth Range: -5 m and -2000m </i>
+        </td>
+    </tr>
+</table>
+<br><br><br>
+
+
+<hr>
+<p>The following image shows the "Bathymetry &amp; Elevation" tool window:</p>
+<br>
+<table class="invisibletable">
+    <tr class="invisibletable">
+        <td class="invisibletable" align="center">
+            <img src="images/Bathymetry04.png" border="0">
+        </td>
+    </tr>
+</table>
+
+<br><br>
+<b>Bathymetry Mask Parameters - </b> This tool will create a single mask named "BATHYMETRY. The mask name is not
+editable here,
+however, you may subsequently rename the mask in the Mask Manager tool. The mask color and mask transparency
+can be set here. The mask range is determined by the fields "Min Depth" and "Max Depth". <br><br>
+
+"Enabled in All Band" refers to whether to mask will be set to visible in all band within the file. Unchecking this
+box will result in the mask being visible in the current band and hidden in the rest. Note that at any point later
+after this tool has run, the mask visibility may be easily toggled in each of the bands.<br><br> <br>
+
+<b>Bands - </b> This shows the 3 bands which will be created. The band names are not editable here, but may be altered
+subsequently in the File Info tool. Note that the first time you run this tool, it will create the 3 bands and the
+bathymetry mask. If you run this tool again, it will not re-create the 3 bands, but will re-create the mask.
+
+
+</body>
+</html>

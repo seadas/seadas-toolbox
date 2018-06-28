@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>parfile</parFileOptionName>
+        <!--irow:   500 of     4320 Tue Jun 26 15:35:10 2012-->
+        <progressRegex>irow: +(\d+) of +(\d+)</progressRegex>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>infile</name>
+            <value></value>
+            <default></default>
+            <description>listfile of input binfiles</description>
+            <source>command line</source>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
+            <order>0</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value></value>
+            <default>color</default>
+            <description>color bin filename</description>
+            <alias>ofile1</alias>
+            <order>1</order>
+        </option>
+        <option type="string">
+            <name>out_parm</name>
+            <value></value>
+            <default></default>
+            <description>data products list</description>
+            <order>2</order>
+        </option>
+        <option type="string">
+            <name>reduce_fac</name>
+            <value></value>
+            <default></default>
+            <description>scale reduction factor (power of 2)</description>
+            <order>3</order>
+        </option>
+        <option type="float">
+            <name>loneast</name>
+            <value></value>
+            <default>+180</default>
+            <description>Easternmost longitude (default=+180)</description>
+            <order>4</order>
+        </option>
+        <option type="float">
+            <name>lonwest</name>
+            <value></value>
+            <default>-180</default>
+            <description>Westernmost longitude (default=-180)</description>
+            <order>5</order>
+        </option>
+        <option type="float">
+            <name>latnorth</name>
+            <value></value>
+            <default>+90</default>
+            <description>Northernmost latitude (default=+90)</description>
+            <order>6</order>
+        </option>
+        <option type="float">
+            <name>latsouth</name>
+            <value></value>
+            <default>-90</default>
+            <description>Southernmost latitude (default=-90)</description>
+            <order>7</order>
+        </option>
+        <option type="boolean">
+            <name>noext</name>
+            <value></value>
+            <default>false</default>
+            <description>set to 1 to suppress generation of external files
+                [default=0, (1 for "regional" prodtype)]
+            </description>
+            <order>8</order>
+        </option>
+        <option type="boolean">
+            <name>verbose</name>
+            <value>true</value>
+            <default>false</default>
+            <description>Allow more verbose screen messages [default=0]</description>
+            <order>9</order>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default></default>
+            <description>production version [default=Unspecified]</description>
+            <order>10</order>
+        </option>
+        <option type="string">
+            <name>oformat</name>
+            <value>netCDF4</value>
+            <default>netCDF4</default>
+            <source></source>
+            <validValues>
+                <validValue>
+                    <value>HDF4</value>
+                    <description>HDF4</description>
+                </validValue>
+                <validValue>
+                    <value>netCDF4</value>
+                    <description>netCDF4</description>
+                </validValue>
+                <validValue>
+                    <value>HDF5</value>
+                    <description>HDF5</description>
+                </validValue>
+            </validValues>
+            <description>color file format; default is the same format as input file(s)</description>
+        </option>
+    </options>
+</paramInfo>

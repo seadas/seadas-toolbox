@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>--parfile</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>infile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>infile</name>
+            <value></value>
+            <default></default>
+            <description>Input file</description>
+            <source>command line</source>
+            <usedAs>option</usedAs>
+            <order>0</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value></value>
+            <default></default>
+            <description>L3B output filename</description>
+            <usedAs>option</usedAs>
+            <order>1</order>
+        </option>
+        <option type="string">
+            <name>resolve</name>
+            <value></value>
+            <default></default>
+            <description>the bin resolution (typically '1D')</description>
+            <usedAs>option</usedAs>
+            <order>2</order>
+        </option>
+        <option type="string">
+            <name>l3bprod</name>
+            <value></value>
+            <default></default>
+            <description>product list</description>
+            <usedAs>option</usedAs>
+            <order>3</order>
+        </option>
+        <option type="string">
+            <name>suite</name>
+            <value></value>
+            <default></default>
+            <description>suite</description>
+            <usedAs>option</usedAs>
+            <order>4</order>
+        </option>
+        <option type="string">
+            <name>beam</name>
+            <value></value>
+            <default></default>
+            <description>the radiometer beam (1-3)</description>
+            <validValue>
+                <value>1</value>
+                <description>the radiometer beam 1</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>the radiometer beam 2</description>
+            </validValue>
+            <validValue>
+                <value>3</value>
+                <description>the radiometer beam 3</description>
+            </validValue>
+
+            <usedAs>option</usedAs>
+            <order>5</order>
+        </option>
+        <option type="string">
+            <name>flaguse</name>
+            <value></value>
+            <default></default>
+            <description>flaguse</description>
+            <usedAs>option</usedAs>
+            <order>6</order>
+        </option>
+        <option type="string">
+            <name>filter_width</name>
+            <value></value>
+            <default></default>
+            <description>the angular radius in degrees of the cutoff filter</description>
+            <usedAs>option</usedAs>
+            <order>7</order>
+        </option>
+        <option type="int">
+            <name>fill</name>
+            <value></value>
+            <default></default>
+            <description>{0,1} {0 - no fill of undefined bins, 1 - fill undefined bins}</description>
+            <validValue>
+                <value>0</value>
+                <description>0 - no fill of undefined bins</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>1 - fill undefined bins</description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <order>8</order>
+        </option>
+        <option type="string">
+            <name>fit</name>
+            <value></value>
+            <default></default>
+            <description>{"C", "L", "B", "Q"}
+                "C" - constant fit (1 parameter)
+                "L" - linear fit (2 parameters)
+                "B" - bilinear fit (3 parameters)
+                "Q" - quadratic fit (4 parameters)
+            </description>
+            <validValue>
+                <value>C</value>
+                <description>constant fit (1 parameter)</description>
+            </validValue>
+            <validValue>
+                <value>L</value>
+                <description>linear fit (2 parameters)</description>
+            </validValue>
+            <validValue>
+                <value>B</value>
+                <description>bilinear fit (3 parameters)</description>
+            </validValue>
+            <validValue>
+                <value>Q</value>
+                <description>quadratic fit (4 parameters)</description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <order>9</order>
+        </option>
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default></default>
+            <description>pversion</description>
+            <usedAs>option</usedAs>
+            <order>10</order>
+        </option>
+    </options>
+</paramInfo>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
+        <progressRegex>Processing scan .+?\((\d+) of (\d+)\)</progressRegex>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value/>
+            <type>string</type>
+            <description>input L2 file name or file with a list of files names</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>6</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value/>
+            <type>string</type>
+            <description>output map filename (NULL=STDOUT)</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>7</order>
+        </option>
+        <option type="string">
+            <name>prod</name>
+            <value/>
+            <type>string</type>
+            <description>product name</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>8</order>
+        </option>
+        <option type="boolean">
+            <name>apply_pal</name>
+            <value>false</value>
+            <type>bool</type>
+            <default>false</default>
+            <description>apply color palette, false = grayscale</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>9</order>
+        </option>
+        <option type="string">
+            <name>palfile</name>
+            <value></value>
+            <type>string</type>
+            <default></default>
+            <description>palette filename</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>10</order>
+        </option>
+        <option type="string">
+            <name>palette_dir</name>
+            <value></value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/palette</default>
+            <description>palette directory</description>
+            <source>$OCDATAROOT/common/l2mapgen_defaults.par</source>
+            <usedAs>option</usedAs>
+            <order>11</order>
+        </option>
+        <option type="ifile">
+            <name>product_table</name>
+            <value></value>
+            <type>string</type>
+            <default>$OCDATAROOT/common/smigen_product_table.dat</default>
+            <description>product table</description>
+            <source>$OCDATAROOT/common/l2mapgen_defaults.par</source>
+            <usedAs>option</usedAs>
+            <order>12</order>
+        </option>
+        <option type="string">
+            <name>flaguse</name>
+            <value/>
+            <type>string</type>
+            <description>flags to be masked</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>13</order>
+        </option>
+        <option type="int">
+            <name>quality</name>
+            <value></value>
+            <type>int</type>
+            <default>2</default>
+            <description>minimum allowable quality level for SST. Valid
+                only for SST and only if qual_sst or qual_sst4 SDS exist
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>14</order>
+        </option>
+        <option type="boolean">
+            <name>mask</name>
+            <value></value>
+            <type>boolean</type>
+            <default>no</default>
+            <description>apply mask to land, cloud and glint (see below)</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>15</order>
+        </option>
+        <option type="float">
+            <name>datamin</name>
+            <value></value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>minimum value for data scaling
+                (default: see SMI product table)
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>16</order>
+        </option>
+        <option type="float">
+            <name>datamax</name>
+            <value></value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>maximum value for data scaling
+                (default: see SMI product table)
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>17</order>
+        </option>
+        <option type="int">
+            <name>stype</name>
+            <value></value>
+            <type>int</type>
+            <default>0</default>
+            <description>scaling type: 1=LINEAR; 2=LOG;
+                (default: see SMI product table)
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>18</order>
+        </option>
+        <option type="float">
+            <name>east</name>
+            <value></value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map East longitude
+                (default=scene(s) Easternmost Longitude)
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>19</order>
+        </option>
+        <option type="float">
+            <name>west</name>
+            <value></value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map West longitude
+                (default=scene(s) Westernmost Longitude)
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>20</order>
+        </option>
+        <option type="float">
+            <name>north</name>
+            <value></value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map North latitude
+                (default=scene(s) Northernmost Longitude)
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>21</order>
+        </option>
+        <option type="float">
+            <name>south</name>
+            <value></value>
+            <type>float</type>
+            <default>0.0</default>
+            <description>Map South latitude
+                (default=scene(s) Southernmost Longitude)
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>22</order>
+        </option>
+        <option type="int">
+            <name>width</name>
+            <value>800</value>
+            <type>int</type>
+            <default>800</default>
+            <description>width of the output image</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>23</order>
+        </option>
+        <option type="float">
+            <name>threshold</name>
+            <value></value>
+            <type>float</type>
+            <default>5</default>
+            <description>minimum percentage of the area of interest
+                that must receive valid pixel data before an image is generated
+            </description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>24</order>
+        </option>
+        <option type="string">
+            <name>outmode</name>
+            <value>ppm</value>
+            <type>string</type>
+            <default>ppm</default>
+            <description>format of the output file</description>
+            <source>default</source>
+            <validValue>
+                <value>ppm</value>
+                <description>PPM or PGM image file (alias 1)</description>
+            </validValue>
+            <validValue>
+                <value>png</value>
+                <description>PNG color or grayscale image file (alias 2)</description>
+            </validValue>
+            <validValue>
+                <value>tiff</value>
+                <description>TIFF color or grayscale geo tiff image file (alias 3)</description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <order>25</order>
+        </option>
+        <option type="help">
+            <name>help1</name>
+            <value/>
+            <type>helpString</type>
+            <description>
+                If the "mask" option is set, the output PGM image will be masked for
+                flags defined in the flaguse parameter. The "no data" pixel value will
+                change from 0 to 255, and pixel values 252, 253, and 254 will represent the
+                sunglint, land, and all other (e.g. clouds/ice,hilt,atmfail,navfail,chlfail)
+                masks, respectively. NOTE: sunglint is NOT masked by default, but if it is
+                added to the flaguse parameter, it will be distinguished in the masking as
+                medium gray. If a palette is applied and the mask option is set, the
+                palette values will be modified:
+                Value R G B
+                252 128 128 128
+                253 160 82 45
+                254 255 255 255
+                255 0 0 0
+
+                By default, this program sends its results to standard output as a
+                PGM-formatted binary data stream. Save it to a file via ">" or pipe it
+                to your favorite image display program. The output image is rendered in
+                a Plate Carree projection.
+            </description>
+            <source>default</source>
+            <order>26</order>
+        </option>
+    </options>
+</paramInfo>
