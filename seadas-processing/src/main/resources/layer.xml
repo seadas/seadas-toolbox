@@ -15,7 +15,7 @@
     </folder>
 
     <folder name="Menu">
-        <folder name="Optical">
+        <folder name="Tools">
             <folder name="Water Mask Processing">
                 <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.shadow">
                     <attr name="originalFile" stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-WatermaskOpAction.instance"/>

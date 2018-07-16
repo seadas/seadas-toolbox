@@ -15,11 +15,11 @@
     </folder>
 
     <folder name="Menu">
-        <folder name="Optical">
-            <folder name="Water Mask Processing">
+        <folder name="Raster">
+            <folder name="Masks">
                 <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.shadow">
-                    <attr name="originalFile" stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-WatermaskOpAction.instance"/>
-                    <attr name="position" intvalue="10010"/>
+                    <attr name="originalFile"
+                          stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-WatermaskOpAction.instance"/>
                 </file>
             </folder>
         </folder>
@@ -27,10 +27,10 @@
 
     <folder name="Services">
         <folder name="javahelp">
+            "https://www.youtube.com/watch?v=C5-sHY3KpP8ame="javahelp">
             <file name="gov-nasa-gsfc-seadas-WatermaskOp-helpset.xml" url="helpset.xml">
                 <attr name="position" intvalue="6510"/>
             </file>
         </folder>
     </folder>
-
 </filesystem>

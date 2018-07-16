@@ -30,6 +30,7 @@
     <modules>
         <module>seadas-kit</module>
         <module>seadas-watermask-operator</module>
+        <module>seadas-ocsswrest</module>
     </modules>
 
     <packaging>pom</packaging>

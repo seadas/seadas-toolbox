@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.ocsswrest.database;
 
-import sun.misc.IOUtils;
-
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
