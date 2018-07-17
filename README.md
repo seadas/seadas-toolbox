@@ -16,10 +16,10 @@ Download and install the required build tools
 
 Add $JAVA_HOME/bin, $MAVEN_HOME/bin to your PATH.
 
-Clone the S3TBX source code and related repositories into a directory referred to a ${snap} from here on
+Clone the SeaDAS Toolbox source code and related repositories into a directory referred to a ${snap} from here on
 
     cd ${snap}
-    git clone https://github.com/senbox-org/seadas_toolbox.git
+    git clone https://github.com/seadas/seadas_toolbox.git
     git clone https://github.com/senbox-org/snap-desktop.git
     git clone https://github.com/senbox-org/snap-engine.git
     
@@ -33,9 +33,9 @@ Build SNAP-Desktop:
     cd ${snap}/snap-desktop
     mvn install
 
-Build Sentinel-3 Toolbox:
+Build SeaDAS Toolbox:
 
-    cd ${snap}/s3tbx
+    cd ${snap}/seadas-toolbox
     mvn install
    
 If unit tests are failing, you can use the following to skip the tests
@@ -60,11 +60,11 @@ the option *Create module groups for multi-module Maven projects*. Everything ca
     All VM parameters are optional
     **Program arguments:**
     --userdir
-    "${snap}/s3tbx/target/userdir"
+    "${snap}/seadas-toolbox/target/userdir"
     --clusters
-    "${snap}/s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx"
+    "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas"
     --patches
-    "${snap}/snap-engine/$/target/classes;${snap}/s3tbx/$/target/classes"
+    "${snap}/snap-engine/$/target/classes;${snap}/seadas-toolbox/$/target/classes"
     **Working directory:** ${snap}/snap-desktop/snap-application/target/snap/
     **Use classpath of module:** snap-main
 
