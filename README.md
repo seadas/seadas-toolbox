@@ -19,7 +19,7 @@ Add $JAVA_HOME/bin, $MAVEN_HOME/bin to your PATH.
 Clone the S3TBX source code and related repositories into a directory referred to a ${snap} from here on
 
     cd ${snap}
-    git clone https://github.com/senbox-org/seadas_toolbox.git
+    git clone https://github.com/seadas/seadas_toolbox.git
     git clone https://github.com/senbox-org/snap-desktop.git
     git clone https://github.com/senbox-org/snap-engine.git
     
