@@ -1,4 +1,4 @@
-SeaDAS Toolbox (seadas_toolbox)
+SeaDAS Toolbox (seadas-toolbox)
 ==========================
 
 A toolbox for the OBPG processing code.
@@ -6,7 +6,7 @@ A toolbox for the OBPG processing code.
 [![Build Status](https://travis-ci.org/senbox-org/s3tbx.svg?branch=master)](https://travis-ci.org/senbox-org/s3tbx)
 [![Coverity Scan Status](https://scan.coverity.com/projects/7247/badge.svg)](https://scan.coverity.com/projects/senbox-org-s3tbx)
 
-Building seadas_toolbox from the source
+Building seadas-toolbox from the source
 ------------------------------
 
 Download and install the required build tools
@@ -19,7 +19,7 @@ Add $JAVA_HOME/bin, $MAVEN_HOME/bin to your PATH.
 Clone the SeaDAS Toolbox source code and related repositories into a directory referred to a ${snap} from here on
 
     cd ${snap}
-    git clone https://github.com/seadas/seadas_toolbox.git
+    git clone https://github.com/seadas/seadas-toolbox.git
     git clone https://github.com/senbox-org/snap-desktop.git
     git clone https://github.com/senbox-org/snap-engine.git
     
