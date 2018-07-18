@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 3 of the License, or (at your option)
@@ -9,7 +9,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
@@ -18,7 +18,10 @@ package gov.nasa.gsfc.seadas.watermask.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
 import org.esa.snap.core.datamodel.*;
-import org.esa.snap.core.gpf.*;
+import org.esa.snap.core.gpf.Operator;
+import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.Tile;
 import org.esa.snap.core.gpf.annotations.OperatorMetadata;
 import org.esa.snap.core.gpf.annotations.Parameter;
 import org.esa.snap.core.gpf.annotations.SourceProduct;
@@ -29,7 +32,6 @@ import org.esa.snap.rcp.imgfilter.model.Filter;
 import java.awt.*;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashMap;
 
 /**
  * The watermask operator is a GPF-Operator. It takes the geographic bounds of the input product and creates a new
@@ -221,28 +223,61 @@ public class WatermaskOp extends Operator {
         }
     }
 
-//    private void copySourceToTarget() {
-//        final HashMap<String, Object> subsetParameters = new HashMap<String, Object>();
-//        subsetParameters.put("x", 0);
-//        subsetParameters.put("y", 0);
-//        subsetParameters.put("width", sourceProduct.getSceneRasterWidth());
-//        subsetParameters.put("height", sourceProduct.getSceneRasterHeight());
-//
-//        HashMap<String, Product> projProducts = new HashMap<String, Product>();
-//        projProducts.put("source", sourceProduct);
-//        targetProduct = GPF.createProduct("Subset", subsetParameters, projProducts);
-//    }
-
-
     private void copySourceToTarget() {
-        final HashMap<String, Object> copyOpParameters = new HashMap<String, Object>();
+//        final HashMap<String, Object> copyOpParameters = new HashMap<String, Object>();
+//
+//
+//        HashMap<String, Product> copyOpProducts = new HashMap<String, Product>();
+//        copyOpProducts.put("source", sourceProduct);
+//        targetProduct = GPF.createProduct("Copy", copyOpParameters, copyOpProducts);
+
+        int width = sourceProduct.getSceneRasterWidth();
+        int height = sourceProduct.getSceneRasterHeight();
+        targetProduct = new Product(sourceProduct.getName() + "_LW-Mask", "LandWaterMask", width, height);
+
+        ProductUtils.copyMetadata(sourceProduct, targetProduct);
+        ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
+        copyFlagCodingsIfPossible(sourceProduct, targetProduct);
+        copyIndexCodingsIfPossible(sourceProduct, targetProduct);
+        // copying GeoCoding from product to product, bands which do not have a GC yet will be geo-coded afterwards
+        ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
+        ProductUtils.copyMasks(sourceProduct, targetProduct);
+        ProductUtils.copyVectorData(sourceProduct, targetProduct);
+        targetProduct.setDescription(sourceProduct.getDescription());
+
+        if (sourceProduct.getStartTime() != null && sourceProduct.getEndTime() != null) {
+            targetProduct.setStartTime(sourceProduct.getStartTime());
+            targetProduct.setEndTime(sourceProduct.getEndTime());
+        }
 
 
-        HashMap<String, Product> copyOpProducts = new HashMap<String, Product>();
-        copyOpProducts.put("source", sourceProduct);
-        targetProduct = GPF.createProduct("Copy", copyOpParameters, copyOpProducts);
     }
 
+    private static void copyFlagCodingsIfPossible(Product source, Product target) {
+        int numCodings = source.getFlagCodingGroup().getNodeCount();
+        for (int n = 0; n < numCodings; n++) {
+            FlagCoding sourceFlagCoding = source.getFlagCodingGroup().get(n);
+            final String sourceFlagCodingName = sourceFlagCoding.getName();
+            if (target.containsBand(sourceFlagCodingName) &&
+                    target.getBand(sourceFlagCodingName).hasIntPixels()) {
+                ProductUtils.copyFlagCoding(sourceFlagCoding, target);
+                target.getBand(sourceFlagCodingName).setSampleCoding(sourceFlagCoding);
+            }
+        }
+    }
+
+    private static void copyIndexCodingsIfPossible(Product source, Product target) {
+        int numCodings = source.getIndexCodingGroup().getNodeCount();
+        for (int n = 0; n < numCodings; n++) {
+            IndexCoding sourceIndexCoding = source.getIndexCodingGroup().get(n);
+            final String sourceIndexCodingName = sourceIndexCoding.getName();
+            if (target.containsBand(sourceIndexCodingName) &&
+                    target.getBand(sourceIndexCodingName).hasIntPixels()) {
+                ProductUtils.copyIndexCoding(sourceIndexCoding, target);
+                target.getBand(sourceIndexCodingName).setSampleCoding(sourceIndexCoding);
+            }
+        }
+    }
 
     private void initTargetProduct() {
         if (copySourceFile) {
@@ -333,28 +368,12 @@ public class WatermaskOp extends Operator {
             String[] bandNames = targetProduct.getBandNames();
             for (String bandName : bandNames) {
                 RasterDataNode raster = targetProduct.getRasterDataNode(bandName);
-//            if (landMasksData.isShowCoastlineMaskAllBands()) {
-//                raster.getOverlayMaskGroup().add(coastlineMask);
-//            }
-//            if (landMasksData.isShowLandMaskAllBands()) {
-                raster.getOverlayMaskGroup().add(landMask);
-//            }
-//            if (landMasksData.isShowWaterMaskAllBands()) {
-//                raster.getOverlayMaskGroup().add(waterMask);
-//            }
             }
 
 
         }
-
-
-//        final Band coastBand = targetProduct.addBand(COAST_BAND_NAME, ProductData.TYPE_FLOAT32);
-//        coastBand.setNoDataValue(0);
-//        coastBand.setNoDataValueUsed(true);
-
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
     }
-
 
 
     @SuppressWarnings({"UnusedDeclaration"})
