@@ -1,9 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-
-import gov.nasa.gsfc.seadas.OsUtils;
-import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.ocssw.OsUtils;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
+import org.esa.snap.rcp.util.Dialogs;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
@@ -16,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.out;
-import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by IntelliJ IDEA.

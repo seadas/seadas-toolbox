@@ -3,8 +3,12 @@ package gov.nasa.gsfc.seadas.ocssw;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import org.esa.snap.rcp.SnapApp;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -21,8 +25,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static gov.nasa.gsfc.seadas.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
-import org.esa.snap.rcp.SnapApp;
+import static gov.nasa.gsfc.seadas.ocssw.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
 
 /**
  * Created by aabduraz on 3/27/17.

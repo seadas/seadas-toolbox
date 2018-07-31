@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
 
 import javax.ws.rs.client.WebTarget;
 import java.io.InputStream;

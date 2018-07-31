@@ -1,19 +1,21 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.TableLayout;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.snap.ui.AppContext;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.*;
-import org.esa.snap.ui.AppContext;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.

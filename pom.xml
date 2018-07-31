@@ -31,6 +31,7 @@
         <module>seadas-kit</module>
         <module>seadas-watermask-operator</module>
         <module>seadas-ocsswrest</module>
+        <module>seadas-processing</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -456,6 +457,7 @@
             <email>aynur.abdurazik@nasa.gov</email>
             <organization>NASA OBPG</organization>
             <roles>
+                <role>Team Lead</role>
                 <role>Java Developer</role>
             </roles>
         </developer>
@@ -489,16 +491,6 @@
                 <role>Python Developer</role>
             </roles>
         </developer>
-        <developer>
-            <id>forman</id>
-            <name>Norman Fomferra</name>
-            <email>norman.fomferra@brockmann-consult.de</email>
-            <organization>Brockmann Consult GmbH</organization>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-
     </developers>
 
 </project>
