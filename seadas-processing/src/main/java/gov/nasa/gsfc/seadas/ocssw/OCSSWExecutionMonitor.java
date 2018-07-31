@@ -2,16 +2,14 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.snap.rcp.SnapApp;
 
 import java.io.IOException;
 import java.util.Arrays;
-import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by aabduraz on 1/17/18.

@@ -1,22 +1,28 @@
 <filesystem>
 
-    <folder name="Menu">
-        <folder name="OC Processing">
-            <folder name="Water Mask Processing">
-                <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.shadow">
-                    <attr name="originalFile" stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-WatermaskOpAction.instance"/>
-                    <attr name="position" intvalue="10010"/>
-                </file>
-            </folder>
-        </folder>
-    </folder>
-
-    <folder name="Services">
-        <folder name="javahelp">
-            <file name="gov-nasa-gsfc-seadas-WatermaskOp-helpset.xml" url="helpset.xml">
-                <attr name="position" intvalue="6510"/>
+    <folder name="Actions">
+        <folder name="OCProcessing">
+            <file name="gov-nasa-gsfc-seadas-processing-common-CallCloProgramAction.instance">
             </file>
         </folder>
     </folder>
+
+    <folder name="Menu">
+        <folder name="OC Processing">
+            <file name="gov-nasa-gsfc-seadas-processing-common-CallCloProgramAction.shadow">
+                <attr name="originalFile"
+                      stringvalue="Actions/OCProcessing/gov-nasa-gsfc-seadas-processing-common-CallCloProgramAction.instance"/>
+                <attr name="position" intvalue="100"/>
+            </file>
+        </folder>
+    </folder>
+
+    <!--<folder name="Services">-->
+    <!--<folder name="javahelp">-->
+    <!--<file name="gov-nasa-gsfc-seadas-OCProcessing-helpset.xml" url="helpset.xml">-->
+    <!--<attr name="position" intvalue="6510"/>-->
+    <!--</file>-->
+    <!--</folder>-->
+    <!--</folder>-->
 
 </filesystem>

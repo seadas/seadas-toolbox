@@ -1,12 +1,12 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
+import org.esa.snap.ui.AppContext;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import org.esa.snap.ui.AppContext;
 
 /**
  * Created by IntelliJ IDEA.

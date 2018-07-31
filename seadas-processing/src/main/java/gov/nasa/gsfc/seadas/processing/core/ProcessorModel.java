@@ -2,11 +2,13 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeConfig;
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ProcessorTypeInfo;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
-import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.common.*;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.rcp.util.Dialogs.Answer;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -19,17 +21,10 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.lang.Boolean;
 
 import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.rcp.util.Dialogs;
-import org.esa.snap.rcp.util.Dialogs.Answer;
 
 /**
  * Created by IntelliJ IDEA. User: Aynur Abdurazik (aabduraz) Date: 3/16/12

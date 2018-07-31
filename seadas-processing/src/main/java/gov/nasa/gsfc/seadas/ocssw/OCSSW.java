@@ -2,20 +2,19 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.snap.rcp.util.Dialogs;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.net.URL;
-import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by aabduraz on 3/27/17.

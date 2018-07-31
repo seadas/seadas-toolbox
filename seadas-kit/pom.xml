@@ -68,6 +68,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-processing</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
             <version>${snap.version}</version>
