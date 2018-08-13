@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.ocssw;
+package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
@@ -9,7 +9,6 @@ import gov.nasa.gsfc.seadas.processing.utilities.FileCompare;
 
 import javax.json.JsonObject;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

@@ -25,11 +25,11 @@ public class SheetCell {
   static final boolean USER_EDITION = true;
   static final boolean UPDATE_EVENT = false;
 
-  Object value;
+  String value;
   String formula;
   int    state;
-  Vector listeners;
-  Vector listenees;
+  Vector<SheetCell> listeners;
+  Vector<SheetCell> listenees;
   Color  background;
   Color  foreground;
   int    row;
@@ -41,8 +41,8 @@ public class SheetCell {
     value      = null;
     formula    = null;
     state      = UNDEFINED;
-    listeners  = new Vector();
-    listenees  = new Vector();
+    listeners  = new Vector<>();
+    listenees  = new Vector<>();
     background = Color.white;
     foreground = Color.black;
   }
@@ -54,7 +54,7 @@ public class SheetCell {
     this.formula = formula;
   }
 
-  public Object getValue(){
+  public String getValue(){
       return value;
   }
 
@@ -77,7 +77,7 @@ public class SheetCell {
 
   void updateListeners() {
     for (int ii=0; ii<listeners.size(); ii++) {
-      SheetCell cell = (SheetCell)listeners.get(ii);
+      SheetCell cell = listeners.get(ii);
       SpreadSheetModel.interpreter.interpret(cell, UPDATE_EVENT);
       if (DEBUG) System.out.println("Listener updated.");
       cell.updateListeners();

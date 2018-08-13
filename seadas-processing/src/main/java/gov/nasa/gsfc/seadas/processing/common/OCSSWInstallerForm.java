@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.TableLayout;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.snap.ui.AppContext;

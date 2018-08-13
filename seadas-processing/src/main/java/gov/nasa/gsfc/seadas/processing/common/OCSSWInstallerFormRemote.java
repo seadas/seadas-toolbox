@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.client.WebTarget;

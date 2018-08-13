@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 
 /**
  * Created by aabduraz on 8/21/15.

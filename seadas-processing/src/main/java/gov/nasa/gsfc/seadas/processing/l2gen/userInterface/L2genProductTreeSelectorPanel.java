@@ -1,10 +1,10 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
+import gov.nasa.gsfc.seadas.processing.common.GridBagConstraintsCustom;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genWavelengthInfo;
-import gov.nasa.gsfc.seadas.processing.common.GridBagConstraintsCustom;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -307,12 +307,12 @@ public class L2genProductTreeSelectorPanel extends JPanel {
         L2genBaseInfo.State newState = info.getState();
 
         if (node.getChildCount() > 0) {
-            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
+            Enumeration enumeration = node.children();
             DefaultMutableTreeNode kid;
             boolean selectedFound = false;
             boolean notSelectedFound = false;
             while (enumeration.hasMoreElements()) {
-                kid = enumeration.nextElement();
+                kid = (DefaultMutableTreeNode)enumeration.nextElement();
                 checkTreeState(kid);
 
                 L2genBaseInfo childInfo = (L2genBaseInfo) kid.getUserObject();
@@ -374,13 +374,13 @@ public class L2genProductTreeSelectorPanel extends JPanel {
         if (node.getChildCount() > 0) {
             l2genData.setSelectedInfo(info, state);
 
-            Enumeration<DefaultMutableTreeNode> enumeration = node.children();
+            Enumeration enumeration = node.children();
             DefaultMutableTreeNode childNode;
 
             L2genBaseInfo.State newState = state;
 
             while (enumeration.hasMoreElements()) {
-                childNode = enumeration.nextElement();
+                childNode = (DefaultMutableTreeNode)enumeration.nextElement();
 
                 L2genBaseInfo childInfo = (L2genBaseInfo) childNode.getUserObject();
 

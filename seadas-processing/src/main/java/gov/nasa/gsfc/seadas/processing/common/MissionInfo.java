@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 
 import java.io.File;
 import java.util.HashMap;

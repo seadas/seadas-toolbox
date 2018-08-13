@@ -2,24 +2,23 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWExecutionMonitor;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWExecutionMonitor;
 import gov.nasa.gsfc.seadas.processing.common.*;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
-import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
+import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
+import org.esa.snap.core.util.ResourceInstaller;
+import org.esa.snap.core.util.StringUtils;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.SnapApp;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
-import org.esa.snap.core.util.ResourceInstaller;
-import org.esa.snap.core.util.StringUtils;
-import org.esa.snap.core.util.SystemUtils;
-import org.esa.snap.rcp.SnapApp;
 
 /**
  * A ...
@@ -437,7 +436,7 @@ public class L2genData implements SeaDASProcessorModel {
         fireEvent(name, null, null);
     }
 
-    public void fireEvent(String name, Object oldValue, Object newValue) {
+    public void fireEvent(String name, Serializable oldValue, Serializable newValue) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, oldValue, newValue));
@@ -569,10 +568,6 @@ public class L2genData implements SeaDASProcessorModel {
         paramInfoLookup.put(paramInfo.getName().toLowerCase(), paramInfo);
     }
 
-    public void clearParamInfo() {
-        paramInfos.clear();
-    }
-
     public ArrayList<ParamInfo> getParamInfos() {
         return paramInfos;
     }
@@ -581,12 +576,8 @@ public class L2genData implements SeaDASProcessorModel {
         paramInfos.clear();
     }
 
-    public void sortParamCategoryInfos() {
-        Collections.sort(paramCategoryInfos);
-    }
-
     public void sortParamInfos() {
-        Collections.sort(paramInfos);
+        Collections.sort((List<ParamInfo>)paramInfos);
     }
 
     public ArrayList<L2genWavelengthInfo> getWaveLimiterInfos() {
@@ -1794,7 +1785,7 @@ public class L2genData implements SeaDASProcessorModel {
         if (theFile.canRead()) {
             return theFile;
         }
-        Class callingClass = L2genData.class;
+        Class<gov.nasa.gsfc.seadas.processing.core.L2genData> callingClass = L2genData.class;
         final Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(callingClass);
         Path sourcePath = moduleBasePath.resolve(dataDir.getAbsolutePath());
         

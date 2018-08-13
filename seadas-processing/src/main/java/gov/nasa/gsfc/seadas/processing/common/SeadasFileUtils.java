@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.ocssw.OsUtils;
+import gov.nasa.gsfc.seadas.processing.ocssw.OsUtils;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.snap.rcp.util.Dialogs;
@@ -122,7 +122,7 @@ public class SeadasFileUtils {
         commandArrayParams[0] = sourceFilePathName;
         commandArrayParams[1] = targetFilePathName;
 
-        String[] copyCommandArray = SeadasArrayUtils.concatAll(OsUtils.getCopyCommandSyntax(), commandArrayParams);
+        String[] copyCommandArray = SeadasArrayUtils.concat(OsUtils.getCopyCommandSyntax(), commandArrayParams);
 
         StringBuilder sb = new StringBuilder();
         for (String item : copyCommandArray) {

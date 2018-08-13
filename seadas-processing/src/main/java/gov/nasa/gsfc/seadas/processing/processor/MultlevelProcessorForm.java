@@ -7,13 +7,15 @@ package gov.nasa.gsfc.seadas.processing.processor;
 
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.core.MultiParamList;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.common.*;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -28,10 +30,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import org.esa.snap.core.util.SystemUtils;
-import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.ui.AppContext;
 
+import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
 
 public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 

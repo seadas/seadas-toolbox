@@ -173,7 +173,7 @@ class Interpreter {
             }
 
             if (_noEmptyRef)
-                cell.value = (Object) value.toString();
+                cell.value = (String) value.toString();
             else
                 cell.value = null;
 

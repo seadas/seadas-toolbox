@@ -6,6 +6,9 @@ import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -18,9 +21,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.ui.AppContext;
-import org.esa.snap.ui.ModalDialog;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,6 +29,7 @@ import org.esa.snap.ui.ModalDialog;
  * Time: 9:23 AM
  * To change this template use File | Settings | File Templates.
  */
+
 public class ParamUIFactory {
 
     ProcessorModel processorModel;
@@ -91,9 +92,9 @@ public class ParamUIFactory {
         TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
         textFieldPanel.setLayout(textFieldPanelLayout);
 
-        Iterator itr = paramList.iterator();
+        Iterator<ParamInfo> itr = paramList.iterator();
         while (itr.hasNext()) {
-            final ParamInfo pi = (ParamInfo) itr.next();
+            final ParamInfo pi = itr.next();
             if (!(pi.getName().equals(processorModel.getPrimaryInputFileOptionName()) ||
                     pi.getName().equals(processorModel.getPrimaryOutputFileOptionName()) ||
                     pi.getName().equals(L2genData.GEOFILE) ||
@@ -273,17 +274,17 @@ public class ParamUIFactory {
         final String[] values = new String[validValues.size()];
         ArrayList<String> toolTips = new ArrayList<String>();
 
-        Iterator itr = validValues.iterator();
+        Iterator<ParamValidValueInfo> itr = validValues.iterator();
         int i = 0;
         ParamValidValueInfo paramValidValueInfo;
         while (itr.hasNext()) {
-            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            paramValidValueInfo = itr.next();
             values[i] = paramValidValueInfo.getValue();
             toolTips.add(paramValidValueInfo.getDescription());
             i++;
         }
 
-        final JComboBox inputList = new JComboBox(values);
+        final JComboBox<String> inputList = new JComboBox<String>(values);
         ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
         inputList.setRenderer(renderer);
         renderer.setTooltips(toolTips);
@@ -294,7 +295,7 @@ public class ParamUIFactory {
         if (pi.getDescription() != null) {
             inputList.setToolTipText(pi.getDescription());
         }
-        int defaultValuePosition = new ArrayList(Arrays.asList(values)).indexOf(optionDefaultValue);
+        int defaultValuePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(optionDefaultValue);
 
         if (defaultValuePosition != -1) {
             inputList.setSelectedIndex(defaultValuePosition);
@@ -325,7 +326,7 @@ public class ParamUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 //values = updateValidValues(pi);
-                int currentChoicePosition = new ArrayList(Arrays.asList(values)).indexOf(pi.getValue());
+                int currentChoicePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(pi.getValue());
                 if (currentChoicePosition != -1) {
                     inputList.setSelectedIndex(currentChoicePosition);
                 }
@@ -400,10 +401,10 @@ public class ParamUIFactory {
         String choosenValues = "";
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
 
-        Iterator itr = validValues.iterator();
+        Iterator<ParamValidValueInfo> itr = validValues.iterator();
         ParamValidValueInfo paramValidValueInfo;
         while (itr.hasNext()) {
-            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            paramValidValueInfo = itr.next();
             if (!paramValidValueInfo.getValue().trim().equals("SPARE")) {
                 validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
             }
@@ -422,7 +423,7 @@ public class ParamUIFactory {
         itr = validValues.iterator();
 
         while (itr.hasNext()) {
-            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            paramValidValueInfo = itr.next();
             if (paramValidValueInfo.isSelected()) {
                 choosenValues = choosenValues + paramValidValueInfo.getValue() + ",";
             }
@@ -497,11 +498,11 @@ public class ParamUIFactory {
         final String[] values = new String[validValues.size()];
         ArrayList<String> toolTips = new ArrayList<String>();
 
-        Iterator itr = validValues.iterator();
+        Iterator<ParamValidValueInfo> itr = validValues.iterator();
         int i = 0;
         ParamValidValueInfo paramValidValueInfo;
         while (itr.hasNext()) {
-            paramValidValueInfo = (ParamValidValueInfo) itr.next();
+            paramValidValueInfo = itr.next();
             values[i] = paramValidValueInfo.getValue();
             toolTips.add(paramValidValueInfo.getDescription());
             i++;
@@ -574,7 +575,7 @@ public class ParamUIFactory {
     }
 
     private class ComboboxToolTipRenderer extends DefaultListCellRenderer {
-        ArrayList tooltips;
+        ArrayList<String> tooltips;
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
@@ -584,12 +585,12 @@ public class ParamUIFactory {
                     value, index, isSelected, cellHasFocus);
 
             if (-1 < index && null != value && null != tooltips) {
-                list.setToolTipText((String) tooltips.get(index));
+                list.setToolTipText(tooltips.get(index));
             }
             return comp;
         }
 
-        public void setTooltips(ArrayList tooltips) {
+        public void setTooltips(ArrayList<String> tooltips) {
             this.tooltips = tooltips;
         }
     }

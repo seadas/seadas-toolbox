@@ -8,7 +8,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.common.*;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

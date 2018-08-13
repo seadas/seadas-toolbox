@@ -1,18 +1,14 @@
-package gov.nasa.gsfc.seadas.ocssw;
+package gov.nasa.gsfc.seadas.processing.ocssw;
 
 
-import com.bc.ceres.core.runtime.RuntimeContext;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.

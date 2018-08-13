@@ -3,11 +3,8 @@
 <filesystem>
 
     <folder name="Menu">
-        <folder name="Optical">
-            <attr name="position" intvalue="500"/>
-            <folder name="SeaDASprocessing">
-                <attr name="position" intvalue="600"/>
-            </folder>
+        <folder name="OC Processing">
+            <attr name="position" intvalue="600"/>
         </folder>
     </folder>
 

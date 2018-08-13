@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.ocssw;
+package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import java.util.Locale;
 

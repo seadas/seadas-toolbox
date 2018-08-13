@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 
 import javax.ws.rs.client.WebTarget;
 import java.io.BufferedReader;
@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import static gov.nasa.gsfc.seadas.ocssw.OCSSWRemote.PROCESS_STATUS_NONEXIST;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWRemote.PROCESS_STATUS_NONEXIST;
 
 /**
  * Created by aabduraz on 9/12/17.

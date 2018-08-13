@@ -4,7 +4,7 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.common.*;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 
 import javax.swing.*;
