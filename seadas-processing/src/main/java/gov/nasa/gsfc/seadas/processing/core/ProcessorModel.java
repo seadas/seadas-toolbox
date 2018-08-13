@@ -2,9 +2,9 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.runtime.RuntimeConfig;
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.rcp.util.Dialogs;
@@ -100,7 +100,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public ProcessorModel(String name, String parXMLFileName, OCSSW ocssw) {
         this(name, ocssw);
         if (parXMLFileName != null && parXMLFileName.length() > 0) {
-            setParamList(ParamUtils.computeParamList(parXMLFileName));
+            setParamList((ArrayList<ParamInfo>) ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
             setParFileOptionName(ParamUtils.getParFileOptionName(parXMLFileName));
             progressPattern = Pattern.compile(ParamUtils.getProgressRegex(parXMLFileName));
@@ -407,7 +407,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     public EventInfo[] eventInfos = {
-        new EventInfo("none", this),};
+            new EventInfo("none", this),};
 
     private EventInfo getEventInfo(String name) {
         for (EventInfo eventInfo : eventInfos) {
@@ -475,7 +475,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         fireEvent(name, null, null);
     }
 
-    public void fireEvent(String name, Object oldValue, Object newValue) {
+    public void fireEvent(String name, Serializable oldValue, Serializable newValue) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
             propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, name, oldValue, newValue));
@@ -698,7 +698,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                 ParamInfo pi = getParamInfo(getProdParamName());
                 if (bandNames != null && pi != null) {
-                    ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) pi.getValidValueInfos().clone();
                     String oldValue = pi.getValue();
                     ParamValidValueInfo paramValidValueInfo;
                     for (String bandName : bandNames) {
@@ -1030,7 +1029,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 suiteName = fileName.substring(fileName.indexOf("_", fileName.indexOf("_") + 1) + 1, fileName.indexOf("."));
                 suiteValidValues.add(new ParamValidValueInfo(suiteName));
             }
-            ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) getParamInfo("suite").getValidValueInfos().clone();
+            ArrayList<ParamValidValueInfo> oldValidValues =  new ArrayList<ParamValidValueInfo>(getParamInfo("suite").getValidValueInfos());
             getParamInfo("suite").setValidValueInfos(suiteValidValues);
             fireEvent("suite", oldValidValues, suiteValidValues);
             updateFlagUse(DEFAULT_PAR_FILE_NAME);

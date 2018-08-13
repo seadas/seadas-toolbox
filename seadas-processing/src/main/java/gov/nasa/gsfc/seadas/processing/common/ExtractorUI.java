@@ -1,15 +1,15 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import org.esa.snap.rcp.util.Dialogs;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.File;
 import java.util.HashMap;
-import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,11 +34,13 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private boolean initiliazed = false;
 
+
+    HashMap<String, Boolean> paramCounter;
     //OCSSW ocssw;
 
     public ExtractorUI(String programName, String xmlFileName, OCSSW ocssw) {
         super(programName, xmlFileName, ocssw);
-        paramCounter = new HashMap();
+        paramCounter = new HashMap<String, Boolean>();
         initiliazed = true;
         //this.ocssw = ocssw;
     }
@@ -103,19 +105,21 @@ public class ExtractorUI extends ProgramUIFactory {
 
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
 
-        if (programName.contains("l1aextract_modis") || programName.contains("l1aextract_viirs")) {
-            String geoFileName = (ifileName.substring(0, ifileName.lastIndexOf("."))).concat(".GEO");
+        try {
+            if (programName.contains("l1aextract_modis") || programName.contains("l1aextract_viirs")) {
+                String geoFileName = (ifileName.substring(0, ifileName.lastIndexOf("."))).concat(".GEO");
 
-            if (new File(geoFileName).exists()) {
-                return geoFileName;
-            } else {
-                Dialogs.showError(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
-                return null;
+                if (new File(geoFileName).exists()) {
+                    return geoFileName;
+                } else {
+                    Dialogs.showError(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
+                    return null;
+                }
+
             }
+        } catch (Exception e) {
 
         }
         return ifileName;
     }
-
-    HashMap<String, Boolean> paramCounter;
 }

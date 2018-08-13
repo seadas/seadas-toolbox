@@ -1,25 +1,23 @@
-package gov.nasa.gsfc.seadas.ocssw;
+package gov.nasa.gsfc.seadas.processing.ocssw;
 
+import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 /**
  * Created by aabduraz on 6/12/16.
  */
-public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
+public class LocalOcsswCommandArrayManager extends OcsswCommandArrayManager {
 
-    private HashMap<String, String> iFilesOriginalLocations;
-    private HashMap<String, String> oFilesOriginalLocations;
+    ParFileManager parFileManager;
 
-    public RemoteOcsswCommandArrayManager(ProcessorModel processorModel) {
+    public LocalOcsswCommandArrayManager(ProcessorModel processorModel) {
         super(processorModel);
-        iFilesOriginalLocations = new HashMap<>();
-        oFilesOriginalLocations = new HashMap<>();
+        parFileManager = new ParFileManager(processorModel);
     }
 
     /**
@@ -34,7 +32,14 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
 
         String[] cmdArrayPrefix = processorModel.getCmdArrayPrefix();
         String[] cmdArraySuffix = processorModel.getCmdArraySuffix();
-        String[] cmdArrayForParams = getCmdArrayParam();
+        String[] cmdArrayForParams;
+
+        if (processorModel.acceptsParFile()) {
+            cmdArrayForParams = parFileManager.getCmdArrayWithParFile();
+
+        } else {
+            cmdArrayForParams = getCmdArrayParam();
+        }
 
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
         cmdArray = SeadasArrayUtils.concatAll(cmdArrayPrefix, cmdArrayForParams, cmdArraySuffix);
@@ -51,7 +56,7 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
         return cmdArray;
     }
 
-    public String[] getCmdArrayParam() {
+    private String[] getCmdArrayParam() {
 
         paramList = processorModel.getParamList();
 
@@ -62,33 +67,11 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
         ParamInfo option;
         int optionOrder;
         String optionValue;
-        ParamInfo.Type optionType;
 
         while (itr.hasNext()) {
             option = (ParamInfo) itr.next();
             optionOrder = option.getOrder();
             optionValue = option.getValue();
-            optionType = option.getType();
-            if ((optionType.equals(ParamInfo.Type.IFILE) || optionType.equals(ParamInfo.Type.OFILE))
-                    && optionValue != null && optionValue.trim().length() > 0) {
-                //replace shared folder name for remote server
-                OCSSW ocssw = OCSSW.getOCSSWInstance();
-                if (optionValue.indexOf(ocssw.getOCSSWClientSharedDirName()) != 0) {
-                    //save the original file location for later usage; copy file to the shared folder; change the value of "optionValue"
-                    String fileName = optionValue.substring(optionValue.lastIndexOf(System.getProperty("file.separator")) + 1);
-                    String dirPath = optionValue.substring(0, optionValue.lastIndexOf(System.getProperty("file.separator")));
-                    //if the file is an input file, copy it to the shared folder
-                    if (optionType.equals(ParamInfo.Type.IFILE)) {
-                        getiFilesOriginalLocations().put(fileName, dirPath);
-                    } else if (optionType.equals(ParamInfo.Type.IFILE)) {
-                        getoFilesOriginalLocations().put(fileName, dirPath);
-                    }
-                    optionValue = ocssw.getServerSharedDirName() + System.getProperty("file.separator") + fileName;
-                } else {
-                    optionValue = optionValue.replace(ocssw.getOCSSWClientSharedDirName(), ocssw.getServerSharedDirName());
-                }
-
-            }
             if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
                 if (option.getValue() != null && option.getValue().length() > 0) {
                     cmdArrayParam[optionOrder] = optionValue;
@@ -102,21 +85,5 @@ public class RemoteOcsswCommandArrayManager extends OcsswCommandArrayManager {
             }
         }
         return cmdArrayParam;
-    }
-
-    public HashMap<String, String> getiFilesOriginalLocations() {
-        return iFilesOriginalLocations;
-    }
-
-    public void setiFilesOriginalLocations(HashMap<String, String> iFilesOriginalLocations) {
-        this.iFilesOriginalLocations = iFilesOriginalLocations;
-    }
-
-    public HashMap<String, String> getoFilesOriginalLocations() {
-        return oFilesOriginalLocations;
-    }
-
-    public void setoFilesOriginalLocations(HashMap<String, String> oFilesOriginalLocations) {
-        this.oFilesOriginalLocations = oFilesOriginalLocations;
     }
 }

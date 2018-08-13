@@ -2,15 +2,14 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
-import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileSelector;
-
+import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
+import org.esa.snap.rcp.SnapApp;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by IntelliJ IDEA.

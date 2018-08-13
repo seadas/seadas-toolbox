@@ -6,7 +6,7 @@ package gov.nasa.gsfc.seadas.processing.core;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
-public class ParamValidValueInfo implements Comparable, Cloneable {
+public class ParamValidValueInfo implements Comparable<ParamValidValueInfo>, Cloneable {
 
     private String value = null;
     private String description = null;
@@ -43,10 +43,10 @@ public class ParamValidValueInfo implements Comparable, Cloneable {
         this.description = description;
     }
 
-    @Override
-    public int compareTo(Object object) {
-        return getValue().compareToIgnoreCase(((ParamValidValueInfo) object).getValue());
-    }
+//    @Override
+//    public int compareTo(Object object) {
+//        return getValue().compareToIgnoreCase(((ParamValidValueInfo) object).getValue());
+//    }
 
     @Override
     public String toString() {
@@ -64,7 +64,7 @@ public class ParamValidValueInfo implements Comparable, Cloneable {
     }
 
     @Override
-    public Object clone() {
+    public ParamValidValueInfo clone() {
         ParamValidValueInfo validValueInfo = new ParamValidValueInfo(value);
         validValueInfo.description = description;
         return validValueInfo;
@@ -76,5 +76,10 @@ public class ParamValidValueInfo implements Comparable, Cloneable {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    @Override
+    public int compareTo(ParamValidValueInfo o) {
+        return getValue().compareToIgnoreCase((o).getValue());
     }
 }

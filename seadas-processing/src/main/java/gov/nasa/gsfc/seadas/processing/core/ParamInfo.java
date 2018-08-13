@@ -1,12 +1,14 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.common.FileInfo;
+import gov.nasa.gsfc.seadas.processing.common.FileTypeInfo;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.common.SeadasProcessorInfo;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * A ...
@@ -15,7 +17,8 @@ import java.util.Collections;
  * @author Aynur Abdurazik
  * @since SeaDAS 7.0
  */
-public class ParamInfo implements Comparable, Cloneable {
+
+public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
 
     public static final String PARAM_TYPE_IFILE = "ifile";
     public static final String PARAM_TYPE_OFILE = "ofile";
@@ -34,6 +37,11 @@ public class ParamInfo implements Comparable, Cloneable {
     public static final String USED_IN_COMMAND_AS_FLAG = "flag";
 
     public static final String[] FILE_COMPRESSION_SUFFIXES = {"bz2", "bzip2", "gz", "gzip", "zip", "tar", "tgz", "z"};
+
+    @Override
+    public int compareTo(ParamInfo o) {
+        return getName().compareToIgnoreCase(((ParamInfo) o).getName());
+    }
 
     public static enum Type {
         BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP, DIR, FLAGS
@@ -348,15 +356,15 @@ public class ParamInfo implements Comparable, Cloneable {
         return order;
     }
 
-    protected void sortValidValueInfos() {
-        //  Collections.sort(validValueInfos, new ParamValidValueInfo.ValueComparator());
-        Collections.sort(validValueInfos);
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return getName().compareToIgnoreCase(((ParamInfo) o).getName());
-    }
+//    protected void sortValidValueInfos() {
+//        //  Collections.sort(validValueInfos, new ParamValidValueInfo.ValueComparator());
+//        Collections.sort(validValueInfos);
+//    }
+//
+//    @Override
+//    public int compareTo(Object o) {
+//        return getName().compareToIgnoreCase(((ParamInfo) o).getName());
+//    }
 
     @Override
     public Object clone() {

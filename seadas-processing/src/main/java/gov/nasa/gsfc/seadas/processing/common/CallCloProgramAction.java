@@ -2,11 +2,11 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -14,6 +14,10 @@ import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.UIUtils;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.NbBundle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,6 +37,24 @@ import java.util.regex.Pattern;
  * @author Aynur Abdurazik
  * @since SeaDAS 7.0
  */
+
+@ActionID(
+        category = "Processing",
+        id = "gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction"
+)
+@ActionRegistration(
+        displayName = "#CTL_CallCloProgramActionText",
+        popupText = "#CTL_CallCloProgramActionText"
+)
+@ActionReference(
+        path = "Menu/OCprocessing",
+        position = 100
+)
+@NbBundle.Messages({
+        "CTL__CallCloProgramActionText=XXX",
+        "CTL_CallCloDialogTitle=xxx",
+        "CTL_CallClosDescription=yyy."
+})
 public class CallCloProgramAction extends AbstractSnapAction {
 
     public static final String CONTEXT_LOG_LEVEL_PROPERTY = SystemUtils.getApplicationContextId() + ".logLevel";

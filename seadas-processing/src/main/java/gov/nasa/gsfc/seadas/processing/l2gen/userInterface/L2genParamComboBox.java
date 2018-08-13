@@ -20,13 +20,15 @@ import java.util.ArrayList;
  * Time: 5:39 PM
  * To change this template use File | Settings | File Templates.
  */
+
 public class L2genParamComboBox {
 
     private ParamInfo paramInfo;
     private L2genData l2genData;
 
     private JLabel jLabel;
-    private JComboBox jComboBox;
+    private JComboBox<ParamValidValueInfo> jComboBox;
+
 
     public L2genParamComboBox(L2genData l2genData, ParamInfo paramInfo) {
 
@@ -79,11 +81,11 @@ public class L2genParamComboBox {
         }
 
 
-        jComboBox = new JComboBox(jComboBoxArray);
+        jComboBox = new JComboBox<>(jComboBoxArray);
 
         final MyComboBoxRenderer myComboBoxRenderer = new MyComboBoxRenderer();
         myComboBoxRenderer.setTooltips(validValuesToolTipsArray);
-        jComboBox.setRenderer(myComboBoxRenderer);
+        //jComboBox.setRenderer((ListCellRenderer<ParamValidValueInfo>)myComboBoxRenderer);
         jComboBox.setEditable(false);
 
 
@@ -116,10 +118,10 @@ public class L2genParamComboBox {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 boolean found = false;
-                ComboBoxModel comboBoxModel = jComboBox.getModel();
+                ComboBoxModel<ParamValidValueInfo> comboBoxModel = jComboBox.getModel();
 
                 for (int i = 0; i < comboBoxModel.getSize(); i++) {
-                    ParamValidValueInfo jComboBoxItem = (ParamValidValueInfo) comboBoxModel.getElementAt(i);
+                    ParamValidValueInfo jComboBoxItem = comboBoxModel.getElementAt(i);
                     if (paramInfo.getValue().equals(jComboBoxItem.getValue())) {
                         jComboBox.setSelectedItem(jComboBoxItem);
                         found = true;
@@ -130,11 +132,11 @@ public class L2genParamComboBox {
                     final ParamValidValueInfo newArray[] = new ParamValidValueInfo[comboBoxModel.getSize() + 1];
                     int i;
                     for (i = 0; i < comboBoxModel.getSize(); i++) {
-                        newArray[i] = (ParamValidValueInfo) comboBoxModel.getElementAt(i);
+                        newArray[i] = comboBoxModel.getElementAt(i);
                     }
                     newArray[i] = new ParamValidValueInfo(paramInfo.getValue());
                     newArray[i].setDescription("User defined value");
-                    jComboBox.setModel(new DefaultComboBoxModel(newArray));
+                    jComboBox.setModel(new DefaultComboBoxModel<>(newArray));
                     jComboBox.setSelectedItem(newArray[i]);
                 }
             }
@@ -146,12 +148,12 @@ public class L2genParamComboBox {
         return jLabel;
     }
 
-    public JComboBox getjComboBox() {
+    public JComboBox<ParamValidValueInfo> getjComboBox() {
         return jComboBox;
     }
 
 
-    class MyComboBoxRenderer extends BasicComboBoxRenderer {
+    class MyComboBoxRenderer<ParamValidValueInfo> extends BasicComboBoxRenderer {
 
         private String[] tooltips;
 

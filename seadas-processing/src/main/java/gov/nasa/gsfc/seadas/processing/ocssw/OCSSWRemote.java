@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.ocssw;
+package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
@@ -25,11 +25,12 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static gov.nasa.gsfc.seadas.ocssw.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
 
 /**
  * Created by aabduraz on 3/27/17.
  */
+
 public class OCSSWRemote extends OCSSW {
 
     public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
@@ -95,7 +96,7 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public HashMap<String, String> computePixelsFromLonLat(ProcessorModel processorModel) {
-        HashMap<String, String> pixels = new HashMap();
+        HashMap<String, String> pixels = new HashMap<String, String>();
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
         Response response = target.path("ocssw").path("convertLonLat2Pixels").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
@@ -670,7 +671,7 @@ public class OCSSWRemote extends OCSSW {
 
 
     public boolean downloadCommonFiles(JsonObject paramJsonObject) {
-        Set commandArrayKeys = paramJsonObject.keySet();
+        Set<String> commandArrayKeys = paramJsonObject.keySet();
         String param;
         String ofileFullPathName, ofileName;
         try {
@@ -770,7 +771,7 @@ public class OCSSWRemote extends OCSSW {
             protected Void doInBackground(ProgressMonitor pm) throws Exception {
 
                 JsonObject mlpOfilesJsonObject = target.path("fileServices").path("getMLPOutputFilesList").path(jobId).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
-                Set fileSetKeys = mlpOfilesJsonObject.keySet();
+                Set<String> fileSetKeys = mlpOfilesJsonObject.keySet();
                 Object[] fileArray = (Object[]) fileSetKeys.toArray();
 
                 pm.beginTask("Downloading output files from the remote server to " + ofileDir, fileArray.length);
@@ -814,7 +815,7 @@ public class OCSSWRemote extends OCSSW {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
 
 
-        Iterator itr = paramList.getParamArray().iterator();
+        Iterator<ParamInfo> itr = paramList.getParamArray().iterator();
         Response response;
 
         ParamInfo option;
@@ -822,7 +823,7 @@ public class OCSSWRemote extends OCSSW {
         String fileName;
 
         while (itr.hasNext()) {
-            option = (ParamInfo) itr.next();
+            option = itr.next();
             commandItem = null;
             if (option.getType() != ParamInfo.Type.HELP) {
                 if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
@@ -894,12 +895,12 @@ public class OCSSWRemote extends OCSSW {
     private JsonArray getJsonFromParamListOld(ParamList paramList) {
         JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
-        Iterator itr = paramList.getParamArray().iterator();
+        Iterator<ParamInfo> itr = paramList.getParamArray().iterator();
 
         ParamInfo option;
         String optionValue;
         while (itr.hasNext()) {
-            option = (ParamInfo) itr.next();
+            option = itr.next();
             optionValue = option.getValue();
             if (option.getType() != ParamInfo.Type.HELP) {
                 if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {

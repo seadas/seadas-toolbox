@@ -21,7 +21,7 @@ public class L2genSuiteComboBox {
     private L2genData l2genData;
 
     private JLabel jLabel;
-    private JComboBox jComboBox;
+    private JComboBox<String> jComboBox;
 
     private boolean controlHandlerEnabled = true;
 
@@ -29,7 +29,7 @@ public class L2genSuiteComboBox {
 
         this.l2genData = l2genData;
 
-        jComboBox = new JComboBox();
+        jComboBox = new JComboBox<>();
 
         jLabel = new JLabel("Suite");
 
@@ -64,7 +64,7 @@ public class L2genSuiteComboBox {
                     jLabel.setEnabled(true);
                     jComboBox.setEnabled(true);
 
-                    jComboBox.setModel(new DefaultComboBoxModel(l2genData.getSuiteList()));
+                    jComboBox.setModel(new DefaultComboBoxModel<String>(l2genData.getSuiteList()));
                 } else {
                     jLabel.setEnabled(false);
                     jComboBox.setEnabled(false);

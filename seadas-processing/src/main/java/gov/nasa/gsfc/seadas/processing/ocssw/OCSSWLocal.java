@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.ocssw;
+package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
@@ -10,20 +10,22 @@ import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.apache.commons.lang.ArrayUtils;
-
+import org.esa.snap.core.util.Debug;
+import org.esa.snap.rcp.util.Dialogs;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
-import static java.lang.System.getProperty;
-import org.esa.snap.core.util.Debug;
-import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by aabduraz on 3/27/17.
  */
+
 public class OCSSWLocal extends OCSSW {
 
     private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
@@ -263,7 +265,7 @@ public class OCSSWLocal extends OCSSW {
             return ifileName + ".xml";
         }
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-        ofileName = findOfileName(ifileName, SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
+        ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
         setOfileNameFound(true);
         return ofileName;
     }
@@ -271,7 +273,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public String getOfileName(String ifileName, String programName) {
         String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
-        ofileName = findOfileName(ifileName, SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams));
+        ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
         return ofileName;
     }
 
@@ -436,16 +438,16 @@ public class OCSSWLocal extends OCSSW {
 
     private String[] getCommandArrayParam(ParamList paramList) {
 
-        ArrayList<String> commandArrayList = new ArrayList();
+        ArrayList<String> commandArrayList = new ArrayList<>();
 
-        Iterator itr = paramList.getParamArray().iterator();
+        Iterator<ParamInfo> itr = paramList.getParamArray().iterator();
 
         ParamInfo option;
         int optionOrder;
         String optionValue;
         int i = 0;
         while (itr.hasNext()) {
-            option = (ParamInfo) itr.next();
+            option = itr.next();
             optionOrder = option.getOrder();
             optionValue = option.getValue();
             if (option.getType() != ParamInfo.Type.HELP) {
@@ -476,7 +478,7 @@ public class OCSSWLocal extends OCSSW {
     public HashMap<String, String> computePixelsFromLonLat(ProcessorModel processorModel) {
 
         String[] commandArray = getProgramCommandArray(processorModel);
-        HashMap<String, String> pixels = new HashMap();
+        HashMap<String, String> pixels = new HashMap<String, String>();
         try {
 
             Process process = execute(commandArray);

@@ -5,21 +5,15 @@
  */
 package gov.nasa.gsfc.seadas.processing.common;
 
+import org.esa.snap.core.util.Debug;
+import org.esa.snap.core.util.Guardian;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import org.esa.snap.core.util.Debug;
-import org.esa.snap.core.util.Guardian;
-import org.hsqldb.lib.FileUtil;
+import java.util.logging.*;
 
 /**
  *
@@ -39,10 +33,10 @@ public class SeadasLogger {
      * Default is 'OFF'.
      */
 
-    private static HashMap logLevels;
+    private static HashMap<String, Level> logLevels;
 
     static {
-        logLevels = new HashMap();
+        logLevels = new HashMap<String, Level>();
         logLevels.put("OFF", Level.OFF);
         logLevels.put("SEVERE", Level.SEVERE);
         logLevels.put("WARNING", Level.WARNING);

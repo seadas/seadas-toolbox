@@ -27,7 +27,7 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.gpf.ui.SingleTargetProductDialog;
 import org.esa.snap.ui.AppContext;

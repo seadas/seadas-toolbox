@@ -9,6 +9,7 @@ import java.util.Collections;
  * @author Danny Knowles
  * @since SeaDAS 7.0
  */
+@SuppressWarnings("unchecked")
 public class L2genParamCategoryInfo implements Comparable {
 
     private String name = null;

@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
+import org.esa.snap.rcp.util.Dialogs;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -9,7 +10,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by IntelliJ IDEA.
@@ -136,7 +136,7 @@ public class ParamUtils {
         return longestIFileNameLength;
     }
 
-    public static ArrayList computeParamList(String paramXmlFileName) {
+    public static ArrayList<ParamInfo> computeParamList(String paramXmlFileName) {
 
         if (paramXmlFileName.equals(NO_XML_FILE_SPECIFIED)) {
             return getDefaultParamList();
@@ -260,7 +260,7 @@ public class ParamUtils {
      *
      * @return
      */
-    public static ArrayList getDefaultParamList() {
+    public static ArrayList<ParamInfo> getDefaultParamList() {
         ArrayList<ParamInfo> defaultParamList = new ArrayList<ParamInfo>();
         return defaultParamList;
     }

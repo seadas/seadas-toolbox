@@ -2,11 +2,16 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
-import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
+import org.esa.snap.core.dataio.ProductIOPlugInManager;
+import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductFilter;
+import org.esa.snap.core.datamodel.ProductManager;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.SnapFileChooser;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
@@ -17,15 +22,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Vector;
-import org.esa.snap.core.dataio.ProductIOPlugInManager;
-import org.esa.snap.core.dataio.ProductReaderPlugIn;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductFilter;
-import org.esa.snap.core.datamodel.ProductManager;
-import org.esa.snap.core.util.SystemUtils;
-import org.esa.snap.ui.AppContext;
-import org.esa.snap.ui.SnapFileChooser;
+
+import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,16 +32,17 @@ import org.esa.snap.ui.SnapFileChooser;
  * Time: 3:18 PM
  * To change this template use File | Settings | File Templates.
  */
+
 public class SeadasFileSelector {
     private AppContext appContext;
     private ProductFilter productFilter;
     private File currentDirectory;
     private DefaultComboBoxModel productListModel;
-    private DefaultComboBoxModel fileListModel;
+    private DefaultComboBoxModel<java.io.Serializable> fileListModel;
     private JLabel fileNameLabel;
     private JButton productFileChooserButton;
     private JButton fileChooserButton;
-    private JComboBox fileNameComboBox;
+    private JComboBox<java.io.Serializable> fileNameComboBox;
     private final ProductManager.Listener productManagerListener;
     private ComboBoxSelectionContext selectionContext;
     private RegexFileFilter regexFileFilter;
@@ -58,16 +57,16 @@ public class SeadasFileSelector {
         this(appContext, labelText, false);
     }
 
-    public SeadasFileSelector(AppContext appContext, String labelText, boolean selectMultipleIFiles) {
+    public SeadasFileSelector(AppContext appContext, String labelText, boolean selectMultipleIFiles) throws IllegalArgumentException {
 
         this.selectMultipleIFiles = selectMultipleIFiles;
         this.appContext = appContext;
 
-        fileListModel = new DefaultComboBoxModel();
+        fileListModel = new DefaultComboBoxModel<>();
         fileNameLabel = new JLabel(labelText);
         productFileChooserButton = new JButton(new FileChooserAction());
         fileChooserButton = new JButton(new FileChooserAction());
-        fileNameComboBox = new JComboBox(fileListModel);
+        fileNameComboBox = new JComboBox<>(fileListModel);
         fileNameComboBox.setPrototypeDisplayValue("[1] 123456789 123456789 123456789 123456789 123456789");
         fileNameComboBox.setRenderer(new ProductListCellRenderer());
         fileNameComboBox.setPreferredSize(fileNameComboBox.getPreferredSize());
@@ -115,23 +114,6 @@ public class SeadasFileSelector {
         filterRegexLabel.setEnabled(enabled);
     }
 
-    public SeadasFileSelector(AppContext appContext) {
-        this(appContext, "Name:");
-    }
-
-    /**
-     * @return the product filter, default is a filter which accepts all products
-     */
-    public ProductFilter getProductFilter() {
-        return productFilter;
-    }
-
-    /**
-     * @param productFilter the product filter
-     */
-    public void setProductFilter(ProductFilter productFilter) {
-        this.productFilter = productFilter;
-    }
 
     /*
       Original initProducts method, which initializes the file chooser combo box with the products opened in the SeaDAS file browser.
@@ -151,24 +133,28 @@ public class SeadasFileSelector {
         appContext.getProductManager().addListener(productManagerListener);
     }
 
-    public void setSelectedFile(File file) {
-        if (file == null) {
-            fileListModel.setSelectedItem(null);
-            return;
-        }
-        if (regexFileFilter.accept(file)) {
-            if (fileListModelContains(file)) {
-                fileListModel.setSelectedItem(file);
-            } else {
-                fileListModel.addElement(file);
-                fileListModel.setSelectedItem(file);
+    public void setSelectedFile(File file) throws IllegalArgumentException{
+        try {
+            if (file == null) {
+                fileListModel.setSelectedItem(null);
+                return;
             }
+            if (regexFileFilter.accept(file)) {
+                if (fileListModelContains(file)) {
+                    fileListModel.setSelectedItem(file);
+                } else {
+                    fileListModel.addElement(file);
+                    fileListModel.setSelectedItem(file);
+                }
+            }
+            fileNameComboBox.revalidate();
+            fileNameComboBox.repaint();
+        } catch (Exception e) {
+
         }
-        fileNameComboBox.revalidate();
-        fileNameComboBox.repaint();
     }
 
-    public File getSelectedFile() {
+    public File getSelectedFile() throws IllegalArgumentException{
         return (File) fileListModel.getSelectedItem();
     }
 
@@ -180,7 +166,7 @@ public class SeadasFileSelector {
         fileListModel.removeAllElements();
     }
 
-    public JComboBox getFileNameComboBox() {
+    public JComboBox<java.io.Serializable> getFileNameComboBox() {
         return fileNameComboBox;
     }
 
@@ -188,7 +174,7 @@ public class SeadasFileSelector {
         return fileNameLabel;
     }
 
-    public void setFileNameLabel(JLabel jLabel) {
+    public void setFileNameLabel(JLabel jLabel) throws IllegalArgumentException{
         this.fileNameLabel = jLabel;
     }
 
@@ -196,7 +182,7 @@ public class SeadasFileSelector {
         return fileChooserButton;
     }
 
-    private boolean fileListModelContains(File file) {
+    private boolean fileListModelContains(File file) throws IllegalArgumentException {
         for (int i = 0; i < fileListModel.getSize(); i++) {
             if (fileListModel.getElementAt(i).equals(file)) {
                 return true;
@@ -225,33 +211,9 @@ public class SeadasFileSelector {
     }
 
 
-    private void addLabelToMainPanel(JPanel jPanel) {
+    private void addLabelToMainPanel(JPanel jPanel) throws IllegalArgumentException {
         jPanel.add(getFileNameLabel(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-    }
-
-    private JPanel createFilterPanel() {
-
-        filterRegexField = new JTextField("123456789 ");
-        filterRegexField.setPreferredSize(filterRegexField.getPreferredSize());
-        filterRegexField.setMinimumSize(filterRegexField.getPreferredSize());
-        filterRegexField.setMaximumSize(filterRegexField.getPreferredSize());
-        filterRegexField.setText("");
-        filterRegexField.setName("filterRegexField");
-
-        filterRegexLabel = new JLabel("Filter:");
-        filterRegexLabel.setPreferredSize(filterRegexLabel.getPreferredSize());
-        filterRegexLabel.setMinimumSize(filterRegexLabel.getPreferredSize());
-        filterRegexLabel.setMaximumSize(filterRegexLabel.getPreferredSize());
-        filterRegexLabel.setToolTipText("Filter the chooser by regular expression");
-
-
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setLayout(new FlowLayout());
-        mainPanel.add(filterRegexLabel);
-        mainPanel.add(filterRegexField);
-        return mainPanel;
-
     }
 
     private File[] files;
@@ -264,32 +226,6 @@ public class SeadasFileSelector {
         private FileChooserAction() {
             super("...");
             fileChooser = new SnapFileChooser();
-            //REmoved filter panel as it causes problem in the windows machine
-//            JPanel filterPanel = createFilterPanel();
-//            JPanel filePanel = (JPanel) fileChooser.getComponent(1);
-//            filePanel.add(filterPanel, BorderLayout.CENTER, 0);
-//
-//            final Vector<RegexFileFilter> regexFilters = new Vector<RegexFileFilter>();
-//
-//            //final JTextField filterRegexField = (JTextField) filterPanel.getComponent(1);
-//
-//            filterRegexField.getDocument().addDocumentListener(new DocumentListener() {
-//                @Override
-//                public void insertUpdate(DocumentEvent documentEvent) {
-//                    updateFileFilter();
-//                }
-//
-//                @Override
-//                public void removeUpdate(DocumentEvent documentEvent) {
-//                    updateFileFilter();
-//                }
-//
-//                @Override
-//                public void changedUpdate(DocumentEvent documentEvent) {
-//                    updateFileFilter();
-//                }
-//            });
-
             fileChooser.setMultiSelectionEnabled(selectMultipleIFiles);
             fileChooser.setDialogTitle("Select Input File");
             final Iterator<ProductReaderPlugIn> iterator = ProductIOPlugInManager.getInstance().getAllReaderPlugIns();
@@ -304,16 +240,8 @@ public class SeadasFileSelector {
             fileChooser.setFileHidingEnabled(true);
         }
 
-        private void updateFileFilter() {
-            regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-            fileChooser.resetChoosableFileFilters();
-            fileChooser.addChoosableFileFilter(regexFileFilter);
-            fileChooser.getUI().rescanCurrentDirectory(fileChooser);
-            SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
-        }
-
         @Override
-        public void actionPerformed(ActionEvent event) {
+        public void actionPerformed(ActionEvent event) throws IllegalArgumentException {
             final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
 
             String homeDirPath = SystemUtils.getUserHomeDir().getPath();
@@ -358,7 +286,7 @@ public class SeadasFileSelector {
          *
          * @param window
          */
-        private void handleMultipFileSelection(Window window) {
+        private void handleMultipFileSelection(Window window) throws IllegalArgumentException{
             File[] tmpFiles = fileChooser.getSelectedFiles();
             setSelectedMultiFileList(tmpFiles);
         }
@@ -386,7 +314,7 @@ public class SeadasFileSelector {
                     currentDirectory.getAbsolutePath());
         }
 
-        private void handleError(final Component component, final String message) {
+        private void handleError(final Component component, final String message) throws IllegalArgumentException{
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     //@Override
@@ -404,7 +332,7 @@ public class SeadasFileSelector {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-                                                      boolean cellHasFocus) {
+                                                      boolean cellHasFocus) throws IllegalArgumentException{
             final Component cellRendererComponent =
                     super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
@@ -426,7 +354,7 @@ public class SeadasFileSelector {
     private static class ProductPopupMenuListener implements PopupMenuListener {
 
         @Override
-        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) throws IllegalArgumentException{
             JComboBox box = (JComboBox) e.getSource();
             Object comp = box.getUI().getAccessibleChild(box, 0);
             if (!(comp instanceof JPopupMenu)) {
@@ -458,14 +386,6 @@ public class SeadasFileSelector {
         }
     }
 
-    private static class AllProductFilter implements ProductFilter {
-
-        @Override
-        public boolean accept(Product product) {
-            return true;
-        }
-    }
-
     private class RegexFileFilter extends FileFilter {
 
         private String regex;
@@ -474,7 +394,7 @@ public class SeadasFileSelector {
             this(null);
         }
 
-        public RegexFileFilter(String regex) throws IllegalStateException {
+        public RegexFileFilter(String regex) throws IllegalStateException, IllegalArgumentException{
             SeadasLogger.getLogger().info("regular expression: " + regex);
 
             if (regex == null) {
@@ -498,7 +418,7 @@ public class SeadasFileSelector {
         /* (non-Javadoc)
         * @see java.io.FileFilter#accept(java.io.File)
         */
-        public boolean accept(File pathname) {
+        public boolean accept(File pathname) throws IllegalArgumentException {
 
             if (regex == null) {
                 return true;
@@ -511,9 +431,5 @@ public class SeadasFileSelector {
             return "Files matching regular expression: '" + regex + "'";
         }
 
-        public void ensureFileIsVisible(JFileChooser fc, File f) {
-            ensureFileIsVisible(fc, f);
-            //ensureFileIsVisible(f, true);
-        }
     }
 }

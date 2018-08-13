@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.processor;
 
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 
 /**
  * Created with IntelliJ IDEA.
