@@ -46,5 +46,11 @@
              <groupId>junit</groupId>
              <artifactId>junit</artifactId>
          </dependency>
+         <!-- https://mvnrepository.com/artifact/org.jaitools/jt-contour -->
+         <dependency>
+             <groupId>org.jaitools</groupId>
+             <artifactId>jt-contour</artifactId>
+             <version>1.5.0</version>
+         </dependency>
      </dependencies>
 </project>
