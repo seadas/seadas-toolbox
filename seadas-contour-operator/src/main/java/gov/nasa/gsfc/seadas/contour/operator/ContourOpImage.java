@@ -24,7 +24,6 @@
  */   
 package gov.nasa.gsfc.seadas.contour.operator;
 
-import com.vividsolutions.jts.geom.LineString;
 import org.jaitools.CollectionFactory;
 import org.jaitools.jts.LineSmoother;
 import org.jaitools.jts.SmootherControl;
@@ -32,6 +31,7 @@ import org.jaitools.jts.Utils;
 import org.jaitools.media.jai.AttributeOpImage;
 import org.jaitools.numeric.CompareOp;
 import org.jaitools.numeric.Range;
+import org.locationtech.jts.geom.LineString;
 
 import javax.media.jai.PlanarImage;
 import javax.media.jai.ROI;

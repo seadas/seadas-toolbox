@@ -25,10 +25,11 @@
 
 package gov.nasa.gsfc.seadas.contour.operator;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.operation.linemerge.LineMerger;
+
 import org.jaitools.jts.Utils;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.operation.linemerge.LineMerger;
 
 import java.util.ArrayList;
 import java.util.Collection;
