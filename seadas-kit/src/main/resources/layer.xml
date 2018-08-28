@@ -2,10 +2,30 @@
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
 
-    <folder name="Menu">
-        <folder name="OC Processing">
-            <attr name="position" intvalue="600"/>
-        </folder>
-    </folder>
+    <!--<folder name="Actions">-->
+        <!--<folder name="Processing">-->
+            <!--<file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">-->
+                <!--<attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>-->
+                <!--<attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>-->
+                <!--<attr name="displayName" stringvalue="LandWaterMask"/>-->
+                <!--<attr name="dialogTitle" stringvalue="LandWaterMask"/>-->
+                <!--<attr name="operatorName" stringvalue="LandWaterMask"/>-->
+                <!--<attr name="helpId" stringvalue="WatermaskTool"/>-->
+                <!--<attr name="targetProductNameSuffix" stringvalue="_watermask"/>-->
+            <!--</file>-->
+        <!--</folder>-->
+    <!--</folder>-->
+
+    <!--<folder name="Menu">-->
+        <!--<folder name="OC Processing">-->
+            <!--<attr name="position" intvalue="600"/>-->
+            <!--<file name="gov-nasa-gsfc-seadas-processing-ui-OCSSWInstallerAction.shadow">-->
+                <!--<attr name="originalFile"-->
+                      <!--stringvalue="Actions/OCProcessing/gov-nasa-gsfc-seadas-processing-ui-OCSSWInstallerAction.instance"/>-->
+                <!--<attr name="position" intvalue="100"/>-->
+            <!--</file>-->
+
+        <!--</folder>-->
+    <!--</folder>-->
 
 </filesystem>

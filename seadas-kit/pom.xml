@@ -67,11 +67,11 @@
             <artifactId>seadas-watermask-operator</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
-            <!--<artifactId>seadas-processing</artifactId>-->
-            <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-processing</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-processing-ui</artifactId>
