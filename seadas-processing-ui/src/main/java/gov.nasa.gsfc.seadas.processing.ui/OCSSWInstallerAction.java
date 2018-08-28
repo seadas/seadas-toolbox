@@ -1,14 +1,13 @@
 package gov.nasa.gsfc.seadas.processing.ui;
 
+import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
 import org.esa.snap.core.datamodel.ProductNode;
-import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 /**
  * @author Aynur Abdurazik
@@ -16,24 +15,24 @@ import java.awt.event.ActionEvent;
  * @see
  */
 @ActionID(
-        category = "File",
-        id = "gov.nasa.gsfc.seadas.processing.ui.OCSSWInstallerAction"
+        category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.OCSSWInstallerAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_OCSSWInstallerActionText",
-        popupText = "#CTL_OCSSWInstallerActionText"
+        displayName = "#CTL_OCSSWInstallerAction_Name",
+        popupText = "#CTL_OCSSWInstallerAction_Text"
 )
 @ActionReference(
         path = "Menu/OC Processing",
         position = 70
 )
 @NbBundle.Messages({
-        "CTL_OCSSWInstallerActionText=OCSSW Installer",
-        "CTL_OCSSWInstallerDialogTitle=Install OCSSW",
-        "CTL_OCSSWInstallerDescription=Install OCSSW package."
+        "CTL_OCSSWInstallerAction_Name=OCSSW Installer",
+        "CTL_OCSSWInstallerAction_Text=Install/Update OCSSW",
+        "CTL_OCSSWInstallerAction_DialogTitle=Install/Update OCSSW",
+        "CTL_OCSSWInstallerAction_Description=Install/Updated OCSSW package."
 })
 
-public class OCSSWInstallerAction extends AbstractSnapAction implements ContextAwareAction, LookupListener {
+public class OCSSWInstallerAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
 
     private final Lookup lkp;
 
@@ -45,14 +44,14 @@ public class OCSSWInstallerAction extends AbstractSnapAction implements ContextA
         this.lkp = lkp;
         Lookup.Result<ProductNode> lkpContext = lkp.lookupResult(ProductNode.class);
         lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
-        putValue(Action.NAME, Bundle.CTL_OCSSWInstallerActionText());
-        putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_OCSSWInstallerDescription());
+        putValue(Action.NAME, Bundle.CTL_OCSSWInstallerAction_Name());
+        putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_OCSSWInstallerAction_Description());
     }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
+//
+//    @Override
+//    public void actionPerformed(ActionEvent e) {
+//
+//    }
 
     @Override
     public void resultChanged(LookupEvent lookupEvent) {
@@ -60,7 +59,7 @@ public class OCSSWInstallerAction extends AbstractSnapAction implements ContextA
     }
 
     @Override
-    public Action createContextAwareInstance(Lookup lookup) {
-        return null;
+    public Action createContextAwareInstance(Lookup actionContext) {
+        return new OCSSWInstallerAction(actionContext);
     }
 }
