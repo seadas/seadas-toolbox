@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.runtime.Config;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -25,6 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 /**
@@ -36,19 +38,19 @@ import java.util.regex.Pattern;
  */
 public class OCSSWInfo {
 
-    public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY = "ocssw.sharedDir";
-    public static final String SEADAS_CLIENT_ID_PROPERTY = "client.id";
-    public static final String OCSSW_KEEP_FILES_ON_SERVER_PROPERTY = "ocssw.keepFilesOnServer";
+    public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
+    public static final String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
+    public static final String OCSSW_KEEP_FILES_ON_SERVER_PROPERTY = "seadas.ocssw.keepFilesOnServer";
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
-    public static final String SEADAS_LOG_DIR_PROPERTY = "log.dir";
-    public static final String OCSSW_LOCATION_PROPERTY = "ocssw.location";
+    public static final String SEADAS_LOG_DIR_PROPERTY = "seadas.log.dir";
+    public static final String OCSSW_LOCATION_PROPERTY = "seadas.ocssw.location";
     public static final String OCSSW_LOCATION_LOCAL = "local";
     public static final String OCSSW_LOCATION_VIRTUAL_MACHINE = "virtualMachine";
     public static final String OCSSW_LOCATION_REMOTE_SERVER = "remoteServer";
-    public static final String OCSSW_PROCESS_INPUT_STREAM_PORT = "ocssw.processInputStreamPort";
-    public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "ocssw.processErrorStreamPort";
+    public static final String OCSSW_PROCESS_INPUT_STREAM_PORT = "seadas.ocssw.processInputStreamPort";
+    public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "seadas.ocssw.processErrorStreamPort";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
     public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
@@ -112,11 +114,12 @@ public class OCSSWInfo {
     String clientId;
     String sharedDirPath;
 
+    final Preferences preferences;
+
     private OCSSWInfo() {
-        logDirPath = RuntimeContext.getConfig().getContextProperty(SEADAS_LOG_DIR_PROPERTY);
-        if (logDirPath == null) {
-            logDirPath = System.getProperty("user.home");
-        }
+        preferences = Config.instance("seadas").load().preferences();
+        logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, System.getProperty("user.dir"));
+
         File logDir = new File(getLogDirPath());
         if (!logDir.exists()) {
             try {
@@ -146,16 +149,9 @@ public class OCSSWInfo {
         return processInputStreamPort;
     }
 
-    public void setProcessInputStreamPort(int processInputStreamPort) {
-        processInputStreamPort = processInputStreamPort;
-    }
 
     public int getProcessErrorStreamPort() {
         return processErrorStreamPort;
-    }
-
-    public void setProcessErrorStreamPort(int processErrorStreamPort) {
-        processErrorStreamPort = processErrorStreamPort;
     }
 
     public boolean isOCSSWExist() {
@@ -170,7 +166,7 @@ public class OCSSWInfo {
         System.out.println(sdf.format(date));
         sessionId = date.toString();
 
-        String ocsswLocationPropertyValue = RuntimeContext.getConfig().getContextProperty(OCSSW_LOCATION_PROPERTY);
+        String ocsswLocationPropertyValue = preferences.get(OCSSW_LOCATION_PROPERTY, null);
 
         setOcsswLocation(null);
 
@@ -192,7 +188,7 @@ public class OCSSWInfo {
         }
 
         if (ocsswLocationPropertyValue == null) {
-            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in $SEADAS_HOME/config/seadas.config");
+            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in $HOME/.snap/etc/snap.properties");
             return;
         }
     }
@@ -242,9 +238,9 @@ public class OCSSWInfo {
     private boolean initializeRemoteOCSSW(String serverAPI) {
         ocsswServerUp = false;
         ocsswExist = false;
-        final String BASE_URI_PORT_NUMBER_PROPERTY = "ocssw.port";
+        final String BASE_URI_PORT_NUMBER_PROPERTY = "seadas.ocssw.port";
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
-        String baseUriPortNumber = RuntimeContext.getConfig().getContextProperty(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
+        String baseUriPortNumber = preferences.get(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
         resourceBaseUri = "http://" + serverAPI + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         System.out.println("server URL:" + resourceBaseUri);
         final ClientConfig clientConfig = new ClientConfig();
@@ -312,9 +308,6 @@ public class OCSSWInfo {
         return resourceBaseUri;
     }
 
-    private String getServerAPI() {
-        return null;
-    }
 
     public String getOcsswRoot() {
         return ocsswRoot;
