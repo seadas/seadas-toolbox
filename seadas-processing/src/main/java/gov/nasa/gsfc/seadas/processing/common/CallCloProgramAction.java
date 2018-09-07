@@ -308,6 +308,26 @@ public class CallCloProgramAction extends AbstractSnapAction {
         messagePane.setVisible(true);
     }
 
+    public String getProgramName() {
+        return programName;
+    }
+
+    public void setProgramName(String programName) {
+        this.programName = programName;
+    }
+
+    public String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    public void setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
+    }
+
+    public void setXmlFileName(String xmlFileName) {
+        this.xmlFileName = xmlFileName;
+    }
+
     /**
      * Handler that tries to extract progress from stdout of ocssw processor
      */

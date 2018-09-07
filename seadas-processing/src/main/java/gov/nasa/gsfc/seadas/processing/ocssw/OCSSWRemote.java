@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
@@ -24,8 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -69,7 +66,7 @@ public class OCSSWRemote extends OCSSW {
         ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
         jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-        clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+        clientId = ocsswInfo.getClientId();
         target.path("ocssw").path("ocsswSetClientId").path(jobId).request().put(Entity.entity(clientId, MediaType.TEXT_PLAIN_TYPE));
         setOfileNameFound(false);
     }
