@@ -7,7 +7,6 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
@@ -539,7 +538,7 @@ public class ParamUIFactory {
     private JPanel createIOFileOptionField(final ParamInfo pi) {
 
 
-        final FileSelector ioFileSelector = new FileSelector((AppContext) SnapApp.getDefault(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
+        final FileSelector ioFileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
         ioFileSelector.getFileTextField().setColumns(40);
 
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {

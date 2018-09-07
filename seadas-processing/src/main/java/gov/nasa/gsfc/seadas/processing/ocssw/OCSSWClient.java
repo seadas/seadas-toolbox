@@ -36,6 +36,7 @@ public class OCSSWClient {
     }
 
     public OCSSWClient(String resourceBaseUri) {
+        this.resourceBaseUri = resourceBaseUri;
         final ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(MultiPartFeature.class);
         clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
@@ -59,7 +60,7 @@ public class OCSSWClient {
     }
 
     private String getResourceBaseUri(String serverIPAddress, String portNumber){
-        String resourceBaseUri = "http://" + serverIPAddress + ":" + portNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
+        resourceBaseUri = "http://" + serverIPAddress + ":" + portNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         return  resourceBaseUri;
     }
 

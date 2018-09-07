@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
-import com.bc.ceres.core.runtime.RuntimeContext;
-import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.runtime.Config;
 import org.glassfish.jersey.client.ClientConfig;
@@ -111,7 +109,7 @@ public class OCSSWInfo {
         ocsswLocation = location;
     }
 
-    String clientId;
+    private String clientId;
     String sharedDirPath;
 
     final Preferences preferences;
@@ -188,7 +186,7 @@ public class OCSSWInfo {
         }
 
         if (ocsswLocationPropertyValue == null) {
-            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in $HOME/.snap/etc/snap.properties");
+            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in $HOME/.snap/etc/seadas.properties");
             return;
         }
     }
@@ -213,12 +211,12 @@ public class OCSSWInfo {
 
     public void initializeLocalOCSSW() {
         ocsswServerUp = true;
-        String ocsswRootPath = RuntimeContext.getConfig().getContextProperty("ocssw.root", System.getenv("OCSSWROOT"));
+        String ocsswRootPath = preferences.get("seadas.ocssw.root", System.getenv("OCSSWROOT"));
         if (ocsswRootPath.startsWith("$")) {
             ocsswRootPath = System.getProperty(ocsswRootPath.substring(ocsswRootPath.indexOf("{") + 1, ocsswRootPath.indexOf("}"))) + ocsswRootPath.substring(ocsswRootPath.indexOf("}") + 1);
         }
         if (ocsswRootPath == null) {
-            ocsswRootPath = RuntimeContext.getConfig().getContextProperty("home", System.getProperty("user.home") + File.separator + "ocssw");
+            ocsswRootPath = preferences.get("seadas.home", System.getProperty("user.home")) + File.separator + "ocssw";
         }
         if (ocsswRootPath != null) {
             final File dir = new File(ocsswRootPath + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
@@ -249,10 +247,7 @@ public class OCSSWInfo {
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
-        final String versionKey = SystemUtils.getApplicationContextId() + ".version";
-        if (seadasVersion == null || String.format("${%s}", versionKey).equals(seadasVersion)) {
-            seadasVersion = System.getProperty(versionKey);
-        }
+        seadasVersion = preferences.get("seadas.version", "8.0.0");
         try {
             jsonObject = target.path("ocssw").path("ocsswInfo").path(seadasVersion).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (Exception e) {
@@ -267,14 +262,15 @@ public class OCSSWInfo {
             ocsswInstallerScriptPath = jsonObject.getString("ocsswInstallerScriptPath");
             ocsswRunnerScriptPath = jsonObject.getString("ocsswRunnerScriptPath");
             ocsswScriptsDirPath = jsonObject.getString("ocsswScriptsDirPath");
-            sharedDirPath = RuntimeContext.getConfig().getContextProperty(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY);
+            //todo decide what will happen when sharedDirPath is null
+            sharedDirPath = preferences.get(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY, null);
             //if ( sharedDirPath == null ) {
-            clientId = RuntimeContext.getConfig().getContextProperty(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
-            String keepFilesOnServer = RuntimeContext.getConfig().getContextProperty(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "true");
+            clientId = preferences.get(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
+            String keepFilesOnServer = preferences.get(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "true");
             Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
             // }
-            processInputStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_INPUT_STREAM_PORT)).intValue();
-            processErrorStreamPort = new Integer(RuntimeContext.getConfig().getContextProperty(OCSSW_PROCESS_ERROR_STREAM_PORT)).intValue();
+            processInputStreamPort = new Integer(preferences.get(OCSSW_PROCESS_INPUT_STREAM_PORT, "6402")).intValue();
+            processErrorStreamPort = new Integer(preferences.get(OCSSW_PROCESS_ERROR_STREAM_PORT, "6403")).intValue();
         }
         return ocsswExist;
     }
@@ -343,5 +339,17 @@ public class OCSSWInfo {
 
     public void setLogDirPath(String logDirPath) {
         this.logDirPath = logDirPath;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getContextProperty(String key, String defaultValue) {
+        return preferences.get(key, defaultValue);
     }
 }
