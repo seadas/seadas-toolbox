@@ -19,16 +19,17 @@ import javax.swing.*;
 )
 @ActionRegistration(
         displayName = "#CTL_OCSSWInstallerAction_Name",
-        popupText = "#CTL_OCSSWInstallerAction_Text"
+        popupText = "#CTL_OCSSWInstallerAction_Name"
 )
 @ActionReference(
         path = "Menu/OC Processing",
-        position = 70
+        position = 10
 )
 @NbBundle.Messages({
-        "CTL_OCSSWInstallerAction_Name=OCSSW Installer",
-        "CTL_OCSSWInstallerAction_Text=Install/Update OCSSW",
+        "CTL_OCSSWInstallerAction_Name=Install/Update OC Processors",
+        "CTL_OCSSWInstallerAction_ProgramName=install_ocssw.py",
         "CTL_OCSSWInstallerAction_DialogTitle=Install/Update OCSSW",
+        "CTL_OCSSWInstallerAction_XMLFileName=ocssw_installer.xml",
         "CTL_OCSSWInstallerAction_Description=Install/Updated OCSSW package."
 })
 
@@ -46,6 +47,9 @@ public class OCSSWInstallerAction extends CallCloProgramAction implements Contex
         lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
         putValue(Action.NAME, Bundle.CTL_OCSSWInstallerAction_Name());
         putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_OCSSWInstallerAction_Description());
+        setProgramName(Bundle.CTL_OCSSWInstallerAction_ProgramName());
+        setDialogTitle(Bundle.CTL_OCSSWInstallerAction_DialogTitle());
+        setXmlFileName(Bundle.CTL_OCSSWInstallerAction_XMLFileName());
     }
 //
 //    @Override
