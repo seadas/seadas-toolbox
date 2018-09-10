@@ -1768,14 +1768,13 @@ public class L2genData implements SeaDASProcessorModel {
         return StringUtils.join(productArrayList, " ");
     }
 
-    public  File installResource(final String fileName) {
+    public  static File installResource(final String fileName) {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), OPER_DIR);
         File theFile = new File(dataDir, fileName);
         if (theFile.canRead()) {
             return theFile;
         }
-
-        final Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(getClass());
+        final Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(L2genData.class);
 
         Path targetPath = dataDir.toPath();
 
