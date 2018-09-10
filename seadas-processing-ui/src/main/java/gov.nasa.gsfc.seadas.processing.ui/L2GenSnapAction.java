@@ -14,8 +14,9 @@ import javax.swing.*;
  * @since SeaDAS 8.0
  * @see
  */
+//
 @ActionID(
-        category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.L2GenAction"
+        category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.L2GenSnapAction"
 )
 @ActionRegistration(
         displayName = "#CTL_ L2GenAction_Name",
@@ -33,15 +34,19 @@ import javax.swing.*;
         "CTL_L2GenAction_Description=Process a L1 file to L2."
 })
 
-public class L2GenAction extends L2genAction implements ContextAwareAction, LookupListener {
+public class L2GenSnapAction extends L2genAction implements ContextAwareAction, LookupListener {
 
     private final Lookup lkp;
 
-    public  L2GenAction() {
+    public L2GenSnapAction() {
         this(Utilities.actionsGlobalContext());
     }
 
-    public   L2GenAction(Lookup lkp) {
+    /**
+     *
+     * @param lkp
+     */
+    public L2GenSnapAction(Lookup lkp) {
         this.lkp = lkp;
         Lookup.Result<ProductNode> lkpContext = lkp.lookupResult(ProductNode.class);
         lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
@@ -51,19 +56,22 @@ public class L2GenAction extends L2genAction implements ContextAwareAction, Look
         setDialogTitle(Bundle.CTL_L2GenAction_DialogTitle());
         setXmlFileName(Bundle.CTL_L2GenAction_XMLFileName());
     }
-//
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//
-//    }
-
+    /**
+     * @param lookupEvent
+     * @
+     */
     @Override
     public void resultChanged(LookupEvent lookupEvent) {
 
     }
 
+    /**
+     *
+     * @param actionContext
+     * @return
+     */
     @Override
     public Action createContextAwareInstance(Lookup actionContext) {
-        return new L2GenAction(actionContext);
+        return new L2GenSnapAction(actionContext);
     }
 }
