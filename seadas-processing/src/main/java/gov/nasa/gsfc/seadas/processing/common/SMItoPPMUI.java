@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.snap.rcp.SnapApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,8 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.ui.AppContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,15 +43,8 @@ public class SMItoPPMUI {
         smitoppmCheckBox = new JCheckBox();
         smitoppmCheckBox.setSelected(false);
 
-        ppmFile = new FileSelector((AppContext) SnapApp.getDefault(), ParamInfo.Type.OFILE, "ppm file");
+        ppmFile = new FileSelector(SnapApp.getDefault().getAppContext(), ParamInfo.Type.OFILE, "ppm file");
         ppmFile.getFileTextField().setColumns(20);
-
-//        ppmFile.getFileTextField().addPropertyChangeListener(new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                ppmFile.getFileTextField().postActionEvent();
-//            }
-//        });
 
         ppmFile.addPropertyChangeListener(ppmFile.getPropertyName(), new PropertyChangeListener() {
             @Override
