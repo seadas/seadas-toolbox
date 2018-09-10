@@ -2,11 +2,11 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWExecutionMonitor;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWExecutionMonitor;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.SystemUtils;
@@ -18,12 +18,12 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * A ...
  *
  * @author Danny Knowles
+ * @author Aynur Abdurazik
  * @since SeaDAS 7.0
  */
 public class L2genData implements SeaDASProcessorModel {
@@ -233,12 +233,6 @@ public class L2genData implements SeaDASProcessorModel {
         ocssw.setProgramName(getGuiName());
         processorModel = new ProcessorModel(getGuiName(), getParamInfos(), ocssw);
 
-//            getProcessorModel().addPropertyChangeListener(L2genData.CANCEL, new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent evt) {
-//                    setDirty(true);
-//                }
-//            });
         processorModel.setAcceptsParFile(true);
     }
 
@@ -1651,11 +1645,6 @@ public class L2genData implements SeaDASProcessorModel {
         setParamValueAndDefault(ifileParamInfo, ParamInfo.NULL_STRING);
         if (iFile != null) {
             setParamValue(ifileParamInfo, iFile.toString());
-
-            // reset suite and ifile to same value because this fires needed GUI updates events
-//            if (iFileInfo.isMissionId(MissionInfo.Id.AQUARIUS)) {
-//                setIfileAndSuiteParamValues(iFile.getAbsolutePath(), getParamValue(SUITE));
-//            }
         }
     }
 
@@ -1779,58 +1768,27 @@ public class L2genData implements SeaDASProcessorModel {
         return StringUtils.join(productArrayList, " ");
     }
 
-    public static File installResource(final String fileName) {
+    public  File installResource(final String fileName) {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), OPER_DIR);
         File theFile = new File(dataDir, fileName);
         if (theFile.canRead()) {
             return theFile;
         }
-        Class<gov.nasa.gsfc.seadas.processing.core.L2genData> callingClass = L2genData.class;
-        final Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(callingClass);
-        Path sourcePath = moduleBasePath.resolve(dataDir.getAbsolutePath());
-        
+
+        final Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(getClass());
+
         Path targetPath = dataDir.toPath();
-        //final URL codeSourceUrl = L2genData.class.getProtectionDomain().getCodeSource().getLocation();
+
+        Path sourcePath = moduleBasePath.resolve("gov/nasa/gsfc/seadas/processing/l2gen/userInterface/").toAbsolutePath();
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourcePath, targetPath);
-
         try {
-            resourceInstaller.install(fileName, ProgressMonitor.NULL);
+            resourceInstaller.install(".*.xml", ProgressMonitor.NULL);
         } catch (IOException e) {
-            SystemUtils.LOG.severe("Unable to install " + fileName + " " + moduleBasePath + " to " + targetPath + " " + e.getMessage());
+            e.printStackTrace();
+            SystemUtils.LOG.severe("Unable to install " + sourcePath + File.separator + fileName + " to " + targetPath + " " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(),
-                "Installing " + fileName + " ...") {
-            @Override
-            protected Object doInBackground(ProgressMonitor progressMonitor) throws Exception {
-                resourceInstaller.install(fileName, progressMonitor);
-                return Boolean.TRUE;
-            }
-
-            /**
-             * Executed on the <i>Event Dispatch Thread</i> after the
-             * {@code doInBackground} method is finished. The default
-             * implementation does nothing. Subclasses may override this method
-             * to perform completion actions on the <i>Event Dispatch
-             * Thread</i>. Note that you can query status inside the
-             * implementation of this method to determine the result of this
-             * task or whether this task has been canceled.
-             *
-             * @see #doInBackground
-             * @see #isCancelled()
-             * @see #get
-             */
-            @Override
-            protected void done() {
-                try {
-                    get();
-                } catch (Exception e) {
-                    SnapApp.getDefault().getLogger().log(Level.SEVERE, "Could not install tiny iFile", e);
-                }
-            }
-        };
-
-        swingWorker.executeWithBlocking();
         return theFile;
     }
 
