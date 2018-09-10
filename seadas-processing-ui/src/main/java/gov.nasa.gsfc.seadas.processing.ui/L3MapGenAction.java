@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_L3MapGenAction_ProgramName=l3mapgen",
         "CTL_L3MapGenAction_DialogTitle=l3mapgen",
         "CTL_L3MapGenAction_XMLFileName=l3mapgen.xml",
-        "CTL_L3MapGenAction_Description=Process MODIS L0 to L1A."
+        "CTL_L3MapGenAction_Description=Create a L3 Mapped Image."
 })
 
 public class L3MapGenAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
@@ -51,11 +51,6 @@ public class L3MapGenAction extends CallCloProgramAction implements ContextAware
         setDialogTitle(Bundle.CTL_L3MapGenAction_DialogTitle());
         setXmlFileName(Bundle.CTL_L3MapGenAction_XMLFileName());
     }
-//
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//
-//    }
 
     @Override
     public void resultChanged(LookupEvent lookupEvent) {
