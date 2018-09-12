@@ -20,6 +20,7 @@ Clone the SeaDAS Toolbox source code and related repositories into a directory r
 
     cd ${snap}
     git clone https://github.com/seadas/seadas-toolbox.git
+    git clone https://github.com/senbox-org/s3tbx.git
     git clone https://github.com/senbox-org/snap-desktop.git
     git clone https://github.com/senbox-org/snap-engine.git
     
@@ -32,6 +33,11 @@ Build SNAP-Desktop:
 
     cd ${snap}/snap-desktop
     mvn install
+
+Build Sentinel-3 Toolbox:
+
+    cd ${snap}/s3tbx
+    mvn instal
 
 Build SeaDAS Toolbox:
 
@@ -62,9 +68,9 @@ the option *Create module groups for multi-module Maven projects*. Everything ca
     --userdir
     "${snap}/seadas-toolbox/target/userdir"
     --clusters
-    "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas"
+    "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx"
     --patches
-    "${snap}/snap-engine/$/target/classes;${snap}/seadas-toolbox/$/target/classes"
+    "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/s3tbx/$/target/classes"
     **Working directory:** ${snap}/snap-desktop/snap-application/target/snap/
     **Use classpath of module:** snap-main
 
