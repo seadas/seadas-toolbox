@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.ui;
 
-import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
+import gov.nasa.gsfc.seadas.processing.processor.MultilevelProcessorAction;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -33,7 +33,7 @@ import javax.swing.*;
         "CTL_MultiLevelProcessorAction_Description=Process a file through many levels."
 })
 
-public class MultiLevelProcessorAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
+public class MultiLevelProcessorAction extends MultilevelProcessorAction implements ContextAwareAction, LookupListener {
 
     private final Lookup lkp;
 
