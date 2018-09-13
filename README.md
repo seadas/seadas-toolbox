@@ -61,25 +61,20 @@ the option *Create module groups for multi-module Maven projects*. Everything ca
 
 4. Use the following configuration to run SNAP in the IDE:
 
-    **Main class:** org.esa.snap.nbexec.Launcher
+    **Main class:** `org.esa.snap.nbexec.Launcher`
     
-    **VM parameters:** -Dsun.awt.nopixfmt=true -Dsun.java2d.noddraw=true -Dsun.java2d.dpiaware=false
+    **VM parameters:** `-Dsun.awt.nopixfmt=true -Dsun.java2d.noddraw=true -Dsun.java2d.dpiaware=false`
+    
     All VM parameters are optional
     
-    **Program arguments:**
+    **Program arguments:**    
+       `--userdir "${snap}/seadas-toolbox/target/userdir"`
+       `--clusters "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx"`
+       `--patches "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/s3tbx/$/target/classes"`
     
-    --userdir
-        "${snap}/seadas-toolbox/target/userdir"
-        
-    --clusters
-    "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx"
+    **Working directory:** `${snap}/snap-desktop/snap-application/target/snap/`
     
-    --patches
-    "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/s3tbx/$/target/classes"
-    
-    **Working directory:** ${snap}/snap-desktop/snap-application/target/snap/
-    
-    **Use classpath of module:** snap-main
+    **Use classpath of module:** `snap-main`
 
 Enjoy!
 
