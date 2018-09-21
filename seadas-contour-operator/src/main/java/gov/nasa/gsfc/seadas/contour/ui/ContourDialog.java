@@ -3,19 +3,13 @@ package gov.nasa.gsfc.seadas.contour.ui;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.util.CommonUtilities;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.FilterBand;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.RasterDataNode;
-import org.esa.beam.framework.help.HelpSys;
-import org.esa.beam.framework.ui.UIUtils;
-import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.framework.ui.tool.ToolButtonFactory;
-import org.esa.beam.visat.VisatApp;
-import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandAction;
-import org.esa.beam.visat.actions.imgfilter.model.Filter;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.imgfilter.FilteredBandAction;
+import org.esa.snap.rcp.imgfilter.model.Filter;
+import org.esa.snap.ui.UIUtils;
+import org.esa.snap.ui.tool.ToolButtonFactory;
 
-import javax.help.DefaultHelpBroker;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.*;
@@ -36,6 +30,8 @@ import java.util.Collections;
  * To change this template use File | Settings | File Templates.
  */
 public class ContourDialog extends JDialog {
+
+    static final String PREF_KEY_AUTO_SHOW_NEW_BANDS = "ContourLines.autoShowNewBands";
 
     public static final String TITLE = "Create Contour Lines"; /*I18N*/
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
@@ -77,7 +73,7 @@ public class ContourDialog extends JDialog {
     ContourIntervalDialog contourIntervalDialog;
 
     public ContourDialog(Product product, ArrayList<String> activeBands) {
-        super(VisatApp.getApp().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
+        super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.product = product;
 
         initHelpBroker();
@@ -88,16 +84,17 @@ public class ContourDialog extends JDialog {
             helpButton = getHelpButton(HELP_ID);
         }
 
+        ProductNode productNode = SnapApp.getDefault().getSelectedProductNode(SnapApp.SelectionSourceHint.VIEW);
 
-        if (VisatApp.getApp().getSelectedProductNode() != null && activeBands.contains(VisatApp.getApp().getSelectedProductNode().getName())) {
-            selectedUnfilteredBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+        if (productNode != null && activeBands.contains(productNode.getName())) {
+            selectedUnfilteredBand = product.getBand(productNode.getName());
             //selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
-            selectedBand = getDefaultFilterBand();
+            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
             raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
         } else {
             selectedUnfilteredBand = product.getBand(activeBands.get(0));
             //selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
-            selectedBand = getDefaultFilterBand();
+            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
             raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
 
         }
@@ -238,15 +235,16 @@ public class ContourDialog extends JDialog {
     }
 
 
+    //todo fix the help system
     private void initHelpBroker() {
-        HelpSet helpSet = HelpSys.getHelpSet();
-        if (helpSet != null) {
-            helpBroker = helpSet.createHelpBroker();
-            if (helpBroker instanceof DefaultHelpBroker) {
-                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
-                defaultHelpBroker.setActivationWindow(this);
-            }
-        }
+//        HelpSet helpSet = HelpSys.getHelpSet();
+//        if (helpSet != null) {
+//            helpBroker = helpSet.createHelpBroker();
+//            if (helpBroker instanceof DefaultHelpBroker) {
+//                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
+//                defaultHelpBroker.setActivationWindow(this);
+//            }
+//        }
     }
 
 
@@ -353,7 +351,8 @@ public class ContourDialog extends JDialog {
                 }
                 selectedUnfilteredBand = product.getBand((String) bandComboBox.getSelectedItem());
                 //selectedBand = selectedUnfilteredBand;
-                selectedBand = getDefaultFilterBand();
+                product.getRasterDataNode(oldBandName);
+                selectedBand = getDefaultFilterBand(product.getRasterDataNode(oldBandName));
                 filtered.setSelected(true);
                 filterBand = true;
                 filterMessage.setText("Using filter " + getFilterShortHandName());
@@ -370,20 +369,21 @@ public class ContourDialog extends JDialog {
         filterMessage.setEditable(false);
 
         filterButton.addActionListener(new ActionListener() {
-            VisatApp visatApp = VisatApp.getApp();
+            SnapApp snapApp = SnapApp.getDefault();
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 Band currentFilteredBand = selectedFilteredBand;
-                visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, false);
-                CreateFilteredBandAction filteredBandAction = new CreateFilteredBandAction();
-                VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
+
+                SnapApp.getDefault().getPreferences().put(PREF_KEY_AUTO_SHOW_NEW_BANDS, "false");
+                FilteredBandAction filteredBandAction = new FilteredBandAction();
+                //VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
                 if (selectedFilteredBand != null) {
                     product.getBandGroup().remove(product.getBand(selectedFilteredBand.getName()));
                 }
-                filteredBandAction.actionPerformed(getFilterCommandEvent(filteredBandAction, e));
+                filteredBandAction.actionPerformed(e);
                 updateActiveBandList();
-                visatApp.getPreferences().setPropertyBool(VisatApp.PROPERTY_KEY_AUTO_SHOW_NEW_BANDS, true);
+                SnapApp.getDefault().getPreferences().put(PREF_KEY_AUTO_SHOW_NEW_BANDS, "true");
                 if (filterBand) {
                     filterMessage.setText("Using filter " + getFilterShortHandName());
                     filtered.setSelected(true);
@@ -396,18 +396,17 @@ public class ContourDialog extends JDialog {
             }
         });
 
-
         filtered.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (filtered.isSelected()) {
-                    VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
-                    selectedBand = getDefaultFilterBand();
+                    //SnapApp.getDefault().setSelectedProductNode(selectedUnfilteredBand);
+                    selectedBand = getDefaultFilterBand(selectedBand);
                     selectedFilteredBand = selectedBand;
                     filterMessage.setText("Using filter " + getFilterShortHandName());
                     filterBand = true;
                 } else {
-                    VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
+                    //VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
                     selectedBand = selectedUnfilteredBand;
                     filterMessage.setText("Not filtered");
                     if (selectedFilteredBand != null) {
@@ -557,19 +556,12 @@ public class ContourDialog extends JDialog {
         return filteredBandName;
     }
 
-    public void setFilteredBandName(String filteredBandName) {
-        this.filteredBandName = filteredBandName;
-    }
-
-    private CommandEvent getFilterCommandEvent(CreateFilteredBandAction command, ActionEvent actionEvent) {
-        CommandEvent filterCommandEvent = new CommandEvent(command, actionEvent, null, null);
-        command.setCommandID("createFilteredBand");
-        command.setHelpId("createFilteredBand");
-        command.setLongDescription("filter function in contour");
+    private ActionEvent getFilterActionEvent(FilteredBandAction filteredBandAction, ActionEvent actionEvent) {
+        ActionEvent filterCommandEvent = new ActionEvent(filteredBandAction, 1,null, 0);
         return filterCommandEvent;
     }
 
-    private FilterBand getDefaultFilterBand() {
+    private FilterBand getDefaultFilterBand(RasterDataNode rasterDataNode) {
 //        Filter defaultFilter = new Filter("Mean 2.5 Pixel Radius", "amc_2.5px", 5, 5, new double[]{
 //                0.172, 0.764, 1, 0.764, 0.172,
 //                0.764, 1, 1, 1, 0.764,
@@ -586,9 +578,8 @@ public class ContourDialog extends JDialog {
                            +1, +1, +1, +1, +1,
                    }, 25.0);
 
-        VisatApp.getApp().setSelectedProductNode(selectedUnfilteredBand);
-        //final FilterBand filteredBand = CreateFilteredBandAction.createFilterBand(defaultFilter, selectedUnfilteredBand.getName() + "_amc_2.5px", 1);
-        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBand(defaultFilter, selectedUnfilteredBand.getName() + "_am5", 1);
+        ContourFilteredBandAction contourFilteredBandAction = new ContourFilteredBandAction();
+        final FilterBand filteredBand = contourFilteredBandAction.getFilterBand(rasterDataNode,  selectedUnfilteredBand.getName() + "_am5", defaultFilter,1);
         filterBand = true;
         selectedFilteredBand = filteredBand;
         filteredBandName = filteredBand.getName();

@@ -35,14 +35,11 @@ import java.awt.image.renderable.RenderedImageFactory;
  * OperationRegistrySpi implementation to register the "Contour"
  * operation and its associated image factories.
  *
- * @author Michael Bedward
- * @since 1.1
- * @version $Id$
  */
 public class Contour1Spi implements OperationRegistrySpi {
 
     /** The name of the product to which these operations belong. */
-    private String productName = "org.java.media.jai.contour";
+    private String productName = "gov.nasa.gsfc.seadas.contour";
  
     /** Default constructor. */
     public Contour1Spi() {}

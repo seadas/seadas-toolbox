@@ -3,7 +3,7 @@ package gov.nasa.gsfc.seadas.contour.ui;
 import com.bc.ceres.binding.PropertyDescriptor;
 import com.bc.ceres.swing.figure.FigureStyle;
 import com.bc.ceres.swing.figure.support.DefaultFigureStyle;
-import org.esa.beam.framework.datamodel.VectorDataNode;
+import org.esa.snap.core.datamodel.VectorDataNode;
 
 import java.awt.*;
 

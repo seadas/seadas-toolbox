@@ -8,6 +8,7 @@ import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.rcp.imgfilter.model.Filter;
+import org.esa.snap.ui.product.ProductSceneView;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -163,13 +164,13 @@ public class WaterMaskAction extends AbstractSnapAction {
                                     Map<String, Object> parameters = new HashMap<String, Object>();
 
                                     parameters.put("superSamplingFactor", new Integer(landMasksData.getSuperSampling()));
-                                   // parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
+                                    // parameters.put("subSamplingFactorY", new Integer(landMasksData.getSuperSampling()));
                                     parameters.put("resolution", sourceFileInfo.getResolution(SourceFileInfo.Unit.METER));
                                     parameters.put("mode", sourceFileInfo.getMode().toString());
                                     parameters.put("worldSourceDataFilename", sourceFileInfo.getFile().getName());
                                     parameters.put("copySourceFile", "false");  // when run in GUI don't do this
-                                //    parameters.put("coastalGridSize", landMasksData.getCoastalGridSize());
-                                //    parameters.put("coastalSizeTolerance", landMasksData.getCoastalSizeTolerance());
+                                    //    parameters.put("coastalGridSize", landMasksData.getCoastalGridSize());
+                                    //    parameters.put("coastalSizeTolerance", landMasksData.getCoastalSizeTolerance());
                                     parameters.put("includeMasks", false);  // don't create masks within the operator, do it later
                                     //                             parameters.put("sourceFileInfo", sourceFileInfo);
                                     /*
@@ -181,7 +182,7 @@ public class WaterMaskAction extends AbstractSnapAction {
 
 
                                     Band waterFractionBand = landWaterProduct.getBand(landMasksData.getWaterFractionBandName());
-                                //    Band coastBand = landWaterProduct.getBand("coast");
+                                    //    Band coastBand = landWaterProduct.getBand("coast");
 
                                     // PROBLEM WITH TILE SIZES
                                     // Example: product has tileWidth=498 and tileHeight=611
@@ -189,7 +190,7 @@ public class WaterMaskAction extends AbstractSnapAction {
                                     // Why is this happening and where?
                                     // For now we change the image layout here.
                                     reformatSourceImage(waterFractionBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                              //      reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                    //      reformatSourceImage(coastBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
 
                                     pm.worked(1);
                                     waterFractionBand.setName(landMasksData.getWaterFractionBandName());
@@ -203,7 +204,7 @@ public class WaterMaskAction extends AbstractSnapAction {
 
 
                                     int boxSize = landMasksData.getCoastalGridSize();
-                                    final Filter meanFilter = new Filter("Mean "+ Integer.toString(boxSize)+"x"+Integer.toString(boxSize), "mean"+Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
+                                    final Filter meanFilter = new Filter("Mean " + Integer.toString(boxSize) + "x" + Integer.toString(boxSize), "mean" + Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
                                     final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
                                             meanFilter.getKernelHeight(),
                                             meanFilter.getKernelOffsetX(),
@@ -231,7 +232,6 @@ public class WaterMaskAction extends AbstractSnapAction {
                                     }
 
 
-
                                     product.addBand(filteredCoastlineBand);
 
 
@@ -257,7 +257,7 @@ public class WaterMaskAction extends AbstractSnapAction {
 
                                     maskGroup.add(landMask);
 
-                                    
+
                                     Mask waterMask = Mask.BandMathsType.create(
                                             landMasksData.getWaterMaskName(),
                                             landMasksData.getWaterMaskDescription(),
@@ -267,9 +267,6 @@ public class WaterMaskAction extends AbstractSnapAction {
                                             landMasksData.getWaterMaskColor(),
                                             landMasksData.getWaterMaskTransparency());
                                     maskGroup.add(waterMask);
-
-
-
 
 
                                     pm.worked(1);
@@ -289,16 +286,16 @@ public class WaterMaskAction extends AbstractSnapAction {
                                     }
 
 
-//                    snapApp.setSelectedProductNode(waterFractionBand);
+                                    //snapApp.setSelectedProductNode(waterFractionBand);
 
-//        ProductSceneView selectedProductSceneView = snapApp.getSelectedProductSceneView();
-//        if (selectedProductSceneView != null) {
-//            RasterDataNode raster = selectedProductSceneView.getRaster();
-//            raster.getOverlayMaskGroup().add(landMask);
-//            raster.getOverlayMaskGroup().add(coastlineMask);
-//            raster.getOverlayMaskGroup().add(waterMask);
+                                    ProductSceneView selectedProductSceneView = snapApp.getSelectedProductSceneView();
+                                    if (selectedProductSceneView != null) {
+                                        RasterDataNode raster = selectedProductSceneView.getRaster();
+                                        raster.getOverlayMaskGroup().add(landMask);
+                                        raster.getOverlayMaskGroup().add(coastlineMask);
+                                        raster.getOverlayMaskGroup().add(waterMask);
 
-//        }
+                                    }
 
 
                                 } finally {

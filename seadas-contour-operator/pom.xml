@@ -22,6 +22,23 @@
      <dependencies>
          <dependency>
              <groupId>org.esa.snap</groupId>
+             <artifactId>ceres-core</artifactId>
+             <version>${snap.version}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.esa.snap</groupId>
+             <artifactId>ceres-ui</artifactId>
+             <version>${snap.version}</version>
+         </dependency>
+         <dependency>
+             <groupId>org.esa.snap</groupId>
+             <artifactId>ceres-jai</artifactId>
+             <version>${snap.version}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.esa.snap</groupId>
              <artifactId>snap-core</artifactId>
              <version>7.0.0-SNAPSHOT</version>
          </dependency>
@@ -32,6 +49,10 @@
          <dependency>
              <groupId>org.esa.snap</groupId>
              <artifactId>snap-ui</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>org.esa.snap</groupId>
+             <artifactId>ceres-binding</artifactId>
          </dependency>
          <dependency>
              <groupId>javax.help</groupId>
@@ -52,5 +73,48 @@
              <artifactId>jt-contour</artifactId>
              <version>1.5.0</version>
          </dependency>
+         <dependency>
+             <groupId>org.netbeans.api</groupId>
+             <artifactId>org-openide-util</artifactId>
+             <version>${netbeans.version}</version>
+         </dependency>
+         <dependency>
+             <groupId>org.netbeans.api</groupId>
+             <artifactId>org-openide-util-lookup</artifactId>
+             <version>${netbeans.version}</version>
+         </dependency>
+         <dependency>
+             <groupId>org.netbeans.api</groupId>
+             <artifactId>org-openide-util-ui</artifactId>
+             <version>${netbeans.version}</version>
+         </dependency>
      </dependencies>
+
+    <build>
+       <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>gov.nasa.gsfc.seadas.contour.*</publicPackage>
+                        <useOSGiDependencies>false</useOSGiDependencies>
+                        <verifyRuntime>skip</verifyRuntime>
+                    </publicPackages>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

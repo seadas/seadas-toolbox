@@ -5,12 +5,12 @@ import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.Binding;
 import com.bc.ceres.swing.binding.BindingContext;
-import com.jidesoft.combobox.ColorComboBox;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.util.CommonUtilities;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.ui.ColorComboBoxAdapter;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.ui.color.ColorComboBox;
+import org.esa.snap.ui.color.ColorComboBoxAdapter;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -420,8 +420,8 @@ public class ContourIntervalDialog extends JDialog {
             };
 
             ColorComboBox contourLineColorComboBox = new ColorComboBox();
-            contourLineColorComboBox.setColorValueVisible(false);
-            contourLineColorComboBox.setAllowDefaultColor(true);
+//            contourLineColorComboBox.setColorValueVisible(false);
+//            contourLineColorComboBox.setAllowDefaultColor(true);
             contourLineColorComboBox.setSelectedColor(interval.getLineColor());
             Binding contourLineColorBinding = bindingContext.bind(contourColorPropertyName, new ColorComboBoxAdapter(contourLineColorComboBox));
             contourLineColorBinding.addComponent(contourColorLabel);
@@ -454,27 +454,12 @@ public class ContourIntervalDialog extends JDialog {
             contourLevelPanel.add(contourLevelValue);
             contourLevelPanel.add(contourColorLabel);
             contourLevelPanel.add(contourLineColorComboBox);
-//            contourLevelPanel.add(contourLineStyleLabel);
-//            contourLevelPanel.add(contourLineStyleValue);
-            //contourLevelPanel.add(contourLineDashLengthLabel);
-            //contourLevelPanel.add(dashLengthValue);
-            //contourLevelPanel.add(contourLineSpaceLengthLabel);
-            //contourLevelPanel.add(spaceLengthValue);
             customPanel.add(contourLevelPanel);
         }
 
         Object[] options = {"Save",
                 "Cancel"};
-//        JOptionPane jPane = new JOptionPane();
-//
-//        int n = JOptionPane.showOptionDialog(this, customPanel,
-//                "Customize Contour Levels",
-//                JOptionPane.YES_NO_OPTION,
-//                JOptionPane.PLAIN_MESSAGE,
-//                null,
-//                options,
-//                options[0]);
-        //final JDialog dialog = new JDialog(this, "Customize Contour Levels", true);
+
         final JOptionPane optionPane = new JOptionPane(customPanel,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
@@ -512,15 +497,6 @@ public class ContourIntervalDialog extends JDialog {
         dialog.setAlwaysOnTop(true);
         dialog.setVisible(true);
 
-
-        //int value = ((Integer)optionPane.getValue()).intValue();
-//        if (value == JOptionPane.YES_OPTION) {
-//            setLabel("Good.");
-//        } else if (value == JOptionPane.NO_OPTION) {
-//            setLabel("Try using the window decorations "
-//                     + "to close the non-auto-closing dialog. "
-//                     + "You can't!");
-//        }
         if (optionPane.getValue().equals(options[0])) {
             contourData.setContourIntervals(contourIntervalsClone);
             minValueField.setText(new Double(contourIntervalsClone.get(0).getContourLevelValue()).toString());
@@ -564,7 +540,4 @@ public class ContourIntervalDialog extends JDialog {
 
     }
 
-//    public void updateContourNames(String newFilterName){
-//            contourData.updateContourNamesForNewFilter(contourData.getFilterName(), newFilterName);
-//    }
 }

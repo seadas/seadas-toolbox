@@ -125,7 +125,7 @@ public class MissionInfoFinder {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
         for (MissionNames  missionName : MissionNames.values()) {
             jsonObjectBuilder.add(missionName.getMissionName(), new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + MissionDirs.valueOf(missionName.getMissionName()).getMissionDir()).exists());
-            //System.out.println(MissionDirs.valueOf(missionName.getMissionName()) + " status: " + new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + MissionDirs.valueOf(missionName.getMissionName()).getMissionDir()).exists());
+            System.out.println(MissionDirs.valueOf(missionName.getMissionName()) + " status: " + new File(OCSSWServerModel.getOcsswDataDirPath() + File.separator + MissionDirs.valueOf(missionName.getMissionName()).getMissionDir()).exists());
         }
         return jsonObjectBuilder.build();
 
