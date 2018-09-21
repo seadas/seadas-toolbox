@@ -30,8 +30,6 @@ public class XmlReader {
 
             //parse using builder to get DOM representation of the XML file
             dom = db.parse(inputStream);
-
-
         } catch (ParserConfigurationException pce) {
             pce.printStackTrace();
         } catch (SAXException se) {

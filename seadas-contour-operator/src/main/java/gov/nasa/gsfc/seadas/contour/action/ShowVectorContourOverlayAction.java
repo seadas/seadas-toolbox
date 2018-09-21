@@ -14,6 +14,7 @@ import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.layer.overlay.AbstractOverlayAction;
 import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.feature.FeatureCollection;
@@ -26,35 +27,82 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.*;
 
 import javax.media.jai.JAI;
 import javax.media.jai.OperationRegistry;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Aynur Abdurazik (aabduraz)
- * Date: 4/17/14
- * Time: 2:50 PM
- * To change this template use File | Settings | File Templates.
+ * @author Aynur Abdurazik
  */
-public class ShowVectorContourOverlayAction extends AbstractOverlayAction {
+
+@ActionID(category = "View", id = "OverlayContourLayerAction")
+@ActionRegistration(displayName = "#CTL_OverlayContourLayerActionName")
+@ActionReferences({
+        @ActionReference(path = "Menu/Layer", position = 100),
+        @ActionReference(path = "Toolbars/Overlay", position = 100)
+})
+@NbBundle.Messages({
+        "CTL_OverlayContourLayerActionName=Contour Overlay",
+        "CTL_OverlayContourLayerActionToolTip=Show/hide Contour overlay for the selected image"
+})
+public class ShowVectorContourOverlayAction extends AbstractOverlayAction implements ContextAwareAction, LookupListener {
+
 
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; stroke-dasharray:%s; symbol:cross";
     Product product;
     double noDataValue;
     private GeoCoding geoCoding;
 
+    private final Lookup lkp;
+
+    public  ShowVectorContourOverlayAction() {
+        this(Utilities.actionsGlobalContext());
+    }
+
+    public   ShowVectorContourOverlayAction(Lookup lkp) {
+        this.lkp = lkp;
+        Lookup.Result<ProductNode> lkpContext = lkp.lookupResult(ProductNode.class);
+        lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
+        putValue(Action.NAME, Bundle.CTL_OverlayContourLayerActionName());
+        putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_OverlayContourLayerActionToolTip());
+    }
+
     @Override
-    public void actionPerformed(CommandEvent event) {
+    public void resultChanged(LookupEvent lookupEvent) {
+
+    }
+
+    @Override
+    public Action createContextAwareInstance(Lookup actionContext) {
+        return new ShowVectorContourOverlayAction(actionContext);
+    }
+    @Override
+    protected void initActionProperties() {
+        putValue(NAME, Bundle.CTL_OverlayContourLayerActionName());
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/icons/ContourOverlay22.png", false));
+        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/icons/ContourOverlay24.gif", false));
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_OverlayContourLayerActionToolTip());
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent event) {
         SnapApp snapApp = SnapApp.getDefault();
+        AppContext appContext = snapApp.getAppContext();
         final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-        product = snapApp.getSelectedProduct();
-        ProductNodeGroup<Band> products = snapApp.getSelectedProduct().getBandGroup();
+        product = appContext.getSelectedProduct();
+        ProductNodeGroup<Band> products = product.getBandGroup();
         ContourDialog contourDialog = new ContourDialog(product, getActiveBands(products));
         contourDialog.setVisible(true);
         contourDialog.dispose();
@@ -83,16 +131,6 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction {
             }
         }
 
-    }
-
-    @Override
-    protected void updateEnableState(ProductSceneView view) {
-        setEnabled(ProductUtils.canGetPixelPos(view.getRaster()));
-    }
-
-    @Override
-    protected void updateSelectState(ProductSceneView view) {
-        //setSelected(view.isGraticuleOverlayEnabled());
     }
 
     private ArrayList<String> getActiveBands(ProductNodeGroup<Band> products) {
@@ -200,7 +238,7 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction {
             final SimpleFeature feature = createFeature(featureType, lineString);
 
             if (feature != null) {
-                featureCollection.add(feature);
+                ((ListFeatureCollection) featureCollection).add(feature);
             }
         }
 
@@ -258,23 +296,18 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction {
     }
 
     @Override
-    protected void initActionProperties() {
-
-    }
-
-    @Override
     protected boolean getActionSelectionState(ProductSceneView view) {
-        return false;
+        return view.isGraticuleOverlayEnabled();
     }
 
     @Override
     protected boolean getActionEnabledState(ProductSceneView view) {
-        return false;
+        return ProductUtils.canGetPixelPos(view.getRaster());
     }
 
     @Override
     protected void setOverlayEnableState(ProductSceneView view) {
-
+        view.setGraticuleOverlayEnabled(!getActionSelectionState(view));
     }
 }
 
