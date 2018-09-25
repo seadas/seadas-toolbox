@@ -9,9 +9,10 @@ import org.esa.snap.rcp.imgfilter.FilteredBandAction;
 import org.esa.snap.rcp.imgfilter.model.Filter;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
+import org.openide.util.HelpCtx;
+import org.openide.windows.TopComponent;
 
 import javax.help.HelpBroker;
-import javax.help.HelpSet;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
@@ -42,7 +43,7 @@ public class ContourDialog extends JDialog {
     private Component helpButton = null;
     private HelpBroker helpBroker = null;
 
-    private final static String HELP_ID = "contourLines";
+    private final static String helpId = "contourLines";
     private final static String HELP_ICON = "icons/Help24.gif";
 
     private Product product;
@@ -76,13 +77,9 @@ public class ContourDialog extends JDialog {
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.product = product;
 
-        initHelpBroker();
-
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-        if (helpBroker != null) {
-            helpButton = getHelpButton(HELP_ID);
-        }
+        helpButton = getHelpButton();
 
         ProductNode productNode = SnapApp.getDefault().getSelectedProductNode(SnapApp.SelectionSourceHint.VIEW);
 
@@ -212,39 +209,21 @@ public class ContourDialog extends JDialog {
 
     }
 
-    protected Component getHelpButton(String helpId) {
+    protected AbstractButton getHelpButton() {
         if (helpId != null) {
-
             final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
                     false);
-
-            HelpSet helpSet = helpBroker.getHelpSet();
-            helpBroker.setCurrentID(helpId);
-
-            if (helpButton != null) {
-                helpButton.setToolTipText("Help");
-                helpButton.setName("helpButton");
-                helpBroker.enableHelpKey(helpButton, helpId, helpSet);
-                helpBroker.enableHelpOnButton(helpButton, helpId, helpSet);
-            }
-
+            helpButton.setToolTipText("Help.");
+            helpButton.setName("helpButton");
+            helpButton.addActionListener(e ->getHelpCtx().display());
             return helpButton;
         }
 
         return null;
     }
 
-
-    //todo fix the help system
-    private void initHelpBroker() {
-//        HelpSet helpSet = HelpSys.getHelpSet();
-//        if (helpSet != null) {
-//            helpBroker = helpSet.createHelpBroker();
-//            if (helpBroker instanceof DefaultHelpBroker) {
-//                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
-//                defaultHelpBroker.setActivationWindow(this);
-//            }
-//        }
+    public HelpCtx getHelpCtx() {
+        return new HelpCtx(TopComponent.class);
     }
 
 
