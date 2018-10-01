@@ -1,8 +1,6 @@
 package gov.nasa.gsfc.seadas.contour.action;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.operator.Contour1Spi;
@@ -32,6 +30,8 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import javax.media.jai.JAI;
 import javax.media.jai.OperationRegistry;
@@ -101,7 +101,7 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction implem
         SnapApp snapApp = SnapApp.getDefault();
         AppContext appContext = snapApp.getAppContext();
         final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-        product = appContext.getSelectedProduct();
+        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         ProductNodeGroup<Band> products = product.getBandGroup();
         ContourDialog contourDialog = new ContourDialog(product, getActiveBands(products));
         contourDialog.setVisible(true);
@@ -118,19 +118,21 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction implem
         setGeoCoding(product.getSceneGeoCoding());
         ContourData contourData = contourDialog.getContourData();
         noDataValue = contourDialog.getNoDataValue();
-        ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
-
-        for (VectorDataNode vectorDataNode : vectorDataNodes) {
-            // remove the old vector data node with the same name.
-            if (product.getVectorDataGroup().contains(vectorDataNode.getName())) {
-                product.getVectorDataGroup().remove(product.getVectorDataGroup().get(vectorDataNode.getName()));
+        try {
+            ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
+            for (VectorDataNode vectorDataNode : vectorDataNodes) {
+                // remove the old vector data node with the same name.
+                if (product.getVectorDataGroup().contains(vectorDataNode.getName())) {
+                    product.getVectorDataGroup().remove(product.getVectorDataGroup().get(vectorDataNode.getName()));
+                }
+                product.getVectorDataGroup().add(vectorDataNode);
+                if (sceneView != null) {
+                    sceneView.setLayersVisible(vectorDataNode);
+                }
             }
-            product.getVectorDataGroup().add(vectorDataNode);
-            if (sceneView != null) {
-                sceneView.setLayersVisible(vectorDataNode);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     private ArrayList<String> getActiveBands(ProductNodeGroup<Band> products) {
@@ -190,6 +192,7 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction implem
             try {
                 featureCollection = createContourFeatureCollection(pb);
             } catch (Exception e) {
+                e.printStackTrace();
                 if (contourData.getLevels().size() != 0)
                     System.out.println(e.getMessage());
                 if (SnapApp.getDefault() != null) {
@@ -220,16 +223,24 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction implem
     private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ParameterBlockJAI pb) {
 
         RenderedOp dest = JAI.create("Contour", pb);
-        Collection<LineString> contours = (Collection<LineString>) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
+        Collection<org.locationtech.jts.geom.LineString > contours = (Collection<org.locationtech.jts.geom.LineString >) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
         SimpleFeatureType featureType = null;
         FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
         try {
             featureType = createFeatureType(geoCoding);
             featureCollection = new ListFeatureCollection(featureType);
         } catch (IOException ioe) {
-
+            ioe.printStackTrace();
         }
-        for (LineString lineString : contours) {
+        LineString lineString;
+        org.locationtech.jts.geom.Coordinate[] geomCoordinates;
+        org.locationtech.jts.geom.PrecisionModel geomPrecisionModel;
+        PrecisionModel precisionModel;
+        for (org.locationtech.jts.geom.LineString geomLineString : contours) {
+            geomCoordinates = geomLineString.getCoordinates();
+            geomPrecisionModel = geomLineString.getPrecisionModel();
+            precisionModel = new PrecisionModel(geomPrecisionModel.getScale(), geomPrecisionModel.getOffsetX(), geomPrecisionModel.getOffsetY());
+            lineString = new LineString(transformaCoordinates(geomCoordinates), precisionModel, geomLineString.getSRID());
             Coordinate[] coordinates = lineString.getCoordinates();
             for (int i = 0; i < coordinates.length; i++) {
                 coordinates[i].x = coordinates[i].x + 0.5;
@@ -255,16 +266,25 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction implem
         return featureCollection;
     }
 
+    private Coordinate[] transformaCoordinates(org.locationtech.jts.geom.Coordinate[] geomCoordinates){
+        Coordinate[] coordinates = new Coordinate[geomCoordinates.length];
+        int i = 0;
+
+        for (org.locationtech.jts.geom.Coordinate coordinate:geomCoordinates) {
+            coordinates[i++] = new Coordinate(coordinate.x, coordinate.y, coordinate.z);
+        }
+        return coordinates;
+    }
 
     private static void transformFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection, CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws TransformException {
         final GeometryCoordinateSequenceTransformer transform = FeatureUtils.getTransform(sourceCRS, targetCRS);
         final FeatureIterator<SimpleFeature> features = featureCollection.features();
-        final GeometryFactory geometryFactory = new GeometryFactory();
+        final com.vividsolutions.jts.geom.GeometryFactory geometryFactory = new com.vividsolutions.jts.geom.GeometryFactory();
         while (features.hasNext()) {
             final SimpleFeature simpleFeature = features.next();
             //System.out.println("simple feature : " +  simpleFeature.toString());
             final LineString sourceLine = (LineString) simpleFeature.getDefaultGeometry();
-            final LineString targetLine = transform.transformLineString(sourceLine, geometryFactory);
+            final LineString targetLine = transform.transformLineString((LineString) sourceLine, geometryFactory);
             simpleFeature.setDefaultGeometry(targetLine);
         }
     }
