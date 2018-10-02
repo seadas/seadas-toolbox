@@ -17,12 +17,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * @author Norman
+ * @author Aynur Abdurazik
  */
-@AboutBox(displayName = "SeaDASBX", position = 30)
+@AboutBox(displayName = "SeaDAS Toolbox", position = 40)
 public class SeaDASAboutBox extends JPanel {
 
-    private final static String releaseNotesHTTP = "https://github.com/senbox-org/s3tbx/blob/master/ReleaseNotes.md";
+    private final static String releaseNotesHTTP = "https://github.com/seadas/seadas-toolbox/blob/master/ReleaseNotes.md";
 
     public SeaDASAboutBox() {
         super(new BorderLayout(4, 4));
