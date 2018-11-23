@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.esa.seadas.about;
+package gov.nasa.gsfc.seadas.about;
 
 import org.esa.snap.rcp.about.AboutBox;
 import org.esa.snap.rcp.util.BrowserUtils;
+import org.openide.awt.ActionID;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
+import org.openide.util.NbBundle;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,6 +21,14 @@ import java.net.URISyntaxException;
 /**
  * @author Aynur Abdurazik
  */
+
+@ActionID(category = "Help", id = "gov.nasa.gsfc.seadas.about.AboutAction" )
+//@ActionRegistration(displayName = "#CTL_AboutAction_Name" )
+//@ActionReference(path = "Menu/Help", position = 1600, separatorBefore = 1550)
+@NbBundle.Messages({
+        "CTL_AboutAction_Name=About SeaDAS...",
+        "CTL_AboutAction_Title=About SeaDAS",
+})
 @AboutBox(displayName = "SeaDAS Toolbox", position = 40)
 public class SeaDASAboutBox extends JPanel {
 
@@ -27,7 +37,7 @@ public class SeaDASAboutBox extends JPanel {
     public SeaDASAboutBox() {
         super(new BorderLayout(4, 4));
         setBorder(new EmptyBorder(4, 4, 4, 4));
-        ImageIcon aboutImage = new ImageIcon(SeaDASAboutBox.class.getResource("about_seadas.jpg"));
+        ImageIcon aboutImage = new ImageIcon(SeaDASAboutBox.class.getResource("about_seadas.png"));
         JLabel iconLabel = new JLabel(aboutImage);
         add(iconLabel, BorderLayout.CENTER);
         add(createVersionPanel(), BorderLayout.SOUTH);
