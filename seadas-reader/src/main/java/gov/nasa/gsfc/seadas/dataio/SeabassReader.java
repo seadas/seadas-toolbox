@@ -315,7 +315,7 @@ public class SeabassReader extends LineNumberReader {
     }
 
     /**
-     * internal class used to hold the information about a column of data from the file.
+     * internal class used to hold the information gov.nasa.gsfc.seadas.about a column of data from the file.
      */
     private class ColumnInfo {
         private String name;
@@ -343,11 +343,11 @@ public class SeabassReader extends LineNumberReader {
             } else if (name1.equals("station")) {
                 return String.class;
             } else if (name1.equals("time")) {
-                // todo: figure what to do about the time field
+                // todo: figure what to do gov.nasa.gsfc.seadas.about the time field
                 // return Date.class;
                 return String.class;
             } else if (name1.equals("date")) {
-                // todo: figure what to do about the date field
+                // todo: figure what to do gov.nasa.gsfc.seadas.about the date field
                 // return Date.class;
                 return String.class;
             }

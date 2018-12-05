@@ -133,6 +133,11 @@
             <artifactId>ceres-glayer</artifactId>
             <version>${snap.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

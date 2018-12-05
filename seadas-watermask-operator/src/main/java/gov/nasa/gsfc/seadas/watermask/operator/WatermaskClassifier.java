@@ -374,7 +374,7 @@ public class WatermaskClassifier {
      * @param lat The latitude value.
      * @param lon The longitude value.
      * @return 0 if the given position is over land, 1 if it is over water, 2 if no definite statement can be made
-     *         about the position.
+     *         gov.nasa.gsfc.seadas.about the position.
      */
     public int getWaterMaskSample(float lat, float lon) {
         double tempLon = lon + 180.0;
