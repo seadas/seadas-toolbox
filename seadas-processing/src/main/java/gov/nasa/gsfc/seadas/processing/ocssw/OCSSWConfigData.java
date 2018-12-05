@@ -34,6 +34,7 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY = "seadas.ocssw.processInputStreamPort";
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY = "seadas.ocssw.processErrorStreamPort";
     final static String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
+    final static String SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
 
     final static String SEADAS_LOG_DIR_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + ".seadas" + File.separator +"log";
     final static String SEADAS_OCSSW_ROOT_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + "ocssw";
@@ -43,15 +44,8 @@ public class OCSSWConfigData {
     final static  String SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE = "6402";
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE = "6403";
     final static String SEADAS_CLIENT_ID_DEFAULT_VALUE = System.getProperty("user.name");
+    final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasOCSSWSharedDir";
 
-    private String seadasLogDir;
-    private String seadasOcsswRoot;
-    public String seadasOcsswLocation;
-    public String seadasOcsswPort;
-    public String seadasOcsswProcessInputStreamPort;
-    public String seadasOcsswProcessErrorStreamPort;
-    public boolean seadasOcsswKeepFileOnServer;
-    public String seadasClientId;
 
     public static Properties properties = new Properties(System.getProperties());
 
@@ -69,12 +63,11 @@ public class OCSSWConfigData {
         properties.put(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE);
         properties.put(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE);
         properties.put(SEADAS_CLIENT_ID_PROPERTY, SEADAS_CLIENT_ID_DEFAULT_VALUE);
+        properties.put(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE);
         // set the system properties
         System.setProperties(properties);
         // display new properties
-        System.getProperties().list(System.out);
-
-        seadasLogDir = SEADAS_LOG_DIR_DEFAULT_VALUE;
+        //System.getProperties().list(System.out);
     }
 
     public void updateconfigData(PropertyContainer pc) {
@@ -84,28 +77,12 @@ public class OCSSWConfigData {
             key = newProperties[i].getName();
             value = newProperties[i].getValue();
             properties.setProperty(key, value);
-            System.out.println(newProperties[i].getName() + " = " + newProperties[i].getValue());
+            //System.out.println(newProperties[i].getName() + " = " + newProperties[i].getValue());
         }
 
         // set the system properties
         System.setProperties(properties);
         // display new properties
-        System.getProperties().list(System.out);
-    }
-
-    public String getSeadasLogDir() {
-        return seadasLogDir;
-    }
-
-    public void setSeadasLogDir(String seadasLogDir) {
-        this.seadasLogDir = seadasLogDir;
-    }
-
-    public String getSeadasOcsswRoot() {
-        return seadasOcsswRoot;
-    }
-
-    public void setSeadasOcsswRoot(String seadasOcsswRoot) {
-        this.seadasOcsswRoot = seadasOcsswRoot;
+        //System.getProperties().list(System.out);
     }
 }
