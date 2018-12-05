@@ -3,6 +3,9 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.binding.BindingContext;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -13,8 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_DEFAULT_VALUE;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 public class OCSSWInfoGUI {
@@ -27,21 +29,21 @@ public class OCSSWInfoGUI {
 
     OCSSWConfigData ocsswConfigData = new OCSSWConfigData();
 
+    JButton ok = new JButton("OK");
+    JButton cancel = new JButton("Cancel");
+    JButton apply = new JButton("Apply");
+    JButton help = new JButton("Help");
+
     public static void main(String args[]) {
+
+        final AppContext appContext = SnapApp.getDefault().getAppContext();
+        final Window parent = appContext.getApplicationWindow();
         OCSSWInfoGUI ocsswInfoGUI = new OCSSWInfoGUI();
-        ocsswInfoGUI.init();
-        ;
+        ocsswInfoGUI.init(parent);
     }
 
-    private void init() {
+    public void init(Window parent) {
 
-
-        //Creating the Frame
-        JFrame frame = new JFrame("OCSSW Configuration");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
-
-        //Creating the MenuBar and adding components
         JMenuBar mb = new JMenuBar();
         JMenu m1 = new JMenu("FILE");
         JMenu m2 = new JMenu("Help");
@@ -49,66 +51,37 @@ public class OCSSWInfoGUI {
         mb.add(m2);
         JMenuItem m11 = new JMenuItem("Load");
         JMenuItem m22 = new JMenuItem("Save as");
+        JMenuItem m33 = new JMenuItem("Exit");
         m1.add(m11);
         m1.add(m22);
+        m1.add(m33);
 
 
-        //Creating the bottomPanel at bottom and adding components
-        JPanel bottomPanel = new JPanel(); // the bottomPanel is not visible in output
+        JPanel mainPanel = new JPanel();
+        mainPanel.add(BorderLayout.NORTH, mb);
+        mainPanel.add(BorderLayout.SOUTH, makeParamPanel());
+        mainPanel.setPreferredSize(mainPanel.getPreferredSize());
+        final ModalDialog modalDialog = new ModalDialog(parent, "OCSSW Configuration", mainPanel, ModalDialog.ID_OK_APPLY_CANCEL_HELP, "ocsswInfo");
 
-        JButton ok = new JButton("OK");
-        ok.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ocsswConfigData.updateconfigData(pc);
-                closeCurrentWindow(e);
-            }
-        });
-        JButton cancel = new JButton("Cancel");
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                closeCurrentWindow(e);
-            }
-        });
-        JButton apply = new JButton("Apply");
-        apply.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ocsswConfigData.updateconfigData(pc);
-            }
-        });
+        modalDialog.getButton(ModalDialog.ID_OK).setText("OK");
+        modalDialog.getButton(ModalDialog.ID_CANCEL).setText("Cancel");
+        modalDialog.getButton(ModalDialog.ID_APPLY).setText("Apply");
+        modalDialog.getButton(ModalDialog.ID_HELP).setText("Help");
 
-        JButton help = new JButton("Help");
-        apply.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        modalDialog.getJDialog().setMaximumSize(modalDialog.getJDialog().getPreferredSize());
+        modalDialog.getJDialog().pack();
 
-            }
-        });
+        final int dialogResult = modalDialog.show();
 
-        bottomPanel.add(ok);
-        bottomPanel.add(cancel);
-        bottomPanel.add(apply);
-        bottomPanel.add(help);
-
-        // Text Area at the Center
-        JTextArea ta = new JTextArea();
-
-        //Adding Components to the frame.
-        frame.getContentPane().add(BorderLayout.SOUTH, bottomPanel);
-        frame.getContentPane().add(BorderLayout.NORTH, mb);
-        frame.getContentPane().add(BorderLayout.CENTER, makeParamPanel());
-        frame.setVisible(true);
-    }
-
-    private void closeCurrentWindow(ActionEvent e){
-
+        if (dialogResult != ModalDialog.ID_OK) {
+            ;
+            ocsswConfigData.updateconfigData(pc);
+            return;
+        }
     }
 
     private JPanel makeParamPanel() {
 
-        paramPanel.setBackground(Color.white);
         paramPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -150,7 +123,7 @@ public class OCSSWInfoGUI {
         c.gridx = 1;
         c.gridy = 0;
         paramPanel.add(ocsswLocationList, c);
-
+        paramPanel.setPreferredSize(paramPanel.getPreferredSize());
         return paramPanel;
     }
 
@@ -168,10 +141,9 @@ public class OCSSWInfoGUI {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.5;
-        c.gridx = 1;
+        c.gridx = 0;
         c.gridy = 2;
-        c.insets = new Insets(30, 20, 0, 20);  //top padding
-        c.anchor = GridBagConstraints.PAGE_END; //bottom of space
+        c.insets = new Insets(30, 50, 0, 50);  //top padding
 
         paramPanel.add(newSubParamPanel, c);
         paramPanel.repaint();
@@ -184,22 +156,56 @@ public class OCSSWInfoGUI {
         virtualOCSSWParamPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel ocsswRootLabel = new JLabel("OCSSW Shared Dir:");
-        JTextField ocsswRoot = new JTextField();
+        JLabel ocsswSharedDirLabel = new JLabel("OCSSW Shared Dir:");
+        JTextField ocsswSharedDir = new JTextField();
 
+        pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE));
+        pc.getDescriptor(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY).setDisplayName(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY);
+
+        final BindingContext ctx = new BindingContext(pc);
+
+        ctx.bind(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir);
+
+//        ctx.addPropertyChangeListener(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, new PropertyChangeListener() {
+//
+//            @Override
+//            public void propertyChange(PropertyChangeEvent pce) {
+//
+//                System.out.println("value changed!");
+//            }
+//        });
+
+        JButton ocsswSharedDirButton = new JButton("...");
+        ocsswSharedDirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File newDir = getDir();
+                if (newDir != null) {
+                    ocsswSharedDir.setText(newDir.getAbsolutePath());
+                    apply.setEnabled(true);
+                }
+            }
+        });
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 1;
         c.gridy = 0;
 
-        virtualOCSSWParamPanel.add(ocsswRootLabel, c);
+        virtualOCSSWParamPanel.add(ocsswSharedDirLabel, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.5;
         c.gridx = 2;
         c.gridy = 0;
 
-        virtualOCSSWParamPanel.add(ocsswRoot, c);
+        virtualOCSSWParamPanel.add(ocsswSharedDir, c);
+
+        c.weightx = 0.5;
+        c.gridx = 3;
+        c.gridy = 0;
+
+        virtualOCSSWParamPanel.add(ocsswSharedDirButton, c);
+
 
         return virtualOCSSWParamPanel;
     }
@@ -211,7 +217,7 @@ public class OCSSWInfoGUI {
         GridBagConstraints c = new GridBagConstraints();
 
         JLabel ocsswServerAddressLabel = new JLabel("OCSSW Server Address:");
-        JTextField ocsswserverAddress = new JTextField(10); // accepts upto 10 characters
+        JTextField ocsswserverAddress = new JTextField(20); // accepts upto 20 characters
 
 
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -219,11 +225,68 @@ public class OCSSWInfoGUI {
         c.gridy = 0;
 
         remoteOCSSWParamPanel.add(ocsswServerAddressLabel, c);
-        c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.5;
         c.gridx = 2;
         c.gridy = 0;       //third row
         remoteOCSSWParamPanel.add(ocsswserverAddress, c);
+
+        JLabel serverPortLabel = new JLabel("Server Port: ");
+        JLabel serverInputStreamPortLabel = new JLabel("Server Input Stream Port: ");
+        JLabel serverErrorStreamPortLabel = new JLabel("Server Error Stream Port: ");
+
+        JTextField serverPortNumber = new JTextField(4);
+        JTextField serverInputStreamPortNumber = new JTextField(4);
+        JTextField serverErrorStreamPortNumber = new JTextField(4);
+
+        pc.addProperty(Property.create(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE));
+        pc.getDescriptor(SEADAS_OCSSW_PORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PORT_PROPERTY);
+
+        pc.addProperty(Property.create(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE));
+        pc.getDescriptor(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY);
+
+        pc.addProperty(Property.create(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE));
+        pc.getDescriptor(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY);
+
+
+        final BindingContext ctx = new BindingContext(pc);
+
+        ctx.bind(SEADAS_OCSSW_PORT_PROPERTY, serverPortNumber);
+        ctx.bind(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, serverInputStreamPortNumber);
+        ctx.bind(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, serverErrorStreamPortNumber);
+//
+//        ctx.addPropertyChangeListener(SEADAS_OCSSW_PORT_PROPERTY, new PropertyChangeListener() {
+//
+//            @Override
+//            public void propertyChange(PropertyChangeEvent pce) {
+//
+//                System.out.println("value changed!");
+//            }
+//        });
+
+        c.gridx = 0;
+        c.gridy = 2;
+        //c.insets = new Insets(20, 0, 0, 0);  //top padding
+        remoteOCSSWParamPanel.add(serverPortLabel, c);
+
+        c.gridx = 1;
+        c.gridy = 2;
+        remoteOCSSWParamPanel.add(serverPortNumber, c);
+
+        c.gridx = 2;
+        c.gridy = 2;
+        remoteOCSSWParamPanel.add(serverInputStreamPortLabel, c);
+
+        c.gridx = 3;
+        c.gridy = 2;
+        remoteOCSSWParamPanel.add(serverInputStreamPortNumber, c);
+
+        c.gridx = 4;
+        c.gridy = 2;
+        remoteOCSSWParamPanel.add(serverErrorStreamPortLabel, c);
+
+        c.gridx = 5;
+        c.gridy = 2;
+        remoteOCSSWParamPanel.add(serverErrorStreamPortNumber, c);
 
         return remoteOCSSWParamPanel;
     }
@@ -256,7 +319,11 @@ public class OCSSWInfoGUI {
         ocsswDirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ocsswRoot.setText(getDir().getAbsolutePath());
+                File newDir = getDir();
+                if (newDir != null) {
+                    ocsswRoot.setText(newDir.getAbsolutePath());
+                    apply.setEnabled(true);
+                }
             }
         });
         c.fill = GridBagConstraints.HORIZONTAL;
