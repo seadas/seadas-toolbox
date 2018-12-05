@@ -133,7 +133,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         addTiePointGrids(product, ncFile.getVariables());
         addGeocoding(product);
 
-        // todo - think about maybe possibly sometime creating a flag for questionable data
+        // todo - think gov.nasa.gsfc.seadas.about maybe possibly sometime creating a flag for questionable data
 //        addFlagsAndMasks(product);
         product.setAutoGrouping("RefSB:Emissive");
 

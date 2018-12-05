@@ -1,15 +1,15 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 
 /**
- * An observer that notifies its {@link Handler handlers} about lines of characters that have been written
+ * An observer that notifies its {@link Handler handlers} gov.nasa.gsfc.seadas.about lines of characters that have been written
  * by a process to both {@code stdout} and {@code stderr} output streams.
  *
  * @author Norman Fomferra

@@ -129,7 +129,7 @@ public class Java2DConverter {
 
     /**
      * If you pass in a common GeometryCollection, note that a Shape cannot
-     * preserve information about which elements are 1D and which are 2D. For
+     * preserve information gov.nasa.gsfc.seadas.about which elements are 1D and which are 2D. For
      * example, if you pass in a GeometryCollection containing a ring and a
      * disk, you cannot render them as such: if you use Graphics.fill, you'll
      * get two disks, and if you use Graphics.draw, you'll get two rings.
