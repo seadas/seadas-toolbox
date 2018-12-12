@@ -34,8 +34,8 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_VIR
  * @author Daniel Knowles
  */
 // DEC 2018 - Daniel Knowles - Applied formatting logic for GUI component alignment and arrangement
-//                             Add listeners to set Apply button based on textfield values
-//                             Minor variable renaming.
+//                             Added listeners to set Apply button based on textfield values
+//                             Minor variable renaming
 
 
 public class OCSSWInfoGUI {
