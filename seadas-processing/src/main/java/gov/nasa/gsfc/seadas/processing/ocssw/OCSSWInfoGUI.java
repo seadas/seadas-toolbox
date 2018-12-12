@@ -1,13 +1,18 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
+
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.binding.BindingContext;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
+import org.esa.snap.ui.UIUtils;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,24 +20,38 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_LOCAL;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE;
+
+
+/**
+ * @author Aynur Abdurazik
+ * @author Daniel Knowles
+ */
+// DEC 2018 - Daniel Knowles - Applied formatting logic for GUI component alignment and arrangement
+//                             Add listeners to set Apply button based on textfield values
+//                             Minor variable renaming.
+
 
 public class OCSSWInfoGUI {
 
-    final String PARAM_PANEL_NAME = "paramPanel";
-    JPanel paramPanel = new JPanel();
+    final String PANEL_NAME = "OCSSW Configuration";
+    final String HELP_ID = "ocsswInfo";
+
+    JPanel paramPanel = GridBagUtils.createPanel();
     JPanel paramSubPanel;
+
+    ModalDialog modalDialog;
 
     PropertyContainer pc = new PropertyContainer();
 
     OCSSWConfigData ocsswConfigData = new OCSSWConfigData();
 
-    JButton ok = new JButton("OK");
-    JButton cancel = new JButton("Cancel");
-    JButton apply = new JButton("Apply");
-    JButton help = new JButton("Help");
 
     public static void main(String args[]) {
 
@@ -44,120 +63,247 @@ public class OCSSWInfoGUI {
 
     public void init(Window parent) {
 
-        JMenuBar mb = new JMenuBar();
-        JMenu m1 = new JMenu("FILE");
-        JMenu m2 = new JMenu("Help");
-        mb.add(m1);
-        mb.add(m2);
-        JMenuItem m11 = new JMenuItem("Load");
-        JMenuItem m22 = new JMenuItem("Save as");
-        JMenuItem m33 = new JMenuItem("Exit");
-        m1.add(m11);
-        m1.add(m22);
-        m1.add(m33);
+        JPanel mainPanel = GridBagUtils.createPanel();
 
-
-        JPanel mainPanel = new JPanel();
-        mainPanel.add(BorderLayout.NORTH, mb);
-        mainPanel.add(BorderLayout.SOUTH, makeParamPanel());
-        mainPanel.setPreferredSize(mainPanel.getPreferredSize());
-        final ModalDialog modalDialog = new ModalDialog(parent, "OCSSW Configuration", mainPanel, ModalDialog.ID_OK_APPLY_CANCEL_HELP, "ocsswInfo");
+        modalDialog = new ModalDialog(parent, PANEL_NAME, mainPanel, ModalDialog.ID_OK_APPLY_CANCEL_HELP, HELP_ID);
 
         modalDialog.getButton(ModalDialog.ID_OK).setText("OK");
         modalDialog.getButton(ModalDialog.ID_CANCEL).setText("Cancel");
         modalDialog.getButton(ModalDialog.ID_APPLY).setText("Apply");
         modalDialog.getButton(ModalDialog.ID_HELP).setText("Help");
 
-        modalDialog.getJDialog().setMaximumSize(modalDialog.getJDialog().getPreferredSize());
+
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("File");
+        JMenu helpMenu = new JMenu("Help");
+
+        JMenuItem fileMenuItem1 = new JMenuItem("Load");
+        JMenuItem fileMenuItem2 = new JMenuItem("Save as");
+        JMenuItem fileMenuItem3 = new JMenuItem("Exit");
+        fileMenu.add(fileMenuItem1);
+        fileMenu.add(fileMenuItem2);
+        fileMenu.add(fileMenuItem3);
+
+        menuBar.add(fileMenu);
+        menuBar.add(helpMenu);
+
+
+        fileMenu.setMinimumSize(fileMenu.getPreferredSize());
+        helpMenu.setMinimumSize(helpMenu.getPreferredSize());
+        menuBar.setMinimumSize(menuBar.getPreferredSize());
+
+        GridBagConstraints gbc = createConstraints();
+
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weighty = 0;
+        gbc.weightx = 0;
+        mainPanel.add(menuBar, gbc);
+
+        gbc.gridy += 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(makeParamPanel(), gbc);
+
+
+        // Add filler panel at bottom which expands as needed to force all components within this panel to the top
+        gbc.gridy += 1;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        JPanel fillerPanel = new JPanel();
+        fillerPanel.setMinimumSize(fillerPanel.getPreferredSize());
+        mainPanel.add(fillerPanel, gbc);
+
+
+        mainPanel.setMinimumSize(mainPanel.getMinimumSize());
+
+
+        modalDialog.getButton(ModalDialog.ID_OK).setMinimumSize(modalDialog.getButton(ModalDialog.ID_OK).getPreferredSize());
+
+        // Specifically set sizes for dialog here
+        Dimension minimumSizeAdjusted = adjustDimension(modalDialog.getJDialog().getMinimumSize(), 25, 25);
+        Dimension preferredSizeAdjusted = adjustDimension(modalDialog.getJDialog().getPreferredSize(), 25, 25);
+        modalDialog.getJDialog().setMinimumSize(minimumSizeAdjusted);
+        modalDialog.getJDialog().setPreferredSize(preferredSizeAdjusted);
+
         modalDialog.getJDialog().pack();
+
 
         final int dialogResult = modalDialog.show();
 
         if (dialogResult != ModalDialog.ID_OK) {
-            ;
             ocsswConfigData.updateconfigData(pc);
             return;
         }
     }
 
+    private Dimension adjustDimension(Dimension dimension, int widthAdjustment, int heightAdjustment) {
+
+        if (dimension == null) {
+            return null;
+        }
+
+        int width = dimension.width + widthAdjustment;
+        int height = dimension.height + heightAdjustment;
+
+        return new Dimension(width, height);
+    }
+
     private JPanel makeParamPanel() {
 
-        paramPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints gbc = createConstraints();
 
-
-        JLabel ocsswLocationLabel = new JLabel("OCSSW Location:");
+        JLabel ocsswLocationLabel = new JLabel("OCSSW Location: ");
         String[] ocsswLocations = {OCSSW_LOCATION_LOCAL, OCSSW_LOCATION_VIRTUAL_MACHINE, OCSSW_LOCATION_REMOTE_SERVER};
 
 
-        JComboBox ocsswLocationList = new JComboBox(ocsswLocations);
-        ocsswLocationList.addActionListener(new ActionListener() {
+        JComboBox ocsswLocationComboBox = new JComboBox(ocsswLocations);
+        ocsswLocationComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String ocssLocationString = (String) ocsswLocationList.getSelectedItem(); //get the selected item
-                switch (ocssLocationString) {//check for a match
+
+                // Remove previous selection of paramSubPanel
+                if (paramSubPanel != null) {
+                    paramPanel.remove(paramSubPanel);
+                }
+
+                // Create new paramSubPanel
+                String ocssLocationString = (String) ocsswLocationComboBox.getSelectedItem();
+                switch (ocssLocationString) {
                     case OCSSW_LOCATION_LOCAL:
-                        paramSubPanel = getLocalOCSSWParamPanel();
+                        paramSubPanel = getLocalOCSSWPanel();
                         break;
                     case OCSSW_LOCATION_VIRTUAL_MACHINE:
-                        paramSubPanel = getVirtualOCSSWParamPanel();
+                        paramSubPanel = getVirtualMachinePanel();
                         break;
                     case OCSSW_LOCATION_REMOTE_SERVER:
-                        paramSubPanel = getRemoteOCSSWParamPanel();
+                        paramSubPanel = getRemoteServerPanel();
                         break;
                 }
+
                 updateParamPanel(paramSubPanel);
             }
         });
 
-        ocsswLocationList.setSelectedIndex(1);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0, 50, 0, 50);  //top padding
-        c.gridx = 0;
-        c.gridy = 0;
+        gbc.weighty = 0;
+        gbc.insets.top = 10;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        paramPanel.add(getLocationPanel(ocsswLocationLabel, ocsswLocationComboBox), gbc);
 
-        paramPanel.add(ocsswLocationLabel, c);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
-        c.gridx = 1;
-        c.gridy = 0;
-        paramPanel.add(ocsswLocationList, c);
-        paramPanel.setPreferredSize(paramPanel.getPreferredSize());
+
+        // Determine ideal preferred size and minimum size of the param panel by invoking each selection to obtain
+        // the respective values and then use the largest values.
+
+        ocsswLocationComboBox.setSelectedIndex(0);
+        Dimension preferredSize0 = paramPanel.getPreferredSize();
+        Dimension minimumSize0 = paramPanel.getMinimumSize();
+
+        ocsswLocationComboBox.setSelectedIndex(1);
+        Dimension preferredSize1 = paramPanel.getPreferredSize();
+        Dimension minimumSize1 = paramPanel.getMinimumSize();
+
+        ocsswLocationComboBox.setSelectedIndex(2);
+        Dimension preferredSize2 = paramPanel.getPreferredSize();
+        Dimension minimumSize2 = paramPanel.getMinimumSize();
+
+        Integer preferredWidths[] = {preferredSize0.width, preferredSize1.width, preferredSize2.width};
+        Integer preferredHeights[] = {preferredSize0.height, preferredSize1.height, preferredSize2.height};
+        Integer minimumWidths[] = {minimumSize0.width, minimumSize1.width, minimumSize2.width};
+        Integer minimumHeights[] = {minimumSize0.height, minimumSize1.height, minimumSize2.height};
+
+        int preferredWidth = Collections.max(Arrays.asList(preferredWidths));
+        int preferredHeight = Collections.max(Arrays.asList(preferredHeights));
+        int minimumWidth = Collections.max(Arrays.asList(minimumWidths));
+        int minimumHeight = Collections.max(Arrays.asList(minimumHeights));
+
+        Dimension preferredParamPanelSize = new Dimension(preferredWidth, preferredHeight);
+        Dimension minimumParamPanelSize = new Dimension(minimumWidth, minimumHeight);
+
+
+        // Set selector to desired default index
+        ocsswLocationComboBox.setSelectedIndex(0);
+
+        // Specifically set preferred and minimum size
+        paramPanel.setPreferredSize(preferredParamPanelSize);
+        paramPanel.setMinimumSize(minimumParamPanelSize);
+
         return paramPanel;
     }
 
+
+    private JPanel getLocationPanel(JLabel ocsswLocationLabel, JComboBox ocsswLocationComboBox) {
+
+        JPanel panel = GridBagUtils.createPanel();
+        GridBagConstraints gbc = createConstraints();
+
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswLocationLabel, gbc);
+
+        gbc.gridx += 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswLocationComboBox, gbc);
+
+        ocsswLocationLabel.setMinimumSize(ocsswLocationLabel.getPreferredSize());
+        ocsswLocationComboBox.setMinimumSize(ocsswLocationComboBox.getPreferredSize());
+        panel.setMinimumSize(panel.getPreferredSize());
+
+        return panel;
+    }
+
+
     private void updateParamPanel(JPanel newSubParamPanel) {
 
-        Component[] components = paramPanel.getComponents();
-        for (int i = 0; i < components.length; i++) {
-            if (components[i].getClass() == JPanel.class) {
-                paramPanel.remove(i);
-            }
-        }
+//
+//        Component[] components = paramPanel.getComponents();
+//        for (int i = 0; i < components.length; i++) {
+//            if (components[i].getClass() == JPanel.class) {
+//                paramPanel.remove(i);
+//            }
+//        }
 
         paramPanel.validate();
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = 2;
-        c.insets = new Insets(30, 50, 0, 50);  //top padding
+        GridBagConstraints gbc = createConstraints();
+        gbc.gridy = 1;
+        gbc.weighty = 0;
+        gbc.insets.top = 5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        paramPanel.add(newSubParamPanel, c);
+        newSubParamPanel.setMinimumSize(newSubParamPanel.getMinimumSize());
+
+        paramPanel.add(newSubParamPanel, gbc);
+
+        // Add filler panel at bottom which expands as needed to force all components within this panel to the top
+        gbc.insets.top = 0;
+        gbc.gridy = 2;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        JPanel fillerPanel = new JPanel();
+        fillerPanel.setMinimumSize(fillerPanel.getPreferredSize());
+        paramPanel.add(fillerPanel, gbc);
+
+
         paramPanel.repaint();
         paramPanel.validate();
     }
 
-    private JPanel getVirtualOCSSWParamPanel() {
 
-        JPanel virtualOCSSWParamPanel = new JPanel();
-        virtualOCSSWParamPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+    private JPanel getVirtualMachinePanel() {
 
-        JLabel ocsswSharedDirLabel = new JLabel("OCSSW Shared Dir:");
-        JTextField ocsswSharedDir = new JTextField();
+        JPanel panel = GridBagUtils.createPanel();
+        GridBagConstraints gbc = createConstraints();
+        panel.setBorder(UIUtils.createGroupBorder("Virtual Machine"));
+
+        JLabel ocsswSharedDirLabel = new JLabel("OCSSW Shared Dir: ");
+        JTextField ocsswSharedDir = new JTextField(20);
+
+
+        ocsswSharedDirLabel.setMinimumSize(ocsswSharedDirLabel.getPreferredSize());
+        ocsswSharedDir.setMinimumSize(new JTextField(10).getPreferredSize());
+
 
         pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE));
         pc.getDescriptor(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY).setDisplayName(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY);
@@ -165,6 +311,15 @@ public class OCSSWInfoGUI {
         final BindingContext ctx = new BindingContext(pc);
 
         ctx.bind(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir);
+
+
+        if (simpleTextfieldCheck(ocsswSharedDir, true)) {
+            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
+        } else {
+            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
+        }
+        ocsswSharedDir.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswSharedDir, true));
+
 
 //        ctx.addPropertyChangeListener(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, new PropertyChangeListener() {
 //
@@ -176,67 +331,72 @@ public class OCSSWInfoGUI {
 //        });
 
         JButton ocsswSharedDirButton = new JButton("...");
+
+
         ocsswSharedDirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 File newDir = getDir();
                 if (newDir != null) {
                     ocsswSharedDir.setText(newDir.getAbsolutePath());
-                    apply.setEnabled(true);
+                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
                 }
             }
         });
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1;
-        c.gridy = 0;
+        ocsswSharedDirButton.setMinimumSize(ocsswSharedDirButton.getPreferredSize());
 
-        virtualOCSSWParamPanel.add(ocsswSharedDirLabel, c);
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswSharedDirLabel, gbc);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
-        c.gridx = 2;
-        c.gridy = 0;
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(ocsswSharedDir, gbc);
 
-        virtualOCSSWParamPanel.add(ocsswSharedDir, c);
+        gbc.gridx = 2;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswSharedDirButton, gbc);
 
-        c.weightx = 0.5;
-        c.gridx = 3;
-        c.gridy = 0;
-
-        virtualOCSSWParamPanel.add(ocsswSharedDirButton, c);
+        panel.setMinimumSize(panel.getMinimumSize());
 
 
-        return virtualOCSSWParamPanel;
+        return panel;
     }
 
-    private JPanel getRemoteOCSSWParamPanel() {
 
-        JPanel remoteOCSSWParamPanel = new JPanel();
-        remoteOCSSWParamPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+    private JPanel getRemoteServerPanel() {
 
-        JLabel ocsswServerAddressLabel = new JLabel("OCSSW Server Address:");
-        JTextField ocsswserverAddress = new JTextField(20); // accepts upto 20 characters
+        JPanel panel = GridBagUtils.createPanel();
+        GridBagConstraints gbc = createConstraints();
+        panel.setBorder(UIUtils.createGroupBorder("Remote Server"));
 
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1;
-        c.gridy = 0;
-
-        remoteOCSSWParamPanel.add(ocsswServerAddressLabel, c);
-        c.weightx = 0.5;
-        c.gridx = 2;
-        c.gridy = 0;       //third row
-        remoteOCSSWParamPanel.add(ocsswserverAddress, c);
-
+        JLabel ocsswServerAddressLabel = new JLabel("OCSSW Server Address: ");
         JLabel serverPortLabel = new JLabel("Server Port: ");
         JLabel serverInputStreamPortLabel = new JLabel("Server Input Stream Port: ");
         JLabel serverErrorStreamPortLabel = new JLabel("Server Error Stream Port: ");
 
-        JTextField serverPortNumber = new JTextField(4);
-        JTextField serverInputStreamPortNumber = new JTextField(4);
-        JTextField serverErrorStreamPortNumber = new JTextField(4);
+        JTextField ocsswserverAddressTextfield = new JTextField(20);
+        JTextField serverPortTextfield = new JTextField(4);
+        JTextField serverInputStreamPortTextfield = new JTextField(4);
+        JTextField serverErrorStreamPortTextfield = new JTextField(4);
+
+        // Set minimum size for each component
+
+        ocsswServerAddressLabel.setMinimumSize(ocsswServerAddressLabel.getPreferredSize());
+        serverPortLabel.setMinimumSize(serverPortLabel.getPreferredSize());
+        serverInputStreamPortLabel.setMinimumSize(serverInputStreamPortLabel.getPreferredSize());
+        serverErrorStreamPortLabel.setMinimumSize(serverErrorStreamPortLabel.getPreferredSize());
+
+        ocsswserverAddressTextfield.setMinimumSize(new JTextField(10).getPreferredSize());
+        serverPortTextfield.setMinimumSize(serverPortTextfield.getPreferredSize());
+        serverInputStreamPortTextfield.setMinimumSize(serverInputStreamPortTextfield.getPreferredSize());
+        serverErrorStreamPortTextfield.setMinimumSize(serverErrorStreamPortTextfield.getPreferredSize());
+
 
         pc.addProperty(Property.create(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE));
         pc.getDescriptor(SEADAS_OCSSW_PORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PORT_PROPERTY);
@@ -250,9 +410,19 @@ public class OCSSWInfoGUI {
 
         final BindingContext ctx = new BindingContext(pc);
 
-        ctx.bind(SEADAS_OCSSW_PORT_PROPERTY, serverPortNumber);
-        ctx.bind(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, serverInputStreamPortNumber);
-        ctx.bind(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, serverErrorStreamPortNumber);
+        ctx.bind(SEADAS_OCSSW_PORT_PROPERTY, serverPortTextfield);
+        ctx.bind(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, serverInputStreamPortTextfield);
+        ctx.bind(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, serverErrorStreamPortTextfield);
+
+
+        if (simpleTextfieldCheck(ocsswserverAddressTextfield, false)) {
+            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
+        } else {
+            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
+        }
+        ocsswserverAddressTextfield.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswserverAddressTextfield, false));
+
+
 //
 //        ctx.addPropertyChangeListener(SEADAS_OCSSW_PORT_PROPERTY, new PropertyChangeListener() {
 //
@@ -263,48 +433,89 @@ public class OCSSWInfoGUI {
 //            }
 //        });
 
-        c.gridx = 0;
-        c.gridy = 2;
-        //c.insets = new Insets(20, 0, 0, 0);  //top padding
-        remoteOCSSWParamPanel.add(serverPortLabel, c);
 
-        c.gridx = 1;
-        c.gridy = 2;
-        remoteOCSSWParamPanel.add(serverPortNumber, c);
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(ocsswServerAddressLabel, gbc);
 
-        c.gridx = 2;
-        c.gridy = 2;
-        remoteOCSSWParamPanel.add(serverInputStreamPortLabel, c);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(ocsswserverAddressTextfield, gbc);
 
-        c.gridx = 3;
-        c.gridy = 2;
-        remoteOCSSWParamPanel.add(serverInputStreamPortNumber, c);
+        gbc.gridy += 1;
 
-        c.gridx = 4;
-        c.gridy = 2;
-        remoteOCSSWParamPanel.add(serverErrorStreamPortLabel, c);
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(serverPortLabel, gbc);
 
-        c.gridx = 5;
-        c.gridy = 2;
-        remoteOCSSWParamPanel.add(serverErrorStreamPortNumber, c);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        panel.add(serverPortTextfield, gbc);
 
-        return remoteOCSSWParamPanel;
+        gbc.gridy += 1;
+
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(serverInputStreamPortLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        panel.add(serverInputStreamPortTextfield, gbc);
+
+        gbc.gridy += 1;
+
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(serverErrorStreamPortLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        panel.add(serverErrorStreamPortTextfield, gbc);
+
+        panel.setMinimumSize(panel.getMinimumSize());
+
+
+        return panel;
     }
 
-    private JPanel getLocalOCSSWParamPanel() {
-        JPanel localOCSSWParamPanel = new JPanel();
-        localOCSSWParamPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
 
-        JLabel ocsswRootLabel = new JLabel("OCSSW ROOT:");
-        JTextField ocsswRoot = new JTextField();
+    private JPanel getLocalOCSSWPanel() {
+
+        JPanel panel = GridBagUtils.createPanel();
+        GridBagConstraints gbc = createConstraints();
+
+        panel.setBorder(UIUtils.createGroupBorder("Local Server"));
+
+
+        JLabel ocsswRootLabel = new JLabel("OCSSW ROOT: ");
+        JTextField ocsswRootTextfield = new JTextField(20);
+
+        ocsswRootLabel.setMinimumSize(ocsswRootLabel.getPreferredSize());
+        ocsswRootTextfield.setMinimumSize(new JTextField(10).getPreferredSize());
 
 
         pc.addProperty(Property.create(SEADAS_OCSSW_ROOT_PROPERTY, SEADAS_OCSSW_ROOT_DEFAULT_VALUE));
         pc.getDescriptor(SEADAS_OCSSW_ROOT_PROPERTY).setDisplayName(SEADAS_OCSSW_ROOT_PROPERTY);
         final BindingContext ctx = new BindingContext(pc);
 
-        ctx.bind(SEADAS_OCSSW_ROOT_PROPERTY, ocsswRoot);
+        ctx.bind(SEADAS_OCSSW_ROOT_PROPERTY, ocsswRootTextfield);
+
+
+        if (simpleTextfieldCheck(ocsswRootTextfield, true)) {
+            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
+        } else {
+            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
+        }
+        ocsswRootTextfield.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswRootTextfield, true));
+
 
         ctx.addPropertyChangeListener(SEADAS_OCSSW_ROOT_PROPERTY, new PropertyChangeListener() {
 
@@ -315,37 +526,43 @@ public class OCSSWInfoGUI {
             }
         });
 
-        JButton ocsswDirButton = new JButton("...");
-        ocsswDirButton.addActionListener(new ActionListener() {
+
+        JButton ocsswRootButton = new JButton("...");
+        ocsswRootButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 File newDir = getDir();
                 if (newDir != null) {
-                    ocsswRoot.setText(newDir.getAbsolutePath());
-                    apply.setEnabled(true);
+                    ocsswRootTextfield.setText(newDir.getAbsolutePath());
+                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
                 }
             }
         });
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1;
-        c.gridy = 0;
 
-        localOCSSWParamPanel.add(ocsswRootLabel, c);
+        ocsswRootButton.setMinimumSize(ocsswRootButton.getPreferredSize());
 
-        c.weightx = 0.5;
-        c.gridx = 2;
-        c.gridy = 0;
 
-        localOCSSWParamPanel.add(ocsswRoot, c);
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswRootLabel, gbc);
 
-        c.weightx = 0.5;
-        c.gridx = 3;
-        c.gridy = 0;
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(ocsswRootTextfield, gbc);
 
-        localOCSSWParamPanel.add(ocsswDirButton, c);
+        gbc.gridx = 2;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswRootButton, gbc);
 
-        return localOCSSWParamPanel;
+        panel.setMinimumSize(panel.getMinimumSize());
+
+
+        return panel;
     }
+
 
     public File getDir() {
 
@@ -359,4 +576,65 @@ public class OCSSWInfoGUI {
         }
         return selectedFile;
     }
+
+
+    public static GridBagConstraints createConstraints() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        return gbc;
+    }
+
+
+    private DocumentListener simpleTextfieldDocumentListener(JTextField textfield, boolean directoryCheck) {
+        return new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            private void handler(DocumentEvent e) {
+                if (simpleTextfieldCheck(textfield, directoryCheck)) {
+                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
+                } else {
+                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
+                }
+            }
+        };
+    }
+
+
+    private boolean simpleTextfieldCheck(JTextField textfield, boolean directoryCheck) {
+        if (textfield.getText().length() > 0) {
+            if (!directoryCheck) {
+                return true;
+            } else {
+                File dir = new File(textfield.getText());
+
+                if (dir.exists()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+
 }
