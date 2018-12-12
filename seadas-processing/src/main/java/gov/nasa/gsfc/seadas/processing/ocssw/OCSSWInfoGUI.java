@@ -48,6 +48,12 @@ public class OCSSWInfoGUI {
 
     ModalDialog modalDialog;
 
+    JTextField ocsswserverAddressTextfield;
+    JTextField serverPortTextfield;
+    JTextField serverInputStreamPortTextfield;
+    JTextField serverErrorStreamPortTextfield;
+
+
     PropertyContainer pc = new PropertyContainer();
 
     OCSSWConfigData ocsswConfigData = new OCSSWConfigData();
@@ -380,10 +386,10 @@ public class OCSSWInfoGUI {
         JLabel serverInputStreamPortLabel = new JLabel("Server Input Stream Port: ");
         JLabel serverErrorStreamPortLabel = new JLabel("Server Error Stream Port: ");
 
-        JTextField ocsswserverAddressTextfield = new JTextField(20);
-        JTextField serverPortTextfield = new JTextField(4);
-        JTextField serverInputStreamPortTextfield = new JTextField(4);
-        JTextField serverErrorStreamPortTextfield = new JTextField(4);
+         ocsswserverAddressTextfield = new JTextField(20);
+         serverPortTextfield = new JTextField(4);
+         serverInputStreamPortTextfield = new JTextField(4);
+         serverErrorStreamPortTextfield = new JTextField(4);
 
         // Set minimum size for each component
 
@@ -415,13 +421,15 @@ public class OCSSWInfoGUI {
         ctx.bind(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, serverErrorStreamPortTextfield);
 
 
-        if (simpleTextfieldCheck(ocsswserverAddressTextfield, false)) {
+        if (remoteServerParametersCheck()) {
             modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
         } else {
             modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
         }
-        ocsswserverAddressTextfield.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswserverAddressTextfield, false));
-
+        ocsswserverAddressTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
+        serverPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
+        serverInputStreamPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
+        serverErrorStreamPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
 
 //
 //        ctx.addPropertyChangeListener(SEADAS_OCSSW_PORT_PROPERTY, new PropertyChangeListener() {
@@ -589,6 +597,47 @@ public class OCSSWInfoGUI {
         return gbc;
     }
 
+
+
+    private DocumentListener remoteServerTextfieldsDocumentListener() {
+        return new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            private void handler(DocumentEvent e) {
+                if (remoteServerParametersCheck()) {
+                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
+                } else {
+                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
+                }
+            }
+        };
+    }
+
+    private boolean remoteServerParametersCheck() {
+
+        if (simpleTextfieldCheck(ocsswserverAddressTextfield, false)
+                && simpleTextfieldCheck(serverPortTextfield, false)
+                && simpleTextfieldCheck(serverInputStreamPortTextfield, false)
+                && simpleTextfieldCheck(serverErrorStreamPortTextfield, false)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 
     private DocumentListener simpleTextfieldDocumentListener(JTextField textfield, boolean directoryCheck) {
         return new DocumentListener() {
