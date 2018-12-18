@@ -116,8 +116,17 @@ public class OCSSWInfo {
 
     private OCSSWInfo() {
         preferences = Config.instance("seadas").load().preferences();
+//        try {
+//            if (preferences.keys().length == 0) {
+//                final AppContext appContext = SnapApp.getDefault().getAppContext();
+//                final Window parent = appContext.getApplicationWindow();
+//                OCSSWInfoGUI ocsswInfoGUI = new OCSSWInfoGUI();
+//                ocsswInfoGUI.init(parent);
+//            }
+//        } catch (BackingStoreException bse) {
+//
+//        }
         logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, System.getProperty("user.dir"));
-
         File logDir = new File(getLogDirPath());
         if (!logDir.exists()) {
             try {
@@ -143,7 +152,7 @@ public class OCSSWInfo {
         return ocsswInfo;
     }
 
-    public int getProcessInputStreamPort() {
+    public int getProcessInputStreamPort() {http://alagr.com/book/Uyghur/files/mobile-ext/appLogoIcon.png
         return processInputStreamPort;
     }
 
@@ -163,8 +172,10 @@ public class OCSSWInfo {
         Date date = new Date();
         System.out.println(sdf.format(date));
         sessionId = date.toString();
-
         String ocsswLocationPropertyValue = preferences.get(OCSSW_LOCATION_PROPERTY, null);
+        if (ocsswLocationPropertyValue == null) {
+            return;
+        }
 
         setOcsswLocation(null);
 
