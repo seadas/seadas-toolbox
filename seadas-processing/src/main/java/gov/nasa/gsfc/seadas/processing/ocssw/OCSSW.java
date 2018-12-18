@@ -66,11 +66,18 @@ public abstract class OCSSW {
     private boolean ocsswInstalScriptDownloadSuccessful = false;
 
     public static OCSSW getOCSSWInstance() {
-        if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
+
+        OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
+        String ocsswLocation = ocsswInfo.getOcsswLocation();
+
+        if ( ocsswInfo == null || ocsswLocation == null ) {
+            return null;
+        }
+        if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
             return new OCSSWLocal();
-        } else if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
+        } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
             return new OCSSWVM();
-        } else if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
+        } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
             return new OCSSWRemote();
         }
         return new OCSSWLocal();
