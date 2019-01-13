@@ -79,34 +79,11 @@ public class OCSSWInfoGUI {
         modalDialog.getButton(ModalDialog.ID_HELP).setText("Help");
 
 
-        JMenuBar menuBar = new JMenuBar();
-
-        JMenu fileMenu = new JMenu("File");
-        JMenu helpMenu = new JMenu("Help");
-
-        JMenuItem fileMenuItem1 = new JMenuItem("Load");
-        JMenuItem fileMenuItem2 = new JMenuItem("Save as");
-        JMenuItem fileMenuItem3 = new JMenuItem("Exit");
-        fileMenu.add(fileMenuItem1);
-        fileMenu.add(fileMenuItem2);
-        fileMenu.add(fileMenuItem3);
-
-        menuBar.add(fileMenu);
-        menuBar.add(helpMenu);
-
-
-        fileMenu.setMinimumSize(fileMenu.getPreferredSize());
-        helpMenu.setMinimumSize(helpMenu.getPreferredSize());
-        menuBar.setMinimumSize(menuBar.getPreferredSize());
-
         GridBagConstraints gbc = createConstraints();
 
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0;
         gbc.weightx = 0;
-        mainPanel.add(menuBar, gbc);
-
-        gbc.gridy += 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         mainPanel.add(makeParamPanel(), gbc);
 
