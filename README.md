@@ -52,14 +52,15 @@ If unit tests are failing, you can use the following to skip the tests
 Setting up IntelliJ IDEA
 ------------------------
 
-1. Create an empty project with the ${snap} directory as project directory
 
-2. Import the pom.xml files of snap-engine, snap-desktop and s3tbx as modules. Ensure **not** to enable
-the option *Create module groups for multi-module Maven projects*. Everything can be default values.
+1. In IntelliJ IDEA, select "Import Project" and select the ${snap} directory.
+2. Select "Import project from external model" -> "Maven"
+3. Ensure the "Root directory" is ${snap}. (Note: put your actual path).
+ Select "Search for projects recursively"; Ensure **not** to enable the option *Create module groups for multi-module Maven projects*. Everything can be default values.
 
-3. Set the used SDK for the main project. A JDK 1.8 or later is needed.
+4. Set the used SDK for the main project. A JDK 1.8 or later is needed.
 
-4. Use the following configuration to run SNAP in the IDE:
+5. Use the following configuration to run SNAP in the IDE:
 
     **Main class:** `org.esa.snap.nbexec.Launcher`
     
