@@ -16,9 +16,10 @@
 
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
-import org.esa.beam.jai.ImageHeader;
-import org.esa.beam.util.ImageUtils;
-import org.esa.beam.util.jai.SingleBandedSampleModel;
+
+import org.esa.snap.core.image.ImageHeader;
+import org.esa.snap.core.util.ImageUtils;
+import org.esa.snap.core.util.jai.SingleBandedSampleModel;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
