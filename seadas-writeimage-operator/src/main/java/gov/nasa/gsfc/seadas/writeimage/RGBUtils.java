@@ -1,5 +1,8 @@
 package gov.nasa.gsfc.seadas.writeimage;
 
+import org.esa.snap.core.datamodel.ColorPaletteDef;
+import org.esa.snap.core.datamodel.ColorPaletteDef.Point;
+
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,8 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.esa.beam.framework.datamodel.ColorPaletteDef;
-import org.esa.beam.framework.datamodel.ColorPaletteDef.Point;
 
 /**
  * Class containing helper methods for RGB image construction.
