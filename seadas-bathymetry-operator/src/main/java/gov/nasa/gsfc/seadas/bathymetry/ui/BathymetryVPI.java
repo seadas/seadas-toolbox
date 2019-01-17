@@ -13,7 +13,7 @@ import org.esa.snap.core.gpf.GPF;
 //import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
-import org.esa.snap.rcp.imgfilter.model.Filter;
+//import org.esa.snap.rcp.imgfilter.model.Filter;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
