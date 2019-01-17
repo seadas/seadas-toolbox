@@ -1,9 +1,9 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
-import org.esa.beam.framework.help.HelpSys;
-import org.esa.beam.framework.ui.UIUtils;
-import org.esa.beam.framework.ui.tool.ToolButtonFactory;
+import org.esa.snap.ui.UIUtils;
+import org.esa.snap.ui.tool.ToolButtonFactory;
+//import org.esa.beam.framework.help.HelpSys;
 
 import javax.help.DefaultHelpBroker;
 import javax.help.HelpBroker;
@@ -37,7 +37,7 @@ class BathymetryDialog extends JDialog {
     public BathymetryDialog(BathymetryData bathymetryData, boolean masksCreated, boolean bandCreated) {
         this.bathymetryData = bathymetryData;
 
-        initHelpBroker();
+//        initHelpBroker();
 
         if (helpBroker != null) {
             helpButton = getHelpButton(HELP_ID);
@@ -74,16 +74,16 @@ class BathymetryDialog extends JDialog {
     }
 
 
-    private void initHelpBroker() {
-        HelpSet helpSet = HelpSys.getHelpSet();
-        if (helpSet != null) {
-            helpBroker = helpSet.createHelpBroker();
-            if (helpBroker instanceof DefaultHelpBroker) {
-                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
-                defaultHelpBroker.setActivationWindow(this);
-            }
-        }
-    }
+//    private void initHelpBroker() {
+//        HelpSet helpSet = HelpSys.getHelpSet();
+//        if (helpSet != null) {
+//            helpBroker = helpSet.createHelpBroker();
+//            if (helpBroker instanceof DefaultHelpBroker) {
+//                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
+//                defaultHelpBroker.setActivationWindow(this);
+//            }
+//        }
+//    }
 
 
     public final void createNotificationUI() {
