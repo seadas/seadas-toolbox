@@ -1,20 +1,18 @@
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.dataop.maptransf.Datum;
-import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.gpf.graph.GraphException;
-import org.junit.After;
-import org.junit.Before;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.dataop.maptransf.Datum;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.graph.GraphException;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
+import static org.esa.snap.core.util.Debug.assertNotNull;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 
 /**
  * Created by knowles on 5/31/17.
@@ -29,7 +27,7 @@ public class BathymetryOpTest {
         HashMap<String, Object> parameters = new HashMap<>();
 
         final Product sp = createTestProduct(100, 100);
-        assertNotNull(sp.getGeoCoding());
+        assertNotNull(sp.getSceneGeoCoding());
         parameters.put("resolution", "1855");
         parameters.put("filename", "ETOPO1_ocssw.nc");
 
@@ -53,7 +51,7 @@ public class BathymetryOpTest {
                 Placemark.createPointPlacemark(GcpDescriptor.getInstance(), "p4", "p4", "", new PixelPos(0.5f, h - 0.5f), new GeoPos(-10, -10),
                         null),
         };
-        product.setGeoCoding(new GcpGeoCoding(GcpGeoCoding.Method.POLYNOMIAL1, gcps, w, h, Datum.WGS_84));
+        product.setSceneGeoCoding(new GcpGeoCoding(GcpGeoCoding.Method.POLYNOMIAL1, gcps, w, h, Datum.WGS_84));
 
         Band band1 = product.addBand("radiance_1", ProductData.TYPE_INT32);
         int[] intValues = new int[w * h];
