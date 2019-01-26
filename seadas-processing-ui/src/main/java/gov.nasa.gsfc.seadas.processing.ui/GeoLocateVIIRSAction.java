@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.ui;
 
 import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -43,23 +44,27 @@ public class GeoLocateVIIRSAction extends CallCloProgramAction implements Contex
 
     public   GeoLocateVIIRSAction(Lookup lkp) {
         this.lkp = lkp;
-        Lookup.Result<ProductNode> lkpContext = lkp.lookupResult(ProductNode.class);
+        Lookup.Result<OCSSWInfo> lkpContext = lkp.lookupResult(OCSSWInfo.class);
         lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
         putValue(Action.NAME, Bundle.CTL_GeoLocateVIIRSAction_Name());
         putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_GeoLocateVIIRSAction_Description());
         setProgramName(Bundle.CTL_GeoLocateVIIRSAction_ProgramName());
         setDialogTitle(Bundle.CTL_GeoLocateVIIRSAction_DialogTitle());
         setXmlFileName(Bundle.CTL_GeoLocateVIIRSAction_XMLFileName());
+        setEnableState();
     }
-//
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//
-//    }
-
     @Override
     public void resultChanged(LookupEvent lookupEvent) {
+        setEnableState();
+    }
 
+    public void setEnableState() {
+        boolean state = false;
+//        OCSSWInfo ocsswInfo = lkp.lookup(OCSSWInfo.class);
+        if (ocsswInfo != null) {
+            state = ocsswInfo.isOCSSWExist();
+        }
+        setEnabled(state);
     }
 
     @Override
