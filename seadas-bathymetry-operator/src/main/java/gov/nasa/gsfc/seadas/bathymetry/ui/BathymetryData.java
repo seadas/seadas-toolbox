@@ -1,10 +1,10 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import gov.nasa.gsfc.seadas.OCSSWInfo;
+//import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
-import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+//import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 
 
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -283,30 +283,30 @@ public class BathymetryData {
 
          //  File ocsswRootDir = getOcsswRoot();
         //todo Danny commented this out to skip OCSSWROOT and use .seadas for file location until we figure this out
-        if (1 == 2) {
-            File ocsswRootDir = null;
-            try {
-                ocsswRootDir = new File(OCSSWInfo.getInstance().getOcsswRoot());
-            } catch (Exception e) {
-                SeadasLogger.getLogger().warning("ocssw root not found, will try to use alternate source for bathymetry");
-            }
+//        if (1 == 2) {
+//            File ocsswRootDir = null;
+//            try {
+//                ocsswRootDir = new File(OCSSWInfo.getInstance().getOcsswRoot());
+//            } catch (Exception e) {
+//                SeadasLogger.getLogger().warning("ocssw root not found, will try to use alternate source for bathymetry");
+//            }
 
-            if (ocsswRootDir != null && ocsswRootDir.exists()) {
-                File ocsswRunDir = new File(ocsswRootDir, "run");
-                if (ocsswRootDir.exists()) {
-                    File ocsswRunDataDir = new File(ocsswRunDir, "data");
-                    if (ocsswRunDataDir.exists()) {
-                        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
-                        if (ocsswRunDataCommonDir.exists()) {
-                            File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
-                            if (bathymetryFile.exists()) {
-                                return bathymetryFile;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//            if (ocsswRootDir != null && ocsswRootDir.exists()) {
+//                File ocsswRunDir = new File(ocsswRootDir, "run");
+//                if (ocsswRootDir.exists()) {
+//                    File ocsswRunDataDir = new File(ocsswRunDir, "data");
+//                    if (ocsswRunDataDir.exists()) {
+//                        File ocsswRunDataCommonDir = new File(ocsswRunDataDir, "common");
+//                        if (ocsswRunDataCommonDir.exists()) {
+//                            File bathymetryFile = new File(ocsswRunDataCommonDir, bathymetryFilename);
+//                            if (bathymetryFile.exists()) {
+//                                return bathymetryFile;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         File bathymetryFile = ResourceInstallationUtils.getTargetFile(bathymetryFilename);
       //  if (bathymetryFile.exists()) {

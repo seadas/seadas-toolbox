@@ -12,6 +12,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+import static org.esa.snap.core.util.Debug.assertNotNull;
+
 public class ShapeFileRasterizerTest extends TestCase {
 
     @Test

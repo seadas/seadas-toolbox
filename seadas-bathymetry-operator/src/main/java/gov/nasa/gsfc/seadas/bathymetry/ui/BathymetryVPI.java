@@ -2,21 +2,25 @@ package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import com.jidesoft.action.CommandBar;
+//import com.jidesoft.action.CommandBar;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.ui.command.CommandAdapter;
-import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.framework.ui.command.ExecCommand;
-import org.esa.beam.visat.AbstractVisatPlugIn;
-import org.esa.beam.visat.VisatApp;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.gpf.GPF;
+//import org.esa.snap.core.util.ProductUtils;
+//import org.esa.beam.framework.ui.command.CommandAdapter;
+//import org.esa.beam.framework.ui.command.CommandEvent;
+//import org.esa.beam.framework.ui.command.ExecCommand;
+//import org.esa.beam.visat.AbstractVisatPlugIn;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.actions.AbstractSnapAction;
+//import org.esa.snap.rcp.imgfilter.model.Filter;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.operator.FormatDescriptor;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.DataBuffer;
@@ -30,6 +34,8 @@ import java.util.Map;
 
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.rcp.actions.AbstractSnapAction;
 
 
 /**
@@ -37,7 +43,7 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
  *
  * @author Danny Knowles
  */
-public class BathymetryVPI extends AbstractVisatPlugIn {
+public class BathymetryVPI extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Bathymetry & Elevation";
     public static final String TOOL_TIP = "Add bathymetry-elevation band and mask";
@@ -47,20 +53,20 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
     public static final String BATHYMETRY_PRODUCT_NAME = "BathymetryOp";
 
 
-    @Override
-    public void start(final VisatApp visatApp) {
-        final ExecCommand action = visatApp.getCommandManager().createExecCommand(COMMAND_ID,
-                new ToolbarCommand(visatApp));
+//    @Override
+//    public void start(final VisatApp visatApp) {
+//        final ExecCommand action = visatApp.getCommandManager().createExecCommand(COMMAND_ID,
+//                new ToolbarCommand(visatApp));
 
-        String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, BathymetryVPI.class);
-
-        try {
-            URL iconUrl = new URL(iconFilename);
-            ImageIcon imageIcon = new ImageIcon(iconUrl);
-            action.setLargeIcon(imageIcon);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+//        String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, BathymetryVPI.class);
+//
+//        try {
+//            URL iconUrl = new URL(iconFilename);
+//            ImageIcon imageIcon = new ImageIcon(iconUrl);
+//            action.setLargeIcon(imageIcon);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
 
 
 //        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
@@ -74,35 +80,35 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
 //            }
 //        });
 
-        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
-        lwcButton.setToolTipText(TOOL_TIP);
+//        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
+//        lwcButton.setToolTipText(TOOL_TIP);
 
-        final AbstractButton lwcButton2 = visatApp.createToolButton(COMMAND_ID);
-        lwcButton2.setToolTipText(TOOL_TIP);
+//        final AbstractButton lwcButton2 = visatApp.createToolButton(COMMAND_ID);
+//        lwcButton2.setToolTipText(TOOL_TIP);
 
-        visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
-                if (layersBar != null) {
-                    layersBar.add(lwcButton);
-                }
-
-
-                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDeluxeToolsToolBar");
-                if (seadasDefaultBar != null) {
-                    seadasDefaultBar.add(lwcButton2);
-                }
-            }
-
-        });
+//        visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowOpened(WindowEvent e) {
+//                CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
+//                if (layersBar != null) {
+//                    layersBar.add(lwcButton);
+//                }
 
 
-    }
+//                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDeluxeToolsToolBar");
+//               if (seadasDefaultBar != null) {
+//                    seadasDefaultBar.add(lwcButton2);
+//                }
+//            }
+
+//        });
 
 
-    private void showBathymetry(final VisatApp visatApp) {
-        final Product product = visatApp.getSelectedProduct();
+//    }
+
+
+    private void showBathymetry(final SnapApp snapApp) {
+        final Product product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
         if (product != null) {
             final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
             final ProductNodeGroup<Band> bandGroup = product.getBandGroup();
@@ -205,7 +211,7 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
                         if (bandCreated[0] == true) {
                             msg[0] = "recreating bathymetry mask";
                         }
-                        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                                 msg[0]) {
 
                             @Override
@@ -303,32 +309,34 @@ public class BathymetryVPI extends AbstractVisatPlugIn {
         band.setSourceImage(newImage);
     }
 
-    private class ToolbarCommand extends CommandAdapter {
-        private final VisatApp visatApp;
+//    private class ToolbarCommand extends CommandAdapter {
+//        private final VisatApp visatApp;
 
-        public ToolbarCommand(VisatApp visatApp) {
-            this.visatApp = visatApp;
-        }
+//        public ToolbarCommand(VisatApp visatApp) {
+//            this.visatApp = visatApp;
+//        }
 
         @Override
         public void actionPerformed(
-                CommandEvent event) {
-            showBathymetry(visatApp);
-
-        }
-
-        @Override
-        public void updateState(CommandEvent event) {
-            Product selectedProduct = visatApp.getSelectedProduct();
-            boolean productSelected = selectedProduct != null;
-            boolean hasBands = false;
-            boolean hasGeoCoding = false;
-            if (productSelected) {
-                hasBands = selectedProduct.getNumBands() > 0;
-                hasGeoCoding = selectedProduct.getGeoCoding() != null;
-            }
-            event.getCommand().setEnabled(productSelected && hasBands && hasGeoCoding);
+                ActionEvent e) {
+//                  showBathymetry(visatApp);
         }
     }
-}
+
+
+
+//        @Override
+//        public void updateState(CommandEvent event) {
+//            Product selectedProduct = visatApp.getSelectedProduct();
+//            boolean productSelected = selectedProduct != null;
+//            boolean hasBands = false;
+//            boolean hasGeoCoding = false;
+//            if (productSelected) {
+//                hasBands = selectedProduct.getNumBands() > 0;
+//                hasGeoCoding = selectedProduct.getGeoCoding() != null;
+//           }
+//            event.getCommand().setEnabled(productSelected && hasBands && hasGeoCoding);
+//        }
+//    }
+//}
 
