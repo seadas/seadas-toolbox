@@ -16,9 +16,9 @@
 
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
-import org.esa.beam.util.io.FileUtils;
-import org.esa.beam.util.math.Histogram;
-import org.esa.beam.util.math.Range;
+import org.esa.snap.core.util.io.FileUtils;
+import org.esa.snap.core.util.math.Histogram;
+import org.esa.snap.core.util.math.Range;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryUtils;
 
 import javax.imageio.ImageIO;
