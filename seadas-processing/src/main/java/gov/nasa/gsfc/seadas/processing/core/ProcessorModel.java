@@ -1,14 +1,13 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import com.bc.ceres.core.runtime.RuntimeConfig;
-import com.bc.ceres.core.runtime.RuntimeContext;
+import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
-import gov.nasa.gsfc.seadas.processing.common.*;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.util.Dialogs.Answer;
+import org.esa.snap.runtime.Config;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -20,6 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
@@ -1223,9 +1223,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return cmdArraySuffix;
         }
 
-        private String getSeaDASAppVersion() {
-            RuntimeConfig runtimeConfig = RuntimeContext.getModuleContext().getRuntimeConfig();
-            return runtimeConfig.getContextProperty("version", "");
+        private String getSeaDASAppVersion(){
+            Preferences preferences = Config.instance("seadas").preferences();
+            String seadasVersion = preferences.get("seadas.version", null);
+            return seadasVersion;
         }
     }
 
