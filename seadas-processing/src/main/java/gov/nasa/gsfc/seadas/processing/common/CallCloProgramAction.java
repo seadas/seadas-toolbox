@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -105,14 +106,22 @@ public class CallCloProgramAction extends AbstractSnapAction {
     public void initializeOcsswClient() {
 
         ocssw = OCSSW.getOCSSWInstance();
+        if ( ocssw == null ) {
+            final AppContext appContext = getAppContext();
+            final Window parent = appContext.getApplicationWindow();
+            OCSSWInfoGUI ocsswInfoGUI = new OCSSWInfoGUI();
+            ocsswInfoGUI.init(parent);
+            ocssw = OCSSW.getOCSSWInstance();
+        }
         ocssw.setProgramName(programName);
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
-
-
         initializeOcsswClient();
+        if (ocssw == null) {
+            return;
+        }
 
         final AppContext appContext = getAppContext();
 
