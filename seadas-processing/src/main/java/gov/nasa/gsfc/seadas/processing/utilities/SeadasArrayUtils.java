@@ -56,8 +56,16 @@ public class SeadasArrayUtils {
     }
 
     public static <T> T[] concatAll(T[] first, T[] second, T[] third, T[] fourth) {
-        T[] result = Arrays.copyOf(first, first.length + second.length);
-        System.arraycopy(second, 0, result, first.length, second.length);
-        return result;
+        T[] result = Arrays.copyOf(first, first.length + second.length + third.length + fourth.length);
+        try {
+            System.arraycopy(second, 0, result, first.length, second.length);
+            System.arraycopy(third, 0, result, first.length + second.length, third.length);
+            System.arraycopy(fourth, 0, result, first.length + second.length + third.length, fourth.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            return result;
+        }
     }
 }
