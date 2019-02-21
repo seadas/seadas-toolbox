@@ -1,0 +1,35 @@
+<filesystem>
+    <folder name="Actions">
+        <folder name="Operators">
+            <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="LandWaterMask"/>
+                <attr name="dialogTitle" stringvalue="LandWaterMask"/>
+                <attr name="operatorName" stringvalue="LandWaterMask"/>
+                <attr name="helpId" stringvalue="WatermaskTool"/>
+                <attr name="targetProductNameSuffix" stringvalue="_watermask"/>
+            </file>
+        </folder>
+    </folder>
+
+    <folder name="Menu">
+        <folder name="Raster">
+            <folder name="Masks">
+                <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.shadow">
+                    <attr name="originalFile"
+                          stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-WatermaskOpAction.instance"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+
+    <folder name="Services">
+        <folder name="javahelp">
+            "https://www.youtube.com/watch?v=C5-sHY3KpP8ame="javahelp">
+            <file name="gov-nasa-gsfc-seadas-WatermaskOp-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="6510"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>
