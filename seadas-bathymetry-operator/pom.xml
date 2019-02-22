@@ -12,7 +12,6 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-bathymetry-operator</artifactId>
-    <version>1.0</version>
 
     <name>SEADAS Bathymetry Operator</name>
     <description>Provides an API as well as an operator for creating bathymetry band and mask.
@@ -35,26 +34,27 @@
             <version>${snap.version}</version>
         </dependency>
         <dependency>
-            <artifactId>seadas-processing</artifactId>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-bathymetry-operator</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

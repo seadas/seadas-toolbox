@@ -1,14 +1,14 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Operators">
-            <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">
+            <file name="gov-nasa-gsfc-seadas-BathymetryOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="LandWaterMask"/>
-                <attr name="dialogTitle" stringvalue="LandWaterMask"/>
-                <attr name="operatorName" stringvalue="LandWaterMask"/>
-                <attr name="helpId" stringvalue="WatermaskTool"/>
-                <attr name="targetProductNameSuffix" stringvalue="_watermask"/>
+                <attr name="displayName" stringvalue="Bathymetry"/>
+                <attr name="dialogTitle" stringvalue="Bathymetry"/>
+                <attr name="operatorName" stringvalue="Bathymetry"/>
+                <attr name="helpId" stringvalue="BathymetryTool"/>
+                <attr name="targetProductNameSuffix" stringvalue="_bathymetry"/>
             </file>
         </folder>
     </folder>
@@ -16,9 +16,9 @@
     <folder name="Menu">
         <folder name="Raster">
             <folder name="Masks">
-                <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.shadow">
+                <file name="gov-nasa-gsfc-seadas-BathmetryOpAction.shadow">
                     <attr name="originalFile"
-                          stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-WatermaskOpAction.instance"/>
+                          stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-BathymetryOpAction.instance"/>
                 </file>
             </folder>
         </folder>
@@ -27,8 +27,8 @@
     <folder name="Services">
         <folder name="javahelp">
             "https://www.youtube.com/watch?v=C5-sHY3KpP8ame="javahelp">
-            <file name="gov-nasa-gsfc-seadas-WatermaskOp-helpset.xml" url="helpset.xml">
-                <attr name="position" intvalue="6510"/>
+            <file name="gov-nasa-gsfc-seadas-BathymetryOp-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="7510"/>
             </file>
         </folder>
     </folder>

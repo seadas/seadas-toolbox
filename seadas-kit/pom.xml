@@ -62,16 +62,7 @@
             <!--<artifactId>seadas-app</artifactId>-->
             <!--<version>${project.version}</version>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-contour-operator</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-watermask-operator</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-processing</artifactId>
@@ -80,6 +71,21 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-processing-ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-bathymetry-operator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-contour-operator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-watermask-operator</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
