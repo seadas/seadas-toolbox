@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.ui;
 import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoListener;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;

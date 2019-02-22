@@ -34,6 +34,7 @@
         <module>seadas-processing</module>
         <module>seadas-processing-ui</module>
         <module>seadas-contour-operator</module>
+        <module>seadas-bathymetry-operator</module>
     </modules>
 
     <packaging>pom</packaging>
