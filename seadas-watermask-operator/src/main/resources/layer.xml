@@ -4,11 +4,11 @@
             <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="LandWaterMask"/>
-                <attr name="dialogTitle" stringvalue="LandWaterMask"/>
-                <attr name="operatorName" stringvalue="LandWaterMask"/>
+                <attr name="displayName" stringvalue="LandWaterMask2"/>
+                <attr name="dialogTitle" stringvalue="LandWaterMask2"/>
+                <attr name="operatorName" stringvalue="LandWaterMask2"/>
                 <attr name="helpId" stringvalue="WatermaskTool"/>
-                <attr name="targetProductNameSuffix" stringvalue="_watermask"/>
+                <attr name="targetProductNameSuffix" stringvalue="_watermask2"/>
             </file>
         </folder>
     </folder>
