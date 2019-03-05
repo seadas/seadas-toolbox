@@ -47,7 +47,7 @@ import java.text.MessageFormat;
  * @author Daniel Knowles, Marco Peters, Thomas Storm
  */
 @SuppressWarnings({"FieldCanBeLocal"})
-@OperatorMetadata(alias = "LandWaterMask2",
+@OperatorMetadata(alias = "LandWaterMask",
         version = "1.0",
         internal = false,
         authors = "Daniel Knowles, Marco Peters",
@@ -233,7 +233,7 @@ public class WatermaskOp extends Operator {
 
         int width = sourceProduct.getSceneRasterWidth();
         int height = sourceProduct.getSceneRasterHeight();
-        targetProduct = new Product(sourceProduct.getName() + "_LW-Mask", "LandWaterMask2", width, height);
+        targetProduct = new Product(sourceProduct.getName() + "_LW-Mask", "LandWaterMask", width, height);
 
         ProductUtils.copyMetadata(sourceProduct, targetProduct);
         ProductUtils.copyTiePointGrids(sourceProduct, targetProduct);
