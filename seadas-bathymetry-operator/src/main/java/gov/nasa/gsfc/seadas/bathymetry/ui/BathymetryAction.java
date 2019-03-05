@@ -43,7 +43,7 @@ import org.esa.snap.rcp.actions.AbstractSnapAction;
  *
  * @author Danny Knowles
  */
-public class BathymetryVPI extends AbstractSnapAction {
+public class BathymetryAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Bathymetry & Elevation";
     public static final String TOOL_TIP = "Add bathymetry-elevation band and mask";
@@ -54,21 +54,21 @@ public class BathymetryVPI extends AbstractSnapAction {
 
 
 //    @Override
-//    public void start(final VisatApp visatApp) {
-//        final ExecCommand action = visatApp.getCommandManager().createExecCommand(COMMAND_ID,
+//    public void start(final SnapApp snapApp) {
+//        final ExecCommand action = snapApp.getCommandManager().createExecCommand(COMMAND_ID,
 //                new ToolbarCommand(visatApp));
-
-//        String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, BathymetryVPI.class);
+//
+//       String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, BathymetryVPI.class);
 //
 //        try {
 //            URL iconUrl = new URL(iconFilename);
 //            ImageIcon imageIcon = new ImageIcon(iconUrl);
 //            action.setLargeIcon(imageIcon);
 //        } catch (MalformedURLException e) {
-//            e.printStackTrace();
+//           e.printStackTrace();
 //        }
-
-
+//
+//
 //        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
 //        lwcButton.setToolTipText(TOOL_TIP);
 //
@@ -79,13 +79,13 @@ public class BathymetryVPI extends AbstractSnapAction {
 //                layersBar.add(lwcButton);
 //            }
 //        });
-
+//
 //        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
 //        lwcButton.setToolTipText(TOOL_TIP);
-
+//
 //        final AbstractButton lwcButton2 = visatApp.createToolButton(COMMAND_ID);
 //        lwcButton2.setToolTipText(TOOL_TIP);
-
+//
 //        visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
 //            @Override
 //            public void windowOpened(WindowEvent e) {
@@ -93,17 +93,17 @@ public class BathymetryVPI extends AbstractSnapAction {
 //                if (layersBar != null) {
 //                    layersBar.add(lwcButton);
 //                }
-
-
+//
+//
 //                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDeluxeToolsToolBar");
 //               if (seadasDefaultBar != null) {
 //                    seadasDefaultBar.add(lwcButton2);
 //                }
 //            }
-
+//
 //        });
-
-
+//
+//
 //    }
 
 

@@ -6,7 +6,7 @@
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
                 <attr name="displayName" stringvalue="Bathymetry"/>
                 <attr name="dialogTitle" stringvalue="Bathymetry"/>
-                <attr name="operatorName" stringvalue="Bathymetry"/>
+                <attr name="operatorName" stringvalue="BathymetryOp"/>
                 <attr name="helpId" stringvalue="BathymetryTool"/>
                 <attr name="targetProductNameSuffix" stringvalue="_bathymetry"/>
             </file>
