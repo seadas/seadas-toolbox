@@ -378,8 +378,8 @@ class BathymetryDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         buttonsJPanel.add(createMasks,
                 new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        buttonsJPanel.add(helpButton,
-                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+//        buttonsJPanel.add(helpButton,
+//                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         createMasks.setAlignmentX(0.5f);
 

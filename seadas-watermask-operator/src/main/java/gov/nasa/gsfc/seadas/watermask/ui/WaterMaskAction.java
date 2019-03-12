@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import org.esa.snap.core.gpf.ui.DefaultSingleTargetProductDialog;
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import org.esa.snap.core.datamodel.*;
@@ -9,6 +10,13 @@ import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.rcp.imgfilter.model.Filter;
 import org.esa.snap.ui.product.ProductSceneView;
+import org.esa.snap.ui.AppContext;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.NbBundle;
+
+import java.awt.event.ActionEvent;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -42,6 +50,10 @@ import java.util.Map;
  * @author Danny Knowles
  * @author Marco Peters
  */
+@ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.watermask.ui.WaterMaskAction" )
+@ActionRegistration(displayName = "#CTL_WaterMaskAction_Text")
+@ActionReference(path = "Menu/Raster/Masks", position = 300)
+@NbBundle.Messages({"CTL_WaterMaskAction_Text=CoastlineLandWaterMask"})
 public class WaterMaskAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Coastline, Land & Water";
@@ -50,9 +62,11 @@ public class WaterMaskAction extends AbstractSnapAction {
     //  public static final String ICON = "icons/Coastline24.png";
     public static final String ICON = "coastline_24.png";
 
-    public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask";
+    public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask2";
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
+    private static final String HELP_ID = "watermaskScientificTool";
 
+//    putValue(SHORT_DESCRIPTION, "Creating an accurate, fractional, shapefile-based land-water mask.");
 
     private void showLandWaterCoastMasks(final SnapApp snapApp) {
 
@@ -336,7 +350,15 @@ public class WaterMaskAction extends AbstractSnapAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+//        final AppContext appContext = getAppContext();
 
+        showLandWaterCoastMasks(SnapApp.getDefault());
+//        final DefaultSingleTargetProductDialog dialog = new DefaultSingleTargetProductDialog(LAND_WATER_MASK_OP_ALIAS, appContext,
+//                "Land Water Mask3",
+//                HELP_ID);
+//        dialog.setTargetProductNameSuffix("_watermask3");
+//        dialog.getJDialog().pack();
+//        dialog.show();
     }
 
 
