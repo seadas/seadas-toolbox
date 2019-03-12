@@ -4,11 +4,11 @@
             <file name="gov-nasa-gsfc-seadas-BathymetryOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="Bathymetry"/>
-                <attr name="dialogTitle" stringvalue="Bathymetry"/>
+                <attr name="displayName" stringvalue="Bathymetry2"/>
+                <attr name="dialogTitle" stringvalue="Bathymetry2"/>
                 <attr name="operatorName" stringvalue="BathymetryOp"/>
                 <attr name="helpId" stringvalue="BathymetryTool"/>
-                <attr name="targetProductNameSuffix" stringvalue="_bathymetry"/>
+                <attr name="targetProductNameSuffix" stringvalue="_bathymetry2"/>
             </file>
         </folder>
     </folder>

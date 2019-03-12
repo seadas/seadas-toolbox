@@ -6,14 +6,23 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.GPF;
-//import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.core.util.ProductUtils;
 //import org.esa.beam.framework.ui.command.CommandAdapter;
 //import org.esa.beam.framework.ui.command.CommandEvent;
 //import org.esa.beam.framework.ui.command.ExecCommand;
 //import org.esa.beam.visat.AbstractVisatPlugIn;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
-//import org.esa.snap.rcp.imgfilter.model.Filter;
+import org.esa.snap.rcp.imgfilter.model.Filter;
+import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.Parameter;
+import org.esa.snap.core.gpf.annotations.SourceProduct;
+import org.esa.snap.core.gpf.annotations.TargetProduct;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.NbBundle;
+
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -34,8 +43,7 @@ import java.util.Map;
 
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
-import org.esa.snap.core.datamodel.*;
-import org.esa.snap.rcp.actions.AbstractSnapAction;
+
 
 
 /**
@@ -43,6 +51,10 @@ import org.esa.snap.rcp.actions.AbstractSnapAction;
  *
  * @author Danny Knowles
  */
+@ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryAction" )
+@ActionRegistration(displayName = "#CTL_BathymetryAction_Text")
+@ActionReference(path = "Menu/Raster/Masks", position = 300)
+@NbBundle.Messages({"CTL_BathymetryAction_Text=Bathymetry"})
 public class BathymetryAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Bathymetry & Elevation";
@@ -319,7 +331,7 @@ public class BathymetryAction extends AbstractSnapAction {
         @Override
         public void actionPerformed(
                 ActionEvent e) {
-//                  showBathymetry(visatApp);
+                 showBathymetry(SnapApp.getDefault());
         }
     }
 
