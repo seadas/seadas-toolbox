@@ -211,24 +211,24 @@ class BathymetryDialog extends JDialog {
 
         JTextField maskNameTextfield = new JTextField(bathymetryData.getMaskName());
         maskNameTextfield.setEditable(false);
-        maskNameTextfield.setEnabled(false);
+        maskNameTextfield.setEnabled(true);
         maskNameTextfield.setToolTipText("Name of the mask to be created (this field is not editable)");
 
 
         JTextField bathymetryBandNameTextfield = new JTextField(BathymetryOp.BATHYMETRY_BAND_NAME);
         bathymetryBandNameTextfield.setEditable(false);
-        bathymetryBandNameTextfield.setEnabled(false);
+        bathymetryBandNameTextfield.setEnabled(true);
         bathymetryBandNameTextfield.setToolTipText("Name of the band to be created (this field is not editable)");
 
 
         JTextField topographyBandNameTextfield = new JTextField(BathymetryOp.TOPOGRAPHY_BAND_NAME);
         topographyBandNameTextfield.setEditable(false);
-        topographyBandNameTextfield.setEnabled(false);
+        topographyBandNameTextfield.setEnabled(true);
         topographyBandNameTextfield.setToolTipText("Name of the band to be created (this field is not editable)");
 
         JTextField elevationBandNameTextfield = new JTextField(BathymetryOp.ELEVATION_BAND_NAME);
         elevationBandNameTextfield.setEditable(false);
-        elevationBandNameTextfield.setEnabled(false);
+        elevationBandNameTextfield.setEnabled(true);
         elevationBandNameTextfield.setToolTipText("Name of the band to be created (this field is not editable)");
 
 

@@ -2,15 +2,12 @@ package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-//import com.jidesoft.action.CommandBar;
+
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.util.ProductUtils;
-//import org.esa.beam.framework.ui.command.CommandAdapter;
-//import org.esa.beam.framework.ui.command.CommandEvent;
-//import org.esa.beam.framework.ui.command.ExecCommand;
-//import org.esa.beam.visat.AbstractVisatPlugIn;
+
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.rcp.imgfilter.model.Filter;
@@ -47,7 +44,7 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 
 
 /**
- * This VISAT PlugIn registers an action which calls the "bathymetry" Operator
+ * This registers an action which calls the "bathymetry" Operator
  *
  * @author Danny Knowles
  */
