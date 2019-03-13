@@ -1,8 +1,12 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import org.openide.awt.ColorComboBox;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +19,7 @@ public class CoastlineColorComboBox {
     private LandMasksData landMasksData;
 
     private JLabel jLabel;
-    private JComboBox colorExComboBox = new JComboBox();
+    private ColorComboBox colorExComboBox = new ColorComboBox();
 
     public CoastlineColorComboBox(LandMasksData landMasksData) {
 
@@ -24,8 +28,11 @@ public class CoastlineColorComboBox {
         jLabel = new JLabel("Color");
         jLabel.setToolTipText("Coastline mask color");
 
-        colorExComboBox.getEditor().getEditorComponent().setBackground(landMasksData.getCoastlineMaskColor());
+        colorExComboBox.setSelectedColor(new Color(225,225,225));
         colorExComboBox.setPreferredSize(colorExComboBox.getPreferredSize());
+        colorExComboBox.setMinimumSize(colorExComboBox.getPreferredSize());
+
+        colorExComboBox.setSelectedColor(landMasksData.getCoastlineMaskColor());
 
         addControlListeners();
     }
@@ -36,7 +43,7 @@ public class CoastlineColorComboBox {
         colorExComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                landMasksData.setCoastlineMaskColor(colorExComboBox.getEditor().getEditorComponent().getBackground());
+                landMasksData.setCoastlineMaskColor(colorExComboBox.getSelectedColor());
             }
         });
     }

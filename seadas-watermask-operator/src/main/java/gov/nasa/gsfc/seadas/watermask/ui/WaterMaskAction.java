@@ -29,7 +29,7 @@ import java.util.Map;
 
 
 /**
- * This VISAT PlugIn registers an action which calls the "LandWaterMask" Operator and based on its generated "water_fraction"
+ * This registers an action which calls the "LandWaterMask2" Operator and based on its generated "water_fraction"
  * band, defines 3 masks in the currently selected product:
  * <ol>
  * <li>Water: water_fraction > 90</li>
@@ -37,15 +37,7 @@ import java.util.Map;
  * <li>Coastline: water_fraction > 0.1 && water_fraction < 99.9 (meaning if water_fraction is not 0 or 100 --> it is a coastline)</li>
  * </ol>
  * <p/>
- * <p/>
- * <i>IMPORTANT Note:
- * This VISAT PlugIn is a workaround.
- * Ideally, users would register an action in BEAM's {@code module.xml} and specify a target toolbar for it.
- * Actions specified in BEAM's {@code module.xml} currently only appear in menus, and not in tool bars
- * (because they are hard-coded in VisatApp).
- * Since this feature is still missing in BEAM, so we have to place the action in its target tool bar
- * ("layersToolBar") manually.</i>
- *
+
  * @author Tonio Fincke
  * @author Danny Knowles
  * @author Marco Peters
@@ -302,14 +294,14 @@ public class WaterMaskAction extends AbstractSnapAction {
 
                                     //snapApp.setSelectedProductNode(waterFractionBand);
 
-                                    ProductSceneView selectedProductSceneView = snapApp.getSelectedProductSceneView();
-                                    if (selectedProductSceneView != null) {
-                                        RasterDataNode raster = selectedProductSceneView.getRaster();
-                                        raster.getOverlayMaskGroup().add(landMask);
-                                        raster.getOverlayMaskGroup().add(coastlineMask);
-                                        raster.getOverlayMaskGroup().add(waterMask);
-
-                                    }
+//                                    ProductSceneView selectedProductSceneView = snapApp.getSelectedProductSceneView();
+//                                    if (selectedProductSceneView != null) {
+//                                        RasterDataNode raster = selectedProductSceneView.getRaster();
+//                                        raster.getOverlayMaskGroup().add(landMask);
+//                                        raster.getOverlayMaskGroup().add(coastlineMask);
+//                                        raster.getOverlayMaskGroup().add(waterMask);
+//
+//                                    }
 
 
                                 } finally {
