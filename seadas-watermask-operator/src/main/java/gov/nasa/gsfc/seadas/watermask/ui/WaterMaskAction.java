@@ -13,6 +13,7 @@ import org.esa.snap.ui.product.ProductSceneView;
 import org.esa.snap.ui.AppContext;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
@@ -43,9 +44,17 @@ import java.util.Map;
  * @author Marco Peters
  */
 @ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.watermask.ui.WaterMaskAction" )
-@ActionRegistration(displayName = "#CTL_WaterMaskAction_Text")
-@ActionReference(path = "Menu/Raster/Masks", position = 300)
-@NbBundle.Messages({"CTL_WaterMaskAction_Text=CoastlineLandWaterMask"})
+@ActionRegistration(displayName = "#CTL_WaterMaskAction_Text",
+        iconBase = "gov/nasa/gsfc/seadas/watermask/ui/icons/coastline_24.png")
+@ActionReferences({
+        @ActionReference(path = "Menu/Raster/Masks", position = 300),
+        @ActionReference(path = "Toolbars/Masks", position = 20)
+})
+@NbBundle.Messages({
+        "CTL_WaterMaskAction_Text=CoastlineLandWaterMask",
+        "CTL_CollocationAction_Description=Geographic collocation of two data products."
+})
+
 public class WaterMaskAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Coastline, Land & Water";
