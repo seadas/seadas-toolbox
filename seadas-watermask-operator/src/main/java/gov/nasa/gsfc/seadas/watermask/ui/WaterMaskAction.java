@@ -52,7 +52,7 @@ import java.util.Map;
 })
 @NbBundle.Messages({
         "CTL_WaterMaskAction_Text=CoastlineLandWaterMask",
-        "CTL_CollocationAction_Description=Geographic collocation of two data products."
+        "CTL_WaterMaskAction_Description=Add coastline, land and water masks."
 })
 
 public class WaterMaskAction extends AbstractSnapAction {
