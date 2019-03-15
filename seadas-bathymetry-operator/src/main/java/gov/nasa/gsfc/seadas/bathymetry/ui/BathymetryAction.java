@@ -17,6 +17,7 @@ import org.esa.snap.core.gpf.annotations.SourceProduct;
 import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
@@ -49,9 +50,17 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
  * @author Danny Knowles
  */
 @ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryAction" )
-@ActionRegistration(displayName = "#CTL_BathymetryAction_Text")
-@ActionReference(path = "Menu/Raster/Masks", position = 300)
-@NbBundle.Messages({"CTL_BathymetryAction_Text=Bathymetry"})
+@ActionRegistration(displayName = "#CTL_BathymetryAction_Text",
+        iconBase = "gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png")
+@ActionReferences({
+        @ActionReference(path = "Menu/Raster/Masks", position = 300),
+        @ActionReference(path = "Toolbars/Masks", position = 20)
+})
+@NbBundle.Messages({
+        "CTL_BathymetryAction_Text=Bathymetry",
+        "CTL_BathymetryAction_Description=Add bathymetry-elevation band and mask."
+})
+
 public class BathymetryAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Bathymetry & Elevation";
