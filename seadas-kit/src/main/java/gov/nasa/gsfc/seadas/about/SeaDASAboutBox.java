@@ -22,14 +22,14 @@ import java.net.URISyntaxException;
  * @author Aynur Abdurazik
  */
 
-@ActionID(category = "Help", id = "gov.nasa.gsfc.seadas.about.AboutAction" )
-//@ActionRegistration(displayName = "#CTL_AboutAction_Name" )
-//@ActionReference(path = "Menu/Help", position = 1600, separatorBefore = 1550)
-@NbBundle.Messages({
-        "CTL_AboutAction_Name=About SeaDAS...",
-        "CTL_AboutAction_Title=About SeaDAS",
-})
-@AboutBox(displayName = "SeaDAS Toolbox", position = 40)
+//@ActionID(category = "Help", id = "gov.nasa.gsfc.seadas.about.AboutAction" )
+////@ActionRegistration(displayName = "#CTL_AboutAction_Name" )
+////@ActionReference(path = "Menu/Help", position = 1600, separatorBefore = 1550)
+//@NbBundle.Messages({
+//        "CTL_AboutAction_Name=About SeaDAS...",
+//        "CTL_AboutAction_Title=About SeaDAS",
+//})
+//@AboutBox(displayName = "SeaDAS Toolbox", position = 40)
 public class SeaDASAboutBox extends JPanel {
 
     private final static String releaseNotesHTTP = "https://github.com/seadas/seadas-toolbox/blob/master/ReleaseNotes.md";
