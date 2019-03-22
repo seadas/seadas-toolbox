@@ -19,6 +19,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 
@@ -50,8 +51,8 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
  * @author Danny Knowles
  */
 @ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryAction" )
-@ActionRegistration(displayName = "#CTL_BathymetryAction_Text",
-        iconBase = "gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png")
+@ActionRegistration(displayName = "#CTL_BathymetryAction_Text", lazy = false)
+//        iconBase = "gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png")
 @ActionReferences({
         @ActionReference(path = "Menu/Raster/Masks", position = 300),
         @ActionReference(path = "Toolbars/Masks", position = 20)
@@ -61,7 +62,7 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
         "CTL_BathymetryAction_Description=Add bathymetry-elevation band and mask."
 })
 
-public class BathymetryAction extends AbstractSnapAction {
+public final class BathymetryAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Bathymetry & Elevation";
     public static final String TOOL_TIP = "Add bathymetry-elevation band and mask";
@@ -71,6 +72,11 @@ public class BathymetryAction extends AbstractSnapAction {
     public static final String BATHYMETRY_PRODUCT_NAME = "BathymetryOp";
 
 
+    public BathymetryAction() {
+        putValue(NAME, Bundle.CTL_BathymetryAction_Text());
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png", false));
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_BathymetryAction_Description());
+    }
 //    @Override
 //    public void start(final SnapApp snapApp) {
 //        final ExecCommand action = snapApp.getCommandManager().createExecCommand(COMMAND_ID,
