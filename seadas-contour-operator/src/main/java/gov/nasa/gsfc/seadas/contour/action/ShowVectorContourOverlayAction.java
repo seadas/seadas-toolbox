@@ -91,8 +91,8 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction implem
     @Override
     protected void initActionProperties() {
         putValue(NAME, Bundle.CTL_OverlayContourLayerActionName());
-        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/icons/ContourOverlay22.png", false));
-        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/icons/ContourOverlay24.gif", false));
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay22.png", false));
+        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay24.gif", false));
         putValue(SHORT_DESCRIPTION, Bundle.CTL_OverlayContourLayerActionToolTip());
     }
     
