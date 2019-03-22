@@ -15,6 +15,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 import java.awt.event.ActionEvent;
@@ -44,8 +45,7 @@ import java.util.Map;
  * @author Marco Peters
  */
 @ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.watermask.ui.WaterMaskAction" )
-@ActionRegistration(displayName = "#CTL_WaterMaskAction_Text",
-        iconBase = "gov/nasa/gsfc/seadas/watermask/ui/icons/coastline_24.png")
+@ActionRegistration(displayName = "#CTL_WaterMaskAction_Text", lazy = false)
 @ActionReferences({
         @ActionReference(path = "Menu/Raster/Masks", position = 300),
         @ActionReference(path = "Toolbars/Masks", position = 20)
@@ -55,7 +55,7 @@ import java.util.Map;
         "CTL_WaterMaskAction_Description=Add coastline, land and water masks."
 })
 
-public class WaterMaskAction extends AbstractSnapAction {
+public final class WaterMaskAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Coastline, Land & Water";
     public static final String TOOL_TIP = "Add coastline, land and water masks";
@@ -66,6 +66,12 @@ public class WaterMaskAction extends AbstractSnapAction {
     public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask2";
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
     private static final String HELP_ID = "watermaskScientificTool";
+
+    public WaterMaskAction() {
+        putValue(NAME, Bundle.CTL_WaterMaskAction_Text());
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/watermask/ui/icons/coastline_24.png", false));
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_WaterMaskAction_Description());
+    }
 
 //    putValue(SHORT_DESCRIPTION, "Creating an accurate, fractional, shapefile-based land-water mask.");
 
