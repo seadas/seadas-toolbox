@@ -19,8 +19,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
+import org.openide.util.*;
 
 
 import javax.media.jai.ImageLayout;
@@ -44,7 +43,6 @@ import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
 
 
-
 /**
  * This registers an action which calls the "bathymetry" Operator
  *
@@ -62,7 +60,7 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
         "CTL_BathymetryAction_Description=Add bathymetry-elevation band and mask."
 })
 
-public final class BathymetryAction extends AbstractSnapAction {
+public final class BathymetryAction extends AbstractSnapAction implements LookupListener {
 
     public static final String COMMAND_ID = "Bathymetry & Elevation";
     public static final String TOOL_TIP = "Add bathymetry-elevation band and mask";
@@ -71,11 +69,23 @@ public final class BathymetryAction extends AbstractSnapAction {
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
     public static final String BATHYMETRY_PRODUCT_NAME = "BathymetryOp";
 
+    private final Lookup lookup;
+    private final Lookup.Result<ProductNode> viewResult;
 
-    public BathymetryAction() {
+    public  BathymetryAction() {
+        this(null);
+    }
+
+    public BathymetryAction(Lookup lookup) {
+        putValue(ACTION_COMMAND_KEY, getClass().getName());
+        putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_BathymetryAction_Text());
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png", false));
         putValue(SHORT_DESCRIPTION, Bundle.CTL_BathymetryAction_Description());
+        this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
+        this.viewResult = this.lookup.lookupResult(ProductNode.class);
+        this.viewResult.addLookupListener(WeakListeners.create(LookupListener.class, this, viewResult));
+        updateEnabledState();
     }
 //    @Override
 //    public void start(final SnapApp snapApp) {
@@ -345,7 +355,25 @@ public final class BathymetryAction extends AbstractSnapAction {
                 ActionEvent e) {
                  showBathymetry(SnapApp.getDefault());
         }
+
+    @Override
+    public void resultChanged(LookupEvent ignored) {
+        updateEnabledState();
     }
+    protected void updateEnabledState() {
+        final Product selectedProduct = SnapApp.getDefault().getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
+        boolean productSelected = selectedProduct != null;
+        boolean hasBands = false;
+        boolean hasGeoCoding = false;
+        if (productSelected) {
+            hasBands = selectedProduct.getNumBands() > 0;
+            hasGeoCoding = selectedProduct.getSceneGeoCoding() != null;
+        }
+        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands && hasGeoCoding);
+    }
+
+
+}
 
 
 
