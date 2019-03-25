@@ -75,11 +75,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
         this(null);
     }
 
-    protected WaterMaskAction(Lookup lookup) {
-        this(lookup, null);
-    }
-
-    public WaterMaskAction(Lookup lookup, final SnapApp snapApp){
+    public WaterMaskAction(Lookup lookup){
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_WaterMaskAction_Text());
