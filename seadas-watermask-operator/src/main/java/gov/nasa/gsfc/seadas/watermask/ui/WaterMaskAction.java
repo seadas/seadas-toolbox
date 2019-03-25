@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import com.bc.ceres.swing.figure.Interactor;
 import org.esa.snap.core.gpf.ui.DefaultSingleTargetProductDialog;
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
@@ -15,14 +16,14 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
+import org.openide.util.*;
 
 import java.awt.event.ActionEvent;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.operator.FormatDescriptor;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.RenderedImage;
@@ -55,7 +56,7 @@ import java.util.Map;
         "CTL_WaterMaskAction_Description=Add coastline, land and water masks."
 })
 
-public final class WaterMaskAction extends AbstractSnapAction {
+public final class WaterMaskAction extends AbstractSnapAction implements LookupListener {
 
     public static final String COMMAND_ID = "Coastline, Land & Water";
     public static final String TOOL_TIP = "Add coastline, land and water masks";
@@ -67,13 +68,28 @@ public final class WaterMaskAction extends AbstractSnapAction {
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
     private static final String HELP_ID = "watermaskScientificTool";
 
-    public WaterMaskAction() {
+    private final Lookup lookup;
+    private final Lookup.Result<ProductNode> viewResult;
+
+    public  WaterMaskAction() {
+        this(null);
+    }
+
+    protected WaterMaskAction(Lookup lookup) {
+        this(lookup, null);
+    }
+
+    public WaterMaskAction(Lookup lookup, final SnapApp snapApp){
+        putValue(ACTION_COMMAND_KEY, getClass().getName());
+        putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_WaterMaskAction_Text());
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/watermask/ui/icons/coastline_24.png", false));
         putValue(SHORT_DESCRIPTION, Bundle.CTL_WaterMaskAction_Description());
+        this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
+        this.viewResult = this.lookup.lookupResult(ProductNode.class);
+        this.viewResult.addLookupListener(WeakListeners.create(LookupListener.class, this, viewResult));
+        updateEnabledState();
     }
-
-//    putValue(SHORT_DESCRIPTION, "Creating an accurate, fractional, shapefile-based land-water mask.");
 
     private void showLandWaterCoastMasks(final SnapApp snapApp) {
 
@@ -358,7 +374,8 @@ public final class WaterMaskAction extends AbstractSnapAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 //        final AppContext appContext = getAppContext();
-
+//        setOverlayEnableState(SnapApp.getDefault().getSelectedProductSceneView());
+//        updateActionState();
         showLandWaterCoastMasks(SnapApp.getDefault());
 //        final DefaultSingleTargetProductDialog dialog = new DefaultSingleTargetProductDialog(LAND_WATER_MASK_OP_ALIAS, appContext,
 //                "Land Water Mask3",
@@ -367,6 +384,22 @@ public final class WaterMaskAction extends AbstractSnapAction {
 //        dialog.getJDialog().pack();
 //        dialog.show();
     }
+    @Override
+    public void resultChanged(LookupEvent ignored) {
+        updateEnabledState();
+    }
+    protected void updateEnabledState() {
+        final Product selectedProduct = SnapApp.getDefault().getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
+        boolean productSelected = selectedProduct != null;
+        boolean hasBands = false;
+        boolean hasGeoCoding = false;
+        if (productSelected) {
+            hasBands = selectedProduct.getNumBands() > 0;
+            hasGeoCoding = selectedProduct.getSceneGeoCoding() != null;
+        }
+        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands && hasGeoCoding);
+    }
+
 
 
 //    @Override
