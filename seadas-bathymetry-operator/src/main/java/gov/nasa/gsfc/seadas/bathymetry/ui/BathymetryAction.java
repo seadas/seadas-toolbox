@@ -41,6 +41,7 @@ import java.util.Map;
 
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
+import org.openide.util.actions.Presenter;
 
 
 /**
@@ -60,11 +61,13 @@ import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
         "CTL_BathymetryAction_Description=Add bathymetry-elevation band and mask."
 })
 
-public final class BathymetryAction extends AbstractSnapAction implements LookupListener {
+public final class BathymetryAction extends AbstractSnapAction
+        implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
 
     public static final String COMMAND_ID = "Bathymetry & Elevation";
     public static final String TOOL_TIP = "Add bathymetry-elevation band and mask";
-    public static final String ICON = "bathymetry.png";
+    public static final String SMALLICON = "gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png";
+    public static final String LARGEICON = "gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry24.png";
 
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
     public static final String BATHYMETRY_PRODUCT_NAME = "BathymetryOp";
@@ -80,7 +83,8 @@ public final class BathymetryAction extends AbstractSnapAction implements Lookup
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_BathymetryAction_Text());
-        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png", false));
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         putValue(SHORT_DESCRIPTION, Bundle.CTL_BathymetryAction_Description());
         this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
         this.viewResult = this.lookup.lookupResult(ProductNode.class);
@@ -350,16 +354,32 @@ public final class BathymetryAction extends AbstractSnapAction implements Lookup
 //            this.visatApp = visatApp;
 //        }
 
-        @Override
-        public void actionPerformed(
-                ActionEvent e) {
-                 showBathymetry(SnapApp.getDefault());
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        showBathymetry(SnapApp.getDefault());
         }
+
+    @Override
+    public JMenuItem getMenuPresenter() {
+        JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(this);
+        menuItem.setIcon(null);
+        return menuItem;
+    }
+
+    @Override
+    public Component getToolbarPresenter() {
+        JToggleButton toggleButton = new JToggleButton(this);
+        toggleButton.setText(null);
+        toggleButton.setIcon(ImageUtilities.loadImageIcon(LARGEICON,false));
+        return toggleButton;
+    }
+
 
     @Override
     public void resultChanged(LookupEvent ignored) {
         updateEnabledState();
     }
+
     protected void updateEnabledState() {
         final Product selectedProduct = SnapApp.getDefault().getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
         boolean productSelected = selectedProduct != null;
