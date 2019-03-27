@@ -17,6 +17,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
+import org.openide.util.actions.Presenter;
 
 import java.awt.event.ActionEvent;
 
@@ -56,13 +57,14 @@ import java.util.Map;
         "CTL_WaterMaskAction_Description=Add coastline, land and water masks."
 })
 
-public final class WaterMaskAction extends AbstractSnapAction implements LookupListener {
+public final class WaterMaskAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar {
 
     public static final String COMMAND_ID = "Coastline, Land & Water";
     public static final String TOOL_TIP = "Add coastline, land and water masks";
     //    public static final String ICON = "/org/esa/beam/watermask/ui/icons/coastline_24.png";
     //  public static final String ICON = "icons/Coastline24.png";
-    public static final String ICON = "coastline_24.png";
+    public static final String SMALLICON = "gov/nasa/gsfc/seadas/watermask/ui/icons/coastline.png";
+    public static final String LARGEICON = "gov/nasa/gsfc/seadas/watermask/ui/icons/coastline_24.png";
 
     public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask2";
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
@@ -77,9 +79,9 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
     public WaterMaskAction(Lookup lookup){
         putValue(ACTION_COMMAND_KEY, getClass().getName());
-        putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_WaterMaskAction_Text());
-        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/watermask/ui/icons/coastline_24.png", false));
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         putValue(SHORT_DESCRIPTION, Bundle.CTL_WaterMaskAction_Description());
         this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
         this.viewResult = this.lookup.lookupResult(ProductNode.class);
@@ -381,9 +383,25 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 //        dialog.show();
     }
     @Override
+    public JMenuItem getMenuPresenter() {
+        JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(this);
+        menuItem.setIcon(null);
+        return menuItem;
+    }
+
+    @Override
+    public Component getToolbarPresenter() {
+        JToggleButton toggleButton = new JToggleButton(this);
+        toggleButton.setText(null);
+        toggleButton.setIcon(ImageUtilities.loadImageIcon(LARGEICON,false));
+        return toggleButton;
+    }
+
+    @Override
     public void resultChanged(LookupEvent ignored) {
         updateEnabledState();
     }
+
     protected void updateEnabledState() {
         final Product selectedProduct = SnapApp.getDefault().getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
         boolean productSelected = selectedProduct != null;
