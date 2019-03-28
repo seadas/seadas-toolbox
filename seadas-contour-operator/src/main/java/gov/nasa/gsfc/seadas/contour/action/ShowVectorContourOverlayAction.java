@@ -10,6 +10,7 @@ import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.FeatureUtils;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.rcp.actions.layer.overlay.AbstractOverlayAction;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.ui.AppContext;
@@ -32,12 +33,14 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Coordinate;
+import org.openide.util.actions.Presenter;
 
 import javax.media.jai.JAI;
 import javax.media.jai.OperationRegistry;
 import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,45 +60,56 @@ import java.util.Collection;
         "CTL_OverlayContourLayerActionName=Contour Overlay",
         "CTL_OverlayContourLayerActionToolTip=Show/hide Contour overlay for the selected image"
 })
-public class ShowVectorContourOverlayAction extends AbstractOverlayAction implements ContextAwareAction, LookupListener {
+public class ShowVectorContourOverlayAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
 
 
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; stroke-dasharray:%s; symbol:cross";
     Product product;
     double noDataValue;
     private GeoCoding geoCoding;
+//    private boolean enabled = false;
+    public static final String SMALLICON = "gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay.png";
+    public static final String LARGEICON = "gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay24.png";
 
-    private final Lookup lkp;
+    private final Lookup lookup;
+    private final Lookup.Result<ProductSceneView> viewResult;
+
+//    public  ShowVectorContourOverlayAction() {
+//        this(Utilities.actionsGlobalContext());
+//    }
 
     public  ShowVectorContourOverlayAction() {
-        this(Utilities.actionsGlobalContext());
+        this(null);
     }
 
-    public   ShowVectorContourOverlayAction(Lookup lkp) {
-        this.lkp = lkp;
-        Lookup.Result<ProductNode> lkpContext = lkp.lookupResult(ProductNode.class);
-        lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
-        putValue(Action.NAME, Bundle.CTL_OverlayContourLayerActionName());
-        putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_OverlayContourLayerActionToolTip());
-    }
 
-    @Override
-    public void resultChanged(LookupEvent lookupEvent) {
-
-    }
-
-    @Override
-    public Action createContextAwareInstance(Lookup actionContext) {
-        return new ShowVectorContourOverlayAction(actionContext);
-    }
-    @Override
-    protected void initActionProperties() {
+    public   ShowVectorContourOverlayAction(Lookup lookup) {
+        putValue(ACTION_COMMAND_KEY, getClass().getName());
+        putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_OverlayContourLayerActionName());
-        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay22.png", false));
-        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay24.gif", false));
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         putValue(SHORT_DESCRIPTION, Bundle.CTL_OverlayContourLayerActionToolTip());
+        this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
+        this.viewResult = this.lookup.lookupResult(ProductSceneView.class);
+        this.viewResult.addLookupListener(WeakListeners.create(LookupListener.class, this, viewResult));
+        updateEnabledState();
     }
-    
+
+
+
+//    @Override
+//    public Action createContextAwareInstance(Lookup actionContext) {
+//        return new ShowVectorContourOverlayAction(actionContext);
+//    }
+//    @Override
+//    protected void initActionProperties() {
+//        putValue(NAME, Bundle.CTL_OverlayContourLayerActionName());
+//        putValue(SMALL_ICON, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay22.png", false));
+//        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("gov/nasa/gsfc/seadas/contour/ui/icons/ContourOverlay24.gif", false));
+//        putValue(SHORT_DESCRIPTION, Bundle.CTL_OverlayContourLayerActionToolTip());
+//    }
+//
     @Override
     public void actionPerformed(ActionEvent event) {
         SnapApp snapApp = SnapApp.getDefault();
@@ -316,18 +330,61 @@ public class ShowVectorContourOverlayAction extends AbstractOverlayAction implem
     }
 
     @Override
-    protected boolean getActionSelectionState(ProductSceneView view) {
-        return view.isGraticuleOverlayEnabled();
+    public JMenuItem getMenuPresenter() {
+        JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(this);
+        menuItem.setIcon(null);
+        return menuItem;
     }
 
     @Override
-    protected boolean getActionEnabledState(ProductSceneView view) {
-        return ProductUtils.canGetPixelPos(view.getRaster());
+    public Component getToolbarPresenter() {
+        JToggleButton toggleButton = new JToggleButton(this);
+        toggleButton.setText(null);
+        toggleButton.setIcon(ImageUtilities.loadImageIcon(LARGEICON,false));
+        return toggleButton;
     }
 
     @Override
-    protected void setOverlayEnableState(ProductSceneView view) {
-        view.setGraticuleOverlayEnabled(!getActionSelectionState(view));
+    public void resultChanged(LookupEvent ignored) {
+        updateEnabledState();
     }
+
+    protected void updateEnabledState() {
+        final Product selectedProduct = SnapApp.getDefault().getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
+        boolean productSelected = selectedProduct != null;
+        boolean hasBands = false;
+        boolean hasGeoCoding = false;
+        if (productSelected) {
+            hasBands = selectedProduct.getNumBands() > 0;
+            hasGeoCoding = selectedProduct.getSceneGeoCoding() != null;
+        }
+        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands && hasGeoCoding);
+    }
+//    @Override
+//    protected boolean getActionSelectionState(ProductSceneView view) {
+//        return view.isGraticuleOverlayEnabled();
+////        return isEnabled();
+//    }
+//
+//    @Override
+//    protected boolean getActionEnabledState(ProductSceneView view) {
+//        return ProductUtils.canGetPixelPos(view.getRaster());
+//    }
+//
+//    @Override
+//    protected void setOverlayEnableState(ProductSceneView view) {
+//        view.setGraticuleOverlayEnabled(!getActionSelectionState(view));
+////        setEnabled(!getActionSelectionState(view));
+//    }
+
+//    @Override
+//    public boolean isEnabled() {
+//        return enabled;
+//    }
+//
+//    @Override
+//    public void setEnabled(boolean enabled) {
+//        this.enabled = enabled;
+//    }
 }
 
