@@ -12,6 +12,15 @@ import com.bc.ceres.glayer.support.ImageLayer;
 import com.bc.ceres.glayer.support.LayerUtils;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.grender.support.BufferedImageRendering;
+import com.bc.ceres.grender.support.DefaultViewport;
+import com.sun.media.jai.codec.ImageCodec;
+import com.sun.media.jai.codec.ImageEncoder;
+import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
+import gov.nasa.gsfc.seadas.contour.data.ContourData;
+import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
+import org.esa.beam.framework.datamodel.TextAnnotationDescriptor;
+import org.esa.beam.glayer.ColorBarLayerType;
+import org.esa.beam.visat.actions.ShowColorBarOverlayAction;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
@@ -25,14 +34,17 @@ import org.esa.snap.core.gpf.common.ReadOp;
 import org.esa.snap.core.layer.GraticuleLayer;
 import org.esa.snap.core.layer.GraticuleLayerType;
 import org.esa.snap.core.layer.MaskLayerType;
+import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.core.util.geotiff.GeoTIFF;
+import org.esa.snap.core.util.geotiff.GeoTIFFMetadata;
 import org.esa.snap.core.util.math.MathUtils;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.esa.snap.ui.product.SimpleFeaturePointFigure;
 import org.esa.snap.ui.product.VectorDataLayerFilterFactory;
-import org.geotools.util.logging.LoggerFactory;
 
+import javax.media.jai.operator.BandSelectDescriptor;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -47,8 +59,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author aynur abdurazik
@@ -84,7 +97,7 @@ public class WriteImageOp extends Operator {
     private static final int[] DEFAULT_MASK_COLOR = {192, 192, 192};
     private static final double DEFAULT_MASK_TRANSPARENCY = 0;
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = null;
 
     @SourceProduct(alias = "source", description = "Primary source input from which an RGB image is to be generated.")
     private Product sourceProduct;
@@ -187,7 +200,7 @@ public class WriteImageOp extends Operator {
         final File f = new File(this.cpdFilePath);
         if (f == null || !f.exists()) {
             System.out.println("WARNING: Color palette definition could not be read. Will proceed with default colors.");
-            this.log.warn("WARNING: Color palette definition could not be read. Will proceed with default colors.");
+            log(Level.WARNING, "WARNING: Color palette definition could not be read. Will proceed with default colors.");
 
             // - colour scale min/max are only used if there is cpd file
             if (!(this.colourScaleMin < this.colourScaleMax)) {
@@ -214,14 +227,19 @@ public class WriteImageOp extends Operator {
         // Important: ensures computeTile() is called only once
         this.targetProduct.setPreferredTileSize(sceneRasterWidth, sceneRasterHeight);
 
-        this.log.info("=== initalized === [{}: {}]", sourceProduct.getName(), sourceBandName);
+        this.log.info(formatStringMessage("=== initalized === [%s: %s]", sourceProduct.getName(), sourceBandName));
+    }
+
+    private String formatStringMessage(String meesage, String r1, String r2) {
+        return  String.format(meesage, r1, r2);
     }
 
     @Override
     public void computeTile(final Band targetBand, final Tile targetTile, final ProgressMonitor pm)
             throws OperatorException {
         final Rectangle rectangle = targetTile.getRectangle();
-        this.log.debug(" WriteImage.computeTile({}, {}) ", rectangle.getX(), rectangle.getY());
+        this.log.fine(String.format(" WriteImage.computeTile(%s, %s) : ", rectangle.getX(), rectangle.getY()));
+
 
         try {
             this.writeImage();
@@ -231,9 +249,14 @@ public class WriteImageOp extends Operator {
         }
     }
 
+    private void log(Level logLevel, String message){
+        Logger.getLogger(WriteImageOp.class.getName()).log(logLevel, null, message);
+    }
+
+
     @Override
     public void dispose() {
-        this.log.debug("WriteImage.dispose() invoked");
+        log(Level.INFO,"WriteImage.dispose() invoked");
         super.dispose();
     }
 
