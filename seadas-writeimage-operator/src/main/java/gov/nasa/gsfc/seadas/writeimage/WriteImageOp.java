@@ -18,9 +18,7 @@ import com.sun.media.jai.codec.ImageEncoder;
 import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
-import org.esa.beam.framework.datamodel.TextAnnotationDescriptor;
-import org.esa.beam.glayer.ColorBarLayerType;
-import org.esa.beam.visat.actions.ShowColorBarOverlayAction;
+import org.esa.snap.core.datamodel.TextAnnotationDescriptor;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
@@ -33,12 +31,15 @@ import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.esa.snap.core.gpf.common.ReadOp;
 import org.esa.snap.core.layer.GraticuleLayer;
 import org.esa.snap.core.layer.GraticuleLayerType;
+import org.esa.snap.core.layer.ColorBarLayerType;
 import org.esa.snap.core.layer.MaskLayerType;
 import org.esa.snap.core.util.ProductUtils;
-import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.core.util.geotiff.GeoTIFF;
 import org.esa.snap.core.util.geotiff.GeoTIFFMetadata;
 import org.esa.snap.core.util.math.MathUtils;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.imgfilter.FilteredBandAction;
+import org.esa.snap.rcp.imgfilter.model.Filter;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.esa.snap.ui.product.SimpleFeaturePointFigure;
@@ -299,7 +300,7 @@ public class WriteImageOp extends Operator {
             double minSample = colourScaleMin;
             double maxSample = colourScaleMax;
 
-            band.getImageInfo().setColorPaletteDef(cpd, minSample, maxSample, this.cpdAutoDistribute, defaultImageInfo.isLogScaled(), isLog);
+            band.getImageInfo().setColorPaletteDef(cpd, minSample, maxSample, this.cpdAutoDistribute);
             band.getImageInfo().setLogScaled(isLog);
 
             debug.append("\n CPD min =");
@@ -341,8 +342,8 @@ public class WriteImageOp extends Operator {
 
         final StringBuilder debug = new StringBuilder();
         debug.append("\n====\n");
-        PropertyMap configuration = new PropertyMap();
-        ProductSceneImage productSceneImage = new ProductSceneImage(sourceBand, configuration, this.pm);
+//        PropertyMap configuration = new PropertyMap();
+        ProductSceneImage productSceneImage = new ProductSceneImage(sourceBand, SnapApp.getDefault().getPreferencesPropertyMap(), this.pm);
         ProductSceneView productSceneView = new ProductSceneView(productSceneImage);
 
         boolean entireImageSelected = true;
@@ -620,7 +621,7 @@ public class WriteImageOp extends Operator {
         int[] maskColorValueArray;
         String maskExpression;
         double maskTransparency;
-        Layer maskCollectionLayer = productSceneView.getSceneImage().getMaskCollectionLayer(true);
+        Layer maskCollectionLayer = productSceneView.getMaskCollectionLayer(true);
         maskCollectionLayer.setVisible(true);
         int existingLayerCount = maskCollectionLayer.getChildren().size();
         Operator readerOp = new ReadOp();
@@ -720,7 +721,7 @@ public class WriteImageOp extends Operator {
         TextAnnotationDescriptor descriptor = TextAnnotationDescriptor.getInstance();
 
         PixelPos pixelPos = null;
-        GeoCoding geoCoding = sourceProduct.getGeoCoding();
+        GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
         GeoPos geoPos = null;
         Placemark textAnnotationMark;
         Font textFont;
@@ -803,7 +804,7 @@ public class WriteImageOp extends Operator {
             contourData.setBand(contourBand);
 
             ShowVectorContourOverlayAction action = new ShowVectorContourOverlayAction();
-            action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
+            action.setGeoCoding((GeoCoding) sourceProduct.getSceneGeoCoding());
             ArrayList<VectorDataNode> vectorDataNodes = action.createVectorDataNodesforContours(contourData);
 
 
@@ -1141,7 +1142,7 @@ public class WriteImageOp extends Operator {
                 +1, +1, +1, +1, +1,
         }, 25.0);
         RasterDataNode sourceRaster = sourceProduct.getRasterDataNode(sourceBand.getName());
-        final FilterBand filteredBand = CreateFilteredBandAction.createFilterBandForGPT(sourceRaster, defaultFilter, sourceBand.getName() + "_am5_" + contourName, 1);
+        final FilterBand filteredBand = FilteredBandAction.createFilterBandForGPT(sourceRaster, defaultFilter, sourceBand.getName() + "_am5_" + contourName, 1);
         return filteredBand;
     }
 }
