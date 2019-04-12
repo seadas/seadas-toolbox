@@ -17,10 +17,10 @@
 
     <name> Write Image Operator</name>
     <dependencies>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-contour-operator</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-contour-operator</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>ceres-core</artifactId>
@@ -36,7 +36,10 @@
             <artifactId>ceres-jai</artifactId>
             <version>${snap.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-binding</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>ceres-glayer</artifactId>
@@ -49,12 +52,12 @@
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-core</artifactId>
-            <version>${snap.version}</version>
+            <version>7.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-ui</artifactId>
-            <version>${snap.version}</version>
+            <version>7.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.help</groupId>
@@ -64,19 +67,22 @@
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
-            <version>${snap.version}</version>
+            <version>7.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -87,13 +93,16 @@
             <artifactId>snap-gpf-ui</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>snap-core</artifactId>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-contour-operator</artifactId>
+            <version>8.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>snap-core</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--&lt;!&ndash;<groupId>org.esa.beam</groupId>&ndash;&gt;-->
+            <!--&lt;!&ndash;<artifactId>beam-core</artifactId>&ndash;&gt;-->
+            <!--&lt;!&ndash;<version>5.0.5-SNAPSHOT</version>&ndash;&gt;-->
+        <!--&lt;!&ndash;</dependency>&ndash;&gt;-->
     </dependencies>
     <build>
         <plugins>

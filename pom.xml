@@ -28,13 +28,15 @@
     <url>https://seadas.gsfc.nasa.gov</url>
 
     <modules>
-        <module>seadas-kit</module>
+
         <module>seadas-watermask-operator</module>
         <!--<module>seadas-ocsswrest</module>-->
         <module>seadas-processing</module>
         <module>seadas-processing-ui</module>
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
+        <module>seadas-writeimage-operator</module>
+        <module>seadas-kit</module>
     </modules>
 
     <packaging>pom</packaging>
