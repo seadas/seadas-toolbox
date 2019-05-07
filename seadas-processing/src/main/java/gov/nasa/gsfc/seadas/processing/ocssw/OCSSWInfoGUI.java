@@ -36,12 +36,18 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_VIR
 // DEC 2018 - Daniel Knowles - Applied formatting logic for GUI component alignment and arrangement
 //                             Added listeners to set Apply button based on textfield values
 //                             Minor variable renaming
+// MAY 2019 - Knowles - Added OCSSW branch field
 
 
 public class OCSSWInfoGUI {
 
     final String PANEL_NAME = "OCSSW Configuration";
     final String HELP_ID = "ocsswInfo";
+
+    final String  BRANCH_TOOLTIP = "<html>The OCSSW installation branch<br>" +
+            "This by default will match the SeaDAS version (first two decimal fields)<br> " +
+            "For instance SeaDAS 7.5.3 by default will use OCSSW branch 7.5<br>" +
+            "If OCSSW was manually updated to a different branch then this parameter needs to be set to match</html>";
 
     JPanel paramPanel = GridBagUtils.createPanel();
     JPanel paramSubPanel;
@@ -82,6 +88,14 @@ public class OCSSWInfoGUI {
         GridBagConstraints gbc = createConstraints();
 
         gbc.fill = GridBagConstraints.NONE;
+        gbc.weighty = 0;
+        gbc.weightx = 0;
+
+        JPanel ocsswBranchPanel = ocsswBranchPanel();
+        ocsswBranchPanel.setToolTipText(BRANCH_TOOLTIP);
+        mainPanel.add(ocsswBranchPanel, gbc);
+
+        gbc.gridy += 1;
         gbc.weighty = 0;
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -131,6 +145,11 @@ public class OCSSWInfoGUI {
 
         return new Dimension(width, height);
     }
+
+
+
+
+
 
     private JPanel makeParamPanel() {
 
@@ -660,6 +679,39 @@ public class OCSSWInfoGUI {
         } else {
             return false;
         }
+    }
+
+    private JPanel ocsswBranchPanel() {
+
+        JPanel panel = GridBagUtils.createPanel();
+
+        GridBagConstraints gbc = createConstraints();
+
+        JLabel ocsswBranchLabel = new JLabel("OCSSW Branch: ");
+        JTextField ocsswBranchTextfield = new JTextField(10);
+
+        ocsswBranchLabel.setMinimumSize(ocsswBranchLabel.getPreferredSize());
+        ocsswBranchTextfield.setMinimumSize(new JTextField(5).getPreferredSize());
+        ocsswBranchLabel.setToolTipText(BRANCH_TOOLTIP);
+
+        pc.addProperty(Property.create(SEADAS_OCSSW_BRANCH_PROPERTY, SEADAS_OCSSW_BRANCH_DEFAULT_VALUE));
+        pc.getDescriptor(SEADAS_OCSSW_BRANCH_PROPERTY).setDisplayName(SEADAS_OCSSW_BRANCH_PROPERTY);
+
+        final BindingContext ctx = new BindingContext(pc);
+
+        ctx.bind(SEADAS_OCSSW_BRANCH_PROPERTY, ocsswBranchTextfield);
+
+        gbc.fill = GridBagConstraints.NONE;
+
+        gbc.weighty = 0;
+        gbc.weightx = 0;
+        panel.add(ocsswBranchLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        panel.add(ocsswBranchTextfield, gbc);
+
+        return panel;
     }
 
 
