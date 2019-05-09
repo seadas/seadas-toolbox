@@ -5,6 +5,7 @@ import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.binding.BindingContext;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
@@ -17,16 +18,14 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_LOCAL;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 
 /**
@@ -128,7 +127,7 @@ public class OCSSWInfoGUI {
 
         final int dialogResult = modalDialog.show();
 
-        if (dialogResult != ModalDialog.ID_OK) {
+        if (dialogResult == ModalDialog.ID_OK || dialogResult == ModalDialog.ID_APPLY) {
             ocsswConfigData.updateconfigData(pc);
             return;
         }
@@ -153,13 +152,24 @@ public class OCSSWInfoGUI {
 
     private JPanel makeParamPanel() {
 
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+        String lastOcsswLocation = preferences.get(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
         GridBagConstraints gbc = createConstraints();
 
         JLabel ocsswLocationLabel = new JLabel("OCSSW Location: ");
         String[] ocsswLocations = {OCSSW_LOCATION_LOCAL, OCSSW_LOCATION_VIRTUAL_MACHINE, OCSSW_LOCATION_REMOTE_SERVER};
+        int lastOcsswLocationIndex = 0;
+        for (int i = 0; i < ocsswLocations.length; i++) {
+            if (lastOcsswLocation.equals(ocsswLocations[i])) {
+                lastOcsswLocationIndex = i;
+                break;
+            }
+        }
 
 
         JComboBox ocsswLocationComboBox = new JComboBox(ocsswLocations);
+        ocsswLocationComboBox.setSelectedIndex(lastOcsswLocationIndex);
+
         ocsswLocationComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -184,6 +194,13 @@ public class OCSSWInfoGUI {
                 }
 
                 updateParamPanel(paramSubPanel);
+                preferences.put(SEADAS_OCSSW_LOCATION_PROPERTY, ocssLocationString);
+
+                try {
+                    preferences.flush();
+                } catch (BackingStoreException bse) {
+                    SnapApp.getDefault().getLogger().severe(bse.getMessage());
+                }
             }
         });
 
@@ -224,7 +241,8 @@ public class OCSSWInfoGUI {
 
 
         // Set selector to desired default index
-        ocsswLocationComboBox.setSelectedIndex(0);
+        //ocsswLocationComboBox.setSelectedIndex(0);
+        ocsswLocationComboBox.setSelectedIndex(lastOcsswLocationIndex);
 
         // Specifically set preferred and minimum size
         paramPanel.setPreferredSize(preferredParamPanelSize);
@@ -295,6 +313,7 @@ public class OCSSWInfoGUI {
 
     private JPanel getVirtualMachinePanel() {
 
+        final Preferences preferences = Config.instance("seadas").load().preferences();
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
         panel.setBorder(UIUtils.createGroupBorder("Virtual Machine"));
@@ -307,7 +326,7 @@ public class OCSSWInfoGUI {
         ocsswSharedDir.setMinimumSize(new JTextField(10).getPreferredSize());
 
 
-        pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE));
+        pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE)));
         pc.getDescriptor(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY).setDisplayName(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY);
 
         final BindingContext ctx = new BindingContext(pc);
@@ -382,10 +401,10 @@ public class OCSSWInfoGUI {
         JLabel serverInputStreamPortLabel = new JLabel("Server Input Stream Port: ");
         JLabel serverErrorStreamPortLabel = new JLabel("Server Error Stream Port: ");
 
-         ocsswserverAddressTextfield = new JTextField(20);
-         serverPortTextfield = new JTextField(4);
-         serverInputStreamPortTextfield = new JTextField(4);
-         serverErrorStreamPortTextfield = new JTextField(4);
+        ocsswserverAddressTextfield = new JTextField(20);
+        serverPortTextfield = new JTextField(4);
+        serverInputStreamPortTextfield = new JTextField(4);
+        serverErrorStreamPortTextfield = new JTextField(4);
 
         // Set minimum size for each component
 
@@ -426,17 +445,6 @@ public class OCSSWInfoGUI {
         serverPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
         serverInputStreamPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
         serverErrorStreamPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
-
-//
-//        ctx.addPropertyChangeListener(SEADAS_OCSSW_PORT_PROPERTY, new PropertyChangeListener() {
-//
-//            @Override
-//            public void propertyChange(PropertyChangeEvent pce) {
-//
-//                System.out.println("value changed!");
-//            }
-//        });
-
 
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -521,16 +529,6 @@ public class OCSSWInfoGUI {
         ocsswRootTextfield.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswRootTextfield, true));
 
 
-        ctx.addPropertyChangeListener(SEADAS_OCSSW_ROOT_PROPERTY, new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent pce) {
-
-                System.out.println("value changed!");
-            }
-        });
-
-
         JButton ocsswRootButton = new JButton("...");
         ocsswRootButton.addActionListener(new ActionListener() {
             @Override
@@ -592,7 +590,6 @@ public class OCSSWInfoGUI {
         gbc.weighty = 1;
         return gbc;
     }
-
 
 
     private DocumentListener remoteServerTextfieldsDocumentListener() {
