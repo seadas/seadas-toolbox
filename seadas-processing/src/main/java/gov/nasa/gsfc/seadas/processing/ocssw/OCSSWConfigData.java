@@ -2,9 +2,13 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.runtime.Config;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 public class OCSSWConfigData {
 
@@ -27,7 +31,7 @@ public class OCSSWConfigData {
     */
 
     final static String SEADAS_LOG_DIR_PROPERTY = "seadas.log.dir";
-    final static String SEADAS_OCSSW_BRANCH_PROPERTY = "seadas.ocssw.branch";
+    public final static String SEADAS_OCSSW_BRANCH_PROPERTY = "seadas.ocssw.branch";
     final static String SEADAS_OCSSW_ROOT_PROPERTY = "seadas.ocssw.root";
     final static String SEADAS_OCSSW_LOCATION_PROPERTY = "seadas.ocssw.location";
     final static String SEADAS_OCSSW_PORT_PROPERTY = "seadas.ocssw.port";
@@ -36,7 +40,9 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY = "seadas.ocssw.processErrorStreamPort";
     final static String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
+    final static String SEADAS_OCSSW_VERSION_NUMBER_PROEPRETY ="seadas.ocssw.version";
 
+    final static String SEADAS_OCSSW_VERSION_NUMBER_DEFAULT_VALUE = "7.5.2";
     final static String SEADAS_LOG_DIR_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + ".seadas" + File.separator +"log";
     final static String SEADAS_OCSSW_BRANCH_DEFAULT_VALUE =  "7.5";
     final static String SEADAS_OCSSW_ROOT_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + "ocssw";
@@ -52,39 +58,42 @@ public class OCSSWConfigData {
     public static Properties properties = new Properties(System.getProperties());
 
     public OCSSWConfigData(){
-        initConfigDefauls();
+        //initConfigDefauls();
     }
 
     private void initConfigDefauls(){
 
-        properties.put(SEADAS_LOG_DIR_PROPERTY, SEADAS_LOG_DIR_DEFAULT_VALUE);
-        properties.put(SEADAS_OCSSW_ROOT_PROPERTY, SEADAS_OCSSW_ROOT_DEFAULT_VALUE);
-        properties.put(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
-        properties.put(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE);
-        properties.put(SEADAS_OCSSW_KEEPFILEONSERVER_PROPERTY, SEADAS_OCSSW_KEEPFILEONSERVER_DEFAULT_VALUE);
-        properties.put(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE);
-        properties.put(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE);
-        properties.put(SEADAS_CLIENT_ID_PROPERTY, SEADAS_CLIENT_ID_DEFAULT_VALUE);
-        properties.put(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE);
-        // set the system properties
-        System.setProperties(properties);
-        // display new properties
-        //System.getProperties().list(System.out);
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+        preferences.put(SEADAS_LOG_DIR_PROPERTY, SEADAS_LOG_DIR_DEFAULT_VALUE);
+        preferences.put(SEADAS_OCSSW_ROOT_PROPERTY, SEADAS_OCSSW_ROOT_DEFAULT_VALUE);
+        preferences.put(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
+        preferences.put(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE);
+        preferences.put(SEADAS_OCSSW_KEEPFILEONSERVER_PROPERTY, SEADAS_OCSSW_KEEPFILEONSERVER_DEFAULT_VALUE);
+        preferences.put(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE);
+        preferences.put(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE);
+        preferences.put(SEADAS_CLIENT_ID_PROPERTY, SEADAS_CLIENT_ID_DEFAULT_VALUE);
+        preferences.put(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE);
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            SnapApp.getDefault().getLogger().severe(e.getMessage());
+        }
     }
 
     public void updateconfigData(PropertyContainer pc) {
+        final Preferences preferences = Config.instance("seadas").load().preferences();
         Property[] newProperties = pc.getProperties();
         String key, value;
         for (int i = 0; i < newProperties.length; i++) {
             key = newProperties[i].getName();
             value = newProperties[i].getValue();
-            properties.setProperty(key, value);
-            //System.out.println(newProperties[i].getName() + " = " + newProperties[i].getValue());
+            preferences.put(key, value);
         }
-
-        // set the system properties
-        System.setProperties(properties);
-        // display new properties
-        //System.getProperties().list(System.out);
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            SnapApp.getDefault().getLogger().severe(e.getMessage());
+        }
+        OCSSWInfo.updateOCSSWInfo();
     }
 }
