@@ -6,7 +6,9 @@ import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.runtime.Config;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -15,6 +17,10 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -70,7 +76,7 @@ public abstract class OCSSW {
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
         String ocsswLocation = ocsswInfo.getOcsswLocation();
 
-        if ( ocsswInfo == null || ocsswLocation == null ) {
+        if (ocsswInfo == null || ocsswLocation == null) {
             return null;
         }
         if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
@@ -102,7 +108,9 @@ public abstract class OCSSW {
     public abstract ArrayList<String> readSensorFileIntoArrayList(File file);
 
     public abstract Process execute(ProcessorModel processorModel);
+
     public abstract Process executeSimple(ProcessorModel processorModel);
+
     public abstract InputStream executeAndGetStdout(ProcessorModel processorModel);
 
     public abstract Process execute(ParamList paramList);
@@ -118,7 +126,9 @@ public abstract class OCSSW {
     public abstract void findFileInfo(String fileName, FileInfoFinder fileInfoFinder);
 
     public abstract String getOfileDir();
+
     public abstract String getOfileName(String ifileName);
+
     public abstract String getOfileName(String ifileName, String programName);
 
     public abstract String getOfileName(String ifileName, String[] options);
@@ -196,6 +206,17 @@ public abstract class OCSSW {
         }
     }
 
+    public void updateOCSSWRootProperty(String installDir) {
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+
+        preferences.put(SEADAS_OCSSW_ROOT_PROPERTY, installDir);
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            SnapApp.getDefault().getLogger().severe(e.getMessage());
+        }
+    }
+
     public String[] getCommandArray() {
         return commandArray;
     }
@@ -243,7 +264,8 @@ public abstract class OCSSW {
         this.processExitValue = processExitValue;
     }
 
-    public void waitForProcess(){ }
+    public void waitForProcess() {
+    }
 
     public boolean isOfileNameFound() {
         return ofileNameFound;
@@ -257,9 +279,13 @@ public abstract class OCSSW {
         return RuntimeContext.getConfig().getContextProperty(OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY);
     }
 
-    public void setServerSharedDirName(String name) { serverSharedDirName = name; }
+    public void setServerSharedDirName(String name) {
+        serverSharedDirName = name;
+    }
 
-    public String getServerSharedDirName() { return serverSharedDirName; }
+    public String getServerSharedDirName() {
+        return serverSharedDirName;
+    }
 
     private static void handleException(String errorMessage) {
         Dialogs.showError(errorMessage);
