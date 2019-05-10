@@ -111,6 +111,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
             final Window parent = appContext.getApplicationWindow();
             OCSSWInfoGUI ocsswInfoGUI = new OCSSWInfoGUI();
             ocsswInfoGUI.init(parent);
+            ocsswInfo = OCSSWInfo.getInstance();
             ocssw = OCSSW.getOCSSWInstance();
         }
         ocssw.setProgramName(programName);
@@ -257,7 +258,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
                     Dialogs.showInformation(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? ""
                             : (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) ? "" : ("Output written to:\n" + outputFileName))), null);
                     if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
-                        ocssw.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
+                        ocssw.updateOCSSWRootProperty(processorModel.getParamValue("--install-dir"));
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();
                         }

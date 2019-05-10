@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_BRANCH_PROPERTY;
 
 /**
  * Created by IntelliJ IDEA. User: Aynur Abdurazik (aabduraz) Date: 3/16/12
@@ -1217,7 +1218,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         @Override
         public String[] getCmdArraySuffix() {
             String[] cmdArraySuffix = new String[1];
-            String[] parts = getSeaDASAppVersion().split("\\.");
+            String[] parts = getOCSSWBranchVersion().split("\\.");
             cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
             getOcssw().setCommandArraySuffix(cmdArraySuffix);
             return cmdArraySuffix;
@@ -1227,6 +1228,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             Preferences preferences = Config.instance("seadas").preferences();
             String seadasVersion = preferences.get("seadas.version", null);
             return seadasVersion;
+        }
+
+        private String getOCSSWBranchVersion(){
+            Preferences preferences = Config.instance("seadas").preferences();
+            String ocsswBranch = preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, null);
+            return ocsswBranch;
         }
     }
 

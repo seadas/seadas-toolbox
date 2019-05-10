@@ -53,6 +53,7 @@ public class OCSSWInfoGUI {
 
     ModalDialog modalDialog;
 
+    JTextField ocsswRootTextfield;
     JTextField ocsswserverAddressTextfield;
     JTextField serverPortTextfield;
     JTextField serverInputStreamPortTextfield;
@@ -240,8 +241,6 @@ public class OCSSWInfoGUI {
         Dimension minimumParamPanelSize = new Dimension(minimumWidth, minimumHeight);
 
 
-        // Set selector to desired default index
-        //ocsswLocationComboBox.setSelectedIndex(0);
         ocsswLocationComboBox.setSelectedIndex(lastOcsswLocationIndex);
 
         // Specifically set preferred and minimum size
@@ -275,14 +274,6 @@ public class OCSSWInfoGUI {
 
 
     private void updateParamPanel(JPanel newSubParamPanel) {
-
-//
-//        Component[] components = paramPanel.getComponents();
-//        for (int i = 0; i < components.length; i++) {
-//            if (components[i].getClass() == JPanel.class) {
-//                paramPanel.remove(i);
-//            }
-//        }
 
         paramPanel.validate();
 
@@ -342,15 +333,6 @@ public class OCSSWInfoGUI {
         ocsswSharedDir.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswSharedDir, true));
 
 
-//        ctx.addPropertyChangeListener(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, new PropertyChangeListener() {
-//
-//            @Override
-//            public void propertyChange(PropertyChangeEvent pce) {
-//
-//                System.out.println("value changed!");
-//            }
-//        });
-
         JButton ocsswSharedDirButton = new JButton("...");
 
 
@@ -360,6 +342,7 @@ public class OCSSWInfoGUI {
                 File newDir = getDir();
                 if (newDir != null) {
                     ocsswSharedDir.setText(newDir.getAbsolutePath());
+                    pc.setValue(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir.getText());
                     modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
                 }
             }
@@ -391,6 +374,8 @@ public class OCSSWInfoGUI {
 
     private JPanel getRemoteServerPanel() {
 
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
         panel.setBorder(UIUtils.createGroupBorder("Remote Server"));
@@ -419,13 +404,13 @@ public class OCSSWInfoGUI {
         serverErrorStreamPortTextfield.setMinimumSize(serverErrorStreamPortTextfield.getPreferredSize());
 
 
-        pc.addProperty(Property.create(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE));
+        pc.addProperty(Property.create(SEADAS_OCSSW_PORT_PROPERTY, preferences.get(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE)));
         pc.getDescriptor(SEADAS_OCSSW_PORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PORT_PROPERTY);
 
-        pc.addProperty(Property.create(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE));
+        pc.addProperty(Property.create(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, preferences.get(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE)));
         pc.getDescriptor(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY);
 
-        pc.addProperty(Property.create(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE));
+        pc.addProperty(Property.create(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, preferences.get(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE)));
         pc.getDescriptor(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY);
 
 
@@ -501,6 +486,7 @@ public class OCSSWInfoGUI {
 
     private JPanel getLocalOCSSWPanel() {
 
+        final Preferences preferences = Config.instance("seadas").load().preferences();
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
 
@@ -508,14 +494,16 @@ public class OCSSWInfoGUI {
 
 
         JLabel ocsswRootLabel = new JLabel("OCSSW ROOT: ");
-        JTextField ocsswRootTextfield = new JTextField(20);
 
         ocsswRootLabel.setMinimumSize(ocsswRootLabel.getPreferredSize());
+
+        ocsswRootTextfield = new JTextField(20);
         ocsswRootTextfield.setMinimumSize(new JTextField(10).getPreferredSize());
 
 
-        pc.addProperty(Property.create(SEADAS_OCSSW_ROOT_PROPERTY, SEADAS_OCSSW_ROOT_DEFAULT_VALUE));
+        pc.addProperty(Property.create(SEADAS_OCSSW_ROOT_PROPERTY, preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, SEADAS_OCSSW_ROOT_DEFAULT_VALUE)));
         pc.getDescriptor(SEADAS_OCSSW_ROOT_PROPERTY).setDisplayName(SEADAS_OCSSW_ROOT_PROPERTY);
+
         final BindingContext ctx = new BindingContext(pc);
 
         ctx.bind(SEADAS_OCSSW_ROOT_PROPERTY, ocsswRootTextfield);
@@ -536,6 +524,7 @@ public class OCSSWInfoGUI {
                 File newDir = getDir();
                 if (newDir != null) {
                     ocsswRootTextfield.setText(newDir.getAbsolutePath());
+                    pc.setValue(SEADAS_OCSSW_ROOT_PROPERTY, ocsswRootTextfield.getText());
                     modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
                 }
             }
@@ -651,6 +640,7 @@ public class OCSSWInfoGUI {
 
             private void handler(DocumentEvent e) {
                 if (simpleTextfieldCheck(textfield, directoryCheck)) {
+                    System.out.println(textfield.getText());
                     modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
                 } else {
                     modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
@@ -680,6 +670,8 @@ public class OCSSWInfoGUI {
 
     private JPanel ocsswBranchPanel() {
 
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+
         JPanel panel = GridBagUtils.createPanel();
 
         GridBagConstraints gbc = createConstraints();
@@ -691,7 +683,7 @@ public class OCSSWInfoGUI {
         ocsswBranchTextfield.setMinimumSize(new JTextField(5).getPreferredSize());
         ocsswBranchLabel.setToolTipText(BRANCH_TOOLTIP);
 
-        pc.addProperty(Property.create(SEADAS_OCSSW_BRANCH_PROPERTY, SEADAS_OCSSW_BRANCH_DEFAULT_VALUE));
+        pc.addProperty(Property.create(SEADAS_OCSSW_BRANCH_PROPERTY, preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, SEADAS_OCSSW_BRANCH_DEFAULT_VALUE)));
         pc.getDescriptor(SEADAS_OCSSW_BRANCH_PROPERTY).setDisplayName(SEADAS_OCSSW_BRANCH_PROPERTY);
 
         final BindingContext ctx = new BindingContext(pc);
