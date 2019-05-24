@@ -7,7 +7,7 @@
                 <attr name="displayName" stringvalue="Bathymetry2"/>
                 <attr name="dialogTitle" stringvalue="Bathymetry2"/>
                 <attr name="operatorName" stringvalue="BathymetryOp"/>
-                <attr name="helpId" stringvalue="BathymetryTool"/>
+                <attr name="helpId" stringvalue="bathymetry"/>
                 <attr name="targetProductNameSuffix" stringvalue="_bathymetry2"/>
             </file>
         </folder>
@@ -26,7 +26,6 @@
 
     <folder name="Services">
         <folder name="javahelp">
-            "https://www.youtube.com/watch?v=C5-sHY3KpP8ame="javahelp">
             <file name="gov-nasa-gsfc-seadas-BathymetryOp-helpset.xml" url="helpset.xml">
                 <attr name="position" intvalue="7510"/>
             </file>
