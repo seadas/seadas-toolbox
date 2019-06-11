@@ -6,9 +6,18 @@ Author: Danny Knowles
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.common.CloProgramUI;
+import gov.nasa.gsfc.seadas.processing.common.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileSelector;
+import gov.nasa.gsfc.seadas.processing.common.SimpleDialogMessage;
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.L2genParamCategoryInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -20,9 +29,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.ui.AppContext;
 
 
 public class L2genForm extends JPanel implements CloProgramUI {
@@ -59,7 +65,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
 
         masterData.showIOFields = showIOFields;
-
 
         SnapApp snapApp = SnapApp.getDefault();
         snapApp.setStatusBarMessage("Initializing L2gen GUI");
