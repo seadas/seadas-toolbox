@@ -1,20 +1,22 @@
 package gov.nasa.gsfc.seadas.processing.processor;
 
+import gov.nasa.gsfc.seadas.processing.common.CloProgramUI;
+import gov.nasa.gsfc.seadas.processing.common.GridBagConstraintsCustom;
+import gov.nasa.gsfc.seadas.processing.common.ProgramUIFactory;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.common.*;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import org.esa.snap.ui.ModalDialog;
+import org.esa.snap.ui.UIUtils;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import org.esa.snap.ui.ModalDialog;
-import org.esa.snap.ui.UIUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -325,33 +327,33 @@ public class MultilevelProcessorRow {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
-    private File getTinyIFile() {
-        String ifileName = parentForm.getFirstIFile();
-        FileInfo fileInfo = null;
-        String missionName = (new MissionInfo(MissionInfo.Id.SEAWIFS)).getName();
-
-        if (ifileName != null) {
-            fileInfo = new FileInfo(ifileName);
-            MissionInfo.Id missionId = fileInfo.getMissionId();
-            if (missionId == MissionInfo.Id.SEAWIFS ||
-                    missionId == MissionInfo.Id.MODISA ||
-                    missionId == MissionInfo.Id.MODIST ||
-                    missionId == MissionInfo.Id.MERIS ||
-                    missionId == MissionInfo.Id.CZCS ||
-                    missionId == MissionInfo.Id.OCTS) {
-                missionName = fileInfo.getMissionName();
-            }
-        }
-
-        missionName = missionName.replace(' ', '_');
-        String tinyFileName = "tiny_" + missionName;
-
-        if (fileInfo != null && fileInfo.isGeofileRequired()) {
-            L2genData.installResource(tinyFileName + ".GEO");
-        }
-
-        return L2genData.installResource(tinyFileName);
-    }
+//    private File getTinyIFile() {
+//        String ifileName = parentForm.getFirstIFile();
+//        FileInfo fileInfo = null;
+//        String missionName = (new MissionInfo(MissionInfo.Id.SEAWIFS)).getName();
+//
+//        if (ifileName != null) {
+//            fileInfo = new FileInfo(ifileName);
+//            MissionInfo.Id missionId = fileInfo.getMissionId();
+//            if (missionId == MissionInfo.Id.SEAWIFS ||
+//                    missionId == MissionInfo.Id.MODISA ||
+//                    missionId == MissionInfo.Id.MODIST ||
+//                    missionId == MissionInfo.Id.MERIS ||
+//                    missionId == MissionInfo.Id.CZCS ||
+//                    missionId == MissionInfo.Id.OCTS) {
+//                missionName = fileInfo.getMissionName();
+//            }
+//        }
+//
+//        missionName = missionName.replace(' ', '_');
+//        String tinyFileName = "tiny_" + missionName;
+//
+//        if (fileInfo != null && fileInfo.isGeofileRequired()) {
+//            L2genData.installResource(tinyFileName + ".GEO");
+//        }
+//
+//        return L2genData.installResource(tinyFileName);
+//    }
 
     public boolean isCheckboxControlHandlerEnabled() {
         return checkboxControlHandlerEnabled;
