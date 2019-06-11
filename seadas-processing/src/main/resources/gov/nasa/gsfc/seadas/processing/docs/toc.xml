@@ -26,7 +26,7 @@
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
             <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
             <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
-
+            <tocitem text="OCSSW Configuration" target="ocsswInfoConfig"/>
             <tocitem text="Product Extractors">
                 <tocitem text="Introduction" target="extractor"/>
                 <tocitem text="l1aextract_modis" target="l1aextract_modis"/>

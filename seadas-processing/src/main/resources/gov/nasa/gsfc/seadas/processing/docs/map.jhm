@@ -27,4 +27,5 @@
     <mapID target="smigen" url="processors/ProcessSmigen.html"/>
     <mapID target="multilevel_processor.py" url="processors/ProcessMultilevel_processor.html"/>
     <mapID target="processOverview" url="processors/ProcessOverview.html"/>
+    <mapID target="ocsswInfoConfig" url="processors/OCSSWInfoConfig.html"/>
 </map>
