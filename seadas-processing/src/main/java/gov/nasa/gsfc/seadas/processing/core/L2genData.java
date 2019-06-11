@@ -174,7 +174,7 @@ public class L2genData implements SeaDASProcessorModel {
         }
     }
 
-//    private L2genData() {
+    //    private L2genData() {
 //        this(Mode.L2GEN);
 //    }
     private L2genData(Mode mode, OCSSW ocssw) {
@@ -377,8 +377,8 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
     public EventInfo[] eventInfos = {
-        new EventInfo(L2PROD, this),
-        new EventInfo(PARSTRING, this)
+            new EventInfo(L2PROD, this),
+            new EventInfo(PARSTRING, this)
     };
 
     private EventInfo getEventInfo(String name) {
@@ -571,7 +571,7 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
     public void sortParamInfos() {
-        Collections.sort((List<ParamInfo>)paramInfos);
+        Collections.sort((List<ParamInfo>) paramInfos);
     }
 
     public ArrayList<L2genWavelengthInfo> getWaveLimiterInfos() {
@@ -1520,9 +1520,12 @@ public class L2genData implements SeaDASProcessorModel {
         l2genDir.mkdirs();
 
         File xmlFile = new File(l2genDir, getProductInfoXml());
+        SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
+        SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
 
         if (source == Source.RESOURCES) {
             if (!xmlFile.exists() || overwrite) {
+                SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file does not exist!");
                 xmlFile = installResource(getProductInfoXml());
             }
 
@@ -1564,7 +1567,9 @@ public class L2genData implements SeaDASProcessorModel {
 
                     return new FileInputStream(xmlFile);
                 } catch (IOException e) {
+                    SeadasLogger.getLogger().severe(this.getClass().getName() + ": Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + e.getMessage() + "\n" );
                     throw new IOException("Problem creating product XML file: " + e.getMessage());
+
                 }
             }
         }
@@ -1578,7 +1583,13 @@ public class L2genData implements SeaDASProcessorModel {
         File l2genDir = new File(dataDir, OPER_DIR);
         l2genDir.mkdirs();
 
+        SeadasFileUtils.debug("l2gen xml file dir :" + l2genDir.getAbsolutePath());
+        SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + l2genDir.getAbsolutePath());
+
         File xmlFile = new File(l2genDir, getParamInfoXml());
+
+        SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
+        SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
 
         if (!xmlFile.exists()) {
             xmlFile = installResource(getParamInfoXml());
@@ -1768,23 +1779,27 @@ public class L2genData implements SeaDASProcessorModel {
         return StringUtils.join(productArrayList, " ");
     }
 
-    public  static File installResource(final String fileName) {
+    public File installResource(final String fileName) {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), OPER_DIR);
         File theFile = new File(dataDir, fileName);
         if (theFile.canRead()) {
             return theFile;
         }
-        final Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(L2genData.class);
+        final Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(this.getClass());
 
         Path targetPath = dataDir.toPath();
 
-        Path sourcePath = moduleBasePath.resolve("gov/nasa/gsfc/seadas/processing/l2gen/userInterface/").toAbsolutePath();
+        Path sourcePath = moduleBasePath.resolve("gov/nasa/gsfc/seadas/processing/l2gen/userInterface").toAbsolutePath();
+
+        SeadasLogger.getLogger().info(this.getClass().getName() + " Installing resource from  " + sourcePath.toString() + "   to  " + targetPath.toString());
+
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourcePath, targetPath);
         try {
             resourceInstaller.install(".*.xml", ProgressMonitor.NULL);
+            SeadasLogger.getLogger().info(System.getProperty(this.getClass().getName() + ": resource install successful. All xml files are copied to ")  + targetPath.toString());
         } catch (IOException e) {
             e.printStackTrace();
-            SystemUtils.LOG.severe("Unable to install " + sourcePath + File.separator + fileName + " to " + targetPath + " " + e.getMessage());
+            SeadasLogger.getLogger().severe("Unable to install " + sourcePath + File.separator + fileName + " to " + targetPath + " " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
