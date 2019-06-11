@@ -5,3 +5,5 @@ OpenIDE-Module-Java-Dependencies: Java > 1.8
 OpenIDE-Module-Display-Category: SeaDAS Toolbox
 OpenIDE-Module-Specification-Version: ${seadas.nbmSpecVersion}
 OpenIDE-Module-Long-Description: Test
+OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
+
