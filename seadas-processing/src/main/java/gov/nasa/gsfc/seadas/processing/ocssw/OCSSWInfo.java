@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.runtime.Config;
 import org.glassfish.jersey.client.ClientConfig;
@@ -152,7 +153,9 @@ public class OCSSWInfo {
         return ocsswInfo;
     }
 
-    public int getProcessInputStreamPort() {http://alagr.com/book/Uyghur/files/mobile-ext/appLogoIcon.png
+    public int getProcessInputStreamPort() {
+        http:
+//alagr.com/book/Uyghur/files/mobile-ext/appLogoIcon.png
         return processInputStreamPort;
     }
 
@@ -223,25 +226,24 @@ public class OCSSWInfo {
     public void initializeLocalOCSSW() {
         ocsswServerUp = true;
         String ocsswRootPath = preferences.get("seadas.ocssw.root", System.getenv("OCSSWROOT"));
-        if (ocsswRootPath.startsWith("$")) {
-            ocsswRootPath = System.getProperty(ocsswRootPath.substring(ocsswRootPath.indexOf("{") + 1, ocsswRootPath.indexOf("}"))) + ocsswRootPath.substring(ocsswRootPath.indexOf("}") + 1);
-        }
+
         if (ocsswRootPath == null) {
             ocsswRootPath = preferences.get("seadas.home", System.getProperty("user.home")) + File.separator + "ocssw";
-        }
-        if (ocsswRootPath != null) {
+        } else if (ocsswRootPath.startsWith("$")) {
+            ocsswRootPath = System.getProperty(ocsswRootPath.substring(ocsswRootPath.indexOf("{") + 1, ocsswRootPath.indexOf("}"))) + ocsswRootPath.substring(ocsswRootPath.indexOf("}") + 1);
+        } else {
             final File dir = new File(ocsswRootPath + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
-            System.out.println("server ocssw root path: " + dir.getAbsoluteFile());
+            SeadasLogger.getLogger().info("server ocssw root path: " + dir.getAbsoluteFile());
             if (dir.isDirectory()) {
                 ocsswExist = true;
             }
-            ocsswRoot = ocsswRootPath;
-            ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
-            ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
-            ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM_NAME;
-            ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
-            ocsswBinDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
         }
+        ocsswRoot = ocsswRootPath;
+        ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
+        ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
+        ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM_NAME;
+        ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
+        ocsswBinDirPath = ocsswRoot + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
     }
 
     private boolean initializeRemoteOCSSW(String serverAPI) {
