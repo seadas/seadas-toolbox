@@ -41,7 +41,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 public class OCSSWInfoGUI {
 
     final String PANEL_NAME = "OCSSW Configuration";
-    final String HELP_ID = "ocsswInfo";
+    final String HELP_ID = "ocsswInfoConfig";
 
     final String  BRANCH_TOOLTIP = "<html>The OCSSW installation branch<br>" +
             "This by default will match the SeaDAS version (first two decimal fields)<br> " +
