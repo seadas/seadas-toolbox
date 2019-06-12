@@ -3,6 +3,6 @@
 
 <map version="2.0">
 
-    <mapID target="contourLines" url="ContourLines.html"/>
+    <mapID target="contourLinesHelp" url="tools/ContourLines.html"/>
 
 </map>

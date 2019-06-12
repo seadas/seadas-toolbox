@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.contour.action;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
@@ -8,10 +10,8 @@ import gov.nasa.gsfc.seadas.contour.operator.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.FeatureUtils;
-import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
-import org.esa.snap.rcp.actions.layer.overlay.AbstractOverlayAction;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.product.ProductSceneView;
@@ -31,8 +31,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Coordinate;
 import org.openide.util.actions.Presenter;
 
 import javax.media.jai.JAI;
@@ -360,31 +358,5 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
         }
         super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands && hasGeoCoding);
     }
-//    @Override
-//    protected boolean getActionSelectionState(ProductSceneView view) {
-//        return view.isGraticuleOverlayEnabled();
-////        return isEnabled();
-//    }
-//
-//    @Override
-//    protected boolean getActionEnabledState(ProductSceneView view) {
-//        return ProductUtils.canGetPixelPos(view.getRaster());
-//    }
-//
-//    @Override
-//    protected void setOverlayEnableState(ProductSceneView view) {
-//        view.setGraticuleOverlayEnabled(!getActionSelectionState(view));
-////        setEnabled(!getActionSelectionState(view));
-//    }
-
-//    @Override
-//    public boolean isEnabled() {
-//        return enabled;
-//    }
-//
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//        this.enabled = enabled;
-//    }
 }
 
