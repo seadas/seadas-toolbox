@@ -3,6 +3,6 @@
 
 <map version="2.0">
 
-    <mapID target="coastlineLandMasks" url="CoastlineLandMasks.html"/>
+    <mapID target="coastlineLandMasks" url="tools/CoastlineLandMasks.html"/>
 
 </map>
