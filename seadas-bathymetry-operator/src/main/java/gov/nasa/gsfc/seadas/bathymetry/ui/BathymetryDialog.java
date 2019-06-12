@@ -3,17 +3,17 @@ package gov.nasa.gsfc.seadas.bathymetry.ui;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
-//import org.esa.beam.framework.help.HelpSys;
+import org.openide.util.HelpCtx;
 
-import javax.help.DefaultHelpBroker;
 import javax.help.HelpBroker;
-import javax.help.HelpSet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+//import org.esa.beam.framework.help.HelpSys;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,11 +37,7 @@ class BathymetryDialog extends JDialog {
     public BathymetryDialog(BathymetryData bathymetryData, boolean masksCreated, boolean bandCreated) {
         this.bathymetryData = bathymetryData;
 
-//        initHelpBroker();
-
-        if (helpBroker != null) {
-            helpButton = getHelpButton(HELP_ID);
-        }
+        helpButton = getHelpButton(HELP_ID);
 
         if (masksCreated) {
             createNotificationUI();
@@ -51,40 +47,22 @@ class BathymetryDialog extends JDialog {
     }
 
 
-    protected Component getHelpButton(String helpId) {
+    protected AbstractButton getHelpButton(String helpId) {
         if (helpId != null) {
-
             final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
                     false);
-
-            HelpSet helpSet = helpBroker.getHelpSet();
-            helpBroker.setCurrentID(helpId);
-
-            if (helpButton != null) {
-                helpButton.setToolTipText("Help");
-                helpButton.setName("helpButton");
-                helpBroker.enableHelpKey(helpButton, helpId, helpSet);
-                helpBroker.enableHelpOnButton(helpButton, helpId, helpSet);
-            }
-
+            helpButton.setToolTipText("Help.");
+            helpButton.setName("helpButton");
+            helpButton.addActionListener(e -> getHelpCtx(helpId).display());
             return helpButton;
         }
 
         return null;
     }
 
-
-//    private void initHelpBroker() {
-//        HelpSet helpSet = HelpSys.getHelpSet();
-//        if (helpSet != null) {
-//            helpBroker = helpSet.createHelpBroker();
-//            if (helpBroker instanceof DefaultHelpBroker) {
-//                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
-//                defaultHelpBroker.setActivationWindow(this);
-//            }
-//        }
-//    }
-
+    public HelpCtx getHelpCtx(String helpId) {
+        return new HelpCtx(helpId);
+    }
 
     public final void createNotificationUI() {
         JButton createMasks = new JButton("Recreate Bathymetry Mask");
@@ -308,9 +286,6 @@ class BathymetryDialog extends JDialog {
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
-
-
-
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
 
@@ -378,8 +353,8 @@ class BathymetryDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         buttonsJPanel.add(createMasks,
                 new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-//        buttonsJPanel.add(helpButton,
-//                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        buttonsJPanel.add(helpButton,
+                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         createMasks.setAlignmentX(0.5f);
 
