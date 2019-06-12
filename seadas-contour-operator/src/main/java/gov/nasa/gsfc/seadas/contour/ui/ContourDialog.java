@@ -10,7 +10,6 @@ import org.esa.snap.rcp.imgfilter.model.Filter;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.openide.util.HelpCtx;
-import org.openide.windows.TopComponent;
 
 import javax.help.HelpBroker;
 import javax.swing.*;
@@ -43,7 +42,7 @@ public class ContourDialog extends JDialog {
     private Component helpButton = null;
     private HelpBroker helpBroker = null;
 
-    private final static String helpId = "contourLines";
+    private final static String helpId = "contourLinesHelp";
     private final static String HELP_ICON = "icons/Help24.gif";
 
     private Product product;
@@ -223,7 +222,7 @@ public class ContourDialog extends JDialog {
     }
 
     public HelpCtx getHelpCtx() {
-        return new HelpCtx(TopComponent.class);
+        return new HelpCtx(helpId);
     }
 
 
