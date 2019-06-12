@@ -2,25 +2,17 @@ package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-
-import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
+import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.GPF;
-import org.esa.snap.core.util.ProductUtils;
-
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
-import org.esa.snap.rcp.imgfilter.model.Filter;
-import org.esa.snap.core.gpf.annotations.OperatorMetadata;
-import org.esa.snap.core.gpf.annotations.Parameter;
-import org.esa.snap.core.gpf.annotations.SourceProduct;
-import org.esa.snap.core.gpf.annotations.TargetProduct;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
-
+import org.openide.util.actions.Presenter;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -28,26 +20,19 @@ import javax.media.jai.operator.FormatDescriptor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
-import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
-import org.openide.util.actions.Presenter;
 
 
 /**
  * This registers an action which calls the "bathymetry" Operator
  *
  * @author Danny Knowles
+ * @author Aynur Abdurazik
+ * @author Bing Yang
  */
 @ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryAction" )
 @ActionRegistration(displayName = "#CTL_BathymetryAction_Text", lazy = false)
