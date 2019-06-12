@@ -3,9 +3,9 @@ package gov.nasa.gsfc.seadas.watermask.ui;
 
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
+import org.openide.util.HelpCtx;
 
 import javax.help.HelpBroker;
-import javax.help.HelpSet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,11 +26,7 @@ class LandMasksDialog extends JDialog {
     public LandMasksDialog(LandMasksData landMasksData, boolean masksCreated) {
         this.landMasksData = landMasksData;
 
-        //initHelpBroker();
-
-        if (helpBroker != null) {
-            helpButton = getHelpButton(HELP_ID);
-        }
+        helpButton = getHelpButton(HELP_ID);
 
         if (masksCreated) {
             createNotificationUI();
@@ -39,43 +35,22 @@ class LandMasksDialog extends JDialog {
         }
     }
 
-
-    protected Component getHelpButton(String helpId) {
+    protected AbstractButton getHelpButton(String helpId) {
         if (helpId != null) {
-
             final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
                     false);
-
-            HelpSet helpSet = helpBroker.getHelpSet();
-            helpBroker.setCurrentID(helpId);
-
-            if (helpButton != null) {
-                helpButton.setToolTipText("Help");
-                helpButton.setName("helpButton");
-                helpBroker.enableHelpKey(helpButton, helpId, helpSet);
-                helpBroker.enableHelpOnButton(helpButton, helpId, helpSet);
-            }
-
+            helpButton.setToolTipText("Help.");
+            helpButton.setName("helpButton");
+            helpButton.addActionListener(e ->getHelpCtx(helpId).display());
             return helpButton;
         }
 
         return null;
     }
 
-
-//    private void initHelpBroker() {
-//        HelpSet helpSet = HelpCtx.setHelpIDString();
-//        if (helpSet != null) {
-//            helpBroker = helpSet.createHelpBroker();
-//            if (helpBroker instanceof DefaultHelpBroker) {
-//                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
-//                defaultHelpBroker.setActivationWindow(this);
-//            }
-//        }
-//    }
-
-
-
+    public HelpCtx getHelpCtx(String helpId) {
+        return new HelpCtx(helpId);
+    }
 
     public final void createNotificationUI() {
         JButton createMasks = new JButton("Create New Masks");
@@ -114,8 +89,8 @@ class LandMasksDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         buttonsJPanel.add(createMasks,
                 new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-//        buttonsJPanel.add(helpButton,
-//                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        buttonsJPanel.add(helpButton,
+                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         JLabel jLabel = new JLabel("Masks have already been created for this product");
@@ -362,8 +337,8 @@ class LandMasksDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         buttonsJPanel.add(createMasks,
                 new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-//        buttonsJPanel.add(helpButton,
-//                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        buttonsJPanel.add(helpButton,
+                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         createMasks.setAlignmentX(0.5f);
 
