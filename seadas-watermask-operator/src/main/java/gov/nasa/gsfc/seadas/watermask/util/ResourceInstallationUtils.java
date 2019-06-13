@@ -105,7 +105,6 @@ public class ResourceInstallationUtils {
         File targetModuleDir = new File(SystemUtils.getApplicationDataDir(), WATERMASK_MODULE_NAME);
         File targetDir = new File(targetModuleDir, AUXDIR);
         File targetFile = new File(targetDir, filename);
-
         return targetFile;
     }
 
@@ -124,16 +123,14 @@ public class ResourceInstallationUtils {
 
     public static File installAuxdata(Class sourceClass, String filename) {
         File targetFile = getTargetFile(filename);
-
         if (!targetFile.canRead()) {
             Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(ResourceInstallationUtils.class);
             Path sourcePath = moduleBasePath.resolve(AUXPATH).toAbsolutePath();
             Path targetPath = targetFile.getParentFile().toPath();
             ResourceInstaller resourceInstaller = new ResourceInstaller(sourcePath, targetPath);
             try {
-                System.out.println("source class: " + sourceClass.getName() + " module base path: " + moduleBasePath + " source: " + sourcePath);
-                System.out.println("target: " + targetPath);
-
+//                System.out.println("source class: " + sourceClass.getName() + " module base path: " + moduleBasePath + " source: " + sourcePath);
+//                System.out.println("target: " + targetPath);
                 resourceInstaller.install(".*.zip", ProgressMonitor.NULL);
             } catch (Exception e) {
                 e.printStackTrace();
