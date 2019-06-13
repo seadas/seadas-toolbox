@@ -4,7 +4,6 @@ import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -118,7 +117,7 @@ public class SourceFileInfo {
         try{
             file = ResourceInstallationUtils.installAuxdata(WatermaskClassifier.class, filename);
             setStatus(true, null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             setStatus(false, e.getMessage());
         }
 
