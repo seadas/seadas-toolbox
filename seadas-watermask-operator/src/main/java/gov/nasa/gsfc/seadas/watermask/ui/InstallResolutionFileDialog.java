@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
-import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
 
 import javax.swing.*;
@@ -72,25 +71,6 @@ class InstallResolutionFileDialog extends JDialog {
                         Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, landMasksData));
                         t.start();
                     }
-
-
-//                    if (sourceFileInfo.getMode() == WatermaskClassifier.Mode.SRTM_GC) {
-//                        File gcFile = ResourceInstallationUtils.getTargetFile(WatermaskClassifier.GC_WATER_MASK_FILE);
-//
-//                        if (!gcFile.exists()) {
-//                            final URL northSourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + gcFile.getName());
-//
-//                            Thread t2 = new Thread(new FileInstallRunnable(northSourceUrl, gcFile.getName(), sourceFileInfo, landMasksData));
-//                            t2.start();
-//                        }
-//                    }
-
-
-//                    File targetDir = ResourceInstallationUtils.getTargetDir();
-//                    ProcessBuilder pb = new ProcessBuilder("wget.py", sourceUrl.toString(), targetDir.getAbsolutePath());
-//                    pb.start();
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -98,26 +78,7 @@ class InstallResolutionFileDialog extends JDialog {
             }
         });
 
-//        this.addPropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                SourceFileInfo sourceFileInfo = (SourceFileInfo) evt.getNewValue();
-//
-//                InstallResolutionFileDialog dialog = new InstallResolutionFileDialog(this, sourceFileInfo, InstallResolutionFileDialog.Step.CONFIRMATION);
-//                dialog.setVisible(true);
-//                dialog.setEnabled(true);
-//
-//                if (sourceFileInfo.isEnabled()) {
-//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " has been installed");
-//                    landMasksData.fireEvent(LandMasksData.FILE_INSTALLED_EVENT2);
-//                } else {
-//                    jLabel = new JLabel("File " + sourceFileInfo.getFile().getName().toString() + " installation failure");
-//                }
-//
-//                landMasksData.removePropertyChangeListener(LandMasksData.FILE_INSTALLED_EVENT, this);
-//            }
-//        });
-//
+
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
         cancelButton.setMinimumSize(cancelButton.getPreferredSize());
@@ -140,8 +101,8 @@ class InstallResolutionFileDialog extends JDialog {
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         buttonsJPanel.add(installButton,
                 new ExGridBagConstraints(2, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-//        buttonsJPanel.add(helpButton,
-//                new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        //buttonsJPanel.add(helpButton,
+        //        new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
         jLabel = new JLabel("Do you want to install file " + sourceFileInfo.getFile().getName().toString() + " ?");

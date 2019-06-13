@@ -122,16 +122,22 @@ public class ResourceInstallationUtils {
 
     }
 
-    public static File installAuxdata(Class sourceClass, String filename) throws IOException {
+    public static File installAuxdata(Class sourceClass, String filename) {
         File targetFile = getTargetFile(filename);
 
         if (!targetFile.canRead()) {
-            Path sourceUrl = ResourceInstaller.findModuleCodeBasePath(sourceClass);
-            ResourceInstaller resourceInstaller = new ResourceInstaller(sourceUrl, targetFile.getParentFile().toPath());
+            Path moduleBasePath = ResourceInstaller.findModuleCodeBasePath(ResourceInstallationUtils.class);
+            Path sourcePath = moduleBasePath.resolve(AUXPATH).toAbsolutePath();
+            Path targetPath = targetFile.getParentFile().toPath();
+            ResourceInstaller resourceInstaller = new ResourceInstaller(sourcePath, targetPath);
             try {
-                resourceInstaller.install(filename, ProgressMonitor.NULL);
+                System.out.println("source class: " + sourceClass.getName() + " module base path: " + moduleBasePath + " source: " + sourcePath);
+                System.out.println("target: " + targetPath);
+
+                resourceInstaller.install(".*.zip", ProgressMonitor.NULL);
             } catch (Exception e) {
-                throw new IOException("file failed: " + e.getMessage());
+                e.printStackTrace();
+                System.out.println("file failed: " + e.getMessage());
             }
         }
         return targetFile;
