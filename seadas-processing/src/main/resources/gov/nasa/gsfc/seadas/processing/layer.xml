@@ -1,0 +1,10 @@
+<filesystem>
+    <folder name="Services">
+        <folder name="javahelp">
+            <file name="gov-nasa-gsfc-seadas-processing-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="5910"/>
+            </file>
+        </folder>
+    </folder>
+
+</filesystem>

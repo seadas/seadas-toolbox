@@ -2,20 +2,20 @@ package gov.nasa.gsfc.seadas.writeimage;
 
 import com.bc.ceres.core.ProgressMonitor;
 import junit.framework.TestCase;
-import org.esa.beam.GlobalTestConfig;
-import org.esa.beam.framework.dataio.ProductIO;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.gpf.Operator;
-import org.esa.beam.framework.gpf.OperatorSpi;
-import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
-import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.gpf.graph.Graph;
-import org.esa.beam.framework.gpf.graph.GraphIO;
-import org.esa.beam.framework.gpf.graph.GraphProcessor;
-import org.esa.beam.gpf.operators.standard.WriteOp;
-import org.esa.beam.util.io.FileUtils;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.Operator;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.Tile;
+import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.TargetProduct;
+import org.esa.snap.core.gpf.common.WriteOp;
+import org.esa.snap.core.gpf.graph.Graph;
+import org.esa.snap.core.gpf.graph.GraphIO;
+import org.esa.snap.core.gpf.graph.GraphProcessor;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.core.util.io.FileUtils;
 
 import javax.media.jai.JAI;
 import javax.media.jai.TileScheduler;
@@ -27,6 +27,13 @@ import java.io.StringReader;
  * Created by aabduraz on 7/30/15.
  */
 public class WriteImageOpTest extends TestCase {
+
+
+    public static final String SNAP_TEST_DATA_INPUT_DIR_PROPERTY_NAME = "org.esa.snap.testdata.in";
+    public static final String SNAP_TEST_DATA_OUTPUT_DIR_PROPERTY_NAME = "org.esa.snap.testdata.out";
+    public static final String SNAP_TEST_DATA_INPUT_DIR_DEFAULT_PATH = "testdata" + File.separatorChar + "in";
+    public static final String SNAP_TEST_DATA_OUTPUT_DIR_DEFAULT_PATH = "testdata" + File.separatorChar + "out";
+    
     private static final int RASTER_WIDTH = 4;
     private static final int RASTER_HEIGHT = 40;
 
@@ -39,12 +46,31 @@ public class WriteImageOpTest extends TestCase {
     protected void setUp() throws Exception {
         GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(writeImageSpi);
         GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(writeSpi);
-        outputFile = GlobalTestConfig.getBeamTestDataOutputFile("WriteImageOpTest/writtenProduct.dim");
+        outputFile = getBeamTestDataOutputFile("WriteImageOpTest/writtenProduct.dim");
         outputFile.getParentFile().mkdirs();
 
         TileScheduler tileScheduler = JAI.getDefaultInstance().getTileScheduler();
         oldParallelism = tileScheduler.getParallelism();
         tileScheduler.setParallelism(Runtime.getRuntime().availableProcessors());
+    }
+
+    public static File getBeamTestDataOutputFile(String relPath) {
+        return new File(getBeamTestDataOutputDirectory(),
+                SystemUtils.convertToLocalPath(relPath));
+    }
+
+    public static File getBeamTestDataOutputDirectory() {
+        return getDirectory(SNAP_TEST_DATA_OUTPUT_DIR_PROPERTY_NAME,
+                SNAP_TEST_DATA_OUTPUT_DIR_DEFAULT_PATH);
+    }
+
+    private static File getDirectory(String propertyName, String beamRelDefaultPath) {
+        String filePath = System.getProperty(propertyName);
+        if (filePath != null) {
+            return new File(filePath);
+        }
+        return new File(SystemUtils.getApplicationHomeDir(),
+                SystemUtils.convertToLocalPath(beamRelDefaultPath));
     }
 
     @Override
@@ -140,7 +166,7 @@ public class WriteImageOpTest extends TestCase {
                     band.getName() + "-" + minX + "-" + minY,
                     "label", "descr",
                     new PixelPos(minX, minY), null,
-                    targetProduct.getGeoCoding());
+                    targetProduct.getSceneGeoCoding());
 
             targetProduct.getPinGroup().add(placemark);
 
