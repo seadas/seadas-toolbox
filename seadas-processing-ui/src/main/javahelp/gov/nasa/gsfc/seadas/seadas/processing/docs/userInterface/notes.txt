@@ -1,0 +1,601 @@
+L2gen design notes:
+
+
+
+//todo New: Categorization
+We want to add a new layer of categorization as defined in the xml file productCategories.xml.
+We want to combined the waveDependent and waveIndependent products together within this list.
+
+
+// todo ifile ofile stuff
+
+// todo make run button do something
+
+
+
+        <param>pversion</param>
+        <param>suite</param>
+        <param>il2file</param>
+        <param>metafile</param>
+        <param>resolution</param>
+        <param>chloc2_wave</param>
+        <param>chloc2_coef</param>
+        <param>chloc3_wave</param>
+        <param>chloc3_coef</param>
+        <param>chloc4_wave</param>
+        <param>chloc4_coef</param>
+        <param>chlclark_wave</param>
+        <param>chlclark_coef</param>
+        <param>kd2_wave</param>
+        <param>kd2_coef</param>
+        <param>coccolith</param>
+        <param>ctl_pt_incr</param>
+        <param>prodxmlfile</param>
+
+
+
+
+
+//    private void createWaveIndependentProductsJPanel(JPanel waveIndependentProductsJPanel) {
+//
+//        createWaveIndependentProductsJList();
+//
+//        JScrollPane waveIndependentProductsJScrollPane = new JScrollPane(waveIndependentProductsJList);
+//        waveIndependentProductsJScrollPane.setMinimumSize(new Dimension(400, 400));
+//        waveIndependentProductsJScrollPane.setMaximumSize(new Dimension(400, 400));
+//        waveIndependentProductsJScrollPane.setPreferredSize(new Dimension(400, 400));
+//
+//        waveIndependentProductsJPanel.setBorder(BorderFactory.createTitledBorder(WAVE_INDEPENDENT_PRODUCTS_JPANEL_TITLE));
+//        waveIndependentProductsJPanel.setLayout(new GridBagLayout());
+//
+//        // Add to waveIndependentProductsJPanel grid cell
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.fill = GridBagConstraints.BOTH;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        waveIndependentProductsJPanel.add(waveIndependentProductsJScrollPane, c);
+//    }
+
+
+//    private void createWaveIndependentProductsJList() {
+//
+//        waveIndependentProductsJList = new JList();
+//
+//        setWaveIndependentProductsJList();
+//
+//        // add listener to control
+//        waveIndependentProductsJList.addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                if (handleWaveIndependentProductsJListEnabled) {
+//                    handleWaveIndependentProductsJList();
+//                }
+//            }
+//        });
+//    }
+
+
+//    private void setWaveIndependentProductsJList() {
+//        // Create arrayList for all the algorithmInfo objects
+//        ArrayList<AlgorithmInfo> algorithmInfoArrayList = new ArrayList<AlgorithmInfo>();
+//
+//        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
+//            for (BaseInfo algorithmInfo : productInfo.getChildren()) {
+//                ((AlgorithmInfo) algorithmInfo).setToStringShowProductName(true);
+//                algorithmInfoArrayList.add((AlgorithmInfo) algorithmInfo);
+//            }
+//        }
+//
+//        // Store the arrayList into an array which can then be fed into a JList control
+//        AlgorithmInfo[] algorithmInfoArray = new AlgorithmInfo[algorithmInfoArrayList.size()];
+//        algorithmInfoArrayList.toArray(algorithmInfoArray);
+//
+//        // format the JList control
+//        waveIndependentProductsJList.setListData(algorithmInfoArray);
+//
+//        //     setSelectionStatesWaveIndependentProductsJList();
+//    }
+
+
+
+
+//    private void handleWaveIndependentProductsJList() {
+//
+//        l2genData.disableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
+//
+//        Object[] selectedElements = waveIndependentProductsJList.getSelectedValues();
+//
+//        for (Object object : selectedElements) {
+//            AlgorithmInfo algorithmInfo = (AlgorithmInfo) object;
+//
+//            if (!algorithmInfo.isSelected()) {
+//                l2genData.setSelectedWaveIndependentProduct(algorithmInfo, true);
+//            }
+//        }
+//
+//        waveIndependentProductsJList.clearSelection();
+//        l2genData.enableEvent(l2genData.WAVE_INDEPENDENT_PRODUCT_CHANGED);
+//    }
+
+
+//    private void setSelectionStatesWaveIndependentProductsJList() {
+//        waveIndependentProductsJList.clearSelection();
+//
+//        int idx = 0;
+//
+//        for (ProductInfo productInfo : l2genData.getWaveIndependentProductInfoArray()) {
+//            for (AlgorithmInfo algorithmInfo : productInfo.getAlgorithmInfoArrayList()) {
+//
+//                if (algorithmInfo.isSelected() == true) {
+//                    waveIndependentProductsJList.setSelectedIndex(idx);
+//                }
+//
+//                idx++;
+//            }
+//        }
+//    }
+
+
+
+
+    private boolean isValidL2prod(String inProductFullName) {
+
+        if (inProductFullName != null) {
+            for (ProductInfo productInfo : productInfoArray) {
+                for (BaseInfo aInfo : productInfo.getChildren()) {
+                    AlgorithmInfo algorithmInfo = (AlgorithmInfo) aInfo;
+
+                    if (algorithmInfo.getParameterType() == AlgorithmInfo.ParameterType.NONE) {
+                        if (inProductFullName.equals(algorithmInfo.getFullName())) {
+                            return true;
+                        }
+                    } else {
+                        for (BaseInfo wInfo : aInfo.getChildren()) {
+                            WavelengthInfo wavelengthInfo = (WavelengthInfo) wInfo;
+
+                            if (inProductFullName.equals(wavelengthInfo.getFullName())) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+
+
+
+//
+//    class SelectedProductsTableModel extends AbstractTableModel {
+//
+//
+//        String[] columnNames = {"Selected", "Product"};
+//        Object[][] data = null;
+//
+//
+//        public SelectedProductsTableModel(ArrayList<Object> selectedProductObjects) {
+//
+//            if (selectedProductObjects != null) {
+//                data = new Object[selectedProductObjects.size()][2];
+//
+//                int idx = 0;
+//                for (Object selectedProductObject : selectedProductObjects) {
+//                    data[idx][0] = new Boolean(false);
+//                    data[idx][1] = selectedProductObject;
+//
+//                    idx++;
+//                }
+//            } else {
+//                data = new Object[1][2];
+//                data[0][0] = " ";
+//                data[0][1] = "No Products Selected";
+//            }
+//        }
+//
+//
+//        public int getColumnCount() {
+//            return columnNames.length;
+//        }
+//
+//        public int getRowCount() {
+//            return data.length;
+//        }
+//
+//        public String getColumnName(int col) {
+//            return (String) columnNames[col];
+//        }
+//
+//        public Object getValueAt(int row, int col) {
+//            return data[row][col];
+//        }
+//
+//
+//        /*
+//        * JTable uses this method to determine the default renderer/
+//        * editor for each cell.  If we didn't implement this method,
+//        * then the last column would contain text ("true"/"false"),
+//        * rather than a check box.
+//        */
+//        public Class getColumnClass(int c) {
+//            return getValueAt(0, c).getClass();
+//        }
+//
+//        /*
+//        * Don't need to implement this method unless your table's
+//        * editable.
+//        */
+//        public boolean isCellEditable(int row, int col) {
+//            //Note that the data/cell address is constant,
+//            //no matter where the cell appears onscreen.
+//            if (col < 2) {
+//                return false;
+//            } else {
+//                return true;
+//            }
+//        }
+//
+//        /*
+//        * Don't need to implement this method unless your table's
+//        * data can change.
+//        */
+//        public void setValueAt(Object value, int row, int col) {
+//            data[row][col] = value;
+//            fireTableCellUpdated(row, col);
+//        }
+//
+//    }
+//
+//
+//    private void createProductsCartTab(String myTabname) {
+//
+//        final String COORDINATES_PANEL_TITLE = "Selected Products";
+//
+//        productsCartJPanel = new JPanel();
+//        productsCartJTable = new JTable();
+//
+//        productsCartJTable.addMouseListener(new MouseListener() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                selectedProductsJTableMouseClickedHandler(e);
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                //To change body of implemented methods use File | Settings | File Templates.
+//            }
+//        });
+//
+//        JButton selectedProductsRemoveButton = new JButton("Remove");
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create mainPanel to hold all controls
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel mainPanel = new JPanel();
+//        mainPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
+//        mainPanel.setLayout(new GridBagLayout());
+//
+//        productsCartJPanel.add(new JScrollPane(productsCartJTable));
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.fill = GridBagConstraints.NONE;
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        mainPanel.add(productsCartJPanel, c);
+//
+//
+//        selectedProductsRemoveButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                handleSelectedProductsDelete();
+//            }
+//        });
+//
+//        //
+//        //
+//
+//        c = SeadasGuiUtils.makeConstraints(0, 1);
+//        c.fill = GridBagConstraints.NONE;
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//        mainPanel.add(selectedProductsRemoveButton, c);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel wrappedMainPanel = SeadasGuiUtils.addPaddedWrapperPanel(
+//                mainPanel,
+//                3,
+//                GridBagConstraints.NORTHWEST,
+//                GridBagConstraints.NONE);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add wrappedMainPanel to tabbedPane
+//        // ----------------------------------------------------------------------------------------
+//
+//        addTab(myTabname, wrappedMainPanel);
+//    }
+//
+//
+//    private void selectedProductsJTableMouseClickedHandler(MouseEvent e) {
+//        int row = productsCartJTable.rowAtPoint(e.getPoint());
+//        int col = productsCartJTable.columnAtPoint(e.getPoint());
+//
+//
+//        if (col == 0) {
+//            if (productsCartJTable.getValueAt(row, col).equals(true)) {
+//                productsCartJTable.setValueAt(new Boolean(false), row, col);
+//            } else {
+//                productsCartJTable.setValueAt(new Boolean(true), row, col);
+//            }
+//        }
+//
+//    }
+//
+//
+//
+//    private void handleSelectedProductsDelete() {
+//
+//        ArrayList<Object> productsToDeleteArrayList = new ArrayList<Object>();
+//
+//
+//        for (int row = 0; row < productsCartJTable.getRowCount(); row++) {
+//
+//            if (productsCartJTable.getValueAt(row, 0).equals(true)) {
+//
+//                Object product = productsCartJTable.getValueAt(row, 1);
+//
+//                productsToDeleteArrayList.add(product);
+//
+//            }
+//        }
+//
+//
+//        for (Object productToDelete : productsToDeleteArrayList) {
+//            if (productToDelete instanceof AlgorithmInfo) {
+//                l2genData.setSelectedInfo((AlgorithmInfo) productToDelete, BaseInfo.State.NOT_SELECTED);
+//            } else if (productToDelete instanceof WavelengthInfo) {
+//                l2genData.setSelectedInfo((WavelengthInfo) productToDelete, BaseInfo.State.NOT_SELECTED);
+//            }
+//        }
+//    }
+//
+//
+//        private void productChangedHandler() {
+//
+//        selectedProductsJTextArea.setText(l2genData.getProdParamValue());
+//        parfileJTextArea.setText(l2genData.getParfile());
+//        productJTree.treeDidChange();
+//
+//        if (l2genData.getSelectedProducts().size() > 0) {
+//            System.out.println("make new selectedProductsTableModel with data");
+//            productsCartTableModel = new SelectedProductsTableModel(l2genData.getSelectedProducts());
+//
+//            productsCartJTable.setModel(productsCartTableModel);
+//
+//        } else {
+//            System.out.println("make new selectedProductsTableModel WITH NO data");
+//            productsCartTableModel = new SelectedProductsTableModel(null);
+//            productsCartJTable.setModel(productsCartTableModel);
+//        }
+//
+//        productsCartJTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+//        productsCartJTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+//
+//
+//        productsCartJTable.setRowSelectionAllowed(false);
+//        productsCartJTable.setColumnSelectionAllowed(false);
+//        productsCartJTable.setCellSelectionEnabled(false);
+//        productsCartJPanel.add(new JScrollPane(productsCartJTable));
+//
+//    }
+
+//        l2genData.addPropertyChangeListener(l2genData.PROD, new PropertyChangeListener() {
+//            @Override
+//
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                debug("RECEIVING PROD EVENT FIRE");
+//                productChangedHandler();
+//            }
+//
+//        });
+
+
+
+//
+//    private void createLatLonPane(JPanel inPanel) {
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Set all constants for this tabbed pane
+//        // ----------------------------------------------------------------------------------------
+//
+//        final int COORDINATES_JTEXTFIELD_LENGTH = 5;
+//
+//        final String COORDINATES_PANEL_TITLE = "Coordinates";
+//
+//        final String NORTH_LABEL = "N";
+//        final String SOUTH_LABEL = "S";
+//        final String EAST_LABEL = "E";
+//        final String WEST_LABEL = "W";
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        northJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        southJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        westJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//        eastJTextField = new JTextField(COORDINATES_JTEXTFIELD_LENGTH);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add lose focus listeners to all JTextField components
+//        // ----------------------------------------------------------------------------------------
+//
+//        northJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                northLostFocus();
+//            }
+//        });
+//
+//        southJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                southLostFocus();
+//            }
+//        });
+//
+//        westJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                westLostFocus();
+//            }
+//        });
+//
+//        eastJTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                eastLostFocus();
+//            }
+//        });
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create labels for all Swing controls used on this tabbed panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JLabel northLabel = new JLabel(NORTH_LABEL);
+//        final JLabel southLabel = new JLabel(SOUTH_LABEL);
+//        final JLabel westLabel = new JLabel(WEST_LABEL);
+//        final JLabel eastLabel = new JLabel(EAST_LABEL);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create mainPanel to hold all controls
+//        // ----------------------------------------------------------------------------------------
+//
+//        //     final JPanel inPanel = new JPanel();
+//        inPanel.setBorder(BorderFactory.createTitledBorder(COORDINATES_PANEL_TITLE));
+//        inPanel.setLayout(new GridBagLayout());
+//
+//        inPanel.add(northJTextField,
+//                SeadasGuiUtils.makeConstraints(2, 1, GridBagConstraints.NORTH));
+//
+//        inPanel.add(southJTextField,
+//                SeadasGuiUtils.makeConstraints(2, 3, GridBagConstraints.SOUTH));
+//
+//        inPanel.add(eastJTextField,
+//                SeadasGuiUtils.makeConstraints(3, 2, GridBagConstraints.EAST));
+//
+//        inPanel.add(westJTextField,
+//                SeadasGuiUtils.makeConstraints(1, 2, GridBagConstraints.WEST));
+//
+//        inPanel.add(northLabel,
+//                SeadasGuiUtils.makeConstraints(2, 0, GridBagConstraints.SOUTH));
+//
+//        inPanel.add(southLabel,
+//                SeadasGuiUtils.makeConstraints(2, 4, GridBagConstraints.NORTH));
+//
+//        inPanel.add(eastLabel,
+//                SeadasGuiUtils.makeConstraints(4, 2, GridBagConstraints.WEST));
+//
+//        inPanel.add(westLabel,
+//                SeadasGuiUtils.makeConstraints(0, 2, GridBagConstraints.EAST));
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Create wrappedMainPanel to hold mainPanel: this is a formatting wrapper panel
+//        // ----------------------------------------------------------------------------------------
+//
+//        final JPanel wrappedMainPanel = new JPanel();
+//        wrappedMainPanel.setLayout(new GridBagLayout());
+//
+//        GridBagConstraints c = SeadasGuiUtils.makeConstraints(0, 0);
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.insets = new Insets(3, 3, 3, 3);
+//        c.fill = GridBagConstraints.NONE;
+//        c.weightx = 1;
+//        c.weighty = 1;
+//
+//        wrappedMainPanel.add(inPanel, c);
+//
+//
+//        // ----------------------------------------------------------------------------------------
+//        // Add wrappedMainPanel to tabbedPane
+//        // ----------------------------------------------------------------------------------------
+//
+//    }
+//
+//
+
+
+
+
+// HELP EXAMPLE
+
+//        final JPanel helpPanel = new JPanel(new GridBagLayout());
+//        helpPanel.add(getHelpButton("l2gen"), BorderLayout.EAST);
+//
+//        mainPanel.add(helpPanel,
+//                new GridBagConstraintsCustom(0, 2, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 0, 2));
+
+//    protected AbstractButton getHelpButton(String helpId) {
+//        if (helpId != null) {
+//            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/Help24.gif"),
+//                    false);
+//            helpButton.setToolTipText("Help.");
+//            helpButton.setName("helpButton");
+//            HelpSys.enableHelpOnButton(helpButton, helpId);
+//            //  HelpSys.enableHelpKey(getParentDialogContentPane(), getHelpId());
+//            return helpButton;
+//        }
+//
+//        return null;
+//    }
+
+
+
+
+

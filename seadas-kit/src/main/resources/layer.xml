@@ -27,9 +27,4 @@
 
         <!--</folder>-->
     <!--</folder>-->
-
-    <folder name="Help">
-        <attr name="position" intvalue="9000"/>
-        <file name="org-netbeans-core-actions-AboutAction.shadow_hidden"/>
-    </folder>
 </filesystem>

@@ -51,11 +51,6 @@
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
-            <artifactId>snap-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
             <artifactId>snap-ui</artifactId>
             <version>7.0.0-SNAPSHOT</version>
         </dependency>
@@ -98,11 +93,11 @@
             <version>8.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--&lt;!&ndash;<groupId>org.esa.beam</groupId>&ndash;&gt;-->
-            <!--&lt;!&ndash;<artifactId>beam-core</artifactId>&ndash;&gt;-->
-            <!--&lt;!&ndash;<version>5.0.5-SNAPSHOT</version>&ndash;&gt;-->
-        <!--&lt;!&ndash;</dependency>&ndash;&gt;-->
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-core</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
