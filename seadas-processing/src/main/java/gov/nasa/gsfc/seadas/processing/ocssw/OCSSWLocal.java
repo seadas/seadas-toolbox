@@ -28,11 +28,6 @@ import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 
 public class OCSSWLocal extends OCSSW {
 
-    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
-    private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
-    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-
-
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
     private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
@@ -86,6 +81,11 @@ public class OCSSWLocal extends OCSSW {
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
+    }
+
+    @Override
+    public void updateOCSSWProgramXMLFiles() {
+
     }
 
     @Override
@@ -194,7 +194,27 @@ public class OCSSWLocal extends OCSSW {
 
     @Override
     public Process execute(String programName, String[] commandArrayParams) {
-        return null;
+
+        String[] programNameArray = {programName};
+        commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, commandArrayParams, commandArraySuffix);
+        return execute(commandArray);
+    }
+
+    @Override
+    public String executeUpdateLuts(ProcessorModel processorModel){
+        String[] programNameArray = {programName};
+        String[] commandArrayParams =  getCommandArrayParam(processorModel.getParamList());
+        Process process = null;
+        for (String param: commandArrayParams) {
+            commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, new String[]{param}, commandArraySuffix);
+            process = execute(commandArray);
+        }
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return process.exitValue() == 0? "Update Luts successful." : "Update Luts failed.";
     }
 
     @Override
