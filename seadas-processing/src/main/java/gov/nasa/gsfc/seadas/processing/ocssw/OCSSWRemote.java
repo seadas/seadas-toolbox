@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -604,6 +605,24 @@ public class OCSSWRemote extends OCSSW {
     }
 
     @Override
+    public void updateOCSSWProgramXMLFiles() {
+
+    }
+
+    @Override
+    public String executeUpdateLuts(ProcessorModel processorModel) {
+        this.processorModel = processorModel;
+        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+        JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+        Response response = target.path("ocssw").path("executeUpdateLutsProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        if  (response.getStatus() == 200 ) {
+            return "Update Luts successful";
+        } else {
+            return "Update Luts failed on server";
+        }
+    }
+
+    @Override
     public void getOutputFiles(ProcessorModel processorModel) {
         if (processorModel.getProgramName() == MLP_PROGRAM_NAME) {
             downloadMLPOutputFiles(processorModel);
@@ -1032,7 +1051,10 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public Process execute(String programName, String[] commandArrayParams) {
-        return null;
+
+        String[] programNameArray = {programName};
+        commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, commandArrayParams, commandArraySuffix);
+        return execute(commandArray);
     }
 
     @Override
