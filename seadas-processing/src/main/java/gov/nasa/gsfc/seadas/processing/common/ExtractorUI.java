@@ -25,6 +25,9 @@ public class ExtractorUI extends ProgramUIFactory {
     public static final String START_PIXEL_PARAM_NAME = "spixl";
     public static final String END_PIXEL_PARAM_NAME = "epixl";
 
+    public static final String GEO_LOCATE_PROGRAM_NAME_VIIRS = "geolocate_viirs";
+    public static final String GEO_LOCATE_PROGRAM_NAME_MODIS = "modis_GEO.py";
+
     private ProcessorModel lonlat2pixline;
     private JPanel pixelPanel;
     private JPanel newsPanel;
@@ -121,5 +124,18 @@ public class ExtractorUI extends ProgramUIFactory {
 
         }
         return ifileName;
+    }
+
+    private String getGeoLocateProgramName(String programName){
+
+        String geoLocateProgramName = null;
+
+        if(programName.contains("modis")) {
+            geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_MODIS;
+        } else if(programName.contains("viirs")) {
+            geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_VIIRS;
+
+        }
+        return geoLocateProgramName;
     }
 }
