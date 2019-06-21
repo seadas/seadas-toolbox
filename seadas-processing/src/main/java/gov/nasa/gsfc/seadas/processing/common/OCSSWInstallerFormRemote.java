@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
+import org.esa.snap.ui.AppContext;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.client.WebTarget;
@@ -10,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
-import org.esa.snap.ui.AppContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,8 +58,11 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
 
         }
 
-        if (target.path("ocssw").path("srcDirInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("build")) {
+        if (target.path("ocssw").path("srcDirInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("ocssw-src")) {
             processorModel.setParamValue("--src", "1");
+        }
+        if (target.path("ocssw").path("viirsDemInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("viirs-dem")) {
+            processorModel.setParamValue("--viirsdem", "1");
         }
     }
 
