@@ -61,7 +61,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     "OLI",
                     "OSMI",
                     "SEAWIFS",
-                    "VIIRSN"}
+                    "VIIRSN",
+                    "VIIRSJ1"}
     ));
     private static final Set<String> DEFAULT_MISSIONS = new HashSet<String>(Arrays.asList(
             new String[]{
@@ -206,6 +207,13 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                         } else if (tmpString.equals("CLEAN")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Clean Install");
                             ((JPanel) c).getComponents()[0].setEnabled(true);
+                        } else if (tmpString.equals("VIIRSDEM")) {
+                            ((JLabel) ((JPanel) c).getComponent(0)).setText("VIIRS DEM files");
+                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") +
+                                    "share" + System.getProperty("file.separator") + "viirs" +
+                                    System.getProperty("file.separator") + "dem").exists()) {
+                                ((JPanel) c).getComponents()[0].setEnabled(false);
+                            }
                         }
                         otherPanel.add(c);
                         otherPanel.add(new JLabel("      "));
