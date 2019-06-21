@@ -44,7 +44,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     }
 
     public static enum Type {
-        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP, DIR, FLAGS
+        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP, DIR, FLAGS, BUTTON
     }
 
     private String name = NULL_STRING;
