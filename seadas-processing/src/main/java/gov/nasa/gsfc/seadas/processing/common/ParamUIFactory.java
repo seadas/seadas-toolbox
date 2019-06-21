@@ -43,7 +43,7 @@ public class ParamUIFactory {
         //final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
         final JScrollPane textScrollPane = new JScrollPane(createParamPanel(processorModel));
 
-        textScrollPane.setPreferredSize(new Dimension(700, 400));
+//        textScrollPane.setPreferredSize(new Dimension(700, 400));
 
         final JPanel parameterComponent = new JPanel(new BorderLayout());
 
@@ -79,6 +79,8 @@ public class ParamUIFactory {
         booleanParamPanel.setName("boolean field panel");
         JPanel fileParamPanel = new JPanel();
         fileParamPanel.setName("file parameter panel");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setName("button panel");
 
         TableLayout booleanParamLayout = new TableLayout(3);
         booleanParamPanel.setLayout(booleanParamLayout);
@@ -89,6 +91,7 @@ public class ParamUIFactory {
 
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
         TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
+        textFieldPanelLayout.setTablePadding(5,5);
         textFieldPanel.setLayout(textFieldPanelLayout);
 
         Iterator<ParamInfo> itr = paramList.iterator();
@@ -127,6 +130,9 @@ public class ParamUIFactory {
                         case FLAGS:
                             textFieldPanel.add(makeButtonOptionPanel(pi));
                             break;
+                        case BUTTON:
+                            buttonPanel.add(makeActionButtonPanel(pi));
+                            break;
                     }
                     //paramPanel.add(makeOptionField(pi));
                 }
@@ -139,6 +145,7 @@ public class ParamUIFactory {
         paramPanel.add(fileParamPanel);
         paramPanel.add(textFieldPanel);
         paramPanel.add(booleanParamPanel);
+        paramPanel.add(buttonPanel);
 
         return paramPanel;
     }
@@ -338,12 +345,13 @@ public class ParamUIFactory {
     private JPanel makeButtonOptionPanel(final ParamInfo pi) {
         final JPanel singlePanel = new JPanel();
 
-        TableLayout comboParamLayout = new TableLayout(1);
+        TableLayout comboParamLayout = new TableLayout(8);
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
 
         //final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
         final JButton optionNameButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
+        optionNameButton.setName("optionButton");
         optionNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -368,6 +376,21 @@ public class ParamUIFactory {
         });
         //field.setEditable(false);
         singlePanel.add(field);
+        return singlePanel;
+    }
+
+    private JPanel makeActionButtonPanel(final ParamInfo pi) {
+        final JPanel singlePanel = new JPanel();
+
+        TableLayout comboParamLayout = new TableLayout(8);
+        comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+        singlePanel.setLayout(comboParamLayout);
+
+
+        final JButton actionButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
+        actionButton.setName("actionButton");
+        actionButton.setEnabled(false);
+        singlePanel.add(actionButton);
         return singlePanel;
     }
 
