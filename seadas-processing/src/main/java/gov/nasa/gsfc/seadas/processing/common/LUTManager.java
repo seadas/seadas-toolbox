@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
+import org.esa.snap.rcp.util.Dialogs;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -21,6 +22,7 @@ public class LUTManager {
     private String missionName;
     private JButton lutButton;
     OCSSW ocssw;
+    boolean enableUpdateLuts;
 
     public LUTManager(OCSSW ocssw) {
         this.ocssw = ocssw;
@@ -35,6 +37,7 @@ public class LUTManager {
                 updateLUT();
             }
         });
+        enableUpdateLuts = false;
     }
 
     protected JButton getLUTButton() {
@@ -50,16 +53,18 @@ public class LUTManager {
             int exitValue = process.waitFor();
         } catch (Exception e) {
             Logger.getGlobal().severe("Execution exception 0 : " + e.getMessage());
+            Dialogs.showError("WARNING: LUTs update failed");
         }
-        //System.out.println("update_luts exit value = " + process.exitValue());
     }
 
     protected void enableLUTButton(String missionName) {
         this.missionName = missionName;
+        enableUpdateLuts = true;
         lutButton.setEnabled(true);
     }
 
     protected void disableLUTButton() {
+        enableUpdateLuts = false;
         lutButton.setEnabled(false);
     }
 
@@ -75,6 +80,7 @@ public class LUTManager {
     protected JPanel getLUTPanel() {
         JPanel lutPanel = new JPanel();
         lutPanel.setLayout(new TableLayout(1));
+        lutButton.setEnabled(enableUpdateLuts);
         lutPanel.add(lutButton);
         return lutPanel;
     }
