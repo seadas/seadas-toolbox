@@ -28,6 +28,7 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
         missionDataStatus.put("AQUA", ocssw.isMissionDirExist("aqua"));
         missionDataStatus.put("TERRA", ocssw.isMissionDirExist("terra"));
         missionDataStatus.put("VIIRSN", ocssw.isMissionDirExist("viirsn"));
+        missionDataStatus.put("VIIRSJ1", ocssw.isMissionDirExist("viirsj1"));
         missionDataStatus.put("MERIS", ocssw.isMissionDirExist("meris"));
         missionDataStatus.put("CZCS", ocssw.isMissionDirExist("czcs"));
         missionDataStatus.put("AQUARIUS", ocssw.isMissionDirExist("aquarius"));
@@ -61,6 +62,9 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
         }
         if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "ocssw-src").exists()) {
             processorModel.setParamValue("--src", "1");
+        }
+        if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "share/viirs/dem").exists()) {
+            processorModel.setParamValue("--viirsdem", "1");
         }
     }
 }

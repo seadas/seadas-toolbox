@@ -3,9 +3,9 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
-import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.core.*;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.runtime.Config;
@@ -17,9 +17,11 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import static gov.nasa.gsfc.seadas.processing.core.L2genData.OPER_DIR;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
 
 /**
@@ -32,6 +34,10 @@ public abstract class OCSSW {
     public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
+    public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
+    public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
+    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
+    public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
             L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
@@ -74,11 +80,16 @@ public abstract class OCSSW {
     public static OCSSW getOCSSWInstance() {
 
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
-        String ocsswLocation = ocsswInfo.getOcsswLocation();
-
-        if (ocsswInfo == null || ocsswLocation == null) {
+        if (ocsswInfo == null) {
             return null;
         }
+
+        String ocsswLocation = ocsswInfo.getOcsswLocation();
+
+        if ( ocsswLocation == null) {
+            return null;
+        }
+
         if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
             return new OCSSWLocal();
         } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
@@ -108,9 +119,8 @@ public abstract class OCSSW {
     public abstract ArrayList<String> readSensorFileIntoArrayList(File file);
 
     public abstract Process execute(ProcessorModel processorModel);
-
+    public abstract String executeUpdateLuts(ProcessorModel processorModel);
     public abstract Process executeSimple(ProcessorModel processorModel);
-
     public abstract InputStream executeAndGetStdout(ProcessorModel processorModel);
 
     public abstract Process execute(ParamList paramList);
@@ -323,5 +333,65 @@ public abstract class OCSSW {
         }
     }
 
+    public void updateL2genProductInfoXMLFiles(){
+        String programName = "l2gen";
+        File dataDir = SystemUtils.getApplicationDataDir();
+        File l2genDir = new File(dataDir, OPER_DIR);
+        l2genDir.mkdirs();
 
+        File xmlFile = new File(l2genDir, L2genData.PRODUCT_INFO_XML);
+        ProcessorModel processorModel = new ProcessorModel(programName, this);
+        processorModel.setAcceptsParFile(false);
+        processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+        processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
+
+        try {
+            Process p = executeSimple(processorModel);
+            waitForProcess();
+
+            if (getProcessExitValue() != 0) {
+                throw new IOException(programName + " returned nonzero exitvalue");
+            }
+            boolean downloadSuccessful = getIntermediateOutputFiles(processorModel);
+
+        } catch (Exception e) {
+            SeadasLogger.getLogger().log(Level.SEVERE, "Problem creating product XML file: " + e.getMessage());
+        }
+    }
+    public void updateOCSSWProgramXMLFiles(){
+//        String executable = getGuiName();
+//        // String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+//        if (executable.equals("l3gen")) {
+//            executable = "l2gen";
+//        }
+//        ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
+//
+//        processorModel.setAcceptsParFile(true);
+//        processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
+//
+//        if (suite != null) {
+//            processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
+//        }
+//
+//        processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+//
+//        try {
+//            // Aquarius will use the static xml file instead of a generated one
+//            if (getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
+//                Process p = ocssw.executeSimple(processorModel);
+//                ocssw.waitForProcess();
+//                if (ocssw.getProcessExitValue() != 0) {
+//                    throw new IOException("l2gen failed to run");
+//                }
+//
+//                ocssw.getIntermediateOutputFiles(processorModel);
+//            }
+//
+//            if (!xmlFile.exists()) {
+//                SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+//                VisatApp.getApp().showMessageDialog("", "SEVERE: paramInfo.xml not found!", ModalDialog.ID_OK, null);
+//                return null;
+//            }
+//        }
+    }
 }

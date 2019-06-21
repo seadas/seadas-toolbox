@@ -117,23 +117,15 @@ public class OCSSWInfo {
 
     private OCSSWInfo() {
         preferences = Config.instance("seadas").load().preferences();
-//        try {
-//            if (preferences.keys().length == 0) {
-//                final AppContext appContext = SnapApp.getDefault().getAppContext();
-//                final Window parent = appContext.getApplicationWindow();
-//                OCSSWInfoGUI ocsswInfoGUI = new OCSSWInfoGUI();
-//                ocsswInfoGUI.init(parent);
-//            }
-//        } catch (BackingStoreException bse) {
-//
-//        }
-        logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, System.getProperty("user.dir"));
-        File logDir = new File(getLogDirPath());
-        if (!logDir.exists()) {
-            try {
-                Files.createDirectory(Paths.get(logDirPath));
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (preferences != null ) {
+            logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, System.getProperty("user.dir"));
+            File logDir = new File(getLogDirPath());
+            if (!logDir.exists()) {
+                try {
+                    Files.createDirectory(Paths.get(logDirPath));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -154,8 +146,6 @@ public class OCSSWInfo {
     }
 
     public int getProcessInputStreamPort() {
-        http:
-//alagr.com/book/Uyghur/files/mobile-ext/appLogoIcon.png
         return processInputStreamPort;
     }
 
@@ -163,6 +153,7 @@ public class OCSSWInfo {
     public int getProcessErrorStreamPort() {
         return processErrorStreamPort;
     }
+
 
     public boolean isOCSSWExist() {
         return ocsswExist;
@@ -226,7 +217,9 @@ public class OCSSWInfo {
     public void initializeLocalOCSSW() {
         ocsswServerUp = true;
         String ocsswRootPath = preferences.get("seadas.ocssw.root", System.getenv("OCSSWROOT"));
-
+        if (ocsswRootPath.startsWith("$")) {
+            ocsswRootPath = System.getProperty(ocsswRootPath.substring(ocsswRootPath.indexOf("{") + 1, ocsswRootPath.indexOf("}"))) + ocsswRootPath.substring(ocsswRootPath.indexOf("}") + 1);
+        }
         if (ocsswRootPath == null) {
             ocsswRootPath = preferences.get("seadas.home", System.getProperty("user.home")) + File.separator + "ocssw";
         } else if (ocsswRootPath.startsWith("$")) {
