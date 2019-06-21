@@ -29,6 +29,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.UPDATE_LUTS_PROGRAM_NAME;
+
 
 /**
  * @author Aynur Abdurazik
@@ -95,7 +97,10 @@ public class CallCloProgramAction extends AbstractSnapAction {
             } else {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
+        }else if (   programName.indexOf("update_luts.py") != -1   ) {
+            return new UpdateLutsUI(programName, xmlFileName, ocssw);
         }
+
         return new ProgramUIFactory(programName, xmlFileName, ocssw);//, multiIFile);
     }
 
@@ -200,7 +205,13 @@ public class CallCloProgramAction extends AbstractSnapAction {
             return;
         }
 
-        executeProgram(processorModel);
+        if (programName.equals(UPDATE_LUTS_PROGRAM_NAME)) {
+            String message = ocssw.executeUpdateLuts(processorModel);
+            Dialogs.showInformation(dialogTitle, message, null);
+        } else {
+            executeProgram(processorModel);
+        }
+
         cloProgramUI.getProcessorModel().fireEvent(L2genData.CANCEL);
 
     }
@@ -262,6 +273,10 @@ public class CallCloProgramAction extends AbstractSnapAction {
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();
                         }
+                    }
+                    if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+                        ocssw.updateOCSSWProgramXMLFiles();
+                        ocssw.updateL2genProductInfoXMLFiles();
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
