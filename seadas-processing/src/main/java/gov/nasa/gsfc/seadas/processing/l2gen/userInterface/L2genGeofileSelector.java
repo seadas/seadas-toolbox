@@ -1,14 +1,14 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
-import gov.nasa.gsfc.seadas.processing.core.L2genData;
-import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileSelector;
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
+import org.esa.snap.rcp.SnapApp;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +28,8 @@ public class L2genGeofileSelector {
         this.seaDASProcessorModel = seaDASProcessorModel;
 
         fileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), ParamInfo.Type.IFILE, L2genData.GEOFILE);
+        fileSelector.setEnabled(false);
+        fileSelector.setVisible(false);
         addControlListeners();
         addEventListeners();
     }
