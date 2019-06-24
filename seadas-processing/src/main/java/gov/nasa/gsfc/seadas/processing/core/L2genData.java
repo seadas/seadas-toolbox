@@ -11,6 +11,7 @@ import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.util.Dialogs;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
@@ -58,7 +59,8 @@ public class L2genData implements SeaDASProcessorModel {
         }
     }
 
-    private static final String GUI_NAME = "l2gen",
+    public static final String
+            GUI_NAME = "l2gen",
             PRODUCT_INFO_XML = "productInfo.xml",
             PARAM_INFO_XML = "paramInfo.xml",
             PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml",
@@ -67,14 +69,15 @@ public class L2genData implements SeaDASProcessorModel {
             GETANC = "getanc.py",
             DEFAULT_SUITE = "OC";
 
-    private static final String AQUARIUS_GUI_NAME = "l2gen_aquarius",
+    public static final String
+            AQUARIUS_GUI_NAME = "l2gen_aquarius",
             AQUARIUS_PRODUCT_INFO_XML = "aquariusProductInfo.xml",
             AQUARIUS_PARAM_INFO_XML = "aquariusParamInfo.xml",
             AQUARIUS_PARAM_CATEGORY_INFO_XML = "aquariusParamCategoryInfo.xml",
             AQUARIUS_PRODUCT_CATEGORY_INFO_XML = "aquariusProductCategoryInfo.xml",
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
             AQUARIUS_GETANC = "getanc_aquarius.py",
-            AQUARIUS_DEFAULT_SUITE = "V2.0";
+            AQUARIUS_DEFAULT_SUITE = "V5.0.0";
 
     private static final String L3GEN_GUI_NAME = "l3gen",
             L3GEN_PRODUCT_INFO_XML = "productInfo.xml",
@@ -159,6 +162,8 @@ public class L2genData implements SeaDASProcessorModel {
     private static L2genData L2genData = null;
     private static L2genData L2genAquariusData = null;
     private static L2genData L3genData = null;
+
+    private boolean overwriteProductInfoXML = false;
 
     public static L2genData getNew(Mode mode, OCSSW ocssw) {
         switch (mode) {
@@ -747,15 +752,15 @@ public class L2genData implements SeaDASProcessorModel {
         return paramInfos;
     }
 
-    public void setParString(String parString, boolean ignoreIfile) {
-        setParString(parString, ignoreIfile, false, null);
+    public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite) {
+        setParString(parString, ignoreIfile, ignoreSuite, false, null);
     }
 
-    public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
-        setParString(parString, ignoreIfile, addParamsMode, null);
+    public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite, boolean addParamsMode) {
+        setParString(parString, ignoreIfile, ignoreSuite, addParamsMode, null);
     }
 
-    public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode, File parFileDir) {
+    public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite, boolean addParamsMode, File parFileDir) {
 
         setParamsBeingSetViaParstring(true);
         // addParamsMode is a special mode.
@@ -787,15 +792,16 @@ public class L2genData implements SeaDASProcessorModel {
                 }
             }
         }
-
-        for (ParamInfo parfileParamInfo : parfileParamInfos) {
-            if (parfileParamInfo.getName().toLowerCase().equals(SUITE)) {
-                suite = parfileParamInfo.getValue();
-                break;
+        if (!ignoreSuite) {
+            for (ParamInfo parfileParamInfo : parfileParamInfos) {
+                if (parfileParamInfo.getName().toLowerCase().equals(SUITE)) {
+                    suite = parfileParamInfo.getValue();
+                    break;
+                }
             }
         }
 
-        if ((!ignoreIfile && ifile != null) || suite != null) {
+        if ((!ignoreIfile && ifile != null) || !ignoreSuite && suite != null) {
             setIfileAndSuiteParamValues(ifile, suite);
         }
 
@@ -984,7 +990,7 @@ public class L2genData implements SeaDASProcessorModel {
                 }
 
                 if (isKeepParams()) {
-                    setParString(tmpParString, true, true);
+                    setParString(tmpParString, true, false,true);
                 }
 
             } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
@@ -1199,6 +1205,12 @@ public class L2genData implements SeaDASProcessorModel {
             }
         } else {
             setIfileandSuiteParamValues(ifileParamInfo, ifileValue, newSuite);
+            if (getMode() == Mode.L2GEN_AQUARIUS) {
+                setAncillaryFiles(false,false,false);
+
+                // todo setting some defaults to blank so they get force passed in on run
+                getParamInfo(SUITE).setDefaultValue("");
+            }
         }
 
     }
@@ -1252,6 +1264,8 @@ public class L2genData implements SeaDASProcessorModel {
             String progName;
             if (mode == Mode.L3GEN) {
                 progName = "l3gen";
+            } else if (mode == Mode.L2GEN_AQUARIUS) {
+                progName = "l2gen_aquarius";
             } else {
                 progName = "l2gen";
             }
@@ -1368,6 +1382,10 @@ public class L2genData implements SeaDASProcessorModel {
                                 file.deleteOnExit();
                             }
                         }
+
+                        if (getMode() == Mode.L2GEN_AQUARIUS && file.getName().endsWith("L2_SCAT_V5.0.tar")) {
+                            file.delete();
+                        }
                     }
 
                     BufferedReader stdInput = new BufferedReader(new InputStreamReader(processInputStream));
@@ -1382,13 +1400,24 @@ public class L2genData implements SeaDASProcessorModel {
                             String[] splitLine = line.split("=");
                             if (splitLine.length == 2) {
                                 File currentFile = new File(splitLine[1]);
-                                if (currentFile.isAbsolute()) {
-                                    if (currentFile.getParent() != null && currentFile.getParent().equals(iFile.getParent())) {
-                                        currentFile.deleteOnExit();
+
+                                boolean delete = true;
+
+                                if (getMode() == Mode.L2GEN_AQUARIUS) {
+                                    if (currentFile.getName().startsWith("y") && currentFile.getName().endsWith("h5")) {
+                                        delete = false;
                                     }
-                                } else {
-                                    File absoluteCurrentFile = new File(processorModel.getIFileDir().getAbsolutePath(), currentFile.getName());
-                                    absoluteCurrentFile.deleteOnExit();
+                                }
+
+                                if (delete) {
+                                    if (currentFile.isAbsolute()) {
+                                        if (currentFile.getParent() != null && currentFile.getParent().equals(iFile.getParent())) {
+                                            currentFile.deleteOnExit();
+                                        }
+                                    } else {
+                                        File absoluteCurrentFile = new File(processorModel.getIFileDir().getAbsolutePath(), currentFile.getName());
+                                        absoluteCurrentFile.deleteOnExit();
+                                    }
                                 }
                             }
                         }
@@ -1505,7 +1534,7 @@ public class L2genData implements SeaDASProcessorModel {
                 getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-                getProductInfoInputStream(Source.L2GEN, true);
+                getProductInfoInputStream(Source.L2GEN, overwriteProductInfoXML);
 //                getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
@@ -1561,13 +1590,15 @@ public class L2genData implements SeaDASProcessorModel {
                     }
                     boolean downloadSuccessful = ocssw.getIntermediateOutputFiles(processorModel);
 
-                    if (!xmlFile.exists()) {
+                    if (!xmlFile.exists() || !downloadSuccessful) {
+                        SeadasLogger.getLogger().severe("l2gen can't find productInfo.xml file!");
+                        Dialogs.showError("SEVERE: productInfo.xml not found!");
                         return null;
                     }
 
                     return new FileInputStream(xmlFile);
                 } catch (IOException e) {
-                    SeadasLogger.getLogger().severe(this.getClass().getName() + ": Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + e.getMessage() + "\n" );
+                    SeadasLogger.getLogger().severe(this.getClass().getName() + ": Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + e.getMessage() + "\n");
                     throw new IOException("Problem creating product XML file: " + e.getMessage());
 
                 }
@@ -1633,15 +1664,20 @@ public class L2genData implements SeaDASProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
-            Process p = ocssw.executeSimple(processorModel);
-            ocssw.waitForProcess();
-            if (ocssw.getProcessExitValue() != 0) {
-                throw new IOException("l2gen failed to run");
+            // Aquarius will use the static xml file instead of a generated one
+            if (getMode() != Mode.L2GEN_AQUARIUS) {
+                Process p = ocssw.executeSimple(processorModel);
+                ocssw.waitForProcess();
+                if (ocssw.getProcessExitValue() != 0) {
+                    throw new IOException("l2gen failed to run");
+                }
+
+                ocssw.getIntermediateOutputFiles(processorModel);
+
             }
-
-            ocssw.getIntermediateOutputFiles(processorModel);
-
             if (!xmlFile.exists()) {
+                SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+                Dialogs.showError("SEVERE: paramInfo.xml not found!");
                 return null;
             }
 
@@ -1748,7 +1784,7 @@ public class L2genData implements SeaDASProcessorModel {
                 productInfoStream = getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-                productInfoStream = getProductInfoInputStream(Source.L2GEN, true);
+                productInfoStream = getProductInfoInputStream(Source.L2GEN, overwriteProductInfoXML);
 //              productInfoStream = getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
@@ -1779,7 +1815,7 @@ public class L2genData implements SeaDASProcessorModel {
         return StringUtils.join(productArrayList, " ");
     }
 
-    public File installResource(final String fileName) {
+    public  File installResource(final String fileName) {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), OPER_DIR);
         File theFile = new File(dataDir, fileName);
         if (theFile.canRead()) {
@@ -1796,7 +1832,7 @@ public class L2genData implements SeaDASProcessorModel {
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourcePath, targetPath);
         try {
             resourceInstaller.install(".*.xml", ProgressMonitor.NULL);
-            SeadasLogger.getLogger().info(System.getProperty(this.getClass().getName() + ": resource install successful. All xml files are copied to ")  + targetPath.toString());
+            SeadasLogger.getLogger().info(System.getProperty(this.getClass().getName() + ": resource install successful. All xml files are copied to ") + targetPath.toString());
         } catch (IOException e) {
             e.printStackTrace();
             SeadasLogger.getLogger().severe("Unable to install " + sourcePath + File.separator + fileName + " to " + targetPath + " " + e.getMessage());
