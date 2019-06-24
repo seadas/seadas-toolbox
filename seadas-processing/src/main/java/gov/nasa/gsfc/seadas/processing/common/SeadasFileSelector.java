@@ -65,8 +65,10 @@ public class SeadasFileSelector {
         fileListModel = new DefaultComboBoxModel<>();
         fileNameLabel = new JLabel(labelText);
         productFileChooserButton = new JButton(new FileChooserAction());
+        productFileChooserButton.setName("productFileChooserButton");
         fileChooserButton = new JButton(new FileChooserAction());
         fileNameComboBox = new JComboBox<>(fileListModel);
+        fileChooserButton.setName("fileChooserButton");
         fileNameComboBox.setPrototypeDisplayValue("[1] 123456789 123456789 123456789 123456789 123456789");
         fileNameComboBox.setRenderer(new ProductListCellRenderer());
         fileNameComboBox.setPreferredSize(fileNameComboBox.getPreferredSize());
