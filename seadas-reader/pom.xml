@@ -91,13 +91,13 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <configuration>
-                    <publicPackages>
-                        <publicPackage>gov.nasa.gsfc.seadas.dataio.*</publicPackage>
-                    </publicPackages>
-                    <verifyRuntime>skip</verifyRuntime>
-                </configuration>
-                <extensions>true</extensions>
+                <!--<configuration>-->
+                    <!--<publicPackages>-->
+                        <!--<publicPackage>gov.nasa.gsfc.seadas.dataio.*</publicPackage>-->
+                    <!--</publicPackages>-->
+                    <!--<verifyRuntime>skip</verifyRuntime>-->
+                <!--</configuration>-->
+                <!--<extensions>true</extensions>-->
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
