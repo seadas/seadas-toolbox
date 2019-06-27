@@ -1602,6 +1602,12 @@ public class L2genData implements SeaDASProcessorModel {
                     throw new IOException("Problem creating product XML file: " + e.getMessage());
 
                 }
+            } else {
+                try {
+                    return new FileInputStream(xmlFile);
+                } catch (IOException e) {
+                    throw new IOException("problem creating product XML file: " + e.getMessage());
+                }
             }
         }
 
