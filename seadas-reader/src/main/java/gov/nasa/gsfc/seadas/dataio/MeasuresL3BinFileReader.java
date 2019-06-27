@@ -1,12 +1,12 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.dataio.merisl3.ISINGrid;
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.CrsGeoCoding;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
+import org.esa.s3tbx.dataio.merisl3.ISINGrid;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.CrsGeoCoding;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -15,7 +15,7 @@ import ucar.ma2.InvalidRangeException;
 import ucar.ma2.Section;
 import ucar.nc2.Variable;
 
-import java.awt.*;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -174,11 +174,11 @@ public class MeasuresL3BinFileReader extends SeadasFileReader {
         float pixelSizeX = 360.0f / sceneWidth;
         float pixelSizeY = 180.0f / sceneHeight;
         try {
-            product.setGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
-                    sceneWidth, sceneHeight,
-                    easting, northing,
-                    pixelSizeX, pixelSizeY,
-                    pixelX, pixelY));
+            product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
+                                                       sceneWidth, sceneHeight,
+                                                       easting, northing,
+                                                       pixelSizeX, pixelSizeY,
+                                                       pixelX, pixelY));
         } catch (FactoryException e) {
             throw new IOException(e);
         } catch (TransformException e) {

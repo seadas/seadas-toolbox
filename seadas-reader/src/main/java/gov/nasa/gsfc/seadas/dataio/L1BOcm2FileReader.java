@@ -16,13 +16,14 @@
 
 package gov.nasa.gsfc.seadas.dataio;
 
-import ucar.nc2.Variable;
-import java.util.List;
 import org.esa.snap.core.dataio.ProductIOException;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoCodingFactory;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
+import ucar.nc2.Variable;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -110,7 +111,7 @@ public class L1BOcm2FileReader extends SeadasFileReader {
         latBand.setNoDataValueUsed(true);
         lonBand.setNoDataValueUsed(true);
 
-        product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
+        product.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
     }
 }
 

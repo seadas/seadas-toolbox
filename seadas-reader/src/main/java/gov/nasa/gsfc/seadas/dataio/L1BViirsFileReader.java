@@ -5,23 +5,14 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
-import static gov.nasa.gsfc.seadas.dataio.SeadasFileReader.getProductDataType;
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
-import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductData;
-import org.esa.beam.framework.datamodel.TiePointGrid;
-import org.jdom2.Element;
+import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -152,7 +143,7 @@ public class L1BViirsFileReader extends SeadasFileReader {
                         subSample, subSample, lonTiePoints, TiePointGrid.DISCONT_AT_180);
                 product.addTiePointGrid(lonGrid);
 
-                product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanMultiplier));
+                product.setSceneGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanMultiplier));
 
                 geoNcFile.close();
 

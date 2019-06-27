@@ -16,8 +16,12 @@
 
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoCodingFactory;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import ucar.ma2.Array;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
@@ -34,7 +38,7 @@ import java.util.List;
   */
 public class L2FileReader extends SeadasFileReader {
 
-    private static final String KEEP_BAD_NAV_PROPERTY = "seadas.seadasl2reader.keepBadNavLines";
+    private static final String KEEP_BAD_NAV_PROPERTY = "snap.seadasl2reader.keepBadNavLines";
     private static final boolean keepBadNavLines = Boolean.getBoolean(KEEP_BAD_NAV_PROPERTY);
 
     L2FileReader(SeadasProductReader productReader) {
@@ -197,7 +201,7 @@ public class L2FileReader extends SeadasFileReader {
             lonBand.setNoDataValue(-999.);
             latBand.setNoDataValueUsed(true);
             lonBand.setNoDataValueUsed(true);
-            product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight));
+            product.setSceneGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, scanHeight));
         } else {
             String navGroup = "navigation_data";
             final String cntlPoints = "cntl_pt_cols";
@@ -256,7 +260,7 @@ public class L2FileReader extends SeadasFileReader {
 			    subSampleX, subSampleY, lonTiePoints, TiePointGrid.DISCONT_AT_180);
                     product.addTiePointGrid(lonGrid);
 
-                    product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanHeight));
+                    product.setSceneGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanHeight));
 
                 }
             } catch (IOException e) {
@@ -339,7 +343,7 @@ public class L2FileReader extends SeadasFileReader {
             }
         }
         if (latBand != null) {
-            product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
+            product.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
         }
     }
 }

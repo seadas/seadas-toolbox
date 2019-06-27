@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 ~ Copyright (C) 2011 Brockmann Consult GmbH (info@brockmann-consult.de)
 ~
@@ -29,7 +29,7 @@
     <packaging>nbm</packaging>
 
     <name>SeaDAS OBPG Ocean Color Product Reader</name>
-    <version>1.7.2</version>
+    <version>1.7.4-SNAPSHOT</version>
     <description>A reader for NASA Ocean Color (OBPG) Data Products</description>
 
 
@@ -38,17 +38,31 @@
             <groupId>edu.ucar</groupId>
             <artifactId>netcdf</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-reader</artifactId>-->
+            <!--<version>1.7.4</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.esa.snap.seadas</groupId>
-            <artifactId>seadas-reader</artifactId>
-            <version>1.8-SNAPSHOT</version>
-            <type>jar</type>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-netcdf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s3tbx</groupId>
+            <artifactId>s3tbx-merisl3-reader</artifactId>
             <version>6.0.4</version>
-            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
@@ -56,4 +70,23 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
