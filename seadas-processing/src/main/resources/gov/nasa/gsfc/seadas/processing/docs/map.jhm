@@ -12,6 +12,8 @@
     <mapID target="l1bgen" url="processors/ProcessL1bgen.html"/>
     <mapID target="modis_L1B.py" url="processors/ProcessModis_L1B.html"/>
     <mapID target="modis_L1A.py" url="processors/ProcessModis_L1A.html"/>
+    <mapID target="geolocate_viirs" url="processors/ProcessGeolocate_viirs.html"/>
+    <mapID target="calibrate_viirs" url="processors/ProcessCalibrate_viirs.html"/>
     <mapID target="l1mapgen" url="processors/ProcessL1mapgen.html"/>
     <mapID target="l1brsgen" url="processors/ProcessL1brsgen.html"/>
     <mapID target="l2extract" url="processors/ProcessL2extract.html"/>
