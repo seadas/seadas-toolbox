@@ -35,8 +35,8 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
 
     private int width;
     private int height;
-    private double[] lats;
-    private double[] lons;
+    private float[] lats;
+    private float[] lons;
 
     private Boolean crossingMeridianAt180;
 
@@ -69,7 +69,7 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         }
     }
 
-    public BowtiePixelScanGeoCoding(double[] lats, double[] lons, int width, int height) {
+    public BowtiePixelScanGeoCoding(float[] lats, float[] lons, int width, int height) {
         this.lats = lats;
         this.lons = lons;
         this.width = width;
