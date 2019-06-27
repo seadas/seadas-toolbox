@@ -1,10 +1,10 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
-import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.dataop.maptransf.Datum;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.dataop.maptransf.Datum;
+import org.esa.snap.dataio.netcdf.metadata.profiles.hdfeos.HdfEosUtils;
+import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import org.jdom2.Element;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
@@ -133,7 +133,7 @@ public class L1BModisFileReader extends SeadasFileReader {
         addTiePointGrids(product, ncFile.getVariables());
         addGeocoding(product);
 
-        // todo - think gov.nasa.gsfc.seadas.about maybe possibly sometime creating a flag for questionable data
+        // todo - think about maybe possibly sometime creating a flag for questionable data
 //        addFlagsAndMasks(product);
         product.setAutoGrouping("RefSB:Emissive");
 
@@ -344,7 +344,7 @@ public class L1BModisFileReader extends SeadasFileReader {
                     subSample, subSample, lonTiePoints, TiePointGrid.DISCONT_AT_180);
             product.addTiePointGrid(lonGrid);
 
-            product.setGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanMultiplier));
+            product.setSceneGeoCoding(new BowtieTiePointGeoCoding(latGrid, lonGrid, scanMultiplier));
             //product.setGeoCoding(new TiePointGeoCoding(latGrid, lonGrid, Datum.WGS_84));
 
         } catch (Exception e) {

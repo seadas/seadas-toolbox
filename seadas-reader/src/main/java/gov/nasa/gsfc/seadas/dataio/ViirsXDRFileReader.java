@@ -16,14 +16,21 @@
 
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.FlagCoding;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.ma2.Array;
-import ucar.nc2.*;
+import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
+import ucar.nc2.Group;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.DateFormat;
@@ -366,14 +373,24 @@ public class ViirsXDRFileReader extends SeadasFileReader {
                 ProductData lons = ProductData.createInstance(longitudes);
                 lonBand.setData(lons);
 
-                product.setGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, detectorsInScan));
+                product.setSceneGeoCoding(new BowtiePixelGeoCoding(latBand, lonBand, detectorsInScan));
             } else {
-                product.setGeoCoding(new BowtiePixelGeoCoding(product.getBand(latitude), product.getBand(longitude), detectorsInScan));
+                product.setSceneGeoCoding(new BowtiePixelGeoCoding(findBand(product, latitude), findBand(product, longitude), detectorsInScan));
             }
         }catch (Exception e) {
             throw new ProductIOException(e.getMessage(), e);
         }
 
+    }
+
+    private Band findBand(Product product, String requestedBandName) {
+        for (String productBandName : product.getBandNames()) {
+            final String[] splitProductBandName = productBandName.split("\\.");
+            if (splitProductBandName[splitProductBandName.length - 1].equals(requestedBandName)) {
+                return product.getBand(productBandName);
+            }
+        }
+        return null;
     }
 
     public boolean mustFlipVIIRS() throws ProductIOException {

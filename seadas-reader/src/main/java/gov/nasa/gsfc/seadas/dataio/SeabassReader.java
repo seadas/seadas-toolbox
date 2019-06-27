@@ -3,11 +3,11 @@ package gov.nasa.gsfc.seadas.dataio;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import org.esa.beam.framework.datamodel.CrsGeoCoding;
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.PixelPos;
-import org.esa.beam.util.FeatureUtils;
+import org.esa.snap.core.datamodel.CrsGeoCoding;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.util.FeatureUtils;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -65,7 +65,7 @@ public class SeabassReader extends LineNumberReader {
     public FeatureCollection<SimpleFeatureType, SimpleFeature> createFeatureCollection() throws IOException {
 
         SimpleFeatureType featureType = createFeatureType();
-        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = new ListFeatureCollection(featureType);
+        ListFeatureCollection featureCollection = new ListFeatureCollection(featureType);
 
         String line;
         int pointIndex = 0;
@@ -100,7 +100,7 @@ public class SeabassReader extends LineNumberReader {
         readHeader();
 
         SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
-        //ftb.setName("org.esa.beam.TrackPoint");
+        //ftb.setName("org.esa.snap.TrackPoint");
         ftb.setName("gov.nasa.gsfc.seabass.vectorData");
         /*0*/
         ftb.add("pixelPos", Point.class, geoCoding.getImageCRS());

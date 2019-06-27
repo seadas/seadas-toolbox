@@ -1,8 +1,8 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.CrsGeoCoding;
-import org.esa.beam.framework.datamodel.Product;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.CrsGeoCoding;
+import org.esa.snap.core.datamodel.Product;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -59,12 +59,12 @@ public class SeadasMappedFileReader extends SeadasFileReader {
         float pixelSizeY = (northing - southing) / product.getSceneRasterHeight();
 
         try {
-            product.setGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(),
-                    westing, northing,
-                    pixelSizeX, pixelSizeY,
-                    pixelX, pixelY));
+            product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
+                                                       product.getSceneRasterWidth(),
+                                                       product.getSceneRasterHeight(),
+                                                       westing, northing,
+                                                       pixelSizeX, pixelSizeY,
+                                                       pixelX, pixelY));
         } catch (FactoryException e) {
             throw new IllegalStateException(e);
         } catch (TransformException e) {
