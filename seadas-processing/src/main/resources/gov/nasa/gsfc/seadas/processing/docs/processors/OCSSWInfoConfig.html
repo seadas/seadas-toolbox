@@ -25,7 +25,61 @@
 <p>
     <a href="#location">Location</a> <br/>
     <a href="#details">Details</a> <br/>
+
+    Stores the configuration properties in the file: <b>~/.snap/etc/seadas.properties</b>
+
+
 </p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>Tools -> SeaDAS Processing -> OCSSW Configuration</p>
+
+
+<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>OCSSW Branch</b> - this is the git branch of the OCSSW software.  This is only 2 digits whereas the SeaDAS
+    versioning scheme is 3 digits.  In example SeaDAS 7.5.2 and 7.5.3 would both have OCSSW branch 7.5 as it's default
+    settings.  If a branch is selected which does not correspond with the SeaDAS version (such as choosing OCSSW branch 7.5
+    while using SeaDAS 7.4.x) then a possibility could exist of problems running OCSSW from the SeaDAS GUI.
+</p>
+
+<p>
+    <b>OCSSW Location</b> - this is the physical location of the OCSSW software which you intend to use when running from
+    the SeaDAS GUI.  The following additional parameters are needed dependent on the selection of the OCSSW Location
+    parameter:
+    <ul>
+         <li><b>local</b> - OCCSW is physically located on the machine
+             <ul>
+                 <li><b>OCSSW ROOT</b> -  the directory where OCSSW is installed</li>
+             </ul>
+         </li>
+         <li><b>virtualMachine</b> -  OCSSW is located on the virtual machine
+             <ul>
+                 <li><b>OCSSW Shared Dir</b> - the directory where OCSSW is installed</li>
+             </ul>
+         </li>
+         <li><b>remoteServer</b> -  OCSSW is located on a remote machine
+             <ul>
+                 <li><b>OCSSW Server Address</b></li>
+             </ul>
+             <ul>
+                 <li><b>Server Port</b></li>
+             </ul>
+             <ul>
+                 <li><b>Server Input Stream Port</b></li>
+             </ul>
+             <ul>
+                 <li><b>Server Error Stream Port</b></li>
+             </ul>
+         </li>
+</ul>
+</p>
+<p>Note: this tool updates the file: <b>~/.snap/etc/seadas.properties</b></p>
+
+
+
 
 </body>
 </html>
