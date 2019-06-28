@@ -12,15 +12,15 @@ import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.UIUtils;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -43,7 +43,7 @@ public class OCSSWInfoGUI {
     final String PANEL_NAME = "OCSSW Configuration";
     final String HELP_ID = "ocsswInfoConfig";
 
-    final String  BRANCH_TOOLTIP = "<html>The OCSSW installation branch<br>" +
+    final String BRANCH_TOOLTIP = "<html>The OCSSW installation branch<br>" +
             "This by default will match the SeaDAS version (first two decimal fields)<br> " +
             "For instance SeaDAS 7.5.3 by default will use OCSSW branch 7.5<br>" +
             "If OCSSW was manually updated to a different branch then this parameter needs to be set to match</html>";
@@ -53,6 +53,10 @@ public class OCSSWInfoGUI {
 
     ModalDialog modalDialog;
 
+
+    JTextField ocsswBranchTextfield;
+    JComboBox ocsswLocationComboBox;
+    JTextField ocsswSharedDir;
     JTextField ocsswRootTextfield;
     JTextField ocsswserverAddressTextfield;
     JTextField serverPortTextfield;
@@ -60,10 +64,23 @@ public class OCSSWInfoGUI {
     JTextField serverErrorStreamPortTextfield;
 
 
+    String OCSSW_BRANCH_LABEL = "OCSSW Branch";
+    String OCSSW_LOCATION_LABEL = "OCSSW Location";
+    String OCSSW_SHARED_DIR_LABEL = "OCSSW Shared Dir";
+    String OCSSW_ROOT_LABEL = "OCSSW ROOT";
+    String OCSSW_SERVER_ADDRESS_LABEL = "OCSSW Server Address";
+    String SERVER_PORT_LABEL = "Server Port";
+    String SERVER_INPUT_STREAM_PORT_LABEL = "Server Input Stream Port";
+    String SERVER_ERROR_STREAM_PORT_LABEL = "Server Error Stream Port";
+
+
     PropertyContainer pc = new PropertyContainer();
 
     OCSSWConfigData ocsswConfigData = new OCSSWConfigData();
 
+    boolean windowsOS;
+
+    String[] ocsswLocations;
 
     public static void main(String args[]) {
 
@@ -74,14 +91,20 @@ public class OCSSWInfoGUI {
     }
 
     public void init(Window parent) {
+        String operatingSystem = System.getProperty("os.name");
+        if (operatingSystem.toLowerCase().contains("windows")) {
+            windowsOS = true;
+        } else {
+            windowsOS = false;
+        }
+
 
         JPanel mainPanel = GridBagUtils.createPanel();
 
-        modalDialog = new ModalDialog(parent, PANEL_NAME, mainPanel, ModalDialog.ID_OK_APPLY_CANCEL_HELP, HELP_ID);
+        modalDialog = new ModalDialog(parent, PANEL_NAME, mainPanel, ModalDialog.ID_OK_CANCEL_HELP, HELP_ID);
 
         modalDialog.getButton(ModalDialog.ID_OK).setText("OK");
         modalDialog.getButton(ModalDialog.ID_CANCEL).setText("Cancel");
-        modalDialog.getButton(ModalDialog.ID_APPLY).setText("Apply");
         modalDialog.getButton(ModalDialog.ID_HELP).setText("Help");
 
 
@@ -126,25 +149,29 @@ public class OCSSWInfoGUI {
         modalDialog.getJDialog().pack();
 
 
-        final int dialogResult = modalDialog.show();
+        int dialogResult;
 
-        if (dialogResult == ModalDialog.ID_OK || dialogResult == ModalDialog.ID_APPLY) {
-            ocsswConfigData.updateconfigData(pc);
-            return;
+        boolean finish = false;
+        while (!finish) {
+            dialogResult = modalDialog.show();
+
+            if (dialogResult == ModalDialog.ID_OK) {
+                if (checkParameters()) {
+                    ocsswConfigData.updateconfigData(pc);
+                    finish = true;
+                }
+            } else {
+                finish = true;
+            }
         }
+
+        return;
+
     }
 
-    private Dimension adjustDimension(Dimension dimension, int widthAdjustment, int heightAdjustment) {
 
-        if (dimension == null) {
-            return null;
-        }
 
-        int width = dimension.width + widthAdjustment;
-        int height = dimension.height + heightAdjustment;
 
-        return new Dimension(width, height);
-    }
 
 
 
@@ -157,8 +184,24 @@ public class OCSSWInfoGUI {
         String lastOcsswLocation = preferences.get(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
         GridBagConstraints gbc = createConstraints();
 
-        JLabel ocsswLocationLabel = new JLabel("OCSSW Location: ");
-        String[] ocsswLocations = {OCSSW_LOCATION_LOCAL, OCSSW_LOCATION_VIRTUAL_MACHINE, OCSSW_LOCATION_REMOTE_SERVER};
+        JLabel ocsswLocationLabel = new JLabel(OCSSW_LOCATION_LABEL + ": ");
+
+
+
+
+        ArrayList<String> ocsswLocationArrayList = new ArrayList<String>();
+
+        if (!windowsOS) {
+            ocsswLocationArrayList.add(OCSSW_LOCATION_LOCAL);
+            ocsswLocationLabel.setToolTipText("Note: Windows operating system detected so no local directory option");
+        }
+        ocsswLocationArrayList.add(OCSSW_LOCATION_VIRTUAL_MACHINE);
+        ocsswLocationArrayList.add(OCSSW_LOCATION_REMOTE_SERVER);
+
+        ocsswLocations = ocsswLocationArrayList.toArray(new String[ocsswLocationArrayList.size()]);
+
+//        String[] ocsswLocations = {OCSSW_LOCATION_LOCAL, OCSSW_LOCATION_VIRTUAL_MACHINE, OCSSW_LOCATION_REMOTE_SERVER};
+
         int lastOcsswLocationIndex = 0;
         for (int i = 0; i < ocsswLocations.length; i++) {
             if (lastOcsswLocation.equals(ocsswLocations[i])) {
@@ -168,7 +211,7 @@ public class OCSSWInfoGUI {
         }
 
 
-        JComboBox ocsswLocationComboBox = new JComboBox(ocsswLocations);
+        ocsswLocationComboBox = new JComboBox(ocsswLocations);
         ocsswLocationComboBox.setSelectedIndex(lastOcsswLocationIndex);
 
         ocsswLocationComboBox.addActionListener(new ActionListener() {
@@ -219,13 +262,21 @@ public class OCSSWInfoGUI {
         Dimension preferredSize0 = paramPanel.getPreferredSize();
         Dimension minimumSize0 = paramPanel.getMinimumSize();
 
-        ocsswLocationComboBox.setSelectedIndex(1);
         Dimension preferredSize1 = paramPanel.getPreferredSize();
         Dimension minimumSize1 = paramPanel.getMinimumSize();
+        if (ocsswLocations.length > 1) {
+            ocsswLocationComboBox.setSelectedIndex(1);
+            preferredSize1 = paramPanel.getPreferredSize();
+            minimumSize1 = paramPanel.getMinimumSize();
+        }
 
-        ocsswLocationComboBox.setSelectedIndex(2);
         Dimension preferredSize2 = paramPanel.getPreferredSize();
         Dimension minimumSize2 = paramPanel.getMinimumSize();
+        if (ocsswLocations.length > 2) {
+            ocsswLocationComboBox.setSelectedIndex(2);
+             preferredSize2 = paramPanel.getPreferredSize();
+             minimumSize2 = paramPanel.getMinimumSize();
+        }
 
         Integer preferredWidths[] = {preferredSize0.width, preferredSize1.width, preferredSize2.width};
         Integer preferredHeights[] = {preferredSize0.height, preferredSize1.height, preferredSize2.height};
@@ -309,8 +360,8 @@ public class OCSSWInfoGUI {
         GridBagConstraints gbc = createConstraints();
         panel.setBorder(UIUtils.createGroupBorder("Virtual Machine"));
 
-        JLabel ocsswSharedDirLabel = new JLabel("OCSSW Shared Dir: ");
-        JTextField ocsswSharedDir = new JTextField(20);
+        JLabel ocsswSharedDirLabel = new JLabel(OCSSW_SHARED_DIR_LABEL + ": ");
+        ocsswSharedDir = new JTextField(20);
 
 
         ocsswSharedDirLabel.setMinimumSize(ocsswSharedDirLabel.getPreferredSize());
@@ -325,14 +376,6 @@ public class OCSSWInfoGUI {
         ctx.bind(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir);
 
 
-        if (simpleTextfieldCheck(ocsswSharedDir, true)) {
-            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
-        } else {
-            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
-        }
-        ocsswSharedDir.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswSharedDir, true));
-
-
         JButton ocsswSharedDirButton = new JButton("...");
 
 
@@ -343,7 +386,6 @@ public class OCSSWInfoGUI {
                 if (newDir != null) {
                     ocsswSharedDir.setText(newDir.getAbsolutePath());
                     pc.setValue(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir.getText());
-                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
                 }
             }
         });
@@ -381,10 +423,10 @@ public class OCSSWInfoGUI {
         panel.setBorder(UIUtils.createGroupBorder("Remote Server"));
 
 
-        JLabel ocsswServerAddressLabel = new JLabel("OCSSW Server Address: ");
-        JLabel serverPortLabel = new JLabel("Server Port: ");
-        JLabel serverInputStreamPortLabel = new JLabel("Server Input Stream Port: ");
-        JLabel serverErrorStreamPortLabel = new JLabel("Server Error Stream Port: ");
+        JLabel ocsswServerAddressLabel = new JLabel(OCSSW_SERVER_ADDRESS_LABEL + ": ");
+        JLabel serverPortLabel = new JLabel(SERVER_PORT_LABEL + ": ");
+        JLabel serverInputStreamPortLabel = new JLabel(SERVER_INPUT_STREAM_PORT_LABEL + ": ");
+        JLabel serverErrorStreamPortLabel = new JLabel(SERVER_ERROR_STREAM_PORT_LABEL + ": ");
 
         ocsswserverAddressTextfield = new JTextField(20);
         serverPortTextfield = new JTextField(4);
@@ -420,16 +462,6 @@ public class OCSSWInfoGUI {
         ctx.bind(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, serverInputStreamPortTextfield);
         ctx.bind(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, serverErrorStreamPortTextfield);
 
-
-        if (remoteServerParametersCheck()) {
-            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
-        } else {
-            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
-        }
-        ocsswserverAddressTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
-        serverPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
-        serverInputStreamPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
-        serverErrorStreamPortTextfield.getDocument().addDocumentListener(remoteServerTextfieldsDocumentListener());
 
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -493,7 +525,7 @@ public class OCSSWInfoGUI {
         panel.setBorder(UIUtils.createGroupBorder("Local Server"));
 
 
-        JLabel ocsswRootLabel = new JLabel("OCSSW ROOT: ");
+        JLabel ocsswRootLabel = new JLabel(OCSSW_ROOT_LABEL + ": ");
 
         ocsswRootLabel.setMinimumSize(ocsswRootLabel.getPreferredSize());
 
@@ -509,14 +541,6 @@ public class OCSSWInfoGUI {
         ctx.bind(SEADAS_OCSSW_ROOT_PROPERTY, ocsswRootTextfield);
 
 
-        if (simpleTextfieldCheck(ocsswRootTextfield, true)) {
-            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
-        } else {
-            modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
-        }
-        ocsswRootTextfield.getDocument().addDocumentListener(simpleTextfieldDocumentListener(ocsswRootTextfield, true));
-
-
         JButton ocsswRootButton = new JButton("...");
         ocsswRootButton.addActionListener(new ActionListener() {
             @Override
@@ -525,7 +549,6 @@ public class OCSSWInfoGUI {
                 if (newDir != null) {
                     ocsswRootTextfield.setText(newDir.getAbsolutePath());
                     pc.setValue(SEADAS_OCSSW_ROOT_PROPERTY, ocsswRootTextfield.getText());
-                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
                 }
             }
         });
@@ -581,93 +604,6 @@ public class OCSSWInfoGUI {
     }
 
 
-    private DocumentListener remoteServerTextfieldsDocumentListener() {
-        return new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                handler(e);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                handler(e);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                handler(e);
-            }
-
-            private void handler(DocumentEvent e) {
-                if (remoteServerParametersCheck()) {
-                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
-                } else {
-                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
-                }
-            }
-        };
-    }
-
-    private boolean remoteServerParametersCheck() {
-
-        if (simpleTextfieldCheck(ocsswserverAddressTextfield, false)
-                && simpleTextfieldCheck(serverPortTextfield, false)
-                && simpleTextfieldCheck(serverInputStreamPortTextfield, false)
-                && simpleTextfieldCheck(serverErrorStreamPortTextfield, false)) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    private DocumentListener simpleTextfieldDocumentListener(JTextField textfield, boolean directoryCheck) {
-        return new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                handler(e);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                handler(e);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                handler(e);
-            }
-
-            private void handler(DocumentEvent e) {
-                if (simpleTextfieldCheck(textfield, directoryCheck)) {
-                    System.out.println(textfield.getText());
-                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(true);
-                } else {
-                    modalDialog.getButton(ModalDialog.ID_APPLY).setEnabled(false);
-                }
-            }
-        };
-    }
-
-
-    private boolean simpleTextfieldCheck(JTextField textfield, boolean directoryCheck) {
-        if (textfield.getText().length() > 0) {
-            if (!directoryCheck) {
-                return true;
-            } else {
-                File dir = new File(textfield.getText());
-
-                if (dir.exists()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-    }
-
     private JPanel ocsswBranchPanel() {
 
         final Preferences preferences = Config.instance("seadas").load().preferences();
@@ -676,8 +612,8 @@ public class OCSSWInfoGUI {
 
         GridBagConstraints gbc = createConstraints();
 
-        JLabel ocsswBranchLabel = new JLabel("OCSSW Branch: ");
-        JTextField ocsswBranchTextfield = new JTextField(10);
+        JLabel ocsswBranchLabel = new JLabel(OCSSW_BRANCH_LABEL + ": ");
+        ocsswBranchTextfield = new JTextField(10);
 
         ocsswBranchLabel.setMinimumSize(ocsswBranchLabel.getPreferredSize());
         ocsswBranchTextfield.setMinimumSize(new JTextField(5).getPreferredSize());
@@ -703,5 +639,384 @@ public class OCSSWInfoGUI {
         return panel;
     }
 
+
+
+
+    private Dimension adjustDimension(Dimension dimension, int widthAdjustment, int heightAdjustment) {
+
+        if (dimension == null) {
+            return null;
+        }
+
+        int width = dimension.width + widthAdjustment;
+        int height = dimension.height + heightAdjustment;
+
+        return new Dimension(width, height);
+    }
+
+
+
+
+    /**
+     * If there is a conflict between the String ocsswroot and the environment variable OCSSWROOT
+     * a GUI prompts the users whether this conflict is okay.  If there is no conflict or if there
+     * is a conflict and the user approves then 'true' is returned.
+     *
+     * @param field
+     * @param ocsswroot
+     * @return
+     */
+    private Boolean checkIfEnvironmentVariableConflict(String field, String ocsswroot) {
+
+        Map<String, String> env = System.getenv();
+        String ocsswroot_env = env.get("OCSSWROOT");
+
+        if (ocsswroot_env == null && ocsswroot_env.trim().length() == 0) {
+            return true;
+        }
+
+        if (ocsswroot_env.equals(ocsswroot)) {
+            return true;
+        }
+
+        String msg = "<html>" +
+                "WARNING!: You are defining OCSSW ROOT to be '" + ocsswroot + "'<br>" +
+                "but on your system the environment variable OCSSWROOT points to '" + ocsswroot_env + "'<br>" +
+                "This conflict could cause problems between GUI and command line operations<br>"+
+                "</html>";
+//
+//        JPanel panel = GridBagUtils.createPanel();
+//
+//        JLabel label = new JLabel(msg);
+//
+//        GridBagConstraints gbc = createConstraints();
+//
+//        gbc.anchor = GridBagConstraints.NORTH;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        gbc.weighty = 1;
+//        gbc.weightx = 1;
+//
+//        panel.add(label, gbc);
+//
+//        ModalDialog dialog = new ModalDialog(modalDialog.getParent(), PANEL_NAME, panel, ModalDialog.ID_OK_CANCEL, HELP_ID);
+//        dialog.getButton(ModalDialog.ID_OK).setText("Continue");
+//        dialog.getButton(ModalDialog.ID_CANCEL).setText("Back");
+//        dialog.getButton(ModalDialog.ID_OK).setMinimumSize(dialog.getButton(ModalDialog.ID_OK).getPreferredSize());
+//
+//        // Specifically set sizes for dialog here
+//        Dimension minimumSizeAdjusted = adjustDimension(dialog.getJDialog().getMinimumSize(), 25, 50);
+//        Dimension preferredSizeAdjusted = adjustDimension(dialog.getJDialog().getPreferredSize(), 25, 50);
+//        dialog.getJDialog().setMinimumSize(minimumSizeAdjusted);
+//        dialog.getJDialog().setPreferredSize(preferredSizeAdjusted);
+//
+//        dialog.getJDialog().pack();
+//
+//        final int dialogResult = dialog.show();
+//
+//        if (dialogResult == dialog.ID_OK) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+
+
+        final int dialogResult = getUserResponse(msg, "Continue", "Back");
+
+        if (dialogResult == ModalDialog.ID_OK) {
+            return true;
+        } else {
+            return false;
+        }
+
+
+    }
+
+
+
+    private Boolean checkParameters() {
+
+        if (!isTextFieldValidBranch(OCSSW_BRANCH_LABEL, ocsswBranchTextfield)) {
+            return false;
+        }
+
+        String ocssLocationString = (String) ocsswLocationComboBox.getSelectedItem();
+        switch (ocssLocationString) {
+            case OCSSW_LOCATION_LOCAL:
+                if (!directoryCheck(OCSSW_ROOT_LABEL, ocsswRootTextfield.getText())) {
+                    return false;
+                }
+
+                if (!checkIfEnvironmentVariableConflict(OCSSW_ROOT_LABEL, ocsswRootTextfield.getText())) {
+                    return false;
+                }
+
+                break;
+
+            case OCSSW_LOCATION_VIRTUAL_MACHINE:
+                if (!directoryCheck(OCSSW_SHARED_DIR_LABEL, ocsswSharedDir.getText())) {
+                    return false;
+                }
+
+                break;
+
+            case OCSSW_LOCATION_REMOTE_SERVER:
+                if (!isTextFieldValidIP(OCSSW_SERVER_ADDRESS_LABEL, ocsswserverAddressTextfield)) {
+                    return false;
+                }
+
+                if (!isTextFieldValidPort(SERVER_PORT_LABEL, serverPortTextfield)) {
+                    return false;
+                }
+
+                if (!isTextFieldValidPort(SERVER_INPUT_STREAM_PORT_LABEL, serverInputStreamPortTextfield)) {
+                    return false;
+                }
+
+                if (!isTextFieldValidPort(SERVER_ERROR_STREAM_PORT_LABEL, serverErrorStreamPortTextfield)) {
+                    return false;
+                }
+
+                break;
+        }
+
+        return true;
+    }
+
+
+
+
+    public boolean isTextFieldValidBranch(String field, JTextField textfield) {
+
+        boolean valid = true;
+
+        if (textfield != null) {
+            if (textfieldHasValue(textfield)) {
+                String branch = textfield.getText().trim();
+
+                if (!isValidBranch(branch)) {
+                    notifyError("<html>" + field + "='" + branch + "' is not a valid OCSSW branch. <br>" +
+                            "The OCSSW branch must contain 2 fields of the form X.X where X is an integer</html>");
+                    return false;
+                }
+
+                if (!isDefaultBranch(branch)) {
+                    return false;
+                }
+
+            } else {
+                notifyError("'" + field + "' must contain an OCSSW Branch");
+                valid = false;
+            }
+        } else {
+            notifyError("'" + field + "' not defined");
+            valid = false;
+        }
+
+        return valid;
+    }
+
+
+
+    public boolean isDefaultBranch(String branch) {
+
+        if (branch == null) {
+            return false;
+        }
+
+        branch.trim();
+
+        if (SEADAS_OCSSW_BRANCH_DEFAULT_VALUE.equals(branch)) {
+            return true;
+        }
+
+        String msg = "<html>" +
+                "WARNING!: Your current SeaDAS version has default branch='" + SEADAS_OCSSW_BRANCH_DEFAULT_VALUE + "'<br>"+
+                "You have selected to use branch='" + branch + "'<br>" +
+                "This could cause a possible conflict when running from the SeaDAS GUI" +
+                "</html>";
+
+        final int dialogResult = getUserResponse(msg, "Continue", "Back");
+
+        if (dialogResult == ModalDialog.ID_OK) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+
+    public static boolean isValidBranch(final String branch) {
+
+        String[] arrOfBranch = branch.split("\\.");
+
+        if (arrOfBranch.length == 2) {
+            if (isNumeric(arrOfBranch[0]) && isNumeric(arrOfBranch[1])) {
+                return true;
+            }
+
+        } else {
+            return false;
+        }
+
+        return false;
+    }
+
+
+
+    public boolean isTextFieldValidIP(String label, JTextField textfield) {
+
+        if (textfield != null) {
+            if (textfieldHasValue(textfield)) {
+                if (isValidIP(textfield.getText())) {
+                    return true;
+                } else {
+                    notifyError("<html>" + label + "='" + textfield.getText() + "' is not a valid IP address</html>");
+                }
+            } else {
+                notifyError("'" + label + "' must contain an IP address");
+            }
+        } else {
+            notifyError("'" + label + "' not defined");
+        }
+
+        return false;
+    }
+
+
+    public boolean isTextFieldValidPort(String label, JTextField textfield) {
+
+        if (textfield != null) {
+            if (textfieldHasValue(textfield)) {
+                if (isValidPort(textfield.getText())) {
+                    return true;
+                } else {
+                    notifyError("'" + label + "=" + textfield.getText() + "' is not a valid port");
+                }
+            } else {
+                notifyError("'" + label + "' must contain a port number");
+            }
+        } else {
+            notifyError("'" + label + "' not defined");
+        }
+
+        return false;
+    }
+
+    public static boolean textfieldHasValue(JTextField textfield) {
+        if (textfield.getText() != null && textfield.getText().length() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public static boolean isValidPort(String str) {
+        int port;
+
+        try {
+            port = Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        if (port >= 1 && port <= 65535) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isValidIP(final String ip) {
+        String PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
+
+        return ip.matches(PATTERN);
+    }
+
+
+    public static boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+
+    private int getUserResponse(String msg, String okText, String cancelText) {
+
+        JPanel panel = GridBagUtils.createPanel();
+
+        JLabel label = new JLabel(msg);
+
+        GridBagConstraints gbc = createConstraints();
+
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+
+        panel.add(label, gbc);
+
+        ModalDialog dialog = new ModalDialog(modalDialog.getParent(), PANEL_NAME, panel, ModalDialog.ID_OK_CANCEL, HELP_ID);
+        dialog.getButton(ModalDialog.ID_OK).setText(okText);
+        dialog.getButton(ModalDialog.ID_CANCEL).setText(cancelText);
+        dialog.getButton(ModalDialog.ID_OK).setMinimumSize(dialog.getButton(ModalDialog.ID_OK).getPreferredSize());
+
+        // Specifically set sizes for dialog here
+        Dimension minimumSizeAdjusted = adjustDimension(dialog.getJDialog().getMinimumSize(), 25, 50);
+        Dimension preferredSizeAdjusted = adjustDimension(dialog.getJDialog().getPreferredSize(), 25, 50);
+        dialog.getJDialog().setMinimumSize(minimumSizeAdjusted);
+        dialog.getJDialog().setPreferredSize(preferredSizeAdjusted);
+
+        dialog.getJDialog().pack();
+
+        return dialog.show();
+    }
+
+
+
+
+
+    private Boolean directoryCheck(String field, String filename) {
+        File dir = new File(filename);
+
+        if (dir.exists()) {
+            return true;
+        }
+
+        String msg = "<html>" + field + " directory: '" + filename + "' does not exist" + "</html>";
+
+        final int dialogResult = getUserResponse(msg, "Create Directory", "Back");
+
+        if (dialogResult == ModalDialog.ID_OK) {
+
+            try {
+                dir.mkdirs();
+
+                if (dir.exists()) {
+                    return true;
+                } else {
+                    msg = "<html>Failed to create directory '" +  filename + "'<br></html>";
+                }
+            } catch (Exception e){
+                msg = "<html>Failed to create directory '" +  filename + "'<br>" +
+                        e.toString() + "</html>";
+            }
+
+            notifyError(msg);
+        }
+
+        return false;
+    }
+
+
+
+    private void notifyError(String msg) {
+        JOptionPane.showMessageDialog(null, msg, PANEL_NAME, JOptionPane.WARNING_MESSAGE);
+    }
 
 }
