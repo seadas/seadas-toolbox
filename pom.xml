@@ -58,6 +58,8 @@
         <jersey.version>2.27</jersey.version>
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
+        <seadas.reader.version>1.8-SNAPSHOT</seadas.reader.version>
+        <seadas.reader.ui.version>1.8-SNAPSHOT</seadas.reader.ui.version>
     </properties>
 
     <repositories>
