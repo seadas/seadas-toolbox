@@ -90,11 +90,11 @@
             <artifactId>seadas-reader</artifactId>
             <version>1.8.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-reader-ui</artifactId>
-            <version>1.8.0-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-reader-ui</artifactId>-->
+            <!--<version>1.8.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-contour-operator</artifactId>

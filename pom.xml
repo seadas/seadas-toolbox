@@ -36,7 +36,7 @@
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
         <module>seadas-reader</module>
-        <module>seadas-reader-ui</module>
+        <!--<module>seadas-reader-ui</module>-->
         <!--<module>seadas-writeimage-operator</module>-->
         <module>seadas-kit</module>
     </modules>
