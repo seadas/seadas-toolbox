@@ -23,7 +23,7 @@ import javax.swing.*;
 )
 @ActionReference(
         path = "Menu/OC Processing",
-        position = 210
+        position = 240
 )
 @NbBundle.Messages({
         "CTL_UpdateLutsAction_Name=update_luts.py...",
