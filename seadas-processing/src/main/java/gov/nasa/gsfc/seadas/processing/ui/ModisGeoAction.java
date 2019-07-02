@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ ModisGeoAction_Name"
 )
 @ActionReference(
-        path = "Menu/OC Processing",
+        path = "Menu/SeaDAS OCSSW",
         position = 40
 )
 @NbBundle.Messages({

@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ MultiLevelProcessorAction_Name"
 )
 @ActionReference(
-        path = "Menu/OC Processing",
+        path = "Menu/SeaDAS OCSSW",
         position = 220
 )
 @NbBundle.Messages({
