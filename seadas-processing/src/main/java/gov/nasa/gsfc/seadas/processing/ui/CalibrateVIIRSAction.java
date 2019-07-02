@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ CalibrateVIIRSAction_Name"
 )
 @ActionReference(
-        path = "Menu/OC Processing",
+        path = "Menu/SeaDAS OCSSW",
         position = 70
 )
 @NbBundle.Messages({
