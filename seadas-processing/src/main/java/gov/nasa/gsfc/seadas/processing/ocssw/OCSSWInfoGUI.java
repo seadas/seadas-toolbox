@@ -671,7 +671,7 @@ public class OCSSWInfoGUI {
         Map<String, String> env = System.getenv();
         String ocsswroot_env = env.get("OCSSWROOT");
 
-        if (ocsswroot_env == null && ocsswroot_env.trim().length() == 0) {
+        if (ocsswroot_env == null || ocsswroot_env.trim().length() == 0) {
             return true;
         }
 
