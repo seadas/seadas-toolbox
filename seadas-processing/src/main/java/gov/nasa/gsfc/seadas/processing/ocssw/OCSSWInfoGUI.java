@@ -586,7 +586,7 @@ public class OCSSWInfoGUI {
         int returnValue = jFileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             selectedFile = jFileChooser.getSelectedFile();
-            System.out.println(selectedFile.getAbsolutePath());
+            //System.out.println(selectedFile.getAbsolutePath());
         }
         return selectedFile;
     }

@@ -59,7 +59,7 @@ public class L2genIfileSelector {
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         String ifileName = seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName());
-                        System.out.println("processor model property changed! ifileName in file selector " + ifileName);
+                        //System.out.println("processor model property changed! ifileName in file selector " + ifileName);
                         File iFile = new File(ifileName);
                         if (isEventHandlerEnabled() || ifileName.isEmpty()) {
                             //disableEventHandler();

@@ -1,11 +1,11 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.ParamList;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;    
 
 /**
@@ -48,7 +48,7 @@ public class ParFileManager{
 
             final File tempFile = File.createTempFile(processorModel.getProgramName() + "-tmpParFile", ".par", processorModel.getIFileDir());
             parFileLocation = tempFile.getAbsolutePath();
-                    System.out.println(tempFile.getAbsoluteFile());
+                    //System.out.println(tempFile.getAbsoluteFile());
             //tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
