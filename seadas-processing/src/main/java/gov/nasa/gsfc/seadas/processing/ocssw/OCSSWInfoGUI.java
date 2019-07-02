@@ -682,42 +682,8 @@ public class OCSSWInfoGUI {
         String msg = "<html>" +
                 "WARNING!: You are defining OCSSW ROOT to be '" + ocsswroot + "'<br>" +
                 "but on your system the environment variable OCSSWROOT points to '" + ocsswroot_env + "'<br>" +
-                "This conflict could cause problems between GUI and command line operations<br>"+
+                "This mismatch could cause problems or conflict between GUI and command line operations<br>"+
                 "</html>";
-//
-//        JPanel panel = GridBagUtils.createPanel();
-//
-//        JLabel label = new JLabel(msg);
-//
-//        GridBagConstraints gbc = createConstraints();
-//
-//        gbc.anchor = GridBagConstraints.NORTH;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.weighty = 1;
-//        gbc.weightx = 1;
-//
-//        panel.add(label, gbc);
-//
-//        ModalDialog dialog = new ModalDialog(modalDialog.getParent(), PANEL_NAME, panel, ModalDialog.ID_OK_CANCEL, HELP_ID);
-//        dialog.getButton(ModalDialog.ID_OK).setText("Continue");
-//        dialog.getButton(ModalDialog.ID_CANCEL).setText("Back");
-//        dialog.getButton(ModalDialog.ID_OK).setMinimumSize(dialog.getButton(ModalDialog.ID_OK).getPreferredSize());
-//
-//        // Specifically set sizes for dialog here
-//        Dimension minimumSizeAdjusted = adjustDimension(dialog.getJDialog().getMinimumSize(), 25, 50);
-//        Dimension preferredSizeAdjusted = adjustDimension(dialog.getJDialog().getPreferredSize(), 25, 50);
-//        dialog.getJDialog().setMinimumSize(minimumSizeAdjusted);
-//        dialog.getJDialog().setPreferredSize(preferredSizeAdjusted);
-//
-//        dialog.getJDialog().pack();
-//
-//        final int dialogResult = dialog.show();
-//
-//        if (dialogResult == dialog.ID_OK) {
-//            return true;
-//        } else {
-//            return false;
-//        }
 
 
         final int dialogResult = getUserResponse(msg, "Continue", "Back");
@@ -832,7 +798,7 @@ public class OCSSWInfoGUI {
         String msg = "<html>" +
                 "WARNING!: Your current SeaDAS version has default branch='" + SEADAS_OCSSW_BRANCH_DEFAULT_VALUE + "'<br>"+
                 "You have selected to use branch='" + branch + "'<br>" +
-                "This could cause a possible conflict when running from the SeaDAS GUI" +
+                "This version mismatch could cause possible problems when running from the SeaDAS GUI" +
                 "</html>";
 
         final int dialogResult = getUserResponse(msg, "Continue", "Back");
