@@ -105,13 +105,13 @@ public class OCSSWVM extends OCSSWRemote {
             while (itr.hasNext()) {
                 fileName = itr.next();
                 if (fileName.trim().length() > 0) {
-                    System.out.println("file name in the file list: " + fileName);
+                    //System.out.println("file name in the file list: " + fileName);
                     fileName = workingDir + File.separator + fileName.substring(fileName.lastIndexOf(File.separator) + 1);
                     stringBuilder.append(fileName + "\n");
                 }
             }
             String fileContent = stringBuilder.toString();
-            System.out.println(fileContent);
+            //System.out.println(fileContent);
             SeadasFileUtils.writeStringToFile(fileContent, fileListFileName);
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -146,12 +146,12 @@ public class OCSSWVM extends OCSSWRemote {
         String file2HashValue;
         boolean isTwoEqual = false;
         try {
-            System.out.println("two file is equal: " + isTwoEqual);
+            //System.out.println("two file is equal: " + isTwoEqual);
             file1HashValue = FileCompare.MD5HashFile(file1Path);
             file2HashValue = FileCompare.MD5HashFile(file2Path);
             isTwoEqual = file1HashValue.equals(file2HashValue);
         } catch (Exception ioe) {
-            System.out.println("exception in comparing two files");
+            //System.out.println("exception in comparing two files");
             ioe.printStackTrace();
         }
         return isTwoEqual;

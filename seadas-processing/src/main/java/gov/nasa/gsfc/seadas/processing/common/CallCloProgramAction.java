@@ -97,7 +97,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
             } else {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
-        }else if (   programName.indexOf("update_luts.py") != -1   ) {
+        }else if (programName.indexOf("update_luts.py") != -1   ) {
             return new UpdateLutsUI(programName, xmlFileName, ocssw);
         }
 
