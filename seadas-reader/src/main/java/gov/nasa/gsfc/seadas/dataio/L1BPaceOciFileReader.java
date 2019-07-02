@@ -24,180 +24,107 @@ import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.Variable;
 
-import java.awt.*;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
-  */
-public class L1BHicoFileReader extends SeadasFileReader {
+public class L1BPaceOciFileReader extends SeadasFileReader {
 
-    L1BHicoFileReader(SeadasProductReader productReader) {
+    L1BPaceOciFileReader(SeadasProductReader productReader) {
         super(productReader);
     }
 
-    Array wavlengths = ncFile.findVariable("products/Lt").findAttribute("wavelengths").getValues();
+    enum WvlType {
+        RED("red_wavelengths"),
+        BLUE("blue_wavelengths"),
+        SWIR("swir_wavelenghts");
+
+        private String name;
+
+        private WvlType(String nm) {
+            name = nm;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
+
+    Array blue_wavlengths = null;
+    Array red_wavlengths = null;
+    Array swir_wavlengths = null;
+
 
     @Override
     public Product createProduct() throws ProductIOException {
 
-        int[] dims = ncFile.findVariable("products/Lt").getShape();
-        int sceneWidth = dims[1];
-        int sceneHeight = dims[0];
+        int sceneHeight = ncFile.findDimension("number_of_scans").getLength();
+        int sceneWidth = ncFile.findDimension("ccd_pixels").getLength();
+
         String productName;
 
         try {
-            productName = getStringAttribute("metadata_FGDC_Identification_Information_Dataset_Identifier");
+            productName = getStringAttribute("product_name");
         } catch (Exception ignored) {
             productName = productReader.getInputFile().getName();
         }
-        String hicoOrientation = getStringAttribute("metadata_HICO_Calibration_hico_orientation_from_quaternion");
 
-        mustFlipX = mustFlipY = false;
-        if(hicoOrientation.trim().equals("-XVV")) {
-            mustFlipY = true;
+        Variable blueWvl = ncFile.findVariable("sensor_band_parameters/blue_wavelength");
+        Variable redWvl = ncFile.findVariable("sensor_band_parameters/red_wavelength");
+        Variable swirWvl = ncFile.findVariable("sensor_band_parameters/SWIR_wavelength");
+        try {
+            blue_wavlengths = blueWvl.read();
+            red_wavlengths = redWvl.read();
+            //swir_wavlengths = swirWvl.read();
+
+
+            // somehow there are duplicate bands in the test file.
+            // fixme
+            swir_wavlengths = Array.factory(new float[]{940, 1038, 1250, 1251, 1378, 1615, 1616, 2130, 2260});
+
+
+
+        } catch (IOException e) {
+            throw new ProductIOException(e.getMessage(), e);
         }
+        mustFlipX = mustFlipY = getDefaultFlip();
+
         SeadasProductReader.ProductType productType = productReader.getProductType();
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
         product.setDescription(productName);
 
-        ProductData.UTC utcStart = getUTCAttribute("Start",globalAttributes);
-        if (utcStart != null) {
-            if (mustFlipY){
-                product.setEndTime(utcStart);
-            } else {
-                product.setStartTime(utcStart);
-            }
+        Attribute startTime = findAttribute("time_coverage_start");
+        ProductData.UTC utcStart = getUTCAttribute("time_coverage_start");
+        ProductData.UTC utcEnd = getUTCAttribute("time_coverage_end");
+        if (startTime == null) {
+            utcStart = getUTCAttribute("Start_Time");
+            utcEnd = getUTCAttribute("End_Time");
         }
-        ProductData.UTC utcEnd = getUTCAttribute("End",globalAttributes);
-        if (utcEnd != null) {
-            if (mustFlipY) {
-                product.setStartTime(utcEnd);
-            } else {
-                product.setEndTime(utcEnd);
-            }
+        // only needed as a stop-gap to handle an intermediate version of l2gen metadata
+        if (utcEnd == null) {
+            utcEnd = getUTCAttribute("time_coverage_stop");
         }
 
         product.setFileLocation(productReader.getInputFile());
         product.setProductReader(productReader);
 
         addGlobalMetadata(product);
-        variableMap = addHicoBands(product, ncFile.getVariables());
+        variableMap = addOciBands(product, ncFile.getVariables());
 
         addGeocoding(product);
         addMetadata(product, "products", "Band_Metadata");
         addMetadata(product, "navigation", "Navigation_Metadata");
-        addMetadata(product, "images", "Image_Metadata");
-        addMetadata(product,"quality","Quality_Metadata");
-
-        /*
-        todo add ability to read the true_color image inculded in the file
-        todo the flag bit variable is in width x height not height x width as the other bands...so need to figure
-             out how to read it...
-        */
-        addQualityFlags(product);
-
 
         product.setAutoGrouping("Lt");
 
         return product;
     }
 
-    private void addQualityFlags(Product product) {
-        Band QFBand = product.getBand("flags");
-        if(QFBand != null) {
-            FlagCoding flagCoding = new FlagCoding("Quality_Flags");
-            flagCoding.addFlag("LAND", 0x01, "Land");
-            flagCoding.addFlag("NAVFAIL", 0x02, "Navigation failure");
-            flagCoding.addFlag("NAVWARN", 0x04, "Navigation suspect");
-            flagCoding.addFlag("HISOLZEN", 0x08, "High solar zenith angle");
-            flagCoding.addFlag("HISATZEN", 0x10, "Large satellite zenith angle");
-            flagCoding.addFlag("SPARE", 0x20, "Unused");
-            flagCoding.addFlag("CALFAIL", 0x40, "Calibration failure");
-            flagCoding.addFlag("CLOUD", 0x80, "Cloud determined");
-
-            product.getFlagCodingGroup().add(flagCoding);
-            QFBand.setSampleCoding(flagCoding);
-
-            product.getMaskGroup().add(Mask.BandMathsType.create("LAND", "Land",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "flags.LAND",
-                    LandBrown, 0.0));
-            product.getMaskGroup().add(Mask.BandMathsType.create("HISATZEN", "Large satellite zenith angle",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "flags.HISATZEN",
-                    LightCyan, 0.5));
-            product.getMaskGroup().add(Mask.BandMathsType.create("CLOUD", "Cloud determined",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "flags.CLOUD",
-                    Color.WHITE, 0.0));
-            product.getMaskGroup().add(Mask.BandMathsType.create("HISOLZEN", "High solar zenith angle",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "flags.HISOLZEN",
-                    Purple, 0.5));
-            product.getMaskGroup().add(Mask.BandMathsType.create("CALFAIL", "Calibration failure",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "flags.CALFAIL",
-                    FailRed, 0.0));
-            product.getMaskGroup().add(Mask.BandMathsType.create("NAVWARN", "Navigation suspect",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "flags.NAVWARN",
-                    Color.MAGENTA, 0.5));
-            product.getMaskGroup().add(Mask.BandMathsType.create("NAVFAIL", "Navigation failure",
-                    product.getSceneRasterWidth(),
-                    product.getSceneRasterHeight(), "flags.NAVFAIL",
-                    FailRed, 0.0));
-        }
-    }
-
-    private ProductData.UTC getUTCAttribute(String key, List<Attribute> globalAttributes) {
-        String timeString = null;
-        try {
-            if (key.equals("Start")){
-                Attribute date_attribute = findAttribute("metadata_FGDC_Identification_Information_Time_Period_of_Content_Beginning_Date", globalAttributes);
-                Attribute time_attribute = findAttribute("metadata_FGDC_Identification_Information_Time_Period_of_Content_Beginning_Time", globalAttributes);
-                StringBuilder tstring = new StringBuilder(date_attribute.getStringValue().trim());
-                tstring.append(time_attribute.getStringValue().trim());
-                tstring.append("000");
-                timeString = tstring.toString();
-            }
-            if (key.equals("End")){
-                Attribute date_attribute = findAttribute("metadata_FGDC_Identification_Information_Time_Period_of_Content_Ending_Date", globalAttributes);
-                Attribute time_attribute = findAttribute("metadata_FGDC_Identification_Information_Time_Period_of_Content_Ending_Time", globalAttributes);
-                StringBuilder tstring = new StringBuilder(date_attribute.getStringValue().trim());
-                tstring.append(time_attribute.getStringValue().trim());
-                tstring.append("000");
-                timeString = tstring.toString();
-            }
-        } catch (Exception ignored) {
-        }
-
-        if (timeString != null) {
-
-            final DateFormat dateFormat = ProductData.UTC.createDateFormat("yyyyDDDHHmmssSSS");
-            try {
-                final Date date = dateFormat.parse(timeString);
-                String milliSeconds = timeString.substring(timeString.length() - 3);
-                return ProductData.UTC.create(date, Long.parseLong(milliSeconds) * 1000);
-
-            } catch (ParseException ignored) {
-            }
-        }
-        return null;
-    }
 
     public void addMetadata(Product product, String groupname, String meta_element) throws ProductIOException {
-        Group group =  ncFile.findGroup(groupname);
+        Group group = ncFile.findGroup(groupname);
 
         if (group != null) {
             final MetadataElement bandAttributes = new MetadataElement(meta_element);
@@ -221,7 +148,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
         }
     }
 
-    private Map<Band, Variable> addHicoBands(Product product, List<Variable> variables) {
+    private Map<Band, Variable> addOciBands(Product product, List<Variable> variables) {
         final int sceneRasterWidth = product.getSceneRasterWidth();
         final int sceneRasterHeight = product.getSceneRasterHeight();
         Band band;
@@ -229,21 +156,26 @@ public class L1BHicoFileReader extends SeadasFileReader {
         Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
         int spectralBandIndex = 0;
         for (Variable variable : variables) {
-            if ((variable.getShortName().contains("latitude")) || (variable.getShortName().contains("longitude"))
-                    || (variable.getShortName().equals("true_color")))
+            if (variable.getParentGroup().equals("sensor_band_parameters") || variable.getParentGroup().equals("scan_line_attributes"))
+                continue;
+            if ((variable.getShortName().equals("latitude")) || (variable.getShortName().equals("longitude")))
                 continue;
             int variableRank = variable.getRank();
+
             if (variableRank == 2) {
                 final int[] dimensions = variable.getShape();
-                final int height = dimensions[0] - leadLineSkip - tailLineSkip;
+                final int height = dimensions[0];
                 final int width = dimensions[1];
 
                 if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                    // final List<Attribute> list = variable.getAttributes();
+
                     String units = variable.getUnitsString();
-                    final String name = variable.getShortName();
+                    String name = variable.getShortName();
                     final int dataType = getProductDataType(variable);
                     band = new Band(name, dataType, width, height);
                     product.addBand(band);
+
                     final List<Attribute> list = variable.getAttributes();
                     for (Attribute hdfAttribute : list) {
                         final String attribName = hdfAttribute.getShortName();
@@ -266,14 +198,13 @@ public class L1BHicoFileReader extends SeadasFileReader {
                     }
                     bandToVariableMap.put(band, variable);
                     band.setUnit(units);
-                    band.setDescription(name);
+                    band.setDescription(variable.getDescription());
                 }
-            }
-            if (variableRank == 3) {
+            } else if (variableRank == 3) {
                 final int[] dimensions = variable.getShape();
-                final int bands = dimensions[2];
-                final int height = dimensions[0];
-                final int width = dimensions[1];
+                final int bands = dimensions[0];
+                final int height = dimensions[1];
+                final int width = dimensions[2];
 
                 if (height == sceneRasterHeight && width == sceneRasterWidth) {
                     // final List<Attribute> list = variable.getAttributes();
@@ -282,7 +213,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
                     String description = variable.getShortName();
 
                     for (int i = 0; i < bands; i++) {
-                        final float wavelength = getHicoWvl(i);
+                        final float wavelength = getOciWvl(i, getWvlType(variable.getShortName()));
                         StringBuilder longname = new StringBuilder(description);
                         longname.append("_");
                         longname.append(wavelength);
@@ -296,7 +227,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
 
                         Variable sliced = null;
                         try {
-                            sliced = variable.slice(2, i);
+                            sliced = variable.slice(0, i);
                         } catch (InvalidRangeException e) {
                             e.printStackTrace();  //Todo change body of catch statement.
                         }
@@ -328,12 +259,40 @@ public class L1BHicoFileReader extends SeadasFileReader {
                     }
                 }
             }
+
+
         }
         return bandToVariableMap;
     }
 
-    float getHicoWvl(int index) {
-        return wavlengths.getFloat(index);
+    private WvlType getWvlType(String productName) {
+        WvlType wvltype = null;
+        if (productName.equals("Lt_blue")) {
+            wvltype = WvlType.BLUE;
+        } else if (productName.equals("Lt_red")) {
+            wvltype = WvlType.RED;
+        } else if (productName.equals("Lt_SWIR")) {
+            wvltype = WvlType.SWIR;
+        }
+        return wvltype;
+    }
+
+    private float getOciWvl(int index, WvlType wvlEnum) {
+        float wvl;
+        switch (wvlEnum) {
+            case RED:
+                wvl = red_wavlengths.getFloat(index);
+                break;
+            case BLUE:
+                wvl = blue_wavlengths.getFloat(index);
+                break;
+            case SWIR:
+                wvl = swir_wavlengths.getFloat(index);
+                break;
+            default:
+                wvl = 0;
+        }
+        return wvl;
     }
 
     public ProductData readDataFlip(Variable variable) throws ProductIOException {
@@ -350,14 +309,12 @@ public class L1BHicoFileReader extends SeadasFileReader {
     }
 
     public void addGeocoding(final Product product) throws ProductIOException {
-        Variable latVar = ncFile.findVariable("navigation/latitude");
-        if (latVar == null) {
-            latVar = ncFile.findVariable("navigation/latitudes");
-        }
-        Variable lonVar = ncFile.findVariable("navigation/longitude");
-        if (lonVar == null) {
-            lonVar = ncFile.findVariable("navigation/longitudes");
-        }
+        final String longitude = "longitude";
+        final String latitude = "latitude";
+        String navGroup = "geolocation_data";
+
+        Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
+        Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
 
         if (latVar != null && lonVar != null) {
             final ProductData lonRawData;
@@ -380,7 +337,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
             lonBand.setData(lonRawData);
 
             product.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
-            
+
         }
     }
 }
