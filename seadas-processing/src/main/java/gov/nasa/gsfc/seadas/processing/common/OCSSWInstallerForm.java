@@ -234,6 +234,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 } else {
                     ((JLabel)dirPanel.getComponent(0)).setText("Local install-dir");
                 }
+                dirPanel.getComponent(1).setEnabled(false);
+                dirPanel.getComponent(2).setEnabled(false);
             }
         }
 
