@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import com.bc.ceres.core.runtime.RuntimeContext;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -191,7 +189,7 @@ public class ParamList {
             if (parts.get(i).equals("=")) {
                 pairCount++;
                 if (parts.get(i - 1).equals("=")) {
-                    System.out.printf("ParamList.setParamString - Key/Value pair %d missing Key\n", pairCount);
+                    //System.out.printf("ParamList.setParamString - Key/Value pair %d missing Key\n", pairCount);
                 } else {
                     if (parts.get(i + 1).equals("=") || ((parts.size() > i+2) && parts.get(i + 2).equals("="))) {
                         params.add(new ParamInfo(parts.get(i - 1), ""));

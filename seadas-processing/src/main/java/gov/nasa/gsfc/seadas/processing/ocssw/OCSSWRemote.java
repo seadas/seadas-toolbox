@@ -156,7 +156,7 @@ public class OCSSWRemote extends OCSSW {
             }
         };
         pmSwingWorker.executeWithBlocking();
-        System.out.println("upload process is done: " + pmSwingWorker.isDone());
+        //System.out.println("upload process is done: " + pmSwingWorker.isDone());
         return ifileUploadSuccess;
 
     }
@@ -187,7 +187,7 @@ public class OCSSWRemote extends OCSSW {
                 }
             };
             pmSwingWorker.executeWithBlocking();
-            System.out.println("upload process is done: " + pmSwingWorker.isDone());
+            //System.out.println("upload process is done: " + pmSwingWorker.isDone());
         }
         String fileNameWithoutPath = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
         String charSet = ocsswClient.getServicePathForFileCharSet(jobId).path(fileNameWithoutPath).request().get(String.class);
@@ -301,13 +301,13 @@ public class OCSSWRemote extends OCSSW {
             while (itr.hasNext()) {
                 fileName = itr.next();
                 if (fileName.trim().length() > 0) {
-                    System.out.println("file name in the file list: " + fileName);
+                    //System.out.println("file name in the file list: " + fileName);
                     fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
                     stringBuilder.append(fileName + "\n");
                 }
             }
             String fileContent = stringBuilder.toString();
-            System.out.println(fileContent);
+            //System.out.println(fileContent);
             SeadasFileUtils.writeStringToFile(fileContent, fileListFileName);
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -982,7 +982,7 @@ public class OCSSWRemote extends OCSSW {
 
             final File tempFile = File.createTempFile(programName + "-tmpParFile", ".par");
             String parFileLocation = tempFile.getAbsolutePath();
-            System.out.println(tempFile.getAbsoluteFile());
+            //System.out.println(tempFile.getAbsoluteFile());
             tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
@@ -1025,7 +1025,7 @@ public class OCSSWRemote extends OCSSW {
 
             final File tempFile = File.createTempFile(MLP_PAR_FILE_NAME, ".par");
             String parFileLocation = tempFile.getAbsolutePath();
-            System.out.println(tempFile.getAbsoluteFile());
+            //System.out.println(tempFile.getAbsoluteFile());
             tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {

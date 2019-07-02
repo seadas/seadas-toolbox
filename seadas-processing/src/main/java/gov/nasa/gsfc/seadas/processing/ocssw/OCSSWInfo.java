@@ -164,7 +164,7 @@ public class OCSSWInfo {
         int unique_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
 
         Date date = new Date();
-        System.out.println(sdf.format(date));
+        //System.out.println(sdf.format(date));
         sessionId = date.toString();
         String ocsswLocationPropertyValue = preferences.get(OCSSW_LOCATION_PROPERTY, null);
         if (ocsswLocationPropertyValue == null) {
@@ -246,7 +246,7 @@ public class OCSSWInfo {
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
         String baseUriPortNumber = preferences.get(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
         resourceBaseUri = "http://" + serverAPI + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
-        System.out.println("server URL:" + resourceBaseUri);
+        //System.out.println("server URL:" + resourceBaseUri);
         final ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(MultiPartFeature.class);
         clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
