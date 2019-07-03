@@ -20,7 +20,7 @@ import javax.swing.*;
         popupText = "#CTL_OCSSWInstallerAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS OCSSW",
+        path = "Menu/SeaDAS-OCSSW",
         position = 10
 )
 @NbBundle.Messages({

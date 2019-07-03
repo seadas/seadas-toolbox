@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ GeoLocateVIIRSAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS OCSSW",
+        path = "Menu/SeaDAS-OCSSW",
         position = 60
 )
 @NbBundle.Messages({
@@ -33,7 +33,7 @@ import javax.swing.*;
         "CTL_GeoLocateVIIRSAction_Description=Takes a VIIRS L1A file and outputs geolocation files"
 })
 
-public class GeoLocateVIIRSAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
+public class GeoLocateVIIRSAction extends CallCloProgramAction implements ContextAwareAction, LookupListener{
 
     private final Lookup lkp;
 
@@ -50,16 +50,17 @@ public class GeoLocateVIIRSAction extends CallCloProgramAction implements Contex
         setProgramName(Bundle.CTL_GeoLocateVIIRSAction_ProgramName());
         setDialogTitle(Bundle.CTL_GeoLocateVIIRSAction_DialogTitle());
         setXmlFileName(Bundle.CTL_GeoLocateVIIRSAction_XMLFileName());
-        setEnableState();
+        //setEnableState();
     }
+
     @Override
     public void resultChanged(LookupEvent lookupEvent) {
-        setEnableState();
+        //setEnableState();
     }
 
     public void setEnableState() {
         boolean state = false;
-//        OCSSWInfo ocsswInfo = lkp.lookup(OCSSWInfo.class);
+       // OCSSWInfo ocsswInfo = lkp.lookup(OCSSWInfo.class);
         if (ocsswInfo != null) {
             state = ocsswInfo.isOCSSWExist();
         }

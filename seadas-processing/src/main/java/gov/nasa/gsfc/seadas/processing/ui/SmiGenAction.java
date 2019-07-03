@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ SmiGenAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS OCSSW",
+        path = "Menu/SeaDAS-OCSSW",
         position = 200
 )
 @NbBundle.Messages({
