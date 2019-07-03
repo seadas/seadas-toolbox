@@ -64,16 +64,6 @@ public class OCSSWInfoGUI {
     JTextField serverErrorStreamPortTextfield;
 
 
-    String OCSSW_BRANCH_LABEL = "OCSSW Branch";
-    String OCSSW_LOCATION_LABEL = "OCSSW Location";
-    String OCSSW_SHARED_DIR_LABEL = "OCSSW Shared Dir";
-    String OCSSW_ROOT_LABEL = "OCSSW ROOT";
-    String OCSSW_SERVER_ADDRESS_LABEL = "OCSSW Server Address";
-    String SERVER_PORT_LABEL = "Server Port";
-    String SERVER_INPUT_STREAM_PORT_LABEL = "Server Input Stream Port";
-    String SERVER_ERROR_STREAM_PORT_LABEL = "Server Error Stream Port";
-
-
     PropertyContainer pc = new PropertyContainer();
 
     OCSSWConfigData ocsswConfigData = new OCSSWConfigData();
@@ -446,6 +436,9 @@ public class OCSSWInfoGUI {
         serverErrorStreamPortTextfield.setMinimumSize(serverErrorStreamPortTextfield.getPreferredSize());
 
 
+        pc.addProperty(Property.create(SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY, preferences.get(SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY, SEADAS_OCSSW_SERVER_ADDRESS_DEFAULT_VALUE)));
+        pc.getDescriptor(SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY).setDisplayName(SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY);
+
         pc.addProperty(Property.create(SEADAS_OCSSW_PORT_PROPERTY, preferences.get(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE)));
         pc.getDescriptor(SEADAS_OCSSW_PORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PORT_PROPERTY);
 
@@ -456,11 +449,13 @@ public class OCSSWInfoGUI {
         pc.getDescriptor(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY);
 
 
+
         final BindingContext ctx = new BindingContext(pc);
 
         ctx.bind(SEADAS_OCSSW_PORT_PROPERTY, serverPortTextfield);
         ctx.bind(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, serverInputStreamPortTextfield);
         ctx.bind(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, serverErrorStreamPortTextfield);
+        ctx.bind(SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY, ocsswserverAddressTextfield);
 
 
         gbc.gridx = 0;

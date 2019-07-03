@@ -38,6 +38,7 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_KEEPFILEONSERVER_PROPERTY = "seadas.ocssw.keepFilesOnServer";
     final static String SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY = "seadas.ocssw.processInputStreamPort";
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY = "seadas.ocssw.processErrorStreamPort";
+    final static String SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY = "seadas.ocssw.serverAddress";
     final static String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
     final static String SEADAS_OCSSW_VERSION_NUMBER_PROEPRETY ="seadas.ocssw.version";
@@ -51,8 +52,20 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_KEEPFILEONSERVER_DEFAULT_VALUE = "false";
     final static  String SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE = "6402";
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE = "6403";
+    final static String SEADAS_OCSSW_SERVER_ADDRESS_DEFAULT_VALUE = "";
     final static String SEADAS_CLIENT_ID_DEFAULT_VALUE = System.getProperty("user.name");
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasOCSSWSharedDir";
+
+
+    final static String OCSSW_BRANCH_LABEL = "OCSSW Branch";
+    final static String OCSSW_LOCATION_LABEL = "OCSSW Location";
+    final static String OCSSW_SHARED_DIR_LABEL = "OCSSW Shared Dir";
+    final static String OCSSW_ROOT_LABEL = "OCSSW ROOT";
+    final static String OCSSW_SERVER_ADDRESS_LABEL = "OCSSW Server Address";
+    final static String SERVER_PORT_LABEL = "Server Port";
+    final static String SERVER_INPUT_STREAM_PORT_LABEL = "Server Input Stream Port";
+    final static String SERVER_ERROR_STREAM_PORT_LABEL = "Server Error Stream Port";
+
 
 
     public static Properties properties = new Properties(System.getProperties());
