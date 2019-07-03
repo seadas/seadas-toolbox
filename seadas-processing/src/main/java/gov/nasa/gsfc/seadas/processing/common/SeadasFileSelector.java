@@ -397,7 +397,7 @@ public class SeadasFileSelector {
         }
 
         public RegexFileFilter(String regex) throws IllegalStateException, IllegalArgumentException{
-            SeadasLogger.getLogger().info("regular expression: " + regex);
+            //SeadasLogger.getLogger().info("regular expression: " + regex);
 
             if (regex == null) {
                 return;
