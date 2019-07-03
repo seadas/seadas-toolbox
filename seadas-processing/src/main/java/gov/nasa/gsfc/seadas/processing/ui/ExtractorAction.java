@@ -21,7 +21,7 @@ import javax.swing.*;
         popupText = "#CTL_ ExtractorAction_Name"
 )
 @ActionReference(
-        path = "Menu/OC Processing",
+        path = "Menu/SeaDAS-OCSSW",
         position = 20
 )
 @NbBundle.Messages({
@@ -48,13 +48,13 @@ public class ExtractorAction extends CallCloProgramAction implements ContextAwar
         setProgramName(Bundle.CTL_ExtractorAction_ProgramName());
         setDialogTitle(Bundle.CTL_ExtractorAction_DialogTitle());
         setXmlFileName(Bundle.CTL_ExtractorAction_XMLFileName());
-        setEnableState();
+        //setEnableState();
     }
 
 
     @Override
     public void resultChanged(LookupEvent lookupEvent) {
-        setEnableState();
+        //setEnableState();
     }
 
     public void setEnableState() {
