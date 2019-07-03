@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ L3MapGenAction_Name"
 )
 @ActionReference(
-        path = "Menu/OC Processing",
+        path = "Menu/SeaDAS-OCSSW",
         position = 190
 )
 @NbBundle.Messages({

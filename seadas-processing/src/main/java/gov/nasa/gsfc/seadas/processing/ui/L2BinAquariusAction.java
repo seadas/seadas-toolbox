@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ L2BinAquariusAction_Name"
 )
 @ActionReference(
-        path = "Menu/OC Processing",
+        path = "Menu/SeaDAS-OCSSW",
         position = 160
 )
 @NbBundle.Messages({
