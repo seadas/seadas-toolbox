@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY;
+
 /**
  * Created by aabduraz on 5/25/17.
  */
@@ -171,6 +173,10 @@ public class OCSSWInfo {
             return;
         }
 
+        if(ocsswLocationPropertyValue.equals(OCSSW_LOCATION_REMOTE_SERVER)) {
+            ocsswLocationPropertyValue = preferences.get(SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY, null);
+        }
+
         setOcsswLocation(null);
 
         boolean isValidOcsswPropertyValue = isValidOcsswLocationProperty(ocsswLocationPropertyValue);
@@ -194,6 +200,18 @@ public class OCSSWInfo {
             Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in $HOME/.snap/etc/seadas.properties");
             return;
         }
+
+//        if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
+//            displayRemoteServerDownMessage();
+//            return;
+//        }
+    }
+
+
+    public static void displayRemoteServerDownMessage(){
+        JOptionPane.showMessageDialog(new JOptionPane(), "Remote server is down. OCSSW is not accessible. Please start OCSSW remote server.",
+                "OCSSW Initialization Warning",
+                JOptionPane.WARNING_MESSAGE);
     }
 
     /**

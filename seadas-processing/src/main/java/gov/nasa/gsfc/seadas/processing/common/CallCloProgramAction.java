@@ -5,9 +5,7 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
+import gov.nasa.gsfc.seadas.processing.ocssw.*;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -119,15 +117,23 @@ public class CallCloProgramAction extends AbstractSnapAction {
             ocsswInfo = OCSSWInfo.getInstance();
             ocssw = OCSSW.getOCSSWInstance();
         }
-        ocssw.setProgramName(programName);
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
+
         initializeOcsswClient();
+
         if (ocssw == null) {
             return;
         }
+
+        if (!(ocssw instanceof OCSSWLocal) && !OCSSWInfo.getInstance().isOcsswServerUp()) {
+            OCSSWInfo.displayRemoteServerDownMessage();
+            return;
+        }
+
+        ocssw.setProgramName(programName);
 
         final AppContext appContext = getAppContext();
 
