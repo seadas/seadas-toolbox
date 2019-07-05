@@ -15,6 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -22,6 +24,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.OPER_DIR;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_LOG_DIR_PROPERTY;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
 
 /**
@@ -112,6 +115,23 @@ public abstract class OCSSW {
         return true;
     }
 
+    public String getOCSSWLogDirPath(){
+        Preferences preferences;
+        String logDirPath = ifileDir;
+        preferences = Config.instance("seadas").load().preferences();
+        if (preferences != null ) {
+            logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, ifileDir);
+            File logDir = new File(logDirPath);
+            if (!logDir.exists()) {
+                try {
+                    Files.createDirectory(Paths.get(logDirPath));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return logDirPath;
+    }
     public abstract boolean isMissionDirExist(String missionName);
 
     public abstract String[] getMissionSuites(String missionName, String programName);
