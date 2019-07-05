@@ -249,7 +249,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
 
                 if (exitCode == 0) {
                     pm.done();
-                    String logDir = ocsswInfo.getLogDirPath();
+                    String logDir = ocssw.getOCSSWLogDirPath(); //ocsswInfo.getLogDirPath();
                     SeadasFileUtils.writeToDisk(logDir + File.separator + "OCSSW_LOG_" + programName + ".txt",
                             "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
                 } else {
