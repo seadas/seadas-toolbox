@@ -64,6 +64,10 @@ public class OCSSWRemote extends OCSSW {
     boolean serverProcessCompleted;
 
     public OCSSWRemote() {
+        if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
+            //OCSSWInfo.displayRemoteServerDownMessage();
+            return;
+        }
         ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
         target = ocsswClient.getOcsswWebTarget();
         jobId = target.path("jobs").path("newJobId").request(MediaType.TEXT_PLAIN_TYPE).get(String.class);
@@ -615,7 +619,7 @@ public class OCSSWRemote extends OCSSW {
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
         Response response = target.path("ocssw").path("executeUpdateLutsProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
-        if  (response.getStatus() == 200 ) {
+        if (response.getStatus() == 200) {
             return "Update Luts successful";
         } else {
             return "Update Luts failed on server";
@@ -765,7 +769,7 @@ public class OCSSWRemote extends OCSSW {
         return seadasProcess;
     }
 
-    protected boolean isMLPOdirValid(String mlpOdir){
+    protected boolean isMLPOdirValid(String mlpOdir) {
         if (mlpOdir == null || mlpOdir.trim().isEmpty()) {
             return false;
         } else {
@@ -774,8 +778,8 @@ public class OCSSWRemote extends OCSSW {
     }
 
     protected void downloadMLPOutputFiles(ProcessorModel processorModel) {
-        String mlpOdir =  processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
-        final String ofileDir = isMLPOdirValid(mlpOdir) ?  mlpOdir : ifileDir;
+        String mlpOdir = processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
+        final String ofileDir = isMLPOdirValid(mlpOdir) ? mlpOdir : ifileDir;
 
 
         SnapApp snapApp = SnapApp.getDefault();
@@ -815,7 +819,7 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public Process execute(ParamList paramListl) {
         JsonObject commandArrayJsonObject = getJsonFromParamList(paramListl);
-        setCommandArray((String[])commandArrayJsonObject.asJsonArray().toArray());
+        setCommandArray((String[]) commandArrayJsonObject.asJsonArray().toArray());
         Response response = target.path("ocssw").path("executeOcsswProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             Response output = target.path("fileServices").path("downloadFile").path(jobId).request().get(Response.class);
