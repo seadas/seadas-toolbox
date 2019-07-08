@@ -1,6 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.SnapFileChooser;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -15,10 +18,6 @@ import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import org.esa.snap.core.util.SystemUtils;
-import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.ui.AppContext;
-import org.esa.snap.ui.SnapFileChooser;
 
 /**
  * Created by IntelliJ IDEA.
@@ -346,7 +345,7 @@ public class FileSelector {
         }
 
         public RegexFileFilter(String regex) throws IllegalStateException {
-            SeadasLogger.getLogger().info("regular expression: " + regex);
+            //SeadasLogger.getLogger().info("regular expression: " + regex);
             if (regex == null || regex.trim().length() == 0) {
 
                 //throw new IllegalStateException();
