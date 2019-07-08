@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>SeaDAS Help - Data Processing Tools - l2gen</title>
+    <title>SeaDAS Help - Data Processing Tools - l3gen</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -10,456 +10,54 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            l2gen
+            l3gen
         </td>
         <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
-                                                                                       border=0></a></td>
+                                                                            border=0></a></td>
     </tr>
 </table>
 
 
-<h3>l2gen</h3>
+<h3>l3gen</h3>
 
 <p>
-    Creates a Level 2 file from an input Level 1 (A or B) file.
+    Creates a Level 3 bin file using applicable remote-sensing reflectance based algorithms applied to an input RRS level 3 input file.
 </p>
 
-<h4>Location</h4>
-
-<p>OCSSW -> l2gen</p>
-
-
-<h4>Details</h4>
-
-<p>
-    For the command line version of help run <a href="ProcessL2gen.html#COMMAND_LINE_HELP">l2gen -help</a>
-
-<p>
-    The l2gen GUI is dynamically created based on the selected IFILE. Once the IFILE is specified,
-    l2gen is run in the background in a special mode in order to obtain and populate all the parameters
-    and defaults for l2gen GUI. This means that if a new version of l2gen comes out, with new parameters,
-    defaults, etc., your current version of SeaDAS will automatically support these parameters. Note that
-    because of this l2gen dependency on the building of the GUI, SeaDAS
-    7 requires l2gen version 6.5.7 or later.
-
-<p>
-    All l2gen parameters are contained within a series of categorized tabs: <br>
-
-<ul>
-    <li><a href="ProcessL2gen.html#MAIN_TAB">THE MAIN TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#PRODUCTS_TAB">THE PRODUCTS TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#PROCESSING_OPTIONS_TAB">THE PROCESSING OPTIONS TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#SUBSETTING_OPTIONS_TAB">THE SUBSETTING OPTIONS TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#THRESHOLDS_TAB">THE THRESHOLDS TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#ANCILLARY_TAB">THE ANCILLARY INPUTS TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#IOP_OPTIONS_TAB">THE IOP OPTIONS TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#MISCELLANEOUS_TAB">THE MISCELLANEOUS TAB</a><br>
-    </li>
-
-    <li><a href="ProcessL2gen.html#CALIBRATION_OPTIONS_TAB">THE CALIBRATION OPTIONS TAB</a><br>
-    </li>
-
-
-</ul>
+<h5>Location</h5>
+<p>OCSSW -> l3gen</p>
 
 
 <p>
-    <b>Non-Defaults Selected Indicator (*)</b> <br>
-    When a parameter is chosen to be
-    a non-default value, that parameter will show up in the parfile textarea of the MAIN tab.
-    As an aid to help direct
-    the user to tabs containing at least one parameter set to a non-default value, an asterix
-    (*) will appear at the top
-    of the tab. Also within the tab, an asterix will appear next to each parameter which is a
-    non-default value.
-
-<p>
-
-<p>
+    <a href="#gui">GUI Usage</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
 
 
-    <a name="MAIN_TAB"></a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE MAIN TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <b>Selecting the IFILE </b> <br>
-                The SeaDAS l2gen GUI requires as it's initial input, a correctly formatted, non-corrupt
-                IFILE.
-                All tabs and fields within the l2gen GUI are disabled until the IFILE is specified. If a
-                product
-                is currently loaded and enabled in SeaDAS, then the IFILE of this product will automatically
-                appear in the GUI as the selected IFILE and all the GUI parameters will be built.
-
-            <p>
-                Once this IFILE has been specified, the mission and data level are obtained from this file.
-                If the
-                IFILE data level matches the expected input data level of l2gen, the GUI will then use this
-                file to run
-                l2gen in the background in order to obtain and populate all the parameters
-                and defaults of l2gen GUI.
-
-            <p>
-                One thing very important to note is that since this GUI is built from the IFILE, a
-                subsequent selection
-                of a different IFILE will cause the GUI to be rebuilt with all the fields set to the
-                defaults. If you
-                have
-                parameters already specified and wish to save these, then the best route would be to save
-                them in a
-                parfile,
-                select a new IFILE, then reload the parfile. An alternate way to try to keep your currently
-                selected parameters, is to type the ifile name into the parfile textarea in the GUI.
-
-            <p>
-
-
-                <b>Selecting the OFILE and the GEOFILE </b> <br>
-                A default OFILE, and GEOFILE (if mission uses this parameter) are determined based on the
-                specified
-                IFILE. If the
-                IFILE is not an absolute filename but is a relative filename, then the OFILE, and GEOFILE
-                defaults will
-                be relative
-                as well. Note that in this case, the OFILE, and GEOFILE are expected to be in the same
-                directory
-                as the IFILE. You need not use these defaults and are free to choose your own OFILE and
-                GEOFILE names.
-
-            <p>
-
-                <b>Get Ancillary Files</b><br>
-                This button invokes a web-based utility which retrieves all the ancillary files names needed
-                by l2gen
-                for the selected IFILE.
-
-            <p>
-
-
-                <b>Show Defaults</b> <br>
-                Checking this checkbox causes all the parameters (including those set to default values) to
-                be displayed
-                within the Parfile textarea. They are commented out to prevent them being used when running
-                l2gen. This
-                feature is useful to understand not only what are the defaults but also to be able to view
-                all the
-                possible l2gen parameters in a single textarea.
-
-            <p>
-
-                <b>Suite</b> <br>
-                Selects the suite which will essentially define all the parameter defaults. Please note that selection
-                of a new suite
-                will result in the GUI being reset, similar to what happens when a new IFILE is selected, so any prior
-                information which you entered will be lost, and restored with all the new defaults. If you wish
-                to retain your current information (at least as much as is possible), then type the suite into the
-                parfile
-                textarea instead. This will result in the suite being set, but then the rest of the parfile will be read
-                in.
-
-            <p>
-
-                <b>Parfile Textarea</b><br>
-                This textarea contains all of the currently selected parameters which are not the l2gen
-                default value.
-                You can either export this to a file or import an external file. When importing an external
-                parfile, the
-                "Retain Selected IFILE" checkbox can be used to ignore any IFILE parameter contained within
-                the external
-                parfile.
-
-            <p>
-                It's useful to note that when you are editing text in the parfile textarea you can click
-                "Apply". This
-                will cause the text to update all the GUI parameters. The parfile textarea will
-                automatically
-                be reformatted in a consistent way, so be aware that the order of your hand-entered
-                parameters may
-                change due to this. Clicking on another field or another tab will also have the same effect
-                as clicking
-                the "Apply" button.
-
-            <p>
-                To reset all parameters within a given tab to the default, click the button at the bottom of
-                the panel.
-                To reset all parameters within all tabs, no button as of yet exists but you can simply
-                delete the entire
-                parfile textarea in the main tab, and this will restore everything to default.
-
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-
-        <td>
-
-            <p>
-                <img src="../images/L2gen_main_tab.png" border=0>
-
-
-        </td>
-    </tr>
-</table>
-
-<p>
-
-
-<p>
-
-    <a name="PRODUCTS_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4> THE PRODUCTS TAB </h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                The l2gen product parameter L2PROD is initially set to the default value. At any time L2PROD can be
-                restored to the default value by clicking 'Restore Defaults' at the bottom of this tab. L2PROD can be
-                specified in a multitude of ways. Note that a change within any of
-                one these product specifier controls will automatically update the others.
-
-
-            <p>
-                <b>Product Selector</b> <br>
-                The products are grouped into logical categories within this tree-based selector. Any branch may be
-                fully unwound and an individual product may then be selected. Selection at any parent level will
-                result in the selection of all the child level products. By default, checking/unchecking a parent
-                behaves in a dual state manner, respectively checking/unchecking all of it's children.
-
-            <p>
-                <b>Wavelength Limiter </b> <br>
-                This tool is useful when several partial wavelength selections are desired. If the 'Wavelength
-                Limiter' is partially selected then the 'Product Selector' checkboxes for the parent level take on a
-                tri-state behaviour of (none, partial, all), where partial reflects the selected criteria within the
-                'Wavelength Limiter'.
-
-            <p>
-                Note that a change in the 'Wavelength Limiter' will not directly change the products selected,
-                but only effects the behaviour of the 'Product Selector'.
-
-            <p>
-                Also note that the Wavelength Limitor tool is expected to contain a list of wavelengths regardless
-                of the mission selected. The wavelengths do vary depending on mission. If this tool does not contain
-                any wavelengths then there is likely a problem and could perhaps be a bad IFILE.
-
-            <p>
-                <b>Selected Products Textarea</b> <br>
-                This textfield displays the current selection of L2PROD and is fully editable.
-
-
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#PRODUCTS_TAB"><img src="../images/L2gen_products_tab.png" border=0></a>
-        </td>
-    </tr>
-</table>
-
-
-<p>
-
-
-<p>
-    <a name="PROCESSING_OPTIONS_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE PROCESSING OPTIONS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#PROCESSING_OPTIONS_TAB"><img src="../images/L2gen_proc_opt_tab.png" border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
-
-
-<p>
-
-    <a name="SUBSETTING_OPTIONS_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE SUBSETTING OPTIONS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                This contains 2 sets of mutually exclusive options: pixels (spixl, epixl, dpixl, sline, eline, dline)
-                and
-                coordinates (north, south, east, west). This GUI will not permit selection of both sets, resetting the
-                prior selection to the default. (i.e. If you set pixel field to a non-default value and then
-                subsequently set a coordinate field to a non-default value, the latest selection (the coordinate
-                field) will take precedent and the previously set field (the pixel field) will be automatically
-                reset to the default.
-
-
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#SUBSETTING_OPTIONS_TAB"><img src="../images/L2gen_subset_tab.png"
-                                                                        border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
-
-
-<p>
-    <a name="THRESHOLDS_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE THRESHOLDS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#THRESHOLDS_TAB"><img src="../images/L2gen_threshold_tab.png" border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
-
-
-<p>
-    <a name="ANCILLARY_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE ANCILLARY INPUTS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#ANCILLARY_TAB"><img src="../images/L2gen_ancillary_tab.png" border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
-
-
-<p>
-    <a name="IOP_OPTIONS_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE IOP OPTIONS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#IOP_OPTIONS_TAB"><img src="../images/L2gen_IOP_tab.png" border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
-
-
-<p>
-    <a name="MISCELLANEOUS_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE MISCELLANEOUS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#MISCELLANEOUS_TAB"><img src="../images/L2gen_misc_tab.png" border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
-
-
-<p>
-    <a name="CALIBRATION_OPTIONS_TAB"></a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE CALIBRATION OPTIONS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#CALIBRATION_OPTIONS_TAB"><img src="../images/L2gen_calibration_tab.png"
-                                                                         border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
-
-
-<p>
 
 <hr>
+<a name="gui"><h4>GUI Usage</h4></a>
 
-<a name="COMMAND_LINE_HELP"></a>
 
-<h3>l2gen Help (Command Line Version)</h3>
+<center>
+    <table class="image">
+        <tr>
+            <td><img src="../images/l3gen.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
 
 <pre>
-l2gen 9.3.0-seadas-v7.5.2.1 (Dec  3 2018 15:37:26)
-Usage: l2gen argument-list
+l3gen 9.3.0-seadas-v7.5.2.1 (Dec  3 2018 15:37:27)
+Usage: l3gen argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
   be specified on the commandline, or put into a parameter file, or the
@@ -1012,6 +610,9 @@ The list of valid keywords follows:
    gmpfile (ifile) = GMP geometric parameter file (MISR only)
 </pre>
 
+
+<hr>
 </body>
 </html>
+
 

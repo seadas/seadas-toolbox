@@ -21,7 +21,7 @@
 <h3>modis_L1B.py</h3>
 
 <p>
-    Creates a MODIS Level 1B file from an input Level 0 file.
+    Creates a MODIS Level 1B file from an input Level 1A file.
 </p>
 
 <p>
@@ -32,13 +32,13 @@
 
 <a name="location"><h4>Location</h4></a>
 
-<p>Tools -> OCSSW Processing -> modis_L1B.py</p>
+<p>OCSSW -> modis_L1B.py</p>
 
 
 <<a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>modis_L1B.py</b> creates a MODIS Level 1B file from an input Level 0 file.
+    <b>modis_L1B.py</b> creates a MODIS Level 1B file from an input Level 1A file.
 
 <p></p>
 <hr>
@@ -66,83 +66,83 @@
     </tr>
     <tr>
         <td><b>ifile</b></td>
-        <td>text</td>
-        <td>MODIS_L0_file name</td>
+        <td> ifile</td>
+        <td>MODIS_L1A file name</td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
         <td><b>geofile</b></td>
-        <td> Text Field</td>
+        <td> ifile</td>
         <td>L1A GEO file name</td>
         <td>Optional</td>
         <td>if GEOFILE is not provided, assumed to be basename of L1AFILE + '.GEO'</td>
     </tr>
     <tr>
         <td><b>okm</b></td>
-        <td>text</td>
+        <td> ofile</td>
         <td>Output MODIS L1B 1KM HDF filename</td>
         <td>Optional</td>
-        <td>Derived from the ifile </td>
+        <td>Derived from the ifile</td>
     </tr>
     <tr>
         <td><b>hkm</b></td>
-        <td>text</td>
+        <td> ofile</td>
         <td>Output MODIS L1B HKM HDF filename</td>
         <td>Optional</td>
         <td>Derived from the ifile</td>
     </tr>
     <tr>
         <td><b>qkm</b></td>
-        <td>text</td>
+        <td> ofile</td>
         <td>Output MODIS L1B QKM HDF filename</td>
         <td>Optional</td>
-        <td>Derived from the ifile </td>
+        <td>Derived from the ifile</td>
     </tr>
     <tr>
         <td><b>obc</b></td>
-        <td>text</td>
+        <td> ofile</td>
         <td>Output MODIS L1B OBC HDF filename</td>
         <td>Optional</td>
-        <td>Derived from the ifile </td>
+        <td>Derived from the ifile</td>
     </tr>
 
     <tr>
         <td><b>lutver</b></td>
-        <td>text</td>
+        <td> string</td>
         <td> L1B LUT version number</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>lutdir</b></td>
-        <td>text</td>
+        <td> string</td>
         <td>Path of directory containing LUT files</td>
         <td>Optional</td>
         <td></td>
     </tr>
 
-   <tr>
+    <tr>
         <td><b>del-okm</b></td>
         <td> boolean</td>
-        <td>Delete 1km  resolution L1B file</td>
+        <td>Delete 1km resolution L1B file</td>
         <td>Optional</td>
         <td>false</td>
     </tr>
     <tr>
-         <td><b>del-hkm</b></td>
-         <td> boolean</td>
-         <td>Delete 500m  resolution L1B file</td>
-         <td>Optional</td>
-         <td>false</td>
-     </tr>
+        <td><b>del-hkm</b></td>
+        <td> boolean</td>
+        <td>Delete 500m resolution L1B file</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
     <tr>
-         <td><b>del-qkm</b></td>
-         <td> boolean</td>
-         <td>Delete 250m  resolution L1B file</td>
-         <td>Optional</td>
-         <td>false</td>
-     </tr>
+        <td><b>del-qkm</b></td>
+        <td> boolean</td>
+        <td>Delete 250m resolution L1B file</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
     <tr>
         <td><b>keep_obc</b></td>
         <td> boolean</td>
@@ -151,11 +151,11 @@
         <td>false</td>
     </tr>
     <!--<tr>-->
-        <!--<td><b>verbose</b></td>-->
-        <!--<td> boolean</td>-->
-        <!--<td>Print status messages</td>-->
-        <!--<td>Optional</td>-->
-        <!--<td>false</td>-->
+    <!--<td><b>verbose</b></td>-->
+    <!--<td> boolean</td>-->
+    <!--<td>Print status messages</td>-->
+    <!--<td>Optional</td>-->
+    <!--<td>false</td>-->
     <!--</tr>-->
     <tr>
         <td><b>log</b></td>
@@ -183,7 +183,7 @@
     <tr>
         <td><b>Browser Button</b></td>
         <td>Button</td>
-        <td>Selects infile/ofile
+        <td>Selects ifile/ofile
         </td>
     </tr>
     <tr>
@@ -194,7 +194,7 @@
         </td>
     </tr>
     <tr>
-        <td><b>Save Parameters ...</b></td>
+        <td><b>Store Parameters ...</b></td>
         <td> Button</td>
         <td>Saves the current arguments in GUI in a file.
         </td>
