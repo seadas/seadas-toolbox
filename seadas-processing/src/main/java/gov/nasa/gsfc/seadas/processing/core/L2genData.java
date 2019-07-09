@@ -1549,12 +1549,12 @@ public class L2genData implements SeaDASProcessorModel {
         l2genDir.mkdirs();
 
         File xmlFile = new File(l2genDir, getProductInfoXml());
-        SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
-        SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
+        //SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
+        //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
 
         if (source == Source.RESOURCES) {
             if (!xmlFile.exists() || overwrite) {
-                SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file does not exist!");
+                //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file does not exist!");
                 xmlFile = installResource(getProductInfoXml());
             }
 
@@ -1620,13 +1620,13 @@ public class L2genData implements SeaDASProcessorModel {
         File l2genDir = new File(dataDir, OPER_DIR);
         l2genDir.mkdirs();
 
-        SeadasFileUtils.debug("l2gen xml file dir :" + l2genDir.getAbsolutePath());
-        SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + l2genDir.getAbsolutePath());
+        //SeadasFileUtils.debug("l2gen xml file dir :" + l2genDir.getAbsolutePath());
+        //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + l2genDir.getAbsolutePath());
 
         File xmlFile = new File(l2genDir, getParamInfoXml());
 
-        SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
-        SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
+        //SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
+        //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
 
         if (!xmlFile.exists()) {
             xmlFile = installResource(getParamInfoXml());
