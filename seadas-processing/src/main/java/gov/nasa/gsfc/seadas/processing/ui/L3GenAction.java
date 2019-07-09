@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.ui;
 
-import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
+import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genAction;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -33,7 +33,7 @@ import javax.swing.*;
         "CTL_L3GenAction_Description=Process MODIS L0 to L1A."
 })
 
-public class L3GenAction  extends CallCloProgramAction implements ContextAwareAction, LookupListener {
+public class L3GenAction  extends L2genAction implements ContextAwareAction, LookupListener {
 
     private final Lookup lkp;
 
