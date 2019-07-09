@@ -9,6 +9,7 @@
     <tocitem text="SeaDAS">
         <tocitem text="OCSSW">
             <tocitem text="Introduction" target="processOverview"/>
+            <tocitem text="OCSSW Cookbook" target="ocsswCookbook"/>
             <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
             <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
             <tocitem text="l1bgen" target="l1bgen"/>
@@ -22,6 +23,7 @@
             <tocitem text="l2bin_aquarius" target="l2bin_aquarius"/>
             <tocitem text="l3bin" target="l3bin"/>
             <tocitem text="l3mapgen" target="l3mapgen"/>
+            <tocitem text="l3bindump" target="l3bindump"/>
             <tocitem text="smigen" target="smigen"/>
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
             <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
