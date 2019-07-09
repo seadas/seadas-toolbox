@@ -28,6 +28,7 @@
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
             <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
             <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
+            <tocitem text="update_luts.py" target="update_luts.py"/>
             <tocitem text="geolocate_viirs" target="geolocate_viirs"/>
             <tocitem text="calibrate_viirs" target="calibrate_viirs"/>
             <tocitem text="OCSSW Configuration" target="ocsswInfoConfig"/>
