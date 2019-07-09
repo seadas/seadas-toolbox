@@ -9,7 +9,6 @@
     <tocitem text="SeaDAS">
         <tocitem text="OCSSW">
             <tocitem text="Introduction" target="processOverview"/>
-            <tocitem text="OCSSW Cookbook" target="ocsswCookbook"/>
             <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
             <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
             <tocitem text="l1bgen" target="l1bgen"/>
@@ -39,6 +38,17 @@
                 <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
                 <tocitem text="l2extract" target="l2extract"/>
             </tocitem>
+
+            <tocitem text="OCSSW Cookbook" target="ocsswCookbook"/>
+            <tocitem text="Field Measurements">
+                <tocitem text="Overview" target="fieldMeasurements"/>
+                <tocitem text="Import SeaBASS File" target="importSeabass"/>
+                <tocitem text="Import SeaDAS 6.x Track File" target="importSeaDASTrack"/>
+                <tocitem text="Find Matchup" target="fieldMeasurementsFindMatchups"/>
+                <tocitem text="Make Matchup" target="fieldMeasurementsMakeMatchups"/>
+
+            </tocitem>
+
         </tocitem>
 
     </tocitem>
