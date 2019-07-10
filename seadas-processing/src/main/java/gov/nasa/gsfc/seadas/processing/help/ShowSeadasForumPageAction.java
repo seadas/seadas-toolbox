@@ -16,6 +16,7 @@
 package gov.nasa.gsfc.seadas.processing.help;
 
 import org.esa.snap.runtime.Config;
+//import org.esa.snap;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -33,8 +34,8 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowSeaDASForumAction_MenuText",
         popupText = "#CTL_ShowSeaDASForumAction_MenuText")
 @ActionReference(
-        path = "Menu/Help",
-        position = 1530
+        path = "Menu/Help/SeaDAS..."
+//        position = 1530
 )
 @NbBundle.Messages({
         "CTL_ShowSeaDASForumAction_MenuText=SeaDAS Forum",

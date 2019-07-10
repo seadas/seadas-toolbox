@@ -2,6 +2,16 @@
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
 
+    <!--SNAP's main menu entries-->
+
+    <folder name="Menu">
+        <folder name="Help">
+            <folder name="SeaDAS...">
+                <attr name="position" intvalue="1500"/>
+            </folder>
+        </folder>
+    </folder>
+
     <!--<folder name="Actions">-->
         <!--<folder name="Processing">-->
             <!--<file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">-->
