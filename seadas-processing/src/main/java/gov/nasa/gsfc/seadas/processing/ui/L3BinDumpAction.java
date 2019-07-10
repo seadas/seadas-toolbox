@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.ui;
 
-import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
+import gov.nasa.gsfc.seadas.processing.common.CallL3BinDumpAction;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -33,7 +33,7 @@ import javax.swing.*;
         "CTL_L3BinDumpAction_Description=Create a L3 Mapped Image."
 })
 
-public class L3BinDumpAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
+public class L3BinDumpAction extends CallL3BinDumpAction implements ContextAwareAction, LookupListener {
 
     private final Lookup lkp;
 
