@@ -34,8 +34,8 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowSeadasHomePageAction_MenuText")
 @ActionReferences({
         @ActionReference(
-                path = "Menu/Help",
-                position = 1520
+                path = "Menu/Help/SeaDAS..."
+//                position = 1520
         ),
 //        @ActionReference(
 //                path = "Menu/SeaDAS-OCSSW/help",
