@@ -137,6 +137,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 return new L2Bin_Processor(programName, xmlFileName, ocssw);
             case L3BIN:
                 return new L3Bin_Processor(programName, xmlFileName, ocssw);
+            case L3BINDUMP:
+                return new L3BinDump_Processor(programName, xmlFileName, ocssw);
             case OCSSW_INSTALLER:
                 return new OCSSWInstaller_Processor(programName, xmlFileName, ocssw);
             default:
@@ -1096,14 +1098,38 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             });
         }
-
-//        public String getOfileName() {
-//            if (!(getParamValue("noext").equals("1"))) {
-//                return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
-//            }
-//            return getParamValue(getPrimaryOutputFileOptionName());
-//        }
     }
+
+    private static class L3BinDump_Processor extends ProcessorModel {
+
+        L3BinDump_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
+        }
+
+        @Override
+        public boolean updateIFileInfo(String ifileName) {
+
+            File ifile = new File(ifileName);
+
+            inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
+
+            if (inputFileInfo.isTypeId(FileTypeInfo.Id.L3BIN)) {
+                isIfileValid = true;
+                updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+                updateParamValues(new File(ifileName));
+
+            } else {
+                isIfileValid = false;
+                removePropertyChangeListeners(getPrimaryInputFileOptionName());
+            }
+
+            setReadyToRun(isIfileValid);
+            return isIfileValid;
+
+        }
+    }
+
+
 
     private static class SMIGEN_Processor extends ProcessorModel {
 
