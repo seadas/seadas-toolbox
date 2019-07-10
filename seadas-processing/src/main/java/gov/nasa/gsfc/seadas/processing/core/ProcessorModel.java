@@ -1097,12 +1097,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             });
         }
 
-        public String getOfileName() {
-            if (!(getParamValue("noext").equals("1"))) {
-                return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
-            }
-            return getParamValue(getPrimaryOutputFileOptionName());
-        }
+//        public String getOfileName() {
+//            if (!(getParamValue("noext").equals("1"))) {
+//                return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
+//            }
+//            return getParamValue(getPrimaryOutputFileOptionName());
+//        }
     }
 
     private static class SMIGEN_Processor extends ProcessorModel {
