@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 /**
  * Created by Norman on 30.05.2015.
  */
-class DesktopHelper {
+public class DesktopHelper {
     public static void browse(String uriString) {
         final Desktop desktop = Desktop.getDesktop();
 

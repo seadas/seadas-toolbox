@@ -13,13 +13,12 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package gov.nasa.gsfc.seadas.processing.help;
+package gov.nasa.gsfc.seadas.processing.help.configuration;
 
+import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
 import org.esa.snap.runtime.Config;
-//import org.esa.snap;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
@@ -29,21 +28,21 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeaDASForumAction")
+@ActionID(category = "Help", id = "ShowSeadasClientServerAction")
 @ActionRegistration(
-        displayName = "#CTL_ShowSeaDASForumAction_MenuText",
-        popupText = "#CTL_ShowSeaDASForumAction_MenuText")
+        displayName = "#CTL_ShowSeadasClientServerAction_MenuText",
+        popupText = "#CTL_ShowSeadasClientServerAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS..."
-//        position = 1530
+        path = "Menu/Help/SeaDAS/Configuration",
+        position = 40
 )
 @NbBundle.Messages({
-        "CTL_ShowSeaDASForumAction_MenuText=SeaDAS Forum",
-        "CTL_ShowSeaDASForumAction_ShortDescription=SeaDAS Forum"
+        "CTL_ShowSeadasClientServerAction_MenuText=Client Server Setup",
+        "CTL_ShowSeadasClientServerAction_ShortDescription=Browse the SeaDAS client server configuration web page"
 })
-public class ShowSeadasForumPageAction extends AbstractAction {
+public class ShowSeadasClientServerAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://oceancolor.gsfc.nasa.gov/forum/oceancolor/forum_show.pl";
+    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/client_server/";
 
     /**
      * Launches the default browser to display the web site.
@@ -53,6 +52,6 @@ public class ShowSeadasForumPageAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.forum", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.clientServer", DEFAULT_PAGE_URL));
     }
 }

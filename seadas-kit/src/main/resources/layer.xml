@@ -6,8 +6,22 @@
 
     <folder name="Menu">
         <folder name="Help">
-            <folder name="SeaDAS...">
+            <folder name="SeaDAS">
                 <attr name="position" intvalue="1500"/>
+                <folder name="Configuration">
+                    <attr name="position" intvalue="20"/>
+                    <!--<file name="org-openide-actions-CutAction-separatorAfter.instance">-->
+                        <!--<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>-->
+                        <!--<attr name="position" intvalue="27"/>-->
+                    <!--</file>-->
+                </folder>
+                <folder name="Data Access">
+                    <attr name="position" intvalue="100"/>
+                </folder>
+
+                <folder name="Documentation">
+                    <attr name="position" intvalue="200"/>
+                </folder>
             </folder>
         </folder>
     </folder>
