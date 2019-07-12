@@ -18,41 +18,32 @@ package gov.nasa.gsfc.seadas.processing.help;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+//import org.esa.snap;
+
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeaDASHomePageAction")
+@ActionID(category = "Help", id = "ShowSeaDASPresentationsAction")
 @ActionRegistration(
-        displayName = "#CTL_ShowSeadasHomePageAction_MenuText",
-        popupText = "#CTL_ShowSeadasHomePageAction_MenuText")
-@ActionReferences({
-        @ActionReference(
-                path = "Menu/Help/SeaDAS",
-                position = 10,
-                separatorBefore = 5,
-                separatorAfter = 15
-        ),
-//        @ActionReference(
-//                path = "Menu/SeaDAS-OCSSW/help",
-//                position = 2000,
-//                separatorAfter = 2001
-//        )
-})
-
+        displayName = "#CTL_ShowSeaDASPresentationsAction_MenuText",
+        popupText = "#CTL_ShowSeaDASPresentationsAction_MenuText")
+@ActionReference(
+        path = "Menu/Help/SeaDAS",
+        position = 40
+)
 @NbBundle.Messages({
-        "CTL_ShowSeadasHomePageAction_MenuText=SeaDAS Web",
-        "CTL_ShowSeadasHomePageAction_ShortDescription=Browse the SeaDAS home page"
+        "CTL_ShowSeaDASPresentationsAction_MenuText=Presentations",
+        "CTL_ShowSeaDASPresentationsAction_ShortDescription=Browse the SeaDAS presentations web page"
 })
-public class ShowSeadasHomePageAction extends AbstractAction {
+public class ShowSeadasPresentationsPageAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/";
+    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/tutorials/presentations/";
 
     /**
      * Launches the default browser to display the web site.
@@ -62,6 +53,6 @@ public class ShowSeadasHomePageAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.homePageUrl", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.presentations", DEFAULT_PAGE_URL));
     }
 }

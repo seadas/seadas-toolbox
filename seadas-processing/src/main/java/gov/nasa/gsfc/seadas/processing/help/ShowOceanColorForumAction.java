@@ -18,7 +18,6 @@ package gov.nasa.gsfc.seadas.processing.help;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
@@ -28,31 +27,21 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeaDASHomePageAction")
+@ActionID(category = "Help", id = "ShowOceanColorForumAction")
 @ActionRegistration(
-        displayName = "#CTL_ShowSeadasHomePageAction_MenuText",
-        popupText = "#CTL_ShowSeadasHomePageAction_MenuText")
-@ActionReferences({
-        @ActionReference(
-                path = "Menu/Help/SeaDAS",
-                position = 10,
-                separatorBefore = 5,
-                separatorAfter = 15
-        ),
-//        @ActionReference(
-//                path = "Menu/SeaDAS-OCSSW/help",
-//                position = 2000,
-//                separatorAfter = 2001
-//        )
-})
-
+        displayName = "#CTL_ShowOceanColorForumAction_MenuText",
+        popupText = "#CTL_ShowOceanColorForumAction_MenuText")
+@ActionReference(
+        path = "Menu/Help/SeaDAS",
+        position = 30
+)
 @NbBundle.Messages({
-        "CTL_ShowSeadasHomePageAction_MenuText=SeaDAS Web",
-        "CTL_ShowSeadasHomePageAction_ShortDescription=Browse the SeaDAS home page"
+        "CTL_ShowOceanColorForumAction_MenuText=Forum",
+        "CTL_ShowOceanColorForumAction_ShortDescription=Browse the SeaDAS/OceanColor forum web page"
 })
-public class ShowSeadasHomePageAction extends AbstractAction {
+public class ShowOceanColorForumAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/";
+    private static final String DEFAULT_PAGE_URL = "https://oceancolor.gsfc.nasa.gov/forum/oceancolor/forum_show.pl";
 
     /**
      * Launches the default browser to display the web site.
@@ -62,6 +51,6 @@ public class ShowSeadasHomePageAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.homePageUrl", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.oceanColorForum", DEFAULT_PAGE_URL));
     }
 }
