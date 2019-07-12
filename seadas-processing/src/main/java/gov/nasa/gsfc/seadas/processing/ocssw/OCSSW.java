@@ -121,6 +121,9 @@ public abstract class OCSSW {
         preferences = Config.instance("seadas").load().preferences();
         if (preferences != null ) {
             logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, ifileDir);
+            if (logDirPath == null) {
+                logDirPath = System.getProperty("java.io.tmpdir");
+            }
             File logDir = new File(logDirPath);
             if (!logDir.exists()) {
                 try {
