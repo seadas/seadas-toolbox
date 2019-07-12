@@ -7,20 +7,16 @@ import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.ANC_FILE_LIST_FILE_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.FILE_TYPE_VAR_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MISSION_NAME_VAR_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.*;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_INPUT_STREAM_FILE_NAME;
 
@@ -482,6 +478,14 @@ public class OCSSWServices {
     public JsonObject getOCSSWSrcDirInfo() {
         JsonObject srcDirStatus = Json.createObjectBuilder().add("build", new File(OCSSWServerModelOld.missionDataDir + "build").exists()).build();
         return srcDirStatus;
+    }
+
+    @GET
+    @Path("/viirsDemInfo")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public JsonObject getOCSSWViirsDemInfo() {
+        JsonObject viirsDemStatus = Json.createObjectBuilder().add("viirs-dem", new File(OCSSWServerModel.getOcsswViirsDemPath()).exists()).build();
+        return viirsDemStatus;
     }
 
     @GET
