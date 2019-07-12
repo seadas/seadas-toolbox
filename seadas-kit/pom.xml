@@ -17,6 +17,7 @@
         The SeaDAS Toolbox is a SNAP extension dedicated the processing, 
         analysis and visualization of NASA OBPG science data.
     </description>
+    <url>https://seadas.gsfc.nasa.gov/installers/snap-seadas-toolbox/ </url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
