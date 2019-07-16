@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_BRANCH_PROPERTY;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY;
 
 /**
@@ -86,7 +87,7 @@ public class OCSSWInfo {
     private String ocsswLocation;
     private String logDirPath;
     private String resourceBaseUri;
-    private String seadasVersion;
+    private String ocsswBranch;
 
     public static String getSessionId() {
         return sessionId;
@@ -271,9 +272,9 @@ public class OCSSWInfo {
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
-        seadasVersion = preferences.get("seadas.version", "8.0.0");
+        ocsswBranch = preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, null);
         try {
-            jsonObject = target.path("ocssw").path("ocsswInfo").path(seadasVersion).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            jsonObject = target.path("ocssw").path("ocsswInfo").path(ocsswBranch).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (Exception e) {
             writeException(e);
             return false;
