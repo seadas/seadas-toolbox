@@ -1253,12 +1253,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return cmdArraySuffix;
         }
 
-        private String getSeaDASAppVersion(){
-            Preferences preferences = Config.instance("seadas").preferences();
-            String seadasVersion = preferences.get("seadas.version", null);
-            return seadasVersion;
-        }
-
         private String getOCSSWBranchVersion(){
             Preferences preferences = Config.instance("seadas").preferences();
             String ocsswBranch = preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, null);
