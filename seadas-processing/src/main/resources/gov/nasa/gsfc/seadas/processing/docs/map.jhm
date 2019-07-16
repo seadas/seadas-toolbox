@@ -8,8 +8,9 @@
     <mapID target="processOverview" url="processors/ProcessOverview.html"/>
     <mapID target="install_ocssw.py" url="processors/InstallOCSSW.html"/>
     <mapID target="extractor" url="processors/ProcessExtractors.html"/>
-    <!--<mapID target="l1aextract_modis" url="processors/ProcessL1aextract_modis.html"/>-->
-    <!--<mapID target="l1aextract_seawifs" url="processors/ProcessL1aextract_seawifs.html"/>-->
+    <mapID target="l1aextract_modis" url="processors/ProcessExtractors.html"/>
+    <mapID target="l1aextract_seawifs" url="processors/ProcessExtractors.html"/>
+    <mapID target="l1aextract_viirs" url="processors/ProcessExtractors.html"/>
     <mapID target="modis_GEO.py" url="processors/ProcessModis_GEO.html"/>
     <mapID target="l1bgen" url="processors/ProcessL1bgen.html"/>
     <mapID target="modis_L1B.py" url="processors/ProcessModis_L1B.html"/>
@@ -18,7 +19,7 @@
     <mapID target="calibrate_viirs" url="processors/ProcessCalibrate_viirs.html"/>
     <mapID target="l1mapgen" url="processors/ProcessL1mapgen.html"/>
     <mapID target="l1brsgen" url="processors/ProcessL1brsgen.html"/>
-    <!--<mapID target="l2extract" url="processors/ProcessL2extract.html"/>-->
+    <mapID target="l2extract" url="processors/ProcessExtractors.html"/>
     <mapID target="l2gen" url="processors/ProcessL2gen.html"/>
     <mapID target="l2gen_aquarius" url="processors/ProcessL2genAquarius.html"/>
     <mapID target="l2mapgen" url="processors/ProcessL2mapgen.html"/>
