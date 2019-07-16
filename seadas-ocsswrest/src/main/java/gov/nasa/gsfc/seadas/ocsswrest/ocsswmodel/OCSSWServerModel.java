@@ -69,11 +69,11 @@ public class OCSSWServerModel {
     }
 
     public static String getSeadasVersion() {
-        return seadasVersion;
+        return ocsswBranch;
     }
 
-    public static void setSeadasVersion(String seadasVersion) {
-        OCSSWServerModel.seadasVersion = seadasVersion;
+    public static void setOcsswBranch(String ocsswBranch) {
+        OCSSWServerModel.ocsswBranch = ocsswBranch;
     }
 
     public enum ExtractorPrograms {
@@ -112,7 +112,7 @@ public class OCSSWServerModel {
     private static String ocsswSrcDirPath;
     private static String ocsswViirsDemPath;
 
-    private static String seadasVersion;
+    private static String ocsswBranch;
 
     static boolean isProgramValid;
 

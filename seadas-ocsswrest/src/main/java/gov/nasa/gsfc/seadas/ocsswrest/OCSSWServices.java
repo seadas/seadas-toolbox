@@ -61,10 +61,10 @@ public class OCSSWServices {
      * @return
      */
     @GET
-    @Path("/ocsswInfo/{seadasVersion}")
+    @Path("/ocsswInfo/{ocsswBranch}")
     @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject getOcsswInfo(@PathParam("seadasVersion") String seadasVersion) {
-        OCSSWServerModel.setSeadasVersion(seadasVersion);
+    public JsonObject getOcsswInfo(@PathParam("ocsswBranch") String ocsswBranch) {
+        OCSSWServerModel.setOcsswBranch(ocsswBranch);
         OCSSWServerModel.initiliaze();
         JsonObject ocsswInstallStatus = null;
         try {
