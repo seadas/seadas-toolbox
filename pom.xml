@@ -22,7 +22,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>8.0.1</version>
     <name>SeaDAS Tool Box</name>
     <description>Tools from SeaDAS</description>
     <url>https://seadas.gsfc.nasa.gov</url>
@@ -30,13 +30,10 @@
     <modules>
 
         <module>seadas-watermask-operator</module>
-        <!--<module>seadas-ocsswrest</module>-->
         <module>seadas-processing</module>
-        <!--<module>seadas-processing-ui</module>-->
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
         <module>seadas-reader</module>
-        <!--<module>seadas-reader-ui</module>-->
         <!--<module>seadas-writeimage-operator</module>-->
         <module>seadas-kit</module>
     </modules>
@@ -51,7 +48,7 @@
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <seadas.version>8.0.0-SNAPSHOT</seadas.version>
+        <seadas.version>8.0.1</seadas.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>4.3.22</netcdf.version>
