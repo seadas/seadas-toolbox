@@ -63,7 +63,7 @@ public class ExtractorUI extends ProgramUIFactory {
         processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                if (processorModel.getProgramName()!=null) {
+                if (processorModel.getProgramName() != null) {
                     lonlat2pixline.updateIFileInfo(getLonLattoPixelsIFileName(processorModel.getParamInfo(processorModel.getPrimaryInputFileOptionName()).getValue().trim(), processorModel.getProgramName()));
                 }
             }
@@ -105,34 +105,58 @@ public class ExtractorUI extends ProgramUIFactory {
     }
 
 
-
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
 
         try {
-            if (programName.contains("l1aextract_modis") || programName.contains("l1aextract_viirs")) {
-                String geoFileName = (ifileName.substring(0, ifileName.lastIndexOf("."))).concat(".GEO");
+            String geoFileName = null;
+            if (programName.contains("l1aextract_modis")) {
+                String suffix = ".GEO";
+                geoFileName = (ifileName.substring(0, ifileName.lastIndexOf("."))).concat(suffix);
 
-                if (new File(geoFileName).exists()) {
-                    return geoFileName;
-                } else {
-                    Dialogs.showError(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
-                    return null;
+            } else if (programName.contains("l1aextract_viirs")) {
+                String suffix = null;
+                if (ifileName.contains("JPSS1")) {
+                    suffix = ".GEO-M_JPSS1";
+                } else if (ifileName.contains("SNPP")) {
+                    suffix = ".GEO-M_SNPP";
+                }
+
+                if (suffix != null) {
+                    geoFileName = (ifileName.substring(0, ifileName.lastIndexOf(".L"))).concat(suffix);
                 }
 
             }
+
+            if (geoFileName != null) {
+                if (new File(geoFileName).exists()) {
+                    return geoFileName;
+
+                } else {
+                    geoFileName = geoFileName + ".nc";
+
+                    if (new File(geoFileName).exists()) {
+                        return geoFileName;
+                    } else {
+                        Dialogs.showError(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
+                        return null;
+                    }
+                }
+            }
+
+
         } catch (Exception e) {
 
         }
         return ifileName;
     }
 
-    private String getGeoLocateProgramName(String programName){
+    private String getGeoLocateProgramName(String programName) {
 
         String geoLocateProgramName = null;
 
-        if(programName.contains("modis")) {
+        if (programName.contains("modis")) {
             geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_MODIS;
-        } else if(programName.contains("viirs")) {
+        } else if (programName.contains("viirs")) {
             geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_VIIRS;
 
         }
