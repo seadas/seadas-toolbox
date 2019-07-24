@@ -4,28 +4,28 @@ SeaDAS Toolbox Release Notes
 Release Date: July 24 2019
 
 The SeaDAS development team is pleased to announce the release of SeaDAS Toolbox 8.0-Beta. SeaDAS Toolbox
-enables the ESA SNAP application to use the unique features of NASA SeaDAS application. 
+enables the ESA SNAP application to use many of the key features of the NASA SeaDAS application. Not all
+features of the current version SeaDAS 7.5.3 have been added to the SeaDAS Toolbox.
 
-##### Main Features of SeaDAS Toolbox 8.0
+##### Main Features of SeaDAS Toolbox 8.0-Beta
 
-
-* GUI access to all [OCSSW](https://oceandata.sci.gsfc.nasa.gov/ocssw/)  programs
-* SeaDAS Reader for NASA Satellite instruments
-* Bathymetry Operator
-* Watermask Operator
-* Countour Lines
+* GUI access to all [OCSSW](https://oceandata.sci.gsfc.nasa.gov/ocssw/) programs
+* Reader for all SeaDAS supported satellite instruments
+* Bathymetry Tool
+* Watermask Tool
+* Contour Lines Tool
 
 
 
 ##### Install Guide
 
-Please follow the guideline below to access and install SeaDAS Toolbox:\
+Please follow the guidelines below to access and install the SeaDAS Toolbox.
 https://seadas.gsfc.nasa.gov/installers/snap-seadas-toolbox/
 
 
 ##### NOTES
 
-This is a beta release. Please give the toolbox a test drive and do not hesitate to report any issues to use via 
+This is a beta release. Please give the toolbox a test drive and do not hesitate to report any issues via
 the OceanColor Forum.
 
 <!-- A comprehensive list of all issues resolved in this version of the SeaDAS Toolbox can be found in our 
