@@ -3,11 +3,11 @@ SeaDAS Toolbox Release Notes
 
 Release Date: July 24 2019
 
-The SeaDAS development team is pleased to announce the release of SeaDAS Toolbox 8.0-Beta. SeaDAS Toolbox
+The SeaDAS development team is pleased to announce the release of SeaDAS Toolbox 1.0-Beta. SeaDAS Toolbox
 enables the ESA SNAP application to use many of the key features of the NASA SeaDAS application. Not all
 features of the current version SeaDAS 7.5.3 have been added to the SeaDAS Toolbox.
 
-##### Main Features of SeaDAS Toolbox 8.0-Beta
+##### Main Features of SeaDAS Toolbox 1.0-Beta
 
 * GUI access to all [OCSSW](https://oceandata.sci.gsfc.nasa.gov/ocssw/) programs
 * Reader for all SeaDAS supported satellite instruments
