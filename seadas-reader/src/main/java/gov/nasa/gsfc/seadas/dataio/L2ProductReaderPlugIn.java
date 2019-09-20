@@ -18,6 +18,8 @@ package gov.nasa.gsfc.seadas.dataio;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.RGBImageProfile;
+import org.esa.snap.core.datamodel.RGBImageProfileManager;
 import org.esa.snap.core.util.io.SnapFileFilter;
 import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.nc2.Attribute;
@@ -74,6 +76,11 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
             "OLCI Level-2 Data",
     };
     private static final Set<String> supportedProductTypeSet = new HashSet<String>(Arrays.asList(supportedProductTypes));
+
+
+    static{
+        registerRGBProfiles();
+    }
 
     /**
      * Checks whether the given object is an acceptable input for this product reader and if so, the method checks if it
@@ -239,5 +246,51 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
     @Override
     public String[] getFormatNames() {
         return new String[]{FORMAT_NAME};
+    }
+
+    private static void registerRGBProfiles() {
+        RGBImageProfileManager manager = RGBImageProfileManager.getInstance();
+        manager.addProfile(new RGBImageProfile("NASA SeaWiFS L2",
+                                               new String[]{
+                                                       "Rrs_670",
+                                                       "Rrs_510",
+                                                       "Rrs_443"
+                                               }));
+        manager.addProfile(new RGBImageProfile("NASA MODIS L2",
+                                               new String[]{
+                                                       "Rrs_667",
+                                                       "Rrs_531",
+                                                       "Rrs_443"
+                                               }));
+        manager.addProfile(new RGBImageProfile("NASA OCTS/CZCS L2",
+                                               new String[]{
+                                                       "Rrs_670",
+                                                       "Rrs_520",
+                                                       "Rrs_443"
+                                               }));
+        manager.addProfile(new RGBImageProfile("NASA SeaWiFS L2 Tristimulus",
+                                               new String[]{
+                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_510 + 0.4*nLw_555)",
+                                                       "log(1 + 1.85*nLw_443)"
+                                               }));
+        manager.addProfile(new RGBImageProfile("NASA MODIS L2 Tristimulus",
+                                               new String[]{
+                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_531 + 0.4*nLw_551)",
+                                                       "log(1 + 1.85*nLw_443)"
+                                               }));
+        manager.addProfile(new RGBImageProfile("NASA OCTS L2 Tristimulus",
+                                               new String[]{
+                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_565)",
+                                                       "log(1 + 1.85*nLw_443)"
+                                               }));
+        manager.addProfile(new RGBImageProfile("NASA CZCS L2 Tristimulus",
+                                               new String[]{
+                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_550)",
+                                                       "log(1 + 1.85*nLw_443)"
+                                               }));
     }
 }
