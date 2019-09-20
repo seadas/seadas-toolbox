@@ -1539,7 +1539,7 @@ public abstract class SeadasFileReader {
     }
 
     private File getSystemAuxdataDir() {
-        return new File(SystemUtils.getApplicationDataDir(), "beam-ui/auxdata/masks");
+        return new File(SystemUtils.getApplicationDataDir(), "auxdata/masks");
     }
 
     public boolean getUseFlagNames() {
