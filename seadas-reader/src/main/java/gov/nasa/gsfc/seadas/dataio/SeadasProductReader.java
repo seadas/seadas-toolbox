@@ -56,9 +56,11 @@ public class SeadasProductReader extends AbstractProductReader {
         Level1A_Seawifs("SeaWiFS Level 1A"),
         Level1B("Generic Level 1B"),
         Level1B_HICO("HICO L1B"),
+        Level1B_PACE("PACE L1B"),
         Level1B_Modis("MODIS Level 1B"),
         Level1B_OCM2("OCM2_L1B"),
         Level1B_PaceOCI("PaceOCI_L1B"),
+        Level1B_PaceOCIS("PaceOCIS_L1B"),
         Level2("Level 2"),
         Level2_DscovrEpic("DscovrEpic Level 2"),
         Level3_Bin("Level 3 Binned"),
@@ -139,6 +141,9 @@ public class SeadasProductReader extends AbstractProductReader {
                     break;
                 case Level1B_PaceOCI:
                     seadasFileReader = new L1BPaceOciFileReader(this);
+                    break;
+                case Level1B_PaceOCIS:
+                    seadasFileReader = new L1BPaceOcisFileReader(this);
                     break;
                 case Level3_Bin:
                     seadasFileReader = new L3BinFileReader(this);
@@ -323,6 +328,8 @@ public class SeadasProductReader extends AbstractProductReader {
                 return ProductType.Level2_Aquarius;
             } else if (title.contains("PACE OCI Level-1B Data")) {
                 return ProductType.Level1B_PaceOCI;
+            } else if (title.contains("PACE OCIS Level-1B Data")) {
+                return ProductType.Level1B_PaceOCIS;
             } else if (title.contains("Level-1B")) {
                 return ProductType.Level1B;
             } else if (title.equals("CZCS Level-1A Data")) {
