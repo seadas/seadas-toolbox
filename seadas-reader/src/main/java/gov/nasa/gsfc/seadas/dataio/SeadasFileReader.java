@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,6 +51,9 @@ import java.util.Map;
 
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
+
+import org.esa.snap.core.util.ResourceInstaller;
+import org.esa.snap.ui.GridBagUtils;
 
 
 public abstract class SeadasFileReader {
@@ -73,6 +77,7 @@ public abstract class SeadasFileReader {
 
     private static final String FLAG_MASKS = "flag_masks";
     private static final String FLAG_MEANINGS = "flag_meanings";
+    private boolean defaultMasksInstalled = false;
 
 
     public static final String MASKS_CONFIG_FILENAME = "l2_masks_default.xml";
@@ -318,14 +323,16 @@ public abstract class SeadasFileReader {
 
                 File masksConfigDir = getSystemAuxdataDir();
                 File masksConfigFile = null;
-                if (masksConfigDir != null && masksConfigDir.exists()) {
-                    if (getUseFlagNames()) {
-                        masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME_FLAGNAMES);
-                    } else {
-                        masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME);
-                    }
+
+                if (getUseFlagNames()) {
+                    masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME_FLAGNAMES);
+                } else {
+                    masksConfigFile = new File(masksConfigDir, MASKS_CONFIG_FILENAME);
                 }
 
+                if (masksConfigFile == null || !masksConfigFile.exists()) {
+                    installDefaultMaskProfiles();
+                }
 
 
                 if (masksConfigFile != null && masksConfigFile.exists()) {
@@ -334,8 +341,7 @@ public abstract class SeadasFileReader {
                         final SAXBuilder saxBuilder = new SAXBuilder();
                         final Document document = saxBuilder.build(masksConfigFile);
                         final Element rootElement = document.getRootElement();
-                        @SuppressWarnings({"unchecked"})
-                        final List<Element> children = rootElement.getChildren(DimapProductConstants.TAG_MASK);
+                        @SuppressWarnings({"unchecked"}) final List<Element> children = rootElement.getChildren(DimapProductConstants.TAG_MASK);
                         for (final Element child : children) {
                             final DimapPersistable persistable = DimapPersistence.getPersistable(child);
                             if (persistable != null) {
@@ -380,7 +386,6 @@ public abstract class SeadasFileReader {
 //                        }
 //                    }
 //                }
-
 
 
 //                product.getMaskGroup().add(Mask.BandMathsType.create("Land", "l2_flags.LAND",
@@ -1554,4 +1559,24 @@ public abstract class SeadasFileReader {
 
     public static final boolean DEFAULT_L2_FLAGNAMES_ENABLED = true;
     public static final String PARAMETER_NAME_MASK_L2_FLAGNAMES_ENABLED = "mask.l2.flagnames.enabled";
+
+
+    private boolean installDefaultMaskProfiles() {
+        try {
+            Path sourceBasePath = ResourceInstaller.findModuleCodeBasePath(SeadasFileReader.class);
+            Path auxdataDir = getMasksAuxDir();
+            Path sourceDirPath = sourceBasePath.resolve("auxdata/masks");
+            final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDir);
+
+            resourceInstaller.install(".*.xml", ProgressMonitor.NULL);
+            return true;
+        } catch (IOException e) {
+            SnapApp.getDefault().handleError("Unable to install mask auxillary files", e);
+            return false;
+        }
+    }
+
+    private Path getMasksAuxDir() {
+        return SystemUtils.getAuxDataPath().resolve("masks");
+    }
 }
