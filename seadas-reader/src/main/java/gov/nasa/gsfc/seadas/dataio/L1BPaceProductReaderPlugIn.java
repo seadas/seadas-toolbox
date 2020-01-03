@@ -15,17 +15,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-public class L1BPaceProductReaderPlugin extends GenericNetCdfReaderPlugIn {
+public class L1BPaceProductReaderPlugIn extends GenericNetCdfReaderPlugIn {
 
     // Set to "true" to output debugging information.
     // Don't forget to setback to "false" in production code!
     //
     private static final boolean DEBUG = false;
 
-    private static final String DEFAULT_FILE_EXTENSION = ".he5";
+    private static final String DEFAULT_FILE_EXTENSION = ".nc";
 
-    public static final String READER_DESCRIPTION = "GOCI L1B Products";
-    public static final String FORMAT_NAME = "GOCI-L1B";
+    public static final String READER_DESCRIPTION = "PACE OCIS L1B Products";
+    public static final String FORMAT_NAME = "PACE-L1B";
 
 
     /**
@@ -56,10 +56,10 @@ public class L1BPaceProductReaderPlugin extends GenericNetCdfReaderPlugIn {
         try {
             ncfile = NetcdfFileOpener.open(file.getPath());
             if (ncfile != null) {
-                Attribute scene_title = ncfile.findGlobalAttribute("HDFEOS_POINTS_Scene_Header_Scene_Title");
+                Attribute scene_title = ncfile.findGlobalAttribute("title");
 
                 if (scene_title != null) {
-                    if (scene_title.toString().contains("GOCI Level-1B Data")) {
+                    if (scene_title.toString().contains("PACE OCIS Level-1B Data")) {
                         if (DEBUG) {
                             System.out.println(file);
                         }
@@ -122,7 +122,7 @@ public class L1BPaceProductReaderPlugin extends GenericNetCdfReaderPlugIn {
      */
     @Override
     public ProductReader createReaderInstance() {
-        return new L1BPaceFileReader(this);
+        return new SeadasProductReader(this);
     }
 
     @Override
