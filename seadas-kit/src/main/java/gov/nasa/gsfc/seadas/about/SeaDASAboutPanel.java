@@ -37,8 +37,8 @@ class SeaDASAboutPanel extends JPanel {
         FileObject configFile = FileUtil.getConfigFile("AboutBox");
         if (configFile != null) {
             JTabbedPane tabbedPane = new JTabbedPane();
-            tabbedPane.add("SeaDAS", new SeaDASAboutBox());
-            addAboutBoxPlugins(tabbedPane, configFile);
+            tabbedPane.add("SeaDAS-Toolbox", new SeaDASAboutBox());
+//            addAboutBoxPlugins(tabbedPane, configFile);
             add(tabbedPane, BorderLayout.CENTER);
         } else {
             add(new SeaDASAboutBox(), BorderLayout.CENTER);
