@@ -345,7 +345,7 @@ public abstract class SeadasFileReader {
                         for (final Element child : children) {
                             final DimapPersistable persistable = DimapPersistence.getPersistable(child);
                             if (persistable != null) {
-                                final Mask mask = (Mask) persistable.createObjectFromXml(child, product);
+                                final Mask mask = (Mask) persistable.createObjectFromXml(child, product, null);
                                 if (mask.getImageType().canTransferMask(mask, product)) {
                                     product.getMaskGroup().add(mask);
                                 } else {
