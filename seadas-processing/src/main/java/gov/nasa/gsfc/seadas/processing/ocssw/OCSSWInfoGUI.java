@@ -10,20 +10,32 @@ import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.UIUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
@@ -158,13 +170,6 @@ public class OCSSWInfoGUI {
         return;
 
     }
-
-
-
-
-
-
-
 
 
 
@@ -806,6 +811,73 @@ public class OCSSWInfoGUI {
     }
 
 
+    public ArrayList<String> getValidOcsswTags(){
+        ArrayList<String> validOcsswTags = new ArrayList<>();
+        int i =0;
+        try {
+            Connection connection = Jsoup.connect("https://oceandata.sci.gsfc.nasa.gov/manifest/tags");
+            Document doc = connection.get(); doc.children();
+            String tagName;
+            for (Element file : doc.getElementsByAttribute("href")) {
+                tagName = file.attr("href");
+                System.out.println(tagName);
+                if (tagName.startsWith("V")) {
+                    validOcsswTags.add(tagName);
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        return validOcsswTags;
+    }
+
+    /**
+     * This method downloads the ocssw installer program ocssw_install and manifest.py to a tmp directory
+     * @return
+     */
+    public boolean downloadOCSSWInstaller() {
+
+        boolean downloadSuccessful = true;
+        try {
+
+            //download ocssw_install
+            URL website = new URL(OCSSW_INSTALLER_URL);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+
+            //download manifest.py
+            website = new URL(OCSSW_MANIFEST_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_OCSSW_MANIFEST);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_MANIFEST)).setExecutable(true);
+
+            //download directory
+            website = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/tags");
+
+            Scanner sc = new Scanner(website.openStream());
+            while(sc.hasNextLine())
+                System.out.println(sc.nextLine());
+
+            System.out.println(website.toString());
+        } catch (MalformedURLException malformedURLException) {
+            downloadSuccessful = false;
+            malformedURLException.printStackTrace();
+        } catch (FileNotFoundException fileNotFoundException) {
+            downloadSuccessful = false;
+            fileNotFoundException.printStackTrace();
+        } catch (IOException ioe) {
+            downloadSuccessful = false;
+            ioe.printStackTrace();
+        } finally {
+            return downloadSuccessful;
+        }
+    }
 
 
     public static boolean isValidBranch(final String branch) {
@@ -823,8 +895,6 @@ public class OCSSWInfoGUI {
 
         return false;
     }
-
-
 
     public boolean isTextFieldValidIP(String label, JTextField textfield) {
 
