@@ -25,7 +25,7 @@ import javax.swing.*;
 )
 @NbBundle.Messages({
         "CTL_OCSSWInstallerAction_Name=Install/Update OC Processors",
-        "CTL_OCSSWInstallerAction_ProgramName=install_ocssw.py",
+        "CTL_OCSSWInstallerAction_ProgramName=install_ocssw",
         "CTL_OCSSWInstallerAction_DialogTitle=Install/Update OCSSW",
         "CTL_OCSSWInstallerAction_XMLFileName=ocssw_installer.xml",
         "CTL_OCSSWInstallerAction_Description=Install/Updated OCSSW package."
@@ -37,7 +37,7 @@ public class OCSSWInstallerAction extends CallCloProgramAction
 
    private final Lookup lookup;
 
-    public static final String HELP_ID = "install_ocssw.py";
+    public static final String HELP_ID = "install_ocssw";
     private HelpCtx helpCtx;
 
     public OCSSWInstallerAction() {
