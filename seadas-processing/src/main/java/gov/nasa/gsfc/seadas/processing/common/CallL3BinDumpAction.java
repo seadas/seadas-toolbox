@@ -21,7 +21,7 @@ import org.esa.snap.ui.ModalDialog;
 
 /**
  * Created by IntelliJ IDEA.
- * User: Aynur Abdurazik (aabduraz)
+ * @author Aynur Abdurazik (aabduraz)
  * Date: 4/29/14
  * Time: 1:22 PM
  * To change this template use File | Settings | File Templates.

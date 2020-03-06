@@ -74,7 +74,7 @@ public class ProcessorTypeInfo {
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
         put("multilevel_processor.py", ProcessorID.MULTILEVEL_PROCESSOR_PY);
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
-        put("install_ocssw.py", ProcessorID.OCSSW_INSTALLER);
+        put("install_ocssw", ProcessorID.OCSSW_INSTALLER);
         put("l3bindump", ProcessorID.L3BINDUMP);
         put("get_obpg_file_type.py", ProcessorID.GET_OBPG_FILE_TYPE_PY);
         put("next_level_name.py", ProcessorID.NEXT_LEVEL_NAME_PY);
