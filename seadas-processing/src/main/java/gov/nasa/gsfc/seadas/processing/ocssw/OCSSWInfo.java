@@ -59,7 +59,8 @@ public class OCSSWInfo {
     public static final String OCSSW_DATA_DIR_SUFFIX = "share";
     public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
 
-    public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw.py";
+    public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw";
+    public static final String OCSSW_INSTALLER_PROGRAM_NAME_OLD = "install_ocssw.py";
     public static final String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
 
     public static final String VIRTUAL_MACHINE_SERVER_API = "localhost";

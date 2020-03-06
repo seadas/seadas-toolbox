@@ -34,8 +34,12 @@ public abstract class OCSSW {
 
     public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
     public static final String MLP_PAR_FILE_NAME = "mlp_par_file";
-    public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
-    public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static final String OCSSW_INSTALLER_URL_OLD = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
+    public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags/initial/bin_linux_64/install_ocssw";
+    public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags/initial/bin_linux_64/manifest.py";
+    public static final String TMP_OCSSW_INSTALLER_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
+    public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
 
     public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
@@ -329,6 +333,10 @@ public abstract class OCSSW {
         return ocsswInstalScriptDownloadSuccessful;
     }
 
+    /**
+     * This method downloads the ocssw installer program ocssw_install to a tmp directory
+     * @return
+     */
     public boolean downloadOCSSWInstaller() {
 
         if (isOcsswInstalScriptDownloadSuccessful()) {
@@ -341,6 +349,34 @@ public abstract class OCSSW {
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
             (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+            ocsswInstalScriptDownloadSuccessful = true;
+        } catch (MalformedURLException malformedURLException) {
+            handleException("URL for downloading install_ocssw.py is not correct!");
+        } catch (FileNotFoundException fileNotFoundException) {
+            handleException("ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
+                    "possible cause of error: " + fileNotFoundException.getMessage());
+        } catch (IOException ioe) {
+            handleException("ocssw installation script failed to download. \n" +
+                    "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
+                    "possible cause of error: " + ioe.getLocalizedMessage());
+        } finally {
+            return ocsswInstalScriptDownloadSuccessful;
+        }
+    }
+
+    public boolean downloadOCSSWInstallerOld() {
+
+        if (isOcsswInstalScriptDownloadSuccessful()) {
+            return ocsswInstalScriptDownloadSuccessful;
+        }
+        try {
+            URL website = new URL(OCSSW_INSTALLER_URL_OLD);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER_OLD);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_INSTALLER_OLD)).setExecutable(true);
             ocsswInstalScriptDownloadSuccessful = true;
         } catch (MalformedURLException malformedURLException) {
             handleException("URL for downloading install_ocssw.py is not correct!");

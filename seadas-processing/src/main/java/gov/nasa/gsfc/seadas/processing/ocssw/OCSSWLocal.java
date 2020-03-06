@@ -28,7 +28,8 @@ import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 
 public class OCSSWLocal extends OCSSW {
 
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
 
     private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
