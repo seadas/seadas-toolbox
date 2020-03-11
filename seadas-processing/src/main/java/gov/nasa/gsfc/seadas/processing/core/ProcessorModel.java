@@ -1253,6 +1253,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return cmdArraySuffix;
         }
 
+        /**
+         *  /tmp/install_ocssw --tag initial -i ocssw-new --seadas --modist
+         * @return
+         */
+
         private String getOCSSWBranchVersion(){
             Preferences preferences = Config.instance("seadas").preferences();
             String ocsswBranch = preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, null);

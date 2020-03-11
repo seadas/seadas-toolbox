@@ -29,6 +29,8 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW
 
 /**
  * Created by aabduraz on 3/27/17.
+ * To install ocssw run: /tmp/install_ocssw --tag $TAG -i $OCSSWROOT --seadas --$MISSIONNAME
+ * To get valid ocssw tags: /tmp/install_ocssw --list_tags
  */
 public abstract class OCSSW {
 
