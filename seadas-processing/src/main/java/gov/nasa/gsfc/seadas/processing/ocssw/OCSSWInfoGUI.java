@@ -810,8 +810,36 @@ public class OCSSWInfoGUI {
         }
     }
 
+    /**
+     * This method scans for valid OCSSW tags at https://oceandata.sci.gsfc.nasa.gov/manifest/tags, returns a list of tags that start with capital letter "V"
+     * @return List of valid OCSSW tags for SeaDAS
+     */
+    public ArrayList<String> getValidOcsswTagsFromURL(){
+        ArrayList<String> validOcsswTags = new ArrayList<>();
+        int i =0;
+        try {
+            Connection connection = Jsoup.connect("https://oceandata.sci.gsfc.nasa.gov/manifest/tags");
+            Document doc = connection.get(); doc.children();
+            String tagName;
+            for (Element file : doc.getElementsByAttribute("href")) {
+                tagName = file.attr("href");
+                System.out.println(tagName);
+                if (tagName.startsWith("V")) {
+                    validOcsswTags.add(tagName);
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
 
-    public ArrayList<String> getValidOcsswTags(){
+        return validOcsswTags;
+    }
+
+    /**
+     * This method scans for valid OCSSW tags at https://oceandata.sci.gsfc.nasa.gov/manifest/tags, returns a list of tags that start with capital letter "V"
+     * @return List of valid OCSSW tags for SeaDAS
+     */
+    public ArrayList<String> getValidOcsswTagsFromCLI(){
         ArrayList<String> validOcsswTags = new ArrayList<>();
         int i =0;
         try {

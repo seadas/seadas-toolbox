@@ -23,7 +23,16 @@ public class OCSSWInfoGUITest {
 
     @Test
     public void isValidBranchNew() {
-        ArrayList tags = ocsswInfoGUI.getValidOcsswTags();
+        ArrayList tags = ocsswInfoGUI.getValidOcsswTagsFromURL();
+        Iterator itr = tags.iterator();
+        while (itr.hasNext()) {
+            System.out.println(itr.next());
+        }
+    }
+
+    @Test
+    public void isValidTAGCLI() {
+        ArrayList tags = ocsswInfoGUI.getValidOcsswTagsFromCLI();
         Iterator itr = tags.iterator();
         while (itr.hasNext()) {
             System.out.println(itr.next());
