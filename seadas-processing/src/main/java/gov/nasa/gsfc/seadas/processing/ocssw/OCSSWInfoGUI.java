@@ -869,7 +869,7 @@ public class OCSSWInfoGUI {
         boolean downloadSuccessful = true;
         try {
 
-            //download ocssw_install
+            //download install_ocssw
             URL website = new URL(OCSSW_INSTALLER_URL);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
@@ -884,6 +884,13 @@ public class OCSSWInfoGUI {
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
             (new File(TMP_OCSSW_MANIFEST)).setExecutable(true);
+
+            //download seadasVersion.json
+            website = new URL(OCSSW_SEADAS_VERSIONS_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_SEADAS_OCSSW_VERSIONS_FILE);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
 
             //download directory
             website = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/tags");

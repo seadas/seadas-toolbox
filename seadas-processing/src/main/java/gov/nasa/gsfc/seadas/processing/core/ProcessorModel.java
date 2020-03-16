@@ -1244,8 +1244,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
          *
          * @return
          */
-        @Override
-        public String[] getCmdArraySuffix() {
+
+        public String[] getCmdArraySuffixOld() {
             String[] cmdArraySuffix = new String[1];
             String[] parts = getOCSSWBranchVersion().split("\\.");
             cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
@@ -1257,6 +1257,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
          *  /tmp/install_ocssw --tag initial -i ocssw-new --seadas --modist
          * @return
          */
+        @Override
+        public String[] getCmdArraySuffix(){
+            String[] cmdArraySuffix = new String[2];
+            cmdArraySuffix[0] = "--tag=" ;
+            cmdArraySuffix[1] = "--seadas";
+            return cmdArraySuffix;
+        }
 
         private String getOCSSWBranchVersion(){
             Preferences preferences = Config.instance("seadas").preferences();
