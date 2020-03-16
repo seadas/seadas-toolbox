@@ -34,19 +34,24 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW
  */
 public abstract class OCSSW {
 
+    public static final String SEADAS_OCSSW_VERSIONS_JSON_NAME = "seadasVersions.json";
+
     public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
     public static final String MLP_PAR_FILE_NAME = "mlp_par_file";
     public static final String OCSSW_INSTALLER_URL_OLD = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
     public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags/initial/bin_linux_64/install_ocssw";
     public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags/initial/bin_linux_64/manifest.py";
+    public static final String OCSSW_SEADAS_VERSIONS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json";
     public static final String TMP_OCSSW_INSTALLER_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
+    public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
 
     public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
     public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
+
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
             L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
@@ -345,6 +350,7 @@ public abstract class OCSSW {
             return ocsswInstalScriptDownloadSuccessful;
         }
         try {
+            //download install_ocssw
             URL website = new URL(OCSSW_INSTALLER_URL);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
@@ -352,6 +358,22 @@ public abstract class OCSSW {
             fos.close();
             (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
             ocsswInstalScriptDownloadSuccessful = true;
+
+            //download manifest.py
+            website = new URL(OCSSW_MANIFEST_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_OCSSW_MANIFEST);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_MANIFEST)).setExecutable(true);
+
+            //download seadasVersion.json
+            website = new URL(OCSSW_SEADAS_VERSIONS_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_SEADAS_OCSSW_VERSIONS_FILE);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+
         } catch (MalformedURLException malformedURLException) {
             handleException("URL for downloading install_ocssw.py is not correct!");
         } catch (FileNotFoundException fileNotFoundException) {
