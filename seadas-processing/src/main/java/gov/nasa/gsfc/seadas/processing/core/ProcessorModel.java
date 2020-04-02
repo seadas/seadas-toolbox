@@ -69,7 +69,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private String prodParamName = "prod";
 
-    private String[] cmdArrayPrefix;
+    private static String[] cmdArrayPrefix;
     private String[] cmdArraySuffix;
 
     boolean isIfileValid = false;
@@ -146,23 +146,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return new ProcessorModel(programName, xmlFileName, ocssw);
     }
 
-    private void setCommandArrayPrefix() {
+     void setCommandArrayPrefix() {
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
-        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
-            cmdArrayPrefix = new String[1];
-            cmdArrayPrefix[0] = getProgramName();
-            if (!ocsswInfo.getInstance().isOCSSWExist()) {
-                getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
-            } else {
-                getCmdArrayPrefix()[0] = ocsswInfo.getOcsswInstallerScriptPath();
-            }
-        } else {
             cmdArrayPrefix = new String[4];
             getCmdArrayPrefix()[0] = ocsswInfo.getOcsswRunnerScriptPath();
             getCmdArrayPrefix()[1] = "--ocsswroot";
             getCmdArrayPrefix()[2] = ocsswInfo.getOcsswRoot();
             getCmdArrayPrefix()[3] = getProgramName();
-        }
     }
 
     private void setCommandArraySuffix() {
@@ -716,10 +706,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-    public void setCmdArrayPrefix(String[] cmdArrayPrefix) {
-        this.cmdArrayPrefix = cmdArrayPrefix;
-    }
-
     @Override
     public String getImplicitInputFileExtensions() {
         return fileExtensions;
@@ -1130,7 +1116,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
     private static class SMIGEN_Processor extends ProcessorModel {
 
         SMIGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
@@ -1236,39 +1221,29 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             super(programName, xmlFileName, ocssw);
         }
 
+        @Override
+        void setCommandArrayPrefix() {
+            cmdArrayPrefix = new String[1];
+            cmdArrayPrefix[0] = getProgramName();
+            if (!OCSSWInfo.getInstance().isOCSSWExist()) {
+                getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
+            } else {
+                getCmdArrayPrefix()[0] = OCSSWInfo.getInstance().getOcsswInstallerScriptPath();
+            }
+        }
+
+
         /**
-         * The version number of the "git-branch" is the first two digits of the
-         * SeaDAS app number; trailing numbers should be ignored. For example,
-         * for SeaDAS 7.3.2, the "git-branch" option on command line should be
-         * prepared as "--git-branch=v7.3".
+         * /tmp/install_ocssw --tag initial -i ocssw-new --seadas --modist
          *
          * @return
          */
-
-        public String[] getCmdArraySuffixOld() {
-            String[] cmdArraySuffix = new String[1];
-            String[] parts = getOCSSWBranchVersion().split("\\.");
-            cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
-            getOcssw().setCommandArraySuffix(cmdArraySuffix);
-            return cmdArraySuffix;
-        }
-
-        /**
-         *  /tmp/install_ocssw --tag initial -i ocssw-new --seadas --modist
-         * @return
-         */
         @Override
-        public String[] getCmdArraySuffix(){
+        public String[] getCmdArraySuffix() {
             String[] cmdArraySuffix = new String[2];
-            cmdArraySuffix[0] = "--tag=" ;
+            cmdArraySuffix[0] = "--tag=initial";
             cmdArraySuffix[1] = "--seadas";
             return cmdArraySuffix;
-        }
-
-        private String getOCSSWBranchVersion(){
-            Preferences preferences = Config.instance("seadas").preferences();
-            String ocsswBranch = preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, null);
-            return ocsswBranch;
         }
     }
 

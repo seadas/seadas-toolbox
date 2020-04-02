@@ -61,10 +61,10 @@ public class OCSSWLocal extends OCSSW {
     public boolean isMissionDirExist(String missionName) {
         MissionInfo missionInfo = new MissionInfo(missionName);
         File dir = missionInfo.getSubsensorDirectory();
-        if(dir == null) {
+        if (dir == null) {
             dir = missionInfo.getDirectory();
         }
-        if(dir != null) {
+        if (dir != null) {
             return dir.isDirectory();
         }
         return false;
@@ -145,7 +145,12 @@ public class OCSSWLocal extends OCSSW {
 
         commandArraySuffix = processorModel.getCmdArraySuffix();
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
-        cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, cmdArrayForParams, commandArraySuffix);
+        //TODO: for ocssw_install commandArrayPrefix has the program name with the file path, so it can't include programNameArray again
+        if (OCSSWInfo.getInstance().isOCSSWExist()) {
+            cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, cmdArrayForParams, commandArraySuffix);
+        } else {
+            cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, cmdArrayForParams, commandArraySuffix);
+        }
 
         // get rid of the null strings
         ArrayList<String> cmdList = new ArrayList<String>();
@@ -175,14 +180,14 @@ public class OCSSWLocal extends OCSSW {
 
         Map<String, String> env = processBuilder.environment();
 
-        if( ifileDir != null ) {
+        if (ifileDir != null) {
             env.put("PWD", ifileDir);
             processBuilder.directory(new File(ifileDir));
         }
 
         process = null;
         try {
-            process =  processBuilder.start();
+            process = processBuilder.start();
             if (process != null) {
                 debug("Running the program " + commandArray.toString());
             }
@@ -202,11 +207,11 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
-    public String executeUpdateLuts(ProcessorModel processorModel){
+    public String executeUpdateLuts(ProcessorModel processorModel) {
         String[] programNameArray = {programName};
-        String[] commandArrayParams =  getCommandArrayParam(processorModel.getParamList());
+        String[] commandArrayParams = getCommandArrayParam(processorModel.getParamList());
         Process process = null;
-        for (String param: commandArrayParams) {
+        for (String param : commandArrayParams) {
             commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, new String[]{param}, commandArraySuffix);
             process = execute(commandArray);
         }
@@ -215,12 +220,12 @@ public class OCSSWLocal extends OCSSW {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return process.exitValue() == 0? "Update Luts successful." : "Update Luts failed.";
+        return process.exitValue() == 0 ? "Update Luts successful." : "Update Luts failed.";
     }
 
     @Override
     public void getOutputFiles(ProcessorModel processorModel) {
-      //todo implement this method.
+        //todo implement this method.
     }
 
     @Override
@@ -242,23 +247,23 @@ public class OCSSWLocal extends OCSSW {
             File f = new File(fileName);
             String line = stdInput.readLine();
             while (line != null) {
-                if(line.startsWith(f.getName())) {
-                String splitLine[] = line.split(":");
-                if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
+                if (line.startsWith(f.getName())) {
+                    String splitLine[] = line.split(":");
+                    if (splitLine.length == 3) {
+                        String missionName = splitLine[1].toString().trim();
+                        String fileType = splitLine[2].toString().trim();
 
-                    if (fileType.length() > 0) {
-                        fileInfoFinder.setFileType(fileType);
-                    }
+                        if (fileType.length() > 0) {
+                            fileInfoFinder.setFileType(fileType);
+                        }
 
-                    if (missionName.length() > 0) {
-                        fileInfoFinder.setMissionName(missionName);
-                        setMissionName(missionName);
-                    }
+                        if (missionName.length() > 0) {
+                            fileInfoFinder.setMissionName(missionName);
+                            setMissionName(missionName);
+                        }
                         break;
+                    }
                 }
-            }
                 line = stdInput.readLine();
             } // while lines
         } catch (IOException ioe) {
@@ -305,7 +310,7 @@ public class OCSSWLocal extends OCSSW {
 
                 if (filename.startsWith(prefix) && filename.endsWith(".par")) {
                     String suiteName = filename.substring(prefix.length(), filename.length() - 4);
-                    if(!suites.contains(suiteName)) {
+                    if (!suites.contains(suiteName)) {
                         suites.add(suiteName);
                     }
                 }
@@ -329,7 +334,7 @@ public class OCSSWLocal extends OCSSW {
         // look in subsensor dir
         addSuites(suitesArrayList, missionInfo.getSubsensorDirectory(), prefix);
 
-        if(suitesArrayList.size() > 0) {
+        if (suitesArrayList.size() > 0) {
 
             final String[] suitesArray = new String[suitesArrayList.size()];
 
@@ -490,9 +495,16 @@ public class OCSSWLocal extends OCSSW {
         return commandArrayParam;
     }
 
+    /**
+     * /tmp/install_ocssw --tag initial -i ocssw-new --seadas --modist
+     *
+     * @return
+     */
     @Override
     public void setCommandArraySuffix() {
-
+        String[] cmdArraySuffix = new String[2];
+        cmdArraySuffix[0] = "--tag=initial";
+        cmdArraySuffix[1] = "--seadas";
     }
 
     @Override

@@ -39,7 +39,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
     //private JPanel superParamPanel;
 
-    public static final String INSTALL_DIR_OPTION_NAME = "--install-dir";
+    public static final String INSTALL_DIR_OPTION_NAME = "--install_dir";
 
     public String missionDataDir;
     public OCSSW ocssw;
@@ -229,12 +229,12 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
                 if (! ocsswInfo.getOcsswLocation().equals(ocsswInfo.OCSSW_LOCATION_LOCAL)) {
                     //if ocssw is not local, then disable the button to choose ocssw installation directory
-                    ((JLabel)dirPanel.getComponent(0)).setText("Remote install-dir");
+                    ((JLabel)dirPanel.getComponent(0)).setText("Remote install_dir");
 //                    dirPanel.getComponent(1).setEnabled(false);
 //                    dirPanel.getComponent(2).setEnabled(false);
 //                    dirPanel.getComponent(2).setVisible(false);
                 } else {
-                    ((JLabel)dirPanel.getComponent(0)).setText("Local install-dir");
+                    ((JLabel)dirPanel.getComponent(0)).setText("Local install_dir");
                 }
 //                dirPanel.getComponent(1).setEnabled(false);
 //                dirPanel.getComponent(2).setEnabled(false);
