@@ -275,7 +275,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
                     Dialogs.showInformation(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? ""
                             : (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) ? "" : ("Output written to:\n" + outputFileName))), null);
                     if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
-                        ocssw.updateOCSSWRootProperty(processorModel.getParamValue("--install-dir"));
+                        ocssw.updateOCSSWRootProperty(processorModel.getParamValue("--install_dir"));
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();
                         }

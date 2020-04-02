@@ -8,7 +8,7 @@
     </programMetaData>
     <options>
         <option type="dir">
-            <name>--install-dir</name>
+            <name>--install_dir</name>
             <value></value>
             <default></default>
             <usedAs>option</usedAs>
