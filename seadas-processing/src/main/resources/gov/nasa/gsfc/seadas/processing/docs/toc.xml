@@ -6,11 +6,17 @@
         "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
+
+    <tocitem text="Command Line Interface (GPF)">
+        <tocitem text="GPT Cookbook" target="gptCookbook"/>
+    </tocitem>
     <tocitem text="SeaDAS">
+
+
+
         <tocitem text="OCSSW">
             <tocitem text="Introduction" target="processOverview"/>
             <tocitem text="OCSSW Cookbook" target="ocsswCookbook"/>
-
             <tocitem text="install_ocssw" target="install_ocssw"/>
             <tocitem text="extractors" target="extractor"/>
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>

@@ -1,0 +1,186 @@
+<htm<html>
+
+<head>
+    <title>GPT Cookbook</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header" align="left" width="48%">
+            <a href="index.html">
+                <img src="../images/seadas_header.png" border="0">
+            </a>
+        </td>
+        <td class="header">
+            &nbsp;
+        </td>
+        <td class="header" align="right" width="48%">
+            <a href="index.html">
+                <img src="../images/snap_header_trimmed.jpg" border="0">
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<h2 class="center">GPT Cookbook: <b>Band Maths</b></h2>
+<h2 class="center">Workflow 1<br>Hello World</h2>
+<br>
+
+<table width=100%">
+    <tr>
+        <td bgcolor="#fff9e9">
+            <p>
+
+            </p>
+        </td>
+    </tr>
+</table>
+<br>
+
+
+<div class="center">
+    <table width="500">
+        <tr>
+            <td bgcolor="#fff9e9">
+
+                <table class="invisibletable4">
+                    <tr class="invisibletable4">
+                        <td class="invisibletable4" nowrap="1">Read</td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+
+                    </tr>
+                    <tr>
+                        <td class="invisibletable4" nowrap="1"></td>
+                        <td class="invisibletable4" nowrap="1">&nbsp;&nbsp;</td>
+                        <td class="invisibletable4" nowrap="1">--&gt; Write</td>
+                    </tr>
+
+                </table>
+
+            </td>
+
+
+        </tr>
+    </table>
+
+
+</div>
+<br><br><br>
+
+
+<p>
+    This example illustrates a gpt workflow in SeaDAS by stringing together possibly the two
+    simplest operators (Read and Write) to create multiple copies (one NetCDF-CF and one BEAM-DIMAP) of an input file
+    adding the suffix 'HelloWorld' to each output file.
+</p>
+<p>
+    Although seemingly useless on its face, (because individual operators can read and write), one benefit to the
+    use of the read and write operator, is that you can send the source file in as a parameter to be used
+    in the formulation of both the input and output file names.  Additionally, multiple read and write nodes may
+    be used in a single graph file.
+</p>
+
+
+
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt WorkflowEx01.xml -p WorkflowEx01.par -Pfile=A2010283180500.L2_LAC_SST -PofileSuffix='HelloWorld'
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+<br>
+<p>
+    <b>File = WorkflowEx01.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="WorkflowEx01Graph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+
+    &lt;node id="ReadNode"&gt;
+      &lt;operator&gt;Read&lt;/operator&gt;
+      &lt;sources/&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file}.${ifileExtension}&lt;/file&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+    &lt;node id="WriteFile1Node"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;ReadNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file}_${ofileSuffix}.${ofile1Extension}&lt;/file&gt;
+        &lt;formatName&gt;${ofile1Format}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+
+    &lt;node id="WriteFile2Node"&gt;
+      &lt;operator&gt;Write&lt;/operator&gt;
+      &lt;sources&gt;
+        &lt;source&gt;ReadNode&lt;/source&gt;
+      &lt;/sources&gt;
+      &lt;parameters&gt;
+        &lt;file&gt;${file}_${ofileSuffix}.${ofile2Extension}&lt;/file&gt;
+        &lt;formatName&gt;${ofile2Format}&lt;/formatName&gt;
+      &lt;/parameters&gt;
+    &lt;/node&gt;
+
+
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = WorkflowEx01.par</b>
+</p>
+
+
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+ifileExtension=nc
+
+ofile1Format=NetCDF-CF
+ofile1Extension=nc
+
+ofile2Format=BEAM-DIMAP
+ofile2Extension=dim
+</pre>
+</td></tr></table>
+
+
+
+<br><br><br>
+
+
+</body>
+</html>

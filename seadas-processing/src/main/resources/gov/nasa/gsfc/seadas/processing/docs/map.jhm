@@ -5,6 +5,7 @@
 
 <map version="2.0">
     <mapID target="ocsswCookbook" url="OcsswCookbook/ocsswCookbook.html"/>
+    <mapID target="gptCookbook" url="GptCookbook/gptCookbook.html"/>
     <mapID target="processOverview" url="processors/ProcessOverview.html"/>
     <mapID target="install_ocssw.py" url="processors/InstallOCSSW.html"/>
     <mapID target="extractor" url="processors/ProcessExtractors.html"/>
