@@ -476,6 +476,21 @@ public class CallCloProgramAction extends AbstractSnapAction {
         }
 
         @Override
+        public void handleLineOnStdoutRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
+            int len = line.length();
+            if (len > 70) {
+                String[] parts = line.trim().split("\\s+", 2);
+                try {
+                    int percent = Integer.parseInt(parts[0]);
+                    progressMonitor.setSubTaskName(currentText + " - " + parts[0] + "%");
+                } catch (Exception e) {
+                    progressMonitor.setSubTaskName(line);
+                }
+            } else {
+                progressMonitor.setSubTaskName(line);
+            }
+        }
+        @Override
         public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             int len = line.length();
             if (len > 70) {
