@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<izpack:processing version="5.0"
+                   xmlns:izpack="http://izpack.org/schema/processing"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://izpack.org/schema/processing http://izpack.org/schema/5.0/izpack-processing-5.0.xsd">
+
+    <!--    <job name="do xyz">-->
+    <!--        <os family="windows"/>-->
+    <!--        <executefile name="$INSTALL_PATH/scripts/xyz.bat" workingDir="$INSTALL_PATH">-->
+    <!--            <arg>doit</arg>-->
+    <!--            <arg>$variable</arg>-->
+    <!--        </executefile>-->
+    <!--    </job>-->
+    <job name="Run SeaDAS" final="true">
+        <os family="unix"/>
+        <executefile name="$INSTALL_PATH/bin/snap">
+<!--            <arg>doit</arg>-->
+<!--            <arg>$variable</arg>-->
+        </executefile>
+    </job>
+    <onFail previous="true" next="false"/>
+    <onSuccess previous="true" next="true" condition="runSeaDAS"/>
+    <onSuccess previous="false" next="true" condition="!runSeaDAS"/>
+
+    <!--    <job name="run on failure" catch="true">-->
+    <!--        <os family="unix"/>-->
+    <!--        <executefile name="$INSTALL_PATH/scripts/run_on_fail.sh">-->
+    <!--            <arg>doit</arg>-->
+    <!--            <arg>$variable</arg>-->
+    <!--        </executefile>-->
+    <!--    </job>-->
+    <!--    <job name="run always" final="true">-->
+    <!--        <os family="unix"/>-->
+    <!--        <executefile name="$INSTALL_PATH/scripts/run_always.sh">-->
+    <!--            <arg>doit</arg>-->
+    <!--            <arg>$variable</arg>-->
+    <!--        </executefile>-->
+    <!--    </job>-->
+
+</izpack:processing>
