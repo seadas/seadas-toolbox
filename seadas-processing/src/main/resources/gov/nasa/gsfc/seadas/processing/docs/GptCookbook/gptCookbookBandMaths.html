@@ -49,10 +49,9 @@
     <table class="invisibletable">
         <tr class="invisibletable">
             <td class="invisibletable">
-
-                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Create Math Bands and Retain Source Bands</a></p>
-                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Create Math Bands and Retain Source Bands  (Variables Option)</a></p>
-                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Create only Math Bands</a></p>
+                <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Create only Math Bands</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Create Math Bands and Retain Source Bands</a></p>
+                <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Create Math Bands and Retain Source Bands  (Variables Option)</a></p>
                 <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Remove the "_count" Bands from a Mosaic File (OC Level2)</a></p>
 
             </td>
@@ -61,9 +60,194 @@
 </div>
 
 
-<br><br><hr>
+
+
+<br><br><br><hr>
 <a name="Example1"></a>
-<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands</p>
+<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Create only Math Bands</p>
+<br>
+
+<p>
+    This creates a new file based off an input source file adding math band(s) to it (the bands and masks of the source
+    file are not transferred to the output file).
+</p>
+
+<p>
+
+</p>
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt.command BandMathsGraphEx01.xml -p BandMathsEx01.par -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC_BandMathsEx01.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = BandMathsGraphEx01.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="BandMathsEx01Graph"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;${band1Name}&lt;/name&gt;
+                    &lt;type&gt;${band1Type}&lt;/type&gt;
+                    &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+                    &lt;description&gt;${band1Description}&lt;/description&gt;
+                    &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+                    &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+                    &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+                    &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
+                &lt;/targetBand&gt;
+            &lt;/targetBands&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+&lt;/graph&gt;
+    </pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = BandMathsEx01.par</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)
+band1NoDataValue=-0.19837031
+band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
+</pre>
+</td></tr></table>
+
+
+
+<br>
+
+<p>
+    Here is what example 1 would look like if you use the GUI, in which case there are no variables.  The following
+    graph will load into the GUI via the GraphBuilder tool (note: you need to edit the ifile and ofile paths).
+</p>
+
+<p>
+    Also note that 3 fields of the BandMaths tool are not available within the GUI but are available at the command line:
+    validExpression,
+    spectralWavelength,
+    and spectralBandwidth.
+
+</p>
+
+<br>
+
+<p>
+    <b>File = BandMathsGraphGUIEx01.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="Graph"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;/Users/seadas/GPT_Cookbook/BandMathsEx01/A2010283180500.L2_LAC_OC.nc&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;aod&lt;/name&gt;
+                    &lt;type&gt;float32&lt;/type&gt;
+                    &lt;expression&gt;if (Kd_490 != 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+                    &lt;description/&gt;
+                    &lt;unit&gt;meters&lt;/unit&gt;
+                    &lt;noDataValue&gt;-0.19837031&lt;/noDataValue&gt;
+                &lt;/targetBand&gt;
+            &lt;/targetBands&gt;
+            &lt;variables/&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;/Users/seadas/GPT_Cookbook/BandMathsEx01/A2010283180500.L2_LAC_OC.nc_BandMath.dim&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;applicationData id="Presentation"&gt;
+        &lt;Description/&gt;
+        &lt;node id="Read"&gt;
+            &lt;displayPosition x="37.0" y="134.0"/&gt;
+        &lt;/node&gt;
+        &lt;node id="BandMaths"&gt;
+            &lt;displayPosition x="230.0" y="226.0"/&gt;
+        &lt;/node&gt;
+        &lt;node id="Write"&gt;
+            &lt;displayPosition x="455.0" y="135.0"/&gt;
+        &lt;/node&gt;
+    &lt;/applicationData&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+
+
+<br><br><hr>
+<a name="Example2"></a>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands</p>
+<b>THIS EXAMPLE IS NOT YET TRANSFERRED FROM SEADAS-7 AND WILL NOT WORK IN SEADAS-8</b>
 <br>
 
 <p>
@@ -75,7 +259,7 @@
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx01.dim
+gpt BandMaths.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx02.dim
 </pre>
 </td></tr></table>
 
@@ -88,7 +272,7 @@ gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="BandMathsGraph"&gt;
+&lt;graph id="BandMathsGraphEx02"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
   &lt;node id="BandMathsNode"&gt;
     &lt;operator&gt;BandMaths&lt;/operator&gt;
@@ -120,7 +304,7 @@ gpt BandMaths.xml -p BandMathsEx01.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A
 
 <br>
 <p>
-    <b>File = BandMathsEx01.par</b>
+    <b>File = BandMathsEx02.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -139,12 +323,16 @@ band1SpectralBandwidth=10.0
 </td></tr></table>
 
 
+<i>Note that a difference between Example 2 and Example 1 is that because in Example 2 the source band Kd_490 is
+    present in the output file it is possible to have the validExpression point to Kd_490.</i>
+
 
 
 
 <br><br><br><hr>
-<a name="Example2"></a>
+<a name="Example3"></a>
 <p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands (Variables Option)</p>
+<b>THIS EXAMPLE IS NOT YET TRANSFERRED FROM SEADAS-7 AND WILL NOT WORK IN SEADAS-8</b>
 <br>
 
 <p>
@@ -152,7 +340,7 @@ band1SpectralBandwidth=10.0
 </p>
 
 <p>
-    <i>This is exactly the same as example 1 except it illustrates the use of the variable options.</i>
+    <i>This is exactly the same as example 2 except it illustrates the use of the variable options.</i>
 </p>
 
 <p>
@@ -164,14 +352,14 @@ band1SpectralBandwidth=10.0
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt BandMathsVariables.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx02.dim
+gpt BandMathsEx03.xml -p BandMathsEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx03.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = BandMathsVariables.xml</b>
+    <b>File = BandMathsEx03.xml</b>
 </p>
 
 
@@ -218,7 +406,7 @@ gpt BandMathsVariables.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_O
 
 <br>
 <p>
-    <b>File = BandMathsEx02.par</b>
+    <b>File = BandMathsEx03.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -245,57 +433,9 @@ var1Value=1.3
 
 
 <br><br><br><hr>
-<a name="Example3"></a>
-<p class="subSectionTitle2">Example 3&nbsp;&nbsp;&nbsp;&nbsp;Create only Math Bands</p>
-<br>
-
-<p>
-    This creates a new file based off an input source file adding math band(s) to it (the bands and masks of the source
-    file are not transferred to the output file).
-</p>
-
-<p>
-    <i>This uses the graph file of example 1 and this is identical to example 1 except that the band1ValidExpression
-        does not point to the source band Kd_490 since it does not exist in the created file.</i>
-</p>
-<br>
-<p>
-    <b>Command Line Entry</b>
-</p><table><tr><td bgcolor="#e9f0f0">
-<pre>
-gpt BandMaths.xml -p BandMathsEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx03.dim
-</pre>
-</td></tr></table>
-
-
-
-<br>
-<p>
-    <b>File = BandMathsEx03.par</b>
-</p>
-
-
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-copySourceFile=false
-band1Name=aod
-band1Type=float64
-band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
-band1Description=apparent optical depth
-band1Unit=meters
-band1ValidExpression=aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)
-band1NoDataValue=-0.19837031
-band1SpectralWavelength=490.0
-band1SpectralBandwidth=10.0
-</pre>
-</td></tr></table>
-
-
-
-
-<br><br><br><hr>
 <a name="Example4"></a>
 <p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Remove the "_count" Bands from a Mosaic File (OC Level2)</p>
+<b>THIS EXAMPLE IS NOT YET TRANSFERRED FROM SEADAS-7 AND WILL NOT WORK IN SEADAS-8</b>
 <br>
 
 <p>
