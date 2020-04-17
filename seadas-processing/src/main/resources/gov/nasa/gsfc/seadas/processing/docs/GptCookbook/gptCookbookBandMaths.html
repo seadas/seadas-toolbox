@@ -80,7 +80,7 @@
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt.command BandMathsGraphEx01.xml -p BandMathsEx01.par -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC_BandMathsEx01.dim
+gpt BandMathsGraphEx01.xml -p BandMathsEx01.par -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC_BandMathsEx01.dim
 </pre>
 </td></tr></table>
 
@@ -435,7 +435,6 @@ var1Value=1.3
 <br><br><br><hr>
 <a name="Example4"></a>
 <p class="subSectionTitle2">Example 4&nbsp;&nbsp;&nbsp;&nbsp;Remove the "_count" Bands from a Mosaic File (OC Level2)</p>
-<b>THIS EXAMPLE IS NOT YET TRANSFERRED FROM SEADAS-7 AND WILL NOT WORK IN SEADAS-8</b>
 <br>
 
 <p>
@@ -462,7 +461,7 @@ var1Value=1.3
 
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt BandMathsEx04.xml -p BandMathsEx04.par -Ssource=A2017023193500_MosaicEx05.dim -t A2017023193500_BandMathsEx04.dim
+gpt BandMathsGraphEx04.xml -p BandMathsEx04.par -Pifile=A2017023193500_MosaicEx05.dim -Pofile=A2017023193500_BandMathsEx04.dim
 </pre>
 </td></tr></table>
 
@@ -470,19 +469,27 @@ gpt BandMathsEx04.xml -p BandMathsEx04.par -Ssource=A2017023193500_MosaicEx05.di
 
 <br>
 <p>
-    <b>File = BandMathsEx04.xml</b>
+    <b>File = BandMathsGraphEx04.xml</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="BandMathsGraph"&gt;
+&lt;graph id="BandMathsEx04Graph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
-  &lt;node id="BandMathsNode"&gt;
+  &lt;node id="Read"&gt;
+    &lt;operator&gt;Read&lt;/operator&gt;
+    &lt;sources/&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+        &lt;file&gt;${ifile}&lt;/file&gt;
+        &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="BandMaths"&gt;
     &lt;operator&gt;BandMaths&lt;/operator&gt;
     &lt;sources&gt;
-      &lt;source&gt;${source}&lt;/source&gt;
+      &lt;sourceProduct refid="Read"&gt;
     &lt;/sources&gt;
-    &lt;parameters&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;targetBands&gt;
         &lt;targetBand&gt;
           &lt;name&gt;${band1Name}&lt;/name&gt;
@@ -685,6 +692,16 @@ gpt BandMathsEx04.xml -p BandMathsEx04.par -Ssource=A2017023193500_MosaicEx05.di
         &lt;/targetBand&gt;
 
       &lt;/targetBands&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Write"&gt;
+    &lt;operator&gt;Write&lt;/operator&gt;
+    &lt;sources&gt;
+    &lt;sourceProduct refid="BandMaths"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+        &lt;file&gt;${ofile}&lt;/file&gt;
+        &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
     &lt;/parameters&gt;
   &lt;/node&gt;
 &lt;/graph&gt;
