@@ -50,9 +50,10 @@
         <tr class="invisibletable">
             <td class="invisibletable">
                 <p class="toc">Example 1&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example1" class="invisibleLink">Create only Math Bands</a></p>
-                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Create Math Bands and Retain Source Bands</a></p>
+                <p class="toc">Example 2&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example2" class="invisibleLink">Create Math Bands and Retain Chlor_a and Kd_490 bands</a></p>
                 <p class="toc">Example 3&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example3" class="invisibleLink">Create Math Bands and Retain Source Bands  (Variables Option)</a></p>
                 <p class="toc">Example 4&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example4" class="invisibleLink">Remove the "_count" Bands from a Mosaic File (OC Level2)</a></p>
+                <p class="toc">Example 5&nbsp;&nbsp;<a href="gptCookbookBandMaths.html#Example5" class="invisibleLink">Create Math Bands and Retain Source Bands</a></p>
 
             </td>
         </tr>
@@ -246,12 +247,12 @@ band1SpectralBandwidth=10.0
 
 <br><br><hr>
 <a name="Example2"></a>
-<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands</p>
-<b>THIS EXAMPLE IS NOT YET TRANSFERRED FROM SEADAS-7 AND WILL NOT WORK IN SEADAS-8</b>
+<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band(s) plus chlor_a and Kd_490</p>
 <br>
 
 <p>
-    This creates a copy of a file adding math band(s) to it.
+    This creates a new file based off an input source file adding to it Chlor_a, Kd_490 and math band(s) (the bands and masks of the source
+    file are not transferred to the output file).
 </p>
 
 <br>
@@ -259,43 +260,82 @@ band1SpectralBandwidth=10.0
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt BandMaths.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A2010283180500.L2_LAC_OC_BandMathsEx02.dim
+gpt BandMathsGraph02.xml -p BandMathsEx02.par -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC_BandMathsEx02.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = BandMaths.xml</b>
+    <b>File = BandMathsGraph02.xml</b>
 </p>
 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
 &lt;graph id="BandMathsGraphEx02"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-  &lt;node id="BandMathsNode"&gt;
-    &lt;operator&gt;BandMaths&lt;/operator&gt;
-    &lt;sources&gt;
-      &lt;source&gt;${source}&lt;/source&gt;
-    &lt;/sources&gt;
-    &lt;parameters&gt;
-      &lt;copySourceFile&gt;${copySourceFile}&lt;/copySourceFile&gt;
-      &lt;targetBands&gt;
-        &lt;targetBand&gt;
-          &lt;name&gt;${band1Name}&lt;/name&gt;
-          &lt;type&gt;${band1Type}&lt;/type&gt;
-          &lt;expression&gt;${band1Expression}&lt;/expression&gt;
-          &lt;description&gt;${band1Description}&lt;/description&gt;
-          &lt;unit&gt;${band1Unit}&lt;/unit&gt;
-          &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
-          &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
-          &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
-          &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
-        &lt;/targetBand&gt;
-      &lt;/targetBands&gt;
-    &lt;/parameters&gt;
-  &lt;/node&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;${band1Name}&lt;/name&gt;
+                    &lt;type&gt;${band1Type}&lt;/type&gt;
+                    &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+                    &lt;description&gt;${band1Description}&lt;/description&gt;
+                    &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+                    &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+                    &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+                    &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;chlor_a&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;chlor_a&lt;/expression&gt;
+                    &lt;description&gt;Chlorophyll Concentration, OCI algorithm&lt;/description&gt;
+                    &lt;unit&gt;mg m^-3&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Kd_490&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Kd_490&lt;/expression&gt;
+                    &lt;description&gt;Diffuse attenuation coefficient at 498 nm, KD2 algorithm&lt;/description&gt;
+                    &lt;unit&gt;m^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+
+            &lt;/targetBands&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
@@ -309,7 +349,6 @@ gpt BandMaths.xml -p BandMathsEx02.par -Ssource=A2010283180500.L2_LAC_OC.nc -t A
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-copySourceFile=true
 band1Name=aod
 band1Type=float64
 band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
@@ -331,7 +370,7 @@ band1SpectralBandwidth=10.0
 
 <br><br><br><hr>
 <a name="Example3"></a>
-<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands (Variables Option)</p>
+<p class="subSectionTitle2">Example 3 &nbsp;&nbsp;&nbsp;&nbsp;Create Math Band and Retain Source Bands (Variables Option)</p>
 <b>THIS EXAMPLE IS NOT YET TRANSFERRED FROM SEADAS-7 AND WILL NOT WORK IN SEADAS-8</b>
 <br>
 
@@ -359,7 +398,7 @@ gpt BandMathsEx03.xml -p BandMathsEx03.par -Ssource=A2010283180500.L2_LAC_OC.nc 
 
 <br>
 <p>
-    <b>File = BandMathsEx03.xml</b>
+    <b>File = BandMathsGraphEx03.xml</b>
 </p>
 
 
@@ -824,10 +863,300 @@ band20SpectralWavelength=0.0
 
 
 
+<br><br><hr>
+<a name="Example2"></a>
+<p class="subSectionTitle2">Example 5&nbsp;&nbsp;&nbsp;&nbsp;Create Math Band(s) plus chlor_a and Kd_490</p>
+<br>
+
+<p>
+    This creates a new file based off an input source file adding to it math band(s) and the 20 OC bands(the masks of the source
+    file are not transferred to the output file).
+</p>
+
+<br>
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt BandMathsGraph05.xml -p BandMathsEx05.par -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC_BandMathsEx05.dim
+</pre>
+</td></tr></table>
+
+
+<br>
+<p>
+    <b>File = BandMathsGraph05.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="BandMathsGraphEx05"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;${band1Name}&lt;/name&gt;
+                    &lt;type&gt;${band1Type}&lt;/type&gt;
+                    &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+                    &lt;description&gt;${band1Description}&lt;/description&gt;
+                    &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+                    &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+                    &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+                    &lt;spectralBandwidth&gt;${band1SpectralBandwidth}&lt;/spectralBandwidth&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;aot_869&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;aot_869&lt;/expression&gt;
+                    &lt;description&gt;Aerosol optical thickness at 869 nm&lt;/description&gt;
+                    &lt;unit/&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;869&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;angstrom&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;angstrom&lt;/expression&gt;
+                    &lt;description&gt;Aerosol Angstrom exponent, 443 to 865 nm&lt;/description&gt;
+                    &lt;unit/&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;chlor_a&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;chlor_a&lt;/expression&gt;
+                    &lt;description&gt;Chlorophyll Concentration, OCI algorithm&lt;/description&gt;
+                    &lt;unit&gt;mg m^-3&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;chl_ocx&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;chl_ocx&lt;/expression&gt;
+                    &lt;description&gt;Chlorophyll Concentration, OC3 algorithm&lt;/description&gt;
+                    &lt;unit&gt;mg m^-3&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;ipar&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;ipar&lt;/expression&gt;
+                    &lt;description&gt;Instantaneous Photosynthetically Available Radiation&lt;/description&gt;
+                    &lt;unit&gt;einstein m^-2 s^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Kd_490&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Kd_490&lt;/expression&gt;
+                    &lt;description&gt;Diffuse attenuation coefficient at 498 nm, KD2 algorithm&lt;/description&gt;
+                    &lt;unit&gt;m^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;nflh&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;nflh&lt;/expression&gt;
+                    &lt;description&gt;Normalized Fluorescence Line Height&lt;/description&gt;
+                    &lt;unit&gt;W m^-2 um^-1 sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_412&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_412&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 412 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;412&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_443&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_443&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 443 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;443&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_469&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_469&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 469 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;469&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_488&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_488&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 488 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;488&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_531&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_531&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 531 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;531&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_547&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_547&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 547 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;547&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_555&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_555&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 555 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;555&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_645&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_645&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 645 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;645&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_667&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_667&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 667 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;667&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;Rrs_678&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;Rrs_678&lt;/expression&gt;
+                    &lt;description&gt;Remote sensing reflectance at 678 nm&lt;/description&gt;
+                    &lt;unit&gt;sr^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;678&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;par&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;par&lt;/expression&gt;
+                    &lt;description&gt;Photosynthetically Available Radiation, R. Frouin&lt;/description&gt;
+                    &lt;unit&gt;einstein m^-2 day^-1&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;pic&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;pic&lt;/expression&gt;
+                    &lt;description&gt;Calcite Concentration, Balch and Gordon&lt;/description&gt;
+                    &lt;unit&gt;mol m^-3&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+                &lt;targetBand&gt;
+                    &lt;name&gt;poc&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;poc&lt;/expression&gt;
+                    &lt;description&gt;Particulate Organic Carbon, D. Stramski, 2007 (443/555 version)&lt;/description&gt;
+                    &lt;unit&gt;mg m^-3&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;0.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+
+            &lt;/targetBands&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
 
 
 
+<br>
+<p>
+    <b>File = BandMathsEx05.par</b>
+</p>
 
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 != 0) then 1.3/Kd_490 else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=Kd_490 &amp;gt;= 0.01000 and Kd_490 &amp;lt;= 6.00000
+band1NoDataValue=-0.19837031
+band1SpectralWavelength=490.0
+band1SpectralBandwidth=10.0
+</pre>
+</td></tr></table>
 
 <br><br><br>
 
