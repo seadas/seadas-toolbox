@@ -1,10 +1,680 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>GPT Cookbook</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
 </head>
+
 <body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header" align="left" width="48%">
+            <a href="index.html">
+                <img src="../images/seadas_header.png" border="0">
+            </a>
+        </td>
+        <td class="header">
+            &nbsp;
+        </td>
+        <td class="header" align="right" width="48%">
+            <a href="index.html">
+                <img src="../images/snap_header_trimmed.jpg" border="0">
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<h2 class="center">GPT Tutorial</h2>
+<br>
+
+<table width=100%">
+    <tr>
+        <td bgcolor="#fff9e9">
+            <p>
+                This is a brief tutorial example walk through of running the SNAP/SeaDAS gpt command line tool.
+                This tutorial will demonstrate the use of the BandMaths operator in gpt.  Examples of
+                many operators can be found in the GPT Cookbook.
+            </p>
+        </td>
+    </tr>
+</table>
+<br>
+
+
+<br><br>
+
+<div class="center">
+    <table class="invisibletable">
+        <tr class="invisibletable">
+            <td class="invisibletable">
+                <p class="toc">
+                    <a href="gptTutorial.html#Section1">1 Running gpt within the GUI GraphBuilder</a>
+                </p>
+                <p class="toc">
+                    <a href="gptTutorial.html#Section2">2 Accessing gpt from the command line</a>
+                </p>
+                <p class="toc">
+                    <a href="gptTutorial.html#Section3">3 Running gpt on the command line</a>
+                </p>
+                <p class="toc">
+                    <a href="gptTutorial.html#Section4">4 Passing the input and output files as command line arguments</a>
+                </p>
+                <p class="toc">
+                    <a href="gptTutorial.html#Section5">5 Adding in some parameters not available in the GUI</a>
+                </p>
+                <p class="toc">
+                    <a href="gptTutorial.html#Section6">6 Using a parameter file</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<br><br>
+
+
+
+
+<br><br><br><hr>
+<a name="Section1"></a>
+<p class="subSectionTitle2">1&nbsp;&nbsp;&nbsp;&nbsp;Running gpt within the GUI GraphBuilder</p>
+<br>
+<p>
+    The gpt processing can be run from within the GUI by using the GraphBuilder Tool.  Let's use the
+    BandMaths gpt operator to generate an output file which contains a single custom mathematically derived band.
+
+    <br><br>
+
+    Open the GraphBuilder tool and you will notice that nodes for the "Read" and "Write" operators are automatically
+    loaded within the window by default.
+    <br><br>
+
+    Add in the BandMaths operator node by right-clicking inside the window and selecting "Add > Raster > BandMaths".
+    A square representing the BandMaths node should appear inside the window.
+
+    <br><br>
+
+    <img src="images/gptTutorial1.png">
+
+    <br><br>
+
+    To establish a graph workflow you need to connect the nodes.  To do this you can right-click in the GraphBuilder
+    window and select "Connect Graph".  This will automatically connect all the nodes.  Optionally you can draw each
+    node connection one at a time by hovering the mouse over the left edge of the receiving node and then dragging the
+    mouse to the desired source node.  For more complicated graphs and graphs with parallel threads you will likely
+    need to draw the connections this way manually one at a time.
+
+    <br><br>
+
+    <img src="images/gptTutorial2.png">
+
+    <br><br>
+
+    To configure the Read operator click on the "Read" tab and then choose an input file (aka
+    Source Product Name).  For this example we will use the NASA ocean color file "A2010283180500.L2_LAC_OC.nc".
+    Then select the "Data Format" = "SeaDAS-L2".
+
+    <br><br>
+
+    To configure the Write operator click on the "Write" tab and then specify an output file (aka
+    Target Product Name and its Directory).  For this example we will name it "A2010283180500.L2_LAC_OC.GptTutorialSection01.dim".
+    Then select the data format of the output file "Save as" = "BEAM-DIMAP".
+
+    <br><br>
+
+    To configure the BandMaths operator node click on the "BandMaths" tab and then specify the following (see image):
+
+    <br><br>
+
+    <img src="images/gptTutorial3.png">
+
+    <br><br>
+
+    Before running gpt let's save the graph file for use later in section 3.  To save the graph file click the
+    "Save" button and then select a file name for the graph "GptTutorialGraphSection03.xml"
+
+    <br><br>
+    Now run gpt by clicking the "Run" button.  The file A2010283180500.L2_LAC_OC.GptTutorialSection01.dim will then be written in
+    the directory which you specified as well as be loaded into the "Product Explorer (File Manager)"
+    window.
+
+</p>
+
+
+
+
+<br><br><br><hr>
+<a name="Section2"></a>
+<p class="subSectionTitle2">2&nbsp;&nbsp;&nbsp;&nbsp;Accessing gpt from the command line</p>
+<br>
+
+<p>
+    TBD: discuss configuring path/alias to be "gpt" (platform dependent)
+</p>
+
+
+
+<br><br><br><hr>
+<a name="Section3"></a>
+<p class="subSectionTitle2">3&nbsp;&nbsp;&nbsp;&nbsp;Running gpt on the command line</p>
+<br>
+
+<p>
+    Now let's run gpt from the command line.  In section 1 we ran gpt from the GUI GraphBuilder tool as
+    well as saved the graph file "GptTutorialGraphSection03.xml".  Here is that
+    graph file.
+
+</p>
+
+    <br>
+<p>
+    <b>File = GptTutorialGraphSection03.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="GptTutorialGraphSection03"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;/Users/seadas/GPT_Cookbook/GPT_Tutorial/A2010283180500.L2_LAC_OC.nc&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;aod&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+                    &lt;description/&gt;
+                    &lt;unit&gt;meters&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                &lt;/targetBand&gt;
+            &lt;/targetBands&gt;
+            &lt;variables/&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;/Users/seadas/GPT_Cookbook/GPT_Tutorial/A2010283180500.L2_LAC_OC.GptTutorialSection03.dim&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;applicationData id="Presentation"&gt;
+        &lt;Description/&gt;
+        &lt;node id="Read"&gt;
+            &lt;displayPosition x="37.0" y="134.0"/&gt;
+        &lt;/node&gt;
+        &lt;node id="BandMaths"&gt;
+            &lt;displayPosition x="230.0" y="226.0"/&gt;
+        &lt;/node&gt;
+        &lt;node id="Write"&gt;
+            &lt;displayPosition x="455.0" y="135.0"/&gt;
+        &lt;/node&gt;
+    &lt;/applicationData&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<p>
+    You will notice that the input and output files are explicitly defined in the graph file:<br>
+    Input file: /Users/seadas/GPT_Cookbook/GPT_Tutorial/A2010283180500.L2_LAC_OC.nc<br>
+    Output file: /Users/seadas/GPT_Cookbook/GPT_Tutorial/A2010283180500.L2_LAC_OC.GptTutorialSection03.dim<br>
+    This is fine for now, we will address this in the next section.
+    <br><br>
+    Note: these absolute file paths will likely differ
+    from the graph file which you created in the previous example, so either use your graph
+    file or edit this one to reflect your absolute input/output file paths.<br>
+    Also note: the placement locations of the nodes in "applicationData" will also likely differ in your file.)
+
+    <br>
+    To run this graph file from the command line execute the following command:
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt GptTutorialGraphSection03.xml
+</pre>
+</td></tr></table>
+
+<br><br>
+
+
+<br><br><br><hr>
+<a name="Section4"></a>
+<p class="subSectionTitle2">4&nbsp;&nbsp;&nbsp;&nbsp;Passing the input and output files as command line arguments</p>
+<br>
+
+
+<p>
+
+    We will continue the rest of this tutorial by running exclusively from the command line.  The
+    previous example was a bit limited in that it cannot be reused for other input files.  So
+    let's pull the explicitly defined input file and output file
+    out of the graph file and have it passed in as a command line argument.  To do this we change 2 lines:
+
+    <br><br>
+    The line in the Read node:<br>
+    &lt;file&gt;/Users/seadas/GPT_Cookbook/GPT_Tutorial/A2010283180500.L2_LAC_OC.nc&lt;/file&gt;<br>
+    will become:<br>
+    &lt;file&gt;${ifile}&lt;/file&gt;
+
+    <br><br>
+    The line in the Write node:<br>
+    &lt;file&gt;/Users/seadas/GPT_Cookbook/GPT_Tutorial/A2010283180500.L2_LAC_OC.GptTutorialSection03.dim&lt;/file&gt;<br>
+    will become:<br>
+    &lt;file&gt;${ofile}&lt;/file&gt;
+
+    <br><br>
+    By doing this ${ifile} and ${ofile} will become parameters to be passed in at the command line.  Note that the
+    GraphBuilder tool does not support these command line parameters so the GUI specific section "applicationData"
+    of the graph file is no longer needed and can be removed.
+
+    <br><br>
+
+    The resulting file should look like this:<br>
+</p>
+
+
+
+<p>
+    <b>File = GptTutorialGraphSection04.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="GptTutorialGraphSection04"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;aod&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+                    &lt;description/&gt;
+                    &lt;unit&gt;meters&lt;/unit&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                &lt;/targetBand&gt;
+            &lt;/targetBands&gt;
+            &lt;variables/&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+
+<p>
+    This time when you run gpt from the command line you will pass in the input and output files as
+    parameters.  To do this you use the convention -P{parameter_name}={parameter_value}.  So you
+    will have the following 2 command line arguments:<br>
+    -Pifile=A2010283180500.L2_LAC_OC.nc<br>
+    -Pofile=A2010283180500.L2_LAC_OC.GptTutorialSection04.dim
+
+    <br><br>
+    Your gpt command line will look like this:
+</p>
+
+
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt GptTutorialGraphSection04.xml -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC.GptTutorialSection04.dim
+</pre>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Section5"></a>
+<p class="subSectionTitle2">5&nbsp;&nbsp;&nbsp;&nbsp;Adding in some parameters not available in the GUI</p>
+<br>
+
+
+
+
+
+<p>
+    This isn't always the case, but there may be parameters available at the command line which are
+    not available (at least not yet) via the GUI.  This section goes over how to find these parameters
+    and add them to your graph file.
+
+    <br><br>
+    If you have a familiarity with all the parameters normally in a SNAP/SeaDAS band you might notice
+    that some are missing in the graph file and in the BandMaths GUI.  Take a look at the source file:
+    A2010283180500.L2_LAC_OC.nc.  Right click on the band Kd_490 and select "Properties" and you will
+    notice that some useful parameters were not available in the GUI (these parameters should ideally be
+    added in a future release).  It would be useful to have the "Valid-Pixel Expression" and perhaps
+    the "Description"
+    be available to you.  The complete listing of parameters available for the BandMaths gpt operator
+    can be found by typing on the command line "gpt -h BandMaths".
+
+    <br><br>
+    Let's modify the graph file to add in the following parameter lines: <br>
+    &lt;description&gt;apparent optical depth&lt;/description&gt;<br>
+    &lt;validExpression&gt;aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)&lt;/validExpression&gt;<br>
+    &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
+
+    <br><br>
+
+
+    So your graph file will now look like this:
+
+</p>
+
+
+
+<p>
+    <b>File = GptTutorialGraphSection05.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="GptTutorialGraphSection05"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;aod&lt;/name&gt;
+                    &lt;type&gt;float64&lt;/type&gt;
+                    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+                    &lt;description&gt;apparent optical depth&lt;/description&gt;
+                    &lt;unit&gt;meters&lt;/unit&gt;
+                    &lt;validExpression&gt;aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)&lt;/validExpression&gt;
+                    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+            &lt;/targetBands&gt;
+            &lt;variables/&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+<br><br>
+
+<p>
+    Then run this on the command line as:
+</p>
+
+
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt GptTutorialGraphSection05.xml -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC.GptTutorialSection05.dim
+</pre>
+</td></tr></table>
+
+
+
+<br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><hr>
+<a name="Section6"></a>
+<p class="subSectionTitle2">6&nbsp;&nbsp;&nbsp;&nbsp;Using a parameter file</p>
+<br>
+
+
+
+
+
+<p>
+    Another way to make your graph file more robust and reusable is to define parameters within
+    a separate parameter file  which contains a name=value pair list.
+
+
+    <br><br>
+
+    To do this modify the following lines of GptTutorialGraphSection05.xml:
+    <pre>
+    &lt;name&gt;aod&lt;/name&gt;
+    &lt;type&gt;float64&lt;/type&gt;
+    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+    &lt;description&gt;apparent optical depth&lt;/description&gt;
+    &lt;unit&gt;meters&lt;/unit&gt;
+    &lt;validExpression&gt;aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)&lt;/validExpression&gt;
+    &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+    &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
+    </pre>
+
+
+
+
+    <br><br>
+    Replace those line as follows:
+    <pre>
+    &lt;name&gt;${band1Name}&lt;/name&gt;
+    &lt;type&gt;${band1Type}&lt;/type&gt;
+    &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+    &lt;description&gt;${band1Description}&lt;/description&gt;
+    &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+    &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+    &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+    &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+    </pre>
+
+
+
+
+    So your graph file will now look like this:
+
+</p>
+
+
+
+<p>
+    <b>File = GptTutorialGraphSection06.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="GptTutorialGraphSection06"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="BandMaths"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;targetBands&gt;
+                &lt;targetBand&gt;
+                    &lt;name&gt;${band1Name}&lt;/name&gt;
+                    &lt;type&gt;${band1Type}&lt;/type&gt;
+                    &lt;expression&gt;${band1Expression}&lt;/expression&gt;
+                    &lt;description&gt;${band1Description}&lt;/description&gt;
+                    &lt;unit&gt;${band1Unit}&lt;/unit&gt;
+                    &lt;validExpression&gt;${band1ValidExpression}&lt;/validExpression&gt;
+                    &lt;noDataValue&gt;${band1NoDataValue}&lt;/noDataValue&gt;
+                    &lt;spectralWavelength&gt;${band1SpectralWavelength}&lt;/spectralWavelength&gt;
+                &lt;/targetBand&gt;
+            &lt;/targetBands&gt;
+            &lt;variables/&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="BandMaths"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
+
+
+<br><br>
+
+Then create the following file containing the parameters:
+<br>
+<p>
+    <b>File = GptTutorialSection06.par</b>
+</p>
+
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+band1Name=aod
+band1Type=float64
+band1Expression=if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN
+band1Description=apparent optical depth
+band1Unit=meters
+band1ValidExpression=aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)
+band1NoDataValue=NaN
+band1SpectralWavelength=490.0
+</pre>
+</td></tr></table>
+
+
+<br><br>
+
+<p>
+    Then run this on the command line as:
+</p>
+
+
+<p>
+    <b>Command Line Entry</b>
+</p><table><tr><td bgcolor="#e9f0f0">
+<pre>
+gpt GptTutorialGraphSection06.xml -p GptTutorialSection06.par -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2010283180500.L2_LAC_OC.GptTutorialSection06.dim
+</pre>
+</td></tr></table>
+
+
+
+<p>
+    Note: any of the parameters can be sent in via either the command line or the parameter file.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

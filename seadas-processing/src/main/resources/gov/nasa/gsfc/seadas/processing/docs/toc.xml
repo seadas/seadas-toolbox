@@ -8,10 +8,33 @@
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
 
     <tocitem text="Command Line Interface (GPF)">
-        <tocitem text="GPT Cookbook" target="gptCookbook"/>
+        <tocitem text="GPT Cookbook">
+            <tocitem text="Table of Contents" target="gptCookbook"/>
+            <tocitem text="Configuration" target="gptCookbookConfiguration"/>
+            <tocitem text="Operators">
+                <tocitem text="1. BandMaths" target="gptCookbookBandMaths"/>
+                <tocitem text="2. Collocate" target="gptCookbookCollocate"/>
+                <tocitem text="3. LandWater" target="gptCookbookLandWater"/>
+                <tocitem text="4. Mosaic" target="gptCookbookMosaic"/>
+                <tocitem text="5. PixEx" target="gptCookbookPixEx"/>
+                <tocitem text="6. Reproject" target="gptCookbookReproject"/>
+                <tocitem text="7. StatisticsOp" target="gptCookbookStatisticsOp"/>
+                <tocitem text="8. Subset" target="gptCookbookSubset"/>
+                <tocitem text="9. WriteImage" target="gptCookbookWriteImage"/>
+            </tocitem>
+
+            <tocitem text="Workflows">
+                <!--<tocitem text="1. Hello World" target="gptCookbookWorkflowEx01"/>-->
+                <!--<tocitem text="2. Reproject" target="gptCookbookWorkflowEx02"/>-->
+                <tocitem text="3. Compare Two Files" target="gptCookbookWorkflowEx03"/>
+                <tocitem text="4. Mosaic Cleanup" target="gptCookbookWorkflowEx04"/>
+            </tocitem>
+
+        </tocitem>
+
+        <tocitem text="GPT Tutorial" target="gptTutorial"/>
     </tocitem>
     <tocitem text="SeaDAS">
-
 
 
         <tocitem text="OCSSW">
