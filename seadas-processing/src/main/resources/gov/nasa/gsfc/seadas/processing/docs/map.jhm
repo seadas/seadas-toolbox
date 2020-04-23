@@ -6,6 +6,23 @@
 <map version="2.0">
     <mapID target="ocsswCookbook" url="OcsswCookbook/ocsswCookbook.html"/>
     <mapID target="gptCookbook" url="GptCookbook/gptCookbook.html"/>
+    <mapID target="gptTutorial" url="GptCookbook/gptTutorial.html"/>
+    <mapID target="gptCookbookBandMaths" url="GptCookbook/gptCookbookBandMaths.html"/>
+    <mapID target="gptCookbookCollocate" url="GptCookbook/gptCookbookCollocate.html"/>
+    <mapID target="gptCookbookConfiguration" url="GptCookbook/gptCookbookConfiguration.html"/>
+    <mapID target="gptCookbookLandWater" url="GptCookbook/gptCookbookLandWater.html"/>
+    <mapID target="gptCookbookMosaic" url="GptCookbook/gptCookbookMosaic.html"/>
+    <mapID target="gptCookbookPixEx" url="GptCookbook/gptCookbookPixEx.html"/>
+    <mapID target="gptCookbookReproject" url="GptCookbook/gptCookbookReproject.html"/>
+    <mapID target="gptCookbookStatisticsOp" url="GptCookbook/gptCookbookStatisticsOp.html"/>
+    <mapID target="gptCookbookSubset" url="GptCookbook/gptCookbookSubset.html"/>
+    <mapID target="gptCookbookWorkflowEx01" url="GptCookbook/gptCookbookWorkflowEx01.html"/>
+    <mapID target="gptCookbookWorkflowEx02" url="GptCookbook/gptCookbookWorkflowEx02.html"/>
+    <mapID target="gptCookbookWorkflowEx03" url="GptCookbook/gptCookbookWorkflowEx03.html"/>
+    <mapID target="gptCookbookWorkflowEx04" url="GptCookbook/gptCookbookWorkflowEx04.html"/>
+    <mapID target="gptCookbookWriteImage" url="GptCookbook/gptCookbookWriteImage.html"/>
+
+
     <mapID target="processOverview" url="processors/ProcessOverview.html"/>
     <mapID target="install_ocssw.py" url="processors/InstallOCSSW.html"/>
     <mapID target="extractor" url="processors/ProcessExtractors.html"/>

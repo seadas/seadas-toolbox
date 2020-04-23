@@ -77,20 +77,20 @@
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt CollocateGraph.xml -Pifile1=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -Pifile2=V20172132017243.L3m_MO_SNPP_KD490_Kd_490_9km.nc -Pofile=CollocateEx01.dim
+gpt CollocateGraphEx01.xml -Pifile1=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -Pifile2=V20172132017243.L3m_MO_SNPP_KD490_Kd_490_9km.nc -Pofile=CollocateEx01.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = CollocateGraph.xml</b>
+    <b>File = CollocateGraphEx01.xml</b>
 </p>
 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="CollocateGraph"&gt;
+&lt;graph id="CollocateGraphEx01"&gt;
     &lt;version&gt;1.0&lt;/version&gt;
     &lt;node id="Read"&gt;
         &lt;operator&gt;Read&lt;/operator&gt;
@@ -152,13 +152,13 @@ gpt CollocateGraph.xml -Pifile1=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -
 <br>
 
 <p>
-    <b>File = CollocateGraphGUI.xml</b>
+    <b>File = CollocateGraphGUIEx01.xml</b>
 </p>
 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="Graph"&gt;
+&lt;graph id="CollocateGraphGUIEx01"&gt;
     &lt;version&gt;1.0&lt;/version&gt;
     &lt;node id="Read"&gt;
         &lt;operator&gt;Read&lt;/operator&gt;
@@ -249,20 +249,20 @@ gpt CollocateGraph.xml -Pifile1=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc -
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt CollocatePatternGraph.xml -p CollocateEx02.par -Pifile1=AQUA_MODIS.20020101_20021231.L3m.YR.NSST.sst.9km.nc -Pifile2=AQUA_MODIS.20160101_20161231.L3m.YR.NSST.sst.9km.nc -Pofile=CollocateEx02.dim
+gpt CollocateGraphEx02.xml -p CollocateEx02.par -Pifile1=AQUA_MODIS.20020101_20021231.L3m.YR.NSST.sst.9km.nc -Pifile2=AQUA_MODIS.20160101_20161231.L3m.YR.NSST.sst.9km.nc -Pofile=CollocateEx02.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = CollocatePatternGraph.xml</b>
+    <b>File = CollocateGraphEx02.xml</b>
 </p>
 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="CollocatePatternGraph"&gt;
+&lt;graph id="CollocateGraphEx02"&gt;
     &lt;version&gt;1.0&lt;/version&gt;
     &lt;node id="Read"&gt;
         &lt;operator&gt;Read&lt;/operator&gt;
@@ -350,20 +350,20 @@ resamplingType=NEAREST_NEIGHBOUR
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt CollocateAddSuffixGraph.xml -p CollocateEx03.par -Pifile1=AQUA_MODIS.20020101_20021231.L3m.YR.NSST.sst.9km.nc -Pifile2=AQUA_MODIS.20160101_20161231.L3m.YR.NSST.sst.9km.nc -PreferenceSuffix=2002 -PdependentSuffix=2016 -Pofile=CollocateEx03.dim
+gpt CollocateGraphEx03.xml -p CollocateEx03.par -Pifile1=AQUA_MODIS.20020101_20021231.L3m.YR.NSST.sst.9km.nc -Pifile2=AQUA_MODIS.20160101_20161231.L3m.YR.NSST.sst.9km.nc -PreferenceSuffix=2002 -PdependentSuffix=2016 -Pofile=CollocateEx03.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = CollocateAddSuffixGraph.xml</b>
+    <b>File = CollocateGraphEx03.xml</b>
 </p>
 
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="CollocateAddSuffixGraph"&gt;
+&lt;graph id="CollocateGraphEx03"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
         &lt;node id="Read"&gt;
         &lt;operator&gt;Read&lt;/operator&gt;
