@@ -177,7 +177,7 @@
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-&lt;graph id="GptTutorialGraphSection03"&gt;
+&lt;graph id="Graph"&gt;
     &lt;version&gt;1.0&lt;/version&gt;
     &lt;node id="Read"&gt;
         &lt;operator&gt;Read&lt;/operator&gt;
@@ -197,7 +197,7 @@
                 &lt;targetBand&gt;
                     &lt;name&gt;aod&lt;/name&gt;
                     &lt;type&gt;float64&lt;/type&gt;
-                    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+                    &lt;expression&gt;if (Kd_490 &amp;gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
                     &lt;description/&gt;
                     &lt;unit&gt;meters&lt;/unit&gt;
                     &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
@@ -323,7 +323,7 @@ gpt GptTutorialGraphSection03.xml
                 &lt;targetBand&gt;
                     &lt;name&gt;aod&lt;/name&gt;
                     &lt;type&gt;float64&lt;/type&gt;
-                    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+                    &lt;expression&gt;if (Kd_490 &amp;gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
                     &lt;description/&gt;
                     &lt;unit&gt;meters&lt;/unit&gt;
                     &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
@@ -404,7 +404,7 @@ gpt GptTutorialGraphSection04.xml -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2
     <br><br>
     Let's modify the graph file to add in the following parameter lines: <br>
     &lt;description&gt;apparent optical depth&lt;/description&gt;<br>
-    &lt;validExpression&gt;aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)&lt;/validExpression&gt;<br>
+    &lt;validExpression&gt;aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)&lt;/validExpression&gt;<br>
     &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
 
     <br><br>
@@ -443,10 +443,10 @@ gpt GptTutorialGraphSection04.xml -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2
                 &lt;targetBand&gt;
                     &lt;name&gt;aod&lt;/name&gt;
                     &lt;type&gt;float64&lt;/type&gt;
-                    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+                    &lt;expression&gt;if (Kd_490 &amp;gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
                     &lt;description&gt;apparent optical depth&lt;/description&gt;
                     &lt;unit&gt;meters&lt;/unit&gt;
-                    &lt;validExpression&gt;aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)&lt;/validExpression&gt;
+                    &lt;validExpression&gt;aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)&lt;/validExpression&gt;
                     &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
                     &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
                 &lt;/targetBand&gt;
@@ -519,10 +519,10 @@ gpt GptTutorialGraphSection05.xml -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2
     <pre>
     &lt;name&gt;aod&lt;/name&gt;
     &lt;type&gt;float64&lt;/type&gt;
-    &lt;expression&gt;if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
+    &lt;expression&gt;if (Kd_490 &amp;gt; 0) then 1.3/Kd_490 else NaN&lt;/expression&gt;
     &lt;description&gt;apparent optical depth&lt;/description&gt;
     &lt;unit&gt;meters&lt;/unit&gt;
-    &lt;validExpression&gt;aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)&lt;/validExpression&gt;
+    &lt;validExpression&gt;aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)&lt;/validExpression&gt;
     &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
     &lt;spectralWavelength&gt;490.0&lt;/spectralWavelength&gt;
     </pre>
@@ -545,7 +545,7 @@ gpt GptTutorialGraphSection05.xml -Pifile=A2010283180500.L2_LAC_OC.nc -Pofile=A2
 
 
 
-
+<p>
     So your graph file will now look like this:
 
 </p>
@@ -619,10 +619,10 @@ Then create the following file containing the parameters:
 <pre>
 band1Name=aod
 band1Type=float64
-band1Expression=if (Kd_490 &gt; 0) then 1.3/Kd_490 else NaN
+band1Expression=if (Kd_490 &amp;gt; 0) then 1.3/Kd_490 else NaN
 band1Description=apparent optical depth
 band1Unit=meters
-band1ValidExpression=aod &gt; (1.3/6.0) and aod &lt; (1.3/0.01)
+band1ValidExpression=aod &amp;gt; (1.3/6.0) and aod &amp;lt; (1.3/0.01)
 band1NoDataValue=NaN
 band1SpectralWavelength=490.0
 </pre>
