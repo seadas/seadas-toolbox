@@ -444,16 +444,19 @@ public class OCSSWLocal extends OCSSW {
     }
 
     public void setCommandArrayPrefix() {
-
-        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && !isOCSSWExist()) {
             commandArrayPrefix = new String[1];
-            commandArrayPrefix[0] = programName;
-            if (!isOCSSWExist()) {
-                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
-            } else {
-                commandArrayPrefix[0] = ocsswInfo.getOcsswInstallerScriptPath();
-            }
+            commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
         } else {
+//        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+//            commandArrayPrefix = new String[1];
+//            commandArrayPrefix[0] = programName;
+//            if (!isOCSSWExist()) {
+//                commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
+//            } else {
+//                commandArrayPrefix[0] = ocsswInfo.getOcsswInstallerScriptPath();
+//            }
+//        } else {
             commandArrayPrefix = new String[3];
             commandArrayPrefix[0] = ocsswInfo.getOcsswRunnerScriptPath();
             commandArrayPrefix[1] = "--ocsswroot";

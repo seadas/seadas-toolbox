@@ -72,7 +72,7 @@
             <order>7</order>
         </option>
         <option type="boolean">
-            <name>--aqua</name>
+            <name>--modisa</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
@@ -80,7 +80,7 @@
             <order>8</order>
         </option>
         <option type="boolean">
-            <name>--terra</name>
+            <name>--modist</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>

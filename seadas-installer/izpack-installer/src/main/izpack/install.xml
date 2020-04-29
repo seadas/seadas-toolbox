@@ -7,13 +7,17 @@
   <info>
     <appname>SeaDAS IzPack Installer</appname>
     <appversion>1.0.0</appversion>
+    <javaversion>1.8.0_241</javaversion>
+    <requiresjdk>yes</requiresjdk>
     <url>https://seadas.gsfc.nasa.gov</url>
     <authors>
         <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
     </authors>
+    <summarylogfilepath>$INSTALL_PATH/installinfo/InstallSummary.html</summarylogfilepath>
   </info>
 
   <guiprefs width="800" height="600" resizable="yes">
+    <modifier key="useSplashScreen" value="1000"/>
     <laf name="looks">
       <os family="unix"/>
       <param name="variant" value="mist-aqua"/>
@@ -24,7 +28,7 @@
     </laf>
     <laf name="substance">
       <os family="mac"/>
-      <param name="variant" value="mist-aqua"/>
+      <param name="variant" value="nebula-brick-wall"/>
     </laf>
     <modifier key="useHeadingPanel" value="yes"/>
     <modifier key="useButtonIcons" value="yes"/>
@@ -47,6 +51,7 @@
   <resources>
     <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
     <res id="HTMLInfoPanel.info" src="about/readme.html"/>
+<!--    <res id="JDKPathPanel.info" src="about/readme.html"/>-->
     <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
     <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
     <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -77,6 +82,11 @@
     <variable name="installer:maxHeapSize" value="2048M"/>
     <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
     <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
+
+      <variable name="JDKPathPanel.minVersion" value="1.8.0_201" />
+<!--      <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />-->
+      <variable name="JDKPathPanel.skipIfValid" value="yes" />
+
   </variables>
 
   <conditions>
@@ -108,7 +118,7 @@
     </condition>
     <condition type="variable" id="runSeaDAS">
       <name>runSeaDASAfterInstall</name>
-      <value>true</value>
+      <value>${runSeaDASAfterInstall}</value>
     </condition>
   </conditions>
 
@@ -132,6 +142,7 @@
 
     <panel classname="InstallationTypePanel"/>
     <panel classname="HTMLLicencePanel" id="licence" />
+<!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
     <panel classname="TargetPanel" id="install_dir"/>
     <panel classname="PacksPanel" id="sdk_pack_select"/>
     <panel classname="InstallPanel" id="install"/>
