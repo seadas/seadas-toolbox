@@ -9,6 +9,7 @@ import java.util.Iterator;
 /**
  * Created by IntelliJ IDEA. User: knowles Date: 5/16/12 Time: 3:13 PM To change
  * this template use File | Settings | File Templates.
+ * @author aabduraz
  */
 public class MissionInfo {
 
