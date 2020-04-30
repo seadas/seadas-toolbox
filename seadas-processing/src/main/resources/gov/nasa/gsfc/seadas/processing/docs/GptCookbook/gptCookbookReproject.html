@@ -185,14 +185,14 @@
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt ReprojectGeoLatLon.xml -p ReprojectGeoLatLon.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx01.dim
+gpt ReprojectGraphEx01.xml -p ReprojectEx01.par -Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_ReprojectEx01.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = ReprojectGeoLatLon.xml</b>
+    <b>File = ReprojectGraphEx01.xml</b>
 </p>
 
 
@@ -200,36 +200,49 @@ gpt ReprojectGeoLatLon.xml -p ReprojectGeoLatLon.par -Ssource=A2017023193500.L2_
 <pre>
 &lt;graph id="ReprojectGeoLatLonGraph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;node id="ReprojectGeoLatLonNode"&gt;
+  &lt;node id="Read"&gt;
+    &lt;operator&gt;Read&lt;/operator&gt;
+    &lt;sources/&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Reproject"&gt;
     &lt;operator&gt;Reproject&lt;/operator&gt;
     &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;sourceProduct refid="Read"/&gt;
     &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;crs&gt;
-           GEOGCS["WGS84(DD)",
-                  DATUM["WGS84",
-                        SPHEROID["WGS84", 6378137.0, 298.257223563]],
-                  PRIMEM["Greenwich", 0.0],
-                  UNIT["degree", 0.017453292519943295],
-                  AXIS["Geodetic longitude", EAST],
-                  AXIS["Geodetic latitude", NORTH]]
-        &lt;/crs&gt;
-        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
-        &lt;orientation&gt;0.0&lt;/orientation&gt;
-        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
-        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
-        &lt;orthorectify&gt;false&lt;/orthorectify&gt;
-        &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
-        &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
-        &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
-        &lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
-        &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
-        &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;wktFile/&gt;
+      &lt;crs&gt;
+         GEOGCS[&amp;quot;WGS84(DD)&amp;quot;,
+                DATUM[&amp;quot;WGS84&amp;quot;,
+                      SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563]],
+                PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0],
+                UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
+                AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
+                AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
+      &lt;/crs&gt;
+      &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+      &lt;orientation&gt;0.0&lt;/orientation&gt;
+      &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+      &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+      &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+      &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+      &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+      &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
     &lt;/parameters&gt;
-
+  &lt;/node&gt;
+  &lt;node id="Write"&gt;
+    &lt;operator&gt;Write&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;sourceProduct refid="Reproject"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;${ofile}&lt;/file&gt;
+      &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+    &lt;/parameters&gt;
   &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
@@ -239,16 +252,16 @@ gpt ReprojectGeoLatLon.xml -p ReprojectGeoLatLon.par -Ssource=A2017023193500.L2_
 
 <br>
 <p>
-    <b>File = ReprojectGeoLatLon.par</b>
+    <b>File = ReprojectEx01.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
 pixelSize=0.009
 resampling=Bilinear
-maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
-transferValidPixelExpression=true
-applyValidPixelExpression=true
+<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
+<!--transferValidPixelExpression=true-->
+<!--applyValidPixelExpression=true-->
 </pre>
 </td></tr></table>
 
@@ -309,14 +322,14 @@ applyValidPixelExpression=true
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt ReprojectObliqueStereo.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx02.dim
+gpt ReprojectGraphEx02.xml -p ReprojectEx02.par --Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_ReprojectEx02.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = ReprojectObliqueStereo.xml</b>
+    <b>File = ReprojectGraphEx02.xml</b>
 </p>
 
 
@@ -324,47 +337,60 @@ gpt ReprojectObliqueStereo.xml -p ReprojectGulfMexico.par -Ssource=A201702319350
 <pre>
 &lt;graph id="ReprojectObliqueStereoGraph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;node id="ReprojectObliqueStereoNode"&gt;
+  &lt;node id="Read"&gt;
+    &lt;operator&gt;Read&lt;/operator&gt;
+    &lt;sources/&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;${ifile}&lt;/file&gt;
+      &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Reproject"&gt;
     &lt;operator&gt;Reproject&lt;/operator&gt;
     &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;sourceProduct refid="Read"/&gt;
     &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;crs&gt;
-            PROJCS["Oblique_Stereographic / World Geodetic System 1984",
-                  GEOGCS["World Geodetic System 1984",
-                         DATUM["World Geodetic System 1984",
-                               SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
-                         AUTHORITY["EPSG","6326"]],
-                  PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
-                  UNIT["degree", 0.017453292519943295],
-                  AXIS["Geodetic longitude", EAST],
-                  AXIS["Geodetic latitude", NORTH]],
-            PROJECTION["Oblique_Stereographic"],
-            PARAMETER["central_meridian", ${lon}],
-            PARAMETER["latitude_of_origin", ${lat}],
-            PARAMETER["scale_factor", 1.0],
-            PARAMETER["false_easting", 0.0],
-            PARAMETER["false_northing", 0.0],
-            UNIT["m", 1.0],
-            AXIS["Easting", EAST],
-            AXIS["Northing", NORTH]]
-        &lt;/crs&gt;
-        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
-        &lt;orientation&gt;0.0&lt;/orientation&gt;
-        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
-        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
-        &lt;orthorectify&gt;false&lt;/orthorectify&gt;
-        &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
-        &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
-        &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
-        &lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
-        &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
-        &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;wktFile/&gt;
+      &lt;crs&gt;
+         PROJCS[&amp;quot;Oblique_Stereographic / World Geodetic System 1984&amp;quot;,
+                GEOGCS[&amp;quot;WGS84(DD)&amp;quot;,
+                       DATUM[&amp;quot;WGS84&amp;quot;,
+                             SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
+                       AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
+                PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;],
+                UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
+                AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
+                AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]],
+         PROJECTION[&amp;quot;Oblique_Stereographic&amp;quot;],
+         PARAMETER[&amp;quot;central_meridian&amp;quot;, ${lon}],
+         PARAMETER[&amp;quot;latitude_of_origin&amp;quot;, ${lat}],
+         PARAMETER[&amp;quot;scale_factor&amp;quot;, 1.0],
+         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
+         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
+         UNIT[&amp;quot;m&amp;quot;, 1.0],
+         AXIS[&amp;quot;Easting&amp;quot;, EAST],
+         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+      &lt;/crs&gt;
+      &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+      &lt;orientation&gt;0.0&lt;/orientation&gt;
+      &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+      &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+      &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+      &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+      &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+      &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
     &lt;/parameters&gt;
-
+  &lt;/node&gt;
+  &lt;node id="Write"&gt;
+    &lt;operator&gt;Write&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;sourceProduct refid="Reproject"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;${ofile}&lt;/file&gt;
+      &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+    &lt;/parameters&gt;
   &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
@@ -374,7 +400,7 @@ gpt ReprojectObliqueStereo.xml -p ReprojectGulfMexico.par -Ssource=A201702319350
 
 <br>
 <p>
-    <b>File = ReprojectGulfMexico.par</b>
+    <b>File = ReprojectEx02.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -383,13 +409,108 @@ lat=25.0
 lon=-90.0
 pixelSize=1000.0
 resampling=Bilinear
-maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
-transferValidPixelExpression=true
-applyValidPixelExpression=true
+<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
+<!--transferValidPixelExpression=true-->
+<!--applyValidPixelExpression=true-->
 </pre>
 </td></tr></table>
 
+<br>
 
+<p>
+    Here is what example 2 would look like if you use the GUI, in which case there are no variables.  The following
+    graph will load into the GUI via the GraphBuilder tool (note: you need to edit the ifile and ofile paths).
+</p>
+
+<br>
+
+<p>
+    <b>File = ReprojectGraphGUIEx02.xml</b>
+</p>
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="Graph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="Read"&gt;
+    &lt;operator&gt;Read&lt;/operator&gt;
+    &lt;sources/&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;/Users/seadas/GPT_Cookbook/ReprojectEx02/A2017023193500.L2_LAC_OC.nc&lt;/file&gt;
+      &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Reproject"&gt;
+    &lt;operator&gt;Reproject&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;sourceProduct refid="Read"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;wktFile/&gt;
+      &lt;crs&gt;
+         PROJCS[&amp;quot;Oblique_Stereographic / World Geodetic System 1984&amp;quot;,
+                GEOGCS[&amp;quot;WGS84(DD)&amp;quot;,
+                       DATUM[&amp;quot;WGS84&amp;quot;,
+                             SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
+                       AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
+                PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;],
+                UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
+                AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
+                AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]],
+         PROJECTION[&amp;quot;Oblique_Stereographic&amp;quot;],
+         PARAMETER[&amp;quot;central_meridian&amp;quot;, -90.0],
+         PARAMETER[&amp;quot;latitude_of_origin&amp;quot;, 25.0],
+         PARAMETER[&amp;quot;scale_factor&amp;quot;, 1.0],
+         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
+         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
+         UNIT[&amp;quot;m&amp;quot;, 1.0],
+         AXIS[&amp;quot;Easting&amp;quot;, EAST],
+         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+      &lt;/crs&gt;
+      &lt;resampling&gt;Bilinear&lt;/resampling&gt;
+      &lt;referencePixelX/&gt;
+      &lt;referencePixelY/&gt;
+      &lt;easting/&gt;
+      &lt;northing/&gt;
+      &lt;orientation&gt;0.0&lt;/orientation&gt;
+      &lt;pixelSizeX&gt;1000.0&lt;/pixelSizeX&gt;
+      &lt;pixelSizeY&gt;1000.0&lt;/pixelSizeY&gt;
+      &lt;width/&gt;
+      &lt;height/&gt;
+      &lt;tileSizeX/&gt;
+      &lt;tileSizeY/&gt;
+      &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+      &lt;elevationModelName/&gt;
+      &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+      &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+      &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Write"&gt;
+    &lt;operator&gt;Write&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;sourceProduct refid="Reproject"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;/Users/seadas/GPT_Cookbook/ReprojectEx02/A2017023193500_RprojectGUIEx02.dim&lt;/file&gt;
+      &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;applicationData id="Presentation"&gt;
+    &lt;Description/&gt;
+    &lt;node id="Read"&gt;
+            &lt;displayPosition x="37.0" y="134.0"/&gt;
+    &lt;/node&gt;
+    &lt;node id="Reproject"&gt;
+            &lt;displayPosition x="313.0" y="270.0"/&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+            &lt;displayPosition x="455.0" y="135.0"/&gt;
+    &lt;/node&gt;
+  &lt;/applicationData&gt;
+&lt;/graph&gt;
+</pre>
+</td></tr></table>
 
 
 <br><br><br><hr>
@@ -404,9 +525,9 @@ applyValidPixelExpression=true
 </p>
 
 
-<p>
-    See Example 2 for the file "reprojectGulfMexico.par".
-</p>
+<!--<p>-->
+<!--    See Example 2 for the file "ReprojectEx02.par".-->
+<!--</p>-->
 
 
 <br>
@@ -415,14 +536,14 @@ applyValidPixelExpression=true
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx03.dim
+gpt ReprojectGraphEx03.xml -p ReprojectEx03.par --Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_ReprojectEx03.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = ReprojectLambertAz.xml</b>
+    <b>File = ReprojectGraphEx03.xml</b>
 </p>
 
 
@@ -430,53 +551,81 @@ gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2
 <pre>
 &lt;graph id="ReprojectLambertAzGraph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;node id="ReprojectLambertAzNode"&gt;
+  &lt;node id="Read"&gt;
+    &lt;operator&gt;Read&lt;/operator&gt;
+    &lt;sources/&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;${ifile}&lt;/file&gt;
+      &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Reproject"&gt;
     &lt;operator&gt;Reproject&lt;/operator&gt;
     &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
+      &lt;sourceProduct refid="Read"/&gt;
     &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;crs&gt;
-            PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",
-                   GEOGCS["World Geodetic System 1984",
-                          DATUM["World Geodetic System 1984",
-                                SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
-                          AUTHORITY["EPSG","6326"]],
-                   PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
-                   UNIT["degree", 0.017453292519943295],
-                   AXIS["Geodetic longitude", EAST],
-                   AXIS["Geodetic latitude", NORTH]],
-            PROJECTION["Lambert_Azimuthal_Equal_Area"],
-            PARAMETER["latitude_of_center", ${lat}],
-            PARAMETER["longitude_of_center", ${lon}],
-            PARAMETER["false_easting", 0.0],
-            PARAMETER["false_northing", 0.0],
-            UNIT["m", 1.0],
-            AXIS["Easting", EAST],
-            AXIS["Northing", NORTH]]
-        &lt;/crs&gt;
-        &lt;resampling&gt;${resampling}&lt;/resampling&gt;
-        &lt;orientation&gt;0.0&lt;/orientation&gt;
-        &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
-        &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
-        &lt;orthorectify&gt;false&lt;/orthorectify&gt;
-        &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
-        &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
-        &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
-        &lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
-        &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
-        &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;wktFile/&gt;
+      &lt;crs&gt;
+         PROJECS[&amp;quot;Lambert_Azimuthal_Equal_Area / World Geodetic System 1984&amp;quot;
+                 GEOGCS[&amp;quot;World Geodetic System 1984&amp;quot;,
+                        DATUM[&amp;quot;World Geodetic System 1984&amp;quot;,
+                              SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
+                        AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
+                 PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, , AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;]],
+                 UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
+                 AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
+         AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
+         PROJECTION[&amp;quot;Lambert_Azimuthal_Equal_Area&amp;quot;],
+         PARAMETER[&amp;quot;latitude_of_center&amp;quot;, ${lat}],
+         PARAMETER[&amp;quot;longitude_of_center&amp;quot;, ${lon}],
+         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
+         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
+         UNIT[&amp;quot;m&amp;quot;, 1.0],
+         AXIS[&amp;quot;Easting&amp;quot;, EAST],
+         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+      &lt;/crs&gt;
+      &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+      &lt;orientation&gt;0.0&lt;/orientation&gt;
+      &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+      &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+      &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+      &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+      &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+      &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
     &lt;/parameters&gt;
-
+  &lt;/node&gt;
+  &lt;node id="Write"&gt;
+    &lt;operator&gt;Write&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;sourceProduct refid="Reproject"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;${ofile}&lt;/file&gt;
+      &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+    &lt;/parameters&gt;
   &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
 
 
+<br>
+<p>
+    <b>File = ReprojectEx03.par</b>
+</p>
 
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+lat=25.0
+lon=-90.0
+pixelSize=1000.0
+resampling=Bilinear
+    <!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
+    <!--transferValidPixelExpression=true-->
+    <!--applyValidPixelExpression=true-->
+</pre>
+</td></tr></table>
 
 
 
@@ -489,9 +638,9 @@ gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2
 </p>
 
 
-<p>
-    See Example 3 for the file "ReprojectLambertAz.xml".
-</p>
+<!--<p>-->
+<!--    See Example 3 for the file "ReprojectGraphEx03.xml".-->
+<!--</p>-->
 
 
 <br>
@@ -500,15 +649,82 @@ gpt ReprojectLambertAz.xml -p ReprojectGulfMexico.par -Ssource=A2017023193500.L2
 </p>
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt ReprojectLambertAz.xml -p ReprojectUSMidAtlantic.par -Ssource=A2010283180500.L2_LAC_SST.nc -t ReprojectEx04.nc
+gpt ReprojectGraphEx04.xml -p ReprojectEx04.par -P-ifile=AUQA_MODIS20101010T180508.L2.SST.nc -Pofile=AUQA_MODIS20101010T180508_ReprojectEx04.dim
+</pre>
+</td></tr></table>
+
+<br>
+<p>
+    <b>File = ReprojectGraphEx04.xml</b>
+</p>
+
+
+<table><tr><td bgcolor="#e9f0f0">
+<pre>
+&lt;graph id="ReprojectLambertAzGraph"&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;node id="Read"&gt;
+    &lt;operator&gt;Read&lt;/operator&gt;
+    &lt;sources/&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;${ifile}&lt;/file&gt;
+      &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Reproject"&gt;
+    &lt;operator&gt;Reproject&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;sourceProduct refid="Read"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;wktFile/&gt;
+      &lt;crs&gt;
+         PROJECS[&amp;quot;Lambert_Azimuthal_Equal_Area / World Geodetic System 1984&amp;quot;
+                 GEOGCS[&amp;quot;World Geodetic System 1984&amp;quot;,
+                        DATUM[&amp;quot;World Geodetic System 1984&amp;quot;,
+                              SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
+                        AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
+                 PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, , AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;]],
+                 UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
+                 AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
+                 AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
+         PROJECTION[&amp;quot;Lambert_Azimuthal_Equal_Area&amp;quot;],
+         PARAMETER[&amp;quot;latitude_of_center&amp;quot;, ${lat}],
+         PARAMETER[&amp;quot;longitude_of_center&amp;quot;, ${lon}],
+         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
+         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
+         UNIT[&amp;quot;m&amp;quot;, 1.0],
+         AXIS[&amp;quot;Easting&amp;quot;, EAST],
+         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+      &lt;/crs&gt;
+      &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+      &lt;orientation&gt;0.0&lt;/orientation&gt;
+      &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+      &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+      &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+      &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+      &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+      &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="Write"&gt;
+    &lt;operator&gt;Write&lt;/operator&gt;
+    &lt;sources&gt;
+      &lt;sourceProduct refid="Reproject"/&gt;
+    &lt;/sources&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+      &lt;file&gt;${ofile}&lt;/file&gt;
+      &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+&lt;/graph&gt;
 </pre>
 </td></tr></table>
 
 
-
 <br>
 <p>
-    <b>File = ReprojectUSMidAtlantic.par</b>
+    <b>File = ReprojectGrah04.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -517,30 +733,30 @@ lat=37.0
 lon=-76.0
 pixelSize=1000.0
 resampling=Bilinear
-maskExpression=qual_sst == 0 or  qual_sst == 1
-transferValidPixelExpression=true
-applyValidPixelExpression=true
+<!--maskExpression=qual_sst == 0 or  qual_sst == 1-->
+<!--transferValidPixelExpression=true-->
+<!--applyValidPixelExpression=true-->
 </pre>
 </td></tr></table>
 
 
-<p>
-    Note: the SeaDAS reader for level2 SST creates quality masks.  An alternate way to formulate the expression
-    in ReprojectUSMidAtlantic.par would be:
-</p>
-<br>
+<!--<p>-->
+<!--    Note: the SeaDAS reader for level2 SST creates quality masks.  An alternate way to formulate the expression-->
+<!--    in ReprojectUSMidAtlantic.par would be:-->
+<!--</p>-->
+<!--<br>-->
 
-<table><tr><td bgcolor="#e9f0f0">
-<pre>
-lat=37.0
-lon=-76.0
-pixelSize=1000.0
-resampling=Bilinear
-maskExpression='Best (SST)' or 'Good (SST)'
-transferValidPixelExpression=true
-applyValidPixelExpression=true
-</pre>
-</td></tr></table>
+<!--<table><tr><td bgcolor="#e9f0f0">-->
+<!--<pre>-->
+<!--lat=37.0-->
+<!--lon=-76.0-->
+<!--pixelSize=1000.0-->
+<!--resampling=Bilinear-->
+<!--maskExpression='Best (SST)' or 'Good (SST)'-->
+<!--transferValidPixelExpression=true-->
+<!--applyValidPixelExpression=true-->
+<!--</pre>-->
+<!--</td></tr></table>-->
 
 
 
@@ -660,7 +876,7 @@ gpt Reproject_TC.xml {IFILE} -Plat={LAT} -Plon={LON} -Pres={RES} -t {OFILE}
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt ReprojectEx06.xml -p ReprojectEx06.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_ReprojectEx06.dim
+gpt ReprojectGraphEx06.xml -p ReprojectEx06.par -Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_ReprojectEx06.dim
 </pre>
 </td></tr></table>
 
@@ -672,31 +888,44 @@ gpt ReprojectEx06.xml -p ReprojectEx06.par -Ssource=A2017023193500.L2_LAC_OC.nc 
 <table><tr><td bgcolor="#e9f0f0">
 
 <pre>
-&lt;graph id="ReprojectGraph"&gt;
-&lt;version&gt;1.0&lt;/version&gt;
-
-&lt;node id="ReprojectNode"&gt;
-&lt;operator&gt;Reproject&lt;/operator&gt;
-&lt;sources&gt;
-&lt;source&gt;${source}&lt;/source&gt;
-&lt;/sources&gt;
-
-&lt;parameters&gt;
-&lt;crs&gt;${crs}&lt;/crs&gt;
-&lt;resampling&gt;${resampling}&lt;/resampling&gt;
-&lt;orientation&gt;0.0&lt;/orientation&gt;
-&lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
-&lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
-&lt;orthorectify&gt;false&lt;/orthorectify&gt;
-&lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
-&lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
-&lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
-&lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
-&lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
-&lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
-&lt;/parameters&gt;
-
-&lt;/node&gt;
+&lt;graph id="ReprojectGraphEx06"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Reproject"&gt;
+        &lt;operator&gt;Reproject&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;wktFile/&gt;
+            &lt;crs&gt;${crs}&lt;/crs&gt;
+            &lt;resampling&gt;${resampling}&lt;/resampling&gt;
+            &lt;orientation&gt;0.0&lt;/orientation&gt;
+            &lt;pixelSizeX&gt;${pixelSize}&lt;/pixelSizeX&gt;
+            &lt;pixelSizeY&gt;${pixelSize}&lt;/pixelSizeY&gt;
+            &lt;orthorectify&gt;false&lt;/orthorectify&gt;
+            &lt;noDataValue&gt;NaN&lt;/noDataValue&gt;
+            &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
+            &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Reproject"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
@@ -710,10 +939,10 @@ gpt ReprojectEx06.xml -p ReprojectEx06.par -Ssource=A2017023193500.L2_LAC_OC.nc 
 <pre>
 pixelSize=0.009
 resampling=Bilinear
-maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
-transferValidPixelExpression=true
-applyValidPixelExpression=true
-crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]]
+<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
+<!--transferValidPixelExpression=true-->
+<!--applyValidPixelExpression=true-->
+crs=GEOGCS[&amp;quot;WGS84(DD)&amp;quot;, DATUM[&amp;quot;WGS84&amp;quot;, SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563]], PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0], UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295], AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST], AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
 </pre>
 </td></tr></table>
 
