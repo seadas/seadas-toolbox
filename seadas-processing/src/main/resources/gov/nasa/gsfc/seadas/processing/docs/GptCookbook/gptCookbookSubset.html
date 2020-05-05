@@ -92,40 +92,55 @@
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt geoCrop.xml -p geoCropGulfMexico.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_geoCropGulfMexico.dim
+gpt SubsetGraphEx01.xml -p SubsetEx01.par -Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_SubsetEx01.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = geoCrop.xml</b>
+    <b>File = SubsetGraphEx01.xml</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="GeoCropGraph"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;node id="GeoCropNode"&gt;
-    &lt;operator&gt;Subset&lt;/operator&gt;
-    &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
-    &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;geoRegion&gt;POLYGON((${west} ${north}, ${east} ${north}, ${east} ${south}, ${west} ${south}, ${west} ${north}))&lt;/geoRegion&gt;
-    &lt;/parameters&gt;
-
-  &lt;/node&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Subset"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;geoRegion&gt;POLYGON((${west} ${north}, ${east} ${north}, ${east} ${south}, ${west} ${south}, ${west} ${north}))&lt;/geoRegion&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Subset"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
 
 <br>
 <p>
-    <b>File = geoCropGulfMexico.par</b>
+    <b>File = SubsetEx01.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -166,45 +181,55 @@ east=-80.0
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt pixelCrop.xml -p pixelCrop.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_pixelCrop.dim
+gpt SubsetGraphEx02.xml -p SubsetEx02.par --Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_SubsetEx02.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = pixelCrop.xml</b>
+    <b>File = SubsetGraphEx02.xml</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="PixelCropGraph"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;node id="PixelCropNode"&gt;
-    &lt;operator&gt;Subset&lt;/operator&gt;
-    &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
-    &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;region&gt;
-          &lt;x&gt;${x}&lt;/x&gt;
-          &lt;y&gt;${y}&lt;/y&gt;
-          &lt;width&gt;${width}&lt;/width&gt;
-          &lt;height&gt;${height}&lt;/height&gt;
-        &lt;/region&gt;
-    &lt;/parameters&gt;
-
-  &lt;/node&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Subset"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;region&gt;${x},${y},${width},${height}&lt;/region&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Subset"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
 
 <br>
 <p>
-    <b>File = pixelCrop.par</b>
+    <b>File = SubsetEx02.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -246,40 +271,50 @@ height=2030
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt subsample.xml -p subsample.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_subsample.dim
+gpt SubsetGraphEx03.xml -p SubsetEx03.par --Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_SubsetEx03.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = subsample.xml</b>
+    <b>File = SubsetGraphEx03.xml</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="SubsampleGraph"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;node id="SubsampleNode"&gt;
-    &lt;operator&gt;Subset&lt;/operator&gt;
-    &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
-    &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;region&gt;
-            &lt;x&gt;${x}&lt;/x&gt;
-            &lt;y&gt;${y}&lt;/y&gt;
-            &lt;width&gt;${width}&lt;/width&gt;
-            &lt;height&gt;${height}&lt;/height&gt;
-        &lt;/region&gt;
-        &lt;subSamplingX&gt;${subsampling}&lt;/subSamplingX&gt;
-        &lt;subSamplingY&gt;${subsampling}&lt;/subSamplingY&gt;
-    &lt;/parameters&gt;
-
-  &lt;/node&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Subset"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;region&gt;${x},${y},${width},${height}&lt;/region&gt;
+            &lt;subSamplingX&gt;${subsampling}&lt;/subSamplingX&gt;
+            &lt;subSamplingY&gt;${subsampling}&lt;/subSamplingY&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Subset"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
@@ -288,7 +323,7 @@ gpt subsample.xml -p subsample.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017
 
 <br>
 <p>
-    <b>File = subsample.par</b>
+    <b>File = SubsetGraphEx03.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
@@ -326,39 +361,49 @@ height=2030
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt bandSubset.xml -p bandSubset.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A2017023193500_bandSubset.dim
+gpt SubsetGraphEx04.xml -p SubsetEx04.par -Pifile=A2017023193500.L2_LAC_OC.nc -Pofile=A2017023193500_SubsetEx04.dim
 </pre>
 </td></tr></table>
 
 
 <br>
 <p>
-    <b>File = bandSubset.xml</b>
+    <b>File = SubsetGraphEx04.xml</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 
 <pre>
 &lt;graph id="BandSubsetGraph"&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;node id="BandSubsetNode"&gt;
-    &lt;operator&gt;Subset&lt;/operator&gt;
-    &lt;sources&gt;
-        &lt;source&gt;${source}&lt;/source&gt;
-    &lt;/sources&gt;
-
-    &lt;parameters&gt;
-        &lt;bandNames&gt;${bands}&lt;/bandNames&gt;
-        &lt;region&gt;
-            &lt;x&gt;${x}&lt;/x&gt;
-            &lt;y&gt;${y}&lt;/y&gt;
-            &lt;width&gt;${width}&lt;/width&gt;
-            &lt;height&gt;${height}&lt;/height&gt;
-        &lt;/region&gt;
-    &lt;/parameters&gt;
-
-  &lt;/node&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;node id="Read"&gt;
+        &lt;operator&gt;Read&lt;/operator&gt;
+        &lt;sources/&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ifile}&lt;/file&gt;
+            &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Subset"&gt;
+        &lt;operator&gt;BandMaths&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Read"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;bandNames&gt;${bands}&lt;/bandNames&gt;
+            &lt;region&gt;${x},${y},${width},${height}&lt;/region&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
+    &lt;node id="Write"&gt;
+        &lt;operator&gt;Write&lt;/operator&gt;
+        &lt;sources&gt;
+            &lt;sourceProduct refid="Subset"/&gt;
+        &lt;/sources&gt;
+        &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+            &lt;file&gt;${ofile}&lt;/file&gt;
+            &lt;formatName&gt;BEAM-DIMAP&lt;/formatName&gt;
+        &lt;/parameters&gt;
+    &lt;/node&gt;
 &lt;/graph&gt;
 </pre>
 </td></tr></table>
@@ -368,7 +413,7 @@ gpt bandSubset.xml -p bandSubset.par -Ssource=A2017023193500.L2_LAC_OC.nc -t A20
 
 <br>
 <p>
-    <b>File = bandSubset.par</b>
+    <b>File = SubsetEx04.par</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
