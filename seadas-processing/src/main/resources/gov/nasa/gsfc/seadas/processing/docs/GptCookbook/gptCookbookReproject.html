@@ -216,13 +216,13 @@ gpt ReprojectGraphEx01.xml -p ReprojectEx01.par -Pifile=A2017023193500.L2_LAC_OC
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;wktFile/&gt;
       &lt;crs&gt;
-         GEOGCS[&amp;quot;WGS84(DD)&amp;quot;,
-                DATUM[&amp;quot;WGS84&amp;quot;,
-                      SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563]],
-                PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0],
-                UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
-                AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
-                AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
+         GEOGCS["WGS84(DD)",
+                DATUM["WGS84",
+                      SPHEROID["WGS84", 6378137.0, 298.257223563]],
+                PRIMEM["Greenwich", 0.0],
+                UNIT["degree", 0.017453292519943295],
+                AXIS["Geodetic longitude", EAST],
+                AXIS["Geodetic latitude", NORTH]]
       &lt;/crs&gt;
       &lt;resampling&gt;${resampling}&lt;/resampling&gt;
       &lt;orientation&gt;0.0&lt;/orientation&gt;
@@ -353,24 +353,24 @@ gpt ReprojectGraphEx02.xml -p ReprojectEx02.par --Pifile=A2017023193500.L2_LAC_O
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;wktFile/&gt;
       &lt;crs&gt;
-         PROJCS[&amp;quot;Oblique_Stereographic / World Geodetic System 1984&amp;quot;,
-                GEOGCS[&amp;quot;WGS84(DD)&amp;quot;,
-                       DATUM[&amp;quot;WGS84&amp;quot;,
-                             SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
-                       AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
-                PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;],
-                UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
-                AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
-                AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]],
-         PROJECTION[&amp;quot;Oblique_Stereographic&amp;quot;],
-         PARAMETER[&amp;quot;central_meridian&amp;quot;, ${lon}],
-         PARAMETER[&amp;quot;latitude_of_origin&amp;quot;, ${lat}],
-         PARAMETER[&amp;quot;scale_factor&amp;quot;, 1.0],
-         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
-         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
-         UNIT[&amp;quot;m&amp;quot;, 1.0],
-         AXIS[&amp;quot;Easting&amp;quot;, EAST],
-         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+         PROJCS["Oblique_Stereographic / World Geodetic System 1984",
+                GEOGCS["WGS84(DD)",
+                       DATUM["WGS84",
+                             SPHEROID["WGS84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                             AUTHORITY["EPSG","6326"]],
+                       PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"],
+                       UNIT["degree", 0.017453292519943295],
+                       AXIS["Geodetic longitude", EAST],
+                       AXIS["Geodetic latitude", NORTH]],
+                PROJECTION["Oblique_Stereographic"],
+                PARAMETER["central_meridian", ${lon}],
+                PARAMETER["latitude_of_origin", ${lat}],
+                PARAMETER["scale_factor", 1.0],
+                PARAMETER["false_easting", 0.0],
+                PARAMETER["false_northing", 0.0],
+                UNIT["m", 1.0],
+                AXIS["Easting", EAST],
+                AXIS["Northing", NORTH]]
       &lt;/crs&gt;
       &lt;resampling&gt;${resampling}&lt;/resampling&gt;
       &lt;orientation&gt;0.0&lt;/orientation&gt;
@@ -448,24 +448,24 @@ resampling=Bilinear
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;wktFile/&gt;
       &lt;crs&gt;
-         PROJCS[&amp;quot;Oblique_Stereographic / World Geodetic System 1984&amp;quot;,
-                GEOGCS[&amp;quot;WGS84(DD)&amp;quot;,
-                       DATUM[&amp;quot;WGS84&amp;quot;,
-                             SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
-                       AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
-                PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;],
-                UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
-                AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
-                AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]],
-         PROJECTION[&amp;quot;Oblique_Stereographic&amp;quot;],
-         PARAMETER[&amp;quot;central_meridian&amp;quot;, -90.0],
-         PARAMETER[&amp;quot;latitude_of_origin&amp;quot;, 25.0],
-         PARAMETER[&amp;quot;scale_factor&amp;quot;, 1.0],
-         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
-         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
-         UNIT[&amp;quot;m&amp;quot;, 1.0],
-         AXIS[&amp;quot;Easting&amp;quot;, EAST],
-         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+         PROJCS["Oblique_Stereographic / World Geodetic System 1984",
+                GEOGCS["WGS84(DD)",
+                       DATUM["WGS84",
+                             SPHEROID["WGS84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                             AUTHORITY["EPSG","6326"]],
+                       PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"],
+                       UNIT["degree", 0.017453292519943295],
+                       AXIS["Geodetic longitude", EAST],
+                       AXIS["Geodetic latitude", NORTH]],
+                PROJECTION["Oblique_Stereographic"],
+                PARAMETER["central_meridian", -90.0],
+                PARAMETER["latitude_of_origin", 25.0],
+                PARAMETER["scale_factor", 1.0],
+                PARAMETER["false_easting", 0.0],
+                PARAMETER["false_northing", 0.0],
+                UNIT["m", 1.0],
+                AXIS["Easting", EAST],
+                AXIS["Northing", NORTH]]
       &lt;/crs&gt;
       &lt;resampling&gt;Bilinear&lt;/resampling&gt;
       &lt;referencePixelX/&gt;
@@ -567,23 +567,23 @@ gpt ReprojectGraphEx03.xml -p ReprojectEx03.par --Pifile=A2017023193500.L2_LAC_O
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;wktFile/&gt;
       &lt;crs&gt;
-         PROJECS[&amp;quot;Lambert_Azimuthal_Equal_Area / World Geodetic System 1984&amp;quot;
-                 GEOGCS[&amp;quot;World Geodetic System 1984&amp;quot;,
-                        DATUM[&amp;quot;World Geodetic System 1984&amp;quot;,
-                              SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
-                        AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
-                 PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, , AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;]],
-                 UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
-                 AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
-         AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
-         PROJECTION[&amp;quot;Lambert_Azimuthal_Equal_Area&amp;quot;],
-         PARAMETER[&amp;quot;latitude_of_center&amp;quot;, ${lat}],
-         PARAMETER[&amp;quot;longitude_of_center&amp;quot;, ${lon}],
-         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
-         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
-         UNIT[&amp;quot;m&amp;quot;, 1.0],
-         AXIS[&amp;quot;Easting&amp;quot;, EAST],
-         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+         PROJECS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984"
+                GEOGCS["World Geodetic System 1984",
+                        DATUM["World Geodetic System 1984",
+                              SPHEROID["WGS84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                              AUTHORITY["EPSG","6326"]],
+                        PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+                        UNIT["degree", 0.017453292519943295],
+                        AXIS["Geodetic longitude", EAST],
+                        AXIS["Geodetic latitude", NORTH]],
+                PROJECTION["Lambert_Azimuthal_Equal_Area"],
+                PARAMETER["latitude_of_center", ${lat}],
+                PARAMETER["longitude_of_center", ${lon}],
+                PARAMETER["false_easting", 0.0],
+                PARAMETER["false_northing", 0.0],
+                UNIT["m", 1.0],
+                AXIS["Easting", EAST],
+                AXIS["Northing", NORTH]]
       &lt;/crs&gt;
       &lt;resampling&gt;${resampling}&lt;/resampling&gt;
       &lt;orientation&gt;0.0&lt;/orientation&gt;
@@ -679,23 +679,23 @@ gpt ReprojectGraphEx04.xml -p ReprojectEx04.par -P-ifile=AUQA_MODIS20101010T1805
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;wktFile/&gt;
       &lt;crs&gt;
-         PROJECS[&amp;quot;Lambert_Azimuthal_Equal_Area / World Geodetic System 1984&amp;quot;
-                 GEOGCS[&amp;quot;World Geodetic System 1984&amp;quot;,
-                        DATUM[&amp;quot;World Geodetic System 1984&amp;quot;,
-                              SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
-                        AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
-                 PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, , AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;]],
-                 UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
-                 AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
-                 AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
-         PROJECTION[&amp;quot;Lambert_Azimuthal_Equal_Area&amp;quot;],
-         PARAMETER[&amp;quot;latitude_of_center&amp;quot;, ${lat}],
-         PARAMETER[&amp;quot;longitude_of_center&amp;quot;, ${lon}],
-         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
-         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
-         UNIT[&amp;quot;m&amp;quot;, 1.0],
-         AXIS[&amp;quot;Easting&amp;quot;, EAST],
-         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+         PROJECS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984"
+                GEOGCS["World Geodetic System 1984",
+                        DATUM["World Geodetic System 1984",
+                              SPHEROID["WGS84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                              AUTHORITY["EPSG","6326"]],
+                        PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],
+                        UNIT["degree", 0.017453292519943295],
+                        AXIS["Geodetic longitude", EAST],
+                        AXIS["Geodetic latitude", NORTH]],
+                PROJECTION["Lambert_Azimuthal_Equal_Area"],
+                PARAMETER["latitude_of_center", ${lat}],
+                PARAMETER["longitude_of_center", ${lon}],
+                PARAMETER["false_easting", 0.0],
+                PARAMETER["false_northing", 0.0],
+                UNIT["m", 1.0],
+                AXIS["Easting", EAST],
+                AXIS["Northing", NORTH]]
       &lt;/crs&gt;
       &lt;resampling&gt;${resampling}&lt;/resampling&gt;
       &lt;orientation&gt;0.0&lt;/orientation&gt;
@@ -827,24 +827,24 @@ gpt ReprojectGraphEx05.xml -Pifile={IFILE} -Plat={LAT} -Plon={LON} -Pres={RES} -
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;wktFile/&gt;
       &lt;crs&gt;
-         PROJCS[&amp;quot;Oblique_Stereographic / World Geodetic System 1984&amp;quot;,
-                GEOGCS[&amp;quot;WGS84(DD)&amp;quot;,
-                       DATUM[&amp;quot;WGS84&amp;quot;,
-                             SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;7030&amp;quot;]],
-                       AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;6326&amp;quot;]],
-                PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0, AUTHORITY[&amp;quot;EPSG&amp;quot;,&amp;quot;8901&amp;quot;],
-                UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295],
-                AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST],
-                AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]],
-         PROJECTION[&amp;quot;Oblique_Stereographic&amp;quot;],
-         PARAMETER[&amp;quot;central_meridian&amp;quot;, ${lon}],
-         PARAMETER[&amp;quot;latitude_of_origin&amp;quot;, ${lat}],
-         PARAMETER[&amp;quot;scale_factor&amp;quot;, 1.0],
-         PARAMETER[&amp;quot;false_easting&amp;quot;, 0.0],
-         PARAMETER[&amp;quot;false_northing&amp;quot;, 0.0],
-         UNIT[&amp;quot;m&amp;quot;, 1.0],
-         AXIS[&amp;quot;Easting&amp;quot;, EAST],
-         AXIS[&amp;quot;Northing&amp;quot;, NORTH]]
+         PROJCS["Oblique_Stereographic / World Geodetic System 1984",
+                GEOGCS["WGS84(DD)",
+                        DATUM["WGS84",
+                             SPHEROID["WGS84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],
+                             AUTHORITY["EPSG","6326"]],
+                        PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"],
+                        UNIT["degree", 0.017453292519943295],
+                        AXIS["Geodetic longitude", EAST],
+                        AXIS["Geodetic latitude", NORTH]],
+                PROJECTION["Oblique_Stereographic"],
+                PARAMETER["central_meridian", ${lon}],
+                PARAMETER["latitude_of_origin", ${lat}],
+                PARAMETER["scale_factor", 1.0],
+                PARAMETER["false_easting", 0.0],
+                PARAMETER["false_northing", 0.0],
+                UNIT["m", 1.0],
+                AXIS["Easting", EAST],
+                AXIS["Northing", NORTH]]
       &lt;/crs&gt;
       &lt;resampling&gt;Bilinear&lt;/resampling&gt;
       &lt;orientation&gt;0.0&lt;/orientation&gt;
@@ -955,7 +955,7 @@ resampling=Bilinear
 <!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
 <!--transferValidPixelExpression=true-->
 <!--applyValidPixelExpression=true-->
-crs=GEOGCS[&amp;quot;WGS84(DD)&amp;quot;, DATUM[&amp;quot;WGS84&amp;quot;, SPHEROID[&amp;quot;WGS84&amp;quot;, 6378137.0, 298.257223563]], PRIMEM[&amp;quot;Greenwich&amp;quot;, 0.0], UNIT[&amp;quot;degree&amp;quot;, 0.017453292519943295], AXIS[&amp;quot;Geodetic longitude&amp;quot;, EAST], AXIS[&amp;quot;Geodetic latitude&amp;quot;, NORTH]]
+crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]]
 </pre>
 </td></tr></table>
 
