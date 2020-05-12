@@ -59,7 +59,7 @@
 
 <br><br><br><hr>
 <a name="Example2"></a>
-<p class="subSectionTitle2">Example 2&nbsp;&nbsp;&nbsp;&nbsp;Matchups to In Situ Cruise Stations</p>
+<p class="subSectionTitle2">Example 1&nbsp;&nbsp;&nbsp;&nbsp;Matchups to In Situ Cruise Stations</p>
 <br>
 
 <p>
@@ -73,7 +73,7 @@
     <b>Command Line Entry</b>
 </p><table><tr><td bgcolor="#e9f0f0">
 <pre>
-gpt PixEx02.xml -Ssource=A2010317175500.L2_LAC_OC.nc -p PixEx02.par -Phome=$HOME -PoutputFilePrefix=CV5_A2010317175500 -PcoordinatesFile=cruiseCV5_2010317.txt
+gpt PixExGraph.xml -Pifile=A2010317175500.L2_LAC_OC.nc -p PixEx.par -Phome=$HOME -PoutputFilePrefix=CV5_A2010317175500 -PcoordinatesFile=cruiseCV5_2010317.txt
 </pre>
 </td></tr></table>
 
@@ -81,20 +81,27 @@ gpt PixEx02.xml -Ssource=A2010317175500.L2_LAC_OC.nc -p PixEx02.par -Phome=$HOME
 
 <br>
 <p>
-    <b>File = PixEx02.xml</b>
+    <b>File = PixExGraph.xml</b>
 </p>
 
 <table><tr><td bgcolor="#e9f0f0">
 <pre>
 &lt;graph id="PixExGraph"&gt;
   &lt;version&gt;1.0&lt;/version&gt;
-  &lt;node id="PixExNode"&gt;
+  &lt;node id="Read"&gt;
+    &lt;operator&gt;Read&lt;/operator&gt;
+    &lt;sources/&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
+       &lt;file&gt;${ifile}&lt;/file&gt;
+       &lt;formatName&gt;SeaDAS-L2&lt;/formatName&gt;
+    &lt;/parameters&gt;
+  &lt;/node&gt;
+  &lt;node id="PixEx"&gt;
     &lt;operator&gt;PixEx&lt;/operator&gt;
     &lt;sources&gt;
-      &lt;source&gt;${source}&lt;/source&gt;
+      &lt;sourceProduct refid="Read"/&gt;
     &lt;/sources&gt;
-
-    &lt;parameters&gt;
+    &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
       &lt;outputDir&gt;${home}/${outputDir}&lt;/outputDir&gt;:
       &lt;outputFilePrefix&gt;${outputFilePrefix}&lt;/outputFilePrefix&gt;
 
@@ -123,7 +130,7 @@ gpt PixEx02.xml -Ssource=A2010317175500.L2_LAC_OC.nc -p PixEx02.par -Phome=$HOME
 
 <br>
 <p>
-    <b>File = PixExEx02.par</b>
+    <b>File = PixEx.par</b>
 </p>
 
 
