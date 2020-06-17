@@ -4,11 +4,14 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.binding.BindingContext;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.about.SnapAboutBox;
 import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.ui.UIUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -23,11 +26,15 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+import org.openide.modules.ModuleInfo;
+import org.openide.modules.Modules;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
@@ -43,28 +50,14 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 public class GetSysInfoGUI {
 
     final String PANEL_NAME = "Seadas Configuration";
-    final String HELP_ID = "getSysInfoConfig";
-
-    JPanel paramPanel = GridBagUtils.createPanel();
+    final String HELP_ID = "getSysInfo";
+    String sysInfoText;
 
     ModalDialog modalDialog;
-
-    JTextField ocsswBranchTextfield;
-    JComboBox ocsswLocationComboBox;
-    JTextField ocsswSharedDir;
-    JTextField ocsswRootTextfield;
-    JTextField ocsswLogDirTextfield;
-    JTextField ocsswserverAddressTextfield;
-    JTextField serverPortTextfield;
-    JTextField serverInputStreamPortTextfield;
-    JTextField serverErrorStreamPortTextfield;
-
 
     PropertyContainer pc = new PropertyContainer();
 
     boolean windowsOS;
-
-    String[] ocsswLocations;
 
     public static void main(String args[]) {
 
@@ -85,30 +78,30 @@ public class GetSysInfoGUI {
 
         JPanel mainPanel = GridBagUtils.createPanel();
 
-        modalDialog = new ModalDialog(parent, PANEL_NAME, mainPanel, ModalDialog.ID_OK_CANCEL_HELP, HELP_ID);
+        modalDialog = new ModalDialog(parent, PANEL_NAME, mainPanel, ModalDialog.ID_OK_CANCEL_HELP, HELP_ID){
+            @Override
 
-        modalDialog.getButton(ModalDialog.ID_OK).setText("OK");
-        modalDialog.getButton(ModalDialog.ID_CANCEL).setText("Cancel");
+            protected void onOK(){
+//                System.out.println("sysInfoText: ");
+                SystemUtils.copyToClipboard(sysInfoText);
+            }
+        };
+
+        modalDialog.getButton(ModalDialog.ID_OK).setText("Copy To Clipboard");
+        modalDialog.getButton(ModalDialog.ID_CANCEL).setText("Close");
         modalDialog.getButton(ModalDialog.ID_HELP).setText("Help");
-
 
         GridBagConstraints gbc = createConstraints();
 
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0;
-        gbc.weightx = 0;
-        mainPanel.add(appDirPanel(), gbc);
-
-        gbc.gridy += 1;
-        gbc.weighty = 0;
-        gbc.weightx = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
         JPanel sysInfoPanel = sysInfoPanel();
         mainPanel.add(sysInfoPanel, gbc);
 
         // Add filler panel at bottom which expands as needed to force all components within this panel to the top
         gbc.gridy += 1;
-        gbc.weighty = 1;
+        gbc.weighty = 0;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.VERTICAL;
         JPanel fillerPanel = new JPanel();
@@ -135,25 +128,115 @@ public class GetSysInfoGUI {
         boolean finish = false;
         while (!finish) {
             dialogResult = modalDialog.show();
-            finish = true;
+            if (dialogResult == ModalDialog.ID_CANCEL) {
+                finish = true;
+            } else {
+                finish = true;
+            }
+
+//            finish = true;
         }
 
         return;
 
     }
 
-    private JPanel sysInfoPanel(){
-
-        JLabel sysInfoLabel = new JLabel("SysInfo :");
-        sysInfoLabel.setMinimumSize(sysInfoLabel.getPreferredSize());
-
-        JTextArea sysInfoTextarea = new JTextArea();
+    protected JPanel sysInfoPanel(){
 
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
-        String appDir = Config.instance().installDir().toString();
+
+        JTextArea sysInfoTextarea = new JTextArea();
+        JScrollPane scroll = new JScrollPane(sysInfoTextarea);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+//        final Preferences preferences = Config.instance("seadas").load().preferences();
+//        String lastOcsswLocation = preferences.get(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
+
+        SnapApp snapapp = SnapApp.getDefault();
+        String appNameVersion = snapapp.getInstanceName();
+        String appName = SystemUtils.getApplicationName();
+        String appReleaseVersionFromPOM = SystemUtils.getReleaseVersion();
+        File appHomeDir = SystemUtils.getApplicationHomeDir();
+        File appDataDir = SystemUtils.getApplicationDataDir();
+        Path appBinDir = appHomeDir.toPath().resolve("bin");
+        Path appConfig = null;
+
+        if (appName != null && appName.toUpperCase().contains("SEADAS")) {
+            appConfig = appBinDir.resolve("seadas.properties");
+        } else {
+            appConfig = appBinDir.resolve("snap.properties");
+        }
+
+        Path vmOptions = appBinDir.resolve("pconvert.vmoptions");
+        Path vmOptionsGpt = appBinDir.resolve("gpt.vmoptions");
+
+        String jre = System.getProperty("java.runtime.name") + " " + System.getProperty("java.runtime.version");
+        String jvm = System.getProperty("java.vm.name") + " by " + System.getProperty("java.vendor");
+        String memory = Math.round(Runtime.getRuntime().maxMemory() /1024. /1024.) + " MiB";
+
+        ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
+        ModuleInfo desktopModuleInfo = Modules.getDefault().ownerOf(SnapAboutBox.class);
+        ModuleInfo engineModuleInfo = Modules.getDefault().ownerOf(Product.class);
+
+
+
+
+        System.out.println("\nMain Application Platform:");
+        System.out.println("Application Name Version: " + appNameVersion);
+        System.out.println("Application Home Directory: " + appHomeDir.toString());
+        System.out.println("Application Data Directory: " + appDataDir.toString());
+        System.out.println("Application Configuration: " + appConfig.toString());
+        System.out.println("Virtual Memory Configuration: " + vmOptions.toString());
+        System.out.println("Virtual Memory Configuration (gpt): " + vmOptionsGpt.toString());
+        System.out.println("Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion());
+        System.out.println("Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion());
+        System.out.println("Engine Specification Version: " + engineModuleInfo.getSpecificationVersion());
+        System.out.println("Engine Implementation Version: " + engineModuleInfo.getImplementationVersion());
+        System.out.println("JRE: " + jre);
+        System.out.println("JVM: " + jvm);
+        System.out.println("Memory: " + memory);
+
+        System.out.println("SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion());
+        System.out.println("SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion());
+
+
+
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
         String ocsswRootOcsswInfo = ocsswInfo.getOcsswRoot();
+        String ocsswLogDir = ocsswInfo.getLogDirPath();
+        String ocsswLocation = ocsswInfo.getOcsswLocation();
+
+        //        System.out.println("appDir = " + installDir);
+        //        System.out.println("ocsswRootOcsswInfo = " + ocsswRootOcsswInfo);
+        //        System.out.println("OCSSW Log Directory = " + ocsswLogDir);
+        //        System.out.println("OCSSW Location = " + lastOcsswLocation);
+
+        sysInfoText = "Main Application Platform: " + "\n";
+
+        sysInfoText += "Application Name Version: " + appNameVersion + "\n";
+        sysInfoText += "Application Home Directoy: " + appHomeDir.toString() + "\n";
+        sysInfoText += "Application Data Directory: " + appDataDir.toString() + "\n";
+        sysInfoText += "Application Configuration: " + appConfig.toString() + "\n";
+        sysInfoText += "Virtual Memory Configuration: " + vmOptions.toString() + "\n";
+        sysInfoText += "Virtual Memory Configuration (gpt): " + vmOptionsGpt.toString() + "\n";
+        sysInfoText += "Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion() + "\n";
+        sysInfoText += "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
+        sysInfoText += "Engine Specification Version: " + engineModuleInfo.getSpecificationVersion() + "\n";
+        sysInfoText += "Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
+        sysInfoText += "JRE: " + jre + "\n";
+        sysInfoText += "JVM: " + jvm + "\n";
+        sysInfoText += "Memory: " + memory + "\n";
+
+        sysInfoText += "\n" + "SeaDAS Toolbox: " + "\n";
+
+        sysInfoText += "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
+        sysInfoText += "SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion() + "\n";
+        sysInfoText += "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+        sysInfoText += "OCSSW Log Directory: " + ocsswLogDir + "\n";
+        sysInfoText += "OCSSW Location: " + ocsswLocation + "\n" +"\n";
+
+        String appDir = Config.instance().installDir().toString();
         String command = ocsswRootOcsswInfo + "/scripts/ocssw_runner --ocsswroot " + ocsswRootOcsswInfo
                 + " " + ocsswRootOcsswInfo + "/scripts/seadas_info2.py --AppDir " + appDir;
         System.out.println("command is: " + command);
@@ -164,13 +247,11 @@ public class GetSysInfoGUI {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
             String line;
-            String sysText = "";
             while ((line = reader.readLine()) != null) {
-                sysText = sysText + line;
-                sysText = sysText + "\n";
+                sysInfoText = sysInfoText + line + "\n";
             }
 
-            sysInfoTextarea.setText(sysText);
+            sysInfoTextarea.setText(sysInfoText);
             reader.close();
 
             process.destroy();
@@ -184,14 +265,10 @@ public class GetSysInfoGUI {
         }
 
         gbc.gridx = 0;
-        gbc.weightx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        panel.add(sysInfoLabel, gbc);
-
-        gbc.gridx = 1;
         gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(sysInfoTextarea, gbc);
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(scroll, gbc);
 
         return panel;
     }
@@ -219,55 +296,6 @@ public class GetSysInfoGUI {
         gbc.weightx = 1;
         gbc.weighty = 1;
         return gbc;
-    }
-
-    private JPanel appDirPanel() {
-
-        final Preferences preferences = Config.instance("seadas").load().preferences();
-        String lastOcsswLocation = preferences.get(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
-
-        String installDir = Config.instance().installDir().toString();
-
-        OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
-        String ocsswRootOcsswInfo = ocsswInfo.getOcsswRoot();
-        String ocsswLogDir = ocsswInfo.getLogDirPath();
-
-        JPanel panel = GridBagUtils.createPanel();
-
-        GridBagConstraints gbc = createConstraints();
-
-        JLabel seadasInfoLabel = new JLabel("SeaDAS Info" + ": ");
-        JTextArea seadasInfoTextarea = new JTextArea();
-
-        seadasInfoLabel.setMinimumSize(seadasInfoLabel.getPreferredSize());
-
-        String seadasInfoText = "";
-
-//        System.out.println("appDir = " + installDir);
-        seadasInfoText = seadasInfoText + "Application Directoy : " + installDir + "\n";
-
-//        System.out.println("ocsswRootOcsswInfo = " + ocsswRootOcsswInfo);
-        seadasInfoText = seadasInfoText + "ocsswRootOcsswInfo : " + ocsswRootOcsswInfo + "\n";
-
-//        System.out.println("OCSSW Log Directory = " + ocsswLogDir);
-        seadasInfoText = seadasInfoText + "OCSSW Log Directory : " + ocsswLogDir + "\n";
-
-//        System.out.println("OCSSW Location = " + lastOcsswLocation);
-        seadasInfoText = seadasInfoText + "OCSSW Location : " + lastOcsswLocation + "\n";
-
-        seadasInfoTextarea.setText(seadasInfoText);
-
-        gbc.fill = GridBagConstraints.NONE;
-
-        gbc.weighty = 0;
-        gbc.weightx = 0;
-        panel.add(seadasInfoLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        panel.add(seadasInfoTextarea, gbc);
-
-        return panel;
     }
 
     private Dimension adjustDimension(Dimension dimension, int widthAdjustment, int heightAdjustment) {
