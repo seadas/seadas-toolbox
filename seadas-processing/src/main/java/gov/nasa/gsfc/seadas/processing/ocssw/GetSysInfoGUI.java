@@ -82,7 +82,6 @@ public class GetSysInfoGUI {
             @Override
 
             protected void onOK(){
-//                System.out.println("sysInfoText: ");
                 SystemUtils.copyToClipboard(sysInfoText);
             }
         };
@@ -147,6 +146,7 @@ public class GetSysInfoGUI {
         GridBagConstraints gbc = createConstraints();
 
         JTextArea sysInfoTextarea = new JTextArea();
+        sysInfoTextarea.setEditable(false);
         JScrollPane scroll = new JScrollPane(sysInfoTextarea);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -178,8 +178,6 @@ public class GetSysInfoGUI {
         ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
         ModuleInfo desktopModuleInfo = Modules.getDefault().ownerOf(SnapAboutBox.class);
         ModuleInfo engineModuleInfo = Modules.getDefault().ownerOf(Product.class);
-
-
 
 
         System.out.println("\nMain Application Platform:");

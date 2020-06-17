@@ -68,6 +68,8 @@
 
             <tocitem text="OCSSW Configuration" target="ocsswInfoConfig"/>
 
+            <tocitem text="SeaDAS Configuration" target="getSysInfo"/>
+
             <tocitem text="Field Measurements">
                 <tocitem text="Overview" target="fieldMeasurements"/>
                 <tocitem text="Import SeaBASS File" target="importSeabass"/>

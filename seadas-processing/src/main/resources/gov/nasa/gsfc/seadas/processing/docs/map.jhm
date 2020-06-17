@@ -51,6 +51,7 @@
     <mapID target="smigen" url="processors/ProcessSmigen.html"/>
     <mapID target="multilevel_processor.py" url="processors/ProcessMultilevel_processor.html"/>
     <mapID target="ocsswInfoConfig" url="processors/OCSSWInfoConfig.html"/>
+    <mapID target="getSysInfo" url="processors/GetSysInfo.html"/>
     <mapID target="update_luts.py" url="processors/ProcessUpdateLuts.html"/>
     <mapID target="fieldMeasurements" url="FieldMeasurements/FieldMeasurements.html"/>
     <mapID target="importSeabass" url="FieldMeasurements/importSeabass.html"/>
