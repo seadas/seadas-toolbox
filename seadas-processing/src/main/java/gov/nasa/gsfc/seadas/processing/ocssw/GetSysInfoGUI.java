@@ -26,9 +26,11 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -235,33 +237,42 @@ public class GetSysInfoGUI {
         sysInfoText += "OCSSW Location: " + ocsswLocation + "\n" +"\n";
 
         String appDir = Config.instance().installDir().toString();
+
         String command = ocsswRootOcsswInfo + "/scripts/ocssw_runner --ocsswroot " + ocsswRootOcsswInfo
                 + " " + ocsswRootOcsswInfo + "/scripts/seadas_info2.py --AppDir " + appDir;
-        System.out.println("command is: " + command);
-
-        try {
-            Process process = Runtime.getRuntime().exec(command);
-
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sysInfoText = sysInfoText + line + "\n";
-            }
-
+        String seadasProg = ocsswRootOcsswInfo + "/scripts/seadas_info2.py";
+        if (!Files.isExecutable(Paths.get(seadasProg))) {
+            sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
+            sysInfoText += "Processors not installed" + "\n" +"\n";
+            sysInfoText += "General System and Software: " + "\n";
+            sysInfoText += "These fields could possibly be determined by java?";
             sysInfoTextarea.setText(sysInfoText);
-            reader.close();
+        } else {
+            System.out.println("command is: " + command);
 
-            process.destroy();
+            try {
+                Process process = Runtime.getRuntime().exec(command);
 
-            if (process.exitValue() != 0) {
-                System.out.println("Abnormal process termination");
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sysInfoText += line + "\n";
+                }
+
+                sysInfoTextarea.setText(sysInfoText);
+                reader.close();
+
+                process.destroy();
+
+                if (process.exitValue() != 0) {
+                    System.out.println("Abnormal process termination");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
         gbc.gridx = 0;
         gbc.weightx = 1;
         gbc.weighty = 1;
