@@ -5,8 +5,13 @@
  */
 package gov.nasa.gsfc.seadas.about;
 
+import com.bc.ceres.core.runtime.Version;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import org.esa.snap.rcp.about.AboutBox;
 import org.esa.snap.rcp.util.BrowserUtils;
+import org.openide.modules.ModuleInfo;
+import org.openide.modules.Modules;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -32,6 +37,7 @@ public class SeaDASAboutBox extends JPanel {
     private final static String SEADAS_WEB_URL = "https://seadas.gsfc.nasa.gov/";
     private final static String SEADAS_WEB_URL_NAME = "SeaDAS Web";
 
+    private final static String releaseNotesUrlString = "https://senbox.atlassian.net/issues/?filter=-4&jql=project%20%3D%20SIIITBX%20AND%20fixVersion%20%3D%20";
 
 
     public SeaDASAboutBox() {
@@ -67,24 +73,55 @@ public class SeaDASAboutBox extends JPanel {
 
         gbc.gridy = 1;
         gbc.insets.left = 15;
-        jPanel.add(getUrlJLabel(RELEASE_NOTES_URL, RELEASE_NOTES_URL_NAME), gbc);
-
-        gbc.gridy = 2;
+//        jPanel.add(getUrlJLabel(RELEASE_NOTES_URL, RELEASE_NOTES_URL_NAME), gbc);
+//
+//        gbc.gridy = 2;
         jPanel.add(getUrlJLabel(SEADAS_WEB_URL, SEADAS_WEB_URL_NAME), gbc);
 
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         jPanel.add(getUrlJLabel(OCEAN_COLOR_WEB_URL, OCEAN_COLOR_WEB_URL_NAME), gbc);
 
-        gbc.gridy = 4;
+        gbc.gridy = 3;
         jPanel.add(banner, gbc);
 
-        gbc.gridy = 5;
+        gbc.gridy = 4;
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
         jPanel.add(new JLabel(), gbc);
 
+        gbc.gridy = 5;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets.bottom=10;
+
+        jPanel.add(createVersionPanel(), gbc);
+
         add(jPanel, BorderLayout.WEST);
 
+        ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
+        System.out.println("SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion());
+        System.out.println("SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion());
+
+    }
+
+    private JPanel createVersionPanel() {
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+//        final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(SeaDASAboutBox.class);
+        // todo Overrode this because SeaDASAboutBox version not defined in macro
+        final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
+
+        panel.add(new JLabel("<html><b>SeaDAS Toolbox version " + moduleInfo.getImplementationVersion() + "</b>", SwingConstants.RIGHT));
+
+        Version specVersion = Version.parseVersion(moduleInfo.getSpecificationVersion().toString());
+        String versionString = String.format("%s.%s.%s", specVersion.getMajor(), specVersion.getMinor(), specVersion.getMicro());
+        String changelogUrl = releaseNotesUrlString + versionString;
+        changelogUrl = RELEASE_NOTES_URL;
+        final JLabel releaseNoteLabel = new JLabel("<html><a href=\"" + changelogUrl + "\">Release Notes</a>", SwingConstants.RIGHT);
+        releaseNoteLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        releaseNoteLabel.addMouseListener(new BrowserUtils.URLClickAdaptor(changelogUrl));
+        panel.add(releaseNoteLabel);
+        return panel;
     }
 
 
