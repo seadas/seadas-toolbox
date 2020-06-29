@@ -26,8 +26,8 @@ import java.awt.event.ActionListener;
 @ActionReference(path = "Menu/Help/SeaDAS", position = 1000, separatorBefore = 999)
 //        position = 1510, separatorBefore = 1500)
 @Messages({
-        "CTL_SeaDASAboutAction_Name=About SeaDAS",
-        "CTL_SeaDASAboutAction_Title=About SeaDAS",
+        "CTL_SeaDASAboutAction_Name=About SeaDAS-Toolbox",
+        "CTL_SeaDASAboutAction_Title=About SeaDAS-Toolbox",
 })
 public final class SeaDASAboutAction implements ActionListener {
 
