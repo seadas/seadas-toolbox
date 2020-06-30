@@ -1,0 +1,68 @@
+
+SeaDAS version is contained here.
+snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core.jar/org/netbeans/core/ui/Bundle.properties
+
+SeaDAS Application name is contained here.
+snap-engine/snap-core/src/main/java/org/esa/snap/core/util/SystemUtils.java
+    public static String getApplicationName() {
+        return Config.instance().preferences().get(getApplicationContextId() + ".application.name", EngineConfig.APPLICATION_NAME_);
+    }
+
+
+SeaDAS Splash info.
+snap-desktop/snap-branding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+
+SeaDAS 8 Main About Box
+snap-desktop/snap-rcp/src/main/java/org/esa/snap/rcp/about/SeadasAboutBox.java
+
+SeaDAS Toolbox About Box
+seadas-toolbox/seadas-kit/src/main/java/gov/nasa/gsfc/seadas/about/SeaDASAboutBox.java
+
+I disabled a feature that prevented Mac from show app Title in GUI, we need to test this.
+snap-desktop/snap-rcp/src/main/java/org/esa/snap/rcp/SnapApp.java
+
+
+This is the snap.properties file
+snap-engine/etc/snap.properties
+snap-engine/etc/seadas.properties
+
+snap-desktop/etc/seadas.conf
+snap-desktop/etc/snap.conf
+
+snap-engine/etc/seadas.auxdata.properties
+snap-engine/etc/snap.auxdata.properties
+
+seadas8 defined ( this also may force seadas8.properties)
+/Users/seadas/seadas8/snap-engine/snap-runtime/src/main/java/org/esa/snap/runtime/EngineConfig.java
+
+
+
+The binding context (this is where the fix to colorComboBox binding could be added:
+/Users/seadas/seadas8/snap-engine/ceres-ui/src/main/java/com/bc/ceres/swing/binding/BindingContext.java
+
+These branding files need to be updated each release is snap changes their respective file:
+/Users/seadas/seadas8/snap-desktop/etc/seadas.conf
+/Users/seadas/seadas8/snap-engine/etc/seadas.auxdata.properties
+/Users/seadas/seadas8/snap-engine/etc/seadas.properties
+//todo There is a snap.clusters files somewhere which might need to be seadas.clusters
+
+
+
+Problem where Mac displays "Empty" instead of "SeaDAS" at top of GUI.
+There is a hardcoded piece blocking the Mac, not sure if it is needed?
+snap-desktop/snap-rcp/src/main/java/org/esa/snap/rcp/SnapApp.java
+    private String getEmptyTitle() {
+        String title;
+//        if (Utilities.isMac()) {
+//            title = String.format("[%s]", "Empty");
+//        } else {
+//            title = String.format("%s", getInstanceName());
+//        }
+        // todo Not sure why Mac was disabled, will need to test this.
+        title = String.format("%s", getInstanceName());
+
+        return title;
+    }
+
+
+Branding
