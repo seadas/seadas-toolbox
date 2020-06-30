@@ -44,10 +44,11 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 
 /**
+ * @author Aynur Abdurazik
  * @author Bing Yang
  *
  */
-// May 2020
+// May 2020 - Yang - print out relevant system info for SeaDAS or OCSSW troubleshooting
 
 public class GetSysInfoGUI {
 
@@ -57,7 +58,7 @@ public class GetSysInfoGUI {
 
     ModalDialog modalDialog;
 
-    PropertyContainer pc = new PropertyContainer();
+//    PropertyContainer pc = new PropertyContainer();
 
     boolean windowsOS;
 
@@ -182,24 +183,24 @@ public class GetSysInfoGUI {
         ModuleInfo engineModuleInfo = Modules.getDefault().ownerOf(Product.class);
 
 
-        System.out.println("\nMain Application Platform:");
-        System.out.println("Application Name Version: " + appNameVersion);
-        System.out.println("Application Home Directory: " + appHomeDir.toString());
-        System.out.println("Application Data Directory: " + appDataDir.toString());
-        System.out.println("Application Configuration: " + appConfig.toString());
-        System.out.println("Virtual Memory Configuration: " + vmOptions.toString());
-        System.out.println("Virtual Memory Configuration (gpt): " + vmOptionsGpt.toString());
-        System.out.println("Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion());
-        System.out.println("Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion());
-        System.out.println("Engine Specification Version: " + engineModuleInfo.getSpecificationVersion());
-        System.out.println("Engine Implementation Version: " + engineModuleInfo.getImplementationVersion());
-        System.out.println("JRE: " + jre);
-        System.out.println("JVM: " + jvm);
-        System.out.println("Memory: " + memory);
-
-        System.out.println("SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion());
-        System.out.println("SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion());
-
+//        System.out.println("\nMain Application Platform:");
+//        System.out.println("Application Name Version: " + appNameVersion);
+//        System.out.println("Application Home Directory: " + appHomeDir.toString());
+//        System.out.println("Application Data Directory: " + appDataDir.toString());
+//        System.out.println("Application Configuration: " + appConfig.toString());
+//        System.out.println("Virtual Memory Configuration: " + vmOptions.toString());
+//        System.out.println("Virtual Memory Configuration (gpt): " + vmOptionsGpt.toString());
+//        System.out.println("Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion());
+//        System.out.println("Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion());
+//        System.out.println("Engine Specification Version: " + engineModuleInfo.getSpecificationVersion());
+//        System.out.println("Engine Implementation Version: " + engineModuleInfo.getImplementationVersion());
+//        System.out.println("JRE: " + jre);
+//        System.out.println("JVM: " + jvm);
+//        System.out.println("Memory: " + memory);
+//
+//        System.out.println("SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion());
+//        System.out.println("SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion());
+//
 
 
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
@@ -236,10 +237,11 @@ public class GetSysInfoGUI {
         sysInfoText += "OCSSW Log Directory: " + ocsswLogDir + "\n";
         sysInfoText += "OCSSW Location: " + ocsswLocation + "\n" +"\n";
 
-        String appDir = Config.instance().installDir().toString();
+//        String appDir = Config.instance().installDir().toString();
 
         String command = ocsswRootOcsswInfo + "/scripts/ocssw_runner --ocsswroot " + ocsswRootOcsswInfo
-                + " " + ocsswRootOcsswInfo + "/scripts/seadas_info2.py --AppDir " + appDir;
+                + " " + ocsswRootOcsswInfo + "/scripts/seadas_info.py";
+
         String seadasProg = ocsswRootOcsswInfo + "/scripts/seadas_info2.py";
         if (!Files.isExecutable(Paths.get(seadasProg))) {
             sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
@@ -248,7 +250,7 @@ public class GetSysInfoGUI {
             sysInfoText += "These fields could possibly be determined by java?";
             sysInfoTextarea.setText(sysInfoText);
         } else {
-            System.out.println("command is: " + command);
+//            System.out.println("command is: " + command);
 
             try {
                 Process process = Runtime.getRuntime().exec(command);
