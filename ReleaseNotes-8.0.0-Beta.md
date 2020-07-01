@@ -1,0 +1,1 @@
+Stub for SeaDAS 8.0.0-Beta Release Notes
