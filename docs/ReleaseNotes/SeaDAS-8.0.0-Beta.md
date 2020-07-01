@@ -1,9 +1,13 @@
-SeaDAS Toolbox Release Notes
+SeaDAS 8.0.0-Beta Release Notes
 --------------------------------
 
-Release Date: July 24, 2019
+Release Date: July TBD, 2020
 
-The SeaDAS development team is pleased to announce the release of SeaDAS Toolbox 1.0-Beta. SeaDAS Toolbox
+!!!!TBD : this text is copied from SeaDAS Toolbox Release Notes.  Update to SeaDAS 8.0.0-Beta
+
+
+
+The SeaDAS development team is pleased to announce the release of SeaDAS 8.0.0-Beta. SeaDAS Toolbox
 enables the ESA SNAP application to use many of the key features of the NASA SeaDAS application. Not all
 features of the current version SeaDAS 7.5.3 have been added to the SeaDAS Toolbox.
 
