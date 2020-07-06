@@ -66,3 +66,18 @@ snap-desktop/snap-rcp/src/main/java/org/esa/snap/rcp/SnapApp.java
 
 
 Branding
+
+
+
+Place a component action in 2 different toolbars:
+Example:
+@ActionReferences({
+        @ActionReference(path = "Toolbars/" + PackageDefaults.RANGE_FINDER_TOOLBAR_NAME,
+                position = PackageDefaults.RANGE_FINDER_TOOLBAR_POSITION),
+        @ActionReference(path = "Toolbars/" + "Geometry",
+                position = 101)
+})
+
+Toolbar Configuration:
+/Users/seadas/seadas8/snap-desktop/snap-rcp/src/main/resources/org/esa/snap/rcp/toolbars/Standard.xml
+/Users/seadas/seadas8/snap-desktop/snap-rcp/src/main/resources/org/esa/snap/rcp/layer.xml
