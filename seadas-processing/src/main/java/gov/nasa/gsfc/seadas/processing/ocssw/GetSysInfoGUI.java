@@ -148,7 +148,8 @@ public class GetSysInfoGUI {
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
 
-        JTextArea sysInfoTextarea = new JTextArea();
+        JTextArea sysInfoTextarea = new JTextArea(36,66);
+        sysInfoTextarea.setLineWrap(true);
         sysInfoTextarea.setEditable(false);
         JScrollPane scroll = new JScrollPane(sysInfoTextarea);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -215,12 +216,12 @@ public class GetSysInfoGUI {
 
         sysInfoText = "Main Application Platform: " + "\n";
 
-        sysInfoText += "Application Name Version: " + appNameVersion + "\n";
-        sysInfoText += "Application Home Directoy: " + appHomeDir.toString() + "\n";
-        sysInfoText += "Application Data Directory: " + appDataDir.toString() + "\n";
-        sysInfoText += "Application Configuration: " + appConfig.toString() + "\n";
-        sysInfoText += "Virtual Memory Configuration: " + vmOptions.toString() + "\n";
-        sysInfoText += "Virtual Memory Configuration (gpt): " + vmOptionsGpt.toString() + "\n";
+        sysInfoText += "Application Version: " + appNameVersion + "\n";
+        sysInfoText += "Installation Directoy: " + appHomeDir.toString() + "\n";
+        sysInfoText += "Data Directory: " + appDataDir.toString() + "\n";
+        sysInfoText += "Configuration: " + appConfig.toString() + "\n";
+        sysInfoText += "VM Configuration: " + vmOptions.toString() + "\n";
+        sysInfoText += "VM Configuration (gpt): " + vmOptionsGpt.toString() + "\n";
         sysInfoText += "Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion() + "\n";
         sysInfoText += "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
         sysInfoText += "Engine Specification Version: " + engineModuleInfo.getSpecificationVersion() + "\n";
@@ -242,37 +243,55 @@ public class GetSysInfoGUI {
         String command = ocsswRootOcsswInfo + "/scripts/ocssw_runner --ocsswroot " + ocsswRootOcsswInfo
                 + " " + ocsswRootOcsswInfo + "/scripts/seadas_info.py";
 
-        String seadasProg = ocsswRootOcsswInfo + "/scripts/seadas_info2.py";
-        if (!Files.isExecutable(Paths.get(seadasProg))) {
-            sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
-            sysInfoText += "Processors not installed" + "\n" +"\n";
-            sysInfoText += "General System and Software: " + "\n";
-            sysInfoText += "These fields could possibly be determined by java?";
-            sysInfoTextarea.setText(sysInfoText);
+        String seadasProg = ocsswRootOcsswInfo + "/scripts/seadas_info.py";
+
+        if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
+            String ocsswRootEnv = System.getenv("OCSSWROOT");
+            if ((ocsswRootEnv != null) & Files.exists(Paths.get(ocsswRootEnv))) {
+               sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
+               sysInfoText += "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
+                       "'. To configure the GUI to use this installation then update the 'local directory'  in Menu > SeaDAS-OCSSW > OCSSW Configuration";
+               sysInfoTextarea.setText(sysInfoText);
+            } else {
+                sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
+                sysInfoText += "Processers not installed " + "\n" + "\n";
+                sysInfoText += "General System and Software: " + "\n";
+                sysInfoText += "These fields could possibly be determined by java?";
+                sysInfoTextarea.setText(sysInfoText);
+            }
         } else {
+
+            if (!Files.isExecutable(Paths.get(seadasProg))) {
+                sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
+                sysInfoText += "Can't find Seadas_info.py " + "\n" + "\n";
+                sysInfoText += "General System and Software: " + "\n";
+                sysInfoText += "These fields could possibly be determined by java?";
+                sysInfoTextarea.setText(sysInfoText);
+            } else {
 //            System.out.println("command is: " + command);
 
-            try {
-                Process process = Runtime.getRuntime().exec(command);
+                try {
+                    Process process = Runtime.getRuntime().exec(command);
 
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sysInfoText += line + "\n";
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(process.getInputStream()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        sysInfoText += line + "\n";
+                    }
+
+                    sysInfoTextarea.setText(sysInfoText);
+                    reader.close();
+
+                    process.destroy();
+
+                    if (process.exitValue() != 0) {
+                        System.out.println("Abnormal process termination");
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                sysInfoTextarea.setText(sysInfoText);
-                reader.close();
-
-                process.destroy();
-
-                if (process.exitValue() != 0) {
-                    System.out.println("Abnormal process termination");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         gbc.gridx = 0;
