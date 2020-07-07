@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- http://www.softwarepassion.com/deploy-your-java-application-with-izpack-installer/
+-->
+<izpack:shortcuts version="5.0"
+                  xmlns:izpack="http://izpack.org/schema/shortcuts"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://izpack.org/schema/shortcuts http://izpack.org/schema/5.0/izpack-shortcuts-5.0.xsd
+http://izpack.org/schema/shortcuts ">
+
+    <skipIfNotSupported/>
+
+    <programGroup defaultName="Siemens AWORT" location="applications"/>
+
+    <shortcut
+            name="SeaDAS Application"
+            programGroup="yes"
+            desktop="yes"
+            applications="no"
+            type="Application"
+            startMenu="yes"
+            startup="no"
+            target="$INSTALL_PATH\bin\seadas"
+            commandLine=""
+            description="SeaDAS Application"
+            iconFile="$INSTALL_PATH\bin\splash.png"
+            iconIndex="0"
+            initialState="noShow">
+        <createForPack name="core"/>
+
+    </shortcut>
+
+
+    <shortcut
+            name="SeaDAS Uninstaller"
+            programGroup="yes"
+            desktop="no"
+            applications="no"
+            startMenu="no"
+            startup="no"
+            target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+            commandLine=""
+            iconFile="%SystemRoot%\system32\SHELL32.dll"
+            iconIndex="31"
+            description="Uninstall SoftwarePassion Example">
+
+        <createForPack name="Base"/>
+    </shortcut>
+
+</izpack:shortcuts>

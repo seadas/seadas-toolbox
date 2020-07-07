@@ -3,8 +3,14 @@ package gov.nasa.gsfc.seadas.processing.common;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import org.esa.snap.ui.AppContext;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +31,8 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
     void updateMissionStatus() {
         missionDataStatus = new HashMap<String, Boolean>();
         missionDataStatus.put("SEAWIFS", ocssw.isMissionDirExist("seawifs"));
-        missionDataStatus.put("AQUA", ocssw.isMissionDirExist("aqua"));
-        missionDataStatus.put("TERRA", ocssw.isMissionDirExist("terra"));
+        missionDataStatus.put("MODISA", ocssw.isMissionDirExist("modisa"));
+        missionDataStatus.put("MODIST", ocssw.isMissionDirExist("modist"));
         missionDataStatus.put("VIIRSN", ocssw.isMissionDirExist("viirsn"));
         missionDataStatus.put("VIIRSJ1", ocssw.isMissionDirExist("viirsj1"));
         missionDataStatus.put("MERIS", ocssw.isMissionDirExist("meris"));

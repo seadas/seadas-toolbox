@@ -128,6 +128,12 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.netbeans.external/json-simple-1.1.1 -->
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>json-simple-1.1.1</artifactId>
+            <version>RELEASE82</version>
+        </dependency>
     </dependencies>
 
     <build>

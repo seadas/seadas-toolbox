@@ -12,3 +12,7 @@ OCSSW_LOG_install_ocssw.py.txt
 ProcessingGUI_log_aabduraz.html
 ProcessingGUI_log_aabduraz.txt
 seadas-ocsswrest/hs_err_pid43749.log
+
+# Seadas/IzPack installer related files and directories
+seadas-installer/izpack-installer/target
+seadas-installer/izpack-installer/src/main/izpack/packs
