@@ -5,6 +5,7 @@ Release Date: July TBD, 2020
 
 !!!!TBD : this text is copied from SeaDAS Toolbox Release Notes.  Update to SeaDAS 8.0.0-Beta
 
+The SeaDAS development team is pleased to announce the release of SeaDAS 8.0.0-Beta.
 
 
 The SeaDAS development team is pleased to announce the release of SeaDAS 8.0.0-Beta. SeaDAS Toolbox
@@ -21,6 +22,24 @@ directly within ESA SNAP.
 
 These release notes are specific to SeaDAS 8.0.0-Beta Platform.  For the release notes regarding SeaDAS-Toolbox
 and its core science processors see: [SeaDAS-ToolBox 1.0-Beta Release Notes](https://github.com/seadas/seadas-toolbox/blob/master/ReleaseNotes.md)
+
+
+
+### Features of SeaDAS 8.0.0-Beta
+* Graticules (Map Gridlines)Tool: revised since SNAP 7.0.3.  These revisions are planned to be in SNAP 8.0.0
+* Color Manipulation Tool: revised since SNAP 7.0.3.  These revisions are planned to be in a future release of SNAP.
+* Toolbar Arrangement: Arrangement of the toolbars slightly differs from SNAP.  A few additional tools previously only available
+in the menu system have been added to the toolbars.
+
+### Features of SeaDAS-Toolbox 1.0.0-Beta
+
+
+
+### SNAP Release
+This Beta release of SeaDAS 8.0.0 does not tie to a specific released version of SNAP and is intended for testing and user feedback.
+SeaDAS 8 ties to 7.0.3 but does include some subsequent SNAP development.  Future releases of SeaDAS 8.x will tie to a specific
+SNAP release.
+
 
 
 
@@ -45,6 +64,8 @@ science processors see the SeaDAS-Toolbox Release notes.
 
 
 
+These release notes are specific to SeaDAS 8.0.0-Beta Platform.  For the release notes regarding SeaDAS-Toolbox
+and its core science processors see: [SeaDAS-ToolBox 1.0-Beta Release Notes](https://github.com/seadas/seadas-toolbox/blob/master/ReleaseNotes.md)
 
 
 
