@@ -506,7 +506,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void setCommandArraySuffix() {
         String[] cmdArraySuffix = new String[2];
-        cmdArraySuffix[0] = "--tag=initial";
+        cmdArraySuffix[0] = "--tag=R2020.1";
         cmdArraySuffix[1] = "--seadas";
     }
 

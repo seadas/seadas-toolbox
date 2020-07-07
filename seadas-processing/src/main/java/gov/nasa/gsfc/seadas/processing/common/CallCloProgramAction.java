@@ -89,7 +89,6 @@ public class CallCloProgramAction extends AbstractSnapAction {
             if (!ocssw.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
             }
-
             if (ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {

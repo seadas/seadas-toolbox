@@ -12,10 +12,7 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,12 +31,15 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     ProcessorModel processorModel;
     private AppContext appContext;
     private JPanel dirPanel;
+    private JPanel tagPanel;
     private JPanel missionPanel;
     private JPanel otherPanel;
 
     //private JPanel superParamPanel;
 
     public static final String INSTALL_DIR_OPTION_NAME = "--install_dir";
+    public final static String VALID_TAGS_OPTION_NAME = "--tag";
+    public final static String CURRENT_TAG_OPTION_NAME = "--current_tag";
 
     public String missionDataDir;
     public OCSSW ocssw;
@@ -93,11 +93,9 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 updateMissionStatus();
                 updateMissionValues();
                 createUserInterface();
-                //reorganizePanel(getSuperParamPanel());
             }
         });
     }
-
 
     String getMissionDataDir(){
        return missionDataDir;
@@ -115,7 +113,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     }
 
     abstract void init();
-
     public ProcessorModel getProcessorModel() {
         return processorModel;
     }
@@ -145,13 +142,14 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
         add(dirPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        add(missionPanel,
+        add(tagPanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        add(otherPanel,
-                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
-        //setSize(getPreferredSize().width, getPreferredSize().height + 200);
-        //setPreferredSize(getPreferredSize());
+        add(missionPanel,
+                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+        add(otherPanel,
+                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
     }
@@ -168,7 +166,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
     protected void reorganizePanel(JPanel paramPanel) {
         dirPanel = new JPanel();
-
+        tagPanel = new JPanel();
         missionPanel = new JPanel(new TableLayout(5));
         missionPanel.setBorder(BorderFactory.createTitledBorder("Mission Data"));
 
@@ -225,24 +223,58 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     dirPanel = (JPanel) c;
 
                 }
-
-
                 if (! ocsswInfo.getOcsswLocation().equals(ocsswInfo.OCSSW_LOCATION_LOCAL)) {
                     //if ocssw is not local, then disable the button to choose ocssw installation directory
                     ((JLabel)dirPanel.getComponent(0)).setText("Remote install_dir");
-//                    dirPanel.getComponent(1).setEnabled(false);
-//                    dirPanel.getComponent(2).setEnabled(false);
-//                    dirPanel.getComponent(2).setVisible(false);
                 } else {
                     ((JLabel)dirPanel.getComponent(0)).setText("Local install_dir");
                 }
-//                dirPanel.getComponent(1).setEnabled(false);
-//                dirPanel.getComponent(2).setEnabled(false);
                 ((JLabel)dirPanel.getComponent(0)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
                 ((JTextField)dirPanel.getComponent(1)).setEditable(false);
                 ((JTextField)dirPanel.getComponent(1)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
                 dirPanel.getComponent(2).setVisible(false);
 
+            } else if (option.getName().equals("text field panel")) {
+                Component[] bps = ((JPanel) option).getComponents();
+                JPanel tempPanel1, tempPanel2;
+                for (Component c : bps) {
+                    if (c.getName().equals(VALID_TAGS_OPTION_NAME)) {
+                        tempPanel1 = (JPanel)c;
+                        ((JLabel)tempPanel1.getComponent(0)).setText("Valid OCSSW Tags:");
+                        JComboBox tags = ((JComboBox)tempPanel1.getComponent(1));
+
+                        //This segment of code is to disable tags that are not compatible with the current SeaDAS version
+                        ArrayList<String> validOcsswTags = ocssw.getOcsswTagsValid4CurrentSeaDAS();
+                        Font f1 = tags.getFont();
+                        Font f2 = new Font("Tahoma", 0, 14);
+
+                        tags.setRenderer(new DefaultListCellRenderer() {
+                            @Override
+                            public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                                          int index, boolean isSelected, boolean cellHasFocus) {
+                                if (value instanceof JComponent)
+                                    return (JComponent) value;
+
+                                boolean itemEnabled = validOcsswTags.contains((String)value);
+                                super.getListCellRendererComponent(list, value, index,
+                                        isSelected && itemEnabled, cellHasFocus);
+
+                                // Render item as disabled and with different font:
+                                setEnabled(itemEnabled);
+                                setFont(itemEnabled ? f1 : f2);
+
+                                return this;
+                            }
+                        });
+                        // code segment ends here
+                        tagPanel.add( tempPanel1);
+                    } else if(c.getName().contains(CURRENT_TAG_OPTION_NAME)
+                            || CURRENT_TAG_OPTION_NAME.contains(c.getName())) {
+                        tempPanel2 = (JPanel)c;
+                        ((JLabel)tempPanel2.getComponent(0)).setText("Last Installed OCSSW Tag:");
+                        tagPanel.add( tempPanel2);
+                    }
+                }
             }
         }
 

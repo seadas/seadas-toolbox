@@ -1,13 +1,14 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import com.bc.ceres.core.runtime.Version;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.util.Dialogs.Answer;
-import org.esa.snap.runtime.Config;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -18,15 +19,20 @@ import javax.ws.rs.core.MediaType;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
-import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
+import static gov.nasa.gsfc.seadas.processing.common.OCSSWInstallerForm.VALID_TAGS_OPTION_NAME;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_BRANCH_PROPERTY;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 /**
  * Created by IntelliJ IDEA. User: Aynur Abdurazik (aabduraz) Date: 3/16/12
  * Time: 2:20 PM To change this template use File | Settings | File Templates.
@@ -35,7 +41,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     protected String programName;
 
-    private ParamList paramList;
+    protected ParamList paramList;
     private boolean acceptsParFile;
     private boolean hasGeoFile;
 
@@ -1216,9 +1222,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     private static class OCSSWInstaller_Processor extends ProcessorModel {
+        ArrayList<String> validOcsswTags = new ArrayList<>();
 
         OCSSWInstaller_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
+            updateTags();
+            getValidOCSSWTags4SeaDASVersion();
         }
 
         @Override
@@ -1232,16 +1241,104 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         }
 
+        private void updateTags(){
+            validOcsswTags = ocssw.getOcsswTags();
+            ListIterator<String> listIterator = validOcsswTags.listIterator();
+            ParamValidValueInfo paramValidValueInfo;
+            ArrayList<ParamValidValueInfo> tagValidValues = new ArrayList<>();
+            while (listIterator.hasNext()) {
+                paramValidValueInfo = new ParamValidValueInfo(listIterator.next());
+                tagValidValues.add(paramValidValueInfo);
+            }
+            paramList.getInfo(VALID_TAGS_OPTION_NAME).setValidValueInfos(tagValidValues);
+            //System.out.println(paramList.getInfo(TAG_OPTION_NAME).getName());
+        }
+
 
         /**
-         * /tmp/install_ocssw --tag initial -i ocssw-new --seadas --modist
+         * This method scans for valid OCSSW tags at https://oceandata.sci.gsfc.nasa.gov/manifest/tags, returns a list of tags that start with capital letter "V"
+         * @return List of valid OCSSW tags for SeaDAS
+         */
+        public ArrayList<String> getValidOcsswTagsFromURL(){
+            ArrayList<String> validOcsswTags = new ArrayList<>();
+            try {
+
+                URL tagsURL = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/tags/");
+                URLConnection tagsConnection = tagsURL.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(tagsConnection.getInputStream()));
+
+                String inputLine, tagName;
+                String tokenString = "href=";
+                int sp, ep;
+                while ((inputLine = in.readLine()) != null) {
+                    if (inputLine.indexOf(tokenString) != -1) {
+                        sp = inputLine.indexOf(">");
+                        ep = inputLine.lastIndexOf("<");
+                        tagName = inputLine.substring(sp+1, ep-1);
+                        System.out.println("tag: " + tagName);
+                        if (tagName.startsWith("V") ||
+                                tagName.startsWith("R") ||
+                                tagName.startsWith("T") ) {
+                            validOcsswTags.add(tagName);
+                        }
+                    }
+                }
+
+                in.close();
+
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+            return validOcsswTags;
+        }
+
+        public void getValidOCSSWTags4SeaDASVersion(){
+            //JSON parser object to parse read file
+            JSONParser jsonParser = new JSONParser();
+            try {
+
+                URL tagsURL = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json");
+                URLConnection tagsConnection = tagsURL.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(tagsConnection.getInputStream()));
+
+                //Read JSON file
+                Object obj = jsonParser.parse(in);
+
+                JSONArray validSeaDASTags = (JSONArray) obj;
+                System.out.println(validSeaDASTags);
+
+                //Iterate over seadas tag array
+                validSeaDASTags.forEach( tagObject -> parseValidSeaDASTagObject( (JSONObject) tagObject ) );
+                in.close();
+
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }  catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        private static void parseValidSeaDASTagObject(JSONObject tagObject)
+        {
+            Version currentVersion = VersionChecker.getInstance().getLocalVersion();
+            String seadasVersionString = currentVersion.toString();
+            //Get seadas version
+            String seadasVersion = (String)tagObject.get("seadas");
+            //Get corresponding ocssw tags for seadas
+            JSONArray ocsswTags = (JSONArray) tagObject.get("ocssw");
+            System.out.println(ocsswTags);
+
+        }
+
+        /**
+         * /tmp/install_ocssw --tag $TAGNAME -i ocssw-new --seadas --modist $MISSIONNAME
          *
          * @return
          */
         @Override
         public String[] getCmdArraySuffix() {
             String[] cmdArraySuffix = new String[2];
-            cmdArraySuffix[0] = "--tag=initial";
+            cmdArraySuffix[0] = "--tag=" + paramList.getInfo(VALID_TAGS_OPTION_NAME).getValue();
             cmdArraySuffix[1] = "--seadas";
             return cmdArraySuffix;
         }
