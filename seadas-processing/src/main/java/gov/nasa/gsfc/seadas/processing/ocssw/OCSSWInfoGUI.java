@@ -52,6 +52,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 public class OCSSWInfoGUI {
 
+    final static String OCSSW_VALID_TAGS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags";
     final String PANEL_NAME = "OCSSW Configuration";
     final String HELP_ID = "ocsswInfoConfig";
 
@@ -818,7 +819,7 @@ public class OCSSWInfoGUI {
         ArrayList<String> validOcsswTags = new ArrayList<>();
         int i =0;
         try {
-            Connection connection = Jsoup.connect("https://oceandata.sci.gsfc.nasa.gov/manifest/tags");
+            Connection connection = Jsoup.connect(OCSSW_VALID_TAGS_URL);
             Document doc = connection.get(); doc.children();
             String tagName;
             for (Element file : doc.getElementsByAttribute("href")) {
@@ -843,7 +844,7 @@ public class OCSSWInfoGUI {
         ArrayList<String> validOcsswTags = new ArrayList<>();
         int i =0;
         try {
-            Connection connection = Jsoup.connect("https://oceandata.sci.gsfc.nasa.gov/manifest/tags");
+            Connection connection = Jsoup.connect(OCSSW_VALID_TAGS_URL);
             Document doc = connection.get(); doc.children();
             String tagName;
             for (Element file : doc.getElementsByAttribute("href")) {

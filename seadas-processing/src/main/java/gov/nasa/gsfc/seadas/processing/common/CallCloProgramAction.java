@@ -89,7 +89,6 @@ public class CallCloProgramAction extends AbstractSnapAction {
             if (!ocssw.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
             }
-
             if (ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
@@ -275,7 +274,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
                     Dialogs.showInformation(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? ""
                             : (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) ? "" : ("Output written to:\n" + outputFileName))), null);
                     if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
-                        ocssw.updateOCSSWRootProperty(processorModel.getParamValue("--install-dir"));
+                        ocssw.updateOCSSWRootProperty(processorModel.getParamValue("--install_dir"));
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();
                         }
@@ -475,6 +474,21 @@ public class CallCloProgramAction extends AbstractSnapAction {
             super(programName, progressPattern);
         }
 
+        @Override
+        public void handleLineOnStdoutRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
+            int len = line.length();
+            if (len > 70) {
+                String[] parts = line.trim().split("\\s+", 2);
+                try {
+                    int percent = Integer.parseInt(parts[0]);
+                    progressMonitor.setSubTaskName(currentText + " - " + parts[0] + "%");
+                } catch (Exception e) {
+                    progressMonitor.setSubTaskName(line);
+                }
+            } else {
+                progressMonitor.setSubTaskName(line);
+            }
+        }
         @Override
         public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             int len = line.length();

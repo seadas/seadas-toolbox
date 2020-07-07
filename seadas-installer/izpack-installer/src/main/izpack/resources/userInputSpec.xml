@@ -1,0 +1,23 @@
+<izpack:userinput xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:izpack="http://izpack.org/schema/userinput"
+                  version="5.0"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.0/izpack-userinput-5.0.xsd">
+      <panel id="userInputPanel4Run">
+
+          <field type="check" variable="checkSelection.1">
+                <!--<description id="description.check.1" txt="This is a description for a check box" /> -->
+                <spec txt="Run SeaDAS after Install" id="runSeaDASAfterInstall" true="on" false="off" set="true"/>
+          </field>
+
+      </panel>
+    <panel id="myHello">
+
+        <field type="check" variable="checkSelection.1">
+            <!--<description id="description.check.1" txt="This is a description for a check box" /> -->
+            <spec txt="Run SeaDAS after Install" id="runSeaDASAfterInstall" true="on" false="off" set="true"/>
+        </field>
+        <field type="staticText" align="left" txt="Welcome to SeaDAS Install" id="welcome1"/>
+        <field type="text" variable="welcome2">
+            <spec txt="Enjoy!" id="welcome2" size="25" set=""/>
+        </field>
+    </panel>
+</izpack:userinput>
