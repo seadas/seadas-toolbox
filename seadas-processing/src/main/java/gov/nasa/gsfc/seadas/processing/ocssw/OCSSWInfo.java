@@ -46,6 +46,8 @@ public class OCSSWInfo {
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
+    public static final String SEADAS_VERSION_PROPERTY = "seadas.version";
+    private static final String SEADAS_VERSION_FILE_NAME = "VERSION.txt";
     public static final String SEADAS_LOG_DIR_PROPERTY = "seadas.log.dir";
     public static final String OCSSW_LOCATION_PROPERTY = "seadas.ocssw.location";
     public static final String OCSSW_LOCATION_LOCAL = "local";
@@ -90,12 +92,22 @@ public class OCSSWInfo {
     private String resourceBaseUri;
     private String ocsswBranch;
 
+    private static String seadasVersion;
+
     public static String getSessionId() {
         return sessionId;
     }
 
     public static void setSessionId(String sessionId) {
         OCSSWInfo.sessionId = sessionId;
+    }
+
+    public static String getSeadasVersion() {
+        return seadasVersion;
+    }
+
+    public static void setSeadasVersion(String seadasVersion) {
+        OCSSWInfo.seadasVersion = seadasVersion;
     }
 
     public boolean isOcsswServerUp() {
@@ -131,6 +143,7 @@ public class OCSSWInfo {
                     e.printStackTrace();
                 }
             }
+            seadasVersion = preferences.get(SEADAS_VERSION_PROPERTY, null);
         }
     }
 

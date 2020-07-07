@@ -2,17 +2,24 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
+import com.bc.ceres.core.runtime.Version;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.runtime.Config;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
@@ -51,20 +58,12 @@ public abstract class OCSSW {
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
     public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
-
-
-    final String L1AEXTRACT_MODIS = "l1aextract_modis",
-            L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
-            L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
-            L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
-            L1AEXTRACT_VIIRS = "l1aextract_viirs",
-            L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
-            L2EXTRACT = "l2extract",
-            L2EXTRACT_XML_FILE = "l2extract.xml";
+    public static final String SEADAS_CONFIG_DIR = ".seadas8";
 
     private static boolean monitorProgress = false;
-
-
+    private ArrayList<String> ocsswTags;
+    private String seadasVersion;
+    private ArrayList<String> ocsswTagsValid4CurrentSeaDAS;
     String programName;
     private String xmlFileName;
     String ifileName;
@@ -128,13 +127,14 @@ public abstract class OCSSW {
 
     public String getOCSSWLogDirPath(){
         Preferences preferences;
+        String appContextId = SystemUtils.getApplicationContextId();
         String logDirPath = ifileDir;
         preferences = Config.instance("seadas").load().preferences();
 
         if (preferences != null ) {
             logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, ifileDir);
             if (logDirPath == null) {
-                logDirPath = System.getProperty("user.home") + File.separator + ".snap" + File.separator +  "seadas_logs";
+                logDirPath = System.getProperty("user.home") + File.separator + ".seadas8" + File.separator +  "seadas_logs";
             }
             File logDir = new File(logDirPath);
             if (!logDir.exists()) {
@@ -357,6 +357,7 @@ public abstract class OCSSW {
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
             (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+            updateOCSSWTags();
             ocsswInstalScriptDownloadSuccessful = true;
 
             //download manifest.py
@@ -389,6 +390,83 @@ public abstract class OCSSW {
         }
     }
 
+    public void updateOCSSWTags(){
+        Runtime rt = Runtime.getRuntime();
+        String[] commands = {TMP_OCSSW_INSTALLER, "--list_tags"};
+        Process proc = null;
+        try {
+            proc = rt.exec(commands);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+// Read the output from the command
+        //System.out.println("Here is the standard output of the command:\n");
+        String s = null;
+
+        ArrayList<String> tagsList = new ArrayList<>();
+        while (true) {
+            try {
+                if (!((s = stdInput.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //System.out.println(s);
+            tagsList.add(s);
+        }
+        setOcsswTags(tagsList);
+        getValidOCSSWTags4SeaDASVersion();
+    }
+    public void getValidOCSSWTags4SeaDASVersion(){
+        //JSON parser object to parse read file
+        setOcsswTagsValid4CurrentSeaDAS(new ArrayList<String>());
+        JSONParser jsonParser = new JSONParser();
+        try {
+
+            URL tagsURL = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json");
+            URLConnection tagsConnection = tagsURL.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(tagsConnection.getInputStream()));
+
+            //Read JSON file
+            Object obj = jsonParser.parse(in);
+
+            JSONArray validSeaDASTags = (JSONArray) obj;
+            System.out.println(validSeaDASTags);
+
+            //Iterate over seadas tag array
+            validSeaDASTags.forEach( tagObject -> parseValidSeaDASTagObject( (JSONObject) tagObject ) );
+            in.close();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }  catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    private void parseValidSeaDASTagObject(JSONObject tagObject)
+    {
+        Version currentVersion = VersionChecker.getInstance().getLocalVersion();
+        this.seadasVersion = currentVersion.toString();
+
+        String seadasVersionString = (String)tagObject.get("seadas");
+
+        if (seadasVersionString.equals(seadasVersion)) {
+            //Get corresponding ocssw tags for seadas
+            JSONArray ocsswTags = (JSONArray) tagObject.get("ocssw");
+            if (ocsswTags != null) {
+                for (int i=0;i<ocsswTags.size();i++){
+                    try {
+                        getOcsswTagsValid4CurrentSeaDAS().add((String) ocsswTags.get(i));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        System.out.println(seadasVersion + " " + getOcsswTagsValid4CurrentSeaDAS());
+    }
     public boolean downloadOCSSWInstallerOld() {
 
         if (isOcsswInstalScriptDownloadSuccessful()) {
@@ -477,5 +555,29 @@ public abstract class OCSSW {
 //                return null;
 //            }
 //        }
+    }
+
+    public ArrayList<String> getOcsswTags() {
+        return ocsswTags;
+    }
+
+    public void setOcsswTags(ArrayList<String> ocsswTags) {
+        this.ocsswTags = ocsswTags;
+    }
+
+    public String getSeadasVersion() {
+        return seadasVersion;
+    }
+
+    public void setSeadasVersion(String seadasVersion) {
+        this.seadasVersion = seadasVersion;
+    }
+
+    public ArrayList<String> getOcsswTagsValid4CurrentSeaDAS() {
+        return ocsswTagsValid4CurrentSeaDAS;
+    }
+
+    public void setOcsswTagsValid4CurrentSeaDAS(ArrayList<String> ocsswTagsValid4CurrentSeaDAS) {
+        this.ocsswTagsValid4CurrentSeaDAS = ocsswTagsValid4CurrentSeaDAS;
     }
 }
