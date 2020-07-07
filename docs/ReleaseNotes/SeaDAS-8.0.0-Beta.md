@@ -13,7 +13,20 @@ features of the current version SeaDAS 7.5.3 have been added to the SeaDAS Toolb
 
 
 
-About:
+### The SeaDAS 8 Platform and the SeaDAS-ToolBox:
+SeaDAS 8 serves as the application platform to the SeaDAS-Toolbox.  SeaDAS 8 is a NASA released version of SNAP
+which is branded and tailored to the needs of the SeaDAS user.  The SeaDAS-ToolBox, which contains the core
+elements of NASA SeaDAS science processing, comes installed within the SeaDAS 8 platform and it also can be installed
+directly within ESA SNAP.
+
+These release notes are specific to SeaDAS 8.0.0-Beta Platform.  For the release notes regarding SeaDAS-Toolbox
+and its core science processors see: [SeaDAS-ToolBox 1.0-Beta Release Notes](https://github.com/seadas/seadas-toolbox/blob/master/ReleaseNotes.md)
+
+
+
+
+
+
 SeaDAS is a NASA scientific data visualisation, analysis, and processing software application
 for remote-sensing satellite data.  The core elements of NASA SeaDAS science processing are contained
 within the SeaDAS-Toolbox.  The SeaDAS-Toolbox comes installed within the application platform
