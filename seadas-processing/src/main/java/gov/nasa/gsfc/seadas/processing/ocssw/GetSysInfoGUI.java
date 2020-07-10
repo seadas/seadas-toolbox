@@ -148,7 +148,7 @@ public class GetSysInfoGUI {
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
 
-        JTextArea sysInfoTextarea = new JTextArea(36,66);
+        JTextArea sysInfoTextarea = new JTextArea(45,66);
         sysInfoTextarea.setLineWrap(true);
         sysInfoTextarea.setEditable(false);
         JScrollPane scroll = new JScrollPane(sysInfoTextarea);
@@ -163,14 +163,14 @@ public class GetSysInfoGUI {
         String appReleaseVersionFromPOM = SystemUtils.getReleaseVersion();
         File appHomeDir = SystemUtils.getApplicationHomeDir();
         File appDataDir = SystemUtils.getApplicationDataDir();
-        Path appBinDir = appHomeDir.toPath().resolve("bin");
-        Path appConfig = null;
 
-        if (appName != null && appName.toUpperCase().contains("SEADAS")) {
-            appConfig = appBinDir.resolve("seadas.properties");
-        } else {
-            appConfig = appBinDir.resolve("snap.properties");
-        }
+        Path appBinDir = appHomeDir.toPath().resolve("bin");
+        Path appEtcDir = appHomeDir.toPath().resolve("etc");
+        Path appConfig = appEtcDir.resolve("snap.properties");
+
+        Path dataDirPath = appDataDir.toPath();
+        Path dataEtcPath = dataDirPath.resolve("etc");
+        Path snapProperties = dataEtcPath.resolve("snap.properties");
 
         Path vmOptions = appBinDir.resolve("pconvert.vmoptions");
         Path vmOptionsGpt = appBinDir.resolve("gpt.vmoptions");
@@ -183,6 +183,7 @@ public class GetSysInfoGUI {
         ModuleInfo desktopModuleInfo = Modules.getDefault().ownerOf(SnapAboutBox.class);
         ModuleInfo engineModuleInfo = Modules.getDefault().ownerOf(Product.class);
 
+        Path seadasProperties = dataEtcPath.resolve("seadas.properties");
 
 //        System.out.println("\nMain Application Platform:");
 //        System.out.println("Application Name Version: " + appNameVersion);
@@ -217,35 +218,68 @@ public class GetSysInfoGUI {
         sysInfoText = "Main Application Platform: " + "\n";
 
         sysInfoText += "Application Version: " + appNameVersion + "\n";
-        sysInfoText += "Installation Directoy: " + appHomeDir.toString() + "\n";
+        sysInfoText += "Installation Directory: " + appHomeDir.toString() + "\n";
+        if (!appHomeDir.isDirectory()) {
+            sysInfoText += "WARNING!! Directory '" + appHomeDir.toString() + "' does not exist" + "\n";
+        }
         sysInfoText += "Data Directory: " + appDataDir.toString() + "\n";
+        if (!appDataDir.isDirectory()) {
+            sysInfoText += "WARNING!! Directory '" + appDataDir.toString() + "' does not exist" + "\n";
+        }
         sysInfoText += "Configuration: " + appConfig.toString() + "\n";
+        if (!Files.exists(appConfig)) {
+            sysInfoText += "WARNING!! File '" + appConfig.toString() + "' does not exist" + "\n";
+        }
+        if (!Files.exists(snapProperties)) {
+            sysInfoText += "Configuration2: null" + "\n";
+        } else {
+            sysInfoText += "Configuration2: " + snapProperties.toString() + "\n";
+        }
         sysInfoText += "VM Configuration: " + vmOptions.toString() + "\n";
+        if (!Files.exists(vmOptions)) {
+            sysInfoText += "WARNING!! File '" + vmOptions.toString() + "' does not exist" + "\n";
+        }
         sysInfoText += "VM Configuration (gpt): " + vmOptionsGpt.toString() + "\n";
+        if (!Files.exists(vmOptionsGpt)) {
+            sysInfoText += "WARNING!! File '" + vmOptionsGpt.toString() + "' does not exist" + "\n";
+        }
         sysInfoText += "Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion() + "\n";
         sysInfoText += "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
         sysInfoText += "Engine Specification Version: " + engineModuleInfo.getSpecificationVersion() + "\n";
         sysInfoText += "Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
         sysInfoText += "JRE: " + jre + "\n";
         sysInfoText += "JVM: " + jvm + "\n";
-        sysInfoText += "Memory: " + memory + "\n";
+        sysInfoText += "Memory: " + memory + "\n\n";
 
-        sysInfoText += "\n" + "SeaDAS Toolbox: " + "\n";
+        sysInfoText += "SeaDAS Toolbox: " + "\n";
 
         sysInfoText += "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
         sysInfoText += "SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion() + "\n";
+        if (!Files.exists(seadasProperties)) {
+            sysInfoText += "Configuration: null" + "\n";
+        } else {
+            sysInfoText += "Configuration: " + seadasProperties.toString() + "\n";
+        }
         sysInfoText += "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+        if ((ocsswRootOcsswInfo != null ) && !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
+            sysInfoText += "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
+        }
         sysInfoText += "OCSSW Log Directory: " + ocsswLogDir + "\n";
-        sysInfoText += "OCSSW Location: " + ocsswLocation + "\n" +"\n";
+        if ((ocsswLogDir != null ) && !Files.exists(Paths.get(ocsswLogDir))) {
+            sysInfoText += "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
+        }
+        sysInfoText += "OCSSW Location: " + ocsswLocation + "\n\n";
+
+        sysInfoText += "-----------------------------------------------\n\n";
 
 //        String appDir = Config.instance().installDir().toString();
 
         String command = ocsswRootOcsswInfo + "/scripts/ocssw_runner --ocsswroot " + ocsswRootOcsswInfo
-                + " " + ocsswRootOcsswInfo + "/scripts/seadas_info.py";
+                + " " + ocsswRootOcsswInfo + "/bin/seadas_info";
 
-        String seadasProg = ocsswRootOcsswInfo + "/scripts/seadas_info.py";
+        String seadasProg = ocsswRootOcsswInfo + "/bin/seadas_info";
 
-        if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
+        if ((ocsswRootOcsswInfo == null ) || !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
             String ocsswRootEnv = System.getenv("OCSSWROOT");
             if ((ocsswRootEnv != null) & Files.exists(Paths.get(ocsswRootEnv))) {
                sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
@@ -290,6 +324,9 @@ public class GetSysInfoGUI {
                     }
 
                 } catch (IOException e) {
+                    String warning = "WARNING!! Could not retrieve system parameters because command \'" + command + "\' failed";
+                    sysInfoText += warning + "\n";
+                    sysInfoText += e.toString() + "\n";
                     e.printStackTrace();
                 }
             }
