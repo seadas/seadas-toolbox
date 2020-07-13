@@ -22,7 +22,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>SeaDAS Tool Box</name>
     <description>Tools from SeaDAS</description>
     <url>https://seadas.gsfc.nasa.gov</url>
@@ -412,9 +412,9 @@
                             </goals>
                             <configuration>
                                 <name>seadas.nbmSpecVersion</name>
-                                <value>${project.version}</value>
+                                <value>1.0.0</value>
                                 <regex>-SNAPSHOT</regex>
-                                <replacement>.0</replacement>
+                                <replacement></replacement>
                                 <failIfNoMatch>false</failIfNoMatch>
                             </configuration>
                         </execution>
