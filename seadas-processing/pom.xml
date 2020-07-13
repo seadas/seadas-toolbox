@@ -7,10 +7,11 @@
     <parent>
         <artifactId>seadas</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>8.0.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>seadas-processing</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>SeaDAS Processing</name>

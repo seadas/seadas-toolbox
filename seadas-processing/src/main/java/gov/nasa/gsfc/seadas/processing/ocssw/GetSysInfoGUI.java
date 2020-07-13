@@ -204,6 +204,8 @@ public class GetSysInfoGUI {
 //        System.out.println("SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion());
 //
 
+        String test =Config.instance().preferences().get("seadas.version", null);
+        System.out.println("seadas.version=" + test);
 
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
         String ocsswRootOcsswInfo = ocsswInfo.getOcsswRoot();
