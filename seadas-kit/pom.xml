@@ -69,7 +69,7 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-processing</artifactId>
-            <version>8.0.0-SNAPSHOT</version>
+            <version>${seadas-processing.version}</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-bathymetry-operator</artifactId>
-            <version>8.0.0-SNAPSHOT</version>
+            <version>${seadas-bathymetry-operator.version}</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
@@ -99,12 +99,12 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-contour-operator</artifactId>
-            <version>8.0.0-SNAPSHOT</version>
+            <version>${seadas-contour-operator.version}</version>
         </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-watermask-operator</artifactId>
-            <version>8.0.0-SNAPSHOT</version>
+            <version>${seadas-watermask-operator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
