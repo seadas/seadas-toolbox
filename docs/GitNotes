@@ -10,5 +10,7 @@ Delete remote branch:
 git push origin --delete SeaDAS-8.0.0-Beta-2020-0226
 
 
+
+
 mvn install -Dmaven.test.skip=true -o
 

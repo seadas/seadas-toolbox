@@ -33,7 +33,7 @@
         <module>seadas-processing</module>
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
-        <!--<module>seadas-reader</module>-->
+        <module>seadas-reader</module>
         <!--<module>seadas-writeimage-operator</module>-->
         <module>seadas-kit</module>
     </modules>
@@ -60,7 +60,7 @@
         <jersey.version>2.27</jersey.version>
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
-        <!--<seadas.reader.version>1.8-SNAPSHOT</seadas.reader.version>-->
+        <seadas.reader.version>1.8-SNAPSHOT</seadas.reader.version>
         <!--<seadas.reader.ui.version>1.8-SNAPSHOT</seadas.reader.ui.version>-->
     </properties>
 
