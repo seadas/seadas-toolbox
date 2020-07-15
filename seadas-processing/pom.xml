@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>seadas-processing</artifactId>
+    <version>${seadas-processing.version}</version>
     <packaging>nbm</packaging>
 
     <name>SeaDAS Processing</name>

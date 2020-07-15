@@ -12,6 +12,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-bathymetry-operator</artifactId>
+    <version>${seadas-bathymetry-operator.version}</version>
     <packaging>nbm</packaging>
 
     <name>SEADAS Bathymetry Operator</name>
