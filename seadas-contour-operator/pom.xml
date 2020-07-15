@@ -12,6 +12,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-contour-operator</artifactId>
+    <version>${seadas-contour-operator.version}</version>
     <packaging>nbm</packaging>
 
     <name>SEADAS Contour Operator</name>

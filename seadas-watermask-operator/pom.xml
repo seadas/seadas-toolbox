@@ -12,6 +12,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-watermask-operator</artifactId>
+    <version>${seadas-watermask-operator.version}</version>
     <packaging>nbm</packaging>
 
     <name>SEADAS Watermask Operator</name>
