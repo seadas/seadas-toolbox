@@ -68,7 +68,11 @@
   <variables>
     <variable name="INSTALL_PATH" value="$USER_HOME"/>
     <variable name="app.name" value="@{appname}"/>
-    <variable name="RESOURCEROOT" value="src/main/izpack"/>
+    <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
+    <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
+    <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
+    <variable name="S3TBXROOT" value="$INSTALL_PATH/seadas/s3tbx"/>
+    <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
     <variable name="InstallerFrame.logfilePath" value="Default"/>
     <variable name="WELCOME_TEXT" value="SeaDAS IzPack Installer"/>
     <variable name="WELCOME_VERSION" value="Version: 1"/>
@@ -164,26 +168,13 @@
         to the following technological innovations: Extensibility, Portability, Modular Rich
         Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
         Graph Processing Framework.</description>
-      <fileset dir="packs/snap" casesensitive="true" os="unix" condition="izpack.linuxinstall">
-        <exclude name="bin/*.bat"/>
-        <exclude name="bin/*.command"/>
-        <exclude name="bin/meris*.*"/>
-        <exclude name="bin/aatsr-sst.*"/>
-        <exclude name="bin/flhmci.*"/>
+      <fileset dir="files/unix" casesensitive="true" os="unix" condition="izpack.linuxinstall">
       </fileset>
-      <fileset dir="packs/snap" override="asktrue" casesensitive="true" os="mac">
-        <exclude name="bin/*.bat"/>
-        <exclude name="bin/*.sh"/>
-        <exclude name="bin/meris*.*"/>
-        <exclude name="bin/aatsr-sst.*"/>
-        <exclude name="bin/flhmci.*"/>
+      <fileset dir="files/macosx" override="asktrue" casesensitive="true" os="mac">
       </fileset>
-      <fileset dir="packs/snap" override="asktrue" casesensitive="true" os="windows">
-        <exclude name="bin/*.bat"/>
-        <exclude name="bin/*.sh"/>
-        <exclude name="bin/meris*.*"/>
-        <exclude name="bin/aatsr-sst.*"/>
-        <exclude name="bin/flhmci.*"/>
+      <fileset dir="files/winx32" override="asktrue" casesensitive="true" os="windows">
+      </fileset>
+      <fileset dir="files/winx64" override="asktrue" casesensitive="true" os="windows">
       </fileset>
       <parsable encoding="UTF-8">
         <fileset targetdir="${INSTALL_PATH}/bin">
