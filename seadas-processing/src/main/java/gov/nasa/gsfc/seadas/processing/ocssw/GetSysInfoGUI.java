@@ -52,7 +52,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 public class GetSysInfoGUI {
 
-    final String PANEL_NAME = "Seadas System Information";
+    final String PANEL_NAME = "Seadas/System Information";
     final String HELP_ID = "getSysInfo";
     String sysInfoText;
 

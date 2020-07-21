@@ -30,8 +30,8 @@ import java.awt.event.ActionEvent;
         position = 260
 )
 @NbBundle.Messages({
-        "CTL_GetSysInfoAction_Name=SeaDAS System Info...",
-        "CTL_GetSysInfoAction_DialogTitle=SeaDAS System Information",
+        "CTL_GetSysInfoAction_Name=SeaDAS/System Info...",
+        "CTL_GetSysInfoAction_DialogTitle=SeaDAS/System Information",
         "CTL_GetSysInfoAction_Description=Print SeaDAS and OCSSW info for trouble shooting."
 })
 public class GetSysInfoAction extends AbstractSnapAction implements ContextAwareAction, LookupListener {
