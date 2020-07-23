@@ -1,8 +1,12 @@
 package gov.nasa.gsfc.seadas.contour.action;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.PrecisionModel;
+//import com.geotools..jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.GeometryFactory;
+//import com.vividsolutions.jts.geom.LineString;
+//import com.vividsolutions.jts.geom.PrecisionModel;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.operator.Contour1Spi;
@@ -245,8 +249,8 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
             ioe.printStackTrace();
         }
         LineString lineString;
-        org.locationtech.jts.geom.Coordinate[] geomCoordinates;
-        org.locationtech.jts.geom.PrecisionModel geomPrecisionModel;
+        Coordinate[] geomCoordinates;
+        PrecisionModel geomPrecisionModel;
         PrecisionModel precisionModel;
         for (org.locationtech.jts.geom.LineString geomLineString : contours) {
             geomCoordinates = geomLineString.getCoordinates();
@@ -278,7 +282,7 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
         return featureCollection;
     }
 
-    private Coordinate[] transformaCoordinates(org.locationtech.jts.geom.Coordinate[] geomCoordinates){
+    private Coordinate[] transformaCoordinates(Coordinate[] geomCoordinates){
         Coordinate[] coordinates = new Coordinate[geomCoordinates.length];
         int i = 0;
 
@@ -291,7 +295,7 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
     private static void transformFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection, CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws TransformException {
         final GeometryCoordinateSequenceTransformer transform = FeatureUtils.getTransform(sourceCRS, targetCRS);
         final FeatureIterator<SimpleFeature> features = featureCollection.features();
-        final com.vividsolutions.jts.geom.GeometryFactory geometryFactory = new com.vividsolutions.jts.geom.GeometryFactory();
+        final GeometryFactory geometryFactory = new GeometryFactory();
         while (features.hasNext()) {
             final SimpleFeature simpleFeature = features.next();
             //System.out.println("simple feature : " +  simpleFeature.toString());
