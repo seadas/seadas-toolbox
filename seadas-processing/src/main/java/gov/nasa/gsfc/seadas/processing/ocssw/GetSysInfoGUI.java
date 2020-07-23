@@ -277,7 +277,7 @@ public class GetSysInfoGUI {
 //        String appDir = Config.instance().installDir().toString();
 
         String command = ocsswRootOcsswInfo + "/scripts/ocssw_runner --ocsswroot " + ocsswRootOcsswInfo
-                + " " + ocsswRootOcsswInfo + "/bin/seadas_info";
+                + " seadas_info";
 
         String seadasProg = ocsswRootOcsswInfo + "/bin/seadas_info";
 
