@@ -1,12 +1,9 @@
 package gov.nasa.gsfc.seadas.contour.action;
 
-//import com.geotools..jts.geom.Coordinate;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.geom.GeometryFactory;
-//import com.vividsolutions.jts.geom.LineString;
-//import com.vividsolutions.jts.geom.PrecisionModel;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.operator.Contour1Spi;
@@ -239,7 +236,7 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
     private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ParameterBlockJAI pb) {
 
         RenderedOp dest = JAI.create("Contour", pb);
-        Collection<org.locationtech.jts.geom.LineString > contours = (Collection<org.locationtech.jts.geom.LineString >) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
+        Collection<LineString > contours = (Collection<LineString >) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
         SimpleFeatureType featureType = null;
         FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
         try {
@@ -252,7 +249,7 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
         Coordinate[] geomCoordinates;
         PrecisionModel geomPrecisionModel;
         PrecisionModel precisionModel;
-        for (org.locationtech.jts.geom.LineString geomLineString : contours) {
+        for (LineString geomLineString : contours) {
             geomCoordinates = geomLineString.getCoordinates();
             geomPrecisionModel = geomLineString.getPrecisionModel();
             precisionModel = new PrecisionModel(geomPrecisionModel.getScale(), geomPrecisionModel.getOffsetX(), geomPrecisionModel.getOffsetY());
@@ -286,7 +283,7 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
         Coordinate[] coordinates = new Coordinate[geomCoordinates.length];
         int i = 0;
 
-        for (org.locationtech.jts.geom.Coordinate coordinate:geomCoordinates) {
+        for (Coordinate coordinate:geomCoordinates) {
             coordinates[i++] = new Coordinate(coordinate.x, coordinate.y, coordinate.z);
         }
         return coordinates;
