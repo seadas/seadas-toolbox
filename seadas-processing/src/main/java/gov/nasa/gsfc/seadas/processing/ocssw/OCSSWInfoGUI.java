@@ -4,6 +4,8 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.binding.BindingContext;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
@@ -53,7 +55,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 public class OCSSWInfoGUI {
 
     final static String OCSSW_VALID_TAGS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags";
-    final String PANEL_NAME = "OCSSW Configuration";
+    final String PANEL_NAME = "Configure OCSSW";
     final String HELP_ID = "ocsswInfoConfig";
 
     final String BRANCH_TOOLTIP = "<html>The OCSSW installation branch<br>" +
@@ -176,8 +178,39 @@ public class OCSSWInfoGUI {
 
     private JPanel makeParamPanel() {
 
+
         final Preferences preferences = Config.instance("seadas").load().preferences();
-        String lastOcsswLocation = preferences.get(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
+
+        String ocsswRootString = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
+
+        if (ocsswRootString == null) {
+            final Preferences preferencesSnap = Config.instance().load().preferences();
+
+            ocsswRootString = preferencesSnap.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
+        }
+
+        if (ocsswRootString == null
+                || ocsswRootString == ("$" + SEADAS_OCSSW_ROOT_ENV)
+                || ocsswRootString == ("${" + SEADAS_OCSSW_ROOT_ENV + "}")) {
+            ocsswRootString = System.getenv(SEADAS_OCSSW_ROOT_ENV);
+        }
+
+        // todo This appears to remove this pattern at beginning of string, why is this check needed?
+        if (ocsswRootString != null && ocsswRootString.startsWith("$")) {
+            ocsswRootString = System.getProperty(ocsswRootString.substring(ocsswRootString.indexOf("{") + 1, ocsswRootString.indexOf("}"))) + ocsswRootString.substring(ocsswRootString.indexOf("}") + 1);
+        }
+
+        if (ocsswRootString == null || ocsswRootString.length() == 0) {
+            // File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir() + File.separator + "ocssw");
+            File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir(), "ocssw");
+            ocsswRootString = ocsswRootDir.getAbsolutePath();
+        }
+
+
+
+        String lastOcsswLocation = ocsswRootString;
+
+
         GridBagConstraints gbc = createConstraints();
 
         JLabel ocsswLocationLabel = new JLabel(OCSSW_LOCATION_LABEL + ": ");

@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.runtime.Config;
 import org.glassfish.jersey.client.ClientConfig;
@@ -28,8 +29,8 @@ import java.util.Date;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_BRANCH_PROPERTY;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
 
 /**
  * Created by aabduraz on 5/25/17.
@@ -133,6 +134,8 @@ public class OCSSWInfo {
 
     private OCSSWInfo() {
         preferences = Config.instance("seadas").load().preferences();
+
+
         if (preferences != null ) {
             logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, System.getProperty("user.dir"));
             File logDir = new File(getLogDirPath());
@@ -249,22 +252,45 @@ public class OCSSWInfo {
 
     public void initializeLocalOCSSW() {
         ocsswServerUp = true;
-        String ocsswRootPath = preferences.get("seadas.ocssw.root", System.getenv("OCSSWROOT"));
-        if (ocsswRootPath.startsWith("$")) {
-            ocsswRootPath = System.getProperty(ocsswRootPath.substring(ocsswRootPath.indexOf("{") + 1, ocsswRootPath.indexOf("}"))) + ocsswRootPath.substring(ocsswRootPath.indexOf("}") + 1);
+
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+
+        String ocsswRootString = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
+
+        if (ocsswRootString == null) {
+            final Preferences preferencesSnap = Config.instance().load().preferences();
+
+            ocsswRootString = preferencesSnap.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
         }
-        if (ocsswRootPath == null) {
-            ocsswRootPath = preferences.get("seadas.home", System.getProperty("user.home")) + File.separator + "ocssw";
-        } else if (ocsswRootPath.startsWith("$")) {
-            ocsswRootPath = System.getProperty(ocsswRootPath.substring(ocsswRootPath.indexOf("{") + 1, ocsswRootPath.indexOf("}"))) + ocsswRootPath.substring(ocsswRootPath.indexOf("}") + 1);
-        } else {
-            final File dir = new File(ocsswRootPath + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
+
+        if (ocsswRootString == null
+                || ocsswRootString == ("$" + SEADAS_OCSSW_ROOT_ENV)
+                || ocsswRootString == ("${" + SEADAS_OCSSW_ROOT_ENV + "}")) {
+            ocsswRootString = System.getenv(SEADAS_OCSSW_ROOT_ENV);
+        }
+
+        // todo This appears to remove this pattern at beginning of string, why is this check needed?
+        if (ocsswRootString != null && ocsswRootString.startsWith("$")) {
+            ocsswRootString = System.getProperty(ocsswRootString.substring(ocsswRootString.indexOf("{") + 1, ocsswRootString.indexOf("}"))) + ocsswRootString.substring(ocsswRootString.indexOf("}") + 1);
+        }
+
+        if (ocsswRootString == null || ocsswRootString.length() == 0) {
+            // File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir() + File.separator + "ocssw");
+            File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir(), "ocssw");
+            ocsswRootString = ocsswRootDir.getAbsolutePath();
+        }
+
+
+        if (ocsswRootString != null && ocsswRootString.length() > 0) {
+//            final File dir = new File(ocsswRootString + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
+            final File dir = new File(ocsswRootString, OCSSW_SCRIPTS_DIR_SUFFIX);
             SeadasLogger.getLogger().info("server ocssw root path: " + dir.getAbsoluteFile());
             if (dir.isDirectory()) {
                 ocsswExist = true;
             }
         }
-        ocsswRoot = ocsswRootPath;
+
+        ocsswRoot = ocsswRootString;
         ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
         ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
         ocsswInstallerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_INSTALLER_PROGRAM_NAME;
