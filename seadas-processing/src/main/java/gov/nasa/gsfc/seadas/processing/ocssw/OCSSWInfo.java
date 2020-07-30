@@ -262,17 +262,23 @@ public class OCSSWInfo {
 
             ocsswRootString = preferencesSnap.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
         }
-
-        if (ocsswRootString == null
-                || ocsswRootString == ("$" + SEADAS_OCSSW_ROOT_ENV)
-                || ocsswRootString == ("${" + SEADAS_OCSSW_ROOT_ENV + "}")) {
+        String ocsswRoot1 = "$" + SEADAS_OCSSW_ROOT_ENV;
+        String ocsswRoot2 = "${" + SEADAS_OCSSW_ROOT_ENV + "}";
+        if (ocsswRootString != null &&
+                (ocsswRootString.equals(ocsswRoot1) || ocsswRootString.equals(ocsswRoot2))) {
+            ocsswRootString = System.getenv(SEADAS_OCSSW_ROOT_ENV);
+            if (ocsswRootString == null) {
+                ocsswRootString = " ";
+                // todo  open a popup warning
+            }
+        } else if (ocsswRootString == null ) {
             ocsswRootString = System.getenv(SEADAS_OCSSW_ROOT_ENV);
         }
 
         // todo This appears to remove this pattern at beginning of string, why is this check needed?
-        if (ocsswRootString != null && ocsswRootString.startsWith("$")) {
-            ocsswRootString = System.getProperty(ocsswRootString.substring(ocsswRootString.indexOf("{") + 1, ocsswRootString.indexOf("}"))) + ocsswRootString.substring(ocsswRootString.indexOf("}") + 1);
-        }
+//        if (ocsswRootString != null && ocsswRootString.startsWith("$")) {
+//            ocsswRootString = System.getProperty(ocsswRootString.substring(ocsswRootString.indexOf("{") + 1, ocsswRootString.indexOf("}"))) + ocsswRootString.substring(ocsswRootString.indexOf("}") + 1);
+//        }
 
         if (ocsswRootString == null || ocsswRootString.length() == 0) {
             // File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir() + File.separator + "ocssw");
