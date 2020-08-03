@@ -65,6 +65,7 @@ public class OCSSWInfo {
     public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw";
     public static final String OCSSW_INSTALLER_PROGRAM_NAME_OLD = "install_ocssw.py";
     public static final String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
+    public static final String OCSSW_SEADAS_INFO_PROGRAM_NAME = "seadas_info";
 
     public static final String VIRTUAL_MACHINE_SERVER_API = "localhost";
 

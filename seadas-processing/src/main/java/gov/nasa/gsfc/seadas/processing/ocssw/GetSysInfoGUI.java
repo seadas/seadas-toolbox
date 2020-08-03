@@ -61,6 +61,13 @@ public class GetSysInfoGUI {
 //    PropertyContainer pc = new PropertyContainer();
 
     boolean windowsOS;
+    private String ocsswScriptsDirPath;
+    private String ocsswSeadasInfoPath;
+    private String ocsswRunnerScriptPath;
+    private String ocsswBinDirPath;
+    private String ocsswRootEnv = System.getenv(SEADAS_OCSSW_ROOT_ENV);
+
+
 
     public static void main(String args[]) {
 
@@ -270,19 +277,28 @@ public class GetSysInfoGUI {
         if ((ocsswLogDir != null ) && !Files.exists(Paths.get(ocsswLogDir))) {
             sysInfoText += "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
         }
-        sysInfoText += "OCSSW Location: " + ocsswLocation + "\n\n";
+        sysInfoText += "OCSSW Location: " + ocsswLocation + "\n";
 
-        sysInfoText += "-----------------------------------------------\n\n";
+        sysInfoText += "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
+
+        if (!ocsswRootOcsswInfo.equals(ocsswRootEnv)){
+            sysInfoText +=  "WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
+                    "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
+        }
+
+        sysInfoText += "\n-----------------------------------------------\n\n";
 
 //        String appDir = Config.instance().installDir().toString();
 
-        String command = ocsswRootOcsswInfo + "/scripts/ocssw_runner --ocsswroot " + ocsswRootOcsswInfo
-                + " seadas_info";
+        ocsswScriptsDirPath = ocsswRootOcsswInfo + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
+        ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
+        ocsswBinDirPath = ocsswRootOcsswInfo + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
 
-        String seadasProg = ocsswRootOcsswInfo + "/bin/seadas_info";
+        String command = ocsswRunnerScriptPath + " --ocsswroot " + ocsswRootOcsswInfo + " " + OCSSW_SEADAS_INFO_PROGRAM_NAME ;
+
+        ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
         if ((ocsswRootOcsswInfo == null ) || !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
-            String ocsswRootEnv = System.getenv("OCSSWROOT");
             if ((ocsswRootEnv != null) & Files.exists(Paths.get(ocsswRootEnv))) {
                sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
                sysInfoText += "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
@@ -290,16 +306,16 @@ public class GetSysInfoGUI {
                sysInfoTextarea.setText(sysInfoText);
             } else {
                 sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
-                sysInfoText += "Processers not installed " + "\n" + "\n";
+                sysInfoText += "Processers not installed " + "\n\n";
                 sysInfoText += "General System and Software: " + "\n";
                 sysInfoText += "These fields could possibly be determined by java?";
                 sysInfoTextarea.setText(sysInfoText);
             }
         } else {
 
-            if (!Files.isExecutable(Paths.get(seadasProg))) {
+            if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath))) {
                 sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
-                sysInfoText += "Can't find Seadas_info.py " + "\n" + "\n";
+                sysInfoText += "Can't find Seadas_info " + "\n\n";
                 sysInfoText += "General System and Software: " + "\n";
                 sysInfoText += "These fields could possibly be determined by java?";
                 sysInfoTextarea.setText(sysInfoText);
@@ -322,7 +338,7 @@ public class GetSysInfoGUI {
                     process.destroy();
 
                     if (process.exitValue() != 0) {
-                        System.out.println("Abnormal process termination");
+                        System.out.println("WARNING!: Non zero exit code returned for \'" + command + "\' ");
                     }
 
                 } catch (IOException e) {
