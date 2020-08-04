@@ -218,6 +218,13 @@ public class GetSysInfoGUI {
         String ocsswRootOcsswInfo = ocsswInfo.getOcsswRoot();
         String ocsswLogDir = ocsswInfo.getLogDirPath();
         String ocsswLocation = ocsswInfo.getOcsswLocation();
+        String ocsswDebugInfo = ocsswInfo.getOcsswDebugInfo();
+        Boolean ocsswDebug;
+        if (ocsswDebugInfo.equals("true")){
+            ocsswDebug = true;
+        } else{
+            ocsswDebug = false;
+        }
 
         //        System.out.println("appDir = " + installDir);
         //        System.out.println("ocsswRootOcsswInfo = " + ocsswRootOcsswInfo);
@@ -253,9 +260,13 @@ public class GetSysInfoGUI {
             sysInfoText += "WARNING!! File '" + vmOptionsGpt.toString() + "' does not exist" + "\n";
         }
         sysInfoText += "Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion() + "\n";
-        sysInfoText += "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
+        if (ocsswDebug) {
+            sysInfoText += "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
+        }
         sysInfoText += "Engine Specification Version: " + engineModuleInfo.getSpecificationVersion() + "\n";
-        sysInfoText += "Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
+        if (ocsswDebug) {
+            sysInfoText += "Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
+        }
         sysInfoText += "JRE: " + jre + "\n";
         sysInfoText += "JVM: " + jvm + "\n";
         sysInfoText += "Memory: " + memory + "\n\n";
@@ -263,7 +274,9 @@ public class GetSysInfoGUI {
         sysInfoText += "SeaDAS Toolbox: " + "\n";
 
         sysInfoText += "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
-        sysInfoText += "SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion() + "\n";
+        if (ocsswDebug) {
+            sysInfoText += "SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion() + "\n";
+        }
         if (!Files.exists(seadasProperties)) {
             sysInfoText += "Configuration: null" + "\n";
         } else {

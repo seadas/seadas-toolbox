@@ -424,4 +424,8 @@ public class OCSSWInfo {
     public String getContextProperty(String key, String defaultValue) {
         return preferences.get(key, defaultValue);
     }
+
+    public String getOcsswDebugInfo(){
+        return preferences.get(SEADAS_OCSSW_DEBUG, SEADAS_OCSSW_DEBUG_DEFAULT_VALUE);
+    }
 }
