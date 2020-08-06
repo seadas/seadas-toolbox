@@ -23,6 +23,10 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,6 +59,7 @@ public class GetSysInfoGUI {
     final String PANEL_NAME = "Seadas/System Information";
     final String HELP_ID = "getSysInfo";
     String sysInfoText;
+    String sysInfoText2;
 
     ModalDialog modalDialog;
 
@@ -155,11 +160,18 @@ public class GetSysInfoGUI {
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
 
-        JTextArea sysInfoTextarea = new JTextArea(45,66);
-        sysInfoTextarea.setLineWrap(true);
-        sysInfoTextarea.setEditable(false);
-        JScrollPane scroll = new JScrollPane(sysInfoTextarea);
+//        JTextArea sysInfoTextarea = new JTextArea(45,66);
+//        sysInfoTextarea.setLineWrap(true);
+//        sysInfoTextarea.setEditable(false);
+
+        JTextPane sysInfoTextpane = new JTextPane();
+
+//        JScrollPane scroll = new JScrollPane(sysInfoTextarea);
+        JScrollPane scroll = new JScrollPane(sysInfoTextpane);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+//        panel.add(scroll, gbc);
+
 
 //        final Preferences preferences = Config.instance("seadas").load().preferences();
 //        String lastOcsswLocation = preferences.get(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
@@ -235,71 +247,123 @@ public class GetSysInfoGUI {
 
         sysInfoText += "Application Version: " + appNameVersion + "\n";
         sysInfoText += "Installation Directory: " + appHomeDir.toString() + "\n";
+
+        appendToPane(sysInfoTextpane, sysInfoText, Color.BLACK);
+
         if (!appHomeDir.isDirectory()) {
             sysInfoText += "WARNING!! Directory '" + appHomeDir.toString() + "' does not exist" + "\n";
+            sysInfoText2 = "WARNING!! Directory '" + appHomeDir.toString() + "' does not exist" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         sysInfoText += "Data Directory: " + appDataDir.toString() + "\n";
+        sysInfoText2 = "Data Directory: " + appDataDir.toString() + "\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
         if (!appDataDir.isDirectory()) {
             sysInfoText += "WARNING!! Directory '" + appDataDir.toString() + "' does not exist" + "\n";
+            sysInfoText2 = "WARNING!! Directory '" + appDataDir.toString() + "' does not exist" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         sysInfoText += "Configuration: " + appConfig.toString() + "\n";
+        sysInfoText2 = "Configuration: " + appConfig.toString() + "\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         if (!Files.exists(appConfig)) {
             sysInfoText += "WARNING!! File '" + appConfig.toString() + "' does not exist" + "\n";
+            sysInfoText2 = "WARNING!! File '" + appConfig.toString() + "' does not exist" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         }
         if (!Files.exists(snapProperties)) {
             sysInfoText += "Configuration2: null" + "\n";
+            sysInfoText2 = "Configuration2: null" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         } else {
             sysInfoText += "Configuration2: " + snapProperties.toString() + "\n";
+            sysInfoText2 = "Configuration2: " + snapProperties.toString() + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         }
         sysInfoText += "VM Configuration: " + vmOptions.toString() + "\n";
+        sysInfoText2 = "VM Configuration: " + vmOptions.toString() + "\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         if (!Files.exists(vmOptions)) {
             sysInfoText += "WARNING!! File '" + vmOptions.toString() + "' does not exist" + "\n";
+            sysInfoText2 = "WARNING!! File '" + vmOptions.toString() + "' does not exist" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         sysInfoText += "VM Configuration (gpt): " + vmOptionsGpt.toString() + "\n";
         if (!Files.exists(vmOptionsGpt)) {
             sysInfoText += "WARNING!! File '" + vmOptionsGpt.toString() + "' does not exist" + "\n";
+            sysInfoText2 = "WARNING!! File '" + vmOptionsGpt.toString() + "' does not exist" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         sysInfoText += "Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion() + "\n";
+        sysInfoText2 = "Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion() + "\n";
         if (ocsswDebug) {
             sysInfoText += "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
+            sysInfoText2 += "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
         }
         sysInfoText += "Engine Specification Version: " + engineModuleInfo.getSpecificationVersion() + "\n";
+        sysInfoText2 += "Engine Specification Version: " + engineModuleInfo.getSpecificationVersion() + "\n";
         if (ocsswDebug) {
             sysInfoText += "Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
+            sysInfoText2 += "Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
         }
         sysInfoText += "JRE: " + jre + "\n";
+        sysInfoText2 += "JRE: " + jre + "\n";
         sysInfoText += "JVM: " + jvm + "\n";
+        sysInfoText2 += "JVM: " + jvm + "\n";
         sysInfoText += "Memory: " + memory + "\n\n";
+        sysInfoText2 += "Memory: " + memory + "\n\n";
 
         sysInfoText += "SeaDAS Toolbox: " + "\n";
+        sysInfoText2 += "SeaDAS Toolbox: " + "\n";
 
         sysInfoText += "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
+        sysInfoText2 += "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
         if (ocsswDebug) {
             sysInfoText += "SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion() + "\n";
+            sysInfoText2 += "SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion() + "\n";
         }
         if (!Files.exists(seadasProperties)) {
             sysInfoText += "Configuration: null" + "\n";
+            sysInfoText2 += "Configuration: null" + "\n";
         } else {
             sysInfoText += "Configuration: " + seadasProperties.toString() + "\n";
+            sysInfoText2 += "Configuration: " + seadasProperties.toString() + "\n";
         }
         sysInfoText += "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+        sysInfoText2 += "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
         if ((ocsswRootOcsswInfo != null ) && !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
             sysInfoText += "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
+            sysInfoText2 = "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         sysInfoText += "OCSSW Log Directory: " + ocsswLogDir + "\n";
+        sysInfoText2 = "OCSSW Log Directory: " + ocsswLogDir + "\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         if ((ocsswLogDir != null ) && !Files.exists(Paths.get(ocsswLogDir))) {
             sysInfoText += "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
+            sysInfoText2 = "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         sysInfoText += "OCSSW Location: " + ocsswLocation + "\n";
+        sysInfoText2 = "OCSSW Location: " + ocsswLocation + "\n";
 
         sysInfoText += "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
-
+        sysInfoText2 += "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         if (!ocsswRootOcsswInfo.equals(ocsswRootEnv)){
             sysInfoText +=  "WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
                     "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
+            sysInfoText2 =  "WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
+                    "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
 
         sysInfoText += "\n-----------------------------------------------\n\n";
+        sysInfoText2 = "\n-----------------------------------------------\n\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 
 //        String appDir = Config.instance().installDir().toString();
 
@@ -313,28 +377,53 @@ public class GetSysInfoGUI {
 
         if ((ocsswRootOcsswInfo == null ) || !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
             if ((ocsswRootEnv != null) & Files.exists(Paths.get(ocsswRootEnv))) {
-               sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
-               sysInfoText += "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
+                sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
+                sysInfoText2 = "NASA Science Processing (OCSSW): " + "\n";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
+                sysInfoText += "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
                        "'. To configure the GUI to use this installation then update the 'local directory'  in Menu > SeaDAS-OCSSW > OCSSW Configuration";
-               sysInfoTextarea.setText(sysInfoText);
+                sysInfoText2 = "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
+                        "'. To configure the GUI to use this installation then update the 'local directory'  in Menu > SeaDAS-OCSSW > OCSSW Configuration";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
+
+//               sysInfoTextarea.setText(sysInfoText);
             } else {
                 sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
+                sysInfoText2 = "NASA Science Processing (OCSSW): " + "\n";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
                 sysInfoText += "Processers not installed " + "\n\n";
+                sysInfoText2 = "Warning! Processers not installed " + "\n\n";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
+
                 sysInfoText += "General System and Software: " + "\n";
+                sysInfoText2 += "General System and Software: " + "\n";
                 sysInfoText += "These fields could possibly be determined by java?";
-                sysInfoTextarea.setText(sysInfoText);
+                sysInfoText2 += "These fields could possibly be determined by java?";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+//                sysInfoTextarea.setText(sysInfoText);
             }
         } else {
 
             if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath))) {
                 sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
+                sysInfoText2 = "NASA Science Processing (OCSSW): " + "\n";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
                 sysInfoText += "Can't find Seadas_info " + "\n\n";
+                sysInfoText2 = "Warning! Can't find Seadas_info " + "\n\n";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
                 sysInfoText += "General System and Software: " + "\n";
+                sysInfoText2 = "General System and Software: " + "\n";
                 sysInfoText += "These fields could possibly be determined by java?";
-                sysInfoTextarea.setText(sysInfoText);
+                sysInfoText2 += "These fields could possibly be determined by java?";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
+//                sysInfoTextarea.setText(sysInfoText);
             } else {
 //            System.out.println("command is: " + command);
-
+                sysInfoText2 = "";
                 try {
                     Process process = Runtime.getRuntime().exec(command);
 
@@ -343,9 +432,11 @@ public class GetSysInfoGUI {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         sysInfoText += line + "\n";
+                        sysInfoText2 += line + "\n";
                     }
+                    appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 
-                    sysInfoTextarea.setText(sysInfoText);
+//                    sysInfoTextarea.setText(sysInfoText);
                     reader.close();
 
                     process.destroy();
@@ -357,18 +448,37 @@ public class GetSysInfoGUI {
                 } catch (IOException e) {
                     String warning = "WARNING!! Could not retrieve system parameters because command \'" + command + "\' failed";
                     sysInfoText += warning + "\n";
+                    sysInfoText2 += warning + "\n";
                     sysInfoText += e.toString() + "\n";
+                    sysInfoText2 += e.toString() + "\n";
                     e.printStackTrace();
                 }
             }
         }
+        sysInfoTextpane.setEditable(false);
+
         gbc.gridx = 0;
         gbc.weightx = 1;
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
+        sysInfoTextpane.setPreferredSize(new Dimension(750,750));
+
         panel.add(scroll, gbc);
 
         return panel;
+    }
+    private void appendToPane(JTextPane tp, String msg, Color c)
+    {
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+        int len = tp.getDocument().getLength();
+        tp.setCaretPosition(len);
+        tp.setCharacterAttributes(aset, false);
+        tp.replaceSelection(msg);
     }
 
     public File getDir() {
