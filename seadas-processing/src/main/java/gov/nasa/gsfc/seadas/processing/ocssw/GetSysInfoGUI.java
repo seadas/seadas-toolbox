@@ -223,8 +223,8 @@ public class GetSysInfoGUI {
 //        System.out.println("SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion());
 //
 
-        String test =Config.instance().preferences().get("seadas.version", null);
-        System.out.println("seadas.version=" + test);
+//        String test =Config.instance().preferences().get("seadas.version", null);
+//        System.out.println("seadas.version=" + test);
 
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
         String ocsswRootOcsswInfo = ocsswInfo.getOcsswRoot();
@@ -393,14 +393,11 @@ public class GetSysInfoGUI {
                 sysInfoText2 = "NASA Science Processing (OCSSW): " + "\n";
                 appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 
-                sysInfoText += "Processers not installed " + "\n\n";
+                sysInfoText += "Warning! Processers not installed " + "\n\n";
                 sysInfoText2 = "Warning! Processers not installed " + "\n\n";
                 appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
 
-                sysInfoText += "General System and Software: " + "\n";
-                sysInfoText2 += "General System and Software: " + "\n";
-                sysInfoText += "These fields could possibly be determined by java?";
-                sysInfoText2 += "These fields could possibly be determined by java?";
+                printGeneralSystemInfo(ocsswDebug);
                 appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 //                sysInfoTextarea.setText(sysInfoText);
             }
@@ -411,13 +408,11 @@ public class GetSysInfoGUI {
                 sysInfoText2 = "NASA Science Processing (OCSSW): " + "\n";
                 appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 
-                sysInfoText += "Can't find Seadas_info " + "\n\n";
-                sysInfoText2 = "Warning! Can't find Seadas_info " + "\n\n";
+                sysInfoText += "WARNING! Cannot find 'seadas_info' in the OCSSW bin directory" + "\n\n";
+                sysInfoText2 = "WARNING! Cannot find 'seadas_info' in the OCSSW bin directory" + "\n\n";
                 appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
-                sysInfoText += "General System and Software: " + "\n";
-                sysInfoText2 = "General System and Software: " + "\n";
-                sysInfoText += "These fields could possibly be determined by java?";
-                sysInfoText2 += "These fields could possibly be determined by java?";
+
+                printGeneralSystemInfo(ocsswDebug);
                 appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 
 //                sysInfoTextarea.setText(sysInfoText);
@@ -434,7 +429,7 @@ public class GetSysInfoGUI {
                         sysInfoText += line + "\n";
                         sysInfoText2 += line + "\n";
                     }
-                    appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+//                    appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 
 //                    sysInfoTextarea.setText(sysInfoText);
                     reader.close();
@@ -453,6 +448,7 @@ public class GetSysInfoGUI {
                     sysInfoText2 += e.toString() + "\n";
                     e.printStackTrace();
                 }
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
             }
         }
         sysInfoTextpane.setEditable(false);
@@ -467,6 +463,48 @@ public class GetSysInfoGUI {
 
         return panel;
     }
+
+    private void printGeneralSystemInfo(Boolean ocsswDebug) {
+        sysInfoText += "General System and Software: " + "\n";
+        sysInfoText2 = "General System and Software: " + "\n";
+        sysInfoText += "Operating System: " + System.getProperty("os.name");
+        sysInfoText += " " + System.getProperty("os.version") + "\n";
+        sysInfoText2 += "Operating System: " + System.getProperty("os.name");
+        sysInfoText2 += " " + System.getProperty("os.version") + "\n";
+        sysInfoText += "Java Version: " + System.getProperty("java.version") + "\n";
+        sysInfoText2 += "Java Version: " + System.getProperty("java.version") + "\n";
+
+        if (ocsswDebug) {
+            try {
+                Process process = Runtime.getRuntime().exec("python --version");
+
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sysInfoText += line + "\n";
+                    sysInfoText2 += line + "\n";
+                }
+
+                reader.close();
+
+                process.destroy();
+
+                if (process.exitValue() != 0) {
+                    System.out.println("WARNING!: Non zero exit code returned for 'python --version' ");
+                }
+
+            } catch (IOException e) {
+                String warning = "WARNING!! Could not retrieve system parameters because 'pyhton --version' failed";
+                sysInfoText += warning + "\n";
+                sysInfoText2 += warning + "\n";
+                sysInfoText += e.toString() + "\n";
+                sysInfoText2 += e.toString() + "\n";
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void appendToPane(JTextPane tp, String msg, Color c)
     {
         StyleContext sc = StyleContext.getDefaultStyleContext();
