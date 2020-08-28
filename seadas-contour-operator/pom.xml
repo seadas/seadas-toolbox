@@ -41,7 +41,7 @@
          <dependency>
              <groupId>org.esa.snap</groupId>
              <artifactId>snap-core</artifactId>
-             <version>6.0.4</version>
+             <version>${snap.version}</version>
          </dependency>
          <dependency>
              <groupId>org.esa.snap</groupId>

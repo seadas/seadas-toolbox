@@ -22,16 +22,16 @@ import java.awt.event.ActionEvent;
         category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.GetSysInfoAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_ GetSysInfoAction_Name",
-        popupText = "#CTL_ GetSysInfoAction_Name"
+        displayName = "#CTL_GetSysInfoAction_Name",
+        popupText = "#CTL_GetSysInfoAction_Description"
 )
 @ActionReference(
         path = "Menu/SeaDAS-OCSSW",
         position = 260
 )
 @NbBundle.Messages({
-        "CTL_GetSysInfoAction_Name=getSysInfo...",
-        "CTL_GetSysInfoAction_DialogTitle=get_sys_info",
+        "CTL_GetSysInfoAction_Name=SeaDAS/System Info...",
+        "CTL_GetSysInfoAction_DialogTitle=SeaDAS/System Information",
         "CTL_GetSysInfoAction_Description=Print SeaDAS and OCSSW info for trouble shooting."
 })
 public class GetSysInfoAction extends AbstractSnapAction implements ContextAwareAction, LookupListener {

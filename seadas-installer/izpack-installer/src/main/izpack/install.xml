@@ -51,7 +51,7 @@
   <resources>
     <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
     <res id="HTMLInfoPanel.info" src="about/readme.html"/>
-<!--    <res id="JDKPathPanel.info" src="about/readme.html"/>-->
+    <res id="JDKPathPanel.info" src="about/readme.html"/>
     <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
     <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
     <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -83,10 +83,11 @@
     <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
     <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
-      <variable name="JDKPathPanel.minVersion" value="1.8.0_201" />
-<!--      <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />-->
-      <variable name="JDKPathPanel.skipIfValid" value="yes" />
+    <variable name="JDKPathPanel.minVersion" value="1.8.0_201" />
+    <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />
+    <variable name="JDKPathPanel.skipIfValid" value="yes" />
     <variable name="extra_clusters" value="seadas-toolbox" />
+    <variable name="jdkhome" value="/home/aynur/seadas-installer/jre"/>
 
   </variables>
 
@@ -183,29 +184,41 @@
         to the following technological innovations: Extensibility, Portability, Modular Rich
         Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
         Graph Processing Framework.</description>
-      <fileset dir="packs/snap" casesensitive="true" os="unix" condition="izpack.linuxinstall">
+      <fileset dir="packs/snap" unpack="true"
+               override="true" casesensitive="true" os="unix" condition="izpack.linuxinstall">
         <exclude name="bin/*.bat"/>
         <exclude name="bin/*.exe"/>
         <exclude name="bin/*.command"/>
         <exclude name="bin/meris*.*"/>
         <exclude name="bin/aatsr-sst.*"/>
         <exclude name="bin/flhmci.*"/>
+        <exclude name="jre/*macos*"/>
+        <exclude name="jre/*windows*"/>
       </fileset>
-      <fileset dir="packs/snap" override="asktrue" casesensitive="true" os="mac" condition="izpack.macinstall">
+      <fileset  dir="packs/snap" unpack="true" override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
         <exclude name="bin/*.bat"/>
         <exclude name="bin/*.sh"/>
         <exclude name="bin/meris*.*"/>
         <exclude name="bin/aatsr-sst.*"/>
         <exclude name="bin/flhmci.*"/>
+        <exclude name="jre/*linux*"/>
+        <exclude name="jre/*windows*"/>
       </fileset>
-      <fileset dir="packs/snap" override="asktrue" casesensitive="true" os="windows" condition="izpack.windowsinstall">
+      <fileset dir="packs/snap" unpack="true"  override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
         <exclude name="bin/*.bat"/>
         <exclude name="bin/*.sh"/>
         <exclude name="bin/meris*.*"/>
         <exclude name="bin/aatsr-sst.*"/>
         <exclude name="bin/flhmci.*"/>
+        <exclude name="jre/*macos*"/>
+        <exclude name="jre/*linux*"/>
       </fileset>
-      <parsable encoding="UTF-8">
+      <fileset dir="packs/files/unix" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
+      <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac" condition="izpack.macinstall"/>
+      <fileset dir="packs/files/winx32" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
+      <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
+      <fileset dir="packs/snap" unpack="true"  override="true" casesensitive="true" os="mac" condition="izpack.macinstall"/>
+      <parsable type="plain">
         <fileset targetdir="${INSTALL_PATH}/bin">
           <include name="*.sh"/>
           <include name="snap"/>
