@@ -57,7 +57,7 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_SERVER_ADDRESS_DEFAULT_VALUE = "";
     final static String SEADAS_CLIENT_ID_DEFAULT_VALUE = System.getProperty("user.name");
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasOCSSWSharedDir";
-    final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "true";
+    final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "false";
 
 
     final static String OCSSW_BRANCH_LABEL = "OCSSW Branch";
