@@ -70,28 +70,28 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-processing</artifactId>
-            <version>${project.version}</version>
+            <version>${seadas-processing.version}</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
             <!--<artifactId>seadas-processing-ui</artifactId>-->
             <!--<version>${project.version}</version>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-reader</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-reader</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-bathymetry-operator</artifactId>
-            <version>${project.version}</version>
+            <version>${seadas-bathymetry-operator.version}</version>
         </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-reader</artifactId>
-            <version>1.8.0-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-reader</artifactId>-->
+            <!--<version>1.8.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
             <!--<artifactId>seadas-reader-ui</artifactId>-->
@@ -100,12 +100,12 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-contour-operator</artifactId>
-            <version>${project.version}</version>
+            <version>${seadas-contour-operator.version}</version>
         </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-watermask-operator</artifactId>
-            <version>${project.version}</version>
+            <version>${seadas-watermask-operator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>

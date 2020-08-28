@@ -25,8 +25,8 @@ import java.awt.event.ActionEvent;
         position = 250
 )
 @NbBundle.Messages({
-        "CTL_OCSSWConfigAction_Name=OCSSW Configuration",
-        "CTL_OCSSWConfigAction_DialogTitle=OCSSW Configuration",
+        "CTL_OCSSWConfigAction_Name=Configure OCSSW...",
+        "CTL_OCSSWConfigAction_DialogTitle=Configure OCSSW",
         "CTL_OCSSWConfigAction_Description= Set values for seadas.config properties (variables)."
 })
 public class OCSSWConfigAction extends AbstractSnapAction implements ContextAwareAction, LookupListener {
