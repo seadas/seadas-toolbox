@@ -8,11 +8,11 @@ package gov.nasa.gsfc.seadas.contour.util;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.vividsolutions.jts.awt.GeometryCollectionShape;
-import com.vividsolutions.jts.awt.PolygonShape;
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.awt.GeometryCollectionShape;
+import org.locationtech.jts.awt.PolygonShape;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
 import java.awt.*;
 import java.awt.geom.*;
