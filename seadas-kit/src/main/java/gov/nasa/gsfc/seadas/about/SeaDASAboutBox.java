@@ -111,7 +111,7 @@ public class SeaDASAboutBox extends JPanel {
         // todo Overrode this because SeaDASAboutBox version not defined in macro
         final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
 
-        panel.add(new JLabel("<html><b>SeaDAS Toolbox version " + moduleInfo.getImplementationVersion() + "</b>", SwingConstants.RIGHT));
+        panel.add(new JLabel("<html><b>SeaDAS Toolbox version " + moduleInfo.getSpecificationVersion() + "</b>", SwingConstants.RIGHT));
 
         Version specVersion = Version.parseVersion(moduleInfo.getSpecificationVersion().toString());
         String versionString = String.format("%s.%s.%s", specVersion.getMajor(), specVersion.getMinor(), specVersion.getMicro());

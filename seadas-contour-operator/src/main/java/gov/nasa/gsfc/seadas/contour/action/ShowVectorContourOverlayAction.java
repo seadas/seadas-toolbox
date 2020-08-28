@@ -1,8 +1,9 @@
 package gov.nasa.gsfc.seadas.contour.action;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.GeometryFactory;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.operator.Contour1Spi;
@@ -235,7 +236,7 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
     private FeatureCollection<SimpleFeatureType, SimpleFeature> createContourFeatureCollection(ParameterBlockJAI pb) {
 
         RenderedOp dest = JAI.create("Contour", pb);
-        Collection<org.locationtech.jts.geom.LineString > contours = (Collection<org.locationtech.jts.geom.LineString >) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
+        Collection<LineString > contours = (Collection<LineString >) dest.getProperty(ContourDescriptor.CONTOUR_PROPERTY_NAME);
         SimpleFeatureType featureType = null;
         FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
         try {
@@ -245,10 +246,10 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
             ioe.printStackTrace();
         }
         LineString lineString;
-        org.locationtech.jts.geom.Coordinate[] geomCoordinates;
-        org.locationtech.jts.geom.PrecisionModel geomPrecisionModel;
+        Coordinate[] geomCoordinates;
+        PrecisionModel geomPrecisionModel;
         PrecisionModel precisionModel;
-        for (org.locationtech.jts.geom.LineString geomLineString : contours) {
+        for (LineString geomLineString : contours) {
             geomCoordinates = geomLineString.getCoordinates();
             geomPrecisionModel = geomLineString.getPrecisionModel();
             precisionModel = new PrecisionModel(geomPrecisionModel.getScale(), geomPrecisionModel.getOffsetX(), geomPrecisionModel.getOffsetY());
@@ -278,11 +279,11 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
         return featureCollection;
     }
 
-    private Coordinate[] transformaCoordinates(org.locationtech.jts.geom.Coordinate[] geomCoordinates){
+    private Coordinate[] transformaCoordinates(Coordinate[] geomCoordinates){
         Coordinate[] coordinates = new Coordinate[geomCoordinates.length];
         int i = 0;
 
-        for (org.locationtech.jts.geom.Coordinate coordinate:geomCoordinates) {
+        for (Coordinate coordinate:geomCoordinates) {
             coordinates[i++] = new Coordinate(coordinate.x, coordinate.y, coordinate.z);
         }
         return coordinates;
@@ -291,7 +292,7 @@ public class ShowVectorContourOverlayAction extends AbstractSnapAction implement
     private static void transformFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection, CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws TransformException {
         final GeometryCoordinateSequenceTransformer transform = FeatureUtils.getTransform(sourceCRS, targetCRS);
         final FeatureIterator<SimpleFeature> features = featureCollection.features();
-        final com.vividsolutions.jts.geom.GeometryFactory geometryFactory = new com.vividsolutions.jts.geom.GeometryFactory();
+        final GeometryFactory geometryFactory = new GeometryFactory();
         while (features.hasNext()) {
             final SimpleFeature simpleFeature = features.next();
             //System.out.println("simple feature : " +  simpleFeature.toString());

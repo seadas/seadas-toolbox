@@ -28,11 +28,13 @@
     <url>https://seadas.gsfc.nasa.gov</url>
 
     <modules>
+
         <module>seadas-watermask-operator</module>
         <module>seadas-processing</module>
         <module>seadas-contour-operator</module>
         <module>seadas-bathymetry-operator</module>
-        <module>seadas-reader</module>
+        <!--<module>seadas-reader</module>-->
+        <!--<module>seadas-writeimage-operator</module>-->
         <module>seadas-kit</module>
     </modules>
 
@@ -46,14 +48,19 @@
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <seadas.version>1.0.0-SNAPSHOT</seadas.version>
+        <seadas-toolbox.version>1.0.0-SNAPSHOT</seadas-toolbox.version>
+        <seadas-contour-operator.version>8.0.0-SNAPSHOT</seadas-contour-operator.version>
+        <seadas-processing.version>8.0.0-SNAPSHOT</seadas-processing.version>
+        <seadas-watermask-operator.version>8.0.0-SNAPSHOT</seadas-watermask-operator.version>
+        <seadas-bathymetry-operator.version>8.0.0-SNAPSHOT</seadas-bathymetry-operator.version>
+
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>4.3.22</netcdf.version>
         <jersey.version>2.27</jersey.version>
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
-        <seadas.reader.version>1.8-SNAPSHOT</seadas.reader.version>
+        <!--<seadas.reader.version>1.8-SNAPSHOT</seadas.reader.version>-->
         <!--<seadas.reader.ui.version>1.8-SNAPSHOT</seadas.reader.ui.version>-->
     </properties>
 
@@ -410,9 +417,9 @@
                             </goals>
                             <configuration>
                                 <name>seadas.nbmSpecVersion</name>
-                                <value>${project.version}</value>
+                                <value>${seadas-toolbox.version}</value>
                                 <regex>-SNAPSHOT</regex>
-                                <replacement>.0</replacement>
+                                <replacement></replacement>
                                 <failIfNoMatch>false</failIfNoMatch>
                             </configuration>
                         </execution>
@@ -507,9 +514,9 @@
         </developer>
 
         <developer>
-            <id>melliot</id>
-            <name>Matt Elliott</name>
-            <email>matthew.h.elliott@nasa.gov</email>
+            <id>byang</id>
+            <name>Bing Yang</name>
+            <email>bing.yang@nasa.gov</email>
             <organization>NASA OBPG</organization>
             <roles>
                 <role>Java Developer</role>
