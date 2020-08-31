@@ -13,7 +13,7 @@
 
         <field type="check" variable="checkSelection.1">
             <!--<description id="description.check.1" txt="This is a description for a check box" /> -->
-            <spec txt="Run SeaDAS after Install" id="runSeaDASAfterInstall" true="on" false="off" set="true"/>
+            <spec txt="Run SeaDAS after Install" id="runSeaDASAfterInstall" true="true" false="false" set="false"/>
         </field>
         <field type="staticText" align="left" txt="Welcome to SeaDAS Install" id="welcome1"/>
         <field type="text" variable="welcome2">
