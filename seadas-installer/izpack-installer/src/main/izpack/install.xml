@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               version="5.0"
               xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
->
+  >
   <info>
     <appname>SeaDAS IzPack Installer</appname>
     <appversion>1.0.0</appversion>
@@ -11,7 +11,7 @@
     <requiresjdk>yes</requiresjdk>
     <url>https://seadas.gsfc.nasa.gov</url>
     <authors>
-        <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
+      <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
     </authors>
     <summarylogfilepath>$INSTALL_PATH/installinfo/InstallSummary.html</summarylogfilepath>
   </info>
@@ -77,8 +77,8 @@
     <variable name="WELCOME_TEXT" value="SeaDAS IzPack Installer"/>
     <variable name="WELCOME_VERSION" value="Version: 1"/>
     <variable name="FINISH_TEXT" value="SeaDAS-8 is successfuly installed. Enjoy!"/>
-<!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
-<!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/seadas"/>-->
+    <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
+    <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/seadas"/>-->
     <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
     <variable name="ceresContext" value="seadas"/>
     <variable name="seadasDebug" value="false"/>
@@ -91,8 +91,7 @@
     <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />
     <variable name="JDKPathPanel.skipIfValid" value="yes" />
     <variable name="extra_clusters" value="seadas-toolbox" />
-    <variable name="jdkhome" value="/home/aynur/seadas-installer/jre"/>
-
+    <!--    <variable name="jdkhome" value="/home/aynur/install-seadas/jre"/>-->
   </variables>
 
   <conditions>
@@ -141,10 +140,10 @@
       <name>runSeaDASAfterInstall</name>
       <value>${runSeaDASAfterInstall}</value>
     </condition>
-<!--    <condition type="ref" refid="runSeaDAS">-->
-<!--      <name>runSeaDASAfterInstall</name>-->
-<!--      <value>${runSeaDASAfterInstall}</value>-->
-<!--    </condition>-->
+    <!--    <condition type="ref" refid="runSeaDAS">-->
+    <!--      <name>runSeaDASAfterInstall</name>-->
+    <!--      <value>${runSeaDASAfterInstall}</value>-->
+    <!--    </condition>-->
   </conditions>
 
 
@@ -157,26 +156,29 @@
     <panel classname="HTMLInfoPanel" id="welcome"/>
 
     <!-- this is our custom panel, loaded from the panels.jar file -->
-<!--    <panel classname="com.izforge.izpack.panels.mypanels.MyHelloPanel" id="myHello">-->
-<!--      <configuration>-->
-<!--        <param name="welcome1" value="Welcome to SeaDAS Installation."/>-->
-<!--        <param name="welcome2" value="Enjoy!"/>-->
-<!--      </configuration>-->
-<!--    </panel>-->
+    <!--    <panel classname="com.izforge.izpack.panels.mypanels.MyHelloPanel" id="myHello">-->
+    <!--      <configuration>-->
+    <!--        <param name="welcome1" value="Welcome to SeaDAS Installation."/>-->
+    <!--        <param name="welcome2" value="Enjoy!"/>-->
+    <!--      </configuration>-->
+    <!--    </panel>-->
 
 
     <panel classname="InstallationTypePanel"/>
     <panel classname="HTMLLicencePanel" id="licence" />
-<!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
-    <panel classname="TargetPanel" id="install_dir"/>
+    <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
+    <panel classname="TargetPanel" id="install_dir" />
     <panel classname="PacksPanel" id="sdk_pack_select"/>
     <panel classname="InstallPanel" id="install"/>
     <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-<!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-<!--    <panel classname="ProcessPanel" id="processPanel"/>-->
+    <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
+    <!--    <panel classname="ProcessPanel" id="processPanel"/>-->
     <panel classname="FinishPanel" id="finish"/>
   </panels>
 
+  <dynamicvariables>
+    <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201"/>
+  </dynamicvariables>
 
   <packs>
     <pack name="snap" preselected="yes" required="yes">
@@ -188,40 +190,15 @@
         to the following technological innovations: Extensibility, Portability, Modular Rich
         Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
         Graph Processing Framework.</description>
-      <fileset dir="packs/snap" unpack="true"
-               override="true" casesensitive="true" os="unix" condition="izpack.linuxinstall">
+      <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall">
         <exclude name="bin/*.bat"/>
         <exclude name="bin/*.exe"/>
         <exclude name="bin/*.command"/>
         <exclude name="bin/meris*.*"/>
         <exclude name="bin/aatsr-sst.*"/>
         <exclude name="bin/flhmci.*"/>
-        <exclude name="jre/*macos*"/>
-        <exclude name="jre/*windows*"/>
       </fileset>
-      <fileset  dir="packs/snap" unpack="true" override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
-        <exclude name="bin/*.bat"/>
-        <exclude name="bin/*.sh"/>
-        <exclude name="bin/meris*.*"/>
-        <exclude name="bin/aatsr-sst.*"/>
-        <exclude name="bin/flhmci.*"/>
-        <exclude name="jre/*linux*"/>
-        <exclude name="jre/*windows*"/>
-      </fileset>
-      <fileset dir="packs/snap" unpack="true"  override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
-        <exclude name="bin/*.bat"/>
-        <exclude name="bin/*.sh"/>
-        <exclude name="bin/meris*.*"/>
-        <exclude name="bin/aatsr-sst.*"/>
-        <exclude name="bin/flhmci.*"/>
-        <exclude name="jre/*macos*"/>
-        <exclude name="jre/*linux*"/>
-      </fileset>
-      <fileset dir="packs/files/unix" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
-      <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac" condition="izpack.macinstall"/>
-      <fileset dir="packs/files/winx32" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
-      <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
-      <fileset dir="packs/snap" unpack="true"  override="true" casesensitive="true" os="mac" condition="izpack.macinstall"/>
+      <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
       <parsable type="plain">
         <fileset targetdir="${INSTALL_PATH}/bin">
           <include name="*.sh"/>
@@ -275,6 +252,16 @@
       <description>NASA SeaDAS Toolbox</description>
       <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
       </fileset>
+    </pack>
+    <pack name="Oracle JRE" required="yes" id="pack.oracle.jre">
+      <description>Oracle JRE</description>
+      <file src="packs/jre/jre-8u201-linux-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
+      </file>
+      <executable type="bin" stage="never" failure="warn" keep="true">
+        <!--        <os family="unix"/>-->
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/bin" includes="*" />
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/lib" includes="*" />
+      </executable>
     </pack>
   </packs>
 

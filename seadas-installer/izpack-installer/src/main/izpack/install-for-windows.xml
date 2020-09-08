@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<installation xmlns:izpack="http://izpack.org/schema/installation"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              version="5.0"
+              xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+    >
+    <info>
+        <appname>SeaDAS IzPack Installer</appname>
+        <appversion>1.0.0</appversion>
+        <javaversion>1.8.0_241</javaversion>
+        <requiresjdk>yes</requiresjdk>
+        <url>https://seadas.gsfc.nasa.gov</url>
+        <authors>
+            <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
+        </authors>
+        <summarylogfilepath>$INSTALL_PATH/installinfo/InstallSummary.html</summarylogfilepath>
+    </info>
+
+    <guiprefs width="800" height="600" resizable="yes">
+        <modifier key="useSplashScreen" value="1000"/>
+        <laf name="looks">
+            <os family="unix"/>
+            <param name="variant" value="mist-aqua"/>
+        </laf>
+        <laf name="looks">
+            <os family="windows"/>
+            <param name="variant" value="extwin"/>
+        </laf>
+        <laf name="substance">
+            <os family="mac"/>
+            <param name="variant" value="nebula-brick-wall"/>
+        </laf>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="useButtonIcons" value="yes"/>
+        <modifier key="useLabelIcons" value="no"/>
+        <modifier key="labelGap" value="2"/>
+        <modifier key="layoutAnchor" value="NORTHWEST"/>
+        <modifier key="headingImageOnLeft" value="yes"/>
+        <modifier key="headingLineCount" value="1"/>
+        <modifier key="headingFontSize" value="1.5"/>
+        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+        <modifier key="headingPanelCounter" value="progressbar"/>
+        <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+    </guiprefs>
+
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+
+    <resources>
+        <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
+        <res id="HTMLInfoPanel.info" src="about/readme.html"/>
+        <res id="JDKPathPanel.info" src="about/readme.html"/>
+        <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
+        <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
+        <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
+        <res id="TargetPanel.dir.unix" src="resources/TargetDirUnix.txt"/>
+        <res id="TargetPanel.dir.ubuntu_linux" src="resources/TargetDirUnix.txt"/>
+        <res id="SeaDASLogo" src="images/seadas-icon-128.png"/>
+        <res id="Installer.image" src="images/seadas-installer.png"/>
+        <res id="Splash.image" src="images/seadas-installer.png"/>
+        <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
+        <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
+        <res id="ProcessPanel.Spec.xml" src="resources/processPanelSpec.xml"/>
+        <res id="FinishPanel.finish" src="about/finish.html"/>
+    </resources>
+    <variables>
+        <variable name="INSTALL_PATH" value="$USER_HOME"/>
+        <variable name="app.name" value="@{appname}"/>
+        <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
+        <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
+        <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
+        <variable name="S3TBXROOT" value="$INSTALL_PATH/seadas/s3tbx"/>
+        <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
+        <variable name="InstallerFrame.logfilePath" value="Default"/>
+        <variable name="WELCOME_TEXT" value="SeaDAS IzPack Installer"/>
+        <variable name="WELCOME_VERSION" value="Version: 1"/>
+        <variable name="FINISH_TEXT" value="SeaDAS-8 is successfuly installed. Enjoy!"/>
+        <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
+        <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/seadas"/>-->
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+        <variable name="ceresContext" value="seadas"/>
+        <variable name="seadasDebug" value="false"/>
+        <variable name="maxHeapSize" value="4096M"/>
+        <variable name="installer:maxHeapSize" value="4096M"/>
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+        <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
+
+        <variable name="JDKPathPanel.minVersion" value="1.8.0_201" />
+        <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />
+        <variable name="JDKPathPanel.skipIfValid" value="yes" />
+        <variable name="extra_clusters" value="seadas-toolbox" />
+    </variables>
+
+    <conditions>
+        <condition type="variable" id="standardinstallation">
+            <name>setup.type</name>
+            <value>standard</value>
+        </condition>
+        <condition type="variable" id="expertinstallation">
+            <name>setup.type</name>
+            <value>expert</value>
+        </condition>
+        <condition type="java" id="installonwindows">
+            <java>
+                <class>com.izforge.izpack.util.OsVersion</class>
+                <field>IS_WINDOWS</field>
+            </java>
+            <returnvalue type="boolean">true</returnvalue>
+        </condition>
+        <condition type="java" id="installonmac">
+            <java>
+                <class>com.izforge.izpack.util.OsVersion</class>
+                <field>IS_MAC</field>
+            </java>
+            <returnvalue type="boolean">true</returnvalue>
+        </condition>
+        <condition type="java" id="installonlinux">
+            <java>
+                <class>com.izforge.izpack.util.OsVersion</class>
+                <field>IS_LINUX</field>
+            </java>
+            <returnvalue type="boolean">true</returnvalue>
+        </condition>
+        <condition type="and" id="standardinstallation.onwindows">
+            <condition type="ref" refid="standardinstallation"/>
+            <condition type="ref" refid="installonwindows"/>
+        </condition>
+        <condition id="start-after-install" type="variable">
+            <name>start.after.install</name>
+            <value>true</value>
+        </condition>
+        <condition id="install-as-service" type="variable">
+            <name>install.as.service</name>
+            <value>true</value>
+        </condition>
+        <condition type="variable" id="runSeaDAS">
+            <name>runSeaDASAfterInstall</name>
+            <value>${runSeaDASAfterInstall}</value>
+        </condition>
+        <!--    <condition type="ref" refid="runSeaDAS">-->
+        <!--      <name>runSeaDASAfterInstall</name>-->
+        <!--      <value>${runSeaDASAfterInstall}</value>-->
+        <!--    </condition>-->
+    </conditions>
+
+
+    <!-- pull in the built jar file for our custom panel -->
+    <jar src="custom/izpack-panels.jar" stage="both"/>
+
+    <panels>
+
+        <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
+        <panel classname="HTMLInfoPanel" id="welcome"/>
+
+        <!-- this is our custom panel, loaded from the panels.jar file -->
+        <!--    <panel classname="com.izforge.izpack.panels.mypanels.MyHelloPanel" id="myHello">-->
+        <!--      <configuration>-->
+        <!--        <param name="welcome1" value="Welcome to SeaDAS Installation."/>-->
+        <!--        <param name="welcome2" value="Enjoy!"/>-->
+        <!--      </configuration>-->
+        <!--    </panel>-->
+
+
+        <panel classname="InstallationTypePanel"/>
+        <panel classname="HTMLLicencePanel" id="licence" />
+        <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
+        <panel classname="TargetPanel" id="install_dir" />
+        <panel classname="PacksPanel" id="sdk_pack_select"/>
+        <panel classname="InstallPanel" id="install"/>
+        <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
+        <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
+        <!--    <panel classname="ProcessPanel" id="processPanel"/>-->
+        <panel classname="FinishPanel" id="finish"/>
+    </panels>
+
+    <dynamicvariables>
+        <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201"/>
+    </dynamicvariables>
+
+    <packs>
+        <pack name="snap" preselected="yes" required="yes">
+            <description>A common architecture for all Sentinel Toolboxes is being jointly
+                developed by Brockmann Consult, SkyWatch and C-S called the Sentinel Application
+                Platform (SNAP).
+
+                The SNAP architecture is ideal for Earth Observation processing and analysis due
+                to the following technological innovations: Extensibility, Portability, Modular Rich
+                Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
+                Graph Processing Framework.</description>
+                  <fileset dir="packs/snap" unpack="true"
+                           override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
+                    <os family="windows"/>
+                    <exclude name="bin/*.bat"/>
+                    <exclude name="bin/*.sh"/>
+                    <exclude name="bin/meris*.*"/>
+                    <exclude name="bin/aatsr-sst.*"/>
+                    <exclude name="bin/flhmci.*"/>
+                    <exclude name="jre/*macos*"/>
+                    <exclude name="jre/*linux*"/>
+                  </fileset>
+                  <fileset dir="packs/files/winx32" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
+                  <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
+            <parsable type="plain">
+                <fileset targetdir="${INSTALL_PATH}/bin">
+                    <include name="*.sh"/>
+                    <include name="snap"/>
+                    <exclude name="*.exe"/>
+                </fileset>
+                <os family="unix"/>
+            </parsable>
+            <parsable encoding="UTF-8">
+                <fileset targetdir="${INSTALL_PATH}/etc">
+                    <include name="*.sh"/>
+                    <include name="snap.clusters"/>
+                    <include name="snap.conf"/>
+                    <include name="snap"/>
+                </fileset>
+            </parsable>
+            <parsable encoding="UTF-8">
+                <fileset targetdir="${INSTALL_PATH}/bin">
+                    <include name="*.exe"/>
+                    <include name="snap"/>
+                </fileset>
+                <os family="windows"/>
+            </parsable>
+            <parsable encoding="UTF-8">
+                <fileset targetdir="${INSTALL_PATH}/bin">
+                    <include name="*.command"/>
+                    <include name="snap"/>
+                </fileset>
+                <os family="mac"/>
+            </parsable>
+            <executable type="bin" stage="never" failure="warn" keep="true">
+                <os family="unix"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, snap, *.sh" condition="runSeaDAS" />
+            </executable>
+            <executable type="bin" stage="never" failure="warn" keep="true">
+                <os family="mac"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="*.command, snap" condition="runSeaDAS"/>
+            </executable>
+            <executable type="bin" stage="never" failure="warn" keep="true">
+                <os family="windows"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="*.bat, *.exe" condition="runSeaDAS"/>
+            </executable>
+        </pack>
+        <pack name="s3tbx" required="yes" preselected="true" id="pack.s3tbx">
+            <description>Sentinel 3 Toolbox</description>
+            <fileset dir="packs/s3tbx" casesensitive="true" targetdir="$INSTALL_PATH/s3tbx">
+            </fileset>
+        </pack>
+        <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
+            <description>NASA SeaDAS Toolbox</description>
+            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
+            </fileset>
+        </pack>
+        <pack name="Oracle JRE" required="yes" id="pack.oracle.jre">
+            <description>Oracle JRE</description>
+            <file src="packs/jre/jre-8u201-windows-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
+            </file>
+            <executable type="bin" stage="never" failure="warn" keep="true">
+                <!--        <os family="unix"/>-->
+                <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/bin" includes="*" />
+                <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/lib" includes="*" />
+            </executable>
+        </pack>
+    </packs>
+
+    <natives>
+        <native type="izpack" name="ShellLink.dll"/>
+        <native type="izpack" name="ShellLink_x64.dll"/>
+        <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+            <os family="windows"/>
+        </native>
+    </natives>
+
+</installation>
