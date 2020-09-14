@@ -58,7 +58,7 @@ public abstract class OCSSW {
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
     public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
-    public static final String SEADAS_CONFIG_DIR = ".seadas8";
+    public static final String SEADAS_CONFIG_DIR = ".snap";
 
     private static boolean monitorProgress = false;
     private ArrayList<String> ocsswTags;
@@ -134,7 +134,7 @@ public abstract class OCSSW {
         if (preferences != null ) {
             logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, ifileDir);
             if (logDirPath == null) {
-                logDirPath = System.getProperty("user.home") + File.separator + ".seadas8" + File.separator +  "seadas_logs";
+                logDirPath = System.getProperty("user.home") + File.separator + ".snap" + File.separator +  "seadas_logs";
             }
             File logDir = new File(logDirPath);
             if (!logDir.exists()) {
