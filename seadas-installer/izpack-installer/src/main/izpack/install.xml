@@ -91,7 +91,6 @@
     <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />
     <variable name="JDKPathPanel.skipIfValid" value="yes" />
     <variable name="extra_clusters" value="seadas-toolbox" />
-    <!--    <variable name="jdkhome" value="/home/aynur/install-seadas/jre"/>-->
   </variables>
 
   <conditions>
@@ -177,7 +176,7 @@
   </panels>
 
   <dynamicvariables>
-    <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201"/>
+    <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home"/>
   </dynamicvariables>
 
   <packs>
@@ -190,15 +189,19 @@
         to the following technological innovations: Extensibility, Portability, Modular Rich
         Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
         Graph Processing Framework.</description>
-      <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall">
+      <fileset  dir="packs/snap" unpack="true"
+                override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
+        <os family="mac"/>
         <exclude name="bin/*.bat"/>
         <exclude name="bin/*.exe"/>
-        <exclude name="bin/*.command"/>
+        <exclude name="bin/*.sh"/>
         <exclude name="bin/meris*.*"/>
         <exclude name="bin/aatsr-sst.*"/>
         <exclude name="bin/flhmci.*"/>
+        <exclude name="jre/*linux*"/>
+        <exclude name="jre/*windows*"/>
       </fileset>
-      <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
+      <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac" condition="izpack.macinstall"/>
       <parsable type="plain">
         <fileset targetdir="${INSTALL_PATH}/bin">
           <include name="*.sh"/>
@@ -214,7 +217,7 @@
           <include name="snap.conf"/>
           <include name="snap"/>
         </fileset>
-        <os family="unix"/>
+        <!--                <os family="unix"/>-->
       </parsable>
       <parsable encoding="UTF-8">
         <fileset targetdir="${INSTALL_PATH}/bin">
@@ -255,12 +258,11 @@
     </pack>
     <pack name="Oracle JRE" required="yes" id="pack.oracle.jre">
       <description>Oracle JRE</description>
-      <file src="packs/jre/jre-8u201-linux-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
+      <file src="packs/jre/jre-8u201-macosx-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
       </file>
       <executable type="bin" stage="never" failure="warn" keep="true">
-        <!--        <os family="unix"/>-->
-        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/bin" includes="*" />
-        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/lib" includes="*" />
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home/bin" includes="*" />
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home/lib" includes="*" />
       </executable>
     </pack>
   </packs>
