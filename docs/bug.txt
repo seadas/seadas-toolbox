@@ -1,0 +1,32 @@
+
+
+Install GUI default "at least for me" is nothing selected which results in an error message.
+R2020.1 should be the default.  I don't under "initial" but I never see it any more after my first launch of the GUI.
+Even after deleting ~/.snap I don't see "initial".  Where is this stored?
+
+There is no progress monitor.
+
+
+This is the GUI that appears at finish:
+execution exception: java.io.FileNotFoundException: /Users/seadas/.seadas8/seadas_logs/OCSSW_LOG_install_ocssw.txt (No such file or directory)
+“------ top of file .bash_profile”
+“------ top of file .profile”
+“------ bottom of file .profile”
+“------ bottom of file .bash_profile”
+Installing (1 of 9) - bin_macosx_intel
+Installing (2 of 9) - lib_macosx_intel
+Installing (3 of 9) - opt_macosx_intel
+Installing (4 of 9) - root
+Installing (5 of 9) - scripts
+Installing (6 of 9) - common
+Installing (7 of 9) - modis
+Installing (8 of 9) - modisa
+Installing (9 of 9) - ocrvc
+Installing lut - modisa
+Done
+
+
+
+When I close GUI and reopen there is no "Last Installed Tag" and "Valid OCSSW Tags" is blank.
+
+

@@ -331,7 +331,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public boolean updateIFileInfo(String ifileName) {
 
-        if (programName != null && (programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py"))) {
+        if (programName != null && (programName.equals("multilevel_processor") || programName.equals("multilevel_processor"))) {
             return true;
         }
 

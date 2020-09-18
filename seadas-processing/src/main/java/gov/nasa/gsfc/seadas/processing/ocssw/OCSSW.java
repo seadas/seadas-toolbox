@@ -45,19 +45,19 @@ public abstract class OCSSW {
 
     public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
     public static final String MLP_PAR_FILE_NAME = "mlp_par_file";
-    public static final String OCSSW_INSTALLER_URL_OLD = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
+    public static final String OCSSW_INSTALLER_URL_OLD = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw";
     public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/install_ocssw";
     public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/manifest.py";
     public static final String OCSSW_SEADAS_VERSIONS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json";
-    public static final String TMP_OCSSW_INSTALLER_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static final String TMP_OCSSW_INSTALLER_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
     public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
 
-    public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
+    public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
-    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-    public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
+    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type";
+    public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts";
     public static final String SEADAS_CONFIG_DIR = ".seadas8";
 
     private static boolean monitorProgress = false;
@@ -376,7 +376,7 @@ public abstract class OCSSW {
             fos.close();
 
         } catch (MalformedURLException malformedURLException) {
-            handleException("URL for downloading install_ocssw.py is not correct!");
+            handleException("URL for downloading install_ocssw is not correct!");
         } catch (FileNotFoundException fileNotFoundException) {
             handleException("ocssw installation script failed to download. \n" +
                     "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
@@ -481,7 +481,7 @@ public abstract class OCSSW {
             (new File(TMP_OCSSW_INSTALLER_OLD)).setExecutable(true);
             ocsswInstalScriptDownloadSuccessful = true;
         } catch (MalformedURLException malformedURLException) {
-            handleException("URL for downloading install_ocssw.py is not correct!");
+            handleException("URL for downloading install_ocssw is not correct!");
         } catch (FileNotFoundException fileNotFoundException) {
             handleException("ocssw installation script failed to download. \n" +
                     "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
