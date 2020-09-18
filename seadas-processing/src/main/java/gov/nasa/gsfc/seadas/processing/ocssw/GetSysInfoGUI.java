@@ -314,6 +314,34 @@ public class GetSysInfoGUI {
         sysInfoText += "Memory: " + memory + "\n\n";
         sysInfoText2 += "Memory: " + memory + "\n\n";
 
+        try {
+            Process process1 = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process1.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sysInfoText += "Which python3: " + line + "\n\n";
+                sysInfoText2 += "Which python3: " + line + "\n\n";
+            }
+
+            reader.close();
+
+            process1.destroy();
+
+            if (process1.exitValue() != 0) {
+                System.out.println("WARNING!: Non zero exit code returned for 'which python3' ");
+            }
+
+        } catch (IOException e) {
+            String warning = "WARNING!! Could not retrieve system parameters because 'which python3' failed";
+            sysInfoText += warning + "\n";
+            sysInfoText2 += warning + "\n";
+            sysInfoText += e.toString() + "\n";
+            sysInfoText2 += e.toString() + "\n";
+            e.printStackTrace();
+        }
+
         sysInfoText += "SeaDAS Toolbox: " + "\n";
         sysInfoText2 += "SeaDAS Toolbox: " + "\n";
 
@@ -435,6 +463,15 @@ public class GetSysInfoGUI {
                     reader.close();
 
                     process.destroy();
+
+                    try
+                    {
+                        Thread.sleep(10);
+                    }
+                    catch(InterruptedException ex)
+                    {
+                        Thread.currentThread().interrupt();
+                    }
 
                     if (process.exitValue() != 0) {
                         System.out.println("WARNING!: Non zero exit code returned for \'" + command + "\' ");
