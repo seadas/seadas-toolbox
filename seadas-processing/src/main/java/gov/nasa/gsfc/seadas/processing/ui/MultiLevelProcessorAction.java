@@ -27,8 +27,8 @@ import javax.swing.*;
 )
 @NbBundle.Messages({
         "CTL_MultiLevelProcessorAction_Name=multilevel_processor...",
-        "CTL_MultiLevelProcessorAction_ProgramName=multilevel_processor.py",
-        "CTL_MultiLevelProcessorAction_DialogTitle=multilevel_processor.py",
+        "CTL_MultiLevelProcessorAction_ProgramName=multilevel_processor",
+        "CTL_MultiLevelProcessorAction_DialogTitle=multilevel_processor",
         "CTL_MultiLevelProcessorAction_XMLFileName=multilevel_processor.xml",
         "CTL_MultiLevelProcessorAction_Description=Process a file through many levels."
 })

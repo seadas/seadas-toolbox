@@ -26,16 +26,16 @@ import javax.swing.*;
         position = 240
 )
 @NbBundle.Messages({
-        "CTL_UpdateLutsAction_Name=update_luts.py...",
-        "CTL_UpdateLutsAction_ProgramName=update_luts.py",
-        "CTL_UpdateLutsAction_DialogTitle=update_luts.py",
+        "CTL_UpdateLutsAction_Name=update_luts...",
+        "CTL_UpdateLutsAction_ProgramName=update_luts",
+        "CTL_UpdateLutsAction_DialogTitle=update_luts",
         "CTL_UpdateLutsAction_XMLFileName=update_luts.xml",
         "CTL_UpdateLutsAction_Description=Retrieve latest lookup tables for specified sensor."
 })
 public class UpdateLutsAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
 
     private final Lookup lkp;
-    public static final String HELP_ID = "update_luts.py";
+    public static final String HELP_ID = "update_luts";
     private HelpCtx helpCtx;
 
     public  UpdateLutsAction() {

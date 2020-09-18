@@ -62,7 +62,7 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
     }
 
     /*
-     * usage: update_luts.py [-h] [-e] [-v] [-n] [--timeout TIMEOUT] MISSION
+     * usage: update_luts [-h] [-e] [-v] [-n] [--timeout TIMEOUT] MISSION
 
      * Retrieve latest lookup tables for specified sensor.
 

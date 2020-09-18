@@ -27,7 +27,7 @@ import javax.swing.*;
 )
 @NbBundle.Messages({
         "CTL_ModisL1BAction_Name=modis_L1B...",
-        "CTL_ModisL1BAction_ProgramName=modis_L1B.py",
+        "CTL_ModisL1BAction_ProgramName=modis_L1B",
         "CTL_ModisL1BAction_DialogTitle=modis_L1B",
         "CTL_ModisL1BAction_XMLFileName=modis_L1B.xml",
         "CTL_ModisL1BAction_Description=Process MODIS L0 to L1B."
