@@ -26,7 +26,7 @@ public class ExtractorUI extends ProgramUIFactory {
     public static final String END_PIXEL_PARAM_NAME = "epixl";
 
     public static final String GEO_LOCATE_PROGRAM_NAME_VIIRS = "geolocate_viirs";
-    public static final String GEO_LOCATE_PROGRAM_NAME_MODIS = "modis_GEO.py";
+    public static final String GEO_LOCATE_PROGRAM_NAME_MODIS = "modis_GEO";
 
     private ProcessorModel lonlat2pixline;
     private JPanel pixelPanel;

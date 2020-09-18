@@ -52,11 +52,11 @@ public class ProcessorTypeInfo {
         put("l1aextract_viirs", ProcessorID.EXTRACTOR);
         put("l2extract", ProcessorID.EXTRACTOR);
         put("extractor", ProcessorID.EXTRACTOR);
-        put("modis_L1A.py", ProcessorID.MODIS_L1A_PY);
-        put("modis_GEO.py", ProcessorID.MODIS_GEO_PY);
+        put("modis_L1A", ProcessorID.MODIS_L1A_PY);
+        put("modis_GEO", ProcessorID.MODIS_GEO_PY);
         put("geolocate_viirs", ProcessorID.GEOLOCATE_VIIRS);
         put("l1bgen", ProcessorID.L1BGEN);
-        put("modis_L1B.py", ProcessorID.MODIS_L1B_PY);
+        put("modis_L1B", ProcessorID.MODIS_L1B_PY);
         put("calibrate_viirs", ProcessorID.CALIBRATE_VIIRS);
         put("l1brsgen", ProcessorID.L1BRSGEN);
         put("l2brsgen", ProcessorID.L2BRSGEN);
@@ -72,13 +72,13 @@ public class ProcessorTypeInfo {
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
-        put("multilevel_processor.py", ProcessorID.MULTILEVEL_PROCESSOR_PY);
+        put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR_PY);
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw", ProcessorID.OCSSW_INSTALLER);
         put("l3bindump", ProcessorID.L3BINDUMP);
-        put("get_obpg_file_type.py", ProcessorID.GET_OBPG_FILE_TYPE_PY);
-        put("next_level_name.py", ProcessorID.NEXT_LEVEL_NAME_PY);
-        put("update_luts.py", ProcessorID.UPDATE_LUTS);
+        put("get_obpg_file_type", ProcessorID.GET_OBPG_FILE_TYPE_PY);
+        put("next_level_name", ProcessorID.NEXT_LEVEL_NAME_PY);
+        put("update_luts", ProcessorID.UPDATE_LUTS);
 
     }};
 
@@ -88,8 +88,8 @@ public class ProcessorTypeInfo {
                 "l1aextract_modis" +
                 "l1aextract_seawifs" +
                 "l2extract" +
-                "next_level_name.py" +
-                "get_obpg_file_type.py"+
+                "next_level_name" +
+                "get_obpg_file_type"+
                 "lonlat2pixline";
     }
 

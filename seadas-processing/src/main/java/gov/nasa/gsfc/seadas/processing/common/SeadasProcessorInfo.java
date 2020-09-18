@@ -80,17 +80,17 @@ public class SeadasProcessorInfo {
                 case L1AGEN:
                     if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
                             iFileInfo.isMissionId(MissionInfo.Id.MODIST)) {
-                        return "modis_L1A.py";
+                        return "modis_L1A";
                     } else if (iFileInfo.isMissionId(MissionInfo.Id.SEAWIFS)) {
                         return "l1aextract_seawifs";
 
                     } else {
-                        return "modis_L1A.py";
+                        return "modis_L1A";
                     }
 
                 case GEOGEN:
                     if (iFileInfo.isGeofileRequired()) {
-                        return "modis_GEO.py";
+                        return "modis_GEO";
                     } else {
                         return null;
                     }
@@ -98,7 +98,7 @@ public class SeadasProcessorInfo {
                 case L1BGEN:
                     if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
                             iFileInfo.isMissionId(MissionInfo.Id.MODIST)) {
-                        return "modis_L1B.py";
+                        return "modis_L1B";
                     } else {
                         return "l1bgen";
                     }
