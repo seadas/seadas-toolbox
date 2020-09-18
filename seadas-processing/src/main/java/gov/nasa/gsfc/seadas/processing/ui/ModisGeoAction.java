@@ -27,7 +27,7 @@ import javax.swing.*;
 )
 @NbBundle.Messages({
         "CTL_ModisGeoAction_Name=modis_GEO...",
-        "CTL_ModisGeoAction_ProgramName=modis_GEO.py",
+        "CTL_ModisGeoAction_ProgramName=modis_GEO",
         "CTL_ModisGeoAction_DialogTitle=modis_GEO",
         "CTL_ModisGeoAction_XMLFileName=modis_GEO.xml",
         "CTL_ModisGeoAction_Description=Process MODIS L0 to GEO."

@@ -37,12 +37,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
     public enum Processor {
         MAIN("main"),
-        MODIS_L1A_PY("modis_L1A.py"),
+        MODIS_L1A_PY("modis_L1A"),
         L1AEXTRACT_MODIS("l1aextract_modis"),
         L1AEXTRACT_SEAWIFS("l1aextract_seawifs"),
         L1MAPGEN("l1mapgen"),
         GEO("geo"),
-        MODIS_L1B("modis_L1B.py"),
+        MODIS_L1B("modis_L1B"),
         L1BGEN("l1bgen"),
         L1BRSGEN("l1brsgen"),
         L2GEN("l2gen"),
@@ -337,7 +337,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultiParamList paramList = new MultiParamList();
         for (MultilevelProcessorRow row : rows) {
             String name = row.getName();
-            if (name.equals("modis_GEO.py")) {
+            if (name.equals("modis_GEO")) {
                 name = "geo";
             }
             paramList.addParamList(name, row.getParamList());
@@ -348,7 +348,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     @Override
     public ProcessorModel getProcessorModel() {
         if (processorModel == null) {
-            processorModel = new MultilevelProcessorModel("multilevel_processor.py", xmlFileName, ocssw);
+            processorModel = new MultilevelProcessorModel("multilevel_processor", xmlFileName, ocssw);
             processorModel.setReadyToRun(true);
         }
         processorModel.setParamList(getParamList());
