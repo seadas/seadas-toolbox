@@ -65,6 +65,11 @@ public class GetSysInfoGUI {
 
 //    PropertyContainer pc = new PropertyContainer();
 
+    // todo Danny added this
+    String SEADAS_OCSSW_ROOT_ENV = "OCSSWROOT";
+    String OCSSW_SEADAS_INFO_PROGRAM_NAME = "seadas_info";
+    // end todo
+
     boolean windowsOS;
     private String ocsswScriptsDirPath;
     private String ocsswSeadasInfoPath;
@@ -230,13 +235,16 @@ public class GetSysInfoGUI {
         String ocsswRootOcsswInfo = ocsswInfo.getOcsswRoot();
         String ocsswLogDir = ocsswInfo.getLogDirPath();
         String ocsswLocation = ocsswInfo.getOcsswLocation();
-        String ocsswDebugInfo = ocsswInfo.getOcsswDebugInfo();
-        Boolean ocsswDebug;
-        if (ocsswDebugInfo.equals("true")){
-            ocsswDebug = true;
-        } else{
-            ocsswDebug = false;
-        }
+
+        //todo Danny added this
+//        String ocsswDebugInfo = ocsswInfo.getOcsswDebugInfo();
+        Boolean ocsswDebug = false;
+//        if (ocsswDebugInfo.equals("true")){
+//            ocsswDebug = true;
+//        } else{
+//            ocsswDebug = false;
+//        }
+        // end todo
 
         //        System.out.println("appDir = " + installDir);
         //        System.out.println("ocsswRootOcsswInfo = " + ocsswRootOcsswInfo);
