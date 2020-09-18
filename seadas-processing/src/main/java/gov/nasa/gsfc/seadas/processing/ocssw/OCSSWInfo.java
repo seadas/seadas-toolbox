@@ -57,7 +57,7 @@ public class OCSSWInfo {
     public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "seadas.ocssw.processErrorStreamPort";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
-    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
+    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "bin";
     public static final String OCSSW_DATA_DIR_SUFFIX = "share";
     public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
 
