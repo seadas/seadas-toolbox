@@ -46,8 +46,8 @@ public abstract class OCSSW {
     public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
     public static final String MLP_PAR_FILE_NAME = "mlp_par_file";
     public static final String OCSSW_INSTALLER_URL_OLD = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
-    public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags/initial/bin_linux_64/install_ocssw";
-    public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags/initial/bin_linux_64/manifest.py";
+    public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/install_ocssw";
+    public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/manifest.py";
     public static final String OCSSW_SEADAS_VERSIONS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json";
     public static final String TMP_OCSSW_INSTALLER_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
@@ -58,7 +58,7 @@ public abstract class OCSSW {
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
     public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
-    public static final String SEADAS_CONFIG_DIR = ".snap";
+    public static final String SEADAS_CONFIG_DIR = ".seadas8";
 
     private static boolean monitorProgress = false;
     private ArrayList<String> ocsswTags;
@@ -134,7 +134,7 @@ public abstract class OCSSW {
         if (preferences != null ) {
             logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, ifileDir);
             if (logDirPath == null) {
-                logDirPath = System.getProperty("user.home") + File.separator + ".snap" + File.separator +  "seadas_logs";
+                logDirPath = System.getProperty("user.home") + File.separator + ".seadas8" + File.separator +  "seadas_logs";
             }
             File logDir = new File(logDirPath);
             if (!logDir.exists()) {
