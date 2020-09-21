@@ -314,6 +314,9 @@ public class GetSysInfoGUI {
         sysInfoText += "Memory: " + memory + "\n\n";
         sysInfoText2 += "Memory: " + memory + "\n\n";
 
+        sysInfoText += "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n\n";
+        sysInfoText2 += "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n\n";
+
         try {
             Process process = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
 
