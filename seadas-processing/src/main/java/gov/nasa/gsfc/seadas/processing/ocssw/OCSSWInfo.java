@@ -58,12 +58,12 @@ public class OCSSWInfo {
     public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "seadas.ocssw.processErrorStreamPort";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
-    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "bin";
+    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
     public static final String OCSSW_DATA_DIR_SUFFIX = "share";
     public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
 
     public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw";
-    public static final String OCSSW_INSTALLER_PROGRAM_NAME_OLD = "install_ocssw";
+    public static final String OCSSW_INSTALLER_PROGRAM_NAME_OLD = "install_ocssw.py";
     public static final String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
     public static final String OCSSW_SEADAS_INFO_PROGRAM_NAME = "seadas_info";
 
