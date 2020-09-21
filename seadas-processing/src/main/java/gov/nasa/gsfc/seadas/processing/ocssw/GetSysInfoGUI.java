@@ -315,21 +315,21 @@ public class GetSysInfoGUI {
         sysInfoText2 += "Memory: " + memory + "\n\n";
 
         try {
-            Process process1 = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
+            Process process = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
 
             BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process1.getInputStream()));
+                    new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                sysInfoText += "Which python3: " + line + "\n\n";
-                sysInfoText2 += "Which python3: " + line + "\n\n";
+                sysInfoText += "Python3 Directory: " + line + "\n\n";
+                sysInfoText2 += "Python3 Directory: " + line + "\n\n";
             }
 
             reader.close();
 
-            process1.destroy();
+            process.destroy();
 
-            if (process1.exitValue() != 0) {
+            if (process.exitValue() != 0) {
                 System.out.println("WARNING!: Non zero exit code returned for 'which python3' ");
             }
 
