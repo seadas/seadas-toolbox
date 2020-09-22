@@ -332,6 +332,15 @@ public class GetSysInfoGUI {
 
             process.destroy();
 
+            try
+            {
+                Thread.sleep(10);
+            }
+            catch(InterruptedException ex)
+            {
+                Thread.currentThread().interrupt();
+            }
+
             if (process.exitValue() != 0) {
                 System.out.println("WARNING!: Non zero exit code returned for 'which python3' ");
             }

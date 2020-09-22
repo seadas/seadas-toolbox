@@ -33,10 +33,10 @@ public class OCSSWServerModel {
     public static final String OCSSW_SRC_DIR_SUFFIX = "ocssw-src";
     public static final String OCSSW_VIIRS_DEM_SUFFIX = "share" + File.separator + "viirs" + File.separator + "dem";
 
-    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
+    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw";
     public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
 
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
 
 
     public static String getOcsswDataDirPath() {
