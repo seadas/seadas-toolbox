@@ -43,7 +43,7 @@ public class OCSSWRemoteImpl {
 
     public static String PROCESS_STDOUT_FILE_NAME_EXTENSION = ".log";
 
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
 
     private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
@@ -112,7 +112,7 @@ public class OCSSWRemoteImpl {
     }
 
     public Process executeUpdateLutsProgram(String jobId, JsonObject jsonObject)  {
-        programName = "update_luts.py";
+        programName = "update_luts";
         Set commandArrayKeys = jsonObject.keySet();
         Object[] array = commandArrayKeys.toArray();
         String commandArrayElement;

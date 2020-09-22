@@ -23,7 +23,7 @@ OBPG SCIENCE PROCESSING CODE AND RELATED GUI
 
 KNOWN ISSUES
     - If only VIIRS is installed then you need to either install MODIS Aqua or Terra (downloads a Gig of data)
-      or from command line do "update_luts.py aqua" or "update_luts.py terra".
+      or from command line do "update_luts aqua" or "update_luts.py terra".
 
     - Multilevel_processor does not support: MERIS, OLI and GOCI
 
