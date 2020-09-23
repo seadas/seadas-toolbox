@@ -76,8 +76,8 @@ public class ProcessorTypeInfo {
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw", ProcessorID.OCSSW_INSTALLER);
         put("l3bindump", ProcessorID.L3BINDUMP);
-        put("get_obpg_file_type", ProcessorID.GET_OBPG_FILE_TYPE_PY);
-        put("next_level_name", ProcessorID.NEXT_LEVEL_NAME_PY);
+        put("get_obpg_file_type.py", ProcessorID.GET_OBPG_FILE_TYPE_PY);
+        put("next_level_name.py", ProcessorID.NEXT_LEVEL_NAME_PY);
         put("update_luts", ProcessorID.UPDATE_LUTS);
 
     }};

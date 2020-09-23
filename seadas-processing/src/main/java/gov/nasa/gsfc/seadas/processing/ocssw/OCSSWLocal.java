@@ -236,7 +236,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
 
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, fileName};
+        String[] fileTypeCommandArrayParams = {getObpgFileTypeProgram(), fileName};
 
         process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
 
@@ -290,15 +290,28 @@ public class OCSSWLocal extends OCSSW {
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
         }
-        String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+        String[] commandArrayParams = {getNextLevelNameProgram(), ifileName, programName};
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
         setOfileNameFound(true);
         return ofileName;
     }
 
+
+
+    public String getNextLevelNameProgram() {
+        return ocsswInfo.getOcsswRoot() + File.separator  + "bin" + File.separator + "mlp" + File.separator + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME;
+    }
+
+    public String getObpgFileTypeProgram() {
+        return ocsswInfo.getOcsswRoot() + File.separator  + "bin" + File.separator + "mlp" + File.separator + GET_OBPG_FILE_TYPE_PROGRAM_NAME;
+    }
+
+
+
+
     @Override
     public String getOfileName(String ifileName, String programName) {
-        String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+        String[] commandArrayParams = {getNextLevelNameProgram(), ifileName, programName};
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
         return ofileName;
     }
@@ -374,7 +387,7 @@ public class OCSSWLocal extends OCSSW {
             return ifileName + ".xml";
         }
 
-        String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+        String[] commandArrayParams = {getNextLevelNameProgram(), ifileName, programName};
 
         return findOfileName(ifileName, SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams, options));
     }
@@ -435,7 +448,7 @@ public class OCSSWLocal extends OCSSW {
                     System.out.println("error stream: " + line);
                     line = br.readLine();
                 }
-                Debug.trace("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
+                Debug.trace("Failed exit code on program '" + getNextLevelNameProgram() + "'");
             }
         } catch (IOException ioe) {
             Dialogs.showError(ioe.getMessage());
