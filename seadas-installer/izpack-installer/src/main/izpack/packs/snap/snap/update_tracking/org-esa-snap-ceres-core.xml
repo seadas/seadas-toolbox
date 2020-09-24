@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.ceres.core">
+    <module_version install_time="1598640777086" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2722690113" name="config/Modules/org-esa-snap-ceres-core.xml"/>
+        <file crc="1161417734" name="modules/ext/org.esa.snap.ceres-core/com-thoughtworks-xstream/xstream.jar"/>
+        <file crc="919992673" name="modules/ext/org.esa.snap.ceres-core/commons-cli/commons-cli.jar"/>
+        <file crc="1377219140" name="modules/ext/org.esa.snap.ceres-core/commons-collections/commons-collections.jar"/>
+        <file crc="1049092013" name="modules/ext/org.esa.snap.ceres-core/commons-lang/commons-lang.jar"/>
+        <file crc="3077296198" name="modules/ext/org.esa.snap.ceres-core/commons-logging/commons-logging.jar"/>
+        <file crc="1522608995" name="modules/ext/org.esa.snap.ceres-core/org-apache-commons/commons-math3.jar"/>
+        <file crc="3200881551" name="modules/ext/org.esa.snap.ceres-core/org-apache-velocity/velocity.jar"/>
+        <file crc="2110843376" name="modules/ext/org.esa.snap.ceres-core/org-jdom/jdom2.jar"/>
+        <file crc="3900691082" name="modules/ext/org.esa.snap.ceres-core/xmlpull/xmlpull.jar"/>
+        <file crc="2206742772" name="modules/ext/org.esa.snap.ceres-core/xpp3/xpp3_min.jar"/>
+        <file crc="4205795432" name="modules/org-esa-snap-ceres-core.jar"/>
+    </module_version>
+</module>

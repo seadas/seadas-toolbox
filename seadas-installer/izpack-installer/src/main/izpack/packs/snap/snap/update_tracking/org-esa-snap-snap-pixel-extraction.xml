@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.pixel.extraction">
+    <module_version install_time="1598640778973" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="496820442" name="config/Modules/org-esa-snap-snap-pixel-extraction.xml"/>
+        <file crc="3299800097" name="modules/ext/org.esa.snap.snap-pixel-extraction/org-jfree/jcommon.jar"/>
+        <file crc="3281100986" name="modules/ext/org.esa.snap.snap-pixel-extraction/org-jfree/jfreechart.jar"/>
+        <file crc="3487145751" name="modules/org-esa-snap-snap-pixel-extraction.jar"/>
+    </module_version>
+</module>

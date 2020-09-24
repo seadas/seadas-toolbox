@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.olci.radiometry">
+    <module_version install_time="1599578917542" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="3344660434" name="config/Modules/org-esa-s3tbx-s3tbx-olci-radiometry.xml"/>
+        <file crc="4028803160" name="modules/docs/org-esa-s3tbx-s3tbx-olci-radiometry.jar"/>
+        <file crc="3115414834" name="modules/ext/org.esa.s3tbx.s3tbx-olci-radiometry/com-googlecode-json-simple/json-simple.jar"/>
+        <file crc="2863711006" name="modules/org-esa-s3tbx-s3tbx-olci-radiometry.jar"/>
+    </module_version>
+</module>

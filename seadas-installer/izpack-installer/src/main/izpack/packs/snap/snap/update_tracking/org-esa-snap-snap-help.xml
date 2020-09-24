@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.help">
+    <module_version install_time="1598640780296" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="214187469" name="config/Modules/org-esa-snap-snap-help.xml"/>
+        <file crc="3651660045" name="modules/org-esa-snap-snap-help.jar"/>
+    </module_version>
+</module>

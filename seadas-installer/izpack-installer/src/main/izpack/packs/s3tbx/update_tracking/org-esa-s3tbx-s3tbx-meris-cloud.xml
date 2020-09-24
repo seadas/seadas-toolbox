@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.meris.cloud">
+    <module_version install_time="1599578879549" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2085127762" name="config/Modules/org-esa-s3tbx-s3tbx-meris-cloud.xml"/>
+        <file crc="2271261766" name="modules/docs/org-esa-s3tbx-s3tbx-meris-cloud.jar"/>
+        <file crc="3672168838" name="modules/ext/org.esa.s3tbx.s3tbx-meris-cloud/com-bc-jnn/jnn.jar"/>
+        <file crc="2131572994" name="modules/org-esa-s3tbx-s3tbx-meris-cloud.jar"/>
+    </module_version>
+</module>

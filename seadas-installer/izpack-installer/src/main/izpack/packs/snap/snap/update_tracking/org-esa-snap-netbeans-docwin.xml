@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.netbeans.docwin">
+    <module_version install_time="1598640780732" last="true" origin="installer" specification_version="1.0.2.0">
+        <file crc="2886302042" name="config/Modules/org-esa-snap-netbeans-docwin.xml"/>
+        <file crc="1505055799" name="modules/org-esa-snap-netbeans-docwin.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.dem">
+    <module_version install_time="1598640777725" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2051210404" name="config/Modules/org-esa-snap-snap-dem.xml"/>
+        <file crc="1527915007" name="modules/ext/org.esa.snap.snap-dem/org-jsoup/jsoup.jar"/>
+        <file crc="388178235" name="modules/org-esa-snap-snap-dem.jar"/>
+    </module_version>
+</module>

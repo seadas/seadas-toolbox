@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.bigtiff">
+    <module_version install_time="1598640778348" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="3083658291" name="config/Modules/org-esa-snap-snap-bigtiff.xml"/>
+        <file crc="545258047" name="modules/ext/org.esa.snap.snap-bigtiff/it-geosolutions-imageio-ext/imageio-ext-geocore.jar"/>
+        <file crc="3598545614" name="modules/ext/org.esa.snap.snap-bigtiff/it-geosolutions-imageio-ext/imageio-ext-streams.jar"/>
+        <file crc="1112059661" name="modules/ext/org.esa.snap.snap-bigtiff/it-geosolutions-imageio-ext/imageio-ext-tiff.jar"/>
+        <file crc="2365076827" name="modules/ext/org.esa.snap.snap-bigtiff/it-geosolutions-imageio-ext/imageio-ext-utilities.jar"/>
+        <file crc="1504658669" name="modules/ext/org.esa.snap.snap-bigtiff/javax-activation/javax.activation-api.jar"/>
+        <file crc="2168908005" name="modules/ext/org.esa.snap.snap-bigtiff/javax-xml-bind/jaxb-api.jar"/>
+        <file crc="3055888672" name="modules/org-esa-snap-snap-bigtiff.jar"/>
+    </module_version>
+</module>

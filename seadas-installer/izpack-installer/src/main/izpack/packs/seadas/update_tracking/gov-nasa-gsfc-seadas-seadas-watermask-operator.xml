@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="gov.nasa.gsfc.seadas.seadas.watermask.operator">
+    <module_version install_time="1599591562799" last="true" origin="installer" specification_version="1.0.0">
+        <file crc="681990693" name="config/Modules/gov-nasa-gsfc-seadas-seadas-watermask-operator.xml"/>
+        <file crc="2942019117" name="modules/docs/gov-nasa-gsfc-seadas-seadas-watermask-operator.jar"/>
+        <file crc="2526228326" name="modules/ext/gov.nasa.gsfc.seadas.seadas-watermask-operator/javax-help/javahelp.jar"/>
+        <file crc="1561103007" name="modules/gov-nasa-gsfc-seadas-seadas-watermask-operator.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.ceres.binding">
+    <module_version install_time="1598640777095" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="12374835" name="config/Modules/org-esa-snap-ceres-binding.xml"/>
+        <file crc="29000493" name="modules/org-esa-snap-ceres-binding.jar"/>
+    </module_version>
+</module>

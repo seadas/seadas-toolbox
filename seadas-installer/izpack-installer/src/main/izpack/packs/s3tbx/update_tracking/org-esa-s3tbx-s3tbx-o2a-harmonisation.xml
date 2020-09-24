@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.o2a.harmonisation">
+    <module_version install_time="1599578943825" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="253850287" name="config/Modules/org-esa-s3tbx-s3tbx-o2a-harmonisation.xml"/>
+        <file crc="3715362844" name="modules/docs/org-esa-s3tbx-s3tbx-o2a-harmonisation.jar"/>
+        <file crc="3292138105" name="modules/ext/org.esa.s3tbx.s3tbx-o2a-harmonisation/com-github-haifengl/smile-core.jar"/>
+        <file crc="3506756793" name="modules/ext/org.esa.s3tbx.s3tbx-o2a-harmonisation/com-github-haifengl/smile-data.jar"/>
+        <file crc="1201896813" name="modules/ext/org.esa.s3tbx.s3tbx-o2a-harmonisation/com-github-haifengl/smile-graph.jar"/>
+        <file crc="3911194630" name="modules/ext/org.esa.s3tbx.s3tbx-o2a-harmonisation/com-github-haifengl/smile-math.jar"/>
+        <file crc="3115414834" name="modules/ext/org.esa.s3tbx.s3tbx-o2a-harmonisation/com-googlecode-json-simple/json-simple.jar"/>
+        <file crc="534058107" name="modules/ext/org.esa.s3tbx.s3tbx-o2a-harmonisation/org-esa-snap/snap-runtime.jar"/>
+        <file crc="172552281" name="modules/ext/org.esa.s3tbx.s3tbx-o2a-harmonisation/org-slf4j/slf4j-api.jar"/>
+        <file crc="2978759844" name="modules/org-esa-s3tbx-s3tbx-o2a-harmonisation.jar"/>
+    </module_version>
+</module>

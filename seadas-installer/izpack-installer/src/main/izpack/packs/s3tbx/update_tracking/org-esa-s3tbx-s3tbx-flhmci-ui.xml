@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.flhmci.ui">
+    <module_version install_time="1599578856252" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="256757846" name="config/Modules/org-esa-s3tbx-s3tbx-flhmci-ui.xml"/>
+        <file crc="991238107" name="modules/org-esa-s3tbx-s3tbx-flhmci-ui.jar"/>
+    </module_version>
+</module>

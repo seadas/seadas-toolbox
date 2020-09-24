@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.smart.configurator.ui">
+    <module_version install_time="1598640781391" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="1976139212" name="config/Modules/org-esa-snap-snap-smart-configurator-ui.xml"/>
+        <file crc="2616926890" name="modules/docs/org-esa-snap-snap-smart-configurator-ui.jar"/>
+        <file crc="344444328" name="modules/org-esa-snap-snap-smart-configurator-ui.jar"/>
+    </module_version>
+</module>

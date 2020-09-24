@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.alos.reader">
+    <module_version install_time="1599578820320" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2447986668" name="config/Modules/org-esa-s3tbx-s3tbx-alos-reader.xml"/>
+        <file crc="380284922" name="modules/org-esa-s3tbx-s3tbx-alos-reader.jar"/>
+    </module_version>
+</module>
