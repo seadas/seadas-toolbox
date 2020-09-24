@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.ceres.ui">
+    <module_version install_time="1598640777714" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="3943055742" name="config/Modules/org-esa-snap-ceres-ui.xml"/>
+        <file crc="758989452" name="modules/ext/org.esa.snap.ceres-ui/com-jidesoft/jide-oss.jar"/>
+        <file crc="2972848508" name="modules/ext/org.esa.snap.ceres-ui/org-swinglabs-swingx/swingx-all.jar"/>
+        <file crc="2178221610" name="modules/org-esa-snap-ceres-ui.jar"/>
+    </module_version>
+</module>

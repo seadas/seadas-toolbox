@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.ceres.binio">
+    <module_version install_time="1598640777752" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="804922867" name="config/Modules/org-esa-snap-ceres-binio.xml"/>
+        <file crc="2154959852" name="modules/org-esa-snap-ceres-binio.jar"/>
+    </module_version>
+</module>

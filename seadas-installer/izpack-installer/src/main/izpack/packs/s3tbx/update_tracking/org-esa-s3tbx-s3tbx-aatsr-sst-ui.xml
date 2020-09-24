@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.aatsr.sst.ui">
+    <module_version install_time="1599578817217" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2327253610" name="config/Modules/org-esa-s3tbx-s3tbx-aatsr-sst-ui.xml"/>
+        <file crc="1956096" name="modules/org-esa-s3tbx-s3tbx-aatsr-sst-ui.jar"/>
+    </module_version>
+</module>

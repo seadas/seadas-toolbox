@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.tango">
+    <module_version install_time="1598640780036" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="531726134" name="config/Modules/org-esa-snap-snap-tango.xml"/>
+        <file crc="1740480405" name="modules/org-esa-snap-snap-tango.jar"/>
+    </module_version>
+</module>

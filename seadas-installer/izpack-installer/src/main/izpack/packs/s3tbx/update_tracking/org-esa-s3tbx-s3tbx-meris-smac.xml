@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.meris.smac">
+    <module_version install_time="1599578902862" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="1091808909" name="config/Modules/org-esa-s3tbx-s3tbx-meris-smac.xml"/>
+        <file crc="4279748314" name="modules/docs/org-esa-s3tbx-s3tbx-meris-smac.jar"/>
+        <file crc="1068365132" name="modules/org-esa-s3tbx-s3tbx-meris-smac.jar"/>
+    </module_version>
+</module>

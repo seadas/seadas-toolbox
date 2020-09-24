@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.jp2.reader">
+    <module_version install_time="1598640778413" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="1696161451" name="config/Modules/org-esa-snap-snap-jp2-reader.xml"/>
+        <file crc="1049092013" name="modules/ext/org.esa.snap.snap-jp2-reader/commons-lang/commons-lang.jar"/>
+        <file crc="624420522" name="modules/ext/org.esa.snap.snap-jp2-reader/org-esa-snap/snap-runtime.jar"/>
+        <file crc="3933070638" name="modules/org-esa-snap-snap-jp2-reader.jar"/>
+    </module_version>
+</module>

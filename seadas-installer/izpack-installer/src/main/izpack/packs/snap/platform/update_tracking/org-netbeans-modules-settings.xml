@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.modules.settings/1">
+    <module_version install_time="1598640780895" last="true" origin="installer" specification_version="1.49.1">
+        <file crc="554047262" name="config/Modules/org-netbeans-modules-settings.xml"/>
+        <file crc="1615696058" name="modules/locale/org-netbeans-modules-settings_ja.jar"/>
+        <file crc="1303113711" name="modules/locale/org-netbeans-modules-settings_pt_BR.jar"/>
+        <file crc="2307690364" name="modules/locale/org-netbeans-modules-settings_ru.jar"/>
+        <file crc="4162066203" name="modules/locale/org-netbeans-modules-settings_zh_CN.jar"/>
+        <file crc="2305804162" name="modules/org-netbeans-modules-settings.jar"/>
+    </module_version>
+</module>

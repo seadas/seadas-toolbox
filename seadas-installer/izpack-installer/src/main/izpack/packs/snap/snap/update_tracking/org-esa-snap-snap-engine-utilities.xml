@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.engine.utilities">
+    <module_version install_time="1598640777444" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="471925360" name="config/Modules/org-esa-snap-snap-engine-utilities.xml"/>
+        <file crc="624420522" name="modules/ext/org.esa.snap.snap-engine-utilities/org-esa-snap/snap-runtime.jar"/>
+        <file crc="2547254895" name="modules/org-esa-snap-snap-engine-utilities.jar"/>
+    </module_version>
+</module>

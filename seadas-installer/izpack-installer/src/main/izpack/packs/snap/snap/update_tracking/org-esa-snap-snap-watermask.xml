@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.watermask">
+    <module_version install_time="1598640779057" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="1270727485" name="config/Modules/org-esa-snap-snap-watermask.xml"/>
+        <file crc="2943809186" name="modules/org-esa-snap-snap-watermask.jar"/>
+    </module_version>
+</module>

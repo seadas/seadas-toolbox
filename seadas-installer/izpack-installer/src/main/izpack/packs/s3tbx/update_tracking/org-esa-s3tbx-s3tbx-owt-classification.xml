@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.owt.classification">
+    <module_version install_time="1599578931616" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="769874306" name="config/Modules/org-esa-s3tbx-s3tbx-owt-classification.xml"/>
+        <file crc="3146830069" name="modules/docs/org-esa-s3tbx-s3tbx-owt-classification.jar"/>
+        <file crc="2612086085" name="modules/ext/org.esa.s3tbx.s3tbx-owt-classification/Jama/Jama.jar"/>
+        <file crc="2349605882" name="modules/org-esa-s3tbx-s3tbx-owt-classification.jar"/>
+    </module_version>
+</module>

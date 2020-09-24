@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.netcdf">
+    <module_version install_time="1598640778920" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="3371180294" name="config/Modules/org-esa-snap-snap-netcdf.xml"/>
+        <file crc="3077296198" name="modules/ext/org.esa.snap.snap-netcdf/commons-logging/commons-logging.jar"/>
+        <file crc="2424725385" name="modules/ext/org.esa.snap.snap-netcdf/edu-ucar/netcdfAll.jar"/>
+        <file crc="2653371307" name="modules/ext/org.esa.snap.snap-netcdf/net-java-dev-jna/jna-platform.jar"/>
+        <file crc="2915759914" name="modules/ext/org.esa.snap.snap-netcdf/net-java-dev-jna/jna.jar"/>
+        <file crc="1888669852" name="modules/ext/org.esa.snap.snap-netcdf/org-slf4j/slf4j-api.jar"/>
+        <file crc="2631776017" name="modules/ext/org.esa.snap.snap-netcdf/org-slf4j/slf4j-simple.jar"/>
+        <file crc="606952861" name="modules/lib/amd64/hdf5.dll"/>
+        <file crc="2210379240" name="modules/lib/amd64/hdf5_hl.dll"/>
+        <file crc="1984533462" name="modules/lib/amd64/libcurl.dll"/>
+        <file crc="3165631398" name="modules/lib/amd64/libcurl.so.4"/>
+        <file crc="2985798198" name="modules/lib/amd64/libhdf5.so.9.0.0"/>
+        <file crc="2720106931" name="modules/lib/amd64/libhdf5_hl.so.9.0.0"/>
+        <file crc="3545778094" name="modules/lib/amd64/libnetcdf.so"/>
+        <file crc="1838381100" name="modules/lib/amd64/libz.so.1"/>
+        <file crc="4194968812" name="modules/lib/amd64/netcdf.dll"/>
+        <file crc="1088962807" name="modules/lib/amd64/zlib1.dll"/>
+        <file crc="3480672721" name="modules/lib/x86/hdf5.dll"/>
+        <file crc="2410274559" name="modules/lib/x86/hdf5_hl.dll"/>
+        <file crc="3097753254" name="modules/lib/x86/libcurl.dll"/>
+        <file crc="1972312281" name="modules/lib/x86/netcdf.dll"/>
+        <file crc="2296459860" name="modules/lib/x86/zlib1.dll"/>
+        <file crc="954823322" name="modules/org-esa-snap-snap-netcdf.jar"/>
+    </module_version>
+</module>

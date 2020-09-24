@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.engine.kit">
+    <module_version install_time="1598640777746" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="767228016" name="config/Modules/org-esa-snap-snap-engine-kit.xml"/>
+        <file crc="1360152904" name="modules/org-esa-snap-snap-engine-kit.jar"/>
+    </module_version>
+</module>

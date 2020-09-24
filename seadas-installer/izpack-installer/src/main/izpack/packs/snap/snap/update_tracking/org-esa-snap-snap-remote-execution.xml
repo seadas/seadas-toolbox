@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.remote.execution">
+    <module_version install_time="1598640779583" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="3278831597" name="config/Modules/org-esa-snap-snap-remote-execution.xml"/>
+        <file crc="3115414834" name="modules/ext/org.esa.snap.snap-remote-execution/com-googlecode-json-simple/json-simple.jar"/>
+        <file crc="2722082283" name="modules/ext/org.esa.snap.snap-remote-execution/com-jcraft/jsch.jar"/>
+        <file crc="1049092013" name="modules/ext/org.esa.snap.snap-remote-execution/commons-lang/commons-lang.jar"/>
+        <file crc="1730034361" name="modules/org-esa-snap-snap-remote-execution.jar"/>
+    </module_version>
+</module>

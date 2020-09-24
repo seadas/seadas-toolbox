@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.classification">
+    <module_version install_time="1598640777594" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="1248427202" name="config/Modules/org-esa-snap-snap-classification.xml"/>
+        <file crc="2853351417" name="modules/ext/org.esa.snap.snap-classification/be-abeel/ajt.jar"/>
+        <file crc="2250598882" name="modules/ext/org.esa.snap.snap-classification/com-github-fommil-netlib/core.jar"/>
+        <file crc="2049426874" name="modules/ext/org.esa.snap.snap-classification/com-github-fracpete/jclipboardhelper.jar"/>
+        <file crc="3400851354" name="modules/ext/org.esa.snap.snap-classification/com-github-fracpete/jfilechooser-bookmarks.jar"/>
+        <file crc="531476002" name="modules/ext/org.esa.snap.snap-classification/com-github-vbmacher/java-cup-runtime.jar"/>
+        <file crc="1122940177" name="modules/ext/org.esa.snap.snap-classification/com-github-vbmacher/java-cup.jar"/>
+        <file crc="2951600616" name="modules/ext/org.esa.snap.snap-classification/com-google-code-findbugs/jsr305.jar"/>
+        <file crc="2979725238" name="modules/ext/org.esa.snap.snap-classification/com-google-errorprone/error_prone_annotations.jar"/>
+        <file crc="2254864225" name="modules/ext/org.esa.snap.snap-classification/com-google-guava/guava.jar"/>
+        <file crc="3332531509" name="modules/ext/org.esa.snap.snap-classification/com-google-j2objc/j2objc-annotations.jar"/>
+        <file crc="3863791237" name="modules/ext/org.esa.snap.snap-classification/com-googlecode-matrix-toolkits-java/mtj.jar"/>
+        <file crc="1736008316" name="modules/ext/org.esa.snap.snap-classification/com-googlecode-netlib-java/netlib-java.jar"/>
+        <file crc="2652900996" name="modules/ext/org.esa.snap.snap-classification/com-sun-istack/istack-commons-runtime.jar"/>
+        <file crc="1008836027" name="modules/ext/org.esa.snap.snap-classification/com-sun-xml-fastinfoset/FastInfoset.jar"/>
+        <file crc="3479268786" name="modules/ext/org.esa.snap.snap-classification/jakarta-activation/jakarta.activation-api.jar"/>
+        <file crc="4184256005" name="modules/ext/org.esa.snap.snap-classification/jakarta-xml-bind/jakarta.xml.bind-api.jar"/>
+        <file crc="3618374091" name="modules/ext/org.esa.snap.snap-classification/net-sf/javaml.jar"/>
+        <file crc="3433447400" name="modules/ext/org.esa.snap.snap-classification/net-sourceforge-f2j/arpack_combined_all.jar"/>
+        <file crc="725614428" name="modules/ext/org.esa.snap.snap-classification/nz-ac-waikato-cms-weka-thirdparty/bounce.jar"/>
+        <file crc="52126487" name="modules/ext/org.esa.snap.snap-classification/nz-ac-waikato-cms-weka/LibSVM.jar"/>
+        <file crc="919163598" name="modules/ext/org.esa.snap.snap-classification/nz-ac-waikato-cms-weka/weka-dev.jar"/>
+        <file crc="714098099" name="modules/ext/org.esa.snap.snap-classification/org-checkerframework/checker-compat-qual.jar"/>
+        <file crc="3155375578" name="modules/ext/org.esa.snap.snap-classification/org-codehaus-mojo/animal-sniffer-annotations.jar"/>
+        <file crc="3692812519" name="modules/ext/org.esa.snap.snap-classification/org-glassfish-jaxb/jaxb-runtime.jar"/>
+        <file crc="1106086480" name="modules/ext/org.esa.snap.snap-classification/org-glassfish-jaxb/txw2.jar"/>
+        <file crc="3713762434" name="modules/ext/org.esa.snap.snap-classification/org-jvnet-staxex/stax-ex.jar"/>
+        <file crc="592414171" name="modules/ext/org.esa.snap.snap-classification/tw-edu-ntu-csie/libsvm.jar"/>
+        <file crc="52613700" name="modules/org-esa-snap-snap-classification.jar"/>
+    </module_version>
+</module>

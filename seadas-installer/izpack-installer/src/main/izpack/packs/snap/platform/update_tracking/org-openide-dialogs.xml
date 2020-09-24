@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.openide.dialogs">
+    <module_version install_time="1598640776941" last="true" origin="installer" specification_version="7.42.1">
+        <file crc="807629635" name="config/Modules/org-openide-dialogs.xml"/>
+        <file crc="4050267076" name="modules/locale/org-openide-dialogs_ja.jar"/>
+        <file crc="866376274" name="modules/locale/org-openide-dialogs_pt_BR.jar"/>
+        <file crc="2870690569" name="modules/locale/org-openide-dialogs_ru.jar"/>
+        <file crc="1684904103" name="modules/locale/org-openide-dialogs_zh_CN.jar"/>
+        <file crc="1537751774" name="modules/org-openide-dialogs.jar"/>
+    </module_version>
+</module>

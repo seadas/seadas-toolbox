@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.hdf5.writer">
+    <module_version install_time="1598640778423" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="3430965232" name="config/Modules/org-esa-snap-snap-hdf5-writer.xml"/>
+        <file crc="2853754812" name="modules/org-esa-snap-snap-hdf5-writer.jar"/>
+    </module_version>
+</module>

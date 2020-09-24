@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.envi.reader">
+    <module_version install_time="1598640778386" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="1163932260" name="config/Modules/org-esa-snap-snap-envi-reader.xml"/>
+        <file crc="1510255694" name="modules/docs/org-esa-snap-snap-envi-reader.jar"/>
+        <file crc="2123254959" name="modules/ext/org.esa.snap.snap-envi-reader/tec-uom-lib/uom-lib-common.jar"/>
+        <file crc="2041534629" name="modules/ext/org.esa.snap.snap-envi-reader/tec-uom/uom-se.jar"/>
+        <file crc="2834523503" name="modules/org-esa-snap-snap-envi-reader.jar"/>
+    </module_version>
+</module>

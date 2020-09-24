@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="gov.nasa.gsfc.seadas.seadas.kit">
+    <module_version install_time="1599591585593" last="true" origin="installer" specification_version="1.0.0">
+        <file crc="3185844413" name="config/Modules/gov-nasa-gsfc-seadas-seadas-kit.xml"/>
+        <file crc="1730572037" name="modules/gov-nasa-gsfc-seadas-seadas-kit.jar"/>
+        <file crc="3528750473" name="update_tracking/gov-nasa-gsfc-seadas-seadas-kit.xml"/>
+    </module_version>
+</module>

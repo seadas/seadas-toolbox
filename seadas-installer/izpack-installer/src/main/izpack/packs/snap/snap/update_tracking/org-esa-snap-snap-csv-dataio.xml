@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.csv.dataio">
+    <module_version install_time="1598640778375" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="266243102" name="config/Modules/org-esa-snap-snap-csv-dataio.xml"/>
+        <file crc="1558821461" name="modules/org-esa-snap-snap-csv-dataio.jar"/>
+    </module_version>
+</module>

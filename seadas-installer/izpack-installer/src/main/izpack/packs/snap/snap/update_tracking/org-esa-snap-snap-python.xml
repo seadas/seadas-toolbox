@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.python">
+    <module_version install_time="1598640779005" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="3574617903" name="config/Modules/org-esa-snap-snap-python.xml"/>
+        <file crc="167253376" name="modules/ext/org.esa.snap.snap-python/org-jpy/jpy.jar"/>
+        <file crc="3028961752" name="modules/org-esa-snap-snap-python.jar"/>
+    </module_version>
+</module>

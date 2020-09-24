@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.pgx.reader">
+    <module_version install_time="1598640778951" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2218590469" name="config/Modules/org-esa-snap-snap-pgx-reader.xml"/>
+        <file crc="2870408739" name="modules/org-esa-snap-snap-pgx-reader.jar"/>
+    </module_version>
+</module>

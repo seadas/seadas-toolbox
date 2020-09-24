@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.core.network">
+    <module_version install_time="1598640775687" last="true" origin="installer" specification_version="1.10.1">
+        <file crc="2799144563" name="config/Modules/org-netbeans-core-network.xml"/>
+        <file crc="2601114686" name="modules/ext/nsProxyAutoConfig.js"/>
+        <file crc="2351909923" name="modules/locale/org-netbeans-core-network_ja.jar"/>
+        <file crc="3678006090" name="modules/locale/org-netbeans-core-network_pt_BR.jar"/>
+        <file crc="3752558715" name="modules/locale/org-netbeans-core-network_ru.jar"/>
+        <file crc="2866045620" name="modules/locale/org-netbeans-core-network_zh_CN.jar"/>
+        <file crc="4284190448" name="modules/org-netbeans-core-network.jar"/>
+    </module_version>
+</module>

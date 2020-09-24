@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.kit">
+    <module_version install_time="1599578985301" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2931297792" name="config/Modules/org-esa-s3tbx-s3tbx-kit.xml"/>
+        <file crc="3342531265" name="modules/org-esa-s3tbx-s3tbx-kit.jar"/>
+        <file crc="3530433860" name="update_tracking/org-esa-s3tbx-s3tbx-kit.xml"/>
+    </module_version>
+</module>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.smart.configurator">
+    <module_version install_time="1598640779557" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="1115186369" name="config/Modules/org-esa-snap-snap-smart-configurator.xml"/>
+        <file crc="624420522" name="modules/ext/org.esa.snap.snap-smart-configurator/org-esa-snap/snap-runtime.jar"/>
+        <file crc="1005942850" name="modules/org-esa-snap-snap-smart-configurator.jar"/>
+    </module_version>
+</module>

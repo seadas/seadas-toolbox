@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.merisl3.reader">
+    <module_version install_time="1599578906305" last="true" origin="installer" specification_version="8.0.0.0">
+        <file crc="2186726997" name="config/Modules/org-esa-s3tbx-s3tbx-merisl3-reader.xml"/>
+        <file crc="4230816403" name="modules/org-esa-s3tbx-s3tbx-merisl3-reader.jar"/>
+    </module_version>
+</module>
