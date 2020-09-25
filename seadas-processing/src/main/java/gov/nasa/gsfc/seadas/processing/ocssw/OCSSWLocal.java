@@ -236,7 +236,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
 
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, fileName};
+        String[] fileTypeCommandArrayParams = {OBPG_FILE_TYPE_PROGRAM_NAME, fileName};
 
         process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
 
