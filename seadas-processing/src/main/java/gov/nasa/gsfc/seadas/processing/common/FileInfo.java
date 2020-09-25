@@ -15,7 +15,7 @@ public class FileInfo {
 
     private File file;
 
-    private static final String FILE_INFO_SYSTEM_CALL = "get_obpg_file_type";
+    private static final String FILE_INFO_SYSTEM_CALL = "obpg_file_type";
 
     private static final boolean DEFAULT_MISSION_AND_FILE_TYPE_ENABLED = true;
 
