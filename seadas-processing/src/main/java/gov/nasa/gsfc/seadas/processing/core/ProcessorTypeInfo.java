@@ -32,14 +32,14 @@ public class ProcessorTypeInfo {
         SMIGEN,
         SMITOPPM,
         LONLAT2PIXLINE,
-        MULTILEVEL_PROCESSOR_PY,
+//        MULTILEVEL_PROCESSOR_PY,
         MULTILEVEL_PROCESSOR,
         OCSSW_INSTALLER,
         L2GEN,
         L3GEN,
         L2GEN_AQUARIUS,
         L3BINDUMP,
-        GET_OBPG_FILE_TYPE_PY,
+        OBPG_FILE_TYPE_PY,
         NEXT_LEVEL_NAME_PY,
         UPDATE_LUTS,
         NOID
@@ -72,11 +72,11 @@ public class ProcessorTypeInfo {
         put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
-        put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR_PY);
+//        put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR_PY);
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw", ProcessorID.OCSSW_INSTALLER);
         put("l3bindump", ProcessorID.L3BINDUMP);
-        put("get_obpg_file_type", ProcessorID.GET_OBPG_FILE_TYPE_PY);
+        put("obpg_file_type", ProcessorID.OBPG_FILE_TYPE_PY);
         put("next_level_name", ProcessorID.NEXT_LEVEL_NAME_PY);
         put("update_luts", ProcessorID.UPDATE_LUTS);
 
@@ -89,7 +89,7 @@ public class ProcessorTypeInfo {
                 "l1aextract_seawifs" +
                 "l2extract" +
                 "next_level_name" +
-                "get_obpg_file_type"+
+                "obpg_file_type"+
                 "lonlat2pixline";
     }
 

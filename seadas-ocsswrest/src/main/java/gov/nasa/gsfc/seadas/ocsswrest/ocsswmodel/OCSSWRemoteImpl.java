@@ -27,11 +27,11 @@ public class OCSSWRemoteImpl {
     final static String OCSSW_ROOT_PROPERTY = "ocsswroot";
     final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
 
-    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
+    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
-    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
-    public static String MLP_PROGRAM_NAME = "multilevel_processor.py";
+    public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
+    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw";
+    public static String MLP_PROGRAM_NAME = "multilevel_processor";
     public static String MLP_PAR_FILE_NAME = "multilevel_processor_parFile.par";
     public static String MLP_OUTPUT_DIR_NAME = "mlpOutputDir";
     public static String ANC_FILE_LIST_FILE_NAME = "anc_file_list.txt";
@@ -646,9 +646,9 @@ public class OCSSWRemoteImpl {
 
     protected void extractFileInfo(String ifileName, String jobId) {
 
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
+        String[] fileTypeCommandArrayParams = {OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 
-        Process process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
+        Process process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
 
         try {
 
@@ -725,8 +725,8 @@ public class OCSSWRemoteImpl {
     public HashMap<String, String> getFileInfo(String ifileName, String jobId) {
 
         HashMap<String, String> fileInfoMap = new HashMap<>();
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
-        Process process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
+        String[] fileTypeCommandArrayParams = {OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
+        Process process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
         try {
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = stdInput.readLine();
