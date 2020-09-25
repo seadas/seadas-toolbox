@@ -56,7 +56,7 @@ public abstract class OCSSW {
 
     public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME =  "next_level_name";
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
-    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type";
+    public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
     public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts";
     public static final String SEADAS_CONFIG_DIR = ".seadas8";
 
