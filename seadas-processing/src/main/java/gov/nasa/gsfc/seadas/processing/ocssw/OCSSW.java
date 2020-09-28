@@ -33,6 +33,7 @@ import java.util.prefs.Preferences;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.OPER_DIR;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_LOG_DIR_PROPERTY;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
+import static org.esa.snap.runtime.EngineConfig.USER_DIR_DEFAULT;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -57,7 +58,6 @@ public abstract class OCSSW {
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type";
     public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts";
-    public static final String SEADAS_CONFIG_DIR = ".snap";
 
     private static boolean monitorProgress = false;
     private ArrayList<String> ocsswTags;
@@ -134,7 +134,7 @@ public abstract class OCSSW {
         if (preferences != null ) {
             logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, ifileDir);
             if (logDirPath == null) {
-                logDirPath = System.getProperty("user.home") + File.separator + ".snap" + File.separator +  "seadas_logs";
+                logDirPath = SystemUtils.getApplicationDataDir() + File.separator +  "seadas_logs";
             }
             File logDir = new File(logDirPath);
             if (!logDir.exists()) {
