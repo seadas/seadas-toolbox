@@ -33,7 +33,6 @@ import java.util.prefs.Preferences;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.OPER_DIR;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_LOG_DIR_PROPERTY;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
-import static org.esa.snap.runtime.EngineConfig.USER_DIR_DEFAULT;
 
 /**
  * Created by aabduraz on 3/27/17.
