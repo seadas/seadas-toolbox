@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * To change this template use File | Settings | File Templates.
  */
 public class LUTManager {
-    private final String UPDATE_LUTS_PROCESSOR_NAME = "update_luts.py";
+    private final String UPDATE_LUTS_PROCESSOR_NAME = "update_luts";
     private String missionName;
     private JButton lutButton;
     OCSSW ocssw;

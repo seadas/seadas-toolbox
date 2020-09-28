@@ -23,9 +23,9 @@ public class OCSSWServerModel {
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
-    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
+    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
-    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
+    public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
 
     public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
     public static final String OCSSW_DATA_DIR_SUFFIX = "share";
@@ -33,10 +33,10 @@ public class OCSSWServerModel {
     public static final String OCSSW_SRC_DIR_SUFFIX = "ocssw-src";
     public static final String OCSSW_VIIRS_DEM_SUFFIX = "share" + File.separator + "viirs" + File.separator + "dem";
 
-    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
+    public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw";
     public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
 
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
 
 
     public static String getOcsswDataDirPath() {

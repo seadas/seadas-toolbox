@@ -29,7 +29,7 @@ public class MultilevelProcessorRow {
     public static final String PARAM_STRING_EVENT = "paramString";
     public static final String KEEPFILES_PARAM = "keepfiles";
 
-    private static final String LONGEST_BUTTON_LABEL = "multilevel_processor.py";
+    private static final String LONGEST_BUTTON_LABEL = "multilevel_processor";
 
     private String name;
     private CloProgramUI cloProgramUI;
@@ -136,7 +136,7 @@ public class MultilevelProcessorRow {
                 //  configPanel = (JPanel) cloProgramUI;
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("geo")) {
-                cloProgramUI = new ProgramUIFactory("modis_GEO.py", "modis_GEO.xml", ocssw);
+                cloProgramUI = new ProgramUIFactory("modis_GEO", "modis_GEO.xml", ocssw);
                 configPanel = cloProgramUI.getParamPanel();
             } else if (name.equals("l2gen")) {
             //    cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", getTinyIFile(), false, L2genData.Mode.L2GEN, true, true);
@@ -144,7 +144,7 @@ public class MultilevelProcessorRow {
                 configPanel = cloProgramUI.getParamPanel();
 
             } else {
-                String xmlFile = name.replace(".py", "").concat(".xml");
+                String xmlFile = name.replace("", "").concat(".xml");
                 cloProgramUI = new ProgramUIFactory(name, xmlFile, ocssw);
                 configPanel = cloProgramUI.getParamPanel();
             }

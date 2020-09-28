@@ -2,6 +2,24 @@
 Make a new local branch from an existing remote branch 'SEADAS-PackageDefaults-2020-0226':
 git checkout --track origin/SEADAS-PackageDefaults-2020-0226
 
+
+
+In snap-engine:
+git checkout --track origin/SEADAS-8.0.0-Beta-SNAP8_RC2
+
+In snap-desktop:
+git checkout --track origin/SEADAS-8.0.0-Beta-SNAP8_RC2
+
+In s3tbx:
+git checkout --track origin/SNAP8_RC2
+
+In seadas-toolbox:
+git checkout --track origin/SEADAS-8.0.0-Beta-SNAP8_RC2
+
+
+
+
+
 Delete local branch:
 git branch -d SeaDAS-8.0.0-Beta-2020-0226
 

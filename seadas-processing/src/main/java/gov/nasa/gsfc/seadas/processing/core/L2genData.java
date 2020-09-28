@@ -66,7 +66,7 @@ public class L2genData implements SeaDASProcessorModel {
             PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml",
             PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml",
             DEFAULTS_FILE_PREFIX = "msl12_defaults_",
-            GETANC = "getanc.py",
+            GETANC = "getanc",
             DEFAULT_SUITE = "OC";
 
     public static final String
@@ -76,7 +76,7 @@ public class L2genData implements SeaDASProcessorModel {
             AQUARIUS_PARAM_CATEGORY_INFO_XML = "aquariusParamCategoryInfo.xml",
             AQUARIUS_PRODUCT_CATEGORY_INFO_XML = "aquariusProductCategoryInfo.xml",
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
-            AQUARIUS_GETANC = "getanc_aquarius.py",
+            AQUARIUS_GETANC = "getanc_aquarius",
             AQUARIUS_DEFAULT_SUITE = "V5.0.0";
 
     private static final String L3GEN_GUI_NAME = "l3gen",
@@ -85,7 +85,7 @@ public class L2genData implements SeaDASProcessorModel {
             L3GEN_PARAM_CATEGORY_INFO_XML = "l3genParamCategoryInfo.xml",
             L3GEN_PRODUCT_CATEGORY_INFO_XML = "l3genProductCategoryInfo.xml",
             L3GEN_DEFAULTS_FILE_PREFIX = "msl12_defaults_",
-            L3GEN_GETANC = "getanc.py",
+            L3GEN_GETANC = "getanc",
             L3GEN_DEFAULT_SUITE = "OC";
 
     public static final String ANCILLARY_FILES_CATEGORY_NAME = "Ancillary Inputs";
@@ -1306,7 +1306,7 @@ public class L2genData implements SeaDASProcessorModel {
 
     public void updateLuts(String missionName) {
 
-        String UPDATE_LUTS_SCRIPT = "update_luts.py";
+        String UPDATE_LUTS_SCRIPT = "update_luts";
 
         ProcessorModel processorModel = new ProcessorModel(UPDATE_LUTS_SCRIPT, ocssw);
         processorModel.setAcceptsParFile(false);
@@ -1327,10 +1327,10 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
     public void setAncillaryFiles(boolean refreshDB, boolean forceDownload, boolean getNO2) {
-        //   getanc.py --refreshDB <FILE>
+        //   getanc --refreshDB <FILE>
 
         if (!isValidIfile()) {
-            System.out.println("ERROR - Can not run getanc.py without a valid ifile.");
+            System.out.println("ERROR - Can not run getanc without a valid ifile.");
             return;
         }
 
@@ -1357,7 +1357,7 @@ public class L2genData implements SeaDASProcessorModel {
         }
 
         processorModel.addParamInfo("ifile", ifile, ParamInfo.Type.IFILE, position);
-        //getanc.py accepts ifile as an argument, not as a key-value pair.
+        //getanc accepts ifile as an argument, not as a key-value pair.
         processorModel.getParamInfo("ifile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT);
 
         final File iFile = new File(ifile);

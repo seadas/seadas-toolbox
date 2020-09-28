@@ -13,9 +13,9 @@ import java.io.File;
 @XmlRootElement
 public class OCSSWInfo {
     public static final String _OCSSWROOT_ENVVAR = "OCSSWROOT";
-    public static String OCSSW_INSTALLER = "install_ocssw.py";
+    public static String OCSSW_INSTALLER = "install_ocssw";
     public static String OCSSW_RUNNER = "ocssw_runner";
-    public static String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
     public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";

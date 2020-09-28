@@ -314,6 +314,9 @@ public class GetSysInfoGUI {
         sysInfoText += "Memory: " + memory + "\n\n";
         sysInfoText2 += "Memory: " + memory + "\n\n";
 
+        sysInfoText += "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n\n";
+        sysInfoText2 += "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n\n";
+
         try {
             Process process = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
 
@@ -328,6 +331,15 @@ public class GetSysInfoGUI {
             reader.close();
 
             process.destroy();
+
+            try
+            {
+                Thread.sleep(10);
+            }
+            catch(InterruptedException ex)
+            {
+                Thread.currentThread().interrupt();
+            }
 
             if (process.exitValue() != 0) {
                 System.out.println("WARNING!: Non zero exit code returned for 'which python3' ");

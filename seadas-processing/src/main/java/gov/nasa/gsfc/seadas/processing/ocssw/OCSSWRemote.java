@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class OCSSWRemote extends OCSSW {
 
     public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
-    public static final String MLP_PROGRAM_NAME = "multilevel_processor.py";
+    public static final String MLP_PROGRAM_NAME = "multilevel_processor";
     public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
     public static String MLP_OUTPUT_DIR_NAME = "mlpOutputDir";
 
@@ -44,7 +44,7 @@ public class OCSSWRemote extends OCSSW {
 
     public static final String US_ASCII_CHAR_SET = "us-ascii";
 
-    public static final String PROGRAM_NAMES_FOR_TEXT_INPUT_FILES = "l2bin, l3bin, multilevel_processor.py";
+    public static final String PROGRAM_NAMES_FOR_TEXT_INPUT_FILES = "l2bin, l3bin, multilevel_processor";
 
     public static final String PROGRAMS_NEED_ADDITIONAL_FILES = "l2gen,l3gen,l2gen_aquarius";
 

@@ -53,10 +53,10 @@ public abstract class OCSSW {
     public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
     public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
 
-    public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
+    public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
-    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
-    public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
+    public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type";
+    public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts";
     public static final String SEADAS_CONFIG_DIR = ".snap";
 
     private static boolean monitorProgress = false;
@@ -376,7 +376,7 @@ public abstract class OCSSW {
             fos.close();
 
         } catch (MalformedURLException malformedURLException) {
-            handleException("URL for downloading install_ocssw.py is not correct!");
+            handleException("URL for downloading install_ocssw is not correct!");
         } catch (FileNotFoundException fileNotFoundException) {
             handleException("ocssw installation script failed to download. \n" +
                     "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
