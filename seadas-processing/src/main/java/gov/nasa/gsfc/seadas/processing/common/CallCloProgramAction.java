@@ -94,7 +94,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
             } else {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
-        }else if (programName.indexOf("update_luts.py") != -1   ) {
+        }else if (programName.indexOf("update_luts") != -1   ) {
             return new UpdateLutsUI(programName, xmlFileName, ocssw);
         }
 
@@ -330,7 +330,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
 //                }
 //            }
 //        }
-//        commandManager.getCommand("install_ocssw.py").setText("Update Data Processors");
+//        commandManager.getCommand("install_ocssw").setText("Update Data Processors");
     }
 
     private void displayMessage(String programName, String message) {
@@ -466,7 +466,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
     }
 
     /**
-     * Handler that tries to extract progress from stderr of ocssw_installer.py
+     * Handler that tries to extract progress from stderr of ocssw_installer
      */
     public static class InstallerHandler extends ProgressHandler {
 

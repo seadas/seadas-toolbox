@@ -42,9 +42,9 @@
             <tocitem text="OCSSW Cookbook" target="ocsswCookbook"/>
             <tocitem text="install_ocssw" target="install_ocssw"/>
             <tocitem text="extractors" target="extractor"/>
-            <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
-            <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
-            <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
+            <tocitem text="modis_L1A" target="modis_L1A"/>
+            <tocitem text="modis_L1B" target="modis_L1B"/>
+            <tocitem text="modis_GEO" target="modis_GEO"/>
             <tocitem text="geolocate_viirs" target="geolocate_viirs"/>
             <tocitem text="calibrate_viirs" target="calibrate_viirs"/>
             <tocitem text="l1bgen" target="l1bgen"/>
@@ -62,9 +62,9 @@
             <tocitem text="l3mapgen" target="l3mapgen"/>
             <tocitem text="smigen" target="smigen"/>
 
-            <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
+            <tocitem text="multilevel_processor" target="multilevel_processor"/>
 
-            <tocitem text="update_luts.py" target="update_luts.py"/>
+            <tocitem text="update_luts" target="update_luts"/>
 
             <tocitem text="OCSSW Configuration" target="ocsswInfoConfig"/>
 

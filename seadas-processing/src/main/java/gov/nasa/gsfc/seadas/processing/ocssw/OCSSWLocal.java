@@ -28,7 +28,7 @@ import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 
 public class OCSSWLocal extends OCSSW {
 
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
+    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
 
     private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
@@ -236,7 +236,7 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void findFileInfo(String fileName, FileInfoFinder fileInfoFinder) {
 
-        String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, fileName};
+        String[] fileTypeCommandArrayParams = {OBPG_FILE_TYPE_PROGRAM_NAME, fileName};
 
         process = execute((String[]) ArrayUtils.addAll(commandArrayPrefix, fileTypeCommandArrayParams));
 
@@ -295,6 +295,10 @@ public class OCSSWLocal extends OCSSW {
         setOfileNameFound(true);
         return ofileName;
     }
+
+
+
+
 
     @Override
     public String getOfileName(String ifileName, String programName) {
