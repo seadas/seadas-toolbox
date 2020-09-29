@@ -22,24 +22,6 @@ public class OCSSWInfoGUITest {
     }
 
     @Test
-    public void isValidBranchNew() {
-        ArrayList tags = ocsswInfoGUI.getValidOcsswTagsFromURL();
-        Iterator itr = tags.iterator();
-        while (itr.hasNext()) {
-            System.out.println(itr.next());
-        }
-    }
-
-    @Test
-    public void isValidTAGCLI() {
-        ArrayList tags = ocsswInfoGUI.getValidOcsswTagsFromCLI();
-        Iterator itr = tags.iterator();
-        while (itr.hasNext()) {
-            System.out.println(itr.next());
-        }
-    }
-
-    @Test
     public void main() {
     }
 
@@ -61,11 +43,6 @@ public class OCSSWInfoGUITest {
 
     @Test
     public void isDefaultBranch() {
-    }
-
-    @Test
-    public void downloadOCSSWInstaller() {
-        assertTrue(ocsswInfoGUI.downloadOCSSWInstaller());
     }
 
     @Test
