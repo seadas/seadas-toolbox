@@ -31,7 +31,7 @@ public class OCSSWConfigData {
     */
 
     final static String SEADAS_LOG_DIR_PROPERTY = "seadas.log.dir";
-    public final static String SEADAS_OCSSW_BRANCH_PROPERTY = "seadas.ocssw.branch";
+    public final static String SEADAS_OCSSW_TAG_PROPERTY = "seadas.ocssw.tag";
     final static String SEADAS_OCSSW_ROOT_PROPERTY = "seadas.ocssw.root";
     final static String SEADAS_OCSSW_ROOT_ENV = "OCSSWROOT";
     final static String SEADAS_OCSSW_LOCATION_PROPERTY = "seadas.ocssw.location";
@@ -45,9 +45,7 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_VERSION_NUMBER_PROEPRETY ="seadas.ocssw.version";
     final static String SEADAS_OCSSW_DEBUG ="seadas.ocssw.debug";
 
-    final static String SEADAS_OCSSW_VERSION_NUMBER_DEFAULT_VALUE = "7.5.2";
     final static String SEADAS_LOG_DIR_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + ".seadas" + File.separator +"log";
-    final static String SEADAS_OCSSW_BRANCH_DEFAULT_VALUE =  "7.5";
     final static String SEADAS_OCSSW_ROOT_DEFAULT_VALUE = System.getProperty("user.home") + File.separator + "ocssw";
     final static String SEADAS_OCSSW_LOCATION_DEFAULT_VALUE = "local";
     final static  String SEADAS_OCSSW_PORT_DEFAULT_VALUE = "6400";
@@ -58,9 +56,10 @@ public class OCSSWConfigData {
     final static String SEADAS_CLIENT_ID_DEFAULT_VALUE = System.getProperty("user.name");
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasOCSSWSharedDir";
     final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "false";
+    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "don";
 
 
-    final static String OCSSW_BRANCH_LABEL = "OCSSW Branch";
+    final static String OCSSW_TAG_LABEL = "Valid OCSSW Tag:";
     final static String OCSSW_LOCATION_LABEL = "OCSSW Location";
     final static String OCSSW_SHARED_DIR_LABEL = "OCSSW Shared Dir";
     final static String OCSSW_ROOT_LABEL = "OCSSW ROOT";
