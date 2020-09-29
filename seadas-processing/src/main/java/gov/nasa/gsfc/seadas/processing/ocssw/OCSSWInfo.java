@@ -214,7 +214,7 @@ public class OCSSWInfo {
         }
 
         if (ocsswLocationPropertyValue == null) {
-            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in $HOME/.snap/etc/seadas.properties");
+            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in " + SystemUtils.getApplicationDataDir() + "/etc/seadas.properties");
             return;
         }
 
