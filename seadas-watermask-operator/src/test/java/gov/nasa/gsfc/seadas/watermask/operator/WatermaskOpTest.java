@@ -128,5 +128,15 @@ public class WatermaskOpTest {
         public MathTransform getImageToMapTransform() {
             return null;
         }
+
+        @Override
+        public GeoCoding clone() {
+            return null;
+        }
+
+        @Override
+        public boolean canClone() {
+            return false;
+        }
     }
 }
