@@ -59,7 +59,7 @@ public class OCSSWConfigData {
     public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "don";
 
 
-    final static String OCSSW_TAG_LABEL = "Valid OCSSW Tag:";
+    final static String OCSSW_TAG_LABEL = "Valid OCSSW Tags";
     final static String OCSSW_LOCATION_LABEL = "OCSSW Location";
     final static String OCSSW_SHARED_DIR_LABEL = "OCSSW Shared Dir";
     final static String OCSSW_ROOT_LABEL = "OCSSW ROOT";
