@@ -4,7 +4,6 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.binding.BindingContext;
-import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.runtime.Config;
@@ -12,32 +11,17 @@ import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.UIUtils;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
@@ -54,14 +38,14 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 public class OCSSWInfoGUI {
 
-    final static String OCSSW_VALID_TAGS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/tags";
     final String PANEL_NAME = "Configure OCSSW";
     final String HELP_ID = "ocsswInfoConfig";
 
-    final String BRANCH_TOOLTIP = "<html>The OCSSW installation branch<br>" +
+    //todo the wording needs to be updated.
+    final String BRANCH_TOOLTIP = "<html>The OCSSW installation tag<br>" +
             "This by default will match the SeaDAS version (first two decimal fields)<br> " +
-            "For instance SeaDAS 7.5.3 by default will use OCSSW branch 7.5<br>" +
-            "If OCSSW was manually updated to a different branch then this parameter needs to be set to match</html>";
+            "For instance SeaDAS 8.0.0 by default will use OCSSW tag 8.0<br>" +
+            "If OCSSW was manually updated to a different tag then this parameter needs to be set to match</html>";
 
     JPanel paramPanel = GridBagUtils.createPanel();
     JPanel paramSubPanel;
@@ -69,7 +53,7 @@ public class OCSSWInfoGUI {
     ModalDialog modalDialog;
 
 
-    JTextField ocsswBranchTextfield;
+    JTextField ocsswTagTextfield;
     JComboBox ocsswLocationComboBox;
     JTextField ocsswSharedDir;
     JTextField ocsswRootTextfield;
@@ -119,9 +103,9 @@ public class OCSSWInfoGUI {
         gbc.weighty = 0;
         gbc.weightx = 0;
 
-        JPanel ocsswBranchPanel = ocsswBranchPanel();
-        ocsswBranchPanel.setToolTipText(BRANCH_TOOLTIP);
-        mainPanel.add(ocsswBranchPanel, gbc);
+        JPanel ocsswTagPanel = ocsswTagPanel();
+        ocsswTagPanel.setToolTipText(BRANCH_TOOLTIP);
+        mainPanel.add(ocsswTagPanel, gbc);
 
         gbc.gridy += 1;
         gbc.weighty = 0;
@@ -550,7 +534,6 @@ public class OCSSWInfoGUI {
 //        }
 
         if (ocsswRootString == null || ocsswRootString.length() == 0) {
-            // File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir() + File.separator + "ocssw");
             File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir(), "ocssw");
             ocsswRootString = ocsswRootDir.getAbsolutePath();
         }
@@ -622,7 +605,6 @@ public class OCSSWInfoGUI {
         int returnValue = jFileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             selectedFile = jFileChooser.getSelectedFile();
-            //System.out.println(selectedFile.getAbsolutePath());
         }
         return selectedFile;
     }
@@ -640,7 +622,7 @@ public class OCSSWInfoGUI {
     }
 
 
-    private JPanel ocsswBranchPanel() {
+    private JPanel ocsswTagPanel() {
 
         final Preferences preferences = Config.instance("seadas").load().preferences();
 
@@ -648,29 +630,60 @@ public class OCSSWInfoGUI {
 
         GridBagConstraints gbc = createConstraints();
 
-        JLabel ocsswBranchLabel = new JLabel(OCSSW_BRANCH_LABEL + ": ");
-        ocsswBranchTextfield = new JTextField(10);
+        JLabel ocsswTagLabel = new JLabel(OCSSW_TAG_LABEL + ": ");
 
-        ocsswBranchLabel.setMinimumSize(ocsswBranchLabel.getPreferredSize());
-        ocsswBranchTextfield.setMinimumSize(new JTextField(5).getPreferredSize());
-        ocsswBranchLabel.setToolTipText(BRANCH_TOOLTIP);
+        //This segment of code is to disable tags that are not compatible with the current SeaDAS version
+        OCSSW ocssw = OCSSW.getOCSSWInstance();
+        ocssw.downloadOCSSWInstaller();
+        ArrayList<String> validOcsswTags = ocssw.getOcsswTagsValid4CurrentSeaDAS();
 
-        pc.addProperty(Property.create(SEADAS_OCSSW_BRANCH_PROPERTY, preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, SEADAS_OCSSW_BRANCH_DEFAULT_VALUE)));
-        pc.getDescriptor(SEADAS_OCSSW_BRANCH_PROPERTY).setDisplayName(SEADAS_OCSSW_BRANCH_PROPERTY);
+        JComboBox validOCSSWTagsComboBox = new JComboBox(validOcsswTags.toArray());
+        Font f1 = validOCSSWTagsComboBox.getFont();
+        Font f2 = new Font("Tahoma", 0, 14);
+
+        validOCSSWTagsComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                          int index, boolean isSelected, boolean cellHasFocus) {
+                if (value instanceof JComponent)
+                    return (JComponent) value;
+
+                boolean itemEnabled = validOcsswTags.contains((String)value);
+                super.getListCellRendererComponent(list, value, index,
+                        isSelected && itemEnabled, cellHasFocus);
+
+                // Render item as disabled and with different font:
+                setEnabled(itemEnabled);
+                setFont(itemEnabled ? f1 : f2);
+
+                return this;
+            }
+        });
+
+        ocsswTagTextfield = new JTextField(10);
+
+        ocsswTagLabel.setMinimumSize(ocsswTagLabel.getPreferredSize());
+        //ocsswTagTextfield.setMinimumSize(new JTextField(5).getPreferredSize());
+        validOCSSWTagsComboBox.setMinimumSize(new JComboBox().getPreferredSize());
+        ocsswTagLabel.setToolTipText(BRANCH_TOOLTIP);
+
+        pc.addProperty(Property.create(SEADAS_OCSSW_TAG_PROPERTY, preferences.get(SEADAS_OCSSW_TAG_PROPERTY, SEADAS_OCSSW_TAG_DEFAULT_VALUE)));
+        pc.getDescriptor(SEADAS_OCSSW_TAG_PROPERTY).setDisplayName(SEADAS_OCSSW_TAG_PROPERTY);
 
         final BindingContext ctx = new BindingContext(pc);
 
-        ctx.bind(SEADAS_OCSSW_BRANCH_PROPERTY, ocsswBranchTextfield);
+        ctx.bind(SEADAS_OCSSW_TAG_PROPERTY, validOCSSWTagsComboBox);
 
         gbc.fill = GridBagConstraints.NONE;
 
         gbc.weighty = 0;
         gbc.weightx = 0;
-        panel.add(ocsswBranchLabel, gbc);
+        panel.add(ocsswTagLabel, gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 1;
-        panel.add(ocsswBranchTextfield, gbc);
+        //panel.add(ocsswTagTextfield, gbc);
+        panel.add(validOCSSWTagsComboBox, gbc);
 
         return panel;
     }
@@ -737,9 +750,9 @@ public class OCSSWInfoGUI {
 
     private Boolean checkParameters() {
 
-        if (!isTextFieldValidBranch(OCSSW_BRANCH_LABEL, ocsswBranchTextfield)) {
-            return false;
-        }
+//        if (!isTextFieldValidTag(OCSSW_TAG_LABEL, ocsswTagTextfield)) {
+//            return false;
+//        }
 
         String ocssLocationString = (String) ocsswLocationComboBox.getSelectedItem();
         switch (ocssLocationString) {
@@ -787,7 +800,7 @@ public class OCSSWInfoGUI {
 
 
 
-    public boolean isTextFieldValidBranch(String field, JTextField textfield) {
+    public boolean isTextFieldValidTag(String field, JTextField textfield) {
 
         boolean valid = true;
 
@@ -801,9 +814,9 @@ public class OCSSWInfoGUI {
                     return false;
                 }
 
-                if (!isDefaultBranch(branch)) {
-                    return false;
-                }
+//                if (!isDefaultBranch(branch)) {
+//                    return false;
+//                }
 
             } else {
                 notifyError("'" + field + "' must contain an OCSSW Branch");
@@ -819,136 +832,33 @@ public class OCSSWInfoGUI {
 
 
 
-    public boolean isDefaultBranch(String branch) {
+//    public boolean isDefaultBranch(String branch) {
+//
+//        if (branch == null) {
+//            return false;
+//        }
+//
+//        branch.trim();
+//
+////        if (SEADAS_OCSSW_BRANCH_DEFAULT_VALUE.equals(branch)) {
+////            return true;
+////        }
+//
+//        String msg = "<html>" +
+//                "WARNING!: Your current SeaDAS version has default branch='" + SEADAS_OCSSW_BRANCH_DEFAULT_VALUE + "'<br>"+
+//                "You have selected to use branch='" + branch + "'<br>" +
+//                "This version mismatch could cause possible problems when running from the SeaDAS GUI" +
+//                "</html>";
+//
+//        final int dialogResult = getUserResponse(msg, "Continue", "Back");
+//
+//        if (dialogResult == ModalDialog.ID_OK) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
-        if (branch == null) {
-            return false;
-        }
-
-        branch.trim();
-
-        if (SEADAS_OCSSW_BRANCH_DEFAULT_VALUE.equals(branch)) {
-            return true;
-        }
-
-        String msg = "<html>" +
-                "WARNING!: Your current SeaDAS version has default branch='" + SEADAS_OCSSW_BRANCH_DEFAULT_VALUE + "'<br>"+
-                "You have selected to use branch='" + branch + "'<br>" +
-                "This version mismatch could cause possible problems when running from the SeaDAS GUI" +
-                "</html>";
-
-        final int dialogResult = getUserResponse(msg, "Continue", "Back");
-
-        if (dialogResult == ModalDialog.ID_OK) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * This method scans for valid OCSSW tags at https://oceandata.sci.gsfc.nasa.gov/manifest/tags, returns a list of tags that start with capital letter "V"
-     * @return List of valid OCSSW tags for SeaDAS
-     */
-    public ArrayList<String> getValidOcsswTagsFromURL(){
-        ArrayList<String> validOcsswTags = new ArrayList<>();
-        int i =0;
-        try {
-            Connection connection = Jsoup.connect(OCSSW_VALID_TAGS_URL);
-            Document doc = connection.get(); doc.children();
-            String tagName;
-            for (Element file : doc.getElementsByAttribute("href")) {
-                tagName = file.attr("href");
-                System.out.println(tagName);
-                if (tagName.startsWith("V")) {
-                    validOcsswTags.add(tagName);
-                }
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        return validOcsswTags;
-    }
-
-    /**
-     * This method scans for valid OCSSW tags at https://oceandata.sci.gsfc.nasa.gov/manifest/tags, returns a list of tags that start with capital letter "V"
-     * @return List of valid OCSSW tags for SeaDAS
-     */
-    public ArrayList<String> getValidOcsswTagsFromCLI(){
-        ArrayList<String> validOcsswTags = new ArrayList<>();
-        int i =0;
-        try {
-            Connection connection = Jsoup.connect(OCSSW_VALID_TAGS_URL);
-            Document doc = connection.get(); doc.children();
-            String tagName;
-            for (Element file : doc.getElementsByAttribute("href")) {
-                tagName = file.attr("href");
-                System.out.println(tagName);
-                if (tagName.startsWith("V")) {
-                    validOcsswTags.add(tagName);
-                }
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        return validOcsswTags;
-    }
-
-    /**
-     * This method downloads the ocssw installer program ocssw_install and manifest.py to a tmp directory
-     * @return
-     */
-    public boolean downloadOCSSWInstaller() {
-
-        boolean downloadSuccessful = true;
-        try {
-
-            //download install_ocssw
-            URL website = new URL(OCSSW_INSTALLER_URL);
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
-            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-            fos.close();
-            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
-
-            //download manifest.py
-            website = new URL(OCSSW_MANIFEST_URL);
-            rbc = Channels.newChannel(website.openStream());
-            fos = new FileOutputStream(TMP_OCSSW_MANIFEST);
-            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-            fos.close();
-            (new File(TMP_OCSSW_MANIFEST)).setExecutable(true);
-
-            //download seadasVersion.json
-            website = new URL(OCSSW_SEADAS_VERSIONS_URL);
-            rbc = Channels.newChannel(website.openStream());
-            fos = new FileOutputStream(TMP_SEADAS_OCSSW_VERSIONS_FILE);
-            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-            fos.close();
-
-            //download directory
-            website = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/tags");
-
-            Scanner sc = new Scanner(website.openStream());
-            while(sc.hasNextLine())
-                System.out.println(sc.nextLine());
-
-            System.out.println(website.toString());
-        } catch (MalformedURLException malformedURLException) {
-            downloadSuccessful = false;
-            malformedURLException.printStackTrace();
-        } catch (FileNotFoundException fileNotFoundException) {
-            downloadSuccessful = false;
-            fileNotFoundException.printStackTrace();
-        } catch (IOException ioe) {
-            downloadSuccessful = false;
-            ioe.printStackTrace();
-        } finally {
-            return downloadSuccessful;
-        }
-    }
 
 
     public static boolean isValidBranch(final String branch) {
