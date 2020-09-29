@@ -92,7 +92,7 @@ public class OCSSWInfo {
     private String ocsswLocation;
     private String logDirPath;
     private String resourceBaseUri;
-    private String ocsswBranch;
+    private String ocsswTag;
 
     private static String seadasVersion;
 
@@ -214,7 +214,7 @@ public class OCSSWInfo {
         }
 
         if (ocsswLocationPropertyValue == null) {
-            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in " + SystemUtils.getApplicationDataDir() + "/etc/seadas.properties");
+            Dialogs.showError("Remote OCSSW Initialization", "Please provide OCSSW server location in $HOME/.seadas/etc/seadas.properties");
             return;
         }
 
@@ -317,9 +317,9 @@ public class OCSSWInfo {
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
-        ocsswBranch = preferences.get(SEADAS_OCSSW_BRANCH_PROPERTY, null);
+        ocsswTag = preferences.get(SEADAS_OCSSW_TAG_PROPERTY, null);
         try {
-            jsonObject = target.path("ocssw").path("ocsswInfo").path(ocsswBranch).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            jsonObject = target.path("ocssw").path("ocsswInfo").path(ocsswTag).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (Exception e) {
             writeException(e);
             return false;
