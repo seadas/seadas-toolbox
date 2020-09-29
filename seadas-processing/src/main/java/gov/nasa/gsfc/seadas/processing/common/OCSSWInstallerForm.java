@@ -1,10 +1,12 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
 
 import javax.swing.*;
@@ -13,6 +15,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
+import java.util.prefs.Preferences;
+
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
 
 /**
  * Created by IntelliJ IDEA.
@@ -165,6 +171,9 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     //ToDo: missionDataDir test should be differentiated for local and remote servers
 
     protected void reorganizePanel(JPanel paramPanel) {
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+        String ocsswTagString = preferences.get(SEADAS_OCSSW_TAG_PROPERTY, SEADAS_OCSSW_TAG_DEFAULT_VALUE);
+
         dirPanel = new JPanel();
         tagPanel = new JPanel();
         missionPanel = new JPanel(new TableLayout(5));
@@ -248,6 +257,10 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                         Font f1 = tags.getFont();
                         Font f2 = new Font("Tahoma", 0, 14);
 
+                        if( ocsswTagString!=null) {
+                            tags.setSelectedItem(ocsswTagString);
+                        }
+
                         tags.setRenderer(new DefaultListCellRenderer() {
                             @Override
                             public Component getListCellRendererComponent(JList<?> list, Object value,
@@ -268,6 +281,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                         });
                         // code segment ends here
                         tagPanel.add( tempPanel1);
+;
                     } else if(c.getName().contains(CURRENT_TAG_OPTION_NAME)
                             || CURRENT_TAG_OPTION_NAME.contains(c.getName())) {
                         tempPanel2 = (JPanel)c;
