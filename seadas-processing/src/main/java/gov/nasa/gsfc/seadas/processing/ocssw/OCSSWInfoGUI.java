@@ -3,25 +3,38 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
+import com.bc.ceres.core.runtime.Version;
 import com.bc.ceres.swing.binding.BindingContext;
 import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.UIUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.OCSSW_INSTALLER_URL;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.TMP_OCSSW_INSTALLER;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
@@ -70,6 +83,8 @@ public class OCSSWInfoGUI {
     boolean windowsOS;
 
     String[] ocsswLocations;
+
+    ArrayList<String> validOCSSWTagList = new ArrayList<>();
 
     public static void main(String args[]) {
 
@@ -159,7 +174,6 @@ public class OCSSWInfoGUI {
     }
 
 
-
     private JPanel makeParamPanel() {
 
         final Preferences preferences = Config.instance("seadas").load().preferences();
@@ -167,8 +181,6 @@ public class OCSSWInfoGUI {
         GridBagConstraints gbc = createConstraints();
 
         JLabel ocsswLocationLabel = new JLabel(OCSSW_LOCATION_LABEL + ": ");
-
-
 
 
         ArrayList<String> ocsswLocationArrayList = new ArrayList<String>();
@@ -256,8 +268,8 @@ public class OCSSWInfoGUI {
         Dimension minimumSize2 = paramPanel.getMinimumSize();
         if (ocsswLocations.length > 2) {
             ocsswLocationComboBox.setSelectedIndex(2);
-             preferredSize2 = paramPanel.getPreferredSize();
-             minimumSize2 = paramPanel.getMinimumSize();
+            preferredSize2 = paramPanel.getPreferredSize();
+            minimumSize2 = paramPanel.getMinimumSize();
         }
 
         Integer preferredWidths[] = {preferredSize0.width, preferredSize1.width, preferredSize2.width};
@@ -441,7 +453,6 @@ public class OCSSWInfoGUI {
         pc.getDescriptor(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY).setDisplayName(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY);
 
 
-
         final BindingContext ctx = new BindingContext(pc);
 
         ctx.bind(SEADAS_OCSSW_PORT_PROPERTY, serverPortTextfield);
@@ -524,7 +535,7 @@ public class OCSSWInfoGUI {
                 ocsswRootString = " ";
                 // todo  open a popup warning
             }
-        } else if (ocsswRootString == null ) {
+        } else if (ocsswRootString == null) {
             ocsswRootString = System.getenv(SEADAS_OCSSW_ROOT_ENV);
         }
 
@@ -621,10 +632,57 @@ public class OCSSWInfoGUI {
         return gbc;
     }
 
+    private void getTagsforConfig() {
+
+        JSONParser jsonParser = new JSONParser();
+        try {
+
+            URL tagsURL = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json");
+            URLConnection tagsConnection = tagsURL.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(tagsConnection.getInputStream()));
+
+            //Read JSON file
+            Object obj = jsonParser.parse(in);
+
+            JSONArray validSeaDASTags = (JSONArray) obj;
+            //System.out.println(validSeaDASTags);
+
+            //Iterate over seadas tag array
+            validSeaDASTags.forEach(tagObject -> parseValidSeaDASTagObject((JSONObject) tagObject));
+            in.close();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseValidSeaDASTagObject(JSONObject tagObject) {
+        String seadasToolboxVersion = getClass().getPackage().getImplementationVersion();
+
+        String seadasVersionString = (String) tagObject.get("seadas");
+
+        if (seadasVersionString.equals(seadasToolboxVersion)) {
+            //Get corresponding ocssw tags for seadas
+            JSONArray ocsswTags = (JSONArray) tagObject.get("ocssw");
+            if (ocsswTags != null) {
+                for (int i = 0; i < ocsswTags.size(); i++) {
+                    try {
+                        validOCSSWTagList.add((String) ocsswTags.get(i));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 
     private JPanel ocsswTagPanel() {
 
         final Preferences preferences = Config.instance("seadas").load().preferences();
+
+        getTagsforConfig();
 
         JPanel panel = GridBagUtils.createPanel();
 
@@ -632,12 +690,7 @@ public class OCSSWInfoGUI {
 
         JLabel ocsswTagLabel = new JLabel(OCSSW_TAG_LABEL + ": ");
 
-        //This segment of code is to disable tags that are not compatible with the current SeaDAS version
-        OCSSW ocssw = OCSSW.getOCSSWInstance();
-        ocssw.downloadOCSSWInstaller();
-        ArrayList<String> validOcsswTags = ocssw.getOcsswTagsValid4CurrentSeaDAS();
-
-        JComboBox validOCSSWTagsComboBox = new JComboBox(validOcsswTags.toArray());
+        JComboBox validOCSSWTagsComboBox = new JComboBox(validOCSSWTagList.toArray());
         Font f1 = validOCSSWTagsComboBox.getFont();
         Font f2 = new Font("Tahoma", 0, 14);
 
@@ -648,7 +701,7 @@ public class OCSSWInfoGUI {
                 if (value instanceof JComponent)
                     return (JComponent) value;
 
-                boolean itemEnabled = validOcsswTags.contains((String)value);
+                boolean itemEnabled = validOCSSWTagList.contains((String) value);
                 super.getListCellRendererComponent(list, value, index,
                         isSelected && itemEnabled, cellHasFocus);
 
@@ -663,7 +716,6 @@ public class OCSSWInfoGUI {
         ocsswTagTextfield = new JTextField(10);
 
         ocsswTagLabel.setMinimumSize(ocsswTagLabel.getPreferredSize());
-        //ocsswTagTextfield.setMinimumSize(new JTextField(5).getPreferredSize());
         validOCSSWTagsComboBox.setMinimumSize(new JComboBox().getPreferredSize());
         ocsswTagLabel.setToolTipText(BRANCH_TOOLTIP);
 
@@ -689,8 +741,6 @@ public class OCSSWInfoGUI {
     }
 
 
-
-
     private Dimension adjustDimension(Dimension dimension, int widthAdjustment, int heightAdjustment) {
 
         if (dimension == null) {
@@ -702,8 +752,6 @@ public class OCSSWInfoGUI {
 
         return new Dimension(width, height);
     }
-
-
 
 
     /**
@@ -731,7 +779,7 @@ public class OCSSWInfoGUI {
         String msg = "<html>" +
                 "WARNING!: You are defining OCSSW ROOT to be '" + ocsswroot + "'<br>" +
                 "but on your system the environment variable OCSSWROOT points to '" + ocsswroot_env + "'<br>" +
-                "This mismatch could cause problems or conflict between GUI and command line operations<br>"+
+                "This mismatch could cause problems or conflict between GUI and command line operations<br>" +
                 "</html>";
 
 
@@ -745,7 +793,6 @@ public class OCSSWInfoGUI {
 
 
     }
-
 
 
     private Boolean checkParameters() {
@@ -798,8 +845,6 @@ public class OCSSWInfoGUI {
     }
 
 
-
-
     public boolean isTextFieldValidTag(String field, JTextField textfield) {
 
         boolean valid = true;
@@ -831,7 +876,6 @@ public class OCSSWInfoGUI {
     }
 
 
-
 //    public boolean isDefaultBranch(String branch) {
 //
 //        if (branch == null) {
@@ -858,7 +902,6 @@ public class OCSSWInfoGUI {
 //            return false;
 //        }
 //    }
-
 
 
     public static boolean isValidBranch(final String branch) {
@@ -990,9 +1033,6 @@ public class OCSSWInfoGUI {
     }
 
 
-
-
-
     private Boolean directoryCheck(String field, String filename) {
         File dir = new File(filename);
 
@@ -1012,10 +1052,10 @@ public class OCSSWInfoGUI {
                 if (dir.exists()) {
                     return true;
                 } else {
-                    msg = "<html>Failed to create directory '" +  filename + "'<br></html>";
+                    msg = "<html>Failed to create directory '" + filename + "'<br></html>";
                 }
-            } catch (Exception e){
-                msg = "<html>Failed to create directory '" +  filename + "'<br>" +
+            } catch (Exception e) {
+                msg = "<html>Failed to create directory '" + filename + "'<br>" +
                         e.toString() + "</html>";
             }
 
@@ -1024,7 +1064,6 @@ public class OCSSWInfoGUI {
 
         return false;
     }
-
 
 
     private void notifyError(String msg) {
