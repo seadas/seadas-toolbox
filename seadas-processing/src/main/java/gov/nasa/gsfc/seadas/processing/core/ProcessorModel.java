@@ -1275,7 +1275,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         sp = inputLine.indexOf(">");
                         ep = inputLine.lastIndexOf("<");
                         tagName = inputLine.substring(sp+1, ep-1);
-                        System.out.println("tag: " + tagName);
+                        //System.out.println("tag: " + tagName);
                         if (tagName.startsWith("V") ||
                                 tagName.startsWith("R") ||
                                 tagName.startsWith("T") ) {
@@ -1306,7 +1306,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 Object obj = jsonParser.parse(in);
 
                 JSONArray validSeaDASTags = (JSONArray) obj;
-                System.out.println(validSeaDASTags);
+                //System.out.println(validSeaDASTags);
 
                 //Iterate over seadas tag array
                 validSeaDASTags.forEach( tagObject -> parseValidSeaDASTagObject( (JSONObject) tagObject ) );
@@ -1326,7 +1326,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String seadasVersion = (String)tagObject.get("seadas");
             //Get corresponding ocssw tags for seadas
             JSONArray ocsswTags = (JSONArray) tagObject.get("ocssw");
-            System.out.println(ocsswTags);
+            //System.out.println(ocsswTags);
 
         }
 

@@ -109,7 +109,7 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
 
     private Component findJButton(Component comp, String panelName) {
 
-        System.out.println(comp.getClass() + "  " + comp.getName());
+        //System.out.println(comp.getClass() + "  " + comp.getName());
         if (comp.getClass() == JButton.class && comp.getName() != null && comp.getName().contains("actionButton")) return comp.getParent();
         if (comp instanceof Container) {
             Component[] components = ((Container) comp).getComponents();

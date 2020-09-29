@@ -432,7 +432,7 @@ public abstract class OCSSW {
             Object obj = jsonParser.parse(in);
 
             JSONArray validSeaDASTags = (JSONArray) obj;
-            System.out.println(validSeaDASTags);
+            //System.out.println(validSeaDASTags);
 
             //Iterate over seadas tag array
             validSeaDASTags.forEach( tagObject -> parseValidSeaDASTagObject( (JSONObject) tagObject ) );
