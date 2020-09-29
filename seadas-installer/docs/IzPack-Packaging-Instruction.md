@@ -26,19 +26,37 @@
       <dirEntry mountPoint="645" file="./files/unix" subDirectory="unix" />
     </entries>
     
- <component name="SNAP" id="76" customizedId="SNAP" hideHelpButton="true" changeable="false">
-        <description>Sentinels Application Platform.</description>
-        <include>
-          <entry location="bin" />
-          <entry location="etc" />
-          <entry location="snap" />
-          <entry location="platform" />
-          <entry location="ide" />
-          <entry location="LICENSE.txt" />
-          <entry location="THIRDPARTY_LICENSES.txt" />
-          <entry location="VERSION.txt" />
-          <entry filesetId="634" />
-          <entry filesetId="637" />
-          <entry filesetId="639" />
-          <entry filesetId="641" />
-        </include>
+ 
+##### Packaging
+###### _Contents of the "packs" directory_
+
+1.**snap**
+
+/snap-desktop/snap-application/target/snap/
+
+2.**s3tbx**
+
+/s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx
+
+3.**seadas**
+
+/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas
+
+###### _Changes to properties files_ 
+
+1.To have s3tbx and seadas-toolbox installed by default, add the following 
+two lines in ../packs/snap/etc/snap.clusters:
+
+`s3tbx`
+
+`seadas-toolbox`
+
+2.Add the following lines in ../packs/snap/etc/snap.properties:
+
+`snap.context=seadas`
+
+`snap.context.application.name=SeaDAS`
+
+3.Add the following line in ../packs/snap/etc/snap.conf:
+
+`extra_clusters=${extra_clusters}`
