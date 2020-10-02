@@ -13,10 +13,10 @@ import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.ui.UIUtils;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+//import org.jsoup.Connection;
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+//import org.jsoup.nodes.Element;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -369,6 +369,12 @@ public class GetSysInfoGUI {
         } else {
             sysInfoText += "Configuration: " + seadasProperties.toString() + "\n";
             sysInfoText2 += "Configuration: " + seadasProperties.toString() + "\n";
+        }
+        if(ocsswDebug) {
+            final Preferences preferences = Config.instance("seadas").load().preferences();
+            String ocsswRootSeadasProperties = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
+            sysInfoText += "seadas.ocssw.root (seadas.properties): " + ocsswRootSeadasProperties + "\n";
+            sysInfoText2 += "seadas.ocssw.root (seadas.properties): " + ocsswRootSeadasProperties + "\n";
         }
         sysInfoText += "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
         sysInfoText2 += "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
