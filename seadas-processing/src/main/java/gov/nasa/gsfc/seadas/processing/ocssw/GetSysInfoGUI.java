@@ -323,9 +323,20 @@ public class GetSysInfoGUI {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
             String line;
+            Integer numOfLines = 0;
+            sysInfoText += "Python3 Directory: " + "\n";
+            sysInfoText2 += "Python3 Directory: " + "\n";
             while ((line = reader.readLine()) != null) {
-                sysInfoText += "Python3 Directory: " + line + "\n\n";
-                sysInfoText2 += "Python3 Directory: " + line + "\n\n";
+                sysInfoText += line + "\n";
+                sysInfoText2 += line + "\n";
+                numOfLines ++;
+            }
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
+            if (numOfLines > 1) {
+                sysInfoText += "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+                sysInfoText2 = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+                appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
             }
 
             reader.close();
@@ -354,8 +365,8 @@ public class GetSysInfoGUI {
             e.printStackTrace();
         }
 
-        sysInfoText += "SeaDAS Toolbox: " + "\n";
-        sysInfoText2 += "SeaDAS Toolbox: " + "\n";
+        sysInfoText += "\n" + "SeaDAS Toolbox: " + "\n";
+        sysInfoText2 = "\n" + "SeaDAS Toolbox: " + "\n";
 
         sysInfoText += "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
         sysInfoText2 += "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
@@ -471,9 +482,23 @@ public class GetSysInfoGUI {
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(process.getInputStream()));
                     String line;
+                    Integer numOfLines = 0;
+                    Boolean extraLine = false;
                     while ((line = reader.readLine()) != null) {
                         sysInfoText += line + "\n";
                         sysInfoText2 += line + "\n";
+                        if ((numOfLines == 0) && !line.contains("NASA")) {
+                            extraLine = true;
+                        }
+                        numOfLines ++;
+                    }
+
+                    appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+
+                    if (extraLine) {
+                        sysInfoText += "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+                        sysInfoText2 = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+                        appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
                     }
 //                    appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
 
@@ -503,7 +528,7 @@ public class GetSysInfoGUI {
                     sysInfoText2 += e.toString() + "\n";
                     e.printStackTrace();
                 }
-                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+//                appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
             }
         }
         sysInfoTextpane.setEditable(false);
