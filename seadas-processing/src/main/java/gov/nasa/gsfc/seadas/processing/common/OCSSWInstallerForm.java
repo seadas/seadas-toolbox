@@ -282,8 +282,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                         // code segment ends here
                         tagPanel.add( tempPanel1);
 ;
-                    } else if(c.getName().contains(CURRENT_TAG_OPTION_NAME)
-                            || CURRENT_TAG_OPTION_NAME.contains(c.getName())) {
+                    } else if(c.getName().contains(CURRENT_TAG_OPTION_NAME)  ){
+                            //|| CURRENT_TAG_OPTION_NAME.contains(c.getName())) {
                         tempPanel2 = (JPanel)c;
                         ((JLabel)tempPanel2.getComponent(0)).setText("Last Installed OCSSW Tag:");
                         tagPanel.add( tempPanel2);
