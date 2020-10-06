@@ -15,11 +15,11 @@ public class ProcessorTypeInfo {
 
     public static enum ProcessorID {
         EXTRACTOR,
-        MODIS_L1A_PY,
-        MODIS_GEO_PY,
+        MODIS_L1A,
+        MODIS_GEO,
         GEOLOCATE_VIIRS,
         L1BGEN,
-        MODIS_L1B_PY,
+        MODIS_L1B,
         CALIBRATE_VIIRS,
         L1BRSGEN,
         L2BRSGEN,
@@ -52,11 +52,11 @@ public class ProcessorTypeInfo {
         put("l1aextract_viirs", ProcessorID.EXTRACTOR);
         put("l2extract", ProcessorID.EXTRACTOR);
         put("extractor", ProcessorID.EXTRACTOR);
-        put("modis_L1A", ProcessorID.MODIS_L1A_PY);
-        put("modis_GEO", ProcessorID.MODIS_GEO_PY);
+        put("modis_L1A", ProcessorID.MODIS_L1A);
+        put("modis_GEO", ProcessorID.MODIS_GEO);
         put("geolocate_viirs", ProcessorID.GEOLOCATE_VIIRS);
         put("l1bgen", ProcessorID.L1BGEN);
-        put("modis_L1B", ProcessorID.MODIS_L1B_PY);
+        put("modis_L1B", ProcessorID.MODIS_L1B);
         put("calibrate_viirs", ProcessorID.CALIBRATE_VIIRS);
         put("l1brsgen", ProcessorID.L1BRSGEN);
         put("l2brsgen", ProcessorID.L2BRSGEN);

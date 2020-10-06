@@ -129,7 +129,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         switch (processorID) {
             case EXTRACTOR:
                 return new Extractor_Processor(programName, xmlFileName, ocssw);
-            case MODIS_L1B_PY:
+            case MODIS_L1B:
                 return new Modis_L1B_Processor(programName, xmlFileName, ocssw);
             case LONLAT2PIXLINE:
                 return new LonLat2Pixels_Processor(programName, xmlFileName, ocssw);
@@ -1234,11 +1234,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         void setCommandArrayPrefix() {
             cmdArrayPrefix = new String[1];
             cmdArrayPrefix[0] = getProgramName();
-            if (!OCSSWInfo.getInstance().isOCSSWExist()) {
-                getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
-            } else {
-                getCmdArrayPrefix()[0] = OCSSWInfo.getInstance().getOcsswInstallerScriptPath();
-            }
+            getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
+//            if (!OCSSWInfo.getInstance().isOCSSWExist()) {
+//                getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
+//            } else {
+//                getCmdArrayPrefix()[0] = OCSSWInfo.getInstance().getOcsswInstallerScriptPath();
+//            }
         }
 
         private void updateTags(){
