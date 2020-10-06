@@ -48,7 +48,6 @@ public class OCSSWInfo {
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
     public static final String SEADAS_VERSION_PROPERTY = "seadas.version";
-    private static final String SEADAS_VERSION_FILE_NAME = "VERSION.txt";
     public static final String SEADAS_LOG_DIR_PROPERTY = "seadas.log.dir";
     public static final String OCSSW_LOCATION_PROPERTY = "seadas.ocssw.location";
     public static final String OCSSW_LOCATION_LOCAL = "local";
@@ -63,15 +62,10 @@ public class OCSSWInfo {
     public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
 
     public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw";
-    public static final String OCSSW_INSTALLER_PROGRAM_NAME_OLD = "install_ocssw.py";
     public static final String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
     public static final String OCSSW_SEADAS_INFO_PROGRAM_NAME = "seadas_info";
 
     public static final String VIRTUAL_MACHINE_SERVER_API = "localhost";
-
-    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-
 
     private static OCSSWInfo ocsswInfo = null;
 

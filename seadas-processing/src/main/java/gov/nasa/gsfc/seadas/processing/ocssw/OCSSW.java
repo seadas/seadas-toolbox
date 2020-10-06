@@ -48,7 +48,6 @@ public abstract class OCSSW {
     public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/install_ocssw";
     public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/manifest.py";
     public static final String OCSSW_SEADAS_VERSIONS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json";
-    public static final String TMP_OCSSW_INSTALLER_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
     public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();

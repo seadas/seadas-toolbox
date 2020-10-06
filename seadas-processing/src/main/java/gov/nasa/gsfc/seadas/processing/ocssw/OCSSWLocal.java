@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -28,8 +29,7 @@ import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 
 public class OCSSWLocal extends OCSSW {
 
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH_OLD = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
-    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
+    public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), OCSSW_INSTALLER_PROGRAM_NAME)).getPath();
 
     private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
@@ -146,7 +146,7 @@ public class OCSSWLocal extends OCSSW {
         commandArraySuffix = processorModel.getCmdArraySuffix();
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
         //TODO: for ocssw_install commandArrayPrefix has the program name with the file path, so it can't include programNameArray again
-        if (OCSSWInfo.getInstance().isOCSSWExist()) {
+        if (!processorModel.getProgramName().equals(OCSSW_INSTALLER_PROGRAM_NAME)) {
             cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, cmdArrayForParams, commandArraySuffix);
         } else {
             cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, cmdArrayForParams, commandArraySuffix);
@@ -448,7 +448,7 @@ public class OCSSWLocal extends OCSSW {
     }
 
     public void setCommandArrayPrefix() {
-        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && !isOCSSWExist()) {
+        if (programName.equals(OCSSW_INSTALLER_PROGRAM_NAME) ) {  //&& !isOCSSWExist()
             commandArrayPrefix = new String[1];
             commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
         } else {
