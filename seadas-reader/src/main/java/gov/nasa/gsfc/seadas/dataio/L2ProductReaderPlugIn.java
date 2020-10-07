@@ -251,46 +251,46 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
     private static void registerRGBProfiles() {
         RGBImageProfileManager manager = RGBImageProfileManager.getInstance();
         manager.addProfile(new RGBImageProfile("NASA SeaWiFS L2",
-                                               new String[]{
-                                                       "Rrs_670",
-                                                       "Rrs_510",
-                                                       "Rrs_443"
-                                               }));
+                new String[]{
+                        "Rrs_670",
+                        "Rrs_510",
+                        "Rrs_443"
+                }));
         manager.addProfile(new RGBImageProfile("NASA MODIS L2",
-                                               new String[]{
-                                                       "Rrs_667",
-                                                       "Rrs_531",
-                                                       "Rrs_443"
-                                               }));
+                new String[]{
+                        "Rrs_667",
+                        "Rrs_531",
+                        "Rrs_443"
+                }));
         manager.addProfile(new RGBImageProfile("NASA OCTS/CZCS L2",
-                                               new String[]{
-                                                       "Rrs_670",
-                                                       "Rrs_520",
-                                                       "Rrs_443"
-                                               }));
+                new String[]{
+                        "Rrs_670",
+                        "Rrs_520",
+                        "Rrs_443"
+                }));
         manager.addProfile(new RGBImageProfile("NASA SeaWiFS L2 Tristimulus",
-                                               new String[]{
-                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
-                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_510 + 0.4*nLw_555)",
-                                                       "log(1 + 1.85*nLw_443)"
-                                               }));
+                new String[]{
+                        "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                        "log(1 + 0.2*nLw_443 + 0.4*nLw_510 + 0.4*nLw_555)",
+                        "log(1 + 1.85*nLw_443)"
+                }));
         manager.addProfile(new RGBImageProfile("NASA MODIS L2 Tristimulus",
-                                               new String[]{
-                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
-                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_531 + 0.4*nLw_551)",
-                                                       "log(1 + 1.85*nLw_443)"
-                                               }));
+                new String[]{
+                        "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                        "log(1 + 0.2*nLw_443 + 0.4*nLw_531 + 0.4*nLw_551)",
+                        "log(1 + 1.85*nLw_443)"
+                }));
         manager.addProfile(new RGBImageProfile("NASA OCTS L2 Tristimulus",
-                                               new String[]{
-                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
-                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_565)",
-                                                       "log(1 + 1.85*nLw_443)"
-                                               }));
+                new String[]{
+                        "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                        "log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_565)",
+                        "log(1 + 1.85*nLw_443)"
+                }));
         manager.addProfile(new RGBImageProfile("NASA CZCS L2 Tristimulus",
-                                               new String[]{
-                                                       "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
-                                                       "log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_550)",
-                                                       "log(1 + 1.85*nLw_443)"
-                                               }));
+                new String[]{
+                        "log(1 + 0.2*nLw_443 + 1.1*nLw_670)",
+                        "log(1 + 0.2*nLw_443 + 0.4*nLw_520 + 0.4*nLw_550)",
+                        "log(1 + 1.85*nLw_443)"
+                }));
     }
 }
