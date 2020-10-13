@@ -18,18 +18,18 @@ import javax.swing.*;
         category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.L1BGenAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_ L1BGenAction_Name",
-        popupText = "#CTL_ L1BGenAction_Name"
+        displayName = "#CTL_L1BGenAction_Name",
+        popupText = "#CTL_L1BGenAction_Name"
 )
 @ActionReference(
         path = "Menu/SeaDAS-OCSSW",
         position = 80
 )
 @NbBundle.Messages({
-        "CTL_L1BGenAction_Name=l1bgen...",
-        "CTL_L1BGenAction_ProgramName=l1bgen",
-        "CTL_L1BGenAction_DialogTitle=l1bgen",
-        "CTL_L1BGenAction_XMLFileName=l1bgen.xml",
+        "CTL_L1BGenAction_Name=l1bgen_generic...",
+        "CTL_L1BGenAction_ProgramName=l1bgen_generic",
+        "CTL_L1BGenAction_DialogTitle=l1bgen_generic",
+        "CTL_L1BGenAction_XMLFileName=l1bgen_generic.xml",
         "CTL_L1BGenAction_Description=Process MODIS L0 to L1A."
 })
 
