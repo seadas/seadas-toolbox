@@ -43,7 +43,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         L1MAPGEN("l1mapgen"),
         GEO("geo"),
         MODIS_L1B("modis_L1B"),
-        L1BGEN("l1bgen"),
+        L1BGEN("l1bgen_generic"),
         L1BRSGEN("l1brsgen"),
         L2GEN("l2gen"),
         L2EXTRACT("l2extract"),

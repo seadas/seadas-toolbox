@@ -100,7 +100,7 @@ public class SeadasProcessorInfo {
                             iFileInfo.isMissionId(MissionInfo.Id.MODIST)) {
                         return "modis_L1B";
                     } else {
-                        return "l1bgen";
+                        return "l1bgen_generic";
                     }
 
                 case L1MAPGEN:
