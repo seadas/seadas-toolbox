@@ -20,7 +20,7 @@ public class ProcessObserver {
     protected static final String STDERR = "stderr";
     protected final Process process;
     protected final String processName;
-    protected final ProgressMonitor progressMonitor;
+    protected final com.bc.ceres.core.ProgressMonitor progressMonitor;
     protected final ArrayList<Handler> handlers;
 
     private int processExitValue;
@@ -32,7 +32,7 @@ public class ProcessObserver {
      * @param processName     A name that represents the process
      * @param progressMonitor A progress monitor
      */
-    public ProcessObserver(final Process process, String processName, ProgressMonitor progressMonitor) {
+    public ProcessObserver(final Process process, String processName, com.bc.ceres.core.ProgressMonitor progressMonitor) {
         this.process = process;
         this.processName = processName;
         this.progressMonitor = progressMonitor;

@@ -235,19 +235,27 @@ public class CallCloProgramAction extends AbstractSnapAction {
             protected String doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);
+
                 final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
                 final ProcessObserver processObserver = ocssw.getOCSSWProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
+
+                Pattern pattern = processorModel.getProgressPattern();
+
                 if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+//                    pm.beginTask("Installing OCSSW Processors " + "Install OCSSW", 10);
+//                    pm.worked(1);
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
                 } else {
                     processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
                 }
                 processObserver.addHandler(ch);
+
                 processObserver.startAndWait();
+
                 processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
 
                 int exitCode = processObserver.getProcessExitValue();
@@ -363,11 +371,11 @@ public class CallCloProgramAction extends AbstractSnapAction {
      */
     public static class ProgressHandler implements ProcessObserver.Handler {
 
-        private boolean progressSeen;
-        private boolean stdoutOn;
+        protected boolean progressSeen;
+        protected boolean stdoutOn;
         private int lastScan = 0;
-        private String programName;
-        private Pattern progressPattern;
+        protected String programName;
+        protected Pattern progressPattern;
         protected String currentText = "Part 1 - ";
 
         public ProgressHandler(String programName, Pattern progressPattern) {
@@ -476,35 +484,45 @@ public class CallCloProgramAction extends AbstractSnapAction {
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
-            int len = line.length();
-            if (len > 70) {
-                String[] parts = line.trim().split("\\s+", 2);
-                try {
-                    int percent = Integer.parseInt(parts[0]);
-                    progressMonitor.setSubTaskName(currentText + " - " + parts[0] + "%");
-                } catch (Exception e) {
-                    progressMonitor.setSubTaskName(line);
+            stdoutOn = true;
+
+            Matcher matcher = progressPattern.matcher(line);
+            if (matcher.find()) {
+                int currentWork = Integer.parseInt(matcher.group(1));
+                int totalWork = Integer.parseInt(matcher.group(2))+1;  // note: buffer added so as not to fill
+                if (!progressSeen) {
+                    progressSeen = true;
+                    progressMonitor.beginTask(programName, totalWork);
+
                 }
-            } else {
-                progressMonitor.setSubTaskName(line);
+
+                // System.out.println("WORK of TOTAL=" + currentWork + "of " + totalWork);
+
+                // Note: if statement used to prevent progress monitor from filling
+                // up here so that the GUI doesn't close too early.
+                // The progress monitor will be specifically closed when finished.
+                if (currentWork < totalWork) {
+                    progressMonitor.worked(1);
+                }
+
+                currentText = line;
             }
+
+            progressMonitor.setTaskName(programName);
+            progressMonitor.setSubTaskName(line);
         }
+
+
+
         @Override
         public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
-            int len = line.length();
-            if (len > 70) {
-                String[] parts = line.trim().split("\\s+", 2);
-                try {
-                    int percent = Integer.parseInt(parts[0]);
-                    progressMonitor.setSubTaskName(currentText + " - " + parts[0] + "%");
-                } catch (Exception e) {
-                    progressMonitor.setSubTaskName(line);
-                }
-            } else {
-                progressMonitor.setSubTaskName(line);
+            if (!super.stdoutOn) {
+                handleLineOnStdoutRead(line, process, progressMonitor);
             }
         }
     }
+
+
 
     private class ScrolledPane extends JFrame {
 
