@@ -347,6 +347,10 @@ public class OCSSWRemote extends OCSSW {
             return ifileName + ".xml";
         }
 
+        if(programName.equals("l1bgen_generic")){
+            programName = "l1bgen";
+        }
+
         if (!fileExistsOnServer(ifileName)) {
             uploadClientFile(ifileName);
         }
