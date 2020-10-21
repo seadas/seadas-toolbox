@@ -47,7 +47,7 @@
             <tocitem text="modis_GEO" target="modis_GEO"/>
             <tocitem text="geolocate_viirs" target="geolocate_viirs"/>
             <tocitem text="calibrate_viirs" target="calibrate_viirs"/>
-            <tocitem text="l1bgen" target="l1bgen"/>
+            <tocitem text="l1bgen_generic" target="l1bgen_generic"/>
             <tocitem text="l1brsgen" target="l1brsgen"/>
             <tocitem text="l1mapgen" target="l1mapgen"/>
             <tocitem text="L2gen" target="l2gen"/>
