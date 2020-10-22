@@ -433,7 +433,7 @@ public class GetSysInfoGUI {
         ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
         if ((ocsswRootOcsswInfo == null ) || !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
-            if ((ocsswRootEnv != null) & Files.exists(Paths.get(ocsswRootEnv))) {
+            if ((ocsswRootEnv != null) && Files.exists(Paths.get(ocsswRootEnv))) {
                 sysInfoText += "NASA Science Processing (OCSSW): " + "\n";
                 sysInfoText2 = "NASA Science Processing (OCSSW): " + "\n";
                 appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
