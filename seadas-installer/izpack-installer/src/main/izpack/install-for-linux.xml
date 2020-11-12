@@ -7,7 +7,7 @@
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.0.0</appversion>
-        <javaversion>1.8.0_241</javaversion>
+        <javaversion>1.8.0_201</javaversion>
         <requiresjdk>yes</requiresjdk>
         <url>https://seadas.gsfc.nasa.gov</url>
         <authors>
