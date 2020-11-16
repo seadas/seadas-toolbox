@@ -1,24 +1,123 @@
 body {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     color: #000000;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12;
     padding: 6pt;
     margin: 6pt;
+    width: 444pt;
 }
+
+
+
 
 p {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     margin: 6pt;
+    }
+
+
+
+.i0first {
+    margin-left: 6;
+    margin-top: 0;
+}
+
+.i0hang {
+    margin-left: 6;
+    margin-bottom: 0;
+}
+
+.i1hang {
+    margin-left: 40;
+    margin-bottom: 0;
+}
+
+.i1first {
+    margin-left: 40;
+    margin-top: 0;
+}
+
+.i2first {
+    margin-left: 80;
+    margin-top: 0;
+}
+
+
+.i0 {
+    margin-left: 6;
 }
 
 .i1 {
-    margin-left: 30;
+    margin-left: 40;
 }
 
 .i2 {
-    margin-left: 50;
+    margin-left: 80;
 }
+
+.i3 {
+    margin-left: 120;
+}
+
+
+
+.toc {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 10pt;
+    margin-left: 0;
+}
+
+
+.toc1 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 16;
+    font-weight: bold;
+    margin-top: 18pt;
+    margin-right: 0pt;
+    margin-bottom: 10pt;
+    margin-left: 0pt;
+}
+
+.toc2 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 10pt;
+    margin-left: 40;
+}
+
+
+.chapterTitle {
+                  font-family: Verdana, Arial, Helvetica, sans-serif;
+                  font-size: 35;
+                  font-weight: bold;
+                  margin-top: 18pt;
+                  margin-right: 6pt;
+                  margin-bottom: 12pt;
+                  margin-left: 6pt;
+                  color: #003366;
+
+              }
+
+
+.subSectionTitle2 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 6pt;
+    margin-left: 6pt;
+    color: #003366;
+}
+
 
 .note {
     font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -39,13 +138,20 @@ p {
     font-style: normal;
 }
 
+
+.center {
+    text-align: center;
+
+}
+
+
 h1 {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 25;
     font-weight: bold;
-    margin-top: 18pt;
+    margin-top: 6pt;
     margin-right: 6pt;
-    margin-bottom: 12pt;
+    margin-bottom: 6pt;
     margin-left: 6pt;
 }
 
@@ -53,9 +159,9 @@ h2 {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 21;
     font-weight: bold;
-    margin-top: 18pt;
+    margin-top: 6pt;
     margin-right: 6pt;
-    margin-bottom: 12pt;
+    margin-bottom: 6pt;
     margin-left: 6pt;
 }
 
@@ -68,6 +174,9 @@ h3 {
     margin-bottom: 12pt;
     margin-left: 6pt;
 }
+
+
+
 
 h4 {
     font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -88,6 +197,8 @@ h5 {
     margin-bottom: 6pt;
     margin-left: 6pt;
 }
+
+
 
 h6 {
     font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -111,17 +222,156 @@ table {
     margin: 0;
 }
 
-invisibletable {
+.sectionTitle {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18;
+    font-weight: bold;
+    margin-top: 6pt;
+    margin-right: 6pt;
+    margin-bottom: 6pt;
+    margin-left: 6pt;
+    color: #2B3856;
+    font-style: italic;
+    text-align: center;
+}
+
+.notes {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11;
+    margin-top: 6pt;
+    margin-right: 6pt;
+    margin-bottom: 6pt;
+    margin-left: 6pt;
+    font-style: italic;
+}
+.subSectionTitle {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 20;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 6pt;
+    margin-left: 6pt;
+    color: #005000;
+    font-style: italic;
+}
+
+.subSectionDetails {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11;
+    margin-left: 6pt;
+    margin-top : 0pt;
+    margin-bottom: 14pt;
+    margin-right: 0pt;
+    font-style: normal;
+}
+
+
+
+.h3better {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18;
+    font-weight: bold;
+    margin-top: 18pt;
+    margin-right: 6pt;
+    margin-bottom: 0pt;
+    margin-left: 6pt;
+}
+
+
+.groupTitle {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14;
+    margin: 0pt;
+    margin-left: 6;
+    font-style: normal;
+}
+.groupDetails {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    margin-left: 24pt;
+    margin-top : 0pt;
+    margin-bottom: 6pt;
+    margin-right: 0pt;
+    font-style: normal;
+}
+
+.groupLocation {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    margin-left: 42pt;
+    margin-top : 0pt;
+    margin-bottom: 12pt;
+    margin-right: 0pt;
+    font-style: italic;
+}
+
+
+
+
+.invisibleLink {
+    /*text-decoration:none;*/
+}
+
+.invisibletable {
     border-width: 0;
     border-style: solid;
     border-color: #FFFFFF;
     border-collapse: collapse;
-    padding: 1px;
+    padding: 0px;
     margin: 0;
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 12;
     font-style: normal;
+    text-valign: top;
+    vertical-align: top;
 }
+
+.invisibletable2 {
+    border-width: 0;
+    border-style: solid;
+    border-color: #FFFFFF;
+    border-collapse: collapse;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    padding: 4px;
+    margin: 4;
+    font-style: normal;
+    text-valign: top;
+    vertical-align: top;
+}
+
+.invisibletable3 {
+    border-width: 0;
+    border-style: solid;
+    border-color: #FFFFFF;
+    border-collapse: collapse;
+    padding: 0px;
+    margin: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    font-style: normal;
+    text-valign: bottom;
+    vertical-align: bottom;
+}
+
+
+.invisibletable4 {
+    border-width: 0;
+    border-style: solid;
+    border-color: #fff9e9;
+    background-color: #fff9e9;
+    border-collapse: collapse;
+    padding: 0px;
+    margin: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    font-style: normal;
+    text-valign: top;
+    vertical-align: top;
+}
+
+
 
 th {
     font-size: 12;
@@ -137,7 +387,7 @@ th {
 }
 
 td {
-    font-size: 11;
+    font-size: 12;
     border-width: 1;
     border-color: #BBBBBB;
     border-style: solid;
@@ -154,23 +404,86 @@ table.header {
     height: 29;
     font-size: 17;
     color: #ffffff;
+    align: left;
     vertical-align: middle;
-    background-color: #1d3752;
+    background-color: #024150;
     border-width: 0;
     padding: 0;
     margin: 0;
 }
 
-.header {
+td.icon {
+    width: 24;
+    height: 24;
+    font-size: 17;
+    color: #ffffff;
+    bgcolor: #ffffff
+    vertical-align: middle;
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.headerOld {
     font-size: 17;
     height: 29;
     color: #ffffff;
     vertical-align: middle;
-    background-color: #1d3752;
+    background-color: #FFD257;
     border-width: 0;
     padding: 0;
     white-space: nowrap;
 }
+
+
+.header {
+    border-collapse: collapse;
+    padding: 0px;
+    margin: 0;
+        border-color: #024150;
+    font-size: 17;
+    height: 29;
+    color: #ffffff;
+    vertical-align: middle;
+    text-align: center;
+    background-color: #024150;
+    border-width: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.header2 {
+    border-collapse: collapse;
+    padding: 0px;
+    margin: 0;
+        border-color: #FFFFFF;
+    font-size: 17;
+    height: 29;
+    color: #ffffff;
+    vertical-align: middle;
+    text-align: center;
+    background-color: #ffffff;
+    border-width: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.contents {
+    border-collapse: collapse;
+    padding: 0px;
+        border-color: #FFFFFF;
+    font-size: 12;
+    height: 29;
+    color: #000000;
+    vertical-align: middle;
+    background-color: #ffffff;
+    border-width: 0;
+    spacing: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+
 
 hr {
     height: 4;
@@ -179,3 +492,34 @@ hr {
     border-style: solid;
     border-width: 1;
 }
+
+img.center {
+    display: block;
+    margin: 0 auto;
+}
+
+.center {
+    text-align: center;
+}
+
+.toolDescription {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12;
+    font-weight: bold;
+    margin: 6pt;
+    color: #008888;
+}
+
+.resize {
+    width:40px; /* you can use % */
+    height: auto;
+}
+
+.nospace {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    margin: 0pt;
+    margin-left: 30;
+}
+
+
+

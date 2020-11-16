@@ -406,6 +406,7 @@ table.header {
     color: #ffffff;
     align: left;
     vertical-align: middle;
+    background-color: #024150;
     border-width: 0;
     padding: 0;
     margin: 0;
@@ -439,13 +440,13 @@ td.icon {
     border-collapse: collapse;
     padding: 0px;
     margin: 0;
-        border-color: #1d3752;
+        border-color: #024150;
     font-size: 17;
     height: 29;
-    color: #ffff99;
+    color: #ffffff;
     vertical-align: middle;
     text-align: center;
-    background-color: #1d3752;
+    background-color: #024150;
     border-width: 0;
     white-space: nowrap;
     text-align: right;
@@ -514,7 +515,11 @@ img.center {
     height: auto;
 }
 
-
+.nospace {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    margin: 0pt;
+    margin-left: 30;
+}
 
 
 
