@@ -17,6 +17,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.openide.modules.ModuleInfo;
+import org.openide.modules.Modules;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -659,11 +661,12 @@ public class OCSSWInfoGUI {
     }
 
     private void parseValidSeaDASTagObject(JSONObject tagObject) {
-        String seadasToolboxVersion = getClass().getPackage().getImplementationVersion();
+        ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
+        String seadasToolboxVersion = String.valueOf(seadasProcessingModuleInfo.getSpecificationVersion());
 
-        String seadasVersionString = (String) tagObject.get("seadas");
+        String seadasToolboxVersionJson = (String) tagObject.get("seadas");
 
-        if (seadasVersionString.equals(seadasToolboxVersion)) {
+        if (seadasToolboxVersionJson.equals(seadasToolboxVersion)) {
             //Get corresponding ocssw tags for seadas
             JSONArray ocsswTags = (JSONArray) tagObject.get("ocssw");
             if (ocsswTags != null) {
