@@ -86,3 +86,10 @@ Toolbar Configuration:
 https://seadas.gsfc.nasa.gov/downloads/VERSION/txt
 contents ?:
 8.0.0
+
+
+Versioning Files:
+http://wiki.netbeans.org/DevFaqVersionNumber
+/Users/seadas/seadas8/snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core.jar/org/netbeans/core/ui/Bundle.properties
+/Users/seadas/seadas8/snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
+/Users/seadas/seadas8/snap-desktop/snap-branding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
