@@ -28,7 +28,7 @@ public class SeaDASAboutBox extends JPanel {
     private final static String PACKAGE = "SeaDAS-Toolbox";
     private final static String SEADAS_VERSION = "1.0-Beta";
 
-    private final static String RELEASE_NOTES_URL = "https://github.com/seadas/seadas-toolbox/blob/master/ReleaseNotes.md";
+    private final static String RELEASE_NOTES_URL = "https://github.com/seadas/seadas-toolbox/blob/master/docs/release-notes/seadas-toolbox/1.0.0.md";
     private final static String RELEASE_NOTES_URL_NAME = PACKAGE + " " + SEADAS_VERSION + " Release Notes";
 
     private final static String OCEAN_COLOR_WEB_URL = "https://oceancolor.gsfc.nasa.gov/";

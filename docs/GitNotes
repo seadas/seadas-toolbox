@@ -5,15 +5,16 @@ git checkout --track origin/SEADAS-PackageDefaults-2020-0226
 
 
 In snap-engine:
-git checkout --track origin/SEADAS-8.0.0-Beta-SNAP8_RC2
+git checkout --track origin/SEADAS-8.0.0-Beta
 
 In snap-desktop:
-git checkout --track origin/SEADAS-8.0.0-Beta-SNAP8_RC2
+git checkout --track origin/SEADAS-8.0.0-Beta
 
 In s3tbx:
-git checkout --track origin/SNAP8_RC2
+git checkout -b 8.0.0 8.0.0
 
 In seadas-toolbox:
+git checkout master
 git checkout --track origin/SEADAS-8.0.0-Beta-SNAP8_RC2
 
 
