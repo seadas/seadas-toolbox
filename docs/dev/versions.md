@@ -5,7 +5,9 @@ SeaDAS Versioning Notes
 SeaDAS 8.0.0
 SeaDAS Toolbox 1.0.0
 
-seadas-toolbox: /origin/master
+seadas-toolbox: branch = SEADAS-8.0.0-SNAP-8.0.1
+cd seadas-toolbox
+git checkout --track origin/SEADAS-8.0.0-SNAP-8.0.1
 
 
 s3tbx: tag=8.0.0
