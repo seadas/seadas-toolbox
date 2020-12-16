@@ -7,7 +7,7 @@
   <info>
     <appname>SeaDAS IzPack Installer</appname>
     <appversion>1.0.0</appversion>
-    <javaversion>1.8.0_241</javaversion>
+    <javaversion>1.8.0_201</javaversion>
     <requiresjdk>yes</requiresjdk>
     <url>https://seadas.gsfc.nasa.gov</url>
     <authors>
@@ -78,7 +78,7 @@
     <variable name="WELCOME_VERSION" value="Version: 1"/>
     <variable name="FINISH_TEXT" value="SeaDAS-8 is successfuly installed. Enjoy!"/>
     <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
-    <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/seadas"/>-->
+    <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
     <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
     <variable name="ceresContext" value="seadas"/>
     <variable name="seadasDebug" value="false"/>
@@ -198,8 +198,6 @@
         <exclude name="bin/meris*.*"/>
         <exclude name="bin/aatsr-sst.*"/>
         <exclude name="bin/flhmci.*"/>
-        <exclude name="jre/*linux*"/>
-        <exclude name="jre/*windows*"/>
       </fileset>
       <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac" condition="izpack.macinstall"/>
       <parsable type="plain">
@@ -223,6 +221,7 @@
         <fileset targetdir="${INSTALL_PATH}/bin">
           <include name="*.exe"/>
           <include name="snap"/>
+          <include name="seadas"/>
         </fileset>
         <os family="windows"/>
       </parsable>
