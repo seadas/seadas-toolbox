@@ -70,7 +70,7 @@
         <variable name="WELCOME_VERSION" value="Version: 1"/>
         <variable name="FINISH_TEXT" value="SeaDAS-8 is successfuly installed. Enjoy!"/>
         <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
-        <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/seadas"/>-->
+        <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>
