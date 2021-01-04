@@ -1232,9 +1232,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         @Override
         void setCommandArrayPrefix() {
-            cmdArrayPrefix = new String[1];
-            cmdArrayPrefix[0] = getProgramName();
-            getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
+            cmdArrayPrefix = new String[2];
+            cmdArrayPrefix[0] = ocssw.TMP_OCSSW_BOOTSTRAP;
+            getCmdArrayPrefix()[1] = ocssw.TMP_OCSSW_INSTALLER;
 //            if (!OCSSWInfo.getInstance().isOCSSWExist()) {
 //                getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
 //            } else {
