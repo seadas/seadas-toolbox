@@ -452,8 +452,9 @@ public class OCSSWLocal extends OCSSW {
 
     public void setCommandArrayPrefix() {
         if (programName.equals(OCSSW_INSTALLER_PROGRAM_NAME) ) {  //&& !isOCSSWExist()
-            commandArrayPrefix = new String[1];
-            commandArrayPrefix[0] = TMP_OCSSW_INSTALLER_PROGRAM_PATH;
+            commandArrayPrefix = new String[2];
+            commandArrayPrefix[0] = TMP_OCSSW_BOOTSTRAP;
+            commandArrayPrefix[1] = TMP_OCSSW_INSTALLER;
         } else {
 //        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
 //            commandArrayPrefix = new String[1];
