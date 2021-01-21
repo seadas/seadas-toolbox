@@ -6,7 +6,7 @@
 
         <job name="Create Symbolic Link">
             <os family="mac"/>
-            <executefile name="$INSTALL_PATH/bin/snap.app/Contents/MacOS/createSymLink.sh" workingDir="$INSTALL_PATH">
+            <executefile name="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/createSymLink.sh" workingDir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/">
 <!--                <arg>doit</arg>-->
 <!--                <arg>$variable</arg>-->
             </executefile>
