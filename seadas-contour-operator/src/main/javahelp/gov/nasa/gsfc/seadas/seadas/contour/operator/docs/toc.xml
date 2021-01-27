@@ -2,7 +2,7 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
-    <tocitem text="SeaDAS">
+    <tocitem text="SeaDAS Toolbox">
         <tocitem text="Layers &amp; Masks">
             <tocitem text="Contour Lines" target="contourLinesHelp">
             </tocitem>
