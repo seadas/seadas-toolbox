@@ -722,7 +722,7 @@ public class OCSSWInfoGUI {
         validOCSSWTagsComboBox.setMinimumSize(new JComboBox().getPreferredSize());
         ocsswTagLabel.setToolTipText(BRANCH_TOOLTIP);
 
-        pc.addProperty(Property.create(SEADAS_OCSSW_TAG_PROPERTY, preferences.get(SEADAS_OCSSW_TAG_PROPERTY, SEADAS_OCSSW_TAG_DEFAULT_VALUE)));
+        pc.addProperty(Property.create(SEADAS_OCSSW_TAG_PROPERTY, preferences.get(SEADAS_OCSSW_TAG_PROPERTY, validOCSSWTagList.get(0))));
         pc.getDescriptor(SEADAS_OCSSW_TAG_PROPERTY).setDisplayName(SEADAS_OCSSW_TAG_PROPERTY);
 
         final BindingContext ctx = new BindingContext(pc);
