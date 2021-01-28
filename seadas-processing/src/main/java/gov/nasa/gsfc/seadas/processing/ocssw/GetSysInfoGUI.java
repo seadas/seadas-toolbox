@@ -410,7 +410,7 @@ public class GetSysInfoGUI {
         sysInfoText += "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
         sysInfoText2 += "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
         appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
-        if ((ocsswRootOcsswInfo != null ) && !ocsswRootOcsswInfo.equals(ocsswRootEnv)){
+        if ((ocsswRootOcsswInfo != null ) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv)){
             sysInfoText +=  "WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
                     "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
             sysInfoText2 =  "WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
