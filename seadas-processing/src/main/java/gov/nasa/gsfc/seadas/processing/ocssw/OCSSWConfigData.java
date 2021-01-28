@@ -56,7 +56,7 @@ public class OCSSWConfigData {
     final static String SEADAS_CLIENT_ID_DEFAULT_VALUE = System.getProperty("user.name");
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasOCSSWSharedDir";
     final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "false";
-    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "V2021.0";
+    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "V2021.1";
 
 
     final static String OCSSW_TAG_LABEL = "Valid OCSSW Tags";
