@@ -19,6 +19,7 @@ import java.util.prefs.Preferences;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_SRC_DIR_NAME;
 
 /**
  * Created by IntelliJ IDEA.
@@ -208,7 +209,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
-                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + "ocssw_src").exists()) {
+                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + OCSSW_SRC_DIR_NAME).exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             }
                         } else if (tmpString.equals("CLEAN")) {
