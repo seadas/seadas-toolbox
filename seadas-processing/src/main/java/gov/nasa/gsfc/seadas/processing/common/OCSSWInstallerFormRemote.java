@@ -59,7 +59,7 @@ public class OCSSWInstallerFormRemote extends OCSSWInstallerForm {
 
         }
 
-        if (target.path("ocssw").path("srcDirInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("ocssw-src")) {
+        if (target.path("ocssw").path("srcDirInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("ocssw_src")) {
             processorModel.setParamValue("--src", "1");
         }
         if (target.path("ocssw").path("viirsDemInfo").request(MediaType.APPLICATION_JSON_TYPE).get(new GenericType<HashMap<String, Boolean>>() {}).get("viirs-dem")) {
