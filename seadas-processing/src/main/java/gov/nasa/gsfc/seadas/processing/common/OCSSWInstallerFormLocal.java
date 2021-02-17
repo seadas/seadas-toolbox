@@ -66,7 +66,7 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
             }
 
         }
-        if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "ocssw-src").exists()) {
+        if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "ocssw_src").exists()) {
             processorModel.setParamValue("--src", "1");
         }
         if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "share/viirs/dem").exists()) {

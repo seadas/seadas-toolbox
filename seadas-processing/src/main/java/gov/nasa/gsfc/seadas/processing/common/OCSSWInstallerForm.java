@@ -208,7 +208,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
-                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + "ocssw-src").exists()) {
+                            if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + "ocssw_src").exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             }
                         } else if (tmpString.equals("CLEAN")) {
