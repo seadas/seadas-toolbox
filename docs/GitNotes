@@ -36,3 +36,9 @@ mvn install -Dmaven.test.skip=true -o
 
 git merge  SEADAS-8.0.0-Beta-SNAP8_RC2 -X ours
 git merge  SEADAS-8.0.0-Beta-SNAP8_RC2 -X theirs
+
+Merging a single "modified" file from another branch
+git checkout --patch SEADAS-003-SNAP-8.0.3 snap-ui/src/main/java/org/esa/snap/ui/product/ProductSceneImage.jav
+
+Merging a single "new" file from another branch (remove --patch option)
+git checkout SEADAS-003-SNAP-8.0.3 snap-rcp/src/main/java/org/esa/snap/rcp/actions/layer/overlay/OverlayColorBarLayerAction.java
