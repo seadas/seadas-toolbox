@@ -37,7 +37,7 @@ Build SNAP-Desktop:
 Build Sentinel-3 Toolbox:
 
     cd ${snap}/s3tbx
-    mvn instal
+    mvn install
 
 Build SeaDAS Toolbox:
 
@@ -53,14 +53,14 @@ Setting up IntelliJ IDEA
 ------------------------
 
 
-1. In IntelliJ IDEA, select "Import Project" and select the ${snap} directory.
+1. In IntelliJ IDEA, select "Import Project" and select the ${snap} directory. (Some versions: select "New -> Project From Existing Sources", then navigate upwards in the file selector to select the ${snap} directory, then select "Open")
 2. Select "Import project from external model" -> "Maven"
 3. Ensure the "Root directory" is ${snap}. (Note: put your actual path).
  Select "Search for projects recursively"; Ensure **not** to enable the option *Create module groups for multi-module Maven projects*. Everything can be default values.
 
 4. Set the used SDK for the main project. A JDK 1.8 or later is needed.
 
-5. Use the following configuration to run SNAP in the IDE:
+5. Use the following configuration to run SNAP in the IDE: 
 
     **Main class:** `org.esa.snap.nbexec.Launcher`
     
