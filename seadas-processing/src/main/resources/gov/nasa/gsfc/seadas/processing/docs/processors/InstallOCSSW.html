@@ -271,53 +271,88 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-Usage: install_ocssw [options]
+usage: install_ocssw [-h] [--version] [--list_tags] [-t TAG] [-i INSTALL_DIR] [-b BASE_URL] [-l LOCAL_DIR] [-s SAVE_DIR]
+                     [-c] [--wget] [-a ARCH] [-v] [--bin] [--opt] [--src] [--luts] [--viirs_l1_bin] [--root] [--opt_src]
+                     [--afrt] [--aquarius] [--avhrr] [--aviris] [--common] [--czcs] [--eval] [--goci] [--hawkeye] [--hico]
+                     [--l5tm] [--l7etmp] [--meris] [--misr] [--modisa] [--modist] [--mos] [--msis2a] [--msis2b] [--oci]
+                     [--ocia] [--ocip] [--ocis] [--ocm1] [--ocm2] [--ocrvc] [--octs] [--olcis3a] [--olcia3b] [--oli]
+                     [--osmi] [--prism] [--sabiamar] [--seawifs] [--sgli] [--viirsdem] [--viirsj1] [--viirsn] [--wv3]
+                     [--cloud] [--benchmark] [--viirs_l1_benchmark] [--direct_broadcast] [--seadas] [--odps] [--viirs_l1]
+                     [--all]
 
-Options:
-  --version             show program's version number and exit
+Install OCSSW bundles
+
+optional arguments:
   -h, --help            show this help message and exit
-  -v, --verbose         Print more information while running
-  -i INSTALL_DIR, --install_dir=INSTALL_DIR
-                        destination directory for install. Defaults to
-                        $OCSSWROOT or "$HOME/ocssw" if neither are given.
-  -g GIT_BASE, --git-base=GIT_BASE
-                        web location for the git repositories
-  -b GIT_BRANCH, --git-branch=GIT_BRANCH
-                        branch in the git repositories to checkout
-  -a ARCH, --arch=ARCH  set system architecture (linux, linux_64,
-                        macosx_intel)
-  -s, --src             install source code
-  -l LOCAL, --local=LOCAL
-                        local directory containing previously downloaded
-                        bundles
-  -c, --clean           Do a clean install by deleting the install directory
-                        first, if it exists
-  --curl                use curl for download instead of wget
-  --no-update           do not update the git repositories or luts
-  --save-dir=SAVE_DIR   destination directory to save all of the install
-                        files.
+  --version             print this program's version
+  --list_tags           list the tags that exist on the server
+  -t TAG, --tag TAG     tag that you want to install
+  -i INSTALL_DIR, --install_dir INSTALL_DIR
+                        root directory for bundle installation (default=$OCSSWROOT)
+  -b BASE_URL, --base_url BASE_URL
+                        remote url for the bundle server
+  -l LOCAL_DIR, --local_dir LOCAL_DIR
+                        local directory to use for bundle source instead of the bundle server
+  -s SAVE_DIR, --save_dir SAVE_DIR
+                        local directory to save a copy of the downloaded bundles
+  -c, --clean           delete extra files in the destination directory
+  --wget                use wget for file download
+  -a ARCH, --arch ARCH  use this architecture instead of guessing the local machine (linux_64,macosx_intel,odps)
+  -v, --verbose         increase output verbosity
+  --bin                 install binary executables
+  --opt                 install 3rd party programs and libs
+  --src                 install source files
+  --luts                install LUT files
+  --viirs_l1_bin        install VIIRS binary executables subset
+  --root                install random files in the root dir files
+  --opt_src             install 3rd party library sources files
+  --afrt                install Ahmad-Fraser RT data files
   --aquarius            install Aquarius files
   --avhrr               install AVHRR files
+  --aviris              install AVIRIS files
+  --common              install common files
   --czcs                install CZCS files
+  --eval                install evaluation files
   --goci                install GOCI files
+  --hawkeye             install Hawkeye files
   --hico                install HICO files
+  --l5tm                install l5tm files
+  --l7etmp              install l7etmp files
   --meris               install MERIS files
-  --aqua                install MODIS Aqua files
-  --terra               install MODIS Terra files
+  --misr                install MISR files
+  --modisa              install MODIS AQUA files
+  --modist              install MODIS TERRA files
   --mos                 install MOS files
-  --msis2a              install MSI S2A files
-  --msis2b              install MSI S2B files
+  --msis2a              install MSI Sentinel 2A files
+  --msis2b              install MSI Sentinel 2B files
+  --oci                 install PACE OCI files
+  --ocia                install PACE OCI AVIRIS files
+  --ocip                install PACE OCI PRISM files
+  --ocis                install PACE OCI Simulated data files
   --ocm1                install OCM1 files
   --ocm2                install OCM2 files
+  --ocrvc               install OC Virtual Constellation files
   --octs                install OCTS files
   --olcis3a             install OLCI Sentinel 3A files
-  --oli                 install Landsat 8 OLI files
+  --olcia3b             install OLCI Sentinel 3B files
+  --oli                 install Landsat OLI files
   --osmi                install OSMI files
+  --prism               install PRISM files
+  --sabiamar            install Sabiamar files
   --seawifs             install SeaWiFS files
-  --viirsn              install VIIRS NPP files
+  --sgli                install SGLI files
+  --viirsdem            install VIIRS Digital Elevation files
   --viirsj1             install VIIRS JPSS1 files
-  --viirsdem            install VIIRS digital elevation map (DEM) files
-  --direct-broadcast    install direct broadcast files
+  --viirsn              install VIIRS NPP files
+  --wv3                 install WV3 files
+  --cloud               install cloud properties processing files
+  --benchmark           install benchmark MOSIS Aqua, level0 -> level3 Mapped files
+  --viirs_l1_benchmark  install VIIRS benchmark data files
+  --direct_broadcast    toggle on bundles needed for MODIS direct broadcast
+  --seadas              toggle on the base set of bundles for SeaDAS
+  --odps                toggle on the base set of bundles for ODPS systems
+  --viirs_l1            install everything to run and test the VIIRS executables
+  --all                 toggle on all satellite bundles
 </pre>
 
 

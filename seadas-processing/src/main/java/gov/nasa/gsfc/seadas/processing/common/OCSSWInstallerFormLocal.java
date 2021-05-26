@@ -47,6 +47,8 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
         missionDataStatus.put("AVHRR", ocssw.isMissionDirExist("avhrr"));
         missionDataStatus.put("HICO", ocssw.isMissionDirExist("hico"));
         missionDataStatus.put("GOCI", ocssw.isMissionDirExist("goci"));
+        missionDataStatus.put("HAWKEYE", ocssw.isMissionDirExist("HAWKEYE"));
+        missionDataStatus.put("SGLI", ocssw.isMissionDirExist("SGLI"));
     }
 
     void init(){

@@ -55,6 +55,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     "AVHRR",
                     "CZCS",
                     "GOCI",
+                    "HAWKEYE",
                     "HICO",
                     "MERIS",
                     "MODISA",
@@ -66,6 +67,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     "OCTS",
                     "OLI",
                     "OSMI",
+                    "SGLI",
                     "SEAWIFS",
                     "VIIRSN",
                     "VIIRSJ1"}
