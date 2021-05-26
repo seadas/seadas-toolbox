@@ -170,7 +170,7 @@ public class MissionInfo {
         names.put(Id.GOCI, GOCI_NAMES);
         names.put(Id.OLI, OLI_NAMES);
         names.put(Id.OLCI, OLCI_NAMES);
-        names.put(Id.SGLI, OLCI_NAMES);
+        names.put(Id.SGLI, SGLI_NAMES);
         names.put(Id.HAWKEYE, HAWKEYE_NAMES);
     }
 
