@@ -33,6 +33,7 @@
     <mapID target="l1bgen_generic" url="processors/ProcessL1bgen_generic.html"/>
     <mapID target="modis_L1B" url="processors/ProcessModis_L1B.html"/>
     <mapID target="modis_L1A" url="processors/ProcessModis_L1A.html"/>
+    <mapID target="geolocate_hawkeye" url="processors/ProcessGeolocate_hawkeye.html"/>
     <mapID target="geolocate_viirs" url="processors/ProcessGeolocate_viirs.html"/>
     <mapID target="calibrate_viirs" url="processors/ProcessCalibrate_viirs.html"/>
     <mapID target="l1mapgen" url="processors/ProcessL1mapgen.html"/>

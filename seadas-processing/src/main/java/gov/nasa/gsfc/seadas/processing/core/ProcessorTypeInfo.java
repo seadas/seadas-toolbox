@@ -18,6 +18,7 @@ public class ProcessorTypeInfo {
         MODIS_L1A,
         MODIS_GEO,
         GEOLOCATE_VIIRS,
+        GEOLOCATE_HAWKEYE,
         L1BGEN_GENERIC,
         MODIS_L1B,
         CALIBRATE_VIIRS,
@@ -55,6 +56,7 @@ public class ProcessorTypeInfo {
         put("modis_L1A", ProcessorID.MODIS_L1A);
         put("modis_GEO", ProcessorID.MODIS_GEO);
         put("geolocate_viirs", ProcessorID.GEOLOCATE_VIIRS);
+        put("geolocate_hawkeye", ProcessorID.GEOLOCATE_HAWKEYE);
         put("l1bgen_generic", ProcessorID.L1BGEN_GENERIC);
         put("modis_L1B", ProcessorID.MODIS_L1B);
         put("calibrate_viirs", ProcessorID.CALIBRATE_VIIRS);

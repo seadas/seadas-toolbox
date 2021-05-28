@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>--parfile</parFileOptionName>
+        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>geofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value></value>
+            <default></default>
+            <description>Input file</description>
+            <source>command line</source>
+            <usedAs>argument</usedAs>
+            <order>0</order>
+        </option>
+        <option type="ofile">
+            <name>geofile</name>
+            <value></value>
+            <default></default>
+            <description>generated GEO file</description>
+            <usedAs>argument</usedAs>
+            <order>1</order>
+        </option>
+<!--        <option type="string">-->
+<!--            <name>&#45;&#45;att1</name>-->
+<!--            <value></value>-->
+<!--            <type>string</type>-->
+<!--            <default></default>-->
+<!--            <description>Input attitude file 1 (chronological)</description>-->
+<!--            <source>default</source>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>2</order>-->
+<!--        </option>-->
+<!--        <option type="string">-->
+<!--            <name>&#45;&#45;att2</name>-->
+<!--            <value></value>-->
+<!--            <type>string</type>-->
+<!--            <default></default>-->
+<!--            <description>Input attitude file 2 (chronological)</description>-->
+<!--            <source>default</source>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>3</order>-->
+<!--        </option>-->
+<!--        <option type="string">-->
+<!--            <name>&#45;&#45;eph1</name>-->
+<!--            <value></value>-->
+<!--            <type>string</type>-->
+<!--            <default></default>-->
+<!--            <description>Input ephemeris file 1 (chronological)</description>-->
+<!--            <source>default</source>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>4</order>-->
+<!--        </option>-->
+<!--        <option type="string">-->
+<!--            <name>&#45;&#45;eph2</name>-->
+<!--            <value></value>-->
+<!--            <type>string</type>-->
+<!--            <default></default>-->
+<!--            <description>Input ephemeris file 2 (chronological)</description>-->
+<!--            <source>default</source>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>5</order>-->
+<!--        </option>-->
+<!--        <option type="dir">-->
+<!--            <name>&#45;&#45;ancdir</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>Use a custom directory tree for ancillary files</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>6</order>-->
+<!--        </option>-->
+<!--        <option type="ifile">-->
+<!--            <name>&#45;&#45;ancdb</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>Use a custom file for ancillary database. If full path-->
+<!--                not given, ANCDB is assumed to exist (or will be-->
+<!--                created) under $OCSSWROOT/log/. If $OCSSWROOT/log/-->
+<!--                does not exist, ANCDB is assumed (or will be created)-->
+<!--                under the current working directory-->
+<!--            </description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>7</order>-->
+<!--        </option>-->
+<!--        <option type="string">-->
+<!--            <name>&#45;&#45;threshold</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>% of geo-populated pixels required to pass geocheck validation test</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>8</order>-->
+<!--        </option>-->
+<!--        <option type="boolean">-->
+<!--            <name>&#45;&#45;refreshDB</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>Remove existing database records and re-query for ancillary files</description>-->
+<!--            <usedAs>flag</usedAs>-->
+<!--            <order>9</order>-->
+<!--        </option>-->
+<!--        <option type="boolean">-->
+<!--            <name>&#45;&#45;disable-download</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>Disable download of ancillary files not found on hard disk</description>-->
+<!--            <usedAs>flag</usedAs>-->
+<!--            <order>10</order>-->
+<!--        </option>-->
+<!--        <option type="boolean">-->
+<!--            <name>&#45;&#45;enable-dem</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>Enable MODIS terrain elevation correction</description>-->
+<!--            <usedAs>flag</usedAs>-->
+<!--            <order>11</order>-->
+<!--        </option>-->
+<!--        <option type="boolean">-->
+<!--            <name>&#45;&#45;verbose</name>-->
+<!--            <value>true</value>-->
+<!--            <default></default>-->
+<!--            <description>print status messages</description>-->
+<!--            <usedAs>flag</usedAs>-->
+<!--            <order>12</order>-->
+<!--        </option>-->
+<!--        <option type="boolean">-->
+<!--            <name>&#45;&#45;entrained</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>Use entrained attitude for Terra</description>-->
+<!--            <usedAs>flag</usedAs>-->
+<!--            <order>13</order>-->
+<!--        </option>-->
+<!--        <option type="boolean">-->
+<!--            <name>&#45;&#45;log</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>Save processing log files</description>-->
+<!--            <usedAs>flag</usedAs>-->
+<!--            <order>14</order>-->
+<!--        </option>-->
+<!--        <option type="button">-->
+<!--            <name>update luts</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius-->
+<!--            </description>-->
+<!--            <usedAs>button</usedAs>-->
+<!--            <order>15</order>-->
+<!--        </option>-->
+    </options>
+</paramInfo>
