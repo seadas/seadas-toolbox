@@ -26,10 +26,9 @@ import java.awt.*;
 public class SeaDASAboutBox extends JPanel {
 
     private final static String PACKAGE = "SeaDAS-Toolbox";
-    private final static String SEADAS_VERSION = "1.0-Beta";
+    private final static String SEADAS_VERSION = "1.1.0";
 
-    private final static String RELEASE_NOTES_URL = "https://github.com/seadas/seadas-toolbox/blob/master/docs/release-notes/seadas-toolbox/1.0.0.md";
-    private final static String RELEASE_NOTES_URL_NAME = PACKAGE + " " + SEADAS_VERSION + " Release Notes";
+    private final static String RELEASE_NOTES_URL = "https://github.com/seadas/seadas-toolbox/blob/master/docs/release-notes/seadas-toolbox/" + SEADAS_VERSION + ".md";
 
     private final static String OCEAN_COLOR_WEB_URL = "https://oceancolor.gsfc.nasa.gov/";
     private final static String OCEAN_COLOR_WEB_URL_NAME = "NASA Ocean Color Web";
