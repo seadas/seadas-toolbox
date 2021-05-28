@@ -234,7 +234,7 @@ public class MissionInfo {
             return;
         }
 
-        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1)) {
+        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1) || isId(Id.HAWKEYE)) {
             setGeofileRequired(true);
         } else {
             setGeofileRequired(false);
