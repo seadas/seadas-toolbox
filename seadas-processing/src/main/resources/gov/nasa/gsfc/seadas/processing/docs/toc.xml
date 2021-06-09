@@ -45,6 +45,7 @@
             <tocitem text="modis_L1A" target="modis_L1A"/>
             <tocitem text="modis_L1B" target="modis_L1B"/>
             <tocitem text="modis_GEO" target="modis_GEO"/>
+            <tocitem text="geolocate_hawkeye" target="geolocate_hawkeye"/>
             <tocitem text="geolocate_viirs" target="geolocate_viirs"/>
             <tocitem text="calibrate_viirs" target="calibrate_viirs"/>
             <tocitem text="l1bgen_generic" target="l1bgen_generic"/>
