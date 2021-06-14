@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.ui">
-    <module_version install_time="1598640781101" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="2604915166" name="config/Modules/org-esa-snap-snap-ui.xml"/>
-        <file crc="2123254959" name="modules/ext/org.esa.snap.snap-ui/tec-uom-lib/uom-lib-common.jar"/>
-        <file crc="2041534629" name="modules/ext/org.esa.snap.snap-ui/tec-uom/uom-se.jar"/>
-        <file crc="3666384447" name="modules/org-esa-snap-snap-ui.jar"/>
-    </module_version>
-</module>

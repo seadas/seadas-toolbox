@@ -60,6 +60,7 @@ public class OCSSWInfo {
     public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "bin";
     public static final String OCSSW_DATA_DIR_SUFFIX = "share";
     public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
+    public static final String OCSSW_SRC_DIR_NAME = "ocssw_src";
 
     public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw";
     public static final String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
@@ -174,8 +175,6 @@ public class OCSSWInfo {
 
     public void detectOcssw() {
 
-        int unique_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-
         Date date = new Date();
         //System.out.println(sdf.format(date));
         sessionId = date.toString();
@@ -212,10 +211,6 @@ public class OCSSWInfo {
             return;
         }
 
-//        if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
-//            displayRemoteServerDownMessage();
-//            return;
-//        }
     }
 
 
@@ -304,7 +299,7 @@ public class OCSSWInfo {
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
         String baseUriPortNumber = preferences.get(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
         resourceBaseUri = "http://" + serverAPI + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
-        //System.out.println("server URL:" + resourceBaseUri);
+        System.out.println("server URL:" + resourceBaseUri);
         final ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(MultiPartFeature.class);
         clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
@@ -312,9 +307,11 @@ public class OCSSWInfo {
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
         ocsswTag = preferences.get(SEADAS_OCSSW_TAG_PROPERTY, null);
+        System.out.println("ocssw tag = " + ocsswTag);
         try {
             jsonObject = target.path("ocssw").path("ocsswInfo").path(ocsswTag).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (Exception e) {
+            e.printStackTrace();
             writeException(e);
             return false;
         }
@@ -336,6 +333,7 @@ public class OCSSWInfo {
             processInputStreamPort = new Integer(preferences.get(OCSSW_PROCESS_INPUT_STREAM_PORT, "6402")).intValue();
             processErrorStreamPort = new Integer(preferences.get(OCSSW_PROCESS_ERROR_STREAM_PORT, "6403")).intValue();
         }
+        System.out.println("ocsswExist = " + ocsswExist);
         return ocsswExist;
     }
 

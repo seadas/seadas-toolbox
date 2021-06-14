@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.core.startup.base">
-    <module_version install_time="1598640780804" last="true" origin="installer" specification_version="1.62.1.1">
-        <file crc="3758452502" name="core/core-base.jar"/>
-        <file crc="3996322977" name="core/locale/core-base_ja.jar"/>
-        <file crc="1963202775" name="core/locale/core-base_pt_BR.jar"/>
-        <file crc="2221991297" name="core/locale/core-base_ru.jar"/>
-        <file crc="2943672350" name="core/locale/core-base_zh_CN.jar"/>
-    </module_version>
-</module>

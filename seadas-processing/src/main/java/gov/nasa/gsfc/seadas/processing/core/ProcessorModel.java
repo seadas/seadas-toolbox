@@ -1232,9 +1232,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         @Override
         void setCommandArrayPrefix() {
-            cmdArrayPrefix = new String[1];
-            cmdArrayPrefix[0] = getProgramName();
-            getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
+            cmdArrayPrefix = new String[2];
+            cmdArrayPrefix[0] = ocssw.TMP_OCSSW_BOOTSTRAP;
+            getCmdArrayPrefix()[1] = ocssw.TMP_OCSSW_INSTALLER;
 //            if (!OCSSWInfo.getInstance().isOCSSWExist()) {
 //                getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
 //            } else {
@@ -1342,6 +1342,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             cmdArraySuffix[0] = "--tag=" + paramList.getInfo(VALID_TAGS_OPTION_NAME).getValue();
             cmdArraySuffix[1] = "--seadas";
             return cmdArraySuffix;
+        }
+
+        @Override
+        public ParamList getParamList(){
+            ParamInfo paramInfo;
+            paramInfo = new ParamInfo(("--tag"), paramList.getInfo(VALID_TAGS_OPTION_NAME).getValue(), ParamInfo.Type.STRING);
+            paramInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
+            paramList.addInfo(paramInfo);
+            paramInfo = new ParamInfo(("--seadas"), "true", ParamInfo.Type.FLAGS);
+            paramInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_FLAG);
+            paramList.addInfo(paramInfo);
+            return paramList;
         }
     }
 

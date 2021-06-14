@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.mphchl">
-    <module_version install_time="1599578920765" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="668335847" name="config/Modules/org-esa-s3tbx-s3tbx-mphchl.xml"/>
-        <file crc="1615739241" name="modules/docs/org-esa-s3tbx-s3tbx-mphchl.jar"/>
-        <file crc="3742585602" name="modules/org-esa-s3tbx-s3tbx-mphchl.jar"/>
-    </module_version>
-</module>

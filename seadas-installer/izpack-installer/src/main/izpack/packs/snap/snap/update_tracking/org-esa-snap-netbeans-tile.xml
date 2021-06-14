@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.netbeans.tile">
-    <module_version install_time="1598640781086" last="true" origin="installer" specification_version="1.0">
-        <file crc="1530308391" name="config/Modules/org-esa-snap-netbeans-tile.xml"/>
-        <file crc="196737381" name="modules/org-esa-snap-netbeans-tile.jar"/>
-    </module_version>
-</module>

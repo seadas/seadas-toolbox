@@ -27,10 +27,10 @@ public class OCSSWServerModel {
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
 
-    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
+    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "bin";
     public static final String OCSSW_DATA_DIR_SUFFIX = "share";
     public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
-    public static final String OCSSW_SRC_DIR_SUFFIX = "ocssw-src";
+    public static final String OCSSW_SRC_DIR_SUFFIX = "ocssw_src";
     public static final String OCSSW_VIIRS_DEM_SUFFIX = "share" + File.separator + "viirs" + File.separator + "dem";
 
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw";
