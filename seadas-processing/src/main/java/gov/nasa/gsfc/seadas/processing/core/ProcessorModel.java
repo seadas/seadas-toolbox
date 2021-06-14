@@ -1343,6 +1343,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             cmdArraySuffix[1] = "--seadas";
             return cmdArraySuffix;
         }
+
+        @Override
+        public ParamList getParamList(){
+            ParamInfo paramInfo;
+            paramInfo = new ParamInfo(("--tag"), paramList.getInfo(VALID_TAGS_OPTION_NAME).getValue(), ParamInfo.Type.STRING);
+            paramInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
+            paramList.addInfo(paramInfo);
+            paramInfo = new ParamInfo(("--seadas"), "true", ParamInfo.Type.FLAGS);
+            paramInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_FLAG);
+            paramList.addInfo(paramInfo);
+            return paramList;
+        }
     }
 
 }
