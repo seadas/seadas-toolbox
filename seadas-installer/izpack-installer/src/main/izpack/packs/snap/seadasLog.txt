@@ -1,2 +1,0 @@
-Aug 31, 2020 11:54:25 AM gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo initializeLocalOCSSW
-INFO: server ocssw root path: /home/aynur/ocssw/scripts

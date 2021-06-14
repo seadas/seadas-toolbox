@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.land.cover.ui">
-    <module_version install_time="1598640780310" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="1603273271" name="config/Modules/org-esa-snap-snap-land-cover-ui.xml"/>
-        <file crc="3148545467" name="modules/org-esa-snap-snap-land-cover-ui.jar"/>
-    </module_version>
-</module>

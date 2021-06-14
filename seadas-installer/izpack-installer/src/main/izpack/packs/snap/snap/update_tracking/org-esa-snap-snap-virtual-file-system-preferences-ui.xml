@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.virtual.file.system.preferences.ui">
-    <module_version install_time="1598640781153" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="2978207557" name="config/Modules/org-esa-snap-snap-virtual-file-system-preferences-ui.xml"/>
-        <file crc="3240409260" name="modules/org-esa-snap-snap-virtual-file-system-preferences-ui.jar"/>
-    </module_version>
-</module>

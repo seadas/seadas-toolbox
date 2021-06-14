@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.arc">
-    <module_version install_time="1599578824534" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="498861928" name="config/Modules/org-esa-s3tbx-s3tbx-arc.xml"/>
-        <file crc="289310138" name="modules/org-esa-s3tbx-s3tbx-arc.jar"/>
-    </module_version>
-</module>

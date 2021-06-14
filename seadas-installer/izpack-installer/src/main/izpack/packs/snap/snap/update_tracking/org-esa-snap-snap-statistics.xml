@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.statistics">
-    <module_version install_time="1598640779018" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="3762955006" name="config/Modules/org-esa-snap-snap-statistics.xml"/>
-        <file crc="489831635" name="modules/org-esa-snap-snap-statistics.jar"/>
-    </module_version>
-</module>
