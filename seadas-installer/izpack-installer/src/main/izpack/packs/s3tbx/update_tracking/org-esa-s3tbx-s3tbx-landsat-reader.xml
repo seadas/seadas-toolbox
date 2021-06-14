@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.landsat.reader">
-    <module_version install_time="1599578875415" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="2356776798" name="config/Modules/org-esa-s3tbx-s3tbx-landsat-reader.xml"/>
-        <file crc="2424725385" name="modules/ext/org.esa.s3tbx.s3tbx-landsat-reader/edu-ucar/netcdfAll.jar"/>
-        <file crc="523098442" name="modules/ext/org.esa.s3tbx.s3tbx-landsat-reader/org-xeustechnologies/jtar.jar"/>
-        <file crc="1544279341" name="modules/org-esa-s3tbx-s3tbx-landsat-reader.jar"/>
-    </module_version>
-</module>

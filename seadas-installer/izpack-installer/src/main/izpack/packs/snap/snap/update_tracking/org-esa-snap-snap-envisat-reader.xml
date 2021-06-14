@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.envisat.reader">
-    <module_version install_time="1598640778397" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="37405471" name="config/Modules/org-esa-snap-snap-envisat-reader.xml"/>
-        <file crc="2918553378" name="modules/org-esa-snap-snap-envisat-reader.jar"/>
-    </module_version>
-</module>

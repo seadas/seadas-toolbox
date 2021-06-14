@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.arcbingrid.reader">
-    <module_version install_time="1598640778333" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="50629775" name="config/Modules/org-esa-snap-snap-arcbingrid-reader.xml"/>
-        <file crc="2913998947" name="modules/ext/org.esa.snap.snap-arcbingrid-reader/net-sourceforge-jexcelapi/jxl.jar"/>
-        <file crc="4157654115" name="modules/ext/org.esa.snap.snap-arcbingrid-reader/uk-me-jstott/jcoord.jar"/>
-        <file crc="659092281" name="modules/org-esa-snap-snap-arcbingrid-reader.jar"/>
-    </module_version>
-</module>

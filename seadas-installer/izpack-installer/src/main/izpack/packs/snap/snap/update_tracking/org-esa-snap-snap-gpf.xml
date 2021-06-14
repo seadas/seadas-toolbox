@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.gpf">
-    <module_version install_time="1598640777734" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="4161167036" name="config/Modules/org-esa-snap-snap-gpf.xml"/>
-        <file crc="2559404136" name="modules/org-esa-snap-snap-gpf.jar"/>
-    </module_version>
-</module>

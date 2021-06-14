@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.insitu.client.ui">
-    <module_version install_time="1599578869825" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="294856061" name="config/Modules/org-esa-s3tbx-s3tbx-insitu-client-ui.xml"/>
-        <file crc="1388540762" name="modules/ext/org.esa.s3tbx.s3tbx-insitu-client-ui/com-google-code-gson/gson.jar"/>
-        <file crc="1270158064" name="modules/org-esa-s3tbx-s3tbx-insitu-client-ui.jar"/>
-    </module_version>
-</module>
