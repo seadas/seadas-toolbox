@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.cluster.analysis">
-    <module_version install_time="1598640778365" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="2388852015" name="config/Modules/org-esa-snap-snap-cluster-analysis.xml"/>
-        <file crc="220586721" name="modules/docs/org-esa-snap-snap-cluster-analysis.jar"/>
-        <file crc="3817311959" name="modules/org-esa-snap-snap-cluster-analysis.jar"/>
-    </module_version>
-</module>

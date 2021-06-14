@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.getasse30.dem">
-    <module_version install_time="1598640778418" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="1334454712" name="config/Modules/org-esa-snap-snap-getasse30-dem.xml"/>
-        <file crc="3136366738" name="modules/org-esa-snap-snap-getasse30-dem.jar"/>
-    </module_version>
-</module>

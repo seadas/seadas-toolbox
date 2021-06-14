@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.sta.ui">
-    <module_version install_time="1598640781383" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="1700307401" name="config/Modules/org-esa-snap-snap-sta-ui.xml"/>
-        <file crc="1377219140" name="modules/ext/org.esa.snap.snap-sta-ui/commons-collections/commons-collections.jar"/>
-        <file crc="632202455" name="modules/org-esa-snap-snap-sta-ui.jar"/>
-    </module_version>
-</module>
