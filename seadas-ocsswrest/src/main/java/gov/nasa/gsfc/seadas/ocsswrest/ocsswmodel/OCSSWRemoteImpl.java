@@ -81,20 +81,23 @@ public class OCSSWRemoteImpl {
         return commandArrayPrefix;
     }
 
+    //TODO this needs to be modified
     public String[] getCommandArraySuffix(String programName) {
         String[] commandArraySuffix = null;
-        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
-            commandArraySuffix = new String[1];
-            String[] parts = OCSSWServerModel.getSeadasVersion().split("\\.");
-            commandArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
-        }
-        if (commandArraySuffix != null) {
-            for (String item : commandArraySuffix) {
-                debug("commandArraySuffix " + item);
-            }
-        }
+//        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
+//            commandArraySuffix = new String[2];
+//            String[] parts = OCSSWServerModel.getSeadasVersion().split("\\.");
+//            commandArraySuffix[0] = "--tag=" + OCSSWServerModel.getOCSSWTag(); //"--git-branch=v" + parts[0] + "." + parts[1];
+//            commandArraySuffix[1] =  "--seadas";
+//        }
+//        if (commandArraySuffix != null) {
+//            for (String item : commandArraySuffix) {
+//                debug("commandArraySuffix " + item);
+//            }
+//        }
         return commandArraySuffix;
     }
+
 
     public void executeProgram(String jobId, JsonObject jsonObject) {
         programName = SQLiteJDBC.getProgramName(jobId);

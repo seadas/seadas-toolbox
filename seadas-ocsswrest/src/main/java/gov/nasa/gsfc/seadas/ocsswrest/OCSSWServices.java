@@ -439,7 +439,7 @@ public class OCSSWServices {
     @Path("/srcDirInfo")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public JsonObject getOCSSWSrcDirInfo() {
-        JsonObject srcDirStatus = Json.createObjectBuilder().add("ocssw-src", new File(OCSSWServerModel.getOcsswSrcDirPath()).exists()).build();
+        JsonObject srcDirStatus = Json.createObjectBuilder().add("ocssw_src", new File(OCSSWServerModel.getOcsswSrcDirPath()).exists()).build();
         return srcDirStatus;
     }
 

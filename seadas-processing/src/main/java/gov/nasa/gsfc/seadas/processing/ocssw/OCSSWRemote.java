@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 public class OCSSWRemote extends OCSSW {
 
-    public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
     public static final String MLP_PROGRAM_NAME = "multilevel_processor";
     public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
     public static String MLP_OUTPUT_DIR_NAME = "mlpOutputDir";
@@ -65,7 +64,7 @@ public class OCSSWRemote extends OCSSW {
 
     public OCSSWRemote() {
         if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
-            //OCSSWInfo.displayRemoteServerDownMessage();
+            OCSSWInfo.displayRemoteServerDownMessage();
             return;
         }
         ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());

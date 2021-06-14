@@ -9,6 +9,7 @@ import java.io.File;
  * Date: 1/9/15
  * Time: 2:50 PM
  * To change this template use File | Settings | File Templates.
+ * This class should always be synchronized with OCSSWInfo
  */
 @XmlRootElement
 public class OCSSWInfo {
@@ -18,10 +19,19 @@ public class OCSSWInfo {
     public static String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
 
-    public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "scripts";
-    public static String _OCSSW_DATA_DIR_SUFFIX =  System.getProperty("file.separator") + "run" +  System.getProperty("file.separator") + "data";
+    public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "bin";
+    public static String _OCSSW_DATA_DIR_SUFFIX =  System.getProperty("file.separator") + "share";
+    public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
+    public static final String OCSSW_SRC_DIR_NAME = "ocssw_src";
+
+    public static final String OCSSW_INSTALLER_PROGRAM_NAME = "install_ocssw";
+    public static final String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
+    public static final String OCSSW_SEADAS_INFO_PROGRAM_NAME = "seadas_info";
+
     private boolean installed;
     private String ocsswDir;
+
+
 
     public boolean isInstalled(){
         return installed;
