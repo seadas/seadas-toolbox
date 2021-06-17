@@ -92,6 +92,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
             if (ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
+                SeadasLogger.getLogger().fine("getting the installer GUI");
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
         }else if (programName.indexOf("update_luts") != -1   ) {
@@ -139,6 +140,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
 
         if (cloProgramUI == null) {
+            SeadasLogger.getLogger().fine("getting the GUI for the program failed");
             return;
         }
 
