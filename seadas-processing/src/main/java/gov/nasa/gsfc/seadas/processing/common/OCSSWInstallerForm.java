@@ -297,10 +297,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
     }
 
-    private void refreshMissionPanel(){
-
-    }
-
     private Component findJPanel(Component comp, String panelName) {
         if (comp.getClass() == JPanel.class) return comp;
         if (comp instanceof Container) {
