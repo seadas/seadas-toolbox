@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.common;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorTypeInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genPrimaryIOFilesSelector;
 
@@ -13,7 +12,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -130,14 +128,11 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
 
         add(ioPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        if( ! processorModel.getProgramName().toLowerCase(Locale.ROOT).equals(ProcessorTypeInfo.ProcessorID.GEOLOCATE_HAWKEYE.name().toLowerCase(Locale.ROOT)) )
-        {
-            add(paramPanel,
-                    new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
+        add(paramPanel,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
 
-            add(parFilePanel,
-                    new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        }
+        add(parFilePanel,
+                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
