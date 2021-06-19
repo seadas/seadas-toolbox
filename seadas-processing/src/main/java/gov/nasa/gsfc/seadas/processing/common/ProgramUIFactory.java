@@ -115,13 +115,11 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
                         paramPanel.validate();
                         remove(1);
                         if( ! processorModel.getProgramName().toLowerCase(Locale.ROOT).equals(ProcessorTypeInfo.ProcessorID.GEOLOCATE_HAWKEYE.name().toLowerCase(Locale.ROOT)) ) {
-
                             add(paramPanel,
-                                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                                    new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
                         }
-
                         add(parFilePanel,
-                                        new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
                         revalidate();
                         repaint();
@@ -131,14 +129,15 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         }
 
         this.setLayout(new GridBagLayout());
+
         add(ioPanel,
-                    new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         add(paramPanel,
-                    new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
 
         add(parFilePanel,
-                    new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
 
         setMinimumSize(getPreferredSize());
