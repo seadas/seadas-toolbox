@@ -16,9 +16,17 @@ public class OCSSWInfo {
     public static final String _OCSSWROOT_ENVVAR = "OCSSWROOT";
     public static String OCSSW_INSTALLER = "install_ocssw";
     public static String OCSSW_RUNNER = "ocssw_runner";
+
+    public static final String SEADAS_OCSSW_VERSIONS_JSON_NAME = "seadasVersions.json";
+
+    public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/install_ocssw";
+    public static final String OCSSW_BOOTSTRAP_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/ocssw_bootstrap";
+    public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/manifest.py";
+    public static final String OCSSW_SEADAS_VERSIONS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json";
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
     public static final String TMP_OCSSW_BOOTSTRAP = (new File(System.getProperty("java.io.tmpdir"), "ocssw_bootstrap")).getPath();
-    public static String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
+    public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
+    public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
 
     public static String _OCSSW_SCRIPTS_DIR_SUFFIX =  System.getProperty("file.separator") + "bin";
     public static String _OCSSW_DATA_DIR_SUFFIX =  System.getProperty("file.separator") + "share";
