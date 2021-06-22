@@ -12,8 +12,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.OCSSW_INSTALLER_URL;
-import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.*;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -38,6 +37,7 @@ public class OCSSWServerModel {
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
 
+    private static boolean ocsswInstalScriptDownloadSuccessful = false;
 
     public static String getOcsswDataDirPath() {
         return ocsswDataDirPath;
@@ -198,10 +198,45 @@ public class OCSSWServerModel {
         return isProgramValid;
     }
 
+//
+//    public static  boolean downloadOCSSWInstaller() {
+//        boolean ocsswInstalScriptDownloadSuccessful = false;
+//        try {
+//            URL website = new URL(OCSSW_INSTALLER_URL);
+//            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+//            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
+//            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+//            fos.close();
+//            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
+//            ocsswInstalScriptDownloadSuccessful = true;
+//        } catch (MalformedURLException malformedURLException) {
+//            System.out.println("URL for downloading install_ocssw.py is not correct!");
+//        } catch (FileNotFoundException fileNotFoundException) {
+//            System.out.println("ocssw installation script failed to download. \n" +
+//                    "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
+//                    "possible cause of error: " + fileNotFoundException.getMessage());
+//        } catch (IOException ioe) {
+//            System.out.println("ocssw installation script failed to download. \n" +
+//                    "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
+//                    "possible cause of error: " + ioe.getLocalizedMessage());
+//        } finally {
+//            return ocsswInstalScriptDownloadSuccessful;
+//        }
+//    }
+    public static boolean isOcsswInstalScriptDownloadSuccessful() {
+    return ocsswInstalScriptDownloadSuccessful;
+}
+    /**
+     * This method downloads the ocssw installer program ocssw_install to a tmp directory
+     * @return
+     */
+    public static boolean downloadOCSSWInstaller() {
 
-    public static  boolean downloadOCSSWInstaller() {
-        boolean ocsswInstalScriptDownloadSuccessful = false;
+        if (isOcsswInstalScriptDownloadSuccessful()) {
+            return ocsswInstalScriptDownloadSuccessful;
+        }
         try {
+            //download install_ocssw
             URL website = new URL(OCSSW_INSTALLER_URL);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
@@ -209,8 +244,33 @@ public class OCSSWServerModel {
             fos.close();
             (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
             ocsswInstalScriptDownloadSuccessful = true;
+
+            //download install_ocssw
+            website = new URL(OCSSW_BOOTSTRAP_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_OCSSW_BOOTSTRAP);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_BOOTSTRAP)).setExecutable(true);
+
+
+            //download manifest.py
+            website = new URL(OCSSW_MANIFEST_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_OCSSW_MANIFEST);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_MANIFEST)).setExecutable(true);
+
+            //download seadasVersion.json
+            website = new URL(OCSSW_SEADAS_VERSIONS_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_SEADAS_OCSSW_VERSIONS_FILE);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+
         } catch (MalformedURLException malformedURLException) {
-            System.out.println("URL for downloading install_ocssw.py is not correct!");
+            System.out.println("URL for downloading install_ocssw is not correct!");
         } catch (FileNotFoundException fileNotFoundException) {
             System.out.println("ocssw installation script failed to download. \n" +
                     "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
@@ -223,7 +283,6 @@ public class OCSSWServerModel {
             return ocsswInstalScriptDownloadSuccessful;
         }
     }
-
 
 }
 
