@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_BOOTSTRAP;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
 
 /**
@@ -829,5 +831,36 @@ public class OCSSWRemoteImpl {
 
         return null;
     }
+
+
+    public String[] getOCSSWTags(){
+        Runtime rt = Runtime.getRuntime();
+        String[] commands = {TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+        Process proc = null;
+        try {
+            proc = rt.exec(commands);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+        // Read the output from the command
+        //System.out.println("Here is the standard output of the command:\n");
+        String s = null;
+
+        ArrayList<String> tagsList = new ArrayList<>();
+        while (true) {
+            try {
+                if (!((s = stdInput.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //System.out.println(s);
+            tagsList.add(s);
+        }
+        return (String[]) tagsList.toArray();
+    }
+
 
 }

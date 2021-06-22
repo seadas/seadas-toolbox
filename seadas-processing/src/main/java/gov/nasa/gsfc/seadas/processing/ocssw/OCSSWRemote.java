@@ -612,6 +612,17 @@ public class OCSSWRemote extends OCSSW {
     }
 
     @Override
+    public void updateOCSSWTags() {
+        ArrayList<String> tagsList = (ArrayList<String>) Arrays.asList(getRemoteOcsswTags());
+        setOcsswTags(tagsList);
+        getValidOCSSWTags4SeaDASVersion();
+    }
+
+    public String[] getRemoteOcsswTags() {
+        return target.path("ocssw").path("ocsswTags").request(MediaType.APPLICATION_JSON_TYPE).get(String[].class);
+    }
+
+    @Override
     public void updateOCSSWProgramXMLFiles() {
 
     }

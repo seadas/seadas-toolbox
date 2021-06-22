@@ -401,35 +401,8 @@ public abstract class OCSSW {
         }
     }
 
-    public void updateOCSSWTags(){
-        Runtime rt = Runtime.getRuntime();
-        String[] commands = {TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-        Process proc = null;
-        try {
-            proc = rt.exec(commands);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public abstract void updateOCSSWTags();
 
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-
-        // Read the output from the command
-        //System.out.println("Here is the standard output of the command:\n");
-        String s = null;
-
-        ArrayList<String> tagsList = new ArrayList<>();
-        while (true) {
-            try {
-                if (!((s = stdInput.readLine()) != null)) break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //System.out.println(s);
-            tagsList.add(s);
-        }
-        setOcsswTags(tagsList);
-        getValidOCSSWTags4SeaDASVersion();
-    }
     public void getValidOCSSWTags4SeaDASVersion(){
         //JSON parser object to parse read file
         setOcsswTagsValid4CurrentSeaDAS(new ArrayList<String>());
