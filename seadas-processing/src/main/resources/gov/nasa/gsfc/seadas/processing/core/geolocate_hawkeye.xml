@@ -7,7 +7,7 @@
         <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
-            <primaryOption>geofile</primaryOption>
+            <primaryOption>output</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -21,7 +21,7 @@
             <order>0</order>
         </option>
         <option type="ofile">
-            <name>geofile</name>
+            <name>output</name>
             <value></value>
             <default></default>
             <description>generated GEO file</description>
