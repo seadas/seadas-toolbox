@@ -613,13 +613,27 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public void updateOCSSWTags() {
-        ArrayList<String> tagsList = (ArrayList<String>) Arrays.asList(getRemoteOcsswTags());
+        ArrayList<String> tagsList = getRemoteOcsswTags();
         setOcsswTags(tagsList);
         getValidOCSSWTags4SeaDASVersion();
     }
 
-    public String[] getRemoteOcsswTags() {
-        return target.path("ocssw").path("ocsswTags").request(MediaType.APPLICATION_JSON_TYPE).get(String[].class);
+    public ArrayList<String> getRemoteOcsswTags() {
+        System.out.println("getting remote tag list!");
+        JsonObject response;
+        JsonArray jsonArray;
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            response = target.path("ocssw").path("ocsswTags").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            jsonArray = response.getJsonArray("tags");
+            for(int i = 0; i < jsonArray.size(); i++) {
+                tags.add(jsonArray.getString(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return tags;
     }
 
     @Override
