@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.ocsswrest.utilities;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.io.File;
@@ -11,7 +10,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.StringTokenizer;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
 
@@ -43,8 +41,8 @@ public class MissionInfoFinder {
         HAWKEYE("HAWKEYE"),
         HICO("HICO"),
         MERIS("MERIS"),
-        AQUA("AQUA"),
-        TERRA("TERRA"),
+        MODISA("MODISA"),
+        MODIST("MODIST"),
         MOS("MOS"),
         MSI("MSI"),
         OCM1("OCM1"),
@@ -79,8 +77,8 @@ public class MissionInfoFinder {
         HAWKEYE("hawkeye"),
         HICO("hico"),
         MERIS("meris"),
-        AQUA("modis/aqua"),
-        TERRA("modis/terra"),
+        MODISA("modisa"),
+        MODIST("modist"),
         MOS("mos"),
         MSI("msi"),
         OCM1("ocm1"),
@@ -282,11 +280,11 @@ public class MissionInfoFinder {
     public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
     public final static String SEAWIFS_DIRECTORY = "seawifs";
 
-    public final static String[] MODISA_NAMES = {"MODIS Aqua", "Aqua", "MODISA"};
-    public final static String MODISA_DIRECTORY = "modis/aqua";
+    public final static String[] MODISA_NAMES = { "MODISA"};
+    public final static String MODISA_DIRECTORY = "modisa";
 
-    public final static String[] MODIST_NAMES = {"MODIS Terra", "TERRA", "MODIST"};
-    public final static String MODIST_DIRECTORY = "modis/terrra";
+    public final static String[] MODIST_NAMES = {"MODIST"};
+    public final static String MODIST_DIRECTORY = "modist";
 
     public final static String[] VIIRSN_NAMES = {"VIIRSN", "VIIRS"};
     public final static String VIIRSN_DIRECTORY = "viirs/npp";
