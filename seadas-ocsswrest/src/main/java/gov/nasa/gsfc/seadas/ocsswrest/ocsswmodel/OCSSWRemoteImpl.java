@@ -6,6 +6,7 @@ import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.swing.*;
@@ -833,7 +834,7 @@ public class OCSSWRemoteImpl {
     }
 
 
-    public String[] getOCSSWTags(){
+    public JsonObject getOCSSWTags(){
         Runtime rt = Runtime.getRuntime();
         String[] commands = {TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
         Process proc = null;
@@ -848,7 +849,7 @@ public class OCSSWRemoteImpl {
         // Read the output from the command
         //System.out.println("Here is the standard output of the command:\n");
         String s = null;
-
+        JsonArrayBuilder array = Json.createArrayBuilder();
         ArrayList<String> tagsList = new ArrayList<>();
         while (true) {
             try {
@@ -857,9 +858,10 @@ public class OCSSWRemoteImpl {
                 e.printStackTrace();
             }
             //System.out.println(s);
-            tagsList.add(s);
+            array.add(s);
         }
-        return (String[]) tagsList.toArray();
+
+        return Json.createObjectBuilder().add("tags", array.build()).build();
     }
 
 

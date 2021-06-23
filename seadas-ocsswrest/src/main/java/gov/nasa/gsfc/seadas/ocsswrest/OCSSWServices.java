@@ -397,8 +397,8 @@ public class OCSSWServices {
     @GET
     @Path("ocsswTags")
     @Produces(MediaType.APPLICATION_JSON)
-    public String[] getOCSSWTags() {
-
+    public JsonObject getOCSSWTags() {
+        System.out.println("reuest for ocssw tags!");
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         return ocsswRemote.getOCSSWTags();
     }
