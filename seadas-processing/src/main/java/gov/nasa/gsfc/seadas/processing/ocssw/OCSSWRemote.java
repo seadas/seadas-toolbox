@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 public class OCSSWRemote extends OCSSW {
 
-    public static final String OCSSW_SERVER_PORT_NUMBER = "6400";
     public static final String MLP_PROGRAM_NAME = "multilevel_processor";
     public static final String MLP_PAR_FILE_ODIR_KEY_NAME = "odir";
     public static String MLP_OUTPUT_DIR_NAME = "mlpOutputDir";
@@ -65,7 +64,7 @@ public class OCSSWRemote extends OCSSW {
 
     public OCSSWRemote() {
         if (!OCSSWInfo.getInstance().isOcsswServerUp()) {
-            //OCSSWInfo.displayRemoteServerDownMessage();
+            OCSSWInfo.displayRemoteServerDownMessage();
             return;
         }
         ocsswClient = new OCSSWClient(ocsswInfo.getResourceBaseUri());
@@ -610,6 +609,31 @@ public class OCSSWRemote extends OCSSW {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void updateOCSSWTags() {
+        ArrayList<String> tagsList = getRemoteOcsswTags();
+        setOcsswTags(tagsList);
+        getValidOCSSWTags4SeaDASVersion();
+    }
+
+    public ArrayList<String> getRemoteOcsswTags() {
+        System.out.println("getting remote tag list!");
+        JsonObject response;
+        JsonArray jsonArray;
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            response = target.path("ocssw").path("ocsswTags").request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
+            jsonArray = response.getJsonArray("tags");
+            for(int i = 0; i < jsonArray.size(); i++) {
+                tags.add(jsonArray.getString(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return tags;
     }
 
     @Override

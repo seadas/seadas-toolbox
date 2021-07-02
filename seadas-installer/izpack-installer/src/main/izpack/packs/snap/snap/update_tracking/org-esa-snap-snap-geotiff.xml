@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.geotiff">
-    <module_version install_time="1598640778404" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="1092707733" name="config/Modules/org-esa-snap-snap-geotiff.xml"/>
-        <file crc="705100044" name="modules/docs/org-esa-snap-snap-geotiff.jar"/>
-        <file crc="269687484" name="modules/org-esa-snap-snap-geotiff.jar"/>
-    </module_version>
-</module>

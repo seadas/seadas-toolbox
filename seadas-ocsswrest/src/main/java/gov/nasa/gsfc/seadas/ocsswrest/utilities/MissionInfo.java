@@ -17,6 +17,7 @@ public class MissionInfo {
         AQUARIUS,
         AVHRR,
         CZCS,
+        HAWKEYE,
         HICO,
         GOCI,
         MERIS,
@@ -32,6 +33,7 @@ public class MissionInfo {
         OCM2,
         OLI,
         OLCI,
+        SGLI,
         UNKNOWN
     }
 
@@ -77,6 +79,9 @@ public class MissionInfo {
     public final static String[] OCM2_NAMES = {"OCM2"};
     public final static String OCM2_DIRECTORY = "ocm2";
 
+    public final static String[] HAWKEYE_NAMES = {"HAWKEYE"};
+    public final static String HAWKEYE_DIRECTORY = "hawkeye";
+
     public final static String[] HICO_NAMES = {"HICO"};
     public final static String HICO_DIRECTORY = "hico";
 
@@ -88,6 +93,9 @@ public class MissionInfo {
 
     public final static String[] OLCI_NAMES = {"OLCI"};
     public final static String OLCI_DIRECTORY = "olci";
+
+    public final static String[] SGLI_NAMES = {"SGLI"};
+    public final static String SGLI_DIRECTORY = "sgli";
 
     private final HashMap<Id, String[]> names = new HashMap<>();
     private final HashMap<Id, String> directories = new HashMap<>();
@@ -139,6 +147,8 @@ public class MissionInfo {
         directories.put(Id.GOCI, GOCI_DIRECTORY);
         directories.put(Id.OLI, OLI_DIRECTORY);
         directories.put(Id.OLCI, OLCI_DIRECTORY);
+        directories.put(Id.HAWKEYE, HAWKEYE_DIRECTORY);
+        directories.put(Id.SGLI, SGLI_DIRECTORY);
     }
 
     private void initNamesHashMap() {
@@ -160,6 +170,8 @@ public class MissionInfo {
         names.put(Id.GOCI, GOCI_NAMES);
         names.put(Id.OLI, OLI_NAMES);
         names.put(Id.OLCI, OLCI_NAMES);
+        names.put(Id.HAWKEYE, HAWKEYE_NAMES);
+        names.put(Id.SGLI, SGLI_NAMES);
     }
 
     public Id getId() {
@@ -218,7 +230,7 @@ public class MissionInfo {
             return;
         }
 
-        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1)) {
+        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1) || isId(Id.HAWKEYE)) {
             setGeofileRequired(true);
         } else {
             setGeofileRequired(false);

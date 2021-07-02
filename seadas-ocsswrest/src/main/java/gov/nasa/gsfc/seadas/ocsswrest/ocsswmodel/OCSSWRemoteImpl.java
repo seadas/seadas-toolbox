@@ -6,6 +6,7 @@ import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.swing.*;
@@ -17,6 +18,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_BOOTSTRAP;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
 
 /**
@@ -81,20 +84,23 @@ public class OCSSWRemoteImpl {
         return commandArrayPrefix;
     }
 
+    //TODO this needs to be modified
     public String[] getCommandArraySuffix(String programName) {
         String[] commandArraySuffix = null;
-        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
-            commandArraySuffix = new String[1];
-            String[] parts = OCSSWServerModel.getSeadasVersion().split("\\.");
-            commandArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
-        }
-        if (commandArraySuffix != null) {
-            for (String item : commandArraySuffix) {
-                debug("commandArraySuffix " + item);
-            }
-        }
+//        if (programName.equals(OCSSW_INSTALLER_PROGRAM)) {
+//            commandArraySuffix = new String[2];
+//            String[] parts = OCSSWServerModel.getSeadasVersion().split("\\.");
+//            commandArraySuffix[0] = "--tag=" + OCSSWServerModel.getOCSSWTag(); //"--git-branch=v" + parts[0] + "." + parts[1];
+//            commandArraySuffix[1] =  "--seadas";
+//        }
+//        if (commandArraySuffix != null) {
+//            for (String item : commandArraySuffix) {
+//                debug("commandArraySuffix " + item);
+//            }
+//        }
         return commandArraySuffix;
     }
+
 
     public void executeProgram(String jobId, JsonObject jsonObject) {
         programName = SQLiteJDBC.getProgramName(jobId);
@@ -826,5 +832,37 @@ public class OCSSWRemoteImpl {
 
         return null;
     }
+
+
+    public JsonObject getOCSSWTags(){
+        Runtime rt = Runtime.getRuntime();
+        String[] commands = {TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+        Process proc = null;
+        try {
+            proc = rt.exec(commands);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+        // Read the output from the command
+        //System.out.println("Here is the standard output of the command:\n");
+        String s = null;
+        JsonArrayBuilder array = Json.createArrayBuilder();
+        ArrayList<String> tagsList = new ArrayList<>();
+        while (true) {
+            try {
+                if (!((s = stdInput.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //System.out.println(s);
+            array.add(s);
+        }
+
+        return Json.createObjectBuilder().add("tags", array.build()).build();
+    }
+
 
 }

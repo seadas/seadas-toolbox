@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.s3tbx.s3tbx.modis.reader">
-    <module_version install_time="1599578910581" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="2736369647" name="config/Modules/org-esa-s3tbx-s3tbx-modis-reader.xml"/>
-        <file crc="2424725385" name="modules/ext/org.esa.s3tbx.s3tbx-modis-reader/edu-ucar/netcdfAll.jar"/>
-        <file crc="1806008341" name="modules/org-esa-s3tbx-s3tbx-modis-reader.jar"/>
-    </module_version>
-</module>
