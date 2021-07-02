@@ -9,6 +9,10 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.util.Dialogs.Answer;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -28,11 +32,6 @@ import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
 import static gov.nasa.gsfc.seadas.processing.common.OCSSWInstallerForm.VALID_TAGS_OPTION_NAME;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 /**
  * Created by IntelliJ IDEA. User: Aynur Abdurazik (aabduraz) Date: 3/16/12
  * Time: 2:20 PM To change this template use File | Settings | File Templates.
@@ -1232,14 +1231,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         @Override
         void setCommandArrayPrefix() {
-            cmdArrayPrefix = new String[1];
-            cmdArrayPrefix[0] = getProgramName();
-            getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
-//            if (!OCSSWInfo.getInstance().isOCSSWExist()) {
-//                getCmdArrayPrefix()[0] = ocssw.TMP_OCSSW_INSTALLER;
-//            } else {
-//                getCmdArrayPrefix()[0] = OCSSWInfo.getInstance().getOcsswInstallerScriptPath();
-//            }
+            cmdArrayPrefix = new String[2];
+            cmdArrayPrefix[0] = ocssw.TMP_OCSSW_BOOTSTRAP;
+            getCmdArrayPrefix()[1] = ocssw.TMP_OCSSW_INSTALLER;
         }
 
         private void updateTags(){
@@ -1342,6 +1336,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             cmdArraySuffix[0] = "--tag=" + paramList.getInfo(VALID_TAGS_OPTION_NAME).getValue();
             cmdArraySuffix[1] = "--seadas";
             return cmdArraySuffix;
+        }
+
+        @Override
+        public ParamList getParamList(){
+            ParamInfo paramInfo;
+            paramInfo = new ParamInfo(("--tag"), paramList.getInfo(VALID_TAGS_OPTION_NAME).getValue(), ParamInfo.Type.STRING);
+            paramInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
+            paramList.addInfo(paramInfo);
+            paramInfo = new ParamInfo(("--seadas"), "true", ParamInfo.Type.FLAGS);
+            paramInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_FLAG);
+            paramList.addInfo(paramInfo);
+            return paramList;
         }
     }
 

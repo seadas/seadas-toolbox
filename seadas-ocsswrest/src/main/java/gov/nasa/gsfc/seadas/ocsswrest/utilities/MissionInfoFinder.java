@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.ocsswrest.utilities;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.io.File;
@@ -11,7 +10,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.StringTokenizer;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
 
@@ -40,10 +38,11 @@ public class MissionInfoFinder {
         AVHRR("AVHRR"),
         CZCS("CZCS"),
         GOCI("GOCI"),
+        HAWKEYE("HAWKEYE"),
         HICO("HICO"),
         MERIS("MERIS"),
-        AQUA("AQUA"),
-        TERRA("TERRA"),
+        MODISA("MODISA"),
+        MODIST("MODIST"),
         MOS("MOS"),
         MSI("MSI"),
         OCM1("OCM1"),
@@ -55,6 +54,7 @@ public class MissionInfoFinder {
         SEAWIFS("SEAWIFS"),
         VIIRSN("VIIRSN"),
         VIIRSJ1("VIIRSJ1"),
+        SGLI("SGLI"),
         UNKNOWN("UNKNOWN");
 
         String missionName;
@@ -74,10 +74,11 @@ public class MissionInfoFinder {
         AVHRR("avhrr"),
         CZCS("czcs"),
         GOCI("goci"),
+        HAWKEYE("hawkeye"),
         HICO("hico"),
         MERIS("meris"),
-        AQUA("modis/aqua"),
-        TERRA("modis/terra"),
+        MODISA("modisa"),
+        MODIST("modist"),
         MOS("mos"),
         MSI("msi"),
         OCM1("ocm1"),
@@ -89,6 +90,7 @@ public class MissionInfoFinder {
         SEAWIFS("seawifs"),
         VIIRSN("viirs/npp"),
         VIIRSJ1("viirs/j1"),
+        SGLI("sgli"),
         UNKNOWN("unknown");
 
         String missionDir;
@@ -231,6 +233,7 @@ public class MissionInfoFinder {
 
         AQUARIUS,
         CZCS,
+        HAWKEYE,
         HICO,
         GOCI,
         MERIS,
@@ -247,12 +250,14 @@ public class MissionInfoFinder {
         OCM2,
         OLI,
         OLCI,
+        SGLI,
         UNKNOWN
     }
 
     public final static Id[] SUPPORTED_IDS = {
             Id.AQUARIUS,
             Id.CZCS,
+            Id.HAWKEYE,
             Id.HICO,
             Id.GOCI,
             Id.MERIS,
@@ -268,17 +273,18 @@ public class MissionInfoFinder {
             Id.OCM1,
             Id.OCM2,
             Id.OLI,
-            Id.OLCI
+            Id.OLCI,
+            Id.SGLI
     };
 
     public final static String[] SEAWIFS_NAMES = {"SeaWiFS"};
     public final static String SEAWIFS_DIRECTORY = "seawifs";
 
-    public final static String[] MODISA_NAMES = {"MODIS Aqua", "Aqua", "MODISA"};
-    public final static String MODISA_DIRECTORY = "modis/aqua";
+    public final static String[] MODISA_NAMES = { "MODISA"};
+    public final static String MODISA_DIRECTORY = "modisa";
 
-    public final static String[] MODIST_NAMES = {"MODIS Terra", "TERRA", "MODIST"};
-    public final static String MODIST_DIRECTORY = "modis/terrra";
+    public final static String[] MODIST_NAMES = {"MODIST"};
+    public final static String MODIST_DIRECTORY = "modist";
 
     public final static String[] VIIRSN_NAMES = {"VIIRSN", "VIIRS"};
     public final static String VIIRSN_DIRECTORY = "viirs/npp";
@@ -313,6 +319,9 @@ public class MissionInfoFinder {
     public final static String[] OCM2_NAMES = {"OCM2"};
     public final static String OCM2_DIRECTORY = "ocm2";
 
+    public final static String[] HAWKEYE_NAMES = {"HAWKEYE"};
+    public final static String HAWKEYE_DIRECTORY = "hawkeye";
+
     public final static String[] HICO_NAMES = {"HICO"};
     public final static String HICO_DIRECTORY = "hico";
 
@@ -324,6 +333,9 @@ public class MissionInfoFinder {
 
     public final static String[] OLCI_NAMES = {"OLCI"};
     public final static String OLCI_DIRECTORY = "olci";
+
+    public final static String[] SGLI_NAMES = {"SGLI"};
+    public final static String SGLI_DIRECTORY = "sgli";
 
     private final HashMap<Id, String[]> names = new HashMap<>();
     private final HashMap<Id, String> directories = new HashMap<>();
@@ -363,6 +375,8 @@ public class MissionInfoFinder {
         directories.put(Id.GOCI, GOCI_DIRECTORY);
         directories.put(Id.OLI, OLI_DIRECTORY);
         directories.put(Id.OLCI, OLCI_DIRECTORY);
+        directories.put(Id.HAWKEYE, HAWKEYE_DIRECTORY);
+        directories.put(Id.SGLI, SGLI_DIRECTORY);
     }
 
     private void initNamesHashMap() {
@@ -384,6 +398,8 @@ public class MissionInfoFinder {
         names.put(Id.GOCI, GOCI_NAMES);
         names.put(Id.OLI, OLI_NAMES);
         names.put(Id.OLCI, OLCI_NAMES);
+        names.put(Id.HAWKEYE, HAWKEYE_NAMES);
+        names.put(Id.SGLI, SGLI_NAMES);
     }
 
     public Id getId() {
@@ -442,7 +458,7 @@ public class MissionInfoFinder {
             return;
         }
 
-        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1)) {
+        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1) || isId(Id.HAWKEYE)) {
             setGeofileRequired(true);
         } else {
             setGeofileRequired(false);

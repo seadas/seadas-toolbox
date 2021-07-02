@@ -64,6 +64,8 @@
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
         <res id="ProcessPanel.Spec.xml" src="resources/processPanelSpec.xml"/>
         <res id="FinishPanel.finish" src="about/finish.html"/>
+        <!--    <res id="packsLang.xml_eng" src="i18n/myPacksLang.xml_eng"/>-->
+
     </resources>
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME"/>
@@ -191,56 +193,31 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.</description>
             <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall">
-                <exclude name="bin/*.bat"/>
-                <exclude name="bin/*.exe"/>
-                <exclude name="bin/*.command"/>
-                <exclude name="bin/meris*.*"/>
-                <exclude name="bin/aatsr-sst.*"/>
-                <exclude name="bin/flhmci.*"/>
+                <os family="linux"/>
+                <exclude name="bin/*"/>
+                <exclude name="etc/*"/>
             </fileset>
             <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
             <parsable type="plain">
                 <fileset targetdir="${INSTALL_PATH}/bin">
                     <include name="*.sh"/>
-                    <include name="snap"/>
+                    <include name="seadas"/>
+                    <include name="seadas.desktop"/>
                     <exclude name="*.exe"/>
                 </fileset>
                 <os family="unix"/>
             </parsable>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
-                    <include name="*.sh"/>
-                    <include name="snap.clusters"/>
-                    <include name="snap.conf"/>
-                    <include name="snap"/>
+                    <include name="seadas.clusters"/>
+                    <include name="seadas.conf"/>
+                    <include name="seadas.properties"/>
                 </fileset>
                 <os family="unix"/>
             </parsable>
-            <parsable encoding="UTF-8">
-                <fileset targetdir="${INSTALL_PATH}/bin">
-                    <include name="*.exe"/>
-                    <include name="snap"/>
-                </fileset>
-                <os family="windows"/>
-            </parsable>
-            <parsable encoding="UTF-8">
-                <fileset targetdir="${INSTALL_PATH}/bin">
-                    <include name="*.command"/>
-                    <include name="snap"/>
-                </fileset>
-                <os family="mac"/>
-            </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <os family="unix"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, snap, *.sh" condition="runSeaDAS" />
-            </executable>
-            <executable type="bin" stage="never" failure="warn" keep="true">
-                <os family="mac"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="*.command, snap" condition="runSeaDAS"/>
-            </executable>
-            <executable type="bin" stage="never" failure="warn" keep="true">
-                <os family="windows"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="*.bat, *.exe" condition="runSeaDAS"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"  />
             </executable>
         </pack>
         <pack name="s3tbx" required="yes" preselected="true" id="pack.s3tbx">

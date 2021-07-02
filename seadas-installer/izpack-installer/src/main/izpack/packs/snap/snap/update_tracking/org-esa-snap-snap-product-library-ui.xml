@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.esa.snap.snap.product.library.ui">
-    <module_version install_time="1598640780318" last="true" origin="installer" specification_version="8.0.0.0">
-        <file crc="504894312" name="config/Modules/org-esa-snap-snap-product-library-ui.xml"/>
-        <file crc="695804934" name="modules/org-esa-snap-snap-product-library-ui.jar"/>
-    </module_version>
-</module>

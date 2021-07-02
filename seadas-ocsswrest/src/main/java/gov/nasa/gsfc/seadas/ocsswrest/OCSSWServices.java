@@ -395,6 +395,15 @@ public class OCSSWServices {
     }
 
     @GET
+    @Path("ocsswTags")
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject getOCSSWTags() {
+        System.out.println("reuest for ocssw tags!");
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        return ocsswRemote.getOCSSWTags();
+    }
+
+    @GET
     @Path("isMissionDirExist/{missionName}")
     @Produces(MediaType.TEXT_PLAIN)
     public Boolean isMissionDirExist(@PathParam("missionName") String missionName) {
@@ -407,24 +416,6 @@ public class OCSSWServices {
     public JsonObject getMissionSuites(@PathParam("missionName") String missionName) {
         return new MissionInfoFinder().getL2BinSuites(missionName);
     }
-//
-//    @GET
-//    @Path("/missionSuites/{missionName}/{programName}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public String[] getL2genMissionSuites(@PathParam("missionName") String missionName, @PathParam("programName") String programName) {
-//        try {
-//            missionName.replaceAll("_", " ");
-//            if (OCSSWServerModel.isMissionDirExist(missionName)) {
-//                return new MissionInfoFinder().getMissionSuiteList(missionName, programName);
-//            } else {
-//                return null;
-//            }
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
 
     @GET
     @Path("/missionSuites/{missionName}/{programName}")
@@ -439,7 +430,7 @@ public class OCSSWServices {
     @Path("/srcDirInfo")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public JsonObject getOCSSWSrcDirInfo() {
-        JsonObject srcDirStatus = Json.createObjectBuilder().add("ocssw-src", new File(OCSSWServerModel.getOcsswSrcDirPath()).exists()).build();
+        JsonObject srcDirStatus = Json.createObjectBuilder().add("ocssw_src", new File(OCSSWServerModel.getOcsswSrcDirPath()).exists()).build();
         return srcDirStatus;
     }
 

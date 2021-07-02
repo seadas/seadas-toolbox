@@ -64,6 +64,8 @@
     <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
     <res id="ProcessPanel.Spec.xml" src="resources/processPanelSpec.xml"/>
     <res id="FinishPanel.finish" src="about/finish.html"/>
+    <!--    <res id="packsLang.xml_eng" src="i18n/myPacksLang.xml_eng"/>-->
+
   </resources>
   <variables>
     <variable name="INSTALL_PATH" value="$USER_HOME"/>
@@ -91,6 +93,7 @@
     <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />
     <variable name="JDKPathPanel.skipIfValid" value="yes" />
     <variable name="extra_clusters" value="seadas-toolbox" />
+    <!--    <variable name="jdkhome" value="/home/aynur/install-snap/jre"/>-->
   </variables>
 
   <conditions>
@@ -176,7 +179,7 @@
   </panels>
 
   <dynamicvariables>
-    <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home"/>
+    <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201"/>
   </dynamicvariables>
 
   <packs>
@@ -189,60 +192,32 @@
         to the following technological innovations: Extensibility, Portability, Modular Rich
         Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
         Graph Processing Framework.</description>
-      <fileset  dir="packs/snap" unpack="true"
-                override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
-        <os family="mac"/>
-        <exclude name="bin/*.bat"/>
-        <exclude name="bin/*.exe"/>
-        <exclude name="bin/*.sh"/>
-        <exclude name="bin/meris*.*"/>
-        <exclude name="bin/aatsr-sst.*"/>
-        <exclude name="bin/flhmci.*"/>
+      <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall">
+        <os family="linux"/>
+        <exclude name="bin/*"/>
+        <exclude name="etc/*"/>
       </fileset>
-      <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac" condition="izpack.macinstall"/>
+      <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
       <parsable type="plain">
         <fileset targetdir="${INSTALL_PATH}/bin">
           <include name="*.sh"/>
-          <include name="snap"/>
+          <include name="seadas"/>
+          <include name="seadas.desktop"/>
           <exclude name="*.exe"/>
         </fileset>
         <os family="unix"/>
       </parsable>
       <parsable encoding="UTF-8">
         <fileset targetdir="${INSTALL_PATH}/etc">
-          <include name="*.sh"/>
-          <include name="snap.clusters"/>
-          <include name="snap.conf"/>
-          <include name="snap"/>
+          <include name="seadas.clusters"/>
+          <include name="seadas.conf"/>
+          <include name="seadas.properties"/>
         </fileset>
-        <!--                <os family="unix"/>-->
-      </parsable>
-      <parsable encoding="UTF-8">
-        <fileset targetdir="${INSTALL_PATH}/bin">
-          <include name="*.exe"/>
-          <include name="snap"/>
-          <include name="seadas"/>
-        </fileset>
-        <os family="windows"/>
-      </parsable>
-      <parsable encoding="UTF-8">
-        <fileset targetdir="${INSTALL_PATH}/bin">
-          <include name="*.command"/>
-          <include name="snap"/>
-        </fileset>
-        <os family="mac"/>
+        <os family="unix"/>
       </parsable>
       <executable type="bin" stage="never" failure="warn" keep="true">
         <os family="unix"/>
-        <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, snap, *.sh" condition="runSeaDAS" />
-      </executable>
-      <executable type="bin" stage="never" failure="warn" keep="true">
-        <os family="mac"/>
-        <fileset targetdir="$INSTALL_PATH/bin" includes="*.command, snap" condition="runSeaDAS"/>
-      </executable>
-      <executable type="bin" stage="never" failure="warn" keep="true">
-        <os family="windows"/>
-        <fileset targetdir="$INSTALL_PATH/bin" includes="*.bat, *.exe" condition="runSeaDAS"/>
+        <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"  />
       </executable>
     </pack>
     <pack name="s3tbx" required="yes" preselected="true" id="pack.s3tbx">
@@ -257,11 +232,12 @@
     </pack>
     <pack name="Oracle JRE" required="yes" id="pack.oracle.jre">
       <description>Oracle JRE</description>
-      <file src="packs/jre/jre-8u201-macosx-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
+      <file src="packs/jre/jre-8u201-linux-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
       </file>
       <executable type="bin" stage="never" failure="warn" keep="true">
-        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home/bin" includes="*" />
-        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home/lib" includes="*" />
+        <!--        <os family="unix"/>-->
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/bin" includes="*" />
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/lib" includes="*" />
       </executable>
     </pack>
   </packs>

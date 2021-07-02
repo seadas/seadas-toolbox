@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_SRC_DIR_NAME;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Aynur Abdurazik (aabduraz)
@@ -68,7 +70,7 @@ public class OCSSWInstallerFormLocal extends OCSSWInstallerForm {
             }
 
         }
-        if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "ocssw-src").exists()) {
+        if (new File(OCSSWInfo.getInstance().getOcsswRoot(), OCSSW_SRC_DIR_NAME).exists()) {
             processorModel.setParamValue("--src", "1");
         }
         if (new File(OCSSWInfo.getInstance().getOcsswRoot(), "share/viirs/dem").exists()) {

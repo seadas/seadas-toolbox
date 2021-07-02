@@ -46,9 +46,11 @@ public abstract class OCSSW {
     public static final String OCSSW_CLIENT_SHARED_DIR_NAME_PROPERTY = "ocssw.sharedDir";
     public static final String MLP_PAR_FILE_NAME = "mlp_par_file";
     public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/install_ocssw";
+    public static final String OCSSW_BOOTSTRAP_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/ocssw_bootstrap";
     public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/manifest.py";
     public static final String OCSSW_SEADAS_VERSIONS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json";
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
+    public static final String TMP_OCSSW_BOOTSTRAP = (new File(System.getProperty("java.io.tmpdir"), "ocssw_bootstrap")).getPath();
     public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
     public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
 
@@ -355,8 +357,16 @@ public abstract class OCSSW {
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
             (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
-            updateOCSSWTags();
             ocsswInstalScriptDownloadSuccessful = true;
+
+            //download install_ocssw
+            website = new URL(OCSSW_BOOTSTRAP_URL);
+            rbc = Channels.newChannel(website.openStream());
+            fos = new FileOutputStream(TMP_OCSSW_BOOTSTRAP);
+            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+            fos.close();
+            (new File(TMP_OCSSW_BOOTSTRAP)).setExecutable(true);
+
 
             //download manifest.py
             website = new URL(OCSSW_MANIFEST_URL);
@@ -373,6 +383,9 @@ public abstract class OCSSW {
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
             fos.close();
 
+            //update ocssw tags
+            updateOCSSWTags();
+
         } catch (MalformedURLException malformedURLException) {
             handleException("URL for downloading install_ocssw is not correct!");
         } catch (FileNotFoundException fileNotFoundException) {
@@ -388,35 +401,8 @@ public abstract class OCSSW {
         }
     }
 
-    public void updateOCSSWTags(){
-        Runtime rt = Runtime.getRuntime();
-        String[] commands = {TMP_OCSSW_INSTALLER, "--list_tags"};
-        Process proc = null;
-        try {
-            proc = rt.exec(commands);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public abstract void updateOCSSWTags();
 
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-
-        // Read the output from the command
-        //System.out.println("Here is the standard output of the command:\n");
-        String s = null;
-
-        ArrayList<String> tagsList = new ArrayList<>();
-        while (true) {
-            try {
-                if (!((s = stdInput.readLine()) != null)) break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //System.out.println(s);
-            tagsList.add(s);
-        }
-        setOcsswTags(tagsList);
-        getValidOCSSWTags4SeaDASVersion();
-    }
     public void getValidOCSSWTags4SeaDASVersion(){
         //JSON parser object to parse read file
         setOcsswTagsValid4CurrentSeaDAS(new ArrayList<String>());
