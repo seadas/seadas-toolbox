@@ -49,6 +49,7 @@
     <mapID target="l3gen" url="processors/ProcessL3gen.html"/>
     <mapID target="l3bindump" url="processors/ProcessL3bindump.html"/>
     <mapID target="l3mapgen" url="processors/ProcessL3mapgen.html"/>
+    <mapID target="mapgen" url="processors/ProcessMapgen.html"/>
     <mapID target="smigen" url="processors/ProcessSmigen.html"/>
     <mapID target="multilevel_processor" url="processors/ProcessMultilevel_processor.html"/>
     <mapID target="ocsswInfoConfig" url="processors/OCSSWInfoConfig.html"/>
