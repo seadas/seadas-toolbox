@@ -136,6 +136,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 return new SMIGEN_Processor(programName, xmlFileName, ocssw);
             case L3MAPGEN:
                 return new L3MAPGEN_Processor(programName, xmlFileName, ocssw);
+            case MAPGEN:
+                return new MAPGEN_Processor(programName, xmlFileName, ocssw);
             case L2BIN:
                 return new L2Bin_Processor(programName, xmlFileName, ocssw);
             case L2BIN_AQUARIUS:
@@ -1164,6 +1166,65 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private static class L3MAPGEN_Processor extends ProcessorModel {
 
         L3MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
+            setOpenInSeadas(false);
+
+            addPropertyChangeListener("product", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    if (ifileName != null) {
+                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                        String newProdValue = (String) propertyChangeEvent.getNewValue();
+                        String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution"), "--oformat=" + getParamValue("oformat")};
+                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        updateOFileInfo(ofileName);
+                    }
+                }
+            });
+
+            addPropertyChangeListener("resolution", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+                    String suite = getParamValue("product");
+                    if (suite == null || suite.trim().length() == 0) {
+                        suite = "all";
+                    }
+                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
+                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+            addPropertyChangeListener("oformat", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String oldFormatValue = (String) propertyChangeEvent.getOldValue();
+                    String newFormatValue = (String) propertyChangeEvent.getNewValue();
+                    String suite = getParamValue("product");
+                    if (suite == null || suite.trim().length() == 0) {
+                        suite = "all";
+                    }
+                    String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + newFormatValue};
+                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+        }
+
+    }
+
+    private static class MAPGEN_Processor extends ProcessorModel {
+
+        MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setOpenInSeadas(false);
 
