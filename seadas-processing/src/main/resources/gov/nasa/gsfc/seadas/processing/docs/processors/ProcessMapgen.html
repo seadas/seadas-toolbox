@@ -65,7 +65,7 @@
     <tr>
         <td><b>ifile</b></td>
         <td> ifile</td>
-        <td>Input file name.
+        <td>input file or text file list of files.
         </td>
         <td>Required</td>
         <td></td>
@@ -73,7 +73,7 @@
     <tr>
         <td><b>ofile</b></td>
         <td> ofile</td>
-        <td>Output filename for generated level 3 image file.
+        <td>output file name; default: &lt;ifile&gt;.MAP.&lt;oformat ext&gt;.
         </td>
         <td>Required</td>
         <td></td>
@@ -81,7 +81,7 @@
     <tr>
         <td><b>product</b></td>
         <td>string</td>
-        <td>product(s) to map</td>
+        <td>product(s) to map; comma separated</td>
         <td>Required</td>
         <td></td>
     </tr>
@@ -90,25 +90,19 @@
         <td>string</td>
         <td> One of the following predefined (proj4) projections may be selected:
             <pre>
-        smi:       Standard Mapped image, cylindrical projection,
-                   uses central_meridian.  NSEW defaults to whole globe.
-                   projection="+proj=eqc +lon_0= "
-        platecarree: Plate Carree image, cylindrical projection,
-                   uses central_meridian.
-                   projection="+proj=eqc +lon_0= "
+        platecarree: Plate Carree (cylindrical) projection
+                   projection="+proj=eqc +lat_0=&lt;central_meridian&gt;"
         mollweide: Mollweide projection
-                   projection="+proj=moll +lon_0= "
+                   projection="+proj=moll +lat_0=&lt;central_meridian&gt;"
         lambert:   Lambert conformal conic projection
-                   projection="+proj=lcc +lon_0= "
+                   projection="+proj=lcc +lat_0=&lt;central_meridian&gt;"
         albersconic: Albers Equal Area Conic projection
-                   projection="+proj=aea +lon_0= "
+                   projection="+proj=aea +lat_0=&lt;central_meridian&gt;"
         mercator:  Mercator cylindrical map projection
-                   projection="+proj=merc +lon_0= "
-        ease2:     EASE-Grid 2.0 projection
-                   projection="+proj=cea +lat_0=0 +lat_ts=30
-                          +ellps=WGS84 +datum=WGS84 +units=m
-                          +lon_0= "
-        raw:       Raw dump of bin file contents.     albersconic: "+proj=aea +lon_0={central_meridian}"
+                   projection="+proj=merc +lat_0=&lt;central_meridian&gt;"
+        ease2:     Ease Grid 2 projection
+                   projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84
+                              +datum=WGS84 +units=m +lat_0=&lt;central_meridian&gt;"
             </pre>
         </td>
         <td>Optional</td>
@@ -119,25 +113,13 @@
         <td>string</td>
         <td>size of the output pixel in meters or SMI dimensions:
             <pre>
-         90km: 432 x 216 image for full globe
-         36km: 1080 x 540
-         18km: 2160 x 1080
-         9km: 4320 x 2160
-         4km: 8640 x 4320
-         2km: 17280 x 8640
-         1km: 34560 x 17280
-         hkm: 69120 x 34560
-         qkm: 138240 x 69120
-         smi: 4096 x 2048
-         smi4: 8192 x 4096
-         land: 8640 x 4320
          #.#:  width of a pixel in meters
          #.#km:  width of a pixel in kilometers
          #.#deg:  width of a pixel in degrees
             </pre>
         </td>
         <td>Optional</td>
-        <td>9km</td>
+        <td>2km</td>
     </tr>
     <tr>
         <td><b>interp</b></td>
@@ -153,13 +135,6 @@
         </td>
         <td>Optional</td>
         <td>nearest</td>
-    </tr>
-    <tr>
-        <td><b>pversion</b></td>
-        <td> string</td>
-        <td>Processing version string</td>
-        <td>Optional</td>
-        <td>Unspecified</td>
     </tr>
     <tr>
         <td><b>north</b></td>
@@ -194,28 +169,20 @@
         <td>string</td>
         <td>format of the output file :
             <pre>
-        netCDF:  netCDF file, can contain more than one product
-        hdf4:    HDF4 file (old SMI format)
-        png:     PNG image file
-        ppm:     PPM image file
-        geoTIFF: TIFF file with georeference tags
+        netCDF:  Network Common Data Form v4 file
+                  can contain more than one product
+        png:     Portable Network Graphics format image
+        ppm:     Portable PixMap format image
+        tiff:    Tagged Image File Format with georeference tags
             </pre>
         </td>
         <td>Optional</td>
         <td>netCDF4</td>
     </tr>
     <tr>
-        <td><b>deflate</b></td>
-        <td>int</td>
-        <td>deflation level</td>
-        <td>Optional</td>
-        <td>4</td>
-    </tr>
-    <tr>
         <td><b>central_meridian</b></td>
         <td>float</td>
-        <td>central meridian for projection in deg east.  Only used <br>
-            for convenience projections and assumes whole earthe from east to west.</td>
+        <td>central meridian to use for projection in degrees east.</td>
         <td>Optional</td>
         <td>0</td>
     </tr>
@@ -224,14 +191,7 @@
         <td> ifile</td>
         <td>palette file name</td>
         <td>Optional</td>
-        <td>the palette is chosen using the product.xml file</td>
-    </tr>
-    <tr>
-        <td><b>palette_dir</b></td>
-        <td> ifile</td>
-        <td>palette directory</td>
-        <td>Optional</td>
-        <td>$OCDATAROOT/common/palette</td>
+        <td>see $OCDATAROOT/common/product.xml</td>
     </tr>
     <tr>
         <td><b>datamin</b></td>
@@ -263,10 +223,12 @@
     <tr>
         <td><b>Product_rgb</b></td>
         <td> string</td>
-        <td>Three products to use for RGB.
-            Default is sensor-specific</td>
+        <td>comma separated string of RGB products
+            e.g., product_rgb=rhos_645,rhos_555,rhos_469.
+        </td>
         <td>Optional</td>
-        <td>rhos_670,rhos_555,rhos_412</td>
+        <td>sensor specific, see
+            $OCDATAROOT/&lt;sensor&gt;/l1mapgen_defaults.par</td>
     </tr>
     <tr>
         <td><b>fudge</b></td>
@@ -297,19 +259,12 @@
         <td>yes</td>
     </tr>
     <tr>
-        <td><b>use_quality</b></td>
-        <td>boolean</td>
-        <td>should we do quality factor processing</td>
-        <td>Optional</td>
-        <td>yes</td>
-    </tr>
-    <tr>
         <td><b>use_rgb</b></td>
         <td>boolean</td>
-        <td>should we use product_rgb to make a
-            pseudo-true color image</td>
+        <td>generate an RGB image output</td>
         <td>Optional</td>
-        <td>no</td>
+        <td>a pseudo-true color image with bands to use
+            controlled by --product_rgb option</td>
     </tr>
 
 </table>
@@ -413,166 +368,87 @@
 
 <a name="cl"><h4>Command Line Usage</h4></a>
 <pre>
-l3mapgen 2.1.0-seadas-v7.5.2.1 (Nov 17 2018 15:44:29)
-Usage: l3mapgen argument-list
+generate mapped output from a SeaDAS supported satellite data files
+arguments can be specified on the commandline or in a parameter file
+the two methods can be used together, with commandline over-riding the parfile
 
-  This program takes a product (or products if netCDF output) from an L3 bin
-  or SMI file, reprojects the data using proj.4 and writes a mapped file in
-  the requested output format.
-
-  Return values
-    0 = All Good
-    1 = Error
-    110 = No valid data to map
-
-  The argument list is a set of keyword=value pairs.  Arguments can
-  be specified on the command line, or put into a parameter file, or the
-  two methods can be used together, with command line overriding.
-
-The list of valid keywords follows:
-
-   help (boolean) (alias=h) (default=false) = print usage information
-   version (boolean) (default=false) = print the version
-        information
-   dump_options (boolean) (default=false) = print
-        information about each option
-   dump_options_paramfile (ofile) = print
-        information about each option to paramfile
-   dump_options_xmlfile (ofile) = print
-        information about each option to XML file
-   par (ifile) = input parameter file
-   suite (string) = suite for default parameters
-   ifile (ifile) = input L3 bin filename
-
-   ofile (ofile) (default=output) = output filename
-   oformat (string) (default=netcdf4) = output file format
-        netcdf4: netCDF4 file, can contain more than one product
-        hdf4:    HDF4 file (old SMI format)
-        png:     PNG image file
-        ppm:     PPM image file
-        tiff:    TIFF file with georeference tags
-   ofile2 (ofile) = second output filename
-   oformat2 (string) (default=png) = second output file format
-        same options as oformat
-   deflate (int) (default=4) = netCDF4 deflation level
-
-   product (string) = comma separated list of products.
-        Each product can have an optional colon and modifier appended.
-        For example, "product=chlor_a,chlor_a:stdev,Kd_490:nobs"
-        Available modifiers:
-            avg       average value (default)
-            stdev     standard deviation
-            var       variance
-            nobs      number of observations in the bin
-            nscenes   number of contributing scenes
-            obs_time  average observation time (TAI93)
-            bin_num   bin ID number
-
-   resolution (string) (default=9km) = size of output pixel
-        in meters or SMI dimensions
-        90km: 432 x 216 image for full globe
-        36km: 1080 x 540
-        18km: 2160 x 1080
-         9km: 4320 x 2160
-         4km: 8640 x 4320
-         2km: 17280 x 8640
-         1km: 34560 x 17280
-         hkm: 69120 x 34560
-         qkm: 138240 x 69120
-         smi: 4096 x 2048
-        smi4: 8192 x 4096
-        land: 8640 x 4320
-         #.#:  width of a pixel in meters
-       #.#km:  width of a pixel in kilometers
-      #.#deg:  width of a pixel in degrees
-   width (int) = width of output image in pixels; supercedes resolution parameter.
-
-   projection (string) (default=platecarree) = proj.4 projection string or one
-        of the following predefined projections:
-        smi:       Standard Mapped image, cylindrical projection,
-                   uses central_meridian.  NSEW defaults to whole globe.
-                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
-        platecarree: Plate Carree image, cylindrical projection,
-                   uses central_meridian.
-                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
-        mollweide: Mollweide projection
-                   projection="+proj=moll +lon_0=&lt;central_meridian&gt;"
-        lambert:   Lambert conformal conic projection
-                   projection="+proj=lcc +lon_0=&lt;central_meridian&gt;"
-        albersconic: Albers Equal Area Conic projection
-                   projection="+proj=aea +lon_0=&lt;central_meridian&gt;"
-        mercator:  Mercator cylindrical map projection
-                   projection="+proj=merc +lon_0=&lt;central_meridian&gt;"
-        obliquemerc:  Oblique Mercator cylindrical map projection
-                   projection="+proj=omerc +gamma=0 +lat_0=&lt;lat_0&gt;
-                          +lonc=&lt;central_meridian&gt; +alpha=&lt;azimuth&gt;
-                          +k_0=1 +x_0=0 +y_0=0"
-        ease2:     EASE-Grid 2.0 projection
-                   projection="+proj=cea +lat_0=0 +lat_ts=30
-                          +ellps=WGS84 +datum=WGS84 +units=m
-                          +lon_0=&lt;central_meridian&gt;"
-        stere:     Stereographic projection
-                   projection="+proj=stere +lat_0=&lt;lat_0&gt; +lat_ts=&lt;lat_ts&gt;
-                          +lon_0=&lt;central_meridian&gt;
-                          +ellps=WGS84 +datum=WGS84 +units=m"
-        conus:     USA Contiguous Albers Equal Area Conic USGS version
-                   projection="+proj=aea +lat_1=29.5 +lat_2=45.5
-                         +lat_0=23.0 +lon_0=-96 +x_0=0 +y_0=0
-                         +ellps=GRS80 +datum=NAD83 +units=m"
-        raw:       Raw dump of bin file contents.
-
-   projection_alt (string) = proj.4 projection string or one
-        of the predefined projections.
-   alt_thresh_lat (float) (default=999) = absolute value of latitude for switching projection
-        to the projection_alt.
-   central_meridian (float) (default=-999) = central meridian for projection in deg east.
-        Used only for raw dump and predefined projections as above.
-   lat_ts (float) = latitude of true scale for projection in deg north.
-        Used only for predefined projections above as required.
-   lat_0 (float) = latitude of origin for projection in deg north.
-        Used only for predefined projections above as required.
-   azimuth (float) = projection rotation angle in deg north.
-        Used only for predefined projections above as required.
-   north (float) (default=-999) = Northernmost Latitude (default: file north)
-   south (float) (default=-999) = Southernmost Latitude (default: file south)
-   east (float) (default=-999) = Easternmost Longitude (default: file east)
-   west (float) (default=-999) = Westernmost Longitude (default: file west)
-   trimNSEW (boolean) (default=yes) = should we trim output
-        to match input NSEW range
-
-   interp (string) (default=nearest) = interpolation method:
-        nearest: Nearest Neighbor
-        bin:     bin all of the pixels that intersect the area of the
-                  output pixel
-        area:    bin weighted by area of all the pixels that intersect
-                  the area of the output pixel
-
-   apply_pal (boolean) (default=yes) = apply color palette:
-        yes: color image
-         no: grayscale image
-   palfile (ifile) = palette filename (default from product.xml)
-   datamin (float) = minimum value for scaling (default from product.xml)
-   datamax (float) = maximum value for scaling (default from product.xml)
-   scale_type (string) = data scaling type (default from product.xml)
-        linear:  linear scaling
-        log:     logarithmic scaling
-        arctan:  arc tangent scaling
-
-   quiet (boolean) (default=false) = stop the status printing
-   pversion (string) (default=Unspecified) = processing version string
-   use_quality (boolean) (default=yes) = should we do quality factor processing
-   quality_product (string) = product to use for quality factor processing
-   use_rgb (boolean) (default=no) = should we use product_rgb to make a
-        pseudo-true color image
-   product_rgb (string) (default=rhos_670,rhos_555,rhos_412) =
-        Three products to use for RGB.  Default is sensor-specific.
-   fudge (float) (default=1.0) = fudge factor used to modify size of L3 pixels
-   threshold (float) (default=0) = minimum percentage of filled pixels before
-        an image is generated
-   num_cache (int) (default=500) = number of rows to cache in memory.
-   mask_land (boolean) (default=no) = set land pixels to pixel value 254
-   land (ifile) (default=$OCDATAROOT/common/landmask_GMT15ARC.nc) = land mask file
-   full_latlon (boolean) (default=yes) = write full latitude and longitude arrays (except for SMI)
+optional arguments:
+  -h, --help            show this help message and exit
+  --parfile PARFILE, -p PARFILE
+                        input parameter file
+  --ifile IFILE, -i IFILE
+                        input file or text file list of files
+  --geofile GEOFILE, -g GEOFILE
+                        geolocation file or text file list of files
+  --ofile OFILE, -o OFILE
+                        output file name; default: &lt;ifile&gt;.MAP.&lt;oformat ext&gt;
+  --logfile LOGFILE, -l LOGFILE
+                        log file
+                        default: mapgen_&lt;timestamp&gt;.log
+                        &lt;timestamp&gt; is in seconds since Jan 1, 1970 00:00:00
+                        this file is deleted if verbose is not set and no errors
+                        occur during processing
+  --use_rgb             generate an RGB image output
+                        default: a pseudo-true color image with bands to use
+                                 controlled by --product_rgb option
+  --product PRODUCT     product(s) to map; comma separated
+  --product_rgb PRODUCT_RGB
+                        comma separated string of RGB products
+                        e.g., product_rgb=rhos_645,rhos_555,rhos_469
+                        default:  sensor specific, see
+                        $OCDATAROOT/&lt;sensor&gt;/l1mapgen_defaults.par
+  --resolution RESOLUTION, -r RESOLUTION
+                             #.#:  width of a pixel in meters
+                           #.#km:  width of a pixel in kilometers
+                          #.#deg:  width of a pixel in degrees
+  --oformat {netcdf4,png,ppm,tiff}
+                        netcdf4: Network Common Data Form v4 file
+                                   can contain more than one product
+                        png:     Portable Network Graphics format image
+                        ppm:     Portable PixMap format image
+                        tiff:    Tagged Image File Format with georeference tags
+  --use_transparency, -t
+                        make missing data transparent
+                        only valid for color PNG and TIFF output
+  --north NORTH, -n NORTH
+                        northern-most latitude; default: input file max lﬂatitude
+  --south SOUTH, -s SOUTH
+                        southern-most latitude; default: input file min latitude
+  --east EAST, -e EAST  eastern-most latitude; default: input file max longitude
+  --west WEST, -w WEST  western-most latitude; default: input file min longitude
+  --projection PROJECTION
+                         "proj" projection string or one of the following:
+                            platecarree: Plate Carree (cylindrical) projection
+                              projection="+proj=eqc +lat_0=&lt;central_meridian&gt;"
+                            mollweide:   Mollweide projection
+                              projection="+proj=moll +lat_0=&lt;central_meridian&gt;"
+                            lambert:     Lambert conformal conic projection
+                              projection="+proj=lcc +lat_0=&lt;central_meridian&gt;"
+                            albersconic: Albers equal-area conic projection
+                              projection="+proj=aea +lat_0=&lt;central_meridian&gt;"
+                            mercator:    Mercator cylindrical map projection
+                              projection="+proj=merc +lat_0=&lt;central_meridian&gt;"
+                            ease2:       Ease Grid 2 projection
+                              projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84
+                              +datum=WGS84 +units=m +lat_0=&lt;central_meridian&gt;"
+  --central_meridian CENTRAL_MERIDIAN
+                        central meridian to use for projection in degrees east
+  --palfile PALFILE     palette filename
+                        default: see $OCDATAROOT/common/product.xml
+  --fudge FUDGE         factor used to modify pixel search radius for mapping
+  --datamin DATAMIN     minimum value for scaling (default from product.xml)
+  --datamax DATAMAX     maximum value for scaling (default from product.xml)
+  --scale_type {linear,log,arctan}
+                        data scaling method (default from product.xml)
+  --threshold THRESHOLD
+                        minimum percentage of filled pixels for image generation
+                        default: 0
+  --trimNSEW            do not trim output to match input NSEW range
+  --write_projtext      write projection information to a text file (for mapgen_overlay script)
+  --keep-intermediates  do not delete the intermediate L2/L3B files produced
+  --verbose, -v         let's get chatty; each occurrence increases verbosity
+                        default: error
+                        -v info -vv debug
 
 </pre>
 <hr>

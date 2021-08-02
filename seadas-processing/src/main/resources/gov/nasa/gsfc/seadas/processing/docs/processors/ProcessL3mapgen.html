@@ -73,7 +73,7 @@
     <tr>
         <td><b>ofile</b></td>
         <td> ofile</td>
-        <td>Output filename for generated level 3 image file.
+        <td>output filename.
         </td>
         <td>Required</td>
         <td></td>
@@ -81,7 +81,7 @@
     <tr>
         <td><b>product</b></td>
         <td>string</td>
-        <td>product(s) to map</td>
+        <td>comma separated list of products.</td>
         <td>Required</td>
         <td></td>
     </tr>
@@ -92,23 +92,52 @@
             <pre>
         smi:       Standard Mapped image, cylindrical projection,
                    uses central_meridian.  NSEW defaults to whole globe.
-                   projection="+proj=eqc +lon_0= "
+                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
         platecarree: Plate Carree image, cylindrical projection,
                    uses central_meridian.
-                   projection="+proj=eqc +lon_0= "
+                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
         mollweide: Mollweide projection
-                   projection="+proj=moll +lon_0= "
-        lambert:   Lambert conformal conic projection
-                   projection="+proj=lcc +lon_0= "
+                   projection="+proj=moll +lon_0=&lt;central_meridian&gt;"
+        lambert:   Lambert conformal conic (2SP) projection
+                   projection="+proj=lcc +lon_0=&lt;central_meridian&gt;
+                                +lat_0=&lt;scene center latitude&gt;
+                                +lat_1=&lt;scene south latitude&gt;
+                                +lat_2=&lt;scene north latitude&gt;"
         albersconic: Albers Equal Area Conic projection
-                   projection="+proj=aea +lon_0= "
+                   projection="+proj=aea +lon_0=&lt;central_meridian>
+                                +lat_0=&lt;scene center latitude&gt;
+                                +lat_1=&lt;scene south latitude&gt;
+                                +lat_2=&lt;scene north latitude&gt;"
         mercator:  Mercator cylindrical map projection
-                   projection="+proj=merc +lon_0= "
+                   projection="+proj=merc +lon_0=&lt;central_meridian&gt;"
+        transmerc:  Transverse Mercator cylindrical map projection
+                   projection="+proj=tmerc +lon_0=&lt;central_meridian&gt;
+                                +lat_0=&lt;scene center latitude&gt;"
+        utm:  Universal Transverse Mercator cylindrical map projection
+                   projection="+proj=utm +zone=&lt;utm_zone&gt; [+south]"
+        obliquemerc:  Oblique Mercator cylindrical map projection
+                   projection="+proj=omerc +gamma=0 +lat_0=&lt;lat_0&gt;
+                          +lonc=&lt;central_meridian&gt; +alpha=&lt;azimuth&gt;
+                          +k_0=1 +x_0=0 +y_0=0"
         ease2:     EASE-Grid 2.0 projection
-                   projection="+proj=cea +lat_0=0 +lat_ts=30
-                          +ellps=WGS84 +datum=WGS84 +units=m
-                          +lon_0= "
-        raw:       Raw dump of bin file contents.     albersconic: "+proj=aea +lon_0={central_meridian}"
+                   projection="EPSG:6933"
+        stere:     Stereographic projection
+                   projection="+proj=stere +lat_0=&lt;lat_0&gt; +lat_ts=&lt;lat_ts&gt;
+                          +lon_0=&lt;central_meridian&gt;
+                          +ellps=WGS84 +datum=WGS84 +units=m"
+        conus:     USA Contiguous Albers Equal Area Conic USGS version
+                   projection="+proj=aea +lat_1=29.5 +lat_2=45.5
+                         +lat_0=23.0 +lon_0=-96 +x_0=0 +y_0=0
+                         +ellps=GRS80 +datum=NAD83 +units=m"
+        alaska:    Alaskan Albers Equal Area Conic USGS version
+                   projection="EPSG:3338"
+        gibs:      latitudinally dependent projection
+                   Plate Carree between 60S and 60N
+                   else use Polar Sterographic
+                   North Polar: projection="EPSG:3413"
+                   South Polar: projection="EPSG:3031"
+         raw:       Raw dump of bin file contents.
+
          </pre>
         </td>
         <td>Optional</td>
@@ -117,7 +146,8 @@
     <tr>
         <td><b>resolution</b></td>
         <td>string</td>
-        <td>size of the output pixel in meters or SMI dimensions:
+        <td>size of output pixel (default from input file)
+            in meters or SMI dimensions:
             <pre>
          90km: 432 x 216 image for full globe
          36km: 1080 x 540
@@ -134,6 +164,7 @@
          #.#:  width of a pixel in meters
          #.#km:  width of a pixel in kilometers
          #.#deg:  width of a pixel in degrees
+         width (int) = width of output image in pixels; supercedes resolution parameter.
      </pre>
         </td>
         <td>Optional</td>
@@ -198,7 +229,7 @@
         hdf4:    HDF4 file (old SMI format)
         png:     PNG image file
         ppm:     PPM image file
-        geoTIFF: TIFF file with georeference tags
+        tiff:    TIFF file with georeference tags
         </pre>
         </td>
         <td>Optional</td>
@@ -207,15 +238,15 @@
     <tr>
         <td><b>deflate</b></td>
         <td>int</td>
-        <td>deflation level</td>
+        <td>netCDF4 deflation level</td>
         <td>Optional</td>
         <td>4</td>
     </tr>
     <tr>
         <td><b>central_meridian</b></td>
         <td>float</td>
-        <td>central meridian for projection in deg east.  Only used <br>
-            for convenience projections and assumes whole earthe from east to west.</td>
+        <td>central meridian for projection in deg east.  Used only <br>
+            for raw dump and predefined projections as above.</td>
         <td>Optional</td>
         <td>0</td>
     </tr>
@@ -224,14 +255,8 @@
         <td> ifile</td>
         <td>palette file name</td>
         <td>Optional</td>
-        <td>the palette is chosen using the product.xml file</td>
-    </tr>
-    <tr>
-        <td><b>palette_dir</b></td>
-        <td> ifile</td>
-        <td>palette directory</td>
-        <td>Optional</td>
-        <td>$OCDATAROOT/common/palette</td>
+        <td>palette filename</td>
+        <td>default from product.xml</td>
     </tr>
     <tr>
         <td><b>datamin</b></td>
@@ -413,7 +438,7 @@
 
 <a name="cl"><h4>Command Line Usage</h4></a>
 <pre>
-l3mapgen 2.1.0-seadas-v7.5.2.1 (Nov 17 2018 15:44:29)
+l3mapgen 2.3.0-T2021.11 (Jul  8 2021 13:59:56)
 Usage: l3mapgen argument-list
 
   This program takes a product (or products if netCDF output) from an L3 bin
@@ -451,6 +476,7 @@ The list of valid keywords follows:
         png:     PNG image file
         ppm:     PPM image file
         tiff:    TIFF file with georeference tags
+   ofile_product_tag (string) (default=PRODUCT) = sub-string in ofile name that will be substituted by the product name
    ofile2 (ofile) = second output filename
    oformat2 (string) (default=png) = second output file format
         same options as oformat
@@ -468,7 +494,7 @@ The list of valid keywords follows:
             obs_time  average observation time (TAI93)
             bin_num   bin ID number
 
-   resolution (string) (default=9km) = size of output pixel
+   resolution (string) = size of output pixel (default from input file)
         in meters or SMI dimensions
         90km: 432 x 216 image for full globe
         36km: 1080 x 540
@@ -497,20 +523,29 @@ The list of valid keywords follows:
                    projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
         mollweide: Mollweide projection
                    projection="+proj=moll +lon_0=&lt;central_meridian&gt;"
-        lambert:   Lambert conformal conic projection
-                   projection="+proj=lcc +lon_0=&lt;central_meridian&gt;"
+        lambert:   Lambert conformal conic (2SP) projection
+                   projection="+proj=lcc +lon_0=&lt;central_meridian&gt;
+                                +lat_0=&lt;scene center latitude&gt;
+                                +lat_1=&lt;scene south latitude&gt;
+                                +lat_2=&lt;scene north latitude&gt;"
         albersconic: Albers Equal Area Conic projection
-                   projection="+proj=aea +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=aea +lon_0=&lt;central_meridian>
+                                +lat_0=&lt;scene center latitude&gt;
+                                +lat_1=&lt;scene south latitude&gt;
+                                +lat_2=&lt;scene north latitude&gt;"
         mercator:  Mercator cylindrical map projection
                    projection="+proj=merc +lon_0=&lt;central_meridian&gt;"
+        transmerc:  Transverse Mercator cylindrical map projection
+                   projection="+proj=tmerc +lon_0=&lt;central_meridian&gt;
+                                +lat_0=&lt;scene center latitude&gt;"
+        utm:  Universal Transverse Mercator cylindrical map projection
+                   projection="+proj=utm +zone=&lt;utm_zone&gt; [+south]"
         obliquemerc:  Oblique Mercator cylindrical map projection
                    projection="+proj=omerc +gamma=0 +lat_0=&lt;lat_0&gt;
                           +lonc=&lt;central_meridian&gt; +alpha=&lt;azimuth&gt;
                           +k_0=1 +x_0=0 +y_0=0"
         ease2:     EASE-Grid 2.0 projection
-                   projection="+proj=cea +lat_0=0 +lat_ts=30
-                          +ellps=WGS84 +datum=WGS84 +units=m
-                          +lon_0=&lt;central_meridian&gt;"
+                   projection="EPSG:6933"
         stere:     Stereographic projection
                    projection="+proj=stere +lat_0=&lt;lat_0&gt; +lat_ts=&lt;lat_ts&gt;
                           +lon_0=&lt;central_meridian&gt;
@@ -519,20 +554,31 @@ The list of valid keywords follows:
                    projection="+proj=aea +lat_1=29.5 +lat_2=45.5
                          +lat_0=23.0 +lon_0=-96 +x_0=0 +y_0=0
                          +ellps=GRS80 +datum=NAD83 +units=m"
-        raw:       Raw dump of bin file contents.
+        alaska:    Alaskan Albers Equal Area Conic USGS version
+                   projection="EPSG:3338"
+        gibs:      latitudinally dependent projection
+                   Plate Carree between 60S and 60N
+                   else use Polar Sterographic
+                   North Polar: projection="EPSG:3413"
+                   South Polar: projection="EPSG:3031"
+         raw:       Raw dump of bin file contents.
 
-   projection_alt (string) = proj.4 projection string or one
-        of the predefined projections.
-   alt_thresh_lat (float) (default=999) = absolute value of latitude for switching projection
-        to the projection_alt.
+   write_projtext (boolean) (default=no) = write projection information to a text file.
    central_meridian (float) (default=-999) = central meridian for projection in deg east.
         Used only for raw dump and predefined projections as above.
    lat_ts (float) = latitude of true scale for projection in deg north.
         Used only for predefined projections above as required.
    lat_0 (float) = latitude of origin for projection in deg north.
         Used only for predefined projections above as required.
+   lat_1 (float) = latitude of first standard parallel (south).
+        Used only for predefined projections above as required.
+   lat_2 (float) = latitude of second standard parallel (north).
+        Used only for predefined projections above as required.
    azimuth (float) = projection rotation angle in deg north.
         Used only for predefined projections above as required.
+   utm_zone (string) = UTM zone number.
+        Used only for the UTM projection;
+        Append 'S' for southern hemisphere zones (e.g. 59S).
    north (float) (default=-999) = Northernmost Latitude (default: file north)
    south (float) (default=-999) = Southernmost Latitude (default: file south)
    east (float) (default=-999) = Easternmost Longitude (default: file east)
@@ -541,7 +587,7 @@ The list of valid keywords follows:
         to match input NSEW range
 
    interp (string) (default=nearest) = interpolation method:
-        nearest: Nearest Neighbor
+        nearest: use the value of the nearest bin for the pixel
         bin:     bin all of the pixels that intersect the area of the
                   output pixel
         area:    bin weighted by area of all the pixels that intersect
@@ -551,6 +597,7 @@ The list of valid keywords follows:
         yes: color image
          no: grayscale image
    palfile (ifile) = palette filename (default from product.xml)
+   use_transparency (boolean) (default=no) = make missing data transparent (only valid for color PNG and TIFF)
    datamin (float) = minimum value for scaling (default from product.xml)
    datamax (float) = maximum value for scaling (default from product.xml)
    scale_type (string) = data scaling type (default from product.xml)
@@ -571,8 +618,9 @@ The list of valid keywords follows:
         an image is generated
    num_cache (int) (default=500) = number of rows to cache in memory.
    mask_land (boolean) (default=no) = set land pixels to pixel value 254
+   rgb_land (string) (default=160,82,45) = RGB value to use for land mask; comma separate string
    land (ifile) (default=$OCDATAROOT/common/landmask_GMT15ARC.nc) = land mask file
-   full_latlon (boolean) (default=yes) = write full latitude and longitude arrays (except for SMI)
+   full_latlon (boolean) (default=yes) = write full latitude and longitude arrays.
 
 </pre>
 
