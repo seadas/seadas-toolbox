@@ -118,7 +118,7 @@ public class FilenamePatterns {
         } else {
             ArrayList<File> possibleGeoFiles = new ArrayList<File>();
 
-            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP", "L1A_JPSS1", "L1B-M_JPSS1", "L1A"};
+            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP", "L1A_JPSS1", "L1B-M_JPSS1", "L1A", "L1B"};
             String STRING_TO_INSERT[] = {"GEO", "geo", "GEO-M_SNPP", "GEO-M_JPSS1"};
 
             /**
