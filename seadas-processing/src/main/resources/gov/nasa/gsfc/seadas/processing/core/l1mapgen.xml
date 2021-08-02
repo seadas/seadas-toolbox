@@ -76,7 +76,7 @@
             <name>ifile</name>
             <value/>
             <type>string</type>
-            <description>input L2 file name or file with a list of files names</description>
+            <description>input L1 file name or file with a list of files names</description>
             <source>default</source>
             <usedAs>option</usedAs>
         </option>
