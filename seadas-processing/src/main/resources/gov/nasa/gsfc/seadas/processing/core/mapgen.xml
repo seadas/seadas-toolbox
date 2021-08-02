@@ -6,6 +6,7 @@
         <parFileOptionName>--parfile</parFileOptionName>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
+            <primaryOption>geofile</primaryOption>
             <primaryOption>ofile</primaryOption>
         </primaryOptions>
     </programMetaData>
@@ -21,47 +22,10 @@
             </aliases>
             <description>print usage information</description>
         </option>
-<!--        <option type="help">-->
-<!--            <name>-version</name>-->
-<!--            <value>false</value>-->
-<!--            <default>false</default>-->
-<!--            <source>default</source>-->
-<!--            <aliases>-->
-<!--                <alias>&#45;&#45;version</alias>-->
-<!--            </aliases>-->
-<!--            <description>print the version information</description>-->
-<!--        </option>-->
-<!--        <option type="help">-->
-<!--            <name>-dump_options</name>-->
-<!--            <value>false</value>-->
-<!--            <default>false</default>-->
-<!--            <source>default</source>-->
-<!--            <aliases>-->
-<!--                <alias>&#45;&#45;dump_options</alias>-->
-<!--            </aliases>-->
-<!--            <description>print information about each option</description>-->
-<!--        </option>-->
-<!--        <option type="help">-->
-<!--            <name>-dump_options_paramfile</name>-->
-<!--            <value/>-->
-<!--            <source>default</source>-->
-<!--            <aliases>-->
-<!--                <alias>&#45;&#45;dump_options_paramfile</alias>-->
-<!--            </aliases>-->
-<!--            <description>print information about each option to paramfile</description>-->
-<!--        </option>-->
-<!--        <option type="help">-->
-<!--            <name>-dump_options_xmlfile</name>-->
-<!--            <value>mapgen.xml</value>-->
-<!--            <source>command line</source>-->
-<!--            <aliases>-->
-<!--                <alias>&#45;&#45;dump_options_xmlfile</alias>-->
-<!--            </aliases>-->
-<!--            <description>print information about each option to XML file</description>-->
-<!--        </option>-->
         <option type="help">
             <name>--parfile</name>
             <value/>
+            <type>string</type>
             <source>default</source>
             <description>input parameter file</description>
         </option>
@@ -73,23 +37,32 @@
             <usedAs>option</usedAs>
             <order>0</order>
         </option>
+        <option type="ifile">
+            <name>geofile</name>
+            <value/>
+            <type>string</type>
+            <description>geolocation file or text file list of files</description>
+            <source>default</source>
+            <usedAs>option</usedAs>
+            <order>1</order>
+        </option>
         <option type="ofile">
             <name>ofile</name>
             <value>color</value>
             <default>color</default>
             <source>default</source>
-            <description>color filename</description>
+            <description>output file name; default: &lt;ifile&gt;.MAP.&lt;oformat ext&gt;</description>
             <usedAs>option</usedAs>
-            <order>1</order>
+            <order>2</order>
         </option>
         <option type="string">
             <name>product</name>
             <value></value>
             <default></default>
             <source>default</source>
-            <description>product(s) to map</description>
+            <description>product(s) to map; comma separated</description>
             <usedAs>option</usedAs>
-            <order>2</order>
+            <order>3</order>
         </option>
         <option type="string">
             <name>projection</name>
@@ -97,10 +70,6 @@
             <default>platecarree</default>
             <source>default</source>
             <validValues>
-                <validValue>
-                    <value>smi</value>
-                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
-                </validValue>
                 <validValue>
                     <value>platecarree</value>
                     <description><![CDATA[ Plate Carree image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
@@ -128,99 +97,21 @@
             </validValues>
             <description>proj.4 projection string or one of the following predefined projections:</description>
             <usedAs>option</usedAs>
-            <order>3</order>
+            <order>4</order>
         </option>
         <option type="string">
             <name>resolution</name>
             <value>2km</value>
             <default>2km</default>
             <source>default</source>
-            <validValues>
-                <validValue>
-                    <value>90km</value>
-                    <description>432 x 216 image for full globe</description>
-                </validValue>
-                <validValue>
-                    <value>36km</value>
-                    <description>1080 x 540</description>
-                </validValue>
-                <validValue>
-                    <value>18km</value>
-                    <description>2160 x 1080</description>
-                </validValue>
-                <validValue>
-                    <value>9km</value>
-                    <description>4320 x 2160</description>
-                </validValue>
-                <validValue>
-                    <value>4km</value>
-                    <description>8640 x 4320</description>
-                </validValue>
-                <validValue>
-                    <value>2km</value>
-                    <description>17280 x 8640</description>
-                </validValue>
-                <validValue>
-                    <value>1km</value>
-                    <description>34560 x 17280</description>
-                </validValue>
-                <validValue>
-                    <value>hkm</value>
-                    <description>69120 x 34560</description>
-                </validValue>
-                <validValue>
-                    <value>qkm</value>
-                    <description>138240 x 69120</description>
-                </validValue>
-                <validValue>
-                    <value>smi</value>
-                    <description>4096 x 2048</description>
-                </validValue>
-                <validValue>
-                    <value>smi4</value>
-                    <description>8192 x 4096</description>
-                </validValue>
-                <validValue>
-                    <value>land</value>
-                    <description>8640 x 4320</description>
-                </validValue>
-            </validValues>
-            <description>size of the color pixel in meters or SMI dimensions</description>
+            <description>
+                #.#:  width of a pixel in meters
+                #.#km:  width of a pixel in kilometers
+                #.#deg:  width of a pixel in degrees
+            </description>
             <usedAs>option</usedAs>
-            <order>4</order>
+            <order>5</order>
         </option>
-<!--        <option type="string">-->
-<!--            <name>interp</name>-->
-<!--            <value>nearest</value>-->
-<!--            <default>nearest</default>-->
-<!--            <source>default</source>-->
-<!--            <validValues>-->
-<!--                <validValue>-->
-<!--                    <value>nearest</value>-->
-<!--                    <description>Nearest Neighbor</description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>bin</value>-->
-<!--                    <description>bin all of the pixels that intersect the area of the color pixel</description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>area</value>-->
-<!--                    <description>bin weighted by area of all the pixels that intersect the area of the color pixel</description>-->
-<!--                </validValue>-->
-<!--            </validValues>-->
-<!--            <description>interpolation method:</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>5</order>-->
-<!--        </option>-->
-<!--        <option type="string">-->
-<!--            <name>pversion</name>-->
-<!--            <value></value>-->
-<!--            <default>Unspecified</default>-->
-<!--            <source>default</source>-->
-<!--            <description>processing version string</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>6</order>-->
-<!--        </option>-->
         <option type="float">
             <name>north</name>
             <value>-999</value>
@@ -228,7 +119,7 @@
             <source>default</source>
             <description>Northern most Latitude</description>
             <usedAs>option</usedAs>
-            <order>5</order>
+            <order>6</order>
         </option>
         <option type="float">
             <name>south</name>
@@ -237,7 +128,7 @@
             <source>default</source>
             <description>Southern most Latitude</description>
             <usedAs>option</usedAs>
-            <order>6</order>
+            <order>7</order>
         </option>
         <option type="float">
             <name>east</name>
@@ -246,7 +137,7 @@
             <source>default</source>
             <description>Eastern most Longitude</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>8</order>
         </option>
         <option type="float">
             <name>west</name>
@@ -255,7 +146,7 @@
             <source>default</source>
             <description>Western most Longitude</description>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>9</order>
         </option>
         <option type="string">
             <name>oformat</name>
@@ -282,59 +173,32 @@
             </validValues>
             <description>color file format</description>
             <usedAs>option</usedAs>
-            <order>9</order>
+            <order>10</order>
         </option>
-<!--        <option type="int">-->
-<!--            <name>deflate</name>-->
-<!--            <value>4</value>-->
-<!--            <default>4</default>-->
-<!--            <source>default</source>-->
-<!--            <description>deflation level</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>12</order>-->
-<!--        </option>-->
         <option type="float">
             <name>central_meridian</name>
             <value></value>
             <default>0</default>
             <source>default</source>
-            <description>central meridian for projection in deg east.  Only used for predefined projection</description>
+            <description>central meridian to use for projection in degrees east</description>
             <usedAs>option</usedAs>
-            <order>10</order>
+            <order>11</order>
         </option>
-<!--        <option type="boolean">-->
-<!--            <name>apply_pal</name>-->
-<!--            <value>true</value>-->
-<!--            <default>true</default>-->
-<!--            <source>default</source>-->
-<!--            <description>apply color palette</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>14</order>-->
-<!--        </option>-->
         <option type="string">
-            <name>--palfile</name>
+            <name>palfile</name>
             <value/>
             <source>default</source>
             <description>palette filename.  (default = means the palette is chosen using the product.xml file</description>
             <usedAs>option</usedAs>
-            <order>11</order>
+            <order>12</order>
         </option>
-<!--        <option type="string">-->
-<!--            <name>palette_dir</name>-->
-<!--            <value>$OCDATAROOT/common/palette</value>-->
-<!--            <default>$OCDATAROOT/common/palette</default>-->
-<!--            <source>default</source>-->
-<!--            <description>directory containing the palette files</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>16</order>-->
-<!--        </option>-->
         <option type="float">
             <name>datamin</name>
             <value/>
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>12</order>
+            <order>13</order>
         </option>
         <option type="float">
             <name>datamax</name>
@@ -342,7 +206,7 @@
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>13</order>
+            <order>14</order>
         </option>
         <option type="string">
             <name>scale_type</name>
@@ -364,41 +228,32 @@
             </validValues>
             <description>data scaling type (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>14</order>
+            <order>15</order>
         </option>
-        <!--<option type="boolean">-->
-            <!--<name>quiet</name>-->
-            <!--<value>false</value>-->
-            <!--<default>false</default>-->
-            <!--<source>default</source>-->
-            <!--<description>stop the status printing</description>-->
-        <!--</option>-->
-<!--        <option type="boolean">-->
-<!--            <name>use_quality</name>-->
-<!--            <value>true</value>-->
-<!--            <default>true</default>-->
-<!--            <source>default</source>-->
-<!--            <description>should we do quality factor processing</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>20</order>-->
-<!--        </option>-->
         <option type="boolean">
             <name>use_rgb</name>
             <value>false</value>
             <default>false</default>
             <source>default</source>
-            <description>should we use product_rgb to make a psudo true color image</description>
+            <description>
+                generate an RGB image output
+                default: a pseudo-true color image with bands to use controlled by --product_rgb option
+            </description>
             <usedAs>option</usedAs>
-            <order>15</order>
+            <order>16</order>
         </option>
         <option type="string">
             <name>product_rgb</name>
             <value></value>
             <default></default>
             <source>default</source>
-            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <description>
+                comma separated string of RGB products
+                e.g., product_rgb=rhos_645,rhos_555,rhos_469
+                default:  sensor specific, see $OCDATAROOT/&lt;sensor&gt;/l1mapgen_defaults.par
+            </description>
             <usedAs>option</usedAs>
-            <order>16</order>
+            <order>17</order>
         </option>
         <option type="float">
             <name>fudge</name>
@@ -407,7 +262,7 @@
             <source>default</source>
             <description>fudge factor used to modify size of L3 pixels</description>
             <usedAs>option</usedAs>
-            <order>17</order>
+            <order>18</order>
         </option>
         <option type="float">
             <name>threshold</name>
@@ -416,7 +271,16 @@
             <source>default</source>
             <description>minimum percentage of filled pixels before an image is generated</description>
             <usedAs>option</usedAs>
-            <order>18</order>
+            <order>19</order>
+        </option>
+        <option type="boolean">
+            <name>trimNSEW</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>do not trim output to match input NSEW range</description>
+            <usedAs>option</usedAs>
+            <order>20</order>
         </option>
     </options>
 </paramInfo>
