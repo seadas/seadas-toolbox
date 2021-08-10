@@ -5,6 +5,7 @@
         <hasParFile>false</hasParFile>
         <parFileOptionName>--parfile</parFileOptionName>
         <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <hasGeoFile>false</hasGeoFile>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>output</primaryOption>

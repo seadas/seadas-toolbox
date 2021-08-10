@@ -118,8 +118,8 @@ public class FilenamePatterns {
         } else {
             ArrayList<File> possibleGeoFiles = new ArrayList<File>();
 
-            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP", "L1A_JPSS1", "L1B-M_JPSS1", "L1A", "L1B"};
-            String STRING_TO_INSERT[] = {"GEO", "geo", "GEO-M_SNPP", "GEO-M_JPSS1"};
+            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP", "L1A_JPSS1", "L1B-M_JPSS1", "L1A", "L1B", "ifile"};
+            String STRING_TO_INSERT[] = {"GEO", "geo", "GEO-M_SNPP", "GEO-M_JPSS1", "geofile"};
 
             /**
              * replace last occurrence of instance of STRING_TO_BE_REPLACED[]
@@ -153,10 +153,12 @@ public class FilenamePatterns {
             }
 
             if (geoFile == null) {
-                if (possibleGeoFiles.size() > 0) {
-                    geoFile = possibleGeoFiles.get(0);
-                } else {
-                    geoFile = new File("YourGeoFilename.GEO");
+                if (iFileInfo.isGeofileRequired() && iFileInfo.getFileTypeName().contains("L1")) {
+                    if (possibleGeoFiles.size() > 0) {
+                        geoFile = possibleGeoFiles.get(0);
+                    } else {
+                        geoFile = new File("YourGeoFilename.GEO");
+                    }
                 }
             }
         }
