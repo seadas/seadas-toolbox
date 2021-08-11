@@ -10,6 +10,7 @@ import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.UIUtils;
@@ -24,10 +25,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.UPDATE_LUTS_PROGRAM_NAME;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
 
 
 /**
@@ -250,6 +253,8 @@ public class CallCloProgramAction extends AbstractSnapAction {
                 if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
 //                    pm.beginTask("Installing OCSSW Processors " + "Install OCSSW", 10);
 //                    pm.worked(1);
+                    Preferences preferences = Config.instance("seadas").load().preferences();
+                    preferences.put(SEADAS_OCSSW_TAG_PROPERTY, processorModel.getParamValue("--tag"));
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
                 } else {
                     processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
