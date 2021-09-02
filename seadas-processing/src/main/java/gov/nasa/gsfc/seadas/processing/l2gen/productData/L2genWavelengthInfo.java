@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 
-import java.util.ArrayList;
-
 /**
  * A ...
  *
@@ -10,8 +8,11 @@ import java.util.ArrayList;
  */
 public class L2genWavelengthInfo extends L2genBaseInfo {
 
-    public static final int INFRARED_LOWER_LIMIT = 3000;
-    public static final int VISIBLE_UPPER_LIMIT = 750;
+    public static final double INFRARED_SHORTCUT_LOWER_LIMIT = 3000;
+    public static final double VISIBLE_SHORTCUT_UPPER_LIMIT = 725;
+
+    public static final double VISIBLE_ALLOWED_UPPER_LIMIT = 2999.9;
+    public static final double IR_ALLOWED_LOWER_LIMIT = 3000;
 
     public static final int NULL_WAVELENGTH = -1;
 
@@ -97,14 +98,14 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
 
     public boolean isWaveTypeAllowed(WaveType waveType) {
         if (waveType == WaveType.INFRARED
-                && wavelength >= INFRARED_LOWER_LIMIT) {
+                && wavelength >= INFRARED_SHORTCUT_LOWER_LIMIT) {
             return true;
 
         } else if (waveType == WaveType.VISIBLE &&
-                wavelength <= INFRARED_LOWER_LIMIT) {
+                wavelength <= INFRARED_SHORTCUT_LOWER_LIMIT) {
             return true;
         } else if (waveType == WaveType.NEAR_INFRARED &&
-                wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
+                wavelength > VISIBLE_SHORTCUT_UPPER_LIMIT && wavelength < INFRARED_SHORTCUT_LOWER_LIMIT) {
             return true;
         } else {
             return false;
@@ -114,14 +115,14 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
 
     public boolean isWaveType(WaveType waveType) {
         if (waveType == WaveType.INFRARED
-                && wavelength >= INFRARED_LOWER_LIMIT) {
+                && wavelength >= INFRARED_SHORTCUT_LOWER_LIMIT) {
             return true;
 
         } else if (waveType == WaveType.VISIBLE &&
-                wavelength <= VISIBLE_UPPER_LIMIT) {
+                wavelength <= VISIBLE_SHORTCUT_UPPER_LIMIT) {
             return true;
         } else if (waveType == WaveType.NEAR_INFRARED &&
-                wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
+                wavelength > VISIBLE_SHORTCUT_UPPER_LIMIT && wavelength < INFRARED_SHORTCUT_LOWER_LIMIT) {
             return true;
         } else {
             return false;
@@ -130,11 +131,11 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
 
 
     public WaveType getWaveType() {
-        if (wavelength >= INFRARED_LOWER_LIMIT) {
+        if (wavelength >= INFRARED_SHORTCUT_LOWER_LIMIT) {
             return WaveType.INFRARED;
-        } else if (wavelength <= VISIBLE_UPPER_LIMIT) {
+        } else if (wavelength <= VISIBLE_SHORTCUT_UPPER_LIMIT) {
             return WaveType.VISIBLE;
-        } else if (wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
+        } else if (wavelength > VISIBLE_SHORTCUT_UPPER_LIMIT && wavelength < INFRARED_SHORTCUT_LOWER_LIMIT) {
             return WaveType.NEAR_INFRARED;
         } else {
             return WaveType.NULL;

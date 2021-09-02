@@ -24,7 +24,6 @@ public class L2genProductsParamInfo extends ParamInfo {
     private ArrayList<L2genProductInfo> integerProductInfos = new ArrayList<L2genProductInfo>();
 
     private HashSet<String> userRemnants = new HashSet<>();
-    private HashSet<String> userShortcuts = new HashSet<>();
 
 
 
@@ -77,7 +76,6 @@ public class L2genProductsParamInfo extends ParamInfo {
 
     private void putValueIntoProductInfos(String value) {
 
-        userShortcuts.clear();
         userRemnants.clear();
 
         if (value == null) {
@@ -115,11 +113,8 @@ public class L2genProductsParamInfo extends ParamInfo {
             for (L2genProductInfo productInfo : productInfos) {
                 for (L2genBaseInfo aInfo : productInfo.getChildren()) {
                     L2genAlgorithmInfo algorithmInfo = (L2genAlgorithmInfo) aInfo;
-                    HashSet<String> userShortcutsTmp = algorithmInfo.setL2prod(inProducts);
+                    algorithmInfo.setL2prod(inProducts);
 
-                    for (String userShortcutTmp: userShortcutsTmp) {
-                        userShortcuts.add(userShortcutTmp);
-                    }
                 }
             }
 
