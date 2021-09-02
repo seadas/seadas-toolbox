@@ -23,8 +23,8 @@ public class L2genProductsParamInfo extends ParamInfo {
 
     private ArrayList<L2genProductInfo> integerProductInfos = new ArrayList<L2genProductInfo>();
 
-    private HashSet<String> userRemnants;
-    private HashSet<String> userShortcuts;
+    private HashSet<String> userRemnants = new HashSet<>();
+    private HashSet<String> userShortcuts = new HashSet<>();
 
 
 

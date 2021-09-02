@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class L2genWavelengthInfo extends L2genBaseInfo {
 
     public static final int INFRARED_LOWER_LIMIT = 3000;
-    public static final int VISIBLE_UPPER_LIMIT = 725;
+    public static final int VISIBLE_UPPER_LIMIT = 750;
 
     public static final int NULL_WAVELENGTH = -1;
 
@@ -92,6 +92,23 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
         }
 
         return result.toString().replaceAll("[_]+", "_");
+    }
+
+
+    public boolean isWaveTypeAllowed(WaveType waveType) {
+        if (waveType == WaveType.INFRARED
+                && wavelength >= INFRARED_LOWER_LIMIT) {
+            return true;
+
+        } else if (waveType == WaveType.VISIBLE &&
+                wavelength <= INFRARED_LOWER_LIMIT) {
+            return true;
+        } else if (waveType == WaveType.NEAR_INFRARED &&
+                wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
