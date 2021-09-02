@@ -217,7 +217,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
     }
 
 
-    public void setL2prod(HashSet<String> inProducts) {
+    public HashSet<String> setL2prod(HashSet<String> inProducts) {
 
         if (getParameterType() == L2genAlgorithmInfo.ParameterType.NONE) {
             String thisProduct = getFullName();
@@ -286,21 +286,23 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             String visibleProduct = getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE);
             if (inProducts.contains(visibleProduct)) {
                 setStateShortcut(L2genProductTools.ShortcutType.VISIBLE, State.SELECTED);
-                inProducts.remove(visibleProduct);
+//                inProducts.remove(visibleProduct);
             }
 
             String irProduct = getShortcutFullname(L2genProductTools.ShortcutType.IR);
             if (inProducts.contains(irProduct)) {
                 setStateShortcut(L2genProductTools.ShortcutType.IR, State.SELECTED);
-                inProducts.remove(irProduct);
+//                inProducts.remove(irProduct);
             }
 
             String allProduct = getShortcutFullname(L2genProductTools.ShortcutType.ALL);
             if (inProducts.contains(allProduct)) {
                 setStateShortcut(L2genProductTools.ShortcutType.ALL, State.SELECTED);
-                inProducts.remove(allProduct);
+//                inProducts.remove(allProduct);
             }
         }
+
+        return inProducts;
     }
 
 
@@ -342,32 +344,41 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                 count++;
             }
 
+            boolean useShortCuts = false;
+            if (useShortCuts) {
+                if (selectedCount == count && selectedCount > 0) {
+                    l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.ALL));
+                } else {
+                    if (visibleSelectedCount == visibleCount && visibleSelectedCount > 0) {
+                        l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE));
+                    }
 
-            if (selectedCount == count && selectedCount > 0) {
-                l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.ALL));
+                    if (infraredSelectedCount == infraredCount && infraredSelectedCount > 0) {
+                        l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.IR));
+                    }
+
+                    for (L2genBaseInfo wInfo : getChildren()) {
+                        L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
+                        if (wInfo.isSelected()) {
+                            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
+                                if (visibleSelectedCount != visibleCount) {
+                                    l2prod.add(wavelengthInfo.getFullName());
+                                }
+                            } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
+                                if (infraredSelectedCount != infraredCount) {
+                                    l2prod.add(wavelengthInfo.getFullName());
+                                }
+                            } else {
+                                l2prod.add(wavelengthInfo.getFullName());
+                            }
+                        }
+                    }
+                }
             } else {
-                if (visibleSelectedCount == visibleCount && visibleSelectedCount > 0) {
-                    l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE));
-                }
-
-                if (infraredSelectedCount == infraredCount && infraredSelectedCount > 0) {
-                    l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.IR));
-                }
-
                 for (L2genBaseInfo wInfo : getChildren()) {
                     L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                     if (wInfo.isSelected()) {
-                        if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
-                            if (visibleSelectedCount != visibleCount) {
-                                l2prod.add(wavelengthInfo.getFullName());
-                            }
-                        } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
-                            if (infraredSelectedCount != infraredCount) {
-                                l2prod.add(wavelengthInfo.getFullName());
-                            }
-                        } else {
-                            l2prod.add(wavelengthInfo.getFullName());
-                        }
+                        l2prod.add(wavelengthInfo.getFullName());
                     }
                 }
             }
