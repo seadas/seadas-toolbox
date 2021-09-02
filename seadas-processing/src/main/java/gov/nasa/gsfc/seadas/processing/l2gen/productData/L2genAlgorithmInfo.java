@@ -39,6 +39,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             units = null;
 
     private ParameterType parameterType = null;
+    boolean contractToShortCuts = true;
 
 
     public L2genAlgorithmInfo(String name, String description, ParameterType parameterType, ArrayList<L2genWavelengthInfo> waveLimiterInfos) {
@@ -217,7 +218,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
     }
 
 
-    public HashSet<String> setL2prod(HashSet<String> inProducts) {
+    public void setL2prod(HashSet<String> inProducts) {
 
         if (getParameterType() == L2genAlgorithmInfo.ParameterType.NONE) {
             String thisProduct = getFullName();
@@ -286,23 +287,21 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             String visibleProduct = getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE);
             if (inProducts.contains(visibleProduct)) {
                 setStateShortcut(L2genProductTools.ShortcutType.VISIBLE, State.SELECTED);
-//                inProducts.remove(visibleProduct);
+                inProducts.remove(visibleProduct);
             }
 
             String irProduct = getShortcutFullname(L2genProductTools.ShortcutType.IR);
             if (inProducts.contains(irProduct)) {
                 setStateShortcut(L2genProductTools.ShortcutType.IR, State.SELECTED);
-//                inProducts.remove(irProduct);
+                inProducts.remove(irProduct);
             }
 
             String allProduct = getShortcutFullname(L2genProductTools.ShortcutType.ALL);
             if (inProducts.contains(allProduct)) {
                 setStateShortcut(L2genProductTools.ShortcutType.ALL, State.SELECTED);
-//                inProducts.remove(allProduct);
+                inProducts.remove(allProduct);
             }
         }
-
-        return inProducts;
     }
 
 
@@ -344,8 +343,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                 count++;
             }
 
-            boolean useShortCuts = false;
-            if (useShortCuts) {
+            if (contractToShortCuts) {
                 if (selectedCount == count && selectedCount > 0) {
                     l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.ALL));
                 } else {
@@ -360,11 +358,11 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     for (L2genBaseInfo wInfo : getChildren()) {
                         L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                         if (wInfo.isSelected()) {
-                            if (wavelengthInfo.isWaveTypeAllowed(L2genWavelengthInfo.WaveType.VISIBLE)) {
+                            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
                                 if (visibleSelectedCount != visibleCount) {
                                     l2prod.add(wavelengthInfo.getFullName());
                                 }
-                            } else if (wavelengthInfo.isWaveTypeAllowed(L2genWavelengthInfo.WaveType.INFRARED)) {
+                            } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
                                 if (infraredSelectedCount != infraredCount) {
                                     l2prod.add(wavelengthInfo.getFullName());
                                 }
@@ -402,10 +400,10 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
 
                 if (getParameterType() == L2genAlgorithmInfo.ParameterType.ALL) {
                     addWavelength = true;
-                } else if (waveLimiterInfo.getWavelength() >= L2genWavelengthInfo.INFRARED_LOWER_LIMIT &&
+                } else if (waveLimiterInfo.getWavelength() >= L2genWavelengthInfo.IR_ALLOWED_LOWER_LIMIT &&
                         getParameterType() == L2genAlgorithmInfo.ParameterType.IR) {
                     addWavelength = true;
-                } else if (waveLimiterInfo.getWavelength() <= L2genWavelengthInfo.INFRARED_LOWER_LIMIT &&
+                } else if (waveLimiterInfo.getWavelength() <= L2genWavelengthInfo.VISIBLE_ALLOWED_UPPER_LIMIT &&
                         getParameterType() == L2genAlgorithmInfo.ParameterType.VISIBLE) {
                     addWavelength = true;
                 }
