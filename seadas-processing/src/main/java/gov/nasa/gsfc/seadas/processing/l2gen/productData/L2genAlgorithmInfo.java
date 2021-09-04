@@ -204,7 +204,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
         } else if (shortcutType == L2genProductTools.ShortcutType.IR) {
             for (L2genBaseInfo wInfo : getChildren()) {
                 L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
-                if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
+                if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.IR)) {
                     if (wavelengthInfo.isSelected()) {
                         found = true;
                     } else {
@@ -322,7 +322,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                     if (wavelengthInfo.getWavelength() == waveLimiterInfo.getWavelength()) {
                         if (wavelengthInfo.isSelected()) {
-                            if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.INFRARED) {
+                            if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.IR) {
                                 infraredSelectedCount++;
                             } else if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.VISIBLE) {
                                 visibleSelectedCount++;
@@ -334,7 +334,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     }
                 }
 
-                if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.INFRARED) {
+                if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.IR) {
                     infraredCount++;
                 } else if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.VISIBLE) {
                     visibleCount++;
@@ -362,7 +362,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                                 if (visibleSelectedCount != visibleCount) {
                                     l2prod.add(wavelengthInfo.getFullName());
                                 }
-                            } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
+                            } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.IR)) {
                                 if (infraredSelectedCount != infraredCount) {
                                     l2prod.add(wavelengthInfo.getFullName());
                                 }
@@ -398,6 +398,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
                 boolean addWavelength = false;
 
+                // Here is where the xml values are based used to determine which wavelengths get into the algorithmInfo
                 if (getParameterType() == L2genAlgorithmInfo.ParameterType.ALL) {
                     addWavelength = true;
                 } else if (waveLimiterInfo.getWavelength() >= L2genWavelengthInfo.IR_ALLOWED_LOWER_LIMIT &&
@@ -428,7 +429,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                 }
             }
 
-            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
+            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.IR)) {
                 if (shortcutType == L2genProductTools.ShortcutType.ALL || shortcutType == L2genProductTools.ShortcutType.IR) {
                     wavelengthInfo.setState(state);
                 }
