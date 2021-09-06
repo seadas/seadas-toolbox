@@ -1,6 +1,11 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 
 
+import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.product.ProductSceneView;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -305,6 +310,16 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
     }
 
 
+
+    private boolean isUseShortcuts() {
+        final ProductSceneView view = SnapApp.getDefault().getSelectedProductSceneView();
+        PropertyMap configuration = view.getSceneImage().getConfiguration();
+
+        return configuration.getPropertyBool(SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY,  SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
+    }
+
+
+
     public ArrayList<String> getL2prod() {
 
         ArrayList<String> l2prod = new ArrayList<String>();
@@ -343,7 +358,8 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                 count++;
             }
 
-            if (contractToShortCuts) {
+            if (isUseShortcuts()) {
+                System.out.println("IS USE SHORTCUTS");
                 if (selectedCount == count && selectedCount > 0) {
                     l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.ALL));
                 } else {
@@ -373,6 +389,8 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     }
                 }
             } else {
+                System.out.println("IS NOT USE SHORTCUTS");
+
                 for (L2genBaseInfo wInfo : getChildren()) {
                     L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                     if (wInfo.isSelected()) {
