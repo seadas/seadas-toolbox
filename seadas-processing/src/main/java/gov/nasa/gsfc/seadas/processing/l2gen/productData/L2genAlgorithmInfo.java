@@ -312,10 +312,12 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
 
 
     private boolean isUseShortcuts() {
-        final ProductSceneView view = SnapApp.getDefault().getSelectedProductSceneView();
-        PropertyMap configuration = view.getSceneImage().getConfiguration();
+//        final ProductSceneView view = SnapApp.getDefault().getSelectedProductSceneView();
+//        PropertyMap configuration = view.getSceneImage().getConfiguration();
 
-        return configuration.getPropertyBool(SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY,  SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+
+        return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY);
     }
 
 
@@ -357,6 +359,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
 
                 count++;
             }
+
 
             if (isUseShortcuts()) {
                 System.out.println("IS USE SHORTCUTS");
