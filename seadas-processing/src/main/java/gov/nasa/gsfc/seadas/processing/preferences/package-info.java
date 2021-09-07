@@ -6,13 +6,13 @@
 @OptionsPanelController.ContainerRegistration(
         id = "SeaDAS",
         categoryName = "#LBL_SeadasToolboxOptionsCategory_Name",
-        iconBase = "gov/nasa/gsfc/seadas/processing/docs/images/seadas_icon_32.gif",
+        iconBase = "gov/nasa/gsfc/seadas/processing/docs/images/seadas_icon_32x32.png",
         keywords = "#LBL_SeadasToolboxOptionsCategory_Keywords",
         keywordsCategory = "SeaDAS_Toolbox",
         position = 1400
 )
 @NbBundle.Messages(value = {
-    "LBL_SeadasToolboxOptionsCategory_Name=SeaDAS_OCSSW",
+    "LBL_SeadasToolboxOptionsCategory_Name=SeaDAS Toolbox",
     "LBL_SeadasToolboxOptionsCategory_Keywords=seadas, ocssw, l2gen"
 })
 package gov.nasa.gsfc.seadas.processing.preferences;
