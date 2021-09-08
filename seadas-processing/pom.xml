@@ -61,7 +61,7 @@
         </dependency>
         <dependency>
             <groupId>edu.ucar</groupId>
-            <artifactId>netcdf</artifactId>
+            <artifactId>netcdfAll</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sun.electric</groupId>
