@@ -22,7 +22,6 @@ import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.binding.ValidationException;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
-import com.bc.ceres.swing.binding.Enablement;
 import com.bc.ceres.swing.binding.PropertyEditorRegistry;
 import com.bc.ceres.swing.binding.PropertyPane;
 import org.esa.snap.rcp.preferences.DefaultConfigController;
@@ -58,7 +57,7 @@ public final class SeadasToolboxController extends DefaultConfigController {
 
 
     protected PropertySet createPropertySet() {
-        return createPropertySet(new ColorBarBean());
+        return createPropertySet(new SeadasToolboxBean());
     }
 
 
@@ -137,6 +136,9 @@ public final class SeadasToolboxController extends DefaultConfigController {
                 });
             }
         }
+
+        // This call is an initialization call which set restoreDefault initial value
+        handlePreferencesPropertyValueChange(context);
     }
 
 
@@ -249,14 +251,15 @@ public final class SeadasToolboxController extends DefaultConfigController {
         return property;
     }
 
+    // todo add a help page ... see the ColorBarLayerController for example
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("colorBarLegendPreferences");
+        return new HelpCtx("seadasToolboxPreferences");
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    static class ColorBarBean {
+    static class SeadasToolboxBean {
 
 
 
