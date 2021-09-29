@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 
-import java.util.ArrayList;
-
 /**
  * A ...
  *
@@ -10,8 +8,14 @@ import java.util.ArrayList;
  */
 public class L2genWavelengthInfo extends L2genBaseInfo {
 
-    public static final int INFRARED_LOWER_LIMIT = 3000;
-    public static final int VISIBLE_UPPER_LIMIT = 725;
+    public static final double UV_LOWER_LIMIT = 100;
+    public static final double VISIBLE_LOWER_LIMIT = 400;
+    public static final double NIR_LOWER_LIMIT = 725;
+    public static final double SWIR_LOWER_LIMIT = 1400;
+    public static final double INFRARED_LOWER_LIMIT = 3000;
+    public static final double INFRARED_UPPER_LIMIT = 15000;
+
+    public static final double IR_ALLOWED_LOWER_LIMIT = INFRARED_LOWER_LIMIT;
 
     public static final int NULL_WAVELENGTH = -1;
 
@@ -19,7 +23,7 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
 
 
     public static enum WaveType {
-        VISIBLE, INFRARED, NEAR_INFRARED, NULL
+        UV, VISIBLE, NIR, SWIR, IR, NULL
     }
 
 
@@ -95,16 +99,11 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
     }
 
 
-    public boolean isWaveType(WaveType waveType) {
-        if (waveType == WaveType.INFRARED
-                && wavelength >= INFRARED_LOWER_LIMIT) {
-            return true;
 
-        } else if (waveType == WaveType.VISIBLE &&
-                wavelength <= VISIBLE_UPPER_LIMIT) {
-            return true;
-        } else if (waveType == WaveType.NEAR_INFRARED &&
-                wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
+
+    public boolean isWaveType(WaveType waveType) {
+
+        if (waveType == getWaveType()) {
             return true;
         } else {
             return false;
@@ -113,12 +112,21 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
 
 
     public WaveType getWaveType() {
-        if (wavelength >= INFRARED_LOWER_LIMIT) {
-            return WaveType.INFRARED;
-        } else if (wavelength <= VISIBLE_UPPER_LIMIT) {
+        if (wavelength >= UV_LOWER_LIMIT && wavelength < VISIBLE_LOWER_LIMIT) {
+            return WaveType.UV;
+
+        } else if (wavelength >= VISIBLE_LOWER_LIMIT && wavelength < NIR_LOWER_LIMIT) {
             return WaveType.VISIBLE;
-        } else if (wavelength > VISIBLE_UPPER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
-            return WaveType.NEAR_INFRARED;
+
+        } else if (wavelength >= NIR_LOWER_LIMIT && wavelength < SWIR_LOWER_LIMIT) {
+            return WaveType.NIR;
+
+        } else if (wavelength >= SWIR_LOWER_LIMIT && wavelength < INFRARED_LOWER_LIMIT) {
+            return WaveType.SWIR;
+
+        } else if (wavelength >= INFRARED_LOWER_LIMIT && wavelength < INFRARED_UPPER_LIMIT) {
+            return WaveType.IR;
+
         } else {
             return WaveType.NULL;
         }
