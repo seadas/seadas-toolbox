@@ -44,7 +44,6 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             units = null;
 
     private ParameterType parameterType = null;
-    boolean contractToShortCuts = true;
 
 
     public L2genAlgorithmInfo(String name, String description, ParameterType parameterType, ArrayList<L2genWavelengthInfo> waveLimiterInfos) {
@@ -362,7 +361,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
 
 
             if (isUseShortcuts()) {
-                System.out.println("IS USE SHORTCUTS");
+//                System.out.println("IS USE SHORTCUTS");
                 if (selectedCount == count && selectedCount > 0) {
                     l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.ALL));
                 } else {
@@ -392,7 +391,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     }
                 }
             } else {
-                System.out.println("IS NOT USE SHORTCUTS");
+//                System.out.println("IS NOT USE SHORTCUTS");
 
                 for (L2genBaseInfo wInfo : getChildren()) {
                     L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
@@ -425,7 +424,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                 } else if (waveLimiterInfo.getWavelength() >= L2genWavelengthInfo.IR_ALLOWED_LOWER_LIMIT &&
                         getParameterType() == L2genAlgorithmInfo.ParameterType.IR) {
                     addWavelength = true;
-                } else if (waveLimiterInfo.getWavelength() <= L2genWavelengthInfo.VISIBLE_ALLOWED_UPPER_LIMIT &&
+                } else if (waveLimiterInfo.getWavelength() < L2genWavelengthInfo.IR_ALLOWED_LOWER_LIMIT &&
                         getParameterType() == L2genAlgorithmInfo.ParameterType.VISIBLE) {
                     addWavelength = true;
                 }

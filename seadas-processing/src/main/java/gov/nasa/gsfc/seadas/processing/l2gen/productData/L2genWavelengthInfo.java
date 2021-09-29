@@ -15,10 +15,7 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
     public static final double INFRARED_LOWER_LIMIT = 3000;
     public static final double INFRARED_UPPER_LIMIT = 15000;
 
-
-
-    public static final double VISIBLE_ALLOWED_UPPER_LIMIT = 2999.9;
-    public static final double IR_ALLOWED_LOWER_LIMIT = 3000;
+    public static final double IR_ALLOWED_LOWER_LIMIT = INFRARED_LOWER_LIMIT;
 
     public static final int NULL_WAVELENGTH = -1;
 
