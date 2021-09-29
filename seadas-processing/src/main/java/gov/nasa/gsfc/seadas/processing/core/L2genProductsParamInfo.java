@@ -23,6 +23,10 @@ public class L2genProductsParamInfo extends ParamInfo {
 
     private ArrayList<L2genProductInfo> integerProductInfos = new ArrayList<L2genProductInfo>();
 
+    private HashSet<String> userRemnants = new HashSet<>();
+
+
+
     ArrayList<String> integerL2prodList = new ArrayList<String>();
 
     public L2genProductsParamInfo() {
@@ -62,11 +66,17 @@ public class L2genProductsParamInfo extends ParamInfo {
 
         Collections.sort(l2prod);
 
+        for (String remnant: userRemnants) {
+            l2prod.add(remnant);
+        }
+
         return StringUtils.join(l2prod, " ");
     }
 
 
     private void putValueIntoProductInfos(String value) {
+
+        userRemnants.clear();
 
         if (value == null) {
             value = "";
@@ -104,6 +114,7 @@ public class L2genProductsParamInfo extends ParamInfo {
                 for (L2genBaseInfo aInfo : productInfo.getChildren()) {
                     L2genAlgorithmInfo algorithmInfo = (L2genAlgorithmInfo) aInfo;
                     algorithmInfo.setL2prod(inProducts);
+
                 }
             }
 
@@ -145,6 +156,10 @@ public class L2genProductsParamInfo extends ParamInfo {
                     }
                 }
             }
+
+
+            userRemnants = inProducts;
+
         }
     }
 

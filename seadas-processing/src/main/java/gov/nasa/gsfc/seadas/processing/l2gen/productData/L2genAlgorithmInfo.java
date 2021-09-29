@@ -1,6 +1,11 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 
 
+import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.product.ProductSceneView;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -203,7 +208,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
         } else if (shortcutType == L2genProductTools.ShortcutType.IR) {
             for (L2genBaseInfo wInfo : getChildren()) {
                 L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
-                if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
+                if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.IR)) {
                     if (wavelengthInfo.isSelected()) {
                         found = true;
                     } else {
@@ -304,6 +309,18 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
     }
 
 
+
+    private boolean isUseShortcuts() {
+//        final ProductSceneView view = SnapApp.getDefault().getSelectedProductSceneView();
+//        PropertyMap configuration = view.getSceneImage().getConfiguration();
+
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+
+        return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY);
+    }
+
+
+
     public ArrayList<String> getL2prod() {
 
         ArrayList<String> l2prod = new ArrayList<String>();
@@ -321,7 +338,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                     if (wavelengthInfo.getWavelength() == waveLimiterInfo.getWavelength()) {
                         if (wavelengthInfo.isSelected()) {
-                            if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.INFRARED) {
+                            if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.IR) {
                                 infraredSelectedCount++;
                             } else if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.VISIBLE) {
                                 visibleSelectedCount++;
@@ -333,7 +350,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     }
                 }
 
-                if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.INFRARED) {
+                if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.IR) {
                     infraredCount++;
                 } else if (waveLimiterInfo.getWaveType() == L2genWavelengthInfo.WaveType.VISIBLE) {
                     visibleCount++;
@@ -343,31 +360,43 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             }
 
 
-            if (selectedCount == count && selectedCount > 0) {
-                l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.ALL));
-            } else {
-                if (visibleSelectedCount == visibleCount && visibleSelectedCount > 0) {
-                    l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE));
-                }
+            if (isUseShortcuts()) {
+//                System.out.println("IS USE SHORTCUTS");
+                if (selectedCount == count && selectedCount > 0) {
+                    l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.ALL));
+                } else {
+                    if (visibleSelectedCount == visibleCount && visibleSelectedCount > 0) {
+                        l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.VISIBLE));
+                    }
 
-                if (infraredSelectedCount == infraredCount && infraredSelectedCount > 0) {
-                    l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.IR));
+                    if (infraredSelectedCount == infraredCount && infraredSelectedCount > 0) {
+                        l2prod.add(getShortcutFullname(L2genProductTools.ShortcutType.IR));
+                    }
+
+                    for (L2genBaseInfo wInfo : getChildren()) {
+                        L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
+                        if (wInfo.isSelected()) {
+                            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
+                                if (visibleSelectedCount != visibleCount) {
+                                    l2prod.add(wavelengthInfo.getFullName());
+                                }
+                            } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.IR)) {
+                                if (infraredSelectedCount != infraredCount) {
+                                    l2prod.add(wavelengthInfo.getFullName());
+                                }
+                            } else {
+                                l2prod.add(wavelengthInfo.getFullName());
+                            }
+                        }
+                    }
                 }
+            } else {
+//                System.out.println("IS NOT USE SHORTCUTS");
 
                 for (L2genBaseInfo wInfo : getChildren()) {
                     L2genWavelengthInfo wavelengthInfo = (L2genWavelengthInfo) wInfo;
                     if (wInfo.isSelected()) {
-                        if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.VISIBLE)) {
-                            if (visibleSelectedCount != visibleCount) {
-                                l2prod.add(wavelengthInfo.getFullName());
-                            }
-                        } else if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
-                            if (infraredSelectedCount != infraredCount) {
-                                l2prod.add(wavelengthInfo.getFullName());
-                            }
-                        } else {
-                            l2prod.add(wavelengthInfo.getFullName());
-                        }
+                        l2prod.add(wavelengthInfo.getFullName());
                     }
                 }
             }
@@ -389,12 +418,13 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             for (L2genWavelengthInfo waveLimiterInfo : waveLimiterInfos) {
                 boolean addWavelength = false;
 
+                // Here is where the xml values are based used to determine which wavelengths get into the algorithmInfo
                 if (getParameterType() == L2genAlgorithmInfo.ParameterType.ALL) {
                     addWavelength = true;
-                } else if (waveLimiterInfo.getWavelength() >= L2genWavelengthInfo.INFRARED_LOWER_LIMIT &&
+                } else if (waveLimiterInfo.getWavelength() >= L2genWavelengthInfo.IR_ALLOWED_LOWER_LIMIT &&
                         getParameterType() == L2genAlgorithmInfo.ParameterType.IR) {
                     addWavelength = true;
-                } else if (waveLimiterInfo.getWavelength() <= L2genWavelengthInfo.VISIBLE_UPPER_LIMIT &&
+                } else if (waveLimiterInfo.getWavelength() < L2genWavelengthInfo.IR_ALLOWED_LOWER_LIMIT &&
                         getParameterType() == L2genAlgorithmInfo.ParameterType.VISIBLE) {
                     addWavelength = true;
                 }
@@ -419,7 +449,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                 }
             }
 
-            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.INFRARED)) {
+            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.IR)) {
                 if (shortcutType == L2genProductTools.ShortcutType.ALL || shortcutType == L2genProductTools.ShortcutType.IR) {
                     wavelengthInfo.setState(state);
                 }
