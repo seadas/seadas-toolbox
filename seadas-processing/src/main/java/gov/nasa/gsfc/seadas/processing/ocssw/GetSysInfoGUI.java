@@ -185,7 +185,14 @@ public class GetSysInfoGUI {
 
         Path appBinDir = appHomeDir.toPath().resolve("bin");
         Path appEtcDir = appHomeDir.toPath().resolve("etc");
-        Path appConfig = appEtcDir.resolve("snap.properties");
+        Path appConfig;
+        if (appNameVersion != null && appNameVersion.toLowerCase().contains("seadas")) {
+            // it's SEADAS
+            appConfig = appEtcDir.resolve("seadas.properties");
+        } else {
+            // is SNAP
+            appConfig = appEtcDir.resolve("snap.properties");
+        }
 
         Path dataDirPath = appDataDir.toPath();
         Path dataEtcPath = dataDirPath.resolve("etc");
@@ -270,7 +277,7 @@ public class GetSysInfoGUI {
         if (!Files.exists(appConfig)) {
             sysInfoText += "WARNING!! File '" + appConfig.toString() + "' does not exist" + "\n";
             sysInfoText2 = "WARNING!! File '" + appConfig.toString() + "' does not exist" + "\n";
-            appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
+            appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         if (!Files.exists(snapProperties)) {
             sysInfoText += "Configuration2: null" + "\n";
@@ -290,6 +297,8 @@ public class GetSysInfoGUI {
             appendToPane(sysInfoTextpane, sysInfoText2, Color.RED);
         }
         sysInfoText += "VM Configuration (gpt): " + vmOptionsGpt.toString() + "\n";
+        sysInfoText2 = "VM Configuration (gpt): " + vmOptionsGpt.toString() + "\n";
+        appendToPane(sysInfoTextpane, sysInfoText2, Color.BLACK);
         if (!Files.exists(vmOptionsGpt)) {
             sysInfoText += "WARNING!! File '" + vmOptionsGpt.toString() + "' does not exist" + "\n";
             sysInfoText2 = "WARNING!! File '" + vmOptionsGpt.toString() + "' does not exist" + "\n";
