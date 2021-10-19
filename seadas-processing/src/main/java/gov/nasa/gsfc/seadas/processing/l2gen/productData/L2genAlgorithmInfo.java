@@ -4,7 +4,6 @@ package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
 import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.ui.product.ProductSceneView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -168,6 +167,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
             result.append(prefix);
         }
 
+        result.append("_");
         result.append(L2genProductTools.convertShortcutType(shortcutType));
 
         if (suffix != null && !suffix.isEmpty()) {

@@ -7,7 +7,9 @@ import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import static gov.nasa.gsfc.seadas.processing.core.ParamInfo.NULL_STRING;
@@ -345,6 +347,40 @@ public class L2genReader {
 
                 L2genProductInfo integerProductInfo = null;
 
+                String dataType = XmlReader.getTextValue(prodElement, "type");
+
+                String units = XmlReader.getTextValue(prodElement, "units");
+
+                NodeList paramDesignatorNodelist = prodElement.getElementsByTagName("paramDesignator");
+
+                Boolean emissiveProd = false;
+                Boolean visibleProd = false;
+                String parameterTypeProdStr = "None";
+
+                if (paramDesignatorNodelist != null && paramDesignatorNodelist.getLength() > 0) {
+                    for (int j = 0; j < paramDesignatorNodelist.getLength(); j++) {
+                        if (paramDesignatorNodelist.item(j).getParentNode().equals(prodElement)) {
+                            Element paramDesignatorElement = (Element) paramDesignatorNodelist.item(j);
+                            if (paramDesignatorElement != null) {
+                                String paramDesignator = paramDesignatorElement.getFirstChild().getNodeValue();
+                                if (paramDesignator.equals("emissive")) {
+                                    emissiveProd = true;
+                                }
+                                if (paramDesignator.equals("visible")) {
+                                    visibleProd = true;
+                                }
+                            }
+                        }
+                    }
+                    if (emissiveProd && visibleProd) {
+                        parameterTypeProdStr = "All";
+                    } else if (emissiveProd) {
+                        parameterTypeProdStr = "IR";
+                    } else if (visibleProd) {
+                        parameterTypeProdStr = "Visible";
+                    }
+                }
+
                 NodeList algNodelist = prodElement.getElementsByTagName("algorithm");
 
                 if (algNodelist != null && algNodelist.getLength() > 0) {
@@ -354,32 +390,75 @@ public class L2genReader {
 
                         L2genAlgorithmInfo algorithmInfo = new L2genAlgorithmInfo(l2genData.waveLimiterInfos);
 
+                        String suffixDefault = null;
+
+                        String algorithmName = null;
                         if (algElement.hasAttribute("name")) {
-                            String algorithmName = algElement.getAttribute("name");
+                            algorithmName = algElement.getAttribute("name");
                             algorithmInfo.setName(algorithmName);
                         }
 
 
                         String suffix = XmlReader.getTextValue(algElement, "suffix");
-                        algorithmInfo.setSuffix(suffix);
+                        if (suffix != null) {
+                            algorithmInfo.setSuffix(suffix);
+                        } else {
+                            algorithmInfo.setSuffix(algorithmName);
+                        }
 
+                        String cat_ix = XmlReader.getTextValue(algElement, "cat_ix");
 
                         String description = XmlReader.getTextValue(algElement, "description");
-                        algorithmInfo.setDescription(description);
+                        String description2 = description.replace("%d", cat_ix);
+                        algorithmInfo.setDescription(description2);
 
                         String prefix = XmlReader.getTextValue(algElement, "prefix");
-                        algorithmInfo.setPrefix(prefix);
+                        if (prefix != null) {
+                            algorithmInfo.setPrefix(prefix);
+                        } else {
+                            algorithmInfo.setPrefix(prodName);
+                        }
 
-                        String units = XmlReader.getTextValue(algElement, "units");
                         algorithmInfo.setUnits(units);
 
-                        String dataType = XmlReader.getTextValue(algElement, "dataType");
                         algorithmInfo.setDataType(dataType);
 
-                        String parameterTypeStr = XmlReader.getTextValue(algElement, "parameterType");
+                        NodeList paramDesNodelist = algElement.getElementsByTagName("paramDesignator");
 
+                        Boolean emissiveAlg = false;
+                        Boolean visibleAlg = false;
+                        Boolean parameterTypeChg = false;
+                        String parameterTypeAlgStr = "None";
 
-                        algorithmInfo.setParameterType(parameterTypeStr);
+                        if (paramDesNodelist != null && paramDesNodelist.getLength() > 0) {
+                            for (int k = 0; k < paramDesNodelist.getLength(); k++) {
+                                Element paramDesElement = (Element) paramDesNodelist.item(k);
+                                if (paramDesElement != null) {
+//                                    String paramDes = XmlReader.getTextValue(paramDesElement, "paramDesignator");
+                                    String paramDes = paramDesElement.getFirstChild().getNodeValue();
+                                    parameterTypeChg = true;
+                                    if (paramDes.equals("emissive")) {
+                                        emissiveAlg = true;
+                                    }
+                                    if (paramDes.equals("visible")) {
+                                        visibleAlg = true;
+                                    }
+                                }
+                            }
+                            if (emissiveAlg && visibleAlg) {
+                                parameterTypeAlgStr = "All";
+                            } else if (emissiveAlg) {
+                                parameterTypeAlgStr = "IR";
+                            } else if (visibleAlg) {
+                                parameterTypeAlgStr = "Visible";
+                            }
+                        }
+
+                        if (parameterTypeChg){
+                            algorithmInfo.setParameterType(parameterTypeAlgStr);
+                        } else {
+                            algorithmInfo.setParameterType(parameterTypeProdStr);
+                        }
 
 
                         if (algorithmInfo.getParameterType() == L2genAlgorithmInfo.ParameterType.INT) {

@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWExecutionMonitor;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.SystemUtils;
@@ -30,6 +31,8 @@ import java.util.*;
 public class L2genData implements SeaDASProcessorModel {
 
     public static final String OPER_DIR = "l2gen";
+    public static final String SHARE_DIR = "share";
+    public static final String COMMON_DIR = "common";
     public static final String CANCEL = "cancel";
 
     public static enum Mode {
@@ -62,6 +65,7 @@ public class L2genData implements SeaDASProcessorModel {
     public static final String
             GUI_NAME = "l2gen",
             PRODUCT_INFO_XML = "productInfo.xml",
+            PRODUCT_XML = "product.xml",
             PARAM_INFO_XML = "paramInfo.xml",
             PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml",
             PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml",
@@ -129,6 +133,7 @@ public class L2genData implements SeaDASProcessorModel {
     // mode dependent fields
     private String paramInfoXml;
     private String productInfoXml;
+    private String productXml;
     private String paramCategoryXml;
     private String productCategoryXml;
     private String getanc;
@@ -164,6 +169,7 @@ public class L2genData implements SeaDASProcessorModel {
     private static L2genData L3genData = null;
 
     private boolean overwriteProductInfoXML = false;
+    private boolean overwriteProductXML = false;
 
     public static L2genData getNew(Mode mode, OCSSW ocssw) {
         switch (mode) {
@@ -227,6 +233,7 @@ public class L2genData implements SeaDASProcessorModel {
                 setGuiName(GUI_NAME);
                 setParamInfoXml(PARAM_INFO_XML);
                 setProductInfoXml(PRODUCT_INFO_XML);
+                setProductXml(PRODUCT_XML);
                 setParamCategoryXml(PARAM_CATEGORY_INFO_XML);
                 setProductCategoryXml(PRODUCT_CATEGORY_INFO_XML);
                 setGetanc(GETANC);
@@ -263,6 +270,14 @@ public class L2genData implements SeaDASProcessorModel {
 
     public void setProductInfoXml(String productInfoXml) {
         this.productInfoXml = productInfoXml;
+    }
+
+    public String getProductXml() {
+        return productXml;
+    }
+
+    public void setProductXml(String productXml) {
+        this.productXml = productXml;
     }
 
     public String getParamCategoryXml() {
@@ -1528,13 +1543,13 @@ public class L2genData implements SeaDASProcessorModel {
 
         InputStream paramInfoStream = getParamInfoInputStream(iFile, suite);
 
-        // do this to create new productInfoXml file which is only used next time SeaDAS is run
+        // do this to create new productXml file which is only used next time SeaDAS is run
         switch (getMode()) {
             case L2GEN_AQUARIUS:
                 getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-                getProductInfoInputStream(Source.L2GEN, overwriteProductInfoXML);
+                getProductInfoInputStream(Source.L2GEN, overwriteProductXML);
 //                getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
@@ -1544,23 +1559,23 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
     private InputStream getProductInfoInputStream(Source source, boolean overwrite) throws IOException {
-        File dataDir = SystemUtils.getApplicationDataDir();
-        File l2genDir = new File(dataDir, OPER_DIR);
-        l2genDir.mkdirs();
+        File ocsswShareDir = new File(OCSSWInfo.getInstance().getOcsswRoot(), SHARE_DIR);
+        File ocsswCommonDir = new File(ocsswShareDir, COMMON_DIR);
+//        ocsswCommonDir.mkdirs();
 
-        File xmlFile = new File(l2genDir, getProductInfoXml());
+        File xmlFile = new File(ocsswCommonDir, getProductXml());
         //SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
         //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
 
         if (source == Source.RESOURCES) {
-            if (!xmlFile.exists() || overwrite) {
-                //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file does not exist!");
-                xmlFile = installResource(getProductInfoXml());
-            }
-
-            if (xmlFile == null || !xmlFile.exists()) {
-                throw new IOException("product XML file does not exist");
-            }
+//            if (!xmlFile.exists() || overwrite) {
+//                //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file does not exist!");
+//                xmlFile = installResource(getProductXml());
+//            }
+//
+//            if (xmlFile == null || !xmlFile.exists()) {
+//                throw new IOException("product XML file does not exist");
+//            }
 
             try {
                 return new FileInputStream(xmlFile);
@@ -1790,7 +1805,7 @@ public class L2genData implements SeaDASProcessorModel {
                 productInfoStream = getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-                productInfoStream = getProductInfoInputStream(Source.L2GEN, overwriteProductInfoXML);
+                productInfoStream = getProductInfoInputStream(Source.L2GEN, overwriteProductXML);
 //              productInfoStream = getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
