@@ -164,6 +164,39 @@ public class OCSSWRemote extends OCSSW {
 
     }
 
+    public boolean uploadParFile(File parFile) {
+
+        String parFileName = parFile.getName();
+        ifileUploadSuccess = false;
+
+        SnapApp snapApp = SnapApp.getDefault();
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
+                "OCSSW Remote Server File Upload") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                pm.beginTask("Uploading par file '" + parFileName + "' to the remote server ", 10);
+
+                pm.worked(1);
+                final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", parFile);
+                final MultiPart multiPart = new FormDataMultiPart()
+                        //.field("ifileName", ifileName)
+                        .bodyPart(fileDataBodyPart);
+                Response response = target.path("fileServices").path("uploadParFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+
+                if (response.getStatus() == Response.ok().build().getStatus()) {
+                    ifileUploadSuccess = true;
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.executeWithBlocking();
+        System.out.println("par file upload process is done: " + pmSwingWorker.isDone());
+        return ifileUploadSuccess;
+    }
+
     public boolean isTextFile(String fileName) {
         if (!fileExistsOnServer(fileName)) {
             SnapApp snapApp = SnapApp.getDefault();
@@ -478,10 +511,11 @@ public class OCSSWRemote extends OCSSW {
             return executeMLP(processorModel);
         } else {
             //todo implement par file uploading for programs other than mlp
-            if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
+            if (processorModel.acceptsParFile() ) {
                 String parString = processorModel.getParamList().getParamString("\n");
-                File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
-                target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+                File parFile = writeParFile(convertParStringForRemoteServer(parString));
+                uploadParFile(parFile);
+                executeWithParFile(parFile.getName());
             } else {
                 commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
                 //this is to make sure that all necessary files are uploaded to the server before execution
@@ -533,6 +567,44 @@ public class OCSSWRemote extends OCSSW {
 
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
         Response response = target.path("ocssw").path("executeOcsswProgramSimple").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            setProcessExitValue(0);
+        }
+
+        serverProcessCompleted = false;
+
+        String processStatus = "-100";
+        while (!serverProcessCompleted) {
+            processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+            switch (processStatus) {
+                case PROCESS_STATUS_NONEXIST:
+                    serverProcessCompleted = false;
+                    break;
+                case PROCESS_STATUS_STARTED:
+                    serverProcessCompleted = false;
+                    break;
+                case PROCESS_STATUS_COMPLETED:
+                    serverProcessCompleted = true;
+                    setProcessExitValue(0);
+                    break;
+                case PROCESS_STATUS_FAILED:
+                    setProcessExitValue(1);
+                    serverProcessCompleted = true;
+                    break;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return seadasProcess;
+    }
+
+    private Process executeWithParFile(String parFileName) {
+        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+
+        Response response = target.path("ocssw").path("executeParFile").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(parFileName, MediaType.TEXT_PLAIN));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             setProcessExitValue(0);
         }
@@ -797,6 +869,9 @@ public class OCSSWRemote extends OCSSW {
         return seadasProcess;
     }
 
+
+
+
     protected boolean isMLPOdirValid(String mlpOdir) {
         if (mlpOdir == null || mlpOdir.trim().isEmpty()) {
             return false;
@@ -1008,31 +1083,6 @@ public class OCSSWRemote extends OCSSW {
         return adjusted;
     }
 
-    protected File writeParFile(String parString) {
-
-        try {
-
-            final File tempFile = File.createTempFile(programName + "-tmpParFile", ".par");
-            String parFileLocation = tempFile.getAbsolutePath();
-            //System.out.println(tempFile.getAbsoluteFile());
-            tempFile.deleteOnExit();
-            FileWriter fileWriter = null;
-            try {
-                fileWriter = new FileWriter(tempFile);
-                fileWriter.write(parString);
-            } finally {
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            }
-            return tempFile;
-
-        } catch (IOException e) {
-            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
-            return null;
-        }
-    }
-
     @Override
     /**
      *
@@ -1055,10 +1105,35 @@ public class OCSSWRemote extends OCSSW {
 
         try {
 
-            final File tempFile = File.createTempFile(MLP_PAR_FILE_NAME, ".par");
-            String parFileLocation = tempFile.getAbsolutePath();
-            //System.out.println(tempFile.getAbsoluteFile());
-            tempFile.deleteOnExit();
+            final File tempFile = File.createTempFile(MLP_PAR_FILE_NAME, ".par", processorModel.getIFileDir());
+
+            System.out.println(tempFile.getAbsoluteFile());
+            //tempFile.deleteOnExit();
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(tempFile);
+                fileWriter.write(parString);
+            } finally {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }
+            return tempFile;
+
+        } catch (IOException e) {
+            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            return null;
+        }
+    }
+
+    protected File writeParFile(String parString) {
+
+        try {
+
+            final File tempFile = File.createTempFile(programName + "_par_file", ".par", processorModel.getIFileDir());
+
+            System.out.println(tempFile.getAbsoluteFile());
+            //tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
