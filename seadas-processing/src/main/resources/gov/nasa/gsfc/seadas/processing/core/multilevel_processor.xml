@@ -40,6 +40,12 @@
             <description>do not re-create intermediate files if they already exist</description>
         </option>
         <option type="boolean">
+            <name>deletefiles</name>
+            <value>false</value>
+            <default>false</default>
+            <description>delete intermediate files</description>
+        </option>
+        <option type="boolean">
             <name>ocproc_getanc</name>
             <value>false</value>
             <default>false</default>

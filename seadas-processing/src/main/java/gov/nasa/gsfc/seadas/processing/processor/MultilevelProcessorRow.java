@@ -146,6 +146,9 @@ public class MultilevelProcessorRow {
                 cloProgramUI = new L2genForm(parentForm.getAppContext(), "l2gen.xml", null  , false, L2genData.Mode.L2GEN, true, true, ocssw);
                 configPanel = cloProgramUI.getParamPanel();
 
+            } else if (name.equals("l2extract")) {
+                cloProgramUI = new ProgramUIFactory("l2extract", "l1aextract.xml", ocssw);
+                configPanel = cloProgramUI.getParamPanel();
             } else {
                 String xmlFile = name.replace("", "").concat(".xml");
                 cloProgramUI = new ProgramUIFactory(name, xmlFile, ocssw);
