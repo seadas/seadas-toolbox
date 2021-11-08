@@ -27,7 +27,9 @@ import java.beans.PropertyChangeListener;
  */
 public class MultilevelProcessorRow {
     public static final String PARAM_STRING_EVENT = "paramString";
-    public static final String KEEPFILES_PARAM = "keepfiles";
+//    public static final String KEEPFILES_PARAM = "keepfiles";
+    public static final String DELETEFILES_PARAM = "deletefiles";
+    public static final String ODIR_PARAM = "";
 
     private static final String LONGEST_BUTTON_LABEL = "multilevel_processor";
 
@@ -36,7 +38,8 @@ public class MultilevelProcessorRow {
     private MultlevelProcessorForm parentForm;
 
     private JButton configButton;
-    private JCheckBox keepCheckBox;
+//    private JCheckBox keepCheckBox;
+//    private JCheckBox deleteCheckBox;
     private JTextField paramTextField;
     private JPanel configPanel;
     private ParamList paramList;
@@ -63,18 +66,18 @@ public class MultilevelProcessorRow {
                 handleButtonEvent();
             }
         });
-        keepCheckBox = new JCheckBox();
-        keepCheckBox.setSelected(false);
-        keepCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (checkboxControlHandlerEnabled) {
-                    setCheckboxControlHandlerEnabled(false);
-                    handleKeepCheckBox();
-                    setCheckboxControlHandlerEnabled(true);
-                }
-            }
-        });
+//        deleteCheckBox = new JCheckBox();
+//        deleteCheckBox.setSelected(false);
+//        deleteCheckBox.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                if (checkboxControlHandlerEnabled) {
+//                    setCheckboxControlHandlerEnabled(false);
+//                    handledeleteCheckBox();
+//                    setCheckboxControlHandlerEnabled(true);
+//                }
+//            }
+//        });
         paramTextField = new JTextField();
         paramTextField.addActionListener(new ActionListener() {
             @Override
@@ -112,24 +115,24 @@ public class MultilevelProcessorRow {
 
     // this method assumes the the JPanel passed in is using a grid bag layout
     public void attachComponents(JPanel base, int row) {
-        keepCheckBox.setToolTipText(configButton.getText() + " output file(s) will be kept");
+//        deleteCheckBox.setToolTipText(configButton.getText() + " output file(s) will be kept");
         configButton.setToolTipText("Open " + configButton.getText() + " GUI to set params");
         base.add(configButton,
                 new GridBagConstraintsCustom(0, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 0)));
 
-        base.add(keepCheckBox,
-                new GridBagConstraintsCustom(1, row, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 2, 0)));
-
+//        base.add(deleteCheckBox,
+//                new GridBagConstraintsCustom(1, row, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 2, 0)));
+//
 
         base.add(paramTextField,
-                new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
+                new GridBagConstraintsCustom(1, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
     }
 
     private void createConfigPanel() {
         createConfigPanel(false);
     }
 
-    private void createConfigPanel(boolean keepfiles) {
+    private void createConfigPanel(boolean deletefiles) {
         if (configPanel == null) {
             if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
                 cloProgramUI = new ProgramUIFactory("multilevel_processor", "multilevel_processor.xml", ocssw);
@@ -171,41 +174,41 @@ public class MultilevelProcessorRow {
     private void getParamListFromCloProgramUI() {
         paramList = (ParamList) cloProgramUI.getProcessorModel().getParamList().clone();
         cleanIOParams(paramList);
-        if (keepCheckBox.isSelected()) {
-            paramList.addInfo(new ParamInfo(KEEPFILES_PARAM, ParamInfo.BOOLEAN_TRUE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
-        } else {
-            paramList.addInfo(new ParamInfo(KEEPFILES_PARAM, ParamInfo.BOOLEAN_FALSE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
-        }
+//        if (deleteCheckBox.isSelected()) {
+//            paramList.addInfo(new ParamInfo(DELETEFILES_PARAM, ParamInfo.BOOLEAN_TRUE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
+//        } else {
+//            paramList.addInfo(new ParamInfo(DELETEFILES_PARAM, ParamInfo.BOOLEAN_FALSE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
+//        }
     }
 
-    private void handleKeepCheckBox() {
-        boolean keepSelected = keepCheckBox.isSelected();
-        boolean test2 = paramList.isValueTrue(KEEPFILES_PARAM);
-        createConfigPanel(keepCheckBox.isSelected());
-
-        if (keepCheckBox.isSelected() != keepSelected) {
-            keepCheckBox.setSelected(keepSelected);
-        }
-//        test1 = keepCheckBox.isSelected();
-//        test2 = paramList.isValueTrue(KEEPFILES_PARAM);
-
-        if (keepCheckBox.isSelected() != paramList.isValueTrue(KEEPFILES_PARAM)) {
-            String oldParamString = getParamString();
-            if (keepCheckBox.isSelected()) {
-                paramList.setValue(KEEPFILES_PARAM, ParamInfo.BOOLEAN_TRUE);
-            } else {
-                paramList.setValue(KEEPFILES_PARAM, ParamInfo.BOOLEAN_FALSE);
-            }
-            String str = getParamString();
-            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
-        }
-    }
+//    private void handledeleteCheckBox() {
+//        boolean deleteSelected = deleteCheckBox.isSelected();
+//        boolean test2 = paramList.isValueTrue(DELETEFILES_PARAM);
+//        createConfigPanel(deleteCheckBox.isSelected());
+//
+//        if (deleteCheckBox.isSelected() != deleteSelected) {
+//            deleteCheckBox.setSelected(deleteSelected);
+//        }
+////        test1 = keepCheckBox.isSelected();
+////        test2 = paramList.isValueTrue(KEEPFILES_PARAM);
+//
+//        if (deleteCheckBox.isSelected() != paramList.isValueTrue(DELETEFILES_PARAM)) {
+//            String oldParamString = getParamString();
+//            if (deleteCheckBox.isSelected()) {
+//                paramList.setValue(DELETEFILES_PARAM, ParamInfo.BOOLEAN_TRUE);
+//            } else {
+//                paramList.setValue(DELETEFILES_PARAM, ParamInfo.BOOLEAN_FALSE);
+//            }
+//            String str = getParamString();
+//            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
+//        }
+//    }
 
     private void handleParamTextField() {
         createConfigPanel();
         String oldParamString = getParamString();
         String str = paramTextField.getText();
-        ParamInfo param = paramList.getInfo(KEEPFILES_PARAM);
+        ParamInfo param = paramList.getInfo(DELETEFILES_PARAM);
         if (param != null) {
             str = str + " " + param.getParamString();
         }
@@ -234,7 +237,7 @@ public class MultilevelProcessorRow {
 
         // load the UI with the current param values
         ParamList list = (ParamList) paramList.clone();
-        list.removeInfo(KEEPFILES_PARAM);
+//        list.removeInfo(DELETEFILES_PARAM);
         cloProgramUI.setParamString(list.getParamString("\n"));
         String oldUIParamString = cloProgramUI.getParamString();
 
@@ -255,19 +258,19 @@ public class MultilevelProcessorRow {
 
     }
 
-    private void updateKeepCheckbox() {
-        keepCheckBox.setSelected(paramList.isValueTrue(KEEPFILES_PARAM));
-    }
+//    private void updatedeleteCheckbox() {
+//        deleteCheckBox.setSelected(paramList.isValueTrue(DELETEFILES_PARAM));
+//    }
 
     private void updateParamTextField() {
         ParamList list = (ParamList) paramList.clone();
-        list.removeInfo(KEEPFILES_PARAM);
+//        list.removeInfo(DELETEFILES_PARAM);
         paramTextField.setText(list.getParamString(" "));
     }
 
     private void updateParamList() {
         updateParamTextField();
-        updateKeepCheckbox();
+//        updatedeleteCheckbox();
     }
 
     public ParamList getParamList() {

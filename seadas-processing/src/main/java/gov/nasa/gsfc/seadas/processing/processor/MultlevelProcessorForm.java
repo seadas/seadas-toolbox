@@ -37,18 +37,21 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
     public enum Processor {
         MAIN("main"),
-        MODIS_L1A_PY("modis_L1A"),
-        L1AEXTRACT_MODIS("l1aextract_modis"),
-        L1AEXTRACT_SEAWIFS("l1aextract_seawifs"),
-        L1MAPGEN("l1mapgen"),
+        MODIS_L1A("modis_L1A"),
+//        L1AEXTRACT_MODIS("l1aextract_modis"),
+//        L1AEXTRACT_SEAWIFS("l1aextract_seawifs"),
+//        L1AEXTRACT_VIIRS("l1aextract_viirs"),
+        EXTRACTOR("l1aextract"),
+//        L1MAPGEN("l1mapgen"),
         GEO("geo"),
         MODIS_L1B("modis_L1B"),
+//        LEVEL_1B("level 1b"),
         L1BGEN("l1bgen_generic"),
-        L1BRSGEN("l1brsgen"),
+//        L1BRSGEN("l1brsgen"),
         L2GEN("l2gen"),
         L2EXTRACT("l2extract"),
-        L2BRSGEN("l2brsgen"),
-        L2MAPGEN("l2mapgen"),
+//        L2BRSGEN("l2brsgen"),
+//        L2MAPGEN("l2mapgen"),
         L2BIN("l2bin"),
         L3BIN("l3bin"),
         //        SMIGEN("smigen"),
@@ -112,7 +115,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private JScrollPane chainScrollPane;
     private JPanel chainPanel;
     private JLabel nameLabel;
-    private JLabel keepLabel;
+//    private JLabel deleteLabel;
     private JLabel paramsLabel;
 
     private JPanel spacer;
@@ -251,9 +254,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         nameLabel = new JLabel("Processor");
         Font font = nameLabel.getFont().deriveFont(Font.BOLD);
         nameLabel.setFont(font);
-        keepLabel = new JLabel("Keep");
-        keepLabel.setToolTipText("Keep intermediate output files");
-        keepLabel.setFont(font);
+//        deleteLabel = new JLabel("Delete");
+//        deleteLabel.setToolTipText("Delete intermediate output files");
+//        deleteLabel.setFont(font);
         paramsLabel = new JLabel("Parameters");
         paramsLabel.setFont(font);
         spacer = new JPanel();
@@ -262,10 +265,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         chainPanel.add(nameLabel,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 2, 2, -8)));
-        chainPanel.add(keepLabel,
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, -8)));
+//        chainPanel.add(deleteLabel,
+//                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, -8)));
         chainPanel.add(paramsLabel,
-                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
         createRows();
         int rowNum = 1;
         for (MultilevelProcessorRow row : rows) {
@@ -291,19 +294,22 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     void createRows() {
         Processor[] rowNames = {
                 Processor.MAIN,
-                Processor.MODIS_L1A_PY,
-                Processor.L1AEXTRACT_SEAWIFS,
-                Processor.L1BRSGEN,
-                Processor.L1MAPGEN,
+                Processor.MODIS_L1A,
+                Processor.EXTRACTOR,
+//                Processor.L1AEXTRACT_MODIS,
+//                Processor.L1AEXTRACT_SEAWIFS,
+//                Processor.L1AEXTRACT_VIIRS,
+//                Processor.L1BRSGEN,
+//                Processor.L1MAPGEN,
                 Processor.GEO,
-                Processor.L1AEXTRACT_MODIS,
+//                Processor.LEVEL_1B,
                 Processor.MODIS_L1B,
                 Processor.L1BGEN,
                 Processor.L2GEN,
                 Processor.L2EXTRACT,
                 Processor.L2BIN,
-                Processor.L2BRSGEN,
-                Processor.L2MAPGEN,
+//                Processor.L2BRSGEN,
+//                Processor.L2MAPGEN,
                 Processor.L3BIN,
 //                Processor.SMIGEN,
                 Processor.L3MAPGEN

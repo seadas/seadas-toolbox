@@ -290,7 +290,7 @@ public class OCSSWLocal extends OCSSW {
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
         }
-        String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+        String[] commandArrayParams = {GET_OUTPUT_NAME_PROGRAM_NAME, ifileName, programName};
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
         setOfileNameFound(true);
         return ofileName;
@@ -305,7 +305,7 @@ public class OCSSWLocal extends OCSSW {
         if(programName.equals("l1bgen_generic")){
             programName = "l1bgen";
         }
-        String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+        String[] commandArrayParams = {GET_OUTPUT_NAME_PROGRAM_NAME, ifileName, programName};
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
         return ofileName;
     }

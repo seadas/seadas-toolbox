@@ -52,6 +52,7 @@ public class ProcessorTypeInfo {
         put("l1aextract_modis", ProcessorID.EXTRACTOR);
         put("l1aextract_seawifs", ProcessorID.EXTRACTOR);
         put("l1aextract_viirs", ProcessorID.EXTRACTOR);
+        put("l1aextract", ProcessorID.EXTRACTOR);
         put("l2extract", ProcessorID.EXTRACTOR);
         put("extractor", ProcessorID.EXTRACTOR);
         put("modis_L1A", ProcessorID.MODIS_L1A);

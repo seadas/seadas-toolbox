@@ -22,15 +22,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
 
 /**
  * Created by aabduraz on 5/25/17.
@@ -43,7 +39,8 @@ public class OCSSWInfo {
 
     public final static String OCSSW_VM_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
     public static final String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
-    public static final String OCSSW_KEEP_FILES_ON_SERVER_PROPERTY = "seadas.ocssw.keepFilesOnServer";
+//    public static final String OCSSW_KEEP_FILES_ON_SERVER_PROPERTY = "seadas.ocssw.keepFilesOnServer";
+    public static final String OCSSW_DELETE_FILES_ON_SERVER_PROPERTY = "seadas.ocssw.deleteFilesOnServer";
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
@@ -327,8 +324,8 @@ public class OCSSWInfo {
             sharedDirPath = preferences.get(OCSSW_VM_SERVER_SHARED_DIR_PROPERTY, null);
             //if ( sharedDirPath == null ) {
             clientId = preferences.get(SEADAS_CLIENT_ID_PROPERTY, System.getProperty("user.name"));
-            String keepFilesOnServer = preferences.get(OCSSW_KEEP_FILES_ON_SERVER_PROPERTY, "true");
-            Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(keepFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
+            String deleteFilesOnServer = preferences.get(OCSSW_DELETE_FILES_ON_SERVER_PROPERTY, "true");
+            Response response = target.path("ocssw").path("manageClientWorkingDirectory").path(clientId).request().put(Entity.entity(deleteFilesOnServer, MediaType.TEXT_PLAIN_TYPE));
             // }
             processInputStreamPort = new Integer(preferences.get(OCSSW_PROCESS_INPUT_STREAM_PORT, "6402")).intValue();
             processErrorStreamPort = new Integer(preferences.get(OCSSW_PROCESS_ERROR_STREAM_PORT, "6403")).intValue();
