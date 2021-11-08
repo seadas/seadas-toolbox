@@ -36,7 +36,8 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_ROOT_ENV = "OCSSWROOT";
     final static String SEADAS_OCSSW_LOCATION_PROPERTY = "seadas.ocssw.location";
     final static String SEADAS_OCSSW_PORT_PROPERTY = "seadas.ocssw.port";
-    final static String SEADAS_OCSSW_KEEPFILEONSERVER_PROPERTY = "seadas.ocssw.keepFilesOnServer";
+//    final static String SEADAS_OCSSW_KEEPFILEONSERVER_PROPERTY = "seadas.ocssw.keepFilesOnServer";
+    final static String SEADAS_OCSSW_DELETEFILEONSERVER_PROPERTY = "seadas.ocssw.deleteFilesOnServer";
     final static String SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY = "seadas.ocssw.processInputStreamPort";
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY = "seadas.ocssw.processErrorStreamPort";
     final static String SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY = "seadas.ocssw.serverAddress";
@@ -83,7 +84,7 @@ public class OCSSWConfigData {
         preferences.put(SEADAS_OCSSW_ROOT_PROPERTY, SEADAS_OCSSW_ROOT_DEFAULT_VALUE);
         preferences.put(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
         preferences.put(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE);
-        preferences.put(SEADAS_OCSSW_KEEPFILEONSERVER_PROPERTY, SEADAS_OCSSW_KEEPFILEONSERVER_DEFAULT_VALUE);
+        preferences.put(SEADAS_OCSSW_DELETEFILEONSERVER_PROPERTY, SEADAS_OCSSW_KEEPFILEONSERVER_DEFAULT_VALUE);
         preferences.put(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE);
         preferences.put(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE);
         preferences.put(SEADAS_CLIENT_ID_PROPERTY, SEADAS_CLIENT_ID_DEFAULT_VALUE);
