@@ -381,7 +381,7 @@ public class OCSSWLocal extends OCSSW {
             return ifileName + ".xml";
         }
 
-        String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileName, programName};
+        String[] commandArrayParams = {GET_OUTPUT_NAME_PROGRAM_NAME, ifileName, programName};
 
         return findOfileName(ifileName, SeadasArrayUtils.concatAll(commandArrayPrefix, commandArrayParams, options));
     }
