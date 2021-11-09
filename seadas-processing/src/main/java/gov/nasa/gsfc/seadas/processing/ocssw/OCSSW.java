@@ -55,6 +55,7 @@ public abstract class OCSSW {
     public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
 
     public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
+    public static String GET_OUTPUT_NAME_PROGRAM_NAME = "get_output_name";
     public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
     public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts";
