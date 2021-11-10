@@ -235,11 +235,11 @@ public class OCSSWRemoteImpl {
             String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
             String parFileNewLocation = workingFileDir + File.separator + parFileName;
             debug("par file new path: " + parFileNewLocation);
-            String parFileContent = convertClientMLPParFilForRemoteServer(new File(parFileName), jobId);
+            String parFileContent = convertClientParFileForRemoteServer(new File(parFileNewLocation), jobId);
             debug("convert successful " );
             ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
             debug("write successful " );
-            String[] commandArray = {programName, parFileNewLocation};
+            String[] commandArray = {programName, "par="+parFileNewLocation};
             execute(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), new File(parFileNewLocation).getParent(), jobId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,7 +290,7 @@ public class OCSSWRemoteImpl {
         return jsonObjectBuilder.build();
     }
 
-    private String convertClientParFilForRemoteServer(File parFile, String jobId) {
+    private String convertClientParFileForRemoteServer(File parFile, String jobId) {
         String parString = readFile(parFile.getAbsolutePath(), StandardCharsets.UTF_8);
         StringTokenizer st1 = new StringTokenizer(parString, "\n");
         StringTokenizer st2;
@@ -299,14 +299,7 @@ public class OCSSWRemoteImpl {
         String key, value;
         boolean isOdirdefined = true;
 
-        int odirStringPositioninParFile = 6;
-
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-        String mlpDir = workingFileDir;
-        String mlpOutputDir = workingFileDir + File.separator + parFile.getName();
-
-        //delete files from the MLP_OUTPUT_DIR_NAME before executing new mlp command.
-        ServerSideFileUtilities.purgeDirectory(new File(mlpOutputDir));
 
         while (st1.hasMoreTokens()) {
             token = st1.nextToken();
@@ -314,44 +307,18 @@ public class OCSSWRemoteImpl {
                 st2 = new StringTokenizer(token, "=");
                 key = st2.nextToken();
                 value = st2.nextToken();
-                if (new File(mlpDir + File.separator + value).exists()) {
-                    value = mlpDir + File.separator + value;
-                    debug("mlp file: " + value);
-                    isOdirdefined = false;
-                    try {
-                        if (isTextFile(value)) {
-                            debug("File is a text file. Need to upload the content.");
-                            updateFileListFileContent(value, mlpDir);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    // make sure the par file contains "odir=mlpOutputDir" element.
-                } else if (!isOdirdefined) {
-                    if (key.equals("odir")) {
-                        value = mlpOutputDir;
-                    } else {
-                        stringBuilder.insert(odirStringPositioninParFile, "odir=" + mlpOutputDir + "\n");
-                    }
-                    isOdirdefined = true;
+                if (new File(workingFileDir + File.separator + value).exists()) {
+                    value = workingFileDir + File.separator + value;
+                    debug("server side file: " + value);
                 }
                 token = key + "=" + value;
-            }
-            stringBuilder.append(token);
-            stringBuilder.append("\n");
-            if (token.indexOf("ifile") != -1) {
-                odirStringPositioninParFile = stringBuilder.indexOf(token) + token.length() + 1;
+                debug("token: " + token);
+                stringBuilder.append(token);
+                stringBuilder.append("\n");
             }
         }
-
-        //Create the mlp output dir; Otherwise mlp will throw exception
-        try {
-            Files.createDirectories(new File(mlpOutputDir).toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         String newParString = stringBuilder.toString();
+        debug("new par string: " + newParString );
         return newParString;
     }
 
@@ -367,6 +334,7 @@ public class OCSSWRemoteImpl {
 
         int odirStringPositioninParFile = 6;
 
+        debug("converting the string");
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String mlpDir = workingFileDir;
         String mlpOutputDir = workingFileDir + File.separator + MLP_OUTPUT_DIR_NAME;
