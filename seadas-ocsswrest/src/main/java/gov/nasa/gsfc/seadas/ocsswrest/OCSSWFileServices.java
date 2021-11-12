@@ -2,7 +2,6 @@ package gov.nasa.gsfc.seadas.ocsswrest;
 
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl;
-import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWServerPropertyValues;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -11,15 +10,18 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.*;
-import java.io.*;
-import java.nio.file.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.OCSSW_ROOT_PROPERTY;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MLP_OUTPUT_DIR_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MLP_PROGRAM_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.PROCESS_STDOUT_FILE_NAME_EXTENSION;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -112,6 +114,46 @@ public class OCSSWFileServices {
         String fileInfoString;
         String fileName = fileInfo.getFileName();
         System.out.println("file info " + " is  " + fileName);
+        if (fileName == null) {
+            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+        } else {
+            String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+            System.out.println("current working directory " + " is  " + currentWorkingDir);
+            File newFile = new File(currentWorkingDir);
+            Files.createDirectories(newFile.toPath());
+            boolean isDirCreated = new File(currentWorkingDir).isDirectory();
+            String clientfileFullPathName = currentWorkingDir + File.separator + fileName;
+            System.out.println(clientfileFullPathName + " is created " + isDirCreated);
+            System.out.println(System.getProperty("user.home"));
+            System.out.println(new File(currentWorkingDir).getAbsolutePath());
+            try {
+                ServerSideFileUtilities.writeToFile(uploadedInputStream, clientfileFullPathName);
+                SQLiteJDBC.updateInputFilesList(jobId, clientfileFullPathName);
+            } catch (Exception e) {
+                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+                e.printStackTrace();
+            }
+        }
+        return Response.status(respStatus).build();
+    }
+
+    /**
+     * Method for uploading a file.
+     * handling HTTP POST requests.      *
+     *
+     * @return String that will be returned as a text/plain response.
+     */
+    @POST
+    @Path("/uploadParFile/{jobId}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadParFile(
+            @PathParam("jobId") String jobId,
+            @FormDataParam("file") InputStream uploadedInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileInfo)
+            throws IOException {
+        Response.Status respStatus = Response.Status.OK;
+        String fileName = fileInfo.getFileName();
+        System.out.println("par file info: file name is  " + fileName);
         if (fileName == null) {
             respStatus = Response.Status.INTERNAL_SERVER_ERROR;
         } else {
