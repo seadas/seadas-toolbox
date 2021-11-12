@@ -5,6 +5,7 @@ import gov.nasa.gsfc.seadas.processing.processor.MultlevelProcessorForm;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +22,7 @@ public class MultiParamList extends ParamList {
     private HashMap<String, ParamList> paramLists;
 
     public MultiParamList() {
-        paramLists = new HashMap<String, ParamList>();
+        paramLists = new LinkedHashMap<String, ParamList>();
     }
 
     public void addParamList(String listName, ParamList list) {
@@ -149,6 +150,7 @@ public class MultiParamList extends ParamList {
             if (list != null && !list.isDefault()) {
                 sb.append(separator);
                 sb.append("\n[").append(entry.getKey()).append("]");
+//                entry.getValue().removeInfo("plusToChain");
                 sb.append(separator);
                 sb.append(list.getParamString(separator));
             }
