@@ -217,14 +217,30 @@ public class OCSSWRemoteImpl {
 
     public void executeMLP(String jobId, File parFile) {
         try {
-            debug("par file path: " + parFile.getAbsolutePath());
             String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
             String parFileNewLocation = workingFileDir + File.separator + MLP_PAR_FILE_NAME;
-            debug("par file new path: " + parFileNewLocation);
+            debug("mlp par file new path: " + parFileNewLocation);
             String parFileContent = convertClientMLPParFilForRemoteServer(parFile, jobId);
             ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
             String[] commandArray = {MLP_PROGRAM_NAME, parFileNewLocation};
             execute(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileNewLocation).getParent(), jobId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //todo
+    public void executeWithParFile(String jobId, String programName, String parFileName) {
+        try {
+            String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+            String parFileNewLocation = workingFileDir + File.separator + parFileName;
+            debug("par file new path: " + parFileNewLocation);
+            String parFileContent = convertClientParFileForRemoteServer(new File(parFileNewLocation), jobId);
+            debug("convert successful " );
+            ServerSideFileUtilities.writeStringToFile(parFileContent, parFileNewLocation);
+            debug("write successful " );
+            String[] commandArray = {programName, "par="+parFileNewLocation};
+            execute(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray), new File(parFileNewLocation).getParent(), jobId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -274,6 +290,39 @@ public class OCSSWRemoteImpl {
         return jsonObjectBuilder.build();
     }
 
+    private String convertClientParFileForRemoteServer(File parFile, String jobId) {
+        String parString = readFile(parFile.getAbsolutePath(), StandardCharsets.UTF_8);
+        StringTokenizer st1 = new StringTokenizer(parString, "\n");
+        StringTokenizer st2;
+        StringBuilder stringBuilder = new StringBuilder();
+        String token;
+        String key, value;
+        boolean isOdirdefined = true;
+
+        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+
+        while (st1.hasMoreTokens()) {
+            token = st1.nextToken();
+            if (token.contains("=")) {
+                st2 = new StringTokenizer(token, "=");
+                key = st2.nextToken();
+                value = st2.nextToken();
+                if (new File(workingFileDir + File.separator + value).exists()) {
+                    value = workingFileDir + File.separator + value;
+                    debug("server side file: " + value);
+                }
+                token = key + "=" + value;
+                debug("token: " + token);
+                stringBuilder.append(token);
+                stringBuilder.append("\n");
+            }
+        }
+        String newParString = stringBuilder.toString();
+        debug("new par string: " + newParString );
+        return newParString;
+    }
+
+
     private String convertClientMLPParFilForRemoteServer(File parFile, String jobId) {
         String parString = readFile(parFile.getAbsolutePath(), StandardCharsets.UTF_8);
         StringTokenizer st1 = new StringTokenizer(parString, "\n");
@@ -285,6 +334,7 @@ public class OCSSWRemoteImpl {
 
         int odirStringPositioninParFile = 6;
 
+        debug("converting the string");
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String mlpDir = workingFileDir;
         String mlpOutputDir = workingFileDir + File.separator + MLP_OUTPUT_DIR_NAME;

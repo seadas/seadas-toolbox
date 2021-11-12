@@ -164,6 +164,39 @@ public class OCSSWRemote extends OCSSW {
 
     }
 
+    public boolean uploadParFile(File parFile) {
+
+        String parFileName = parFile.getName();
+        ifileUploadSuccess = false;
+
+        SnapApp snapApp = SnapApp.getDefault();
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
+                "OCSSW Remote Server File Upload") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+
+                pm.beginTask("Uploading par file '" + parFileName + "' to the remote server ", 10);
+
+                pm.worked(1);
+                final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", parFile);
+                final MultiPart multiPart = new FormDataMultiPart()
+                        //.field("ifileName", ifileName)
+                        .bodyPart(fileDataBodyPart);
+                Response response = target.path("fileServices").path("uploadParFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+
+                if (response.getStatus() == Response.ok().build().getStatus()) {
+                    ifileUploadSuccess = true;
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.executeWithBlocking();
+        System.out.println("par file upload process is done: " + pmSwingWorker.isDone());
+        return ifileUploadSuccess;
+    }
+
     public boolean isTextFile(String fileName) {
         if (!fileExistsOnServer(fileName)) {
             SnapApp snapApp = SnapApp.getDefault();
@@ -468,7 +501,7 @@ public class OCSSWRemote extends OCSSW {
 
         this.processorModel = processorModel;
 
-        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+        Process seadasProcess;
 
         JsonObject commandArrayJsonObject = null;
 
@@ -477,56 +510,61 @@ public class OCSSWRemote extends OCSSW {
         if (programName.equals(MLP_PROGRAM_NAME)) {
             return executeMLP(processorModel);
         } else {
-            //todo implement par file uploading for programs other than mlp
-            if (processorModel.acceptsParFile() && programName.equals(MLP_PROGRAM_NAME)) {
+            if (processorModel.acceptsParFile() ) {
                 String parString = processorModel.getParamList().getParamString("\n");
-                File parFile = writeMLPParFile(convertParStringForRemoteServer(parString));
-                target.path("ocssw").path("uploadMLPParFile").path(jobId).request().put(Entity.entity(parFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+                File parFile = writeParFile(convertParStringForRemoteServer(parString));
+                uploadParFile(parFile);
+                Response response = target.path("ocssw").path("executeParFile").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(parFile.getName(), MediaType.TEXT_PLAIN));
+                seadasProcess = waitForServerExecution(response);
             } else {
                 commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
                 //this is to make sure that all necessary files are uploaded to the server before execution
                 prepareToRemoteExecute(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
-
-                if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-
-                    boolean serverProcessStarted = false;
-                    serverProcessCompleted = false;
-
-                    String processStatus = "-100";
-                    while (!serverProcessStarted) {
-                        processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
-                        switch (processStatus) {
-                            case PROCESS_STATUS_NONEXIST:
-                                serverProcessStarted = false;
-                                break;
-                            case PROCESS_STATUS_STARTED:
-                                serverProcessStarted = true;
-                                break;
-                            case PROCESS_STATUS_COMPLETED:
-                                serverProcessStarted = true;
-                                serverProcessCompleted = true;
-                                setProcessExitValue(0);
-                                break;
-                            case PROCESS_STATUS_FAILED:
-                                setProcessExitValue(1);
-                                serverProcessStarted = true;
-                                break;
-                        }
-                        try {
-                            TimeUnit.SECONDS.sleep(1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    setProcessExitValue(1);
-                }
+                seadasProcess = waitForServerExecution(response);
             }
             return seadasProcess;
         }
     }
 
+    public Process waitForServerExecution(Response response) {
+        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+
+            boolean serverProcessStarted = false;
+            serverProcessCompleted = false;
+
+            String processStatus = "-100";
+            while (!serverProcessStarted) {
+                processStatus = target.path("ocssw").path("processStatus").path(jobId).request().get(String.class);
+                switch (processStatus) {
+                    case PROCESS_STATUS_NONEXIST:
+                        serverProcessStarted = false;
+                        break;
+                    case PROCESS_STATUS_STARTED:
+                        serverProcessStarted = true;
+                        break;
+                    case PROCESS_STATUS_COMPLETED:
+                        serverProcessStarted = true;
+                        serverProcessCompleted = true;
+                        setProcessExitValue(0);
+                        break;
+                    case PROCESS_STATUS_FAILED:
+                        setProcessExitValue(1);
+                        serverProcessStarted = true;
+                        break;
+                }
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            setProcessExitValue(1);
+        }
+        return seadasProcess;
+    }
     @Override
     public Process executeSimple(ProcessorModel processorModel) {
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
@@ -797,6 +835,9 @@ public class OCSSWRemote extends OCSSW {
         return seadasProcess;
     }
 
+
+
+
     protected boolean isMLPOdirValid(String mlpOdir) {
         if (mlpOdir == null || mlpOdir.trim().isEmpty()) {
             return false;
@@ -940,34 +981,6 @@ public class OCSSWRemote extends OCSSW {
         }
     }
 
-    private JsonArray getJsonFromParamListOld(ParamList paramList) {
-        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-
-        Iterator<ParamInfo> itr = paramList.getParamArray().iterator();
-
-        ParamInfo option;
-        String optionValue;
-        while (itr.hasNext()) {
-            option = itr.next();
-            optionValue = option.getValue();
-            if (option.getType() != ParamInfo.Type.HELP) {
-                if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
-                    if (option.getValue() != null && option.getValue().length() > 0) {
-                        jsonArrayBuilder.add(optionValue);
-                    }
-                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
-                    jsonArrayBuilder.add(option.getName() + "=" + optionValue);
-                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
-                    if (option.getName() != null && option.getName().length() > 0) {
-                        jsonArrayBuilder.add(option.getName());
-                    }
-                }
-            }
-        }
-        JsonArray jsonCommandArray = jsonArrayBuilder.build();
-        return jsonCommandArray;
-    }
-
     protected String convertParStringForRemoteServer(String parString) {
         setCommandArray(new String[]{parString});
         StringTokenizer st1 = new StringTokenizer(parString, "\n");
@@ -1008,31 +1021,6 @@ public class OCSSWRemote extends OCSSW {
         return adjusted;
     }
 
-    protected File writeParFile(String parString) {
-
-        try {
-
-            final File tempFile = File.createTempFile(programName + "-tmpParFile", ".par");
-            String parFileLocation = tempFile.getAbsolutePath();
-            //System.out.println(tempFile.getAbsoluteFile());
-            tempFile.deleteOnExit();
-            FileWriter fileWriter = null;
-            try {
-                fileWriter = new FileWriter(tempFile);
-                fileWriter.write(parString);
-            } finally {
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            }
-            return tempFile;
-
-        } catch (IOException e) {
-            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
-            return null;
-        }
-    }
-
     @Override
     /**
      *
@@ -1055,10 +1043,35 @@ public class OCSSWRemote extends OCSSW {
 
         try {
 
-            final File tempFile = File.createTempFile(MLP_PAR_FILE_NAME, ".par");
-            String parFileLocation = tempFile.getAbsolutePath();
-            //System.out.println(tempFile.getAbsoluteFile());
-            tempFile.deleteOnExit();
+            final File tempFile = File.createTempFile(MLP_PAR_FILE_NAME, ".par", processorModel.getIFileDir());
+
+            System.out.println(tempFile.getAbsoluteFile());
+            //tempFile.deleteOnExit();
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter(tempFile);
+                fileWriter.write(parString);
+            } finally {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }
+            return tempFile;
+
+        } catch (IOException e) {
+            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            return null;
+        }
+    }
+
+    protected File writeParFile(String parString) {
+
+        try {
+
+            final File tempFile = File.createTempFile(programName + "_par_file", ".par", processorModel.getIFileDir());
+
+            System.out.println(tempFile.getAbsoluteFile());
+            //tempFile.deleteOnExit();
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
