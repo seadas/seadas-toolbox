@@ -345,7 +345,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             String name = row.getName();
             ParamList list = (ParamList) row.getParamList().clone();
             list.removeInfo("plusToChain");
-            if (name.equals("modis_L1B")) {
+            if (name.equals("modis_L1B") && !list.getParamArray().isEmpty()) {
+                name = "level 1b";
+            }
+            if (name.equals("l1bgen_generic") && !list.getParamArray().isEmpty()) {
                 name = "level 1b";
             }
             paramList.addParamList(name, list);
@@ -358,8 +361,11 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultiParamList paramList = new MultiParamList();
         for (MultilevelProcessorRow row : rows) {
             String name = row.getName();
-            if (name.equals("modis_GEO")) {
-                name = "geo";
+            if (name.equals("modis_L1B") && !row.getParamList().getParamArray().isEmpty()) {
+                name = "level 1b";
+            }
+            if (name.equals("l1bgen_generic") && !row.getParamList().getParamArray().isEmpty()) {
+                name = "level 1b";
             }
             paramList.addParamList(name, row.getParamList());
         }
