@@ -150,7 +150,6 @@ public class MultiParamList extends ParamList {
             if (list != null && !list.isDefault()) {
                 sb.append(separator);
                 sb.append("\n[").append(entry.getKey()).append("]");
-//                entry.getValue().removeInfo("plusToChain");
                 sb.append(separator);
                 sb.append(list.getParamString(separator));
             }
@@ -158,4 +157,27 @@ public class MultiParamList extends ParamList {
         return sb.toString();
     }
 
+    @Override
+    public String getParamString4mlp(String separator) {
+
+        StringBuilder sb = new StringBuilder();
+        ParamList list;
+
+        // let's put main at the top
+        sb.append("[").append("main").append("]");
+        sb.append(separator);
+        sb.append(super.getParamString(separator));
+
+        // loop through all the param lists
+        for (Map.Entry<String, ParamList> entry : paramLists.entrySet()) {
+            list = entry.getValue();
+            if (list != null && !list.getParamArray().isEmpty()) {
+                sb.append(separator);
+                sb.append("\n[").append(entry.getKey()).append("]");
+                sb.append(separator);
+                sb.append(list.getParamString(separator));
+            }
+        }
+        return sb.toString();
+    }
 }
