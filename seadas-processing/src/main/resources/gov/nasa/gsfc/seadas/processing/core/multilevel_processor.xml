@@ -46,7 +46,7 @@
             <description>delete intermediate files</description>
         </option>
         <option type="boolean">
-            <name>ocproc_getanc</name>
+            <name>use_ancillary</name>
             <value>false</value>
             <default>false</default>
             <description>Get the ancillary data for l2gen processing</description>
