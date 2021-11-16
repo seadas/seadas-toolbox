@@ -53,7 +53,12 @@ public class ParFileManager{
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(tempFile);
-                String parString = getParString();
+                String parString;
+                if (processorModel.getProgramName().equals("multilevel_processor")) {
+                    parString = getParString4mlp();
+                } else {
+                    parString = getParString();
+                }
                 fileWriter.write(parString + "\n");
             } finally {
                 if (fileWriter != null) {
@@ -70,6 +75,10 @@ public class ParFileManager{
 
     public String getParString() {
         return paramList.getParamString("\n");
+    }
+
+    public String getParString4mlp() {
+        return paramList.getParamString4mlp("\n");
     }
 
     public String getParFileOptionName() {

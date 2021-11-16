@@ -47,10 +47,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MODIS_L1B("modis_L1B"),
 //        LEVEL_1B("level 1b"),
         L1BGEN("l1bgen_generic"),
-//        L1BRSGEN("l1brsgen"),
+        L1BRSGEN("l1brsgen"),
         L2GEN("l2gen"),
         L2EXTRACT("l2extract"),
-//        L2BRSGEN("l2brsgen"),
+        L2BRSGEN("l2brsgen"),
 //        L2MAPGEN("l2mapgen"),
         L2BIN("l2bin"),
         L3BIN("l3bin"),
@@ -115,7 +115,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private JScrollPane chainScrollPane;
     private JPanel chainPanel;
     private JLabel nameLabel;
-//    private JLabel deleteLabel;
+    private JLabel plusLabel;
     private JLabel paramsLabel;
 
     private JPanel spacer;
@@ -254,9 +254,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         nameLabel = new JLabel("Processor");
         Font font = nameLabel.getFont().deriveFont(Font.BOLD);
         nameLabel.setFont(font);
-//        deleteLabel = new JLabel("Delete");
-//        deleteLabel.setToolTipText("Delete intermediate output files");
-//        deleteLabel.setFont(font);
+        plusLabel = new JLabel("+");
+        plusLabel.setToolTipText("Add the processor to the chain");
+        plusLabel.setFont(font);
         paramsLabel = new JLabel("Parameters");
         paramsLabel.setFont(font);
         spacer = new JPanel();
@@ -265,10 +265,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         chainPanel.add(nameLabel,
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 2, 2, -8)));
-//        chainPanel.add(deleteLabel,
-//                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, -8)));
+        chainPanel.add(plusLabel,
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, -8)));
         chainPanel.add(paramsLabel,
-                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
+                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
         createRows();
         int rowNum = 1;
         for (MultilevelProcessorRow row : rows) {
@@ -299,7 +299,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //                Processor.L1AEXTRACT_MODIS,
 //                Processor.L1AEXTRACT_SEAWIFS,
 //                Processor.L1AEXTRACT_VIIRS,
-//                Processor.L1BRSGEN,
+                Processor.L1BRSGEN,
 //                Processor.L1MAPGEN,
                 Processor.GEO,
 //                Processor.LEVEL_1B,
@@ -308,7 +308,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 Processor.L2GEN,
                 Processor.L2EXTRACT,
                 Processor.L2BIN,
-//                Processor.L2BRSGEN,
+                Processor.L2BRSGEN,
 //                Processor.L2MAPGEN,
                 Processor.L3BIN,
 //                Processor.SMIGEN,
@@ -339,6 +339,21 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         return this;
     }
 
+    public ParamList getFinalParamList() {
+        MultiParamList paramList = new MultiParamList();
+        for (MultilevelProcessorRow row : rows) {
+            String name = row.getName();
+            ParamList list = (ParamList) row.getParamList().clone();
+            list.removeInfo("plusToChain");
+            if (name.equals("modis_L1B")) {
+                name = "level 1b";
+            }
+            paramList.addParamList(name, list);
+//            paramList.addParamList(name, row.getParamList());
+        }
+        return paramList;
+    }
+
     public ParamList getParamList() {
         MultiParamList paramList = new MultiParamList();
         for (MultilevelProcessorRow row : rows) {
@@ -357,7 +372,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             processorModel = new MultilevelProcessorModel("multilevel_processor", xmlFileName, ocssw);
             processorModel.setReadyToRun(true);
         }
-        processorModel.setParamList(getParamList());
+        processorModel.setParamList(getFinalParamList());
         return processorModel;
     }
 
@@ -408,8 +423,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         for (String line : lines) {
             line = line.trim();
-            stringBuilder.append(line).append("\n");
-
+            if (!line.contains("plusToChain")) {
+                stringBuilder.append(line).append("\n");
+            }
             if (line.toLowerCase().startsWith(IFILE)) {
                 String iFilename = line.substring(IFILE.length() + 1, line.length()).trim();
                 File iFile = new File(iFilename);

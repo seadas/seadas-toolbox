@@ -141,8 +141,29 @@ public class ParamList {
         return stringBuffer.toString();
     }
 
+    public String getParamString4mlp(String separator) {
+        StringBuffer stringBuffer = new StringBuffer();
+        boolean first = true;
+        for (ParamInfo param : paramArray) {
+            if(param.getType() != ParamInfo.Type.HELP && !param.isDefault()) {
+                if (first) {
+                    first = false;
+                } else {
+                    stringBuffer.append(separator);
+                }
+                String paramString = param.getParamString();
+                stringBuffer.append(paramString);
+            }
+        }
+        return stringBuffer.toString();
+    }
+
     public String getParamString() {
         return getParamString(" ");
+    }
+
+    public String getParamString4mlp() {
+        return getParamString4mlp(" ");
     }
 
     protected ArrayList<ParamInfo> makeParamInfoArray(String str) {
