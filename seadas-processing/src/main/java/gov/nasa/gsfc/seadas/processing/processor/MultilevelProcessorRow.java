@@ -16,6 +16,7 @@ import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
@@ -29,8 +30,8 @@ public class MultilevelProcessorRow {
     public static final String PARAM_STRING_EVENT = "paramString";
 //    public static final String KEEPFILES_PARAM = "keepfiles";
     public static final String PLUS_PARAM = "plusToChain";
-    public static final String DELETEFILES_PARAM = "deletefiles";
-    public static final String ODIR_PARAM = "";
+//    public static final String DELETEFILES_PARAM = "deletefiles";
+    public static final String ODIR_PARAM = "odir";
 
     private static final String LONGEST_BUTTON_LABEL = "multilevel_processor";
 
@@ -42,11 +43,16 @@ public class MultilevelProcessorRow {
 //    private JCheckBox keepCheckBox;
     private JCheckBox plusCheckBox;
     private JTextField paramTextField;
+//    private JTextField odirTextField;
+//    private JFileChooser odirSelectorOld;
+    private ActiveFileSelector odirSelector;
     private JPanel configPanel;
     private ParamList paramList;
     private SwingPropertyChangeSupport propertyChangeSupport;
 
     private boolean checkboxControlHandlerEnabled = true;
+
+//    static public String ODIR_EVENT = "ODIR";
 
     OCSSW ocssw;
 
@@ -98,6 +104,33 @@ public class MultilevelProcessorRow {
             }
         });
 
+        odirSelector = new ActiveFileSelector(propertyChangeSupport, "ODIR", "", ParamInfo.Type.DIR);
+
+        odirSelector.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                handleOdirChanged();
+            }
+        });
+
+//        odirTextField = new JTextField();
+//        odirTextField.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                handleOdirTextField();
+//            }
+//        });
+//        odirTextField.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                handleOdirTextField();
+//            }
+//        });
 // todo made this change to fix problem where l2gen unchecks the box after user checks the box
         //      essentially now all config user at startup
 //        if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString()) || name.equals("l2gen")) {
@@ -127,6 +160,9 @@ public class MultilevelProcessorRow {
 
         base.add(paramTextField,
                 new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
+
+        base.add(odirSelector.getJPanel(),
+                new GridBagConstraintsCustom(3, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
     }
 
     private void createConfigPanel() {
@@ -160,6 +196,7 @@ public class MultilevelProcessorRow {
             getParamListFromCloProgramUI();
             if (plusfiles) {
                 paramList.setParamString(PLUS_PARAM + "=" + plusfiles);
+                paramList.setParamString(ODIR_PARAM + "=" + "");
             } else {
                 paramList.setParamString("");
             }
@@ -171,6 +208,7 @@ public class MultilevelProcessorRow {
     public void clearConfigPanel() {
         cloProgramUI = null;
         configPanel = null;
+//        odirTextField.setText("");
         paramTextField.setText("");
         paramList = new ParamList();
     }
@@ -180,6 +218,7 @@ public class MultilevelProcessorRow {
         cleanIOParams(paramList);
         if (plusCheckBox.isSelected()) {
             paramList.addInfo(new ParamInfo(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
+            paramList.addInfo(new ParamInfo(ODIR_PARAM, ""));
         } else {
             paramList.addInfo(new ParamInfo(PLUS_PARAM, ParamInfo.BOOLEAN_FALSE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
         }
@@ -200,12 +239,25 @@ public class MultilevelProcessorRow {
             String oldParamString = getParamString();
             if (plusCheckBox.isSelected()) {
                 paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE);
+                paramList.setValue(ODIR_PARAM, "");
             } else {
                 paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
             }
             String str = getParamString();
             propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
         }
+    }
+
+    private void handleOdirChanged() {
+        String oldParamString = paramList.getParamString();
+        String odirName = odirSelector.getFilename();
+//        MultilevelProcessorRow row = getRow(MultlevelProcessorForm.Processor.MAIN.toString());
+        String oldOdir = paramList.getValue("odir");
+        if (odirName!= null && !odirName.equals(oldOdir)) {
+            paramList.setValue("odir", odirName);
+        }
+        String str = paramList.getParamString();
+        propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
     }
 
     private void handleParamTextField() {
@@ -223,6 +275,22 @@ public class MultilevelProcessorRow {
             propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
         }
     }
+
+//    private void handleOdirTextField() {
+//        createConfigPanel();
+//        String oldParamString = getParamString();
+//        String str = odirTextField.getText();
+//        ParamInfo param = paramList.getInfo(PLUS_PARAM);
+//        if (param != null) {
+//            str = str + " " + param.getParamString();
+//        }
+//        paramList.setParamString(str);
+//        str = getParamString();
+//        updateOdirTextField();
+//        if (!oldParamString.equals(str)) {
+//            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
+//        }
+//    }
 
     private void handleButtonEvent() {
         createConfigPanel();
@@ -266,6 +334,12 @@ public class MultilevelProcessorRow {
         plusCheckBox.setSelected(paramList.isValueTrue(PLUS_PARAM));
     }
 
+//    private void updateOdirSelector() {
+//        ParamList list = (ParamList) paramList.clone();
+//        list.removeInfo(PLUS_PARAM);
+//        odirTextField.setText(list.getParamString(" "));
+//    }
+
     private void updateParamTextField() {
         ParamList list = (ParamList) paramList.clone();
         list.removeInfo(PLUS_PARAM);
@@ -273,6 +347,7 @@ public class MultilevelProcessorRow {
     }
 
     private void updateParamList() {
+//        updateOdirSelector();
         updateParamTextField();
         updateplusCheckbox();
     }

@@ -117,6 +117,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private JLabel nameLabel;
     private JLabel plusLabel;
     private JLabel paramsLabel;
+    private JLabel odirLabel;
 
     private JPanel spacer;
 
@@ -259,6 +260,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         plusLabel.setFont(font);
         paramsLabel = new JLabel("Parameters");
         paramsLabel.setFont(font);
+        odirLabel = new JLabel("Odir");
+        odirLabel.setFont(font);
         spacer = new JPanel();
 
         chainPanel = new JPanel(new GridBagLayout());
@@ -269,6 +272,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, -8)));
         chainPanel.add(paramsLabel,
                 new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
+        chainPanel.add(odirLabel,
+                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
+
         createRows();
         int rowNum = 1;
         for (MultilevelProcessorRow row : rows) {
@@ -307,9 +313,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 Processor.L1BGEN,
                 Processor.L2GEN,
                 Processor.L2EXTRACT,
-                Processor.L2BIN,
                 Processor.L2BRSGEN,
 //                Processor.L2MAPGEN,
+                Processor.L2BIN,
                 Processor.L3BIN,
 //                Processor.SMIGEN,
                 Processor.L3MAPGEN
