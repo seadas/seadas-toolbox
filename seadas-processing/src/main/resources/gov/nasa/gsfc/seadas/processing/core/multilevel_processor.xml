@@ -6,6 +6,7 @@
         <parFileOptionName>par</parFileOptionName>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
+            <primaryOption>odir</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
