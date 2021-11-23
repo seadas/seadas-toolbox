@@ -20,10 +20,7 @@ import org.esa.snap.ui.AppContext;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -107,6 +104,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private JPanel importPanel;
     private JButton importParfileButton;
     private JCheckBox retainIFileCheckbox;
+    private JCheckBox overwriteCheckBox;
+    private JCheckBox use_existingCheckBox;
+    private JCheckBox deletefilesCheckBox;
+    private JCheckBox use_ancillaryCheckBox;
     private JButton exportParfileButton;
     private JTextArea parfileTextArea;
     private FileSelector odirSelectorOld;
@@ -118,6 +119,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private JLabel plusLabel;
     private JLabel paramsLabel;
     private JLabel odirLabel;
+    private JLabel ofilePatternLabel;
 
     private JPanel spacer;
 
@@ -130,6 +132,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     String xmlFileName;
     ProcessorModel processorModel;
     private SwingPropertyChangeSupport propertyChangeSupport;
+
+    private boolean checkboxControlHandlerEnabled = true;
 
     OCSSW ocssw;
 
@@ -179,6 +183,22 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             }
         });
 
+        overwriteCheckBox = new JCheckBox("overwrite");
+        overwriteCheckBox.setSelected(false);
+        overwriteCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleoverwriteCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
+
+        use_existingCheckBox = new JCheckBox("use_existing");
+        deletefilesCheckBox = new JCheckBox("delete_files");
+        use_ancillaryCheckBox = new JCheckBox("use_ancillaryLabel");
 
         primaryIOPanel = new JPanel(new GridBagLayout());
         primaryIOPanel.setBorder(BorderFactory.createTitledBorder("Primary I/O Files"));
@@ -187,6 +207,14 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         primaryIOPanel.add(odirSelector.getJPanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+//        primaryIOPanel.add(overwriteCheckBox,
+//                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+//        primaryIOPanel.add(use_existingCheckBox,
+//                new GridBagConstraintsCustom(1, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+//        primaryIOPanel.add(deletefilesCheckBox,
+//                new GridBagConstraintsCustom(2, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+//        primaryIOPanel.add(use_ancillaryCheckBox,
+//                new GridBagConstraintsCustom(3, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
 
@@ -260,8 +288,11 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         plusLabel.setFont(font);
         paramsLabel = new JLabel("Parameters");
         paramsLabel.setFont(font);
+        paramsLabel.setToolTipText("Parameters for the processor");
         odirLabel = new JLabel("Odir");
         odirLabel.setFont(font);
+        ofilePatternLabel = new JLabel("Ofile Pattern");
+        ofilePatternLabel.setFont(font);
         spacer = new JPanel();
 
         chainPanel = new JPanel(new GridBagLayout());
@@ -274,6 +305,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
         chainPanel.add(odirLabel,
                 new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
+        chainPanel.add(ofilePatternLabel,
+                new GridBagConstraintsCustom(4, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
 
         createRows();
         int rowNum = 1;
@@ -301,16 +334,16 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         Processor[] rowNames = {
                 Processor.MAIN,
                 Processor.MODIS_L1A,
+                Processor.GEO,
                 Processor.EXTRACTOR,
 //                Processor.L1AEXTRACT_MODIS,
 //                Processor.L1AEXTRACT_SEAWIFS,
 //                Processor.L1AEXTRACT_VIIRS,
-                Processor.L1BRSGEN,
 //                Processor.L1MAPGEN,
-                Processor.GEO,
 //                Processor.LEVEL_1B,
                 Processor.MODIS_L1B,
                 Processor.L1BGEN,
+                Processor.L1BRSGEN,
                 Processor.L2GEN,
                 Processor.L2EXTRACT,
                 Processor.L2BRSGEN,
@@ -664,5 +697,16 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
+    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
+        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
+    }
 
+    private void handleoverwriteCheckBox() {
+        boolean overwriteSelected = overwriteCheckBox.isSelected();
+
+        if (overwriteCheckBox.isSelected() != overwriteSelected) {
+            overwriteCheckBox.setSelected(overwriteSelected);
+//            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
+        }
+    }
 }
