@@ -30,9 +30,7 @@ public class MultilevelProcessorRow {
     public static final String PARAM_STRING_EVENT = "paramString";
 //    public static final String KEEPFILES_PARAM = "keepfiles";
     public static final String PLUS_PARAM = "plusToChain";
-//    public static final String DELETEFILES_PARAM = "deletefiles";
     public static final String ODIR_PARAM = "odir";
-    public static final String OFILEPATTERN_PARAM = "ofilepattern";
 
     private static final String LONGEST_BUTTON_LABEL = "multilevel_processor";
 
@@ -44,8 +42,6 @@ public class MultilevelProcessorRow {
 //    private JCheckBox keepCheckBox;
     private JCheckBox plusCheckBox;
     private JTextField paramTextField;
-    private JTextField ofilePatternTextField;
-//    private JFileChooser odirSelectorOld;
     private ActiveFileSelector odirSelector;
     private JPanel configPanel;
     private ParamList paramList;
@@ -111,29 +107,10 @@ public class MultilevelProcessorRow {
                 handleOdirChanged();
             }
         });
-
-        ofilePatternTextField = new JTextField();
-        ofilePatternTextField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleOfilePatternTextField();
-            }
-        });
-        ofilePatternTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                handleOfilePatternTextField();
-            }
-        });
 // todo made this change to fix problem where l2gen unchecks the box after user checks the box
         //      essentially now all config user at startup
 //        if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString()) || name.equals("l2gen")) {
-//            createConfigPanel();
+//            createConfigPanel();plus
 //        }
         if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
             createConfigPanel();
@@ -163,10 +140,6 @@ public class MultilevelProcessorRow {
         if (!name.equals("main")) {
             base.add(odirSelector.getJPanel(),
                     new GridBagConstraintsCustom(3, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
-        }
-        if (name.contains("brsgen") || name.contains("bin") || name.equals("l3mapgen")) {
-            base.add(ofilePatternTextField,
-                    new GridBagConstraintsCustom(4, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
         }
     }
 
@@ -202,7 +175,6 @@ public class MultilevelProcessorRow {
             if (plusfiles) {
                 paramList.setParamString(PLUS_PARAM + "=" + plusfiles);
                 paramList.setParamString(ODIR_PARAM + "=" + "");
-//                paramList.setParamString(OFILEPATTERN_PARAM + "=" + "");
             } else {
                 paramList.setParamString("");
             }
@@ -214,7 +186,6 @@ public class MultilevelProcessorRow {
     public void clearConfigPanel() {
         cloProgramUI = null;
         configPanel = null;
-        ofilePatternTextField.setText("");
         paramTextField.setText("");
         paramList = new ParamList();
     }
@@ -224,8 +195,9 @@ public class MultilevelProcessorRow {
         cleanIOParams(paramList);
         if (plusCheckBox.isSelected()) {
             paramList.addInfo(new ParamInfo(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
-            paramList.addInfo(new ParamInfo(ODIR_PARAM, ""));
-//            paramList.addInfo(new ParamInfo(OFILEPATTERN_PARAM, ""));
+            if (paramList.getInfo(ODIR_PARAM) == null) {
+                paramList.addInfo(new ParamInfo(ODIR_PARAM, ""));
+            }
         } else {
             paramList.addInfo(new ParamInfo(PLUS_PARAM, ParamInfo.BOOLEAN_FALSE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
         }
@@ -247,7 +219,6 @@ public class MultilevelProcessorRow {
             if (plusCheckBox.isSelected()) {
                 paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE);
                 paramList.setValue(ODIR_PARAM, "");
-//                paramList.setValue(OFILEPATTERN_PARAM, "");
             } else {
                 paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
             }
@@ -257,13 +228,20 @@ public class MultilevelProcessorRow {
     }
 
     private void handleOdirChanged() {
+        if (paramList.getParamArray().isEmpty()) {
+            createConfigPanel(true);
+            paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE);
+            if (paramList.getInfo(ODIR_PARAM) == null) {
+                paramList.addInfo(new ParamInfo(ODIR_PARAM, ""));
+            }
+        }
         String oldParamString = paramList.getParamString();
         String odirName = odirSelector.getFilename();
-//        MultilevelProcessorRow row = getRow(MultlevelProcessorForm.Processor.MAIN.toString());
         String oldOdir = paramList.getValue("odir");
-        if (odirName!= null && !odirName.equals(oldOdir)) {
+        if (odirName != null && !odirName.equals(oldOdir)) {
             paramList.setValue("odir", odirName);
         }
+        updateplusCheckbox();
         String str = paramList.getParamString();
         propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
     }
@@ -279,26 +257,7 @@ public class MultilevelProcessorRow {
         paramList.setParamString(str);
         str = getParamString();
         updateParamTextField();
-        if (!oldParamString.equals(str)) {
-            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
-        }
-    }
-
-    private void handleOfilePatternTextField() {
-//        createConfigPanel();
-        String oldParamString = getParamString();
-        String str = ofilePatternTextField.getText();
-        ParamInfo param_plusToChain = paramList.getInfo(PLUS_PARAM);
-        if (param_plusToChain != null) {
-            str = str + " " + param_plusToChain.getParamString();
-        }
-        ParamInfo param_odir = paramList.getInfo(ODIR_PARAM);
-        if (param_odir != null) {
-            str = str + " " + param_odir.getParamString();
-        }
-        paramList.setParamString(str);
-        str = getParamString();
-        updateOfilePatternTextField();
+        updateplusCheckbox();
         if (!oldParamString.equals(str)) {
             propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
         }
@@ -343,24 +302,28 @@ public class MultilevelProcessorRow {
     }
 
     private void updateplusCheckbox() {
-        plusCheckBox.setSelected(paramList.isValueTrue(PLUS_PARAM));
+        Boolean check = paramList.isValueTrue(PLUS_PARAM) || !paramList.isDefault();
+        plusCheckBox.setSelected(check);
     }
 
-    private void updateOfilePatternTextField() {
+    private void updateOdir() {
         ParamList list = (ParamList) paramList.clone();
         list.removeInfo(PLUS_PARAM);
-        list.removeInfo(ODIR_PARAM);
-        ofilePatternTextField.setText(list.getParamString(" "));
+        String str = paramList.getInfo(ODIR_PARAM).getValue();
+        odirSelector.getFileSelector().setFilename(str);
     }
 
     private void updateParamTextField() {
         ParamList list = (ParamList) paramList.clone();
         list.removeInfo(PLUS_PARAM);
+        if (list.getInfo("use_existing") == null) {
+            list.removeInfo(ODIR_PARAM);
+        }
         paramTextField.setText(list.getParamString(" "));
     }
 
     private void updateParamList() {
-        updateOfilePatternTextField();
+        updateOdir();
         updateParamTextField();
         updateplusCheckbox();
     }
