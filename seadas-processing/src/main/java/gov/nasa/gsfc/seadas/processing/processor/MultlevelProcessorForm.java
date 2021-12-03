@@ -119,7 +119,6 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private JLabel plusLabel;
     private JLabel paramsLabel;
     private JLabel odirLabel;
-    private JLabel ofilePatternLabel;
 
     private JPanel spacer;
 
@@ -183,22 +182,22 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             }
         });
 
-        overwriteCheckBox = new JCheckBox("overwrite");
-        overwriteCheckBox.setSelected(false);
-        overwriteCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (checkboxControlHandlerEnabled) {
-                    setCheckboxControlHandlerEnabled(false);
-                    handleoverwriteCheckBox();
-                    setCheckboxControlHandlerEnabled(true);
-                }
-            }
-        });
+//        overwriteCheckBox = new JCheckBox("overwrite");
+//        overwriteCheckBox.setSelected(false);
+//        overwriteCheckBox.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                if (checkboxControlHandlerEnabled) {
+//                    setCheckboxControlHandlerEnabled(false);
+//                    handleoverwriteCheckBox();
+//                    setCheckboxControlHandlerEnabled(true);
+//                }
+//            }
+//        });
 
-        use_existingCheckBox = new JCheckBox("use_existing");
-        deletefilesCheckBox = new JCheckBox("delete_files");
-        use_ancillaryCheckBox = new JCheckBox("use_ancillaryLabel");
+//        use_existingCheckBox = new JCheckBox("use_existing");
+//        deletefilesCheckBox = new JCheckBox("delete_files");
+//        use_ancillaryCheckBox = new JCheckBox("use_ancillaryLabel");
 
         primaryIOPanel = new JPanel(new GridBagLayout());
         primaryIOPanel.setBorder(BorderFactory.createTitledBorder("Primary I/O Files"));
@@ -291,8 +290,6 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         paramsLabel.setToolTipText("Parameters for the processor");
         odirLabel = new JLabel("Odir");
         odirLabel.setFont(font);
-        ofilePatternLabel = new JLabel("Ofile Pattern");
-        ofilePatternLabel.setFont(font);
         spacer = new JPanel();
 
         chainPanel = new JPanel(new GridBagLayout());
@@ -305,8 +302,6 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
         chainPanel.add(odirLabel,
                 new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
-        chainPanel.add(ofilePatternLabel,
-                new GridBagConstraintsCustom(4, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, -8, 2, 2)));
 
         createRows();
         int rowNum = 1;
@@ -560,10 +555,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             }
         }
 
-        if (stringBuilder.length() > 0) {
-            MultilevelProcessorRow row = getRow(section);
-            if (row != null) {
+        MultilevelProcessorRow row = getRow(section);
+        if (row != null) {
+            if (stringBuilder.length() > 0) {
                 row.setParamString(stringBuilder.toString(), retainIFile);
+            } else {
+                row.setParamString("plusToChain=1", retainIFile);
             }
         }
 
@@ -601,8 +598,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         }
 
         //todo this should not be needed but is needed at the moment because parfileTextArea doesn't trigger event in this case
-        String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
-        propertyChangeSupport.firePropertyChange(ODIR_EVENT, null, newODir);
+//        String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
+//        propertyChangeSupport.firePropertyChange(ODIR_EVENT, null, newODir);
 
 
         parfileTextArea.setText(getParamString());
@@ -697,16 +694,16 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
-    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
-        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
-    }
-
-    private void handleoverwriteCheckBox() {
-        boolean overwriteSelected = overwriteCheckBox.isSelected();
-
-        if (overwriteCheckBox.isSelected() != overwriteSelected) {
-            overwriteCheckBox.setSelected(overwriteSelected);
-//            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
-        }
-    }
+//    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
+//        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
+//    }
+//
+//    private void handleoverwriteCheckBox() {
+//        boolean overwriteSelected = overwriteCheckBox.isSelected();
+//
+//        if (overwriteCheckBox.isSelected() != overwriteSelected) {
+//            overwriteCheckBox.setSelected(overwriteSelected);
+////            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
+//        }
+//    }
 }

@@ -1,13 +1,13 @@
 package gov.nasa.gsfc.seadas.processing.processor;
 
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileSelector;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import org.esa.snap.rcp.SnapApp;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created with IntelliJ IDEA.
@@ -81,7 +81,7 @@ public class ActiveFileSelector {
         controlHandlerEnabled = false;
     }
 
-    private FileSelector getFileSelector() {
+    public FileSelector getFileSelector() {
         return fileSelector;
     }
 
