@@ -351,7 +351,7 @@ public class OCSSWServices {
                                      @PathParam("programName") String programName,
                                      File parFile) {
         Response.Status respStatus = Response.Status.OK;
-        System.out.println("par file path: " + parFile.getAbsolutePath());
+        System.out.println("mlp par file path: " + parFile.getAbsolutePath());
         if (parFile == null) {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
@@ -362,6 +362,21 @@ public class OCSSWServices {
         }
         return Response.status(respStatus).build();
     }
+
+    //todo
+    @PUT
+    @Path("executeParFile/{jobId}/{programName}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public <parFileName> Response executeParFile(@PathParam("jobId") String jobId,
+                                                 @PathParam("programName") String programName,
+                                                               String parFileName) {
+        Response.Status respStatus = Response.Status.OK;
+        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        ocsswRemote.executeWithParFile(jobId, programName, parFileName);
+        return Response.status(respStatus).build();
+    }
+
 
     @GET
     @Path("executeMLPParFile/{jobId}")
