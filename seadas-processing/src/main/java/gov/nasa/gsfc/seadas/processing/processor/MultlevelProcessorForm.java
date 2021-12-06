@@ -7,12 +7,12 @@ package gov.nasa.gsfc.seadas.processing.processor;
 
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.core.MultiParamList;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.AppContext;
@@ -20,7 +20,10 @@ import org.esa.snap.ui.AppContext;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -323,6 +326,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         setLayout(new GridBagLayout());
         add(tabbedPane, new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH));
 
+//        setMinimumSize(getPreferredSize());
+//        setMaximumSize(new Dimension(2000,2000));
     }
 
     void createRows() {
@@ -449,6 +454,15 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         for (MultilevelProcessorRow row : rows) {
             if (row.getName().equals(name)) {
                 return row;
+            } else {
+                if (name.equals("level 1b")) {
+                  if (row.getName().equals("modis_L1B")) {
+                      return row;
+                  }
+                  if (row.getName().equals("l1bgen_generic")) {
+                      return row;
+                  }
+                }
             }
         }
         return null;
@@ -552,6 +566,16 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         stringBuilder.append(line).append("\n");
                     }
                 }
+            } else {
+                MultilevelProcessorRow row = getRow(section);
+                if (row != null) {
+                    if (stringBuilder.length() > 0) {
+                        row.setParamString(stringBuilder.toString(), retainIFile);
+                    } else {
+                        row.setParamString("plusToChain=1", retainIFile);
+                    }
+                }
+
             }
         }
 
@@ -567,7 +591,25 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
         propertyChangeSupport.firePropertyChange(ODIR_EVENT, oldODir, newODir);
 
-
+        for (MultilevelProcessorRow row2 : rows) {
+            String name = row2.getName();
+            String plusToChain = row2.getParamList().getValue("plusToChain");
+            if (plusToChain != null && plusToChain.equals("1")){
+                if (name.equals("modis_L1B") || name.equals("l1bgen_generic")) {
+                    if (!str.contains("level 1b")) {
+                        row2.setParamValue("plusToChain", "0");
+                        row2.setParamValue("odir", "");
+                        row2.clearConfigPanel();
+                    }
+                } else {
+                    if (!str.contains(name)) {
+                        row2.setParamValue("plusToChain", "0");
+                        row2.setParamValue("odir", "");
+                        row2.clearConfigPanel();
+                    }
+                }
+            }
+        }
         updateParamString();
     }
 
