@@ -24,8 +24,8 @@ public class ProcessorTypeInfo {
         CALIBRATE_VIIRS,
         L1BRSGEN,
         L2BRSGEN,
-        L1MAPGEN,
-        L2MAPGEN,
+//        L1MAPGEN,
+//        L2MAPGEN,
         L2BIN,
         L2BIN_AQUARIUS,
         L3BIN,
@@ -64,8 +64,8 @@ public class ProcessorTypeInfo {
         put("calibrate_viirs", ProcessorID.CALIBRATE_VIIRS);
         put("l1brsgen", ProcessorID.L1BRSGEN);
         put("l2brsgen", ProcessorID.L2BRSGEN);
-        put("l1mapgen", ProcessorID.L1MAPGEN);
-        put("l2mapgen", ProcessorID.L2MAPGEN);
+//        put("l1mapgen", ProcessorID.L1MAPGEN);
+//        put("l2mapgen", ProcessorID.L2MAPGEN);
         put("l2bin", ProcessorID.L2BIN);
         put("l2bin_aquarius", ProcessorID.L2BIN_AQUARIUS);
         put("l2gen", ProcessorID.L2GEN);
