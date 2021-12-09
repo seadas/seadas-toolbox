@@ -17,12 +17,12 @@ public class SeadasProcessorInfo {
         L1AGEN,
         GEOGEN,
         L1BGEN,
-        L1MAPGEN,
+//        L1MAPGEN,
         L1BRSGEN,
         L2EXTRACT,
         L2GEN,
         L2GEN_AQUARIUS,
-        L2MAPGEN,
+//        L2MAPGEN,
         L2BRSGEN,
         L2BIN,
         L3BIN,
@@ -103,8 +103,8 @@ public class SeadasProcessorInfo {
                         return "l1bgen_generic";
                     }
 
-                case L1MAPGEN:
-                    return "l1mapgen";
+//                case L1MAPGEN:
+//                    return "l1mapgen";
                 case L1BRSGEN:
                     return "l1brsgen";
                 case L2EXTRACT:
@@ -113,8 +113,8 @@ public class SeadasProcessorInfo {
                     return "l2gen";
                 case L2GEN_AQUARIUS:
                     return "l2gen_aquarius";
-                case L2MAPGEN:
-                    return "l2mapgen";
+//                case L2MAPGEN:
+//                    return "l2mapgen";
                 case L2BRSGEN:
                     return "l2brsgen";
                 case L2BIN:
@@ -154,8 +154,8 @@ public class SeadasProcessorInfo {
                         iFileInfo.isGeofileRequired();
             case L1BGEN:
                 return iFileInfo.isSupportedMission();
-            case L1MAPGEN:
-                return iFileInfo.isSupportedMission();
+//            case L1MAPGEN:
+//                return iFileInfo.isSupportedMission();
             case L1BRSGEN:
                 return iFileInfo.isSupportedMission();
             case L2EXTRACT:
@@ -164,8 +164,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isSupportedMission();
             case L2GEN_AQUARIUS:
                 return iFileInfo.isSupportedMission();
-            case L2MAPGEN:
-                return iFileInfo.isSupportedMission();
+//            case L2MAPGEN:
+//                return iFileInfo.isSupportedMission();
             case L2BRSGEN:
                 return iFileInfo.isSupportedMission();
             case L2BIN:
@@ -201,8 +201,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L1A);
             case L1BGEN:
                 return isValidL2genFileType(iFileInfo); // same requirements as L2GEN
-            case L1MAPGEN:
-                return isValidL2genFileType(iFileInfo); // same requirements as L2GEN
+//            case L1MAPGEN:
+//                return isValidL2genFileType(iFileInfo); // same requirements as L2GEN
             case L1BRSGEN:
                 return isValidL2genFileType(iFileInfo); // same requirements as L2GEN
             case L2EXTRACT:
@@ -211,8 +211,8 @@ public class SeadasProcessorInfo {
                 return isValidL2genFileType(iFileInfo);
             case L2GEN_AQUARIUS:
                 return isValidL2genFileType(iFileInfo);
-            case L2MAPGEN:
-                return iFileInfo.isTypeId(FileTypeInfo.Id.L2);
+//            case L2MAPGEN:
+//                return iFileInfo.isTypeId(FileTypeInfo.Id.L2);
             case L2BRSGEN:
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L2);
             case L2BIN:
