@@ -45,6 +45,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //        L1MAPGEN("l1mapgen"),
         GEO("geo"),
         MODIS_L1B("modis_L1B"),
+        CALIBRATE_VIIRS("calibrate_viirs"),
 //        LEVEL_1B("level 1b"),
         L1BGEN("l1bgen_generic"),
         L1BRSGEN("l1brsgen"),
@@ -128,6 +129,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     public String MAIN_PARSTRING_EVENT = "MAIN_PARSTRING_EVENT";
     static public String ODIR_EVENT = "ODIR";
     static public final String IFILE = "ifile";
+    public String missionName;
+    public FileInfoFinder fileInfoFinder;
 
     private ArrayList<MultilevelProcessorRow> rows;
 
@@ -342,6 +345,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //                Processor.L1MAPGEN,
 //                Processor.LEVEL_1B,
                 Processor.MODIS_L1B,
+                Processor.CALIBRATE_VIIRS,
                 Processor.L1BGEN,
                 Processor.L1BRSGEN,
                 Processor.L2GEN,
@@ -384,10 +388,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             String name = row.getName();
             ParamList list = (ParamList) row.getParamList().clone();
             list.removeInfo("plusToChain");
-            if (name.equals("modis_L1B") && !list.getParamArray().isEmpty()) {
-                name = "level 1b";
-            }
-            if (name.equals("l1bgen_generic") && !list.getParamArray().isEmpty()) {
+            if ((name.equals("modis_L1B") || name.equals("calibrate_viirs") || name.equals("l1bgen_generic")) &&
+                    !list.getParamArray().isEmpty()) {
                 name = "level 1b";
             }
             paramList.addParamList(name, list);
@@ -400,10 +402,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultiParamList paramList = new MultiParamList();
         for (MultilevelProcessorRow row : rows) {
             String name = row.getName();
-            if (name.equals("modis_L1B") && !row.getParamList().getParamArray().isEmpty()) {
-                name = "level 1b";
-            }
-            if (name.equals("l1bgen_generic") && !row.getParamList().getParamArray().isEmpty()) {
+            if ((name.equals("modis_L1B") || name.equals("calibrate_viirs") || name.equals("l1bgen_generic")) &&
+                    !row.getParamList().getParamArray().isEmpty()) {
                 name = "level 1b";
             }
             paramList.addParamList(name, row.getParamList());
@@ -456,12 +456,21 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 return row;
             } else {
                 if (name.equals("level 1b")) {
-                  if (row.getName().equals("modis_L1B")) {
-                      return row;
-                  }
-                  if (row.getName().equals("l1bgen_generic")) {
-                      return row;
-                  }
+                    if (row.getName().equals("modis_L1B")) {
+                        if (missionName != null && missionName.contains("MODIS")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals("calibrate_viirs")) {
+                        if (missionName != null && missionName.contains("VIIRS")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals("l1bgen_generic")) {
+                        if (missionName != null && missionName.contains("VIIRS")) {
+                            return row;
+                        }
+                    }
                 }
             }
         }
@@ -595,7 +604,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             String name = row2.getName();
             String plusToChain = row2.getParamList().getValue("plusToChain");
             if (plusToChain != null && plusToChain.equals("1")){
-                if (name.equals("modis_L1B") || name.equals("l1bgen_generic")) {
+                if (name.equals("modis_L1B") || name.equals("calibrate_viirs") ||name.equals("l1bgen_generic")) {
                     if (!str.contains("level 1b")) {
                         row2.setParamValue("plusToChain", "0");
                         row2.setParamValue("odir", "");
@@ -693,6 +702,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //            getRow("l2gen").clearConfigPanel();
 
             row.setParamValue(IFILE, ifileName);
+            fileInfoFinder = new FileInfoFinder(ifileName, ocssw);
+            missionName = fileInfoFinder.getMissionName();
             parfileTextArea.setText(getParamString());
         }
     }
