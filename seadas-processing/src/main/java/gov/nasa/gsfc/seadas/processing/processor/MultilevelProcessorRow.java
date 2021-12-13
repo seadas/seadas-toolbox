@@ -307,9 +307,12 @@ public class MultilevelProcessorRow {
     }
 
     private void updateOdir() {
+        String str = "";
         ParamList list = (ParamList) paramList.clone();
         list.removeInfo(PLUS_PARAM);
-        String str = paramList.getInfo(ODIR_PARAM).getValue();
+        if (paramList.getInfo(ODIR_PARAM) != null) {
+           str = paramList.getInfo(ODIR_PARAM).getValue();
+        }
         odirSelector.getFileSelector().setFilename(str);
     }
 
