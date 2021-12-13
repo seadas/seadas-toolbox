@@ -43,7 +43,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //        L1AEXTRACT_VIIRS("l1aextract_viirs"),
         EXTRACTOR("l1aextract"),
 //        L1MAPGEN("l1mapgen"),
-        GEO("geo"),
+//        GEO("geo"),
+        GEOLOCATE_HAWKEYE("geolocate_hawkeye"),
+        GEOLOCATE_VIIRS("geolocate_viirs"),
+        MODIS_GEO("modis_GEO"),
         MODIS_L1B("modis_L1B"),
         CALIBRATE_VIIRS("calibrate_viirs"),
 //        LEVEL_1B("level 1b"),
@@ -337,7 +340,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         Processor[] rowNames = {
                 Processor.MAIN,
                 Processor.MODIS_L1A,
-                Processor.GEO,
+//                Processor.GEO,
+                Processor.GEOLOCATE_HAWKEYE,
+                Processor.GEOLOCATE_VIIRS,
+                Processor.MODIS_GEO,
                 Processor.EXTRACTOR,
 //                Processor.L1AEXTRACT_MODIS,
 //                Processor.L1AEXTRACT_SEAWIFS,
@@ -392,6 +398,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     !list.getParamArray().isEmpty()) {
                 name = "level 1b";
             }
+            if ((name.equals("modie_GEO") || name.equals("geolocate_hawkeye") || name.equals("geolocate_viirs")) &&
+                    !list.getParamArray().isEmpty()) {
+                name = "geo";
+            }
             paramList.addParamList(name, list);
 //            paramList.addParamList(name, row.getParamList());
         }
@@ -402,10 +412,63 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultiParamList paramList = new MultiParamList();
         for (MultilevelProcessorRow row : rows) {
             String name = row.getName();
-            if ((name.equals("modis_L1B") || name.equals("calibrate_viirs") || name.equals("l1bgen_generic")) &&
-                    !row.getParamList().getParamArray().isEmpty()) {
-                name = "level 1b";
+//            if (((name.equals("modis_L1B") && missionName.contains("MODIS")) ||
+//                    (name.equals("calibrate_viirs") && missionName.contains("VIIRS")) ||
+//                    name.equals("l1bgen_generic")) &&
+//                    !row.getParamList().getParamArray().isEmpty()) {
+//                name = "level 1b";
+//            }
+            if (!row.getParamList().getParamArray().isEmpty()){
+                if (name.equals("modis_L1B")) {
+                    if (missionName.contains("MODIS")) {
+                        name = "level 1b";
+                    } else {
+                        row.setParamValue("plusToChain", "0");
+                        System.err.println("Error: can't do modis_L1B on the ifile");
+                    }
+                } else if (name.equals("calibrate_viirs")) {
+                    if (missionName.contains("VIIRS")) {
+                        name = "level 1b";
+                    } else {
+                        row.setParamValue("plusToChain", "0");
+                        System.err.println("Error: can't do calibrate_viirs on the ifile");
+                    }
+                } else if (name.equals("l1bgen_generic")) {
+                    if (!missionName.contains("MODIS") && !missionName.contains("VIIRS")) {
+                        name = "level 1b";
+                    } else {
+                        row.setParamValue("plusToChain", "0");
+                        System.err.println("Error: can't do l1bgen_generic on the ifile");
+                    }
+                } else if (name.equals("modis_GEO")) {
+                    if (missionName.contains("MODIS")) {
+                        name = "geo";
+                    } else {
+                        row.setParamValue("plusToChain", "0");
+                        System.err.println("Error: can't do modis_GEO on the ifile");
+                    }
+                } else if (name.equals("geolocate_hawkeye")) {
+                    if (missionName.contains("HAWKEYE")) {
+                        name = "geo";
+                    } else {
+                        row.setParamValue("plusToChain", "0");
+                        System.err.println("Error: can't do calibrate_hawkeye on the ifile");
+                    }
+                } else if (name.equals("geolocate_viirs")) {
+                    if (missionName.contains("VIIRS")) {
+                        name = "geo";
+                    } else {
+                        row.setParamValue("plusToChain", "0");
+                        System.err.println("Error: can't do calibrate_viirs on the ifile");
+                    }
+                }
             }
+//            if (((name.equals("modis_GEO") && missionName.contains("MODIS")) ||
+//                    (name.equals("geolocate_hawkeye") && missionName.contains("HAWKEYE")) ||
+//                    (name.equals("geolocate_viirs") && missionName.contains("VIIRS"))) &&
+//                    !row.getParamList().getParamArray().isEmpty()) {
+//                name = "geo";
+//            }
             paramList.addParamList(name, row.getParamList());
         }
         return paramList;
@@ -467,6 +530,23 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         }
                     }
                     if (row.getName().equals("l1bgen_generic")) {
+                        if (missionName != null && !missionName.contains("MODIS") && !missionName.contains("VIIRS")) {
+                            return row;
+                        }
+                    }
+                }
+                if (name.equals("geo")) {
+                    if (row.getName().equals("modis_GEO")) {
+                        if (missionName != null && missionName.contains("MODIS")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals("geolocate_hawkeye")) {
+                        if (missionName != null && missionName.contains("HAWKEYE")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals("geolocate_viirs")) {
                         if (missionName != null && missionName.contains("VIIRS")) {
                             return row;
                         }
@@ -610,6 +690,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         row2.setParamValue("odir", "");
                         row2.clearConfigPanel();
                     }
+                } else if (name.equals("modis_GEO") || name.equals("geolocate_hawkeye") ||name.equals("geolocate_viirs")) {
+                    if (!str.contains("geo")) {
+                        row2.setParamValue("plusToChain", "0");
+                        row2.setParamValue("odir", "");
+                        row2.clearConfigPanel();
+                    }
                 } else {
                     if (!str.contains(name)) {
                         row2.setParamValue("plusToChain", "0");
@@ -698,12 +784,28 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultilevelProcessorRow row = getRow(Processor.MAIN.toString());
         String oldIFile = row.getParamList().getValue(IFILE);
         if (!ifileName.equals(oldIFile)) {
-
-//            getRow("l2gen").clearConfigPanel();
-
-            row.setParamValue(IFILE, ifileName);
+            if (missionName != null) {
+                if (missionName.contains("HAWKEYE")) {
+                    MultilevelProcessorRow row_geo_hawkeye = getRow(Processor.GEOLOCATE_HAWKEYE.toString());
+                    row_geo_hawkeye.setParamValue("plusToChain", "0");
+                } else if (missionName.contains("VIIRS")) {
+                    MultilevelProcessorRow row_cal_viirs= getRow(Processor.CALIBRATE_VIIRS.toString());
+                    MultilevelProcessorRow row_geo_viirs = getRow(Processor.GEOLOCATE_VIIRS.toString());
+                    row_cal_viirs.setParamValue("plusToChain", "0");
+                    row_geo_viirs.setParamValue("plusToChain", "0");
+                } else if (missionName.contains("MODIS")) {
+                    MultilevelProcessorRow row_modis_geo= getRow(Processor.MODIS_GEO.toString());
+                    MultilevelProcessorRow row_modis_l1b = getRow(Processor.MODIS_L1B.toString());
+                    row_modis_geo.setParamValue("plusToChain", "0");
+                    row_modis_l1b.setParamValue("plusToChain", "0");
+                } else {
+                    MultilevelProcessorRow row_l1bgen = getRow(Processor.L1BGEN.toString());
+                    row_l1bgen.setParamValue("plusToChain", "0");
+                }
+            }
             fileInfoFinder = new FileInfoFinder(ifileName, ocssw);
             missionName = fileInfoFinder.getMissionName();
+            row.setParamValue(IFILE, ifileName);
             parfileTextArea.setText(getParamString());
         }
     }
