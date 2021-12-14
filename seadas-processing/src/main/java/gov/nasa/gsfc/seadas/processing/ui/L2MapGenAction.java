@@ -21,10 +21,10 @@ import javax.swing.*;
         displayName = "#CTL_ L2MapGenAction_Name",
         popupText = "#CTL_ L2MapGenAction_Name"
 )
-@ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 140
-)
+//@ActionReference(
+//        path = "Menu/SeaDAS-OCSSW",
+//        position = 140
+//)
 @NbBundle.Messages({
         "CTL_L2MapGenAction_Name=l2mapgen...",
         "CTL_L2MapGenAction_ProgramName=l2mapgen",
