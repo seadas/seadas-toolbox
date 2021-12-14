@@ -190,6 +190,11 @@ public class MultilevelProcessorRow {
         paramList = new ParamList();
     }
 
+    public void deselectPlusCheckBox() {
+        plusCheckBox.setSelected(false);
+        paramList.clear();
+    }
+
     private void getParamListFromCloProgramUI() {
         paramList = (ParamList) cloProgramUI.getProcessorModel().getParamList().clone();
         cleanIOParams(paramList);

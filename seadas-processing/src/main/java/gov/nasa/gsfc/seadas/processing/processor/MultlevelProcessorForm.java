@@ -423,43 +423,73 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     if (missionName.contains("MODIS")) {
                         name = "level 1b";
                     } else {
-                        row.setParamValue("plusToChain", "0");
-                        System.err.println("Error: can't do modis_L1B on the ifile");
+//                        row.setParamValue("plusToChain", "0");
+//                        row.setParamString("plusToChain=0", true);
+//                        row.getParamList().clear();
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR: can't do modis_L1B on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
                 } else if (name.equals("calibrate_viirs")) {
                     if (missionName.contains("VIIRS")) {
                         name = "level 1b";
                     } else {
-                        row.setParamValue("plusToChain", "0");
-                        System.err.println("Error: can't do calibrate_viirs on the ifile");
+//                        row.setParamValue("plusToChain", "0");
+//                        row.setParamString("plusToChain=0", true);
+//                        row.getParamList().clear();
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do calibrate_viirs on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
                 } else if (name.equals("l1bgen_generic")) {
                     if (!missionName.contains("MODIS") && !missionName.contains("VIIRS")) {
                         name = "level 1b";
                     } else {
-                        row.setParamValue("plusToChain", "0");
-                        System.err.println("Error: can't do l1bgen_generic on the ifile");
+//                        row.setParamValue("plusToChain", "0");
+//                        row.setParamString("plusToChain=0", true);
+//                        row.getParamList().clear();
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do l1bgen_generic on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
                 } else if (name.equals("modis_GEO")) {
                     if (missionName.contains("MODIS")) {
                         name = "geo";
                     } else {
-                        row.setParamValue("plusToChain", "0");
-                        System.err.println("Error: can't do modis_GEO on the ifile");
+                        row.deselectPlusCheckBox();
+//                        row.setParamString("plusToChain=0", true);
+//                        row.getParamList().clear();
+//                        row.setParamValue("plusToChain", "0");
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do modis_GEO on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
                 } else if (name.equals("geolocate_hawkeye")) {
                     if (missionName.contains("HAWKEYE")) {
                         name = "geo";
                     } else {
-                        row.setParamValue("plusToChain", "0");
-                        System.err.println("Error: can't do calibrate_hawkeye on the ifile");
+//                        row.setParamValue("plusToChain", "0");
+//                        row.setParamString("plusToChain=0", true);
+//                        row.getParamList().clear();
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do geolocate__hawkeye on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
                 } else if (name.equals("geolocate_viirs")) {
                     if (missionName.contains("VIIRS")) {
                         name = "geo";
                     } else {
-                        row.setParamValue("plusToChain", "0");
-                        System.err.println("Error: can't do calibrate_viirs on the ifile");
+//                        row.setParamValue("plusToChain", "0");
+//                        row.setParamString("plusToChain=0", true);
+//                        row.getParamList().clear();
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do do geolocate_viirs on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
                 }
             }
