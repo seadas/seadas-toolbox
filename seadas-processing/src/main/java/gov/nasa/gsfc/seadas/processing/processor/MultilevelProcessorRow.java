@@ -286,7 +286,14 @@ public class MultilevelProcessorRow {
         // load the UI with the current param values
         ParamList list = (ParamList) paramList.clone();
         list.removeInfo(PLUS_PARAM);
-        cloProgramUI.setParamString(list.getParamString("\n"));
+        String paramString_orig = list.getParamString("\n");
+        if (paramString_orig.contains("=\"")) {
+            String paramString_trim = paramString_orig.replaceAll("\"", "");
+            cloProgramUI.setParamString(paramString_trim);
+        } else {
+            cloProgramUI.setParamString(paramString_orig);
+        }
+//        cloProgramUI.setParamString(list.getParamString("\n"));
         String oldUIParamString = cloProgramUI.getParamString();
 
         final int dialogResult = modalDialog.show();
