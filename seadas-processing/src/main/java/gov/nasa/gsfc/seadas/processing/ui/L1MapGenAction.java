@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.ui;
 import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 
@@ -21,10 +20,10 @@ import javax.swing.*;
         displayName = "#CTL_ L1MapGenAction_Name",
         popupText = "#CTL_ L1MapGenAction_Name"
 )
-@ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 100
-)
+//@ActionReference(
+//        path = "Menu/SeaDAS-OCSSW",
+//        position = 100
+//)
 @NbBundle.Messages({
         "CTL_L1MapGenAction_Name=l1mapgen...",
         "CTL_L1MapGenAction_ProgramName=l1mapgen",
