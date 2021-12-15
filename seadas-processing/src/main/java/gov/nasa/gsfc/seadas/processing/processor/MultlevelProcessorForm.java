@@ -20,10 +20,7 @@ import org.esa.snap.ui.AppContext;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -104,7 +101,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private final JTabbedPane tabbedPane;
 
     private JPanel mainPanel;
+    private JPanel primaryPanel;
     private JPanel primaryIOPanel;
+    private JPanel primaryOptionPanel;
     private SeadasFileSelector sourceProductFileSelector;
     private JScrollPane parfileScrollPane;
     private JPanel parfilePanel;
@@ -191,22 +190,57 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             }
         });
 
-//        overwriteCheckBox = new JCheckBox("overwrite");
-//        overwriteCheckBox.setSelected(false);
-//        overwriteCheckBox.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                if (checkboxControlHandlerEnabled) {
-//                    setCheckboxControlHandlerEnabled(false);
-//                    handleoverwriteCheckBox();
-//                    setCheckboxControlHandlerEnabled(true);
-//                }
-//            }
-//        });
+        overwriteCheckBox = new JCheckBox("overwrite");
+        overwriteCheckBox.setSelected(false);
+        overwriteCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleoverwriteCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
 
-//        use_existingCheckBox = new JCheckBox("use_existing");
-//        deletefilesCheckBox = new JCheckBox("delete_files");
-//        use_ancillaryCheckBox = new JCheckBox("use_ancillaryLabel");
+        use_existingCheckBox = new JCheckBox("use_existing");
+        use_existingCheckBox.setSelected(false);
+        use_existingCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleuse_existingCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
+
+        deletefilesCheckBox = new JCheckBox("deletefiles");
+        deletefilesCheckBox.setSelected(false);
+        deletefilesCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handledeletefilesCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
+
+        use_ancillaryCheckBox = new JCheckBox("use_ancillary");
+        use_ancillaryCheckBox.setSelected(false);
+        use_ancillaryCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleuse_ancillaryCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
 
         primaryIOPanel = new JPanel(new GridBagLayout());
         primaryIOPanel.setBorder(BorderFactory.createTitledBorder("Primary I/O Files"));
@@ -215,14 +249,22 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         primaryIOPanel.add(odirSelector.getJPanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(overwriteCheckBox,
-//                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(use_existingCheckBox,
-//                new GridBagConstraintsCustom(1, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(deletefilesCheckBox,
-//                new GridBagConstraintsCustom(2, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(use_ancillaryCheckBox,
-//                new GridBagConstraintsCustom(3, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+        primaryOptionPanel = new JPanel(new GridBagLayout());
+        primaryOptionPanel.add(overwriteCheckBox,
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryOptionPanel.add(use_existingCheckBox,
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryOptionPanel.add(deletefilesCheckBox,
+                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryOptionPanel.add(use_ancillaryCheckBox,
+                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+        primaryPanel = new JPanel(new GridBagLayout());
+        primaryPanel.add(primaryIOPanel,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryPanel.add(primaryOptionPanel,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
 
@@ -282,7 +324,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 2));
 
         mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.add(primaryIOPanel,
+        mainPanel.add(primaryPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         mainPanel.add(parfilePanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
@@ -315,8 +357,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         createRows();
         int rowNum = 1;
         for (MultilevelProcessorRow row : rows) {
-            row.attachComponents(chainPanel, rowNum);
-            rowNum++;
+            if (!row.getName().equals("main")) {
+                row.attachComponents(chainPanel, rowNum);
+                rowNum++;
+            }
         }
         chainPanel.add(spacer,
                 new GridBagConstraintsCustom(0, rowNum, 0, 1, GridBagConstraints.WEST, GridBagConstraints.VERTICAL));
@@ -705,6 +749,28 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             } else {
                 row.setParamString("plusToChain=1", retainIFile);
             }
+            if (row.getName().equals("main")) {
+                if (row.getParamList().getValue("overwrite").equals("1")) {
+                    overwriteCheckBox.setSelected(true);
+                } else {
+                    overwriteCheckBox.setSelected(false);
+                }
+                if (row.getParamList().getValue("use_existing").equals("1")) {
+                    use_existingCheckBox.setSelected(true);
+                } else {
+                    use_existingCheckBox.setSelected(false);
+                }
+                if (row.getParamList().getValue("deletefiles").equals("1")) {
+                    deletefilesCheckBox.setSelected(true);
+                } else {
+                    deletefilesCheckBox.setSelected(false);
+                }
+                if (row.getParamList().getValue("use_ancillary").equals("1")) {
+                    use_ancillaryCheckBox.setSelected(true);
+                } else {
+                    use_ancillaryCheckBox.setSelected(false);
+                }
+            }
         }
 
         String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
@@ -879,16 +945,63 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
-//    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
-//        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
-//    }
-//
-//    private void handleoverwriteCheckBox() {
-//        boolean overwriteSelected = overwriteCheckBox.isSelected();
-//
-//        if (overwriteCheckBox.isSelected() != overwriteSelected) {
-//            overwriteCheckBox.setSelected(overwriteSelected);
-////            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
-//        }
-//    }
+    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
+        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
+    }
+
+    private void handleoverwriteCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (overwriteCheckBox.isSelected()) {
+            paramList.setValue("overwrite", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("overwrite", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void handleuse_existingCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (use_existingCheckBox.isSelected()) {
+            paramList.setValue("use_existing", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("use_existing", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void handledeletefilesCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (deletefilesCheckBox.isSelected()) {
+            paramList.setValue("deletefiles", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("deletefiles", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void handleuse_ancillaryCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (use_ancillaryCheckBox.isSelected()) {
+            paramList.setValue("use_ancillary", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("use_ancillary", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
 }

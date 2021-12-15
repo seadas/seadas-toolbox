@@ -137,10 +137,10 @@ public class MultilevelProcessorRow {
         base.add(paramTextField,
                 new GridBagConstraintsCustom(2, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
 
-        if (!name.equals("main")) {
-            base.add(odirSelector.getJPanel(),
-                    new GridBagConstraintsCustom(3, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
-        }
+//        if (!name.equals("main")) {
+        base.add(odirSelector.getJPanel(),
+                new GridBagConstraintsCustom(3, row, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 0, 2, 2)));
+//        }
     }
 
     private void createConfigPanel() {
