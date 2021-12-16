@@ -693,6 +693,28 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             if (row != null) {
                                 row.setParamString(stringBuilder.toString(), retainIFile);
                             }
+                            if (row.getName().equals("main")) {
+                                if (row.getParamList().getValue("overwrite").equals("1")) {
+                                    overwriteCheckBox.setSelected(true);
+                                } else {
+                                    overwriteCheckBox.setSelected(false);
+                                }
+                                if (row.getParamList().getValue("use_existing").equals("1")) {
+                                    use_existingCheckBox.setSelected(true);
+                                } else {
+                                    use_existingCheckBox.setSelected(false);
+                                }
+                                if (row.getParamList().getValue("deletefiles").equals("1")) {
+                                    deletefilesCheckBox.setSelected(true);
+                                } else {
+                                    deletefilesCheckBox.setSelected(false);
+                                }
+                                if (row.getParamList().getValue("use_ancillary").equals("1")) {
+                                    use_ancillaryCheckBox.setSelected(true);
+                                } else {
+                                    use_ancillaryCheckBox.setSelected(false);
+                                }
+                            }
                             stringBuilder.setLength(0);
                         }
 
@@ -736,6 +758,28 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         row.setParamString(stringBuilder.toString(), retainIFile);
                     } else {
                         row.setParamString("plusToChain=1", retainIFile);
+                    }
+                    if (row.getName().equals("main")) {
+                        if (row.getParamList().getValue("overwrite").equals("1")) {
+                            overwriteCheckBox.setSelected(true);
+                        } else {
+                            overwriteCheckBox.setSelected(false);
+                        }
+                        if (row.getParamList().getValue("use_existing").equals("1")) {
+                            use_existingCheckBox.setSelected(true);
+                        } else {
+                            use_existingCheckBox.setSelected(false);
+                        }
+                        if (row.getParamList().getValue("deletefiles").equals("1")) {
+                            deletefilesCheckBox.setSelected(true);
+                        } else {
+                            deletefilesCheckBox.setSelected(false);
+                        }
+                        if (row.getParamList().getValue("use_ancillary").equals("1")) {
+                            use_ancillaryCheckBox.setSelected(true);
+                        } else {
+                            use_ancillaryCheckBox.setSelected(false);
+                        }
                     }
                 }
 

@@ -225,9 +225,16 @@ public class MultilevelProcessorRow {
                 paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE);
                 paramList.setValue(ODIR_PARAM, "");
             } else {
+                paramList.clear();
+                paramList.addInfo(new ParamInfo(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE, ParamInfo.Type.BOOLEAN, ParamInfo.BOOLEAN_FALSE));
                 paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
             }
+            updateParamTextField();
+            updateOdir();
             String str = getParamString();
+            if (!plusCheckBox.isSelected()) {
+                paramList.clear();
+            }
             propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
         }
     }
@@ -236,9 +243,9 @@ public class MultilevelProcessorRow {
         if (paramList.getParamArray().isEmpty()) {
             createConfigPanel(true);
             paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE);
-            if (paramList.getInfo(ODIR_PARAM) == null) {
-                paramList.addInfo(new ParamInfo(ODIR_PARAM, ""));
-            }
+        }
+        if (paramList.getInfo(ODIR_PARAM) == null) {
+            paramList.addInfo(new ParamInfo(ODIR_PARAM, ""));
         }
         String oldParamString = paramList.getParamString();
         String odirName = odirSelector.getFilename();
@@ -253,6 +260,10 @@ public class MultilevelProcessorRow {
 
     private void handleParamTextField() {
         createConfigPanel();
+        if (paramList.getParamArray().isEmpty()) {
+            getParamListFromCloProgramUI();
+            paramList.setParamString("");
+        }
         String oldParamString = getParamString();
         String str = paramTextField.getText();
         ParamInfo param = paramList.getInfo(PLUS_PARAM);
