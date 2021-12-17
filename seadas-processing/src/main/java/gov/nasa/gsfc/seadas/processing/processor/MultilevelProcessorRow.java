@@ -249,9 +249,9 @@ public class MultilevelProcessorRow {
         }
         String oldParamString = paramList.getParamString();
         String odirName = odirSelector.getFilename();
-        String oldOdir = paramList.getValue("odir");
+        String oldOdir = paramList.getValue(ODIR_PARAM);
         if (odirName != null && !odirName.equals(oldOdir)) {
-            paramList.setValue("odir", odirName);
+            paramList.setValue(ODIR_PARAM, odirName);
         }
         updateplusCheckbox();
         String str = paramList.getParamString();
