@@ -213,18 +213,21 @@
 
 <ul>
     <li><a href="ProcessModis_L1A.html">modis_L1A</a></li>
-    <li><a href="ProcessL1aextract_seawifs.html">l1aextract_seawifs</a></li>
+    <li><a href="ProcessModis_GEO.html">modi_GEO</a></li>
+    <li><a href="ProcessGeolocate_hawkeye.html">geolocate_hawkeye</a></li>
+    <li><a href="ProcessGeolocate_viirs.html">geolocate_viirs</a></li>
+<!--    <li><a href="ProcessL1aextract_modis.html">l1aextract_modis</a></li>-->
+<!--    <li><a href="ProcessL1aextract_seawifs.html">l1aextract_seawifs</a></li>-->
+<!--    <li><a href="ProcessL1aextract_viirs.html">l1aextract_viirs</a></li>-->
+    <li><a href="ProcessExtractors.html">l1aextract</a></li>
     <li><a href="ProcessL1brsgen.html">l1brsgen</a></li>
-    <li><a href="ProcessL1mapsen.html">l1mapgen</a></li>
-    <li><a href="ProcessModis_GEO.html">geo</a></li>
-    <li><a href="ProcessL1aextract_modis.html">l1aextract_modis</a></li>
     <li><a href="ProcessModis_L1B.html">modis_L1B</a></li>
-    <li><a href="ProcessL1bgen.html">l1bgen</a></li>
+    <li><a href="ProcessCalibrate_viirs.html">calibrate_viirs</a></li>
+    <li><a href="ProcessL1bgen_generic.html">l1bgen_generic</a></li>
     <li><a href="ProcessL2gen.html">l2gen</a></li>
     <li><a href="ProcessL2extract.html">l2extract</a></li>
-    <li><a href="ProcessL2bin.html">l2bin</a></li>
     <li><a href="ProcessL2brsgen.html">l2brsgen</a></li>
-    <li><a href="ProcessL2mapgen.html">l2mapgen</a></li>
+    <li><a href="ProcessL2bin.html">l2bin</a></li>
     <li><a href="ProcessL3bin.html">l3bin</a></li>
     <li><a href="ProcessL3mapgen.html">l3mapgen</a></li>
 </ul>
@@ -236,7 +239,7 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-    Usage:
+Usage:
     multilevel_processor [options] parameter_file
 
     The parameter_file is similar to, but not exactly like, parameter
@@ -246,7 +249,7 @@
     The section named "main" is required.  Its allowed options are:
         ifile - Required entry naming the input file(s) to be processed.
         use_nrt_anc - use near real time ancillary data
-        keepfiles - keep all the data files generated
+        deletefiles - delete all the intermediate data files genereated
         overwrite - overwrite any data files which already exist
         use_existing  - use any data files which already exist
 
@@ -267,19 +270,17 @@
         Section name:           Applicable Instrument(s):
         -------------           -------------------------
         level 1a:               modis
-        l1aextract_seawifs:     seawifs
-        l1brsgen:               modis, meris, goci, seawifs, general
-        l1mapgen:               modis, meris, goci, seawifs, general
-        geo:                    modis, viirs, seawifs
-        l1aextract_modis:       modis
-        level 1b:               modis, viirs, meris, goci, seawifs, general
-        l2gen:                  modis, viirs, meris, goci, seawifs, general
-        l2extract:              modis, viirs, meris, goci, seawifs, general
-        l2bin:                  modis, viirs, meris, goci, seawifs, general
-        l2brsgen:               modis, viirs, meris, goci, seawifs, general
-        l2mapgen:               modis, viirs, meris, goci, seawifs, general
-        l3bin:                  modis, viirs, meris, goci, seawifs, general
-        l3mapgen:               modis, viirs, meris, goci, seawifs, general
+        geo:                    hawkeye, modis, viirs
+        l1aextract:             modis, seawifs, viirs
+        l1brsgen:               general, goci, hawkeye, meris, modis, seawifs, viirs
+        level 1b:               general, goci, meris, modis, seawifs, viirs
+        l2gen:                  general, goci, hawkeye, meris, modis, seawifs, viirs
+        l2extract:              general, goci, hawkeye, meris, modis, seawifs, viirs
+        l2brsgen:               general, goci, hawkeye, meris, modis, seawifs, viirs
+        l2bin:                  general, goci, hawkeye, meris, modis, seawifs, viirs
+        l3bin:                  general, goci, hawkeye, meris, modis, seawifs, viirs
+        l3mapgen:               general, goci, hawkeye, meris, modis, seawifs, viirs
+        smigen:                 general, goci, hawkeye, meris, modis, seawifs, viirs
 
     Example:
 
@@ -294,13 +295,12 @@
 Options:
   --version             show program's version number and exit
   -h, --help            show this help message and exit
-  -k, --keepfiles       keep files created during processing
+  -d, --deletefiles     delete files created during processing
   --ifile=IFILE         input file
   --output_dir=ODIR, --odir=ODIR
                         user specified directory for output
   --overwrite           overwrite files which already exist (default = stop
                         processing if file already exists)
-  --timing              report time required to run each program and total
   --use_existing        use files which already exist (default = stop
                         processing if file already exists)
   -v, --verbose         print status messages to stdout
