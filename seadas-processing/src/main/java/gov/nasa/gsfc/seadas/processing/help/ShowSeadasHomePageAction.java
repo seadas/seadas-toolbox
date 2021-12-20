@@ -62,6 +62,6 @@ public class ShowSeadasHomePageAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.homePageUrl", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.homepage.url", DEFAULT_PAGE_URL));
     }
 }

@@ -177,7 +177,7 @@ public class GetSysInfoGUI {
 //        String lastOcsswLocation = preferences.get(SEADAS_OCSSW_LOCATION_PROPERTY, SEADAS_OCSSW_LOCATION_DEFAULT_VALUE);
 
         SnapApp snapapp = SnapApp.getDefault();
-        String appNameVersion = snapapp.getInstanceName();
+        String appNameVersion = snapapp.getInstanceName() + " " + SystemUtils.getReleaseVersion();
         String appName = SystemUtils.getApplicationName();
         String appReleaseVersionFromPOM = SystemUtils.getReleaseVersion();
         File appHomeDir = SystemUtils.getApplicationHomeDir();
