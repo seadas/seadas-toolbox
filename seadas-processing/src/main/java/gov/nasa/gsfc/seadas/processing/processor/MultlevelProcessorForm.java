@@ -20,10 +20,7 @@ import org.esa.snap.ui.AppContext;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -43,8 +40,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //        L1AEXTRACT_VIIRS("l1aextract_viirs"),
         EXTRACTOR("l1aextract"),
 //        L1MAPGEN("l1mapgen"),
-        GEO("geo"),
+//        GEO("geo"),
+        GEOLOCATE_HAWKEYE("geolocate_hawkeye"),
+        GEOLOCATE_VIIRS("geolocate_viirs"),
+        MODIS_GEO("modis_GEO"),
         MODIS_L1B("modis_L1B"),
+        CALIBRATE_VIIRS("calibrate_viirs"),
 //        LEVEL_1B("level 1b"),
         L1BGEN("l1bgen_generic"),
         L1BRSGEN("l1brsgen"),
@@ -100,7 +101,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private final JTabbedPane tabbedPane;
 
     private JPanel mainPanel;
+    private JPanel primaryPanel;
     private JPanel primaryIOPanel;
+    private JPanel primaryOptionPanel;
     private SeadasFileSelector sourceProductFileSelector;
     private JScrollPane parfileScrollPane;
     private JPanel parfilePanel;
@@ -128,6 +131,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     public String MAIN_PARSTRING_EVENT = "MAIN_PARSTRING_EVENT";
     static public String ODIR_EVENT = "ODIR";
     static public final String IFILE = "ifile";
+    public String missionName;
+    public FileInfoFinder fileInfoFinder;
 
     private ArrayList<MultilevelProcessorRow> rows;
 
@@ -185,22 +190,57 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             }
         });
 
-//        overwriteCheckBox = new JCheckBox("overwrite");
-//        overwriteCheckBox.setSelected(false);
-//        overwriteCheckBox.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                if (checkboxControlHandlerEnabled) {
-//                    setCheckboxControlHandlerEnabled(false);
-//                    handleoverwriteCheckBox();
-//                    setCheckboxControlHandlerEnabled(true);
-//                }
-//            }
-//        });
+        overwriteCheckBox = new JCheckBox("overwrite");
+        overwriteCheckBox.setSelected(false);
+        overwriteCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleoverwriteCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
 
-//        use_existingCheckBox = new JCheckBox("use_existing");
-//        deletefilesCheckBox = new JCheckBox("delete_files");
-//        use_ancillaryCheckBox = new JCheckBox("use_ancillaryLabel");
+        use_existingCheckBox = new JCheckBox("use_existing");
+        use_existingCheckBox.setSelected(false);
+        use_existingCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleuse_existingCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
+
+        deletefilesCheckBox = new JCheckBox("deletefiles");
+        deletefilesCheckBox.setSelected(false);
+        deletefilesCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handledeletefilesCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
+
+        use_ancillaryCheckBox = new JCheckBox("use_ancillary");
+        use_ancillaryCheckBox.setSelected(false);
+        use_ancillaryCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleuse_ancillaryCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
 
         primaryIOPanel = new JPanel(new GridBagLayout());
         primaryIOPanel.setBorder(BorderFactory.createTitledBorder("Primary I/O Files"));
@@ -209,14 +249,22 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         primaryIOPanel.add(odirSelector.getJPanel(),
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(overwriteCheckBox,
-//                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(use_existingCheckBox,
-//                new GridBagConstraintsCustom(1, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(deletefilesCheckBox,
-//                new GridBagConstraintsCustom(2, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
-//        primaryIOPanel.add(use_ancillaryCheckBox,
-//                new GridBagConstraintsCustom(3, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+        primaryOptionPanel = new JPanel(new GridBagLayout());
+        primaryOptionPanel.add(overwriteCheckBox,
+                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryOptionPanel.add(use_existingCheckBox,
+                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryOptionPanel.add(deletefilesCheckBox,
+                new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryOptionPanel.add(use_ancillaryCheckBox,
+                new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+        primaryPanel = new JPanel(new GridBagLayout());
+        primaryPanel.add(primaryIOPanel,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryPanel.add(primaryOptionPanel,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
 
@@ -276,7 +324,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 2));
 
         mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.add(primaryIOPanel,
+        mainPanel.add(primaryPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         mainPanel.add(parfilePanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH));
@@ -309,8 +357,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         createRows();
         int rowNum = 1;
         for (MultilevelProcessorRow row : rows) {
-            row.attachComponents(chainPanel, rowNum);
-            rowNum++;
+            if (!row.getName().equals("main")) {
+                row.attachComponents(chainPanel, rowNum);
+                rowNum++;
+            }
         }
         chainPanel.add(spacer,
                 new GridBagConstraintsCustom(0, rowNum, 0, 1, GridBagConstraints.WEST, GridBagConstraints.VERTICAL));
@@ -334,7 +384,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         Processor[] rowNames = {
                 Processor.MAIN,
                 Processor.MODIS_L1A,
-                Processor.GEO,
+//                Processor.GEO,
+                Processor.MODIS_GEO,
+                Processor.GEOLOCATE_HAWKEYE,
+                Processor.GEOLOCATE_VIIRS,
                 Processor.EXTRACTOR,
 //                Processor.L1AEXTRACT_MODIS,
 //                Processor.L1AEXTRACT_SEAWIFS,
@@ -342,6 +395,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //                Processor.L1MAPGEN,
 //                Processor.LEVEL_1B,
                 Processor.MODIS_L1B,
+                Processor.CALIBRATE_VIIRS,
                 Processor.L1BGEN,
                 Processor.L1BRSGEN,
                 Processor.L2GEN,
@@ -383,12 +437,18 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         for (MultilevelProcessorRow row : rows) {
             String name = row.getName();
             ParamList list = (ParamList) row.getParamList().clone();
-            list.removeInfo("plusToChain");
-            if (name.equals("modis_L1B") && !list.getParamArray().isEmpty()) {
+            list.removeInfo(MultilevelProcessorRow.PLUS_PARAM);
+            if ((name.equals(Processor.MODIS_L1B.toString()) ||
+                    name.equals(Processor.CALIBRATE_VIIRS.toString()) ||
+                    name.equals(Processor.L1BGEN.toString())) &&
+                    !list.getParamArray().isEmpty()) {
                 name = "level 1b";
             }
-            if (name.equals("l1bgen_generic") && !list.getParamArray().isEmpty()) {
-                name = "level 1b";
+            if ((name.equals(Processor.MODIS_GEO.toString()) ||
+                    name.equals(Processor.GEOLOCATE_HAWKEYE.toString()) ||
+                    name.equals(Processor.GEOLOCATE_VIIRS.toString())) &&
+                    !list.getParamArray().isEmpty()) {
+                name = "geo";
             }
             paramList.addParamList(name, list);
 //            paramList.addParamList(name, row.getParamList());
@@ -400,11 +460,62 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultiParamList paramList = new MultiParamList();
         for (MultilevelProcessorRow row : rows) {
             String name = row.getName();
-            if (name.equals("modis_L1B") && !row.getParamList().getParamArray().isEmpty()) {
-                name = "level 1b";
-            }
-            if (name.equals("l1bgen_generic") && !row.getParamList().getParamArray().isEmpty()) {
-                name = "level 1b";
+            if (!row.getParamList().getParamArray().isEmpty()){
+                if (name.equals(Processor.MODIS_L1B.toString())) {
+                    if (missionName.contains("MODIS")) {
+                        name = "level 1b";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR: can't do modis_L1B on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
+                } else if (name.equals(Processor.CALIBRATE_VIIRS.toString())) {
+                    if (missionName.contains("VIIRS")) {
+                        name = "level 1b";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do calibrate_viirs on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
+                } else if (name.equals(Processor.L1BGEN.toString())) {
+                    if (!missionName.contains("MODIS") && !missionName.contains("VIIRS")) {
+                        name = "level 1b";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do l1bgen_generic on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
+                } else if (name.equals(Processor.MODIS_GEO.toString())) {
+                    if (missionName.contains("MODIS")) {
+                        name = "geo";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do modis_GEO on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
+                } else if (name.equals(Processor.GEOLOCATE_HAWKEYE.toString())) {
+                    if (missionName.contains("HAWKEYE")) {
+                        name = "geo";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do geolocate__hawkeye on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
+                } else if (name.equals(Processor.GEOLOCATE_VIIRS.toString())) {
+                    if (missionName.contains("VIIRS")) {
+                        name = "geo";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do do geolocate_viirs on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
+                }
             }
             paramList.addParamList(name, row.getParamList());
         }
@@ -456,12 +567,38 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 return row;
             } else {
                 if (name.equals("level 1b")) {
-                  if (row.getName().equals("modis_L1B")) {
-                      return row;
-                  }
-                  if (row.getName().equals("l1bgen_generic")) {
-                      return row;
-                  }
+                    if (row.getName().equals(Processor.MODIS_L1B.toString())) {
+                        if (missionName != null && missionName.contains("MODIS")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals(Processor.CALIBRATE_VIIRS.toString())) {
+                        if (missionName != null && missionName.contains("VIIRS")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals(Processor.L1BGEN.toString())) {
+                        if (missionName != null && !missionName.contains("MODIS") && !missionName.contains("VIIRS")) {
+                            return row;
+                        }
+                    }
+                }
+                if (name.equals("geo")) {
+                    if (row.getName().equals(Processor.MODIS_GEO.toString())) {
+                        if (missionName != null && missionName.contains("MODIS")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals(Processor.GEOLOCATE_HAWKEYE.toString())) {
+                        if (missionName != null && missionName.contains("HAWKEYE")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals(Processor.GEOLOCATE_VIIRS.toString())) {
+                        if (missionName != null && missionName.contains("VIIRS")) {
+                            return row;
+                        }
+                    }
                 }
             }
         }
@@ -477,7 +614,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         for (String line : lines) {
             line = line.trim();
-            if (!line.contains("plusToChain")) {
+            if (!line.contains(MultilevelProcessorRow.PLUS_PARAM)) {
                 stringBuilder.append(line).append("\n");
             }
             if (line.toLowerCase().startsWith(IFILE)) {
@@ -500,7 +637,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
     public void setParamString(String str, boolean retainIFile, File defaultIFileDirectory) {
 
-        String oldODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
+        String oldODir = getRow(Processor.MAIN.toString()).getParamList().getValue(MultilevelProcessorRow.ODIR_PARAM);
 
 
         String[] lines = str.split("\n");
@@ -529,6 +666,28 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             MultilevelProcessorRow row = getRow(section);
                             if (row != null) {
                                 row.setParamString(stringBuilder.toString(), retainIFile);
+                            }
+                            if (row.getName().equals("main")) {
+                                if (row.getParamList().getValue("overwrite").equals(ParamInfo.BOOLEAN_TRUE)) {
+                                    overwriteCheckBox.setSelected(true);
+                                } else {
+                                    overwriteCheckBox.setSelected(false);
+                                }
+                                if (row.getParamList().getValue("use_existing").equals(ParamInfo.BOOLEAN_TRUE)) {
+                                    use_existingCheckBox.setSelected(true);
+                                } else {
+                                    use_existingCheckBox.setSelected(false);
+                                }
+                                if (row.getParamList().getValue("deletefiles").equals(ParamInfo.BOOLEAN_TRUE)) {
+                                    deletefilesCheckBox.setSelected(true);
+                                } else {
+                                    deletefilesCheckBox.setSelected(false);
+                                }
+                                if (row.getParamList().getValue("use_ancillary").equals(ParamInfo.BOOLEAN_TRUE)) {
+                                    use_ancillaryCheckBox.setSelected(true);
+                                } else {
+                                    use_ancillaryCheckBox.setSelected(false);
+                                }
                             }
                             stringBuilder.setLength(0);
                         }
@@ -574,6 +733,28 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     } else {
                         row.setParamString("plusToChain=1", retainIFile);
                     }
+                    if (row.getName().equals("main")) {
+                        if (row.getParamList().getValue("overwrite").equals(ParamInfo.BOOLEAN_TRUE)) {
+                            overwriteCheckBox.setSelected(true);
+                        } else {
+                            overwriteCheckBox.setSelected(false);
+                        }
+                        if (row.getParamList().getValue("use_existing").equals(ParamInfo.BOOLEAN_TRUE)) {
+                            use_existingCheckBox.setSelected(true);
+                        } else {
+                            use_existingCheckBox.setSelected(false);
+                        }
+                        if (row.getParamList().getValue("deletefiles").equals(ParamInfo.BOOLEAN_TRUE)) {
+                            deletefilesCheckBox.setSelected(true);
+                        } else {
+                            deletefilesCheckBox.setSelected(false);
+                        }
+                        if (row.getParamList().getValue("use_ancillary").equals(ParamInfo.BOOLEAN_TRUE)) {
+                            use_ancillaryCheckBox.setSelected(true);
+                        } else {
+                            use_ancillaryCheckBox.setSelected(false);
+                        }
+                    }
                 }
 
             }
@@ -586,25 +767,68 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             } else {
                 row.setParamString("plusToChain=1", retainIFile);
             }
+            if (row.getName().equals("main")) {
+                if (row.getParamList().getValue("overwrite").equals(ParamInfo.BOOLEAN_TRUE)) {
+                    overwriteCheckBox.setSelected(true);
+                } else {
+                    overwriteCheckBox.setSelected(false);
+                }
+                if (row.getParamList().getValue("use_existing").equals(ParamInfo.BOOLEAN_TRUE)) {
+                    use_existingCheckBox.setSelected(true);
+                } else {
+                    use_existingCheckBox.setSelected(false);
+                }
+                if (row.getParamList().getValue("deletefiles").equals(ParamInfo.BOOLEAN_TRUE)) {
+                    deletefilesCheckBox.setSelected(true);
+                } else {
+                    deletefilesCheckBox.setSelected(false);
+                }
+                if (row.getParamList().getValue("use_ancillary").equals(ParamInfo.BOOLEAN_TRUE)) {
+                    use_ancillaryCheckBox.setSelected(true);
+                } else {
+                    use_ancillaryCheckBox.setSelected(false);
+                }
+            }
         }
 
-        String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue("odir");
+        String newODir = getRow(Processor.MAIN.toString()).getParamList().getValue(MultilevelProcessorRow.ODIR_PARAM);
         propertyChangeSupport.firePropertyChange(ODIR_EVENT, oldODir, newODir);
 
         for (MultilevelProcessorRow row2 : rows) {
             String name = row2.getName();
-            String plusToChain = row2.getParamList().getValue("plusToChain");
-            if (plusToChain != null && plusToChain.equals("1")){
-                if (name.equals("modis_L1B") || name.equals("l1bgen_generic")) {
+            if (!row2.getParamList().getParamArray().isEmpty()){
+                if (name.equals(Processor.MODIS_L1B.toString()) ||
+                        name.equals(Processor.CALIBRATE_VIIRS.toString()) ||
+                        name.equals(Processor.L1BGEN.toString())) {
                     if (!str.contains("level 1b")) {
-                        row2.setParamValue("plusToChain", "0");
-                        row2.setParamValue("odir", "");
+                        if (row2.getParamList().getValue(MultilevelProcessorRow.PLUS_PARAM).equals(ParamInfo.BOOLEAN_FALSE)) {
+                            row2.deselectPlusCheckBox();
+                        } else {
+                            row2.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                        }
+                        row2.setParamValue(MultilevelProcessorRow.ODIR_PARAM, "");
+                        row2.clearConfigPanel();
+                    }
+                } else if (name.equals(Processor.MODIS_GEO.toString()) ||
+                        name.equals(Processor.GEOLOCATE_HAWKEYE.toString()) ||
+                        name.equals(Processor.GEOLOCATE_VIIRS.toString())) {
+                    if (!str.contains("geo")) {
+                        row2.setParamValue(MultilevelProcessorRow.ODIR_PARAM, "");
+                        if (row2.getParamList().getValue(MultilevelProcessorRow.PLUS_PARAM).equals(ParamInfo.BOOLEAN_FALSE)) {
+                            row2.deselectPlusCheckBox();
+                        } else {
+                            row2.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                        }
                         row2.clearConfigPanel();
                     }
                 } else {
                     if (!str.contains(name)) {
-                        row2.setParamValue("plusToChain", "0");
-                        row2.setParamValue("odir", "");
+                        row2.setParamValue(MultilevelProcessorRow.ODIR_PARAM, "");
+                        if (row2.getParamList().getValue(MultilevelProcessorRow.PLUS_PARAM).equals(ParamInfo.BOOLEAN_FALSE)) {
+                            row2.deselectPlusCheckBox();
+                        } else {
+                            row2.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                        }
                         row2.clearConfigPanel();
                     }
                 }
@@ -689,9 +913,27 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultilevelProcessorRow row = getRow(Processor.MAIN.toString());
         String oldIFile = row.getParamList().getValue(IFILE);
         if (!ifileName.equals(oldIFile)) {
-
-//            getRow("l2gen").clearConfigPanel();
-
+            if (missionName != null) {
+                if (missionName.contains("HAWKEYE")) {
+                    MultilevelProcessorRow row_geo_hawkeye = getRow(Processor.GEOLOCATE_HAWKEYE.toString());
+                    row_geo_hawkeye.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                } else if (missionName.contains("VIIRS")) {
+                    MultilevelProcessorRow row_cal_viirs= getRow(Processor.CALIBRATE_VIIRS.toString());
+                    MultilevelProcessorRow row_geo_viirs = getRow(Processor.GEOLOCATE_VIIRS.toString());
+                    row_cal_viirs.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                    row_geo_viirs.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                } else if (missionName.contains("MODIS")) {
+                    MultilevelProcessorRow row_modis_geo= getRow(Processor.MODIS_GEO.toString());
+                    MultilevelProcessorRow row_modis_l1b = getRow(Processor.MODIS_L1B.toString());
+                    row_modis_geo.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                    row_modis_l1b.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                } else {
+                    MultilevelProcessorRow row_l1bgen = getRow(Processor.L1BGEN.toString());
+                    row_l1bgen.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                }
+            }
+            fileInfoFinder = new FileInfoFinder(ifileName, ocssw);
+            missionName = fileInfoFinder.getMissionName();
             row.setParamValue(IFILE, ifileName);
             parfileTextArea.setText(getParamString());
         }
@@ -701,9 +943,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private void handleOdirChanged() {
         String odirName = odirSelector.getFilename();
         MultilevelProcessorRow row = getRow(Processor.MAIN.toString());
-        String oldOdir = row.getParamList().getValue("odir");
+        String oldOdir = row.getParamList().getValue(MultilevelProcessorRow.ODIR_PARAM);
         if (!odirName.equals(oldOdir)) {
-            row.setParamValue("odir", odirName);
+            row.setParamValue(MultilevelProcessorRow.ODIR_PARAM, odirName);
             parfileTextArea.setText(getParamString());
         }
     }
@@ -736,16 +978,63 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
-//    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
-//        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
-//    }
-//
-//    private void handleoverwriteCheckBox() {
-//        boolean overwriteSelected = overwriteCheckBox.isSelected();
-//
-//        if (overwriteCheckBox.isSelected() != overwriteSelected) {
-//            overwriteCheckBox.setSelected(overwriteSelected);
-////            propertyChangeSupport.firePropertyChange(PARAM_STRING_EVENT, oldParamString, str);
-//        }
-//    }
+    public void setCheckboxControlHandlerEnabled(boolean checkboxControlHandlerEnabled) {
+        this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
+    }
+
+    private void handleoverwriteCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (overwriteCheckBox.isSelected()) {
+            paramList.setValue("overwrite", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("overwrite", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void handleuse_existingCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (use_existingCheckBox.isSelected()) {
+            paramList.setValue("use_existing", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("use_existing", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void handledeletefilesCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (deletefilesCheckBox.isSelected()) {
+            paramList.setValue("deletefiles", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("deletefiles", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void handleuse_ancillaryCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (use_ancillaryCheckBox.isSelected()) {
+            paramList.setValue("use_ancillary", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("use_ancillary", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
 }
