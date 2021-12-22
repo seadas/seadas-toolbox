@@ -213,6 +213,11 @@ public class MultilevelProcessorRow {
         boolean test2 = paramList.isValueTrue(PLUS_PARAM);
         createConfigPanel(plusCheckBox.isSelected());
 
+        if (paramList.getParamArray().isEmpty()) {
+            getParamListFromCloProgramUI();
+            paramList.setParamString("");
+        }
+
         if (plusCheckBox.isSelected() != plusSelected) {
             plusCheckBox.setSelected(plusSelected);
         }
