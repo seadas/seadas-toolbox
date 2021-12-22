@@ -22,7 +22,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <name>SeaDAS Tool Box</name>
     <description>Tools from SeaDAS</description>
     <url>https://seadas.gsfc.nasa.gov</url>
@@ -39,16 +39,16 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>8.0.3</snap.version>
+        <snap.version>8.0.9</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <seadas-toolbox.version>1.1.0-SNAPSHOT</seadas-toolbox.version>
+        <seadas-toolbox.version>1.2.0-SNAPSHOT</seadas-toolbox.version>
         <seadas-contour-operator.version>8.0.0-SNAPSHOT</seadas-contour-operator.version>
-        <seadas-processing.version>8.1.0-SNAPSHOT</seadas-processing.version>
+        <seadas-processing.version>8.2.0-SNAPSHOT</seadas-processing.version>
         <seadas-watermask-operator.version>8.0.0-SNAPSHOT</seadas-watermask-operator.version>
         <seadas-bathymetry-operator.version>8.0.0-SNAPSHOT</seadas-bathymetry-operator.version>
 
