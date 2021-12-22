@@ -342,7 +342,7 @@ public class MultilevelProcessorRow {
     private void updateParamTextField() {
         ParamList list = (ParamList) paramList.clone();
         list.removeInfo(PLUS_PARAM);
-        if (list.getInfo("use_existing") == null) {
+        if (!name.equals("main")) {
             list.removeInfo(ODIR_PARAM);
         }
         paramTextField.setText(list.getParamString(" "));
@@ -370,6 +370,9 @@ public class MultilevelProcessorRow {
         createConfigPanel();
         String oldParamString = getParamString();
         paramList.setParamString(str, retainIFile, true);
+        if (name.equals("main")) {
+            paramList.setValue(PLUS_PARAM, ParamInfo.BOOLEAN_TRUE);
+        }
         str = getParamString();
         if (!oldParamString.equals(str)) {
             updateParamList();

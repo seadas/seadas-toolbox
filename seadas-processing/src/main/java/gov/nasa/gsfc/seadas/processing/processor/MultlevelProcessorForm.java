@@ -662,8 +662,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     if (nextSection.length() > 0) {
 
                         // set the params for this section
+                        MultilevelProcessorRow row = getRow(section);
                         if (stringBuilder.length() > 0) {
-                            MultilevelProcessorRow row = getRow(section);
                             if (row != null) {
                                 row.setParamString(stringBuilder.toString(), retainIFile);
                             }
@@ -690,8 +690,11 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                                 }
                             }
                             stringBuilder.setLength(0);
+                        } else if (!nextSection.equals("main")){
+                            if (row != null) {
+                                row.setParamString("plusToChain=1", retainIFile);
+                            }
                         }
-
                         section = nextSection;
                     }
 
@@ -718,45 +721,16 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             File absoluteFile = new File(defaultIFileDirectory, originalIFilename);
                             absoluteIFilename = absoluteFile.getAbsolutePath();
                         }
-
+                        if (missionName == null) {
+                            fileInfoFinder = new FileInfoFinder(absoluteIFilename, ocssw);
+                            missionName = fileInfoFinder.getMissionName();
+                        }
                         stringBuilder.append(IFILE).append("=").append(absoluteIFilename).append("\n");
 
                     } else {
                         stringBuilder.append(line).append("\n");
                     }
                 }
-            } else {
-                MultilevelProcessorRow row = getRow(section);
-                if (row != null) {
-                    if (stringBuilder.length() > 0) {
-                        row.setParamString(stringBuilder.toString(), retainIFile);
-                    } else {
-                        row.setParamString("plusToChain=1", retainIFile);
-                    }
-                    if (row.getName().equals("main")) {
-                        if (row.getParamList().getValue("overwrite").equals(ParamInfo.BOOLEAN_TRUE)) {
-                            overwriteCheckBox.setSelected(true);
-                        } else {
-                            overwriteCheckBox.setSelected(false);
-                        }
-                        if (row.getParamList().getValue("use_existing").equals(ParamInfo.BOOLEAN_TRUE)) {
-                            use_existingCheckBox.setSelected(true);
-                        } else {
-                            use_existingCheckBox.setSelected(false);
-                        }
-                        if (row.getParamList().getValue("deletefiles").equals(ParamInfo.BOOLEAN_TRUE)) {
-                            deletefilesCheckBox.setSelected(true);
-                        } else {
-                            deletefilesCheckBox.setSelected(false);
-                        }
-                        if (row.getParamList().getValue("use_ancillary").equals(ParamInfo.BOOLEAN_TRUE)) {
-                            use_ancillaryCheckBox.setSelected(true);
-                        } else {
-                            use_ancillaryCheckBox.setSelected(false);
-                        }
-                    }
-                }
-
             }
         }
 
