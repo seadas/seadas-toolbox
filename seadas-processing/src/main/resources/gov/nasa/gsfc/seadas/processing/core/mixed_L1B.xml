@@ -2,13 +2,11 @@
 <paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
     <programMetaData>
-        <hasParFile>false</hasParFile>
-        <parFileOptionName>--parfile</parFileOptionName>
-        <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
-        <hasGeoFile>false</hasGeoFile>
+        <hasParFile>true</hasParFile>
+        <parFileOptionName>par</parFileOptionName>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
-            <primaryOption>output</primaryOption>
+            <primaryOption>ofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -16,18 +14,21 @@
             <name>ifile</name>
             <value></value>
             <default></default>
-            <description>Input file</description>
+            <description>input L1 file name</description>
             <source>command line</source>
-            <usedAs>argument</usedAs>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
             <order>0</order>
         </option>
         <option type="ofile">
-            <name>output</name>
+            <name>ofile</name>
             <value></value>
-            <default></default>
-            <description>generated GEO file</description>
-            <usedAs>argument</usedAs>
+            <default>output</default>
+            <description>output L2 file #1 name, output vicarious L1B for inverse mode</description>
+            <alias>ofile1</alias>
             <order>1</order>
         </option>
+
     </options>
 </paramInfo>

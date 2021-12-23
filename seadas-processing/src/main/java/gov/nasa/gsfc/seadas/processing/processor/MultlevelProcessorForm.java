@@ -44,7 +44,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         GEOLOCATE_HAWKEYE("geolocate_hawkeye"),
         GEOLOCATE_VIIRS("geolocate_viirs"),
         MODIS_GEO("modis_GEO"),
+        MIXED_GEO("mixed_GEO"),
         MODIS_L1B("modis_L1B"),
+        MIXED_L1B("mixed_L1B"),
         CALIBRATE_VIIRS("calibrate_viirs"),
 //        LEVEL_1B("level 1b"),
         L1BGEN("l1bgen_generic"),
@@ -388,6 +390,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 Processor.MODIS_GEO,
                 Processor.GEOLOCATE_HAWKEYE,
                 Processor.GEOLOCATE_VIIRS,
+                Processor.MIXED_GEO,
                 Processor.EXTRACTOR,
 //                Processor.L1AEXTRACT_MODIS,
 //                Processor.L1AEXTRACT_SEAWIFS,
@@ -397,6 +400,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 Processor.MODIS_L1B,
                 Processor.CALIBRATE_VIIRS,
                 Processor.L1BGEN,
+                Processor.MIXED_L1B,
                 Processor.L1BRSGEN,
                 Processor.L2GEN,
                 Processor.L2EXTRACT,
@@ -440,12 +444,14 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             list.removeInfo(MultilevelProcessorRow.PLUS_PARAM);
             if ((name.equals(Processor.MODIS_L1B.toString()) ||
                     name.equals(Processor.CALIBRATE_VIIRS.toString()) ||
-                    name.equals(Processor.L1BGEN.toString())) &&
+                    name.equals(Processor.L1BGEN.toString()) ||
+                    name.equals(Processor.MIXED_L1B.toString())) &&
                     !list.getParamArray().isEmpty()) {
                 name = "level 1b";
             }
             if ((name.equals(Processor.MODIS_GEO.toString()) ||
                     name.equals(Processor.GEOLOCATE_HAWKEYE.toString()) ||
+                    name.equals(Processor.MIXED_GEO.toString()) ||
                     name.equals(Processor.GEOLOCATE_VIIRS.toString())) &&
                     !list.getParamArray().isEmpty()) {
                 name = "geo";
@@ -470,6 +476,15 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         dialog.setVisible(true);
                         dialog.setEnabled(true);
                     }
+                } else if (name.equals(Processor.MIXED_L1B.toString())) {
+                    if (missionName.contains("mixed")) {
+                        name = "level 1b";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do calibrate_viirs on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
                 } else if (name.equals(Processor.CALIBRATE_VIIRS.toString())) {
                     if (missionName.contains("VIIRS")) {
                         name = "level 1b";
@@ -490,6 +505,15 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     }
                 } else if (name.equals(Processor.MODIS_GEO.toString())) {
                     if (missionName.contains("MODIS")) {
+                        name = "geo";
+                    } else {
+                        row.deselectPlusCheckBox();
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do modis_GEO on the ifile");
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
+                    }
+                } else if (name.equals(Processor.MIXED_GEO.toString())) {
+                    if (missionName.contains("mixed")) {
                         name = "geo";
                     } else {
                         row.deselectPlusCheckBox();
@@ -572,13 +596,21 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             return row;
                         }
                     }
+                    if (row.getName().equals(Processor.MIXED_L1B.toString())) {
+                        if (missionName != null && missionName.contains("mixed")) {
+                            return row;
+                        }
+                    }
                     if (row.getName().equals(Processor.CALIBRATE_VIIRS.toString())) {
                         if (missionName != null && missionName.contains("VIIRS")) {
                             return row;
                         }
                     }
                     if (row.getName().equals(Processor.L1BGEN.toString())) {
-                        if (missionName != null && !missionName.contains("MODIS") && !missionName.contains("VIIRS")) {
+                        if (missionName != null &&
+                                !missionName.contains("MODIS") &&
+                                !missionName.contains("mixed") &&
+                                !missionName.contains("VIIRS")) {
                             return row;
                         }
                     }
@@ -586,6 +618,11 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 if (name.equals("geo")) {
                     if (row.getName().equals(Processor.MODIS_GEO.toString())) {
                         if (missionName != null && missionName.contains("MODIS")) {
+                            return row;
+                        }
+                    }
+                    if (row.getName().equals(Processor.MIXED_GEO.toString())) {
+                        if (missionName != null && missionName.contains("mixed")) {
                             return row;
                         }
                     }
@@ -665,6 +702,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         MultilevelProcessorRow row = getRow(section);
                         if (stringBuilder.length() > 0) {
                             if (row != null) {
+                                row.setParamString("plusToChain=1", retainIFile);
                                 row.setParamString(stringBuilder.toString(), retainIFile);
                             }
                             if (row.getName().equals("main")) {
@@ -722,8 +760,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             absoluteIFilename = absoluteFile.getAbsolutePath();
                         }
                         if (missionName == null) {
-                            fileInfoFinder = new FileInfoFinder(absoluteIFilename, ocssw);
-                            missionName = fileInfoFinder.getMissionName();
+                            findMissionName(absoluteIFilename);
                         }
                         stringBuilder.append(IFILE).append("=").append(absoluteIFilename).append("\n");
 
@@ -736,11 +773,13 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         MultilevelProcessorRow row = getRow(section);
         if (row != null) {
+            row.setParamString("plusToChain=1", retainIFile);
             if (stringBuilder.length() > 0) {
                 row.setParamString(stringBuilder.toString(), retainIFile);
-            } else {
-                row.setParamString("plusToChain=1", retainIFile);
             }
+//            } else {
+//                row.setParamString("plusToChain=1", retainIFile);
+//            }
             if (row.getName().equals("main")) {
                 if (row.getParamList().getValue("overwrite").equals(ParamInfo.BOOLEAN_TRUE)) {
                     overwriteCheckBox.setSelected(true);
@@ -772,6 +811,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             String name = row2.getName();
             if (!row2.getParamList().getParamArray().isEmpty()){
                 if (name.equals(Processor.MODIS_L1B.toString()) ||
+                        name.equals(Processor.MIXED_L1B.toString()) ||
                         name.equals(Processor.CALIBRATE_VIIRS.toString()) ||
                         name.equals(Processor.L1BGEN.toString())) {
                     if (!str.contains("level 1b")) {
@@ -784,6 +824,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         row2.clearConfigPanel();
                     }
                 } else if (name.equals(Processor.MODIS_GEO.toString()) ||
+                        name.equals(Processor.MIXED_GEO.toString()) ||
                         name.equals(Processor.GEOLOCATE_HAWKEYE.toString()) ||
                         name.equals(Processor.GEOLOCATE_VIIRS.toString())) {
                     if (!str.contains("geo")) {
@@ -901,13 +942,17 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     MultilevelProcessorRow row_modis_l1b = getRow(Processor.MODIS_L1B.toString());
                     row_modis_geo.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
                     row_modis_l1b.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                } else if (missionName.contains("mixed")) {
+                    MultilevelProcessorRow row_mixed_geo= getRow(Processor.MIXED_GEO.toString());
+                    MultilevelProcessorRow row_mixed_l1b = getRow(Processor.MIXED_L1B.toString());
+                    row_mixed_geo.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                    row_mixed_l1b.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
                 } else {
                     MultilevelProcessorRow row_l1bgen = getRow(Processor.L1BGEN.toString());
                     row_l1bgen.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
                 }
             }
-            fileInfoFinder = new FileInfoFinder(ifileName, ocssw);
-            missionName = fileInfoFinder.getMissionName();
+            findMissionName(ifileName);
             row.setParamValue(IFILE, ifileName);
             parfileTextArea.setText(getParamString());
         }
@@ -1010,5 +1055,30 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         String str = getParamString();
         parfileTextArea.setText(str);
         propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void findMissionName(String fileName) {
+        fileInfoFinder = new FileInfoFinder(fileName, ocssw);
+        missionName = fileInfoFinder.getMissionName();
+        if (missionName.equals("unknown")){
+            String instrument = "unknown";
+            final ArrayList<String> fileList = SeadasGuiUtils.myReadDataFile(fileName);
+            for (String nextFileName : fileList) {
+                if (nextFileName.length() > 0 && (nextFileName.charAt(0) != '#')) {
+                    fileInfoFinder = new FileInfoFinder(nextFileName, ocssw);
+                    missionName = fileInfoFinder.getMissionName();
+                    if (instrument.equals("unknown")) {
+                        if (missionName.contains(" ")) {
+                            instrument = missionName.split(" ")[0];
+                        } else {
+                            instrument = missionName;
+                        }
+                    } else if (!missionName.contains(instrument)) {
+                        missionName = "mixed";
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

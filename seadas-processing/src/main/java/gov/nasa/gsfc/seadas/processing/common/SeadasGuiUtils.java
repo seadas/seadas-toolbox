@@ -58,7 +58,7 @@ public class SeadasGuiUtils {
     }
 
 
-    private static ArrayList<String> myReadDataFile
+    public static ArrayList<String> myReadDataFile
             (String
                      fileName) {
         String lineData;
