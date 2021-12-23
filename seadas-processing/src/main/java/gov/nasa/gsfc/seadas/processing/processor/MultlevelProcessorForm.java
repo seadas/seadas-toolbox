@@ -359,7 +359,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         createRows();
         int rowNum = 1;
         for (MultilevelProcessorRow row : rows) {
-            if (!row.getName().equals("main")) {
+            if (!row.getName().equals(Processor.MAIN.toString())) {
                 row.attachComponents(chainPanel, rowNum);
                 rowNum++;
             }
@@ -470,74 +470,74 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 if (name.equals(Processor.MODIS_L1B.toString()) && missionName != null) {
                     if (missionName.contains("MODIS")) {
                         name = "level 1b";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR: can't do modis_L1B on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR: can't do modis_L1B on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 } else if (name.equals(Processor.MIXED_L1B.toString())) {
                     if (missionName.contains("mixed") && missionName != null) {
                         name = "level 1b";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do calibrate_viirs on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do calibrate_viirs on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 } else if (name.equals(Processor.CALIBRATE_VIIRS.toString()) && missionName != null) {
                     if (missionName.contains("VIIRS")) {
                         name = "level 1b";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do calibrate_viirs on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do calibrate_viirs on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 } else if (name.equals(Processor.L1BGEN.toString()) && missionName != null) {
                     if (!missionName.contains("MODIS") && !missionName.contains("VIIRS")) {
                         name = "level 1b";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do l1bgen_generic on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do l1bgen_generic on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 } else if (name.equals(Processor.MODIS_GEO.toString()) && missionName != null) {
                     if (missionName.contains("MODIS")) {
                         name = "geo";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do modis_GEO on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do modis_GEO on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 } else if (name.equals(Processor.MIXED_GEO.toString()) && missionName != null) {
                     if (missionName.contains("mixed")) {
                         name = "geo";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do modis_GEO on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do modis_GEO on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 } else if (name.equals(Processor.GEOLOCATE_HAWKEYE.toString()) && missionName != null) {
                     if (missionName.contains("HAWKEYE")) {
                         name = "geo";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do geolocate__hawkeye on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do geolocate__hawkeye on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 } else if (name.equals(Processor.GEOLOCATE_VIIRS.toString()) && missionName != null) {
                     if (missionName.contains("VIIRS")) {
                         name = "geo";
-                    } else {
-                        row.deselectPlusCheckBox();
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do do geolocate_viirs on the ifile");
-                        dialog.setVisible(true);
-                        dialog.setEnabled(true);
+//                    } else {
+//                        row.deselectPlusCheckBox();
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(null, "can't do do geolocate_viirs on the ifile");
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
                     }
                 }
             }
@@ -702,12 +702,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         MultilevelProcessorRow row = getRow(section);
                         if (stringBuilder.length() > 0) {
                             if (row != null) {
-                                if (!row.getName().equals("main")) {
+                                if (!row.getName().equals(Processor.MAIN.toString())) {
                                     row.setParamString("plusToChain=1", retainIFile);
                                 }
                                 row.setParamString(stringBuilder.toString(), retainIFile);
                             }
-                            if (row.getName().equals("main")) {
+                            if (row.getName().equals(Processor.MAIN.toString())) {
                                 if (row.getParamList().getValue("overwrite").equals(ParamInfo.BOOLEAN_TRUE)) {
                                     overwriteCheckBox.setSelected(true);
                                 } else {
@@ -730,7 +730,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                                 }
                             }
                             stringBuilder.setLength(0);
-                        } else if (!nextSection.equals("main")){
+                        } else if (!nextSection.equals(Processor.MAIN.toString())){
                             if (row != null) {
                                 row.setParamString("plusToChain=1", retainIFile);
                             }
@@ -761,9 +761,9 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             File absoluteFile = new File(defaultIFileDirectory, originalIFilename);
                             absoluteIFilename = absoluteFile.getAbsolutePath();
                         }
-                        if (missionName == null) {
-                            findMissionName(absoluteIFilename);
-                        }
+
+                        findMissionName(absoluteIFilename);
+
                         stringBuilder.append(IFILE).append("=").append(absoluteIFilename).append("\n");
 
                     } else {
@@ -782,7 +782,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 //            } else {
 //                row.setParamString("plusToChain=1", retainIFile);
 //            }
-            if (row.getName().equals("main")) {
+            if (row.getName().equals(Processor.MAIN.toString())) {
                 if (row.getParamList().getValue("overwrite").equals(ParamInfo.BOOLEAN_TRUE)) {
                     overwriteCheckBox.setSelected(true);
                 } else {
@@ -1062,25 +1062,105 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private void findMissionName(String fileName) {
         fileInfoFinder = new FileInfoFinder(fileName, ocssw);
         missionName = fileInfoFinder.getMissionName();
-        if (missionName != null && missionName.equals("unknown")){
-            String instrument = "unknown";
-            final ArrayList<String> fileList = SeadasGuiUtils.myReadDataFile(fileName);
-            for (String nextFileName : fileList) {
-                if (nextFileName.length() > 0 && (nextFileName.charAt(0) != '#')) {
-                    fileInfoFinder = new FileInfoFinder(nextFileName, ocssw);
-                    missionName = fileInfoFinder.getMissionName();
-                    if (instrument.equals("unknown")) {
-                        if (missionName.contains(" ")) {
-                            instrument = missionName.split(" ")[0];
-                        } else {
-                            instrument = missionName;
+        if (missionName != null) {
+            if (missionName.equals("unknown")) {
+                String instrument = "unknown";
+                final ArrayList<String> fileList = SeadasGuiUtils.myReadDataFile(fileName);
+                for (String nextFileName : fileList) {
+                    if (nextFileName.length() > 0 && (nextFileName.charAt(0) != '#')) {
+                        fileInfoFinder = new FileInfoFinder(nextFileName, ocssw);
+                        missionName = fileInfoFinder.getMissionName();
+                        if (instrument.equals("unknown")) {
+                            if (missionName.contains(" ")) {
+                                instrument = missionName.split(" ")[0];
+                            } else {
+                                instrument = missionName;
+                            }
+                        } else if (!missionName.contains(instrument)) {
+                            missionName = "mixed";
+                            setRowVisible(Processor.MODIS_L1A.toString(), false);
+                            setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                            setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                            setRowVisible(Processor.MODIS_GEO.toString(), false);
+                            setRowVisible(Processor.MIXED_GEO.toString(), true);
+                            setRowVisible(Processor.EXTRACTOR.toString(), false);
+                            setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                            setRowVisible(Processor.MODIS_L1B.toString(), false);
+                            setRowVisible(Processor.MIXED_L1B.toString(), true);
+                            setRowVisible(Processor.L1BGEN.toString(), false);
+                            setRowVisible(Processor.L1BRSGEN.toString(), false);
+                            break;
                         }
-                    } else if (!missionName.contains(instrument)) {
-                        missionName = "mixed";
-                        break;
                     }
                 }
+            } else if (missionName.contains("VIIRS")) {
+                setRowVisible(Processor.MODIS_L1A.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), true);
+                setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                setRowVisible(Processor.MODIS_GEO.toString(), false);
+                setRowVisible(Processor.MIXED_GEO.toString(), false);
+                setRowVisible(Processor.EXTRACTOR.toString(), true);
+                setRowVisible(Processor.CALIBRATE_VIIRS.toString(), true);
+                setRowVisible(Processor.MODIS_L1B.toString(), false);
+                setRowVisible(Processor.MIXED_L1B.toString(), false);
+                setRowVisible(Processor.L1BGEN.toString(), false);
+                setRowVisible(Processor.L1BRSGEN.toString(), true);
+            } else if (missionName.contains("MODIS")) {
+                setRowVisible(Processor.MODIS_L1A.toString(), true);
+                setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                setRowVisible(Processor.MODIS_GEO.toString(), true);
+                setRowVisible(Processor.MIXED_GEO.toString(), false);
+                setRowVisible(Processor.EXTRACTOR.toString(), true);
+                setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                setRowVisible(Processor.MODIS_L1B.toString(), true);
+                setRowVisible(Processor.MIXED_L1B.toString(), false);
+                setRowVisible(Processor.L1BGEN.toString(), false);
+                setRowVisible(Processor.L1BRSGEN.toString(), true);
+            } else if (missionName.contains("HAWKEYE")) {
+                setRowVisible(Processor.MODIS_L1A.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), true);
+                setRowVisible(Processor.MODIS_GEO.toString(), false);
+                setRowVisible(Processor.MIXED_GEO.toString(), false);
+                setRowVisible(Processor.EXTRACTOR.toString(), false);
+                setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                setRowVisible(Processor.MODIS_L1B.toString(), false);
+                setRowVisible(Processor.MIXED_L1B.toString(), false);
+                setRowVisible(Processor.L1BGEN.toString(), true);
+                setRowVisible(Processor.L1BRSGEN.toString(), true);
+            } else if (missionName.contains("SEAWIFS")) {
+                setRowVisible(Processor.MODIS_L1A.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                setRowVisible(Processor.MODIS_GEO.toString(), false);
+                setRowVisible(Processor.MIXED_GEO.toString(), false);
+                setRowVisible(Processor.EXTRACTOR.toString(), true);
+                setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                setRowVisible(Processor.MODIS_L1B.toString(), false);
+                setRowVisible(Processor.MIXED_L1B.toString(), false);
+                setRowVisible(Processor.L1BGEN.toString(), true);
+                setRowVisible(Processor.L1BRSGEN.toString(), true);
+            } else {
+                setRowVisible(Processor.MODIS_L1A.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                setRowVisible(Processor.MODIS_GEO.toString(), false);
+                setRowVisible(Processor.MIXED_GEO.toString(), false);
+                setRowVisible(Processor.EXTRACTOR.toString(), false);
+                setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                setRowVisible(Processor.MODIS_L1B.toString(), false);
+                setRowVisible(Processor.MIXED_L1B.toString(), false);
+                setRowVisible(Processor.L1BGEN.toString(), true);
+                setRowVisible(Processor.L1BRSGEN.toString(), true);
             }
         }
+    }
+
+    private void setRowVisible(String rowName, Boolean visible) {
+        getRow(rowName).getConfigButton().setEnabled(visible);
+        getRow(rowName).getPlusCheckBox().setVisible(visible);
+        getRow(rowName).getParamTextField().setVisible(visible);
+        getRow(rowName).getOdirSelector().setVisible(visible);
     }
 }
