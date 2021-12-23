@@ -115,8 +115,22 @@ public class MultilevelProcessorRow {
         if (name.equals(MultlevelProcessorForm.Processor.MAIN.toString())) {
             createConfigPanel();
         }
+    }
 
+    public JButton getConfigButton() {
+        return configButton;
+    }
 
+    public JCheckBox getPlusCheckBox() {
+        return plusCheckBox;
+    }
+
+    public ActiveFileSelector getOdirSelector() {
+        return odirSelector;
+    }
+
+    public JTextField getParamTextField() {
+        return paramTextField;
     }
 
     public String getName() {
@@ -192,6 +206,8 @@ public class MultilevelProcessorRow {
 
     public void deselectPlusCheckBox() {
         plusCheckBox.setSelected(false);
+        odirSelector.getFileSelector().setFilename("");
+        paramTextField.setText("");
         paramList.clear();
     }
 
