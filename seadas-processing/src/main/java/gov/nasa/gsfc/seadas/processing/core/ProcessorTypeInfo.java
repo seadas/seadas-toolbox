@@ -17,10 +17,12 @@ public class ProcessorTypeInfo {
         EXTRACTOR,
         MODIS_L1A,
         MODIS_GEO,
+        MIXED_GEO,
         GEOLOCATE_VIIRS,
         GEOLOCATE_HAWKEYE,
         L1BGEN_GENERIC,
         MODIS_L1B,
+        MIXED_L1B,
         CALIBRATE_VIIRS,
         L1BRSGEN,
         L2BRSGEN,
@@ -57,10 +59,12 @@ public class ProcessorTypeInfo {
         put("extractor", ProcessorID.EXTRACTOR);
         put("modis_L1A", ProcessorID.MODIS_L1A);
         put("modis_GEO", ProcessorID.MODIS_GEO);
+        put("mixed_GEO", ProcessorID.MIXED_GEO);
         put("geolocate_viirs", ProcessorID.GEOLOCATE_VIIRS);
         put("geolocate_hawkeye", ProcessorID.GEOLOCATE_HAWKEYE);
         put("l1bgen_generic", ProcessorID.L1BGEN_GENERIC);
         put("modis_L1B", ProcessorID.MODIS_L1B);
+        put("mixed_L1B", ProcessorID.MIXED_L1B);
         put("calibrate_viirs", ProcessorID.CALIBRATE_VIIRS);
         put("l1brsgen", ProcessorID.L1BRSGEN);
         put("l2brsgen", ProcessorID.L2BRSGEN);
