@@ -144,6 +144,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
     private boolean checkboxControlHandlerEnabled = true;
 
+    boolean displayDisabledProcessors = true;  // todo  maybe add as a preferences
+
     OCSSW ocssw;
 
     MultlevelProcessorForm(AppContext appContext, String xmlFileName, OCSSW ocssw) {
@@ -193,6 +195,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         });
 
         overwriteCheckBox = new JCheckBox("overwrite");
+        overwriteCheckBox.setToolTipText("overwrite existing intermediate and output files");
         overwriteCheckBox.setSelected(false);
         overwriteCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -206,6 +209,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         });
 
         use_existingCheckBox = new JCheckBox("use_existing");
+        use_existingCheckBox.setToolTipText("do not re-create intermediate files if they already exist");
         use_existingCheckBox.setSelected(false);
         use_existingCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -219,6 +223,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         });
 
         deletefilesCheckBox = new JCheckBox("deletefiles");
+        deletefilesCheckBox.setToolTipText("delete intermediate files");
         deletefilesCheckBox.setSelected(false);
         deletefilesCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -232,6 +237,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         });
 
         use_ancillaryCheckBox = new JCheckBox("use_ancillary");
+        use_ancillaryCheckBox.setToolTipText("Get the ancillary data for l2gen processing");
         use_ancillaryCheckBox.setSelected(false);
         use_ancillaryCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -253,6 +259,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         primaryOptionPanel = new JPanel(new GridBagLayout());
+        primaryOptionPanel.setBorder(BorderFactory.createTitledBorder("Main Options"));
+
         primaryOptionPanel.add(overwriteCheckBox,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         primaryOptionPanel.add(use_existingCheckBox,
@@ -1158,9 +1166,18 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     }
 
     private void setRowVisible(String rowName, Boolean visible) {
-        getRow(rowName).getConfigButton().setEnabled(visible);
-        getRow(rowName).getPlusCheckBox().setVisible(visible);
-        getRow(rowName).getParamTextField().setVisible(visible);
-        getRow(rowName).getOdirSelector().setVisible(visible);
+        if (displayDisabledProcessors) {
+            if (rowName.contains("mixed_")) {
+                getRow(rowName).getConfigButton().setVisible(visible);
+                getRow(rowName).getPlusCheckBox().setVisible(visible);
+                getRow(rowName).getParamTextField().setVisible(visible);
+                getRow(rowName).getOdirSelector().setVisible(visible);
+            } else {
+                getRow(rowName).getConfigButton().setEnabled(visible);
+                getRow(rowName).getPlusCheckBox().setEnabled(visible);
+                getRow(rowName).getParamTextField().setVisible(visible);
+                getRow(rowName).getOdirSelector().setVisible(visible);
+            }
+        }
     }
 }
