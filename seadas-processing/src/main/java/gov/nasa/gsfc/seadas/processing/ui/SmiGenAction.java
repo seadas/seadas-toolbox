@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.ui;
 import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
 import org.esa.snap.core.datamodel.ProductNode;
 import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 
@@ -21,10 +20,10 @@ import javax.swing.*;
         displayName = "#CTL_ SmiGenAction_Name",
         popupText = "#CTL_ SmiGenAction_Name"
 )
-@ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 200
-)
+//@ActionReference(
+//        path = "Menu/SeaDAS-OCSSW",
+//        position = 200
+//)
 @NbBundle.Messages({
         "CTL_SmiGenAction_Name=smigen...",
         "CTL_SmiGenAction_ProgramName=smigen",
