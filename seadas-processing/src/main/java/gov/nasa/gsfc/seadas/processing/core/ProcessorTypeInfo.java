@@ -33,7 +33,7 @@ public class ProcessorTypeInfo {
         L3BIN,
         L3MAPGEN,
         MAPGEN,
-        SMIGEN,
+//        SMIGEN,
         SMITOPPM,
         LONLAT2PIXLINE,
 //        MULTILEVEL_PROCESSOR_PY,
@@ -78,7 +78,7 @@ public class ProcessorTypeInfo {
         put("l3bin", ProcessorID.L3BIN);
         put("l3mapgen", ProcessorID.L3MAPGEN);
         put("mapgen", ProcessorID.MAPGEN);
-        put("smigen", ProcessorID.SMIGEN);
+//        put("smigen", ProcessorID.SMIGEN);
         put("smitoppm", ProcessorID.SMITOPPM);
         put("lonlat2pixline", ProcessorID.LONLAT2PIXLINE);
 //        put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR_PY);
