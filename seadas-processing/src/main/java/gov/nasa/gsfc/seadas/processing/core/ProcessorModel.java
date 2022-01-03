@@ -132,8 +132,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 return new Modis_L1B_Processor(programName, xmlFileName, ocssw);
             case LONLAT2PIXLINE:
                 return new LonLat2Pixels_Processor(programName, xmlFileName, ocssw);
-            case SMIGEN:
-                return new SMIGEN_Processor(programName, xmlFileName, ocssw);
+//            case SMIGEN:
+//                return new SMIGEN_Processor(programName, xmlFileName, ocssw);
             case L3MAPGEN:
                 return new L3MAPGEN_Processor(programName, xmlFileName, ocssw);
             case MAPGEN:
