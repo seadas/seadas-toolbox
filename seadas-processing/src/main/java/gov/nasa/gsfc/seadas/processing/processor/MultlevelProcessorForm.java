@@ -938,6 +938,16 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         MultilevelProcessorRow row = getRow(Processor.MAIN.toString());
         String oldIFile = row.getParamList().getValue(IFILE);
         if (!ifileName.equals(oldIFile)) {
+            findMissionName(ifileName);
+            row.setParamValue(IFILE, ifileName);
+            for (MultilevelProcessorRow row2 : rows) {
+                if (!row2.getName().equals(Processor.MAIN.toString())) {
+                    if (!row2.getParamList().getParamArray().isEmpty()) {
+                        row2.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                        row2.getParamList().clear();
+                    };
+                }
+            }
             if (missionName != null) {
                 if (missionName.contains("HAWKEYE")) {
                     MultilevelProcessorRow row_geo_hawkeye = getRow(Processor.GEOLOCATE_HAWKEYE.toString());
@@ -962,8 +972,13 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     row_l1bgen.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
                 }
             }
-            findMissionName(ifileName);
-            row.setParamValue(IFILE, ifileName);
+//            findMissionName(ifileName);
+//            row.setParamValue(IFILE, ifileName);
+//            for (MultilevelProcessorRow row2 : rows) {
+//                if (!row2.getName().equals(Processor.MAIN.toString())) {
+//                    row2.getParamList().clear();
+//                }
+//            }
             parfileTextArea.setText(getParamString());
         }
     }
@@ -1100,6 +1115,67 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             break;
                         }
                     }
+                }
+                if (missionName.contains("VIIRS")) {
+                    setRowVisible(Processor.MODIS_L1A.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), true);
+                    setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                    setRowVisible(Processor.MODIS_GEO.toString(), false);
+                    setRowVisible(Processor.MIXED_GEO.toString(), false);
+                    setRowVisible(Processor.EXTRACTOR.toString(), true);
+                    setRowVisible(Processor.CALIBRATE_VIIRS.toString(), true);
+                    setRowVisible(Processor.MODIS_L1B.toString(), false);
+                    setRowVisible(Processor.MIXED_L1B.toString(), false);
+                    setRowVisible(Processor.L1BGEN.toString(), false);
+                    setRowVisible(Processor.L1BRSGEN.toString(), true);
+                } else if (missionName.contains("MODIS")) {
+                    setRowVisible(Processor.MODIS_L1A.toString(), true);
+                    setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                    setRowVisible(Processor.MODIS_GEO.toString(), true);
+                    setRowVisible(Processor.MIXED_GEO.toString(), false);
+                    setRowVisible(Processor.EXTRACTOR.toString(), true);
+                    setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.MODIS_L1B.toString(), true);
+                    setRowVisible(Processor.MIXED_L1B.toString(), false);
+                    setRowVisible(Processor.L1BGEN.toString(), false);
+                    setRowVisible(Processor.L1BRSGEN.toString(), true);
+                } else if (missionName.contains("HAWKEYE")) {
+                    setRowVisible(Processor.MODIS_L1A.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), true);
+                    setRowVisible(Processor.MODIS_GEO.toString(), false);
+                    setRowVisible(Processor.MIXED_GEO.toString(), false);
+                    setRowVisible(Processor.EXTRACTOR.toString(), false);
+                    setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.MODIS_L1B.toString(), false);
+                    setRowVisible(Processor.MIXED_L1B.toString(), false);
+                    setRowVisible(Processor.L1BGEN.toString(), true);
+                    setRowVisible(Processor.L1BRSGEN.toString(), true);
+                } else if (missionName.contains("SEAWIFS")) {
+                    setRowVisible(Processor.MODIS_L1A.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                    setRowVisible(Processor.MODIS_GEO.toString(), false);
+                    setRowVisible(Processor.MIXED_GEO.toString(), false);
+                    setRowVisible(Processor.EXTRACTOR.toString(), true);
+                    setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.MODIS_L1B.toString(), false);
+                    setRowVisible(Processor.MIXED_L1B.toString(), false);
+                    setRowVisible(Processor.L1BGEN.toString(), true);
+                    setRowVisible(Processor.L1BRSGEN.toString(), true);
+                } else if (!missionName.contains("mixed")) {
+                    setRowVisible(Processor.MODIS_L1A.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+                    setRowVisible(Processor.MODIS_GEO.toString(), false);
+                    setRowVisible(Processor.MIXED_GEO.toString(), false);
+                    setRowVisible(Processor.EXTRACTOR.toString(), false);
+                    setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+                    setRowVisible(Processor.MODIS_L1B.toString(), false);
+                    setRowVisible(Processor.MIXED_L1B.toString(), false);
+                    setRowVisible(Processor.L1BGEN.toString(), true);
+                    setRowVisible(Processor.L1BRSGEN.toString(), true);
                 }
             } else if (missionName.contains("VIIRS")) {
                 setRowVisible(Processor.MODIS_L1A.toString(), false);
