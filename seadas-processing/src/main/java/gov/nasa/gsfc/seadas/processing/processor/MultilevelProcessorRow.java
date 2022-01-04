@@ -139,8 +139,13 @@ public class MultilevelProcessorRow {
 
     // this method assumes the the JPanel passed in is using a grid bag layout
     public void attachComponents(JPanel base, int row) {
-        plusCheckBox.setToolTipText(configButton.getText() + " processor add to the chain");
-        configButton.setToolTipText("Open " + configButton.getText() + " GUI to set params");
+        if (name.equals("geolocate_hawkeye") || name.equals("mixed_GEO") || name.equals("mixed_GEO")) {
+            plusCheckBox.setToolTipText(configButton.getText() + " <html>processor add to the chain <br>(no parameters available for mixed list mode)</html>");
+            configButton.setToolTipText("No parameters available for " + configButton.getText()+ " in mixed list mode");
+        } else {
+            plusCheckBox.setToolTipText(configButton.getText() + " processor add to the chain");
+            configButton.setToolTipText("Open " + configButton.getText() + " GUI to set params");
+        }
         base.add(configButton,
                 new GridBagConstraintsCustom(0, row, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 0)));
 
