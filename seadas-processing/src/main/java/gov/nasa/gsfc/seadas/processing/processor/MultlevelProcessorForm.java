@@ -1092,8 +1092,26 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     String instrument = "unknown";
                     for (String nextFileName : fileList) {
                         if (nextFileName.length() > 0 && (nextFileName.charAt(0) != '#')) {
-                            fileInfoFinder = new FileInfoFinder(nextFileName, ocssw);
-                            missionName = fileInfoFinder.getMissionName();
+                            if (!nextFileName.contains(File.separator)) {
+                                File iFile = new File(fileName);
+                                String iFilePath = iFile.getParent();
+                                String absoluteFileName = iFilePath + File.separator + nextFileName;
+                                fileInfoFinder = new FileInfoFinder(absoluteFileName, ocssw);
+                                if (fileInfoFinder.getMissionName() != null
+                                        && !fileInfoFinder.getMissionName().equals("unknown")) {
+                                    missionName = fileInfoFinder.getMissionName();
+                                } else {
+                                    continue;
+                                }
+                            } else {
+                                fileInfoFinder = new FileInfoFinder(nextFileName, ocssw);
+                                if (fileInfoFinder.getMissionName() != null
+                                        && !fileInfoFinder.getMissionName().equals("unknown")) {
+                                    missionName = fileInfoFinder.getMissionName();
+                                } else {
+                                    continue;
+                                }
+                            }
                             if (instrument.equals("unknown")) {
                                 if (missionName.contains(" ")) {
                                     instrument = missionName.split(" ")[0];
