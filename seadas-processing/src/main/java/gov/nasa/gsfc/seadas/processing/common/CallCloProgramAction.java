@@ -92,7 +92,8 @@ public class CallCloProgramAction extends AbstractSnapAction {
             if (!ocssw.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
             }
-            if (ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
+
+            if (ocsswInfo.getOcsswLocation() == null || ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
                 SeadasLogger.getLogger().fine("getting the installer GUI");
