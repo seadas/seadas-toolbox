@@ -394,6 +394,10 @@ public class MultilevelProcessorRow {
 
     public void setParamString(String str, boolean retainIFile) {
         createConfigPanel();
+        if (paramList.getParamArray().isEmpty()) {
+            getParamListFromCloProgramUI();
+            paramList.setParamString("");
+        }
         String oldParamString = getParamString();
         paramList.setParamString(str, retainIFile, true);
         if (name.equals("main")) {
