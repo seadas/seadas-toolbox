@@ -53,7 +53,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 public class OCSSWInfoGUI {
 
-    final String PANEL_NAME = "Configure OCSSW";
+    final String PANEL_NAME = "Configure OCSSW Location";
     final String HELP_ID = "ocsswInfoConfig";
 
     //todo the wording needs to be updated.
@@ -120,13 +120,13 @@ public class OCSSWInfoGUI {
         gbc.weighty = 0;
         gbc.weightx = 0;
 
-        JPanel ocsswTagPanel = ocsswTagPanel();
-        ocsswTagPanel.setToolTipText(BRANCH_TOOLTIP);
-        mainPanel.add(ocsswTagPanel, gbc);
-
-        gbc.gridy += 1;
-        gbc.weighty = 0;
-        gbc.weightx = 0;
+//        JPanel ocsswTagPanel = ocsswTagPanel();
+//        ocsswTagPanel.setToolTipText(BRANCH_TOOLTIP);
+//        mainPanel.add(ocsswTagPanel, gbc);
+//
+//        gbc.gridy += 1;
+//        gbc.weighty = 0;
+//        gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         mainPanel.add(makeParamPanel(), gbc);
 
@@ -681,6 +681,8 @@ public class OCSSWInfoGUI {
         }
     }
 
+
+    // todo call to this method was removed as it is broken and unneeded.   This method can be deleted in future if desired.
     private JPanel ocsswTagPanel() {
 
         final Preferences preferences = Config.instance("seadas").load().preferences();
