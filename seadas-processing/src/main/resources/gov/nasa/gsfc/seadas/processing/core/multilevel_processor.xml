@@ -32,19 +32,19 @@
             <name>overwrite</name>
             <value>false</value>
             <default>false</default>
-            <description>overwrite existing intermediate and output files</description>
+            <description>Overwrite existing intermediate and output files</description>
         </option>
         <option type="boolean">
             <name>use_existing</name>
             <value>false</value>
             <default>false</default>
-            <description>do not re-create intermediate files if they already exist</description>
+            <description>Do not re-create intermediate files if they already exist</description>
         </option>
         <option type="boolean">
             <name>deletefiles</name>
             <value>false</value>
             <default>false</default>
-            <description>delete intermediate files</description>
+            <description>Delete intermediate files</description>
         </option>
         <option type="boolean">
             <name>use_ancillary</name>

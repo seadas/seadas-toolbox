@@ -159,6 +159,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
         // create main panel
         sourceProductFileSelector = new SeadasFileSelector(SnapApp.getDefault().getAppContext(), IFILE, true);
+        sourceProductFileSelector.getFileNameLabel().setToolTipText("Selects the input file");
         sourceProductFileSelector.initProducts();
         //sourceProductFileSelector.setProductNameLabel(new JLabel(IFILE));
         sourceProductFileSelector.getFileNameComboBox().setPrototypeDisplayValue(
@@ -177,7 +178,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
 
 
         odirSelector = new ActiveFileSelector(propertyChangeSupport, ODIR_EVENT, "odir", ParamInfo.Type.DIR);
-
+        odirSelector.getFileSelector().getNameLabel().setToolTipText("Selects the output directory");
 //        odirSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.DIR, "odir");
 //
 //        odirSelector.addPropertyChangeListener(new PropertyChangeListener() {
@@ -195,7 +196,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         });
 
         overwriteCheckBox = new JCheckBox("overwrite");
-        overwriteCheckBox.setToolTipText("overwrite existing intermediate and output files");
+        overwriteCheckBox.setToolTipText("Overwrite existing intermediate and output files");
         overwriteCheckBox.setSelected(false);
         overwriteCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -209,7 +210,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         });
 
         use_existingCheckBox = new JCheckBox("use_existing");
-        use_existingCheckBox.setToolTipText("do not re-create intermediate files if they already exist");
+        use_existingCheckBox.setToolTipText("Do not re-create intermediate files if they already exist");
         use_existingCheckBox.setSelected(false);
         use_existingCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -223,7 +224,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         });
 
         deletefilesCheckBox = new JCheckBox("deletefiles");
-        deletefilesCheckBox.setToolTipText("delete intermediate files");
+        deletefilesCheckBox.setToolTipText("Delete intermediate files");
         deletefilesCheckBox.setSelected(false);
         deletefilesCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -277,8 +278,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         retainIFileCheckbox = new JCheckBox("Retain Selected IFILE");
+        retainIFileCheckbox.setToolTipText("When loading a parfile, use the selected ifile instead of the ifile in the parfile");
 
         importParfileButton = new JButton("Load Parameters");
+        importParfileButton.setToolTipText("Selects a parfile to load");
         importParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -301,6 +304,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         exportParfileButton = new JButton("Save Parameters");
+        exportParfileButton.setToolTipText("Write the current parfile to a file");
         exportParfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
