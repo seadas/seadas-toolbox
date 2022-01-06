@@ -231,7 +231,7 @@ public class ParamUIFactory {
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
-        SeadasLogger.getLogger().finest(optionName + "  " + pi.getValue());
+        //SeadasLogger.getLogger().finest(optionName + "  " + pi.getValue());
         ctx.bind(optionName, field);
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
@@ -239,7 +239,8 @@ public class ParamUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
                 processorModel.updateParamInfo(pi, (new Boolean(field.isSelected())).toString());
-                SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
+                //SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
+                SeadasFileUtils.debug(((new Boolean(field.isSelected())).toString() + "  " + field.getText()));
 
             }
         });

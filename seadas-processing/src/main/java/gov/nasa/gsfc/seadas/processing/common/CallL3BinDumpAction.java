@@ -4,6 +4,8 @@ import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.SheetCell;
 import gov.nasa.gsfc.seadas.processing.utilities.SpreadSheet;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +17,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
-import org.esa.snap.rcp.SnapApp;
-
-import org.esa.snap.ui.ModalDialog;
 
 /**
  * Created by IntelliJ IDEA.

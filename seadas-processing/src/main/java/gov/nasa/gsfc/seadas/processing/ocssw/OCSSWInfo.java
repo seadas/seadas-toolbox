@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
-import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.runtime.Config;
@@ -275,7 +274,7 @@ public class OCSSWInfo {
         if (ocsswRootString != null && ocsswRootString.length() > 0) {
 //            final File dir = new File(ocsswRootString + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
             final File dir = new File(ocsswRootString, OCSSW_SCRIPTS_DIR_SUFFIX);
-            SeadasLogger.getLogger().info("server ocssw root path: " + dir.getAbsoluteFile());
+            //SeadasLogger.getLogger().info("server ocssw root path: " + dir.getAbsoluteFile());
             if (dir.isDirectory()) {
                 ocsswExist = true;
             }
