@@ -231,7 +231,6 @@ public class ParamUIFactory {
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
-        SeadasLogger.getLogger().finest(optionName + "  " + pi.getValue());
         ctx.bind(optionName, field);
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
@@ -239,7 +238,7 @@ public class ParamUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
                 processorModel.updateParamInfo(pi, (new Boolean(field.isSelected())).toString());
-                SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
+                SeadasFileUtils.debug(((new Boolean(field.isSelected())).toString() + "  " + field.getText()));
 
             }
         });
@@ -250,8 +249,6 @@ public class ParamUIFactory {
                 field.setSelected(pi.getValue().equals("true") || pi.getValue().equals("1") ? true : false);
                 field.validate();
                 field.repaint();
-                //optionValue = field.isSelected();
-
             }
         });
 
@@ -349,7 +346,6 @@ public class ParamUIFactory {
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
 
-        //final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
         final JButton optionNameButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
         optionNameButton.setName("optionButton");
         optionNameButton.addActionListener(new ActionListener() {
@@ -359,11 +355,8 @@ public class ParamUIFactory {
                 processorModel.updateParamInfo(pi, selectedFlags);
             }
         });
-        //singlePanel.add(optionNameLabel);
         singlePanel.add(optionNameButton);
         singlePanel.setName(pi.getName());
-
-        //String optionDefaultValue = pi.getValue();
 
         final JTextField field = new JTextField();
         field.setText(pi.getValue());
@@ -374,7 +367,6 @@ public class ParamUIFactory {
                 field.setText(pi.getValue());
             }
         });
-        //field.setEditable(false);
         singlePanel.add(field);
         return singlePanel;
     }
@@ -493,8 +485,6 @@ public class ParamUIFactory {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-                //processorModel.updateParamInfo(pi, (new Boolean(field.isSelected())).toString());
-                //SeadasLogger.getLogger().info((new Boolean(field.isSelected())).toString() + "  " + field.getText());
                 paramValidValueInfo.setSelected(field.isSelected());
             }
         });
@@ -503,8 +493,6 @@ public class ParamUIFactory {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 field.setSelected(paramValidValueInfo.isSelected());
-                //optionValue = field.isSelected();
-
             }
         });
 

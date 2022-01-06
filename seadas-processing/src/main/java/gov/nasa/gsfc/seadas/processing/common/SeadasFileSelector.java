@@ -274,7 +274,6 @@ public class SeadasFileSelector {
                                 file.getCanonicalPath());
 
                         handleError(window, message);
-                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(file.isHidden()).toString());
                     } catch (IOException ioe) {
                         SeadasFileUtils.debug(file + "is not a valid file!");
                     }
@@ -397,8 +396,6 @@ public class SeadasFileSelector {
         }
 
         public RegexFileFilter(String regex) throws IllegalStateException, IllegalArgumentException{
-            //SeadasLogger.getLogger().info("regular expression: " + regex);
-
             if (regex == null) {
                 return;
             }
@@ -425,7 +422,6 @@ public class SeadasFileSelector {
             if (regex == null) {
                 return true;
             }
-            SeadasLogger.getLogger().info("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)));
             return (pathname.isFile() && pathname.getName().matches(this.regex));
         }
 

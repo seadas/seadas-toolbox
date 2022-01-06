@@ -5,7 +5,11 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.ocssw.*;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
+import gov.nasa.gsfc.seadas.processing.utilities.ScrolledPane;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -96,7 +100,6 @@ public class CallCloProgramAction extends AbstractSnapAction {
             if (ocsswInfo.getOcsswLocation() == null || ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
-                SeadasLogger.getLogger().fine("getting the installer GUI");
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
         }else if (programName.indexOf("update_luts") != -1   ) {
@@ -144,7 +147,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
 
         if (cloProgramUI == null) {
-            SeadasLogger.getLogger().fine("getting the GUI for the program failed");
+            SeadasFileUtils.debug("getting the GUI for the program failed");
             return;
         }
 
@@ -242,18 +245,14 @@ public class CallCloProgramAction extends AbstractSnapAction {
 
                 ocssw.setMonitorProgress(true);
 
-                final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
+                final Process process = ocssw.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
                 final ProcessObserver processObserver = ocssw.getOCSSWProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
 
-                Pattern pattern = processorModel.getProgressPattern();
-
                 if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
-//                    pm.beginTask("Installing OCSSW Processors " + "Install OCSSW", 10);
-//                    pm.worked(1);
                     Preferences preferences = Config.instance("seadas").load().preferences();
                     preferences.put(SEADAS_OCSSW_TAG_PROPERTY, processorModel.getParamValue("--tag"));
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
@@ -529,26 +528,4 @@ public class CallCloProgramAction extends AbstractSnapAction {
             }
         }
     }
-
-
-
-    private class ScrolledPane extends JFrame {
-
-        private JScrollPane scrollPane;
-
-        public ScrolledPane(String programName, String message, Window window) {
-            setTitle(programName);
-            setSize(500, 500);
-            setBackground(Color.gray);
-            setLocationRelativeTo(window);
-            JPanel topPanel = new JPanel();
-            topPanel.setLayout(new BorderLayout());
-            getContentPane().add(topPanel);
-            JTextArea text = new JTextArea(message);
-            scrollPane = new JScrollPane();
-            scrollPane.getViewport().add(text);
-            topPanel.add(scrollPane, BorderLayout.CENTER);
-        }
-    }
-
 }
