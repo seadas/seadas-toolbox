@@ -255,7 +255,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     public boolean isValidProcessor() {
-        SeadasLogger.getLogger().info("program location: " + OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
+        //SeadasLogger.getLogger().info("program location: " + OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
         return OCSSWInfo.getInstance().getOcsswRunnerScriptPath() != null;
     }
 
@@ -343,7 +343,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (programName != null && verifyIFilePath(ifileName)) {
             //ocssw.setIfileName(ifileName);
             String ofileName = getOcssw().getOfileName(ifileName, programName);
-            SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
+            //SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
             if (ofileName != null) {
                 isIfileValid = true;
                 updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
@@ -456,7 +456,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public void disableEvent(String name) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
-            SeadasLogger.getLogger().severe("disableEvent - eventInfo not found for " + name);
+            //SeadasLogger.getLogger().severe("disableEvent - eventInfo not found for " + name);
+            SeadasFileUtils.debug("severe: disableEvent - eventInfo not found for " + name);
         } else {
             eventInfo.setEnabled(false);
         }
@@ -465,7 +466,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public void enableEvent(String name) {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
-            SeadasLogger.getLogger().severe("enableEvent - eventInfo not found for " + name);
+            //SeadasLogger.getLogger().severe("enableEvent - eventInfo not found for " + name);
+            SeadasFileUtils.debug("severe: enableEvent - eventInfo not found for " + name );
         } else {
             eventInfo.setEnabled(true);
         }
@@ -500,7 +502,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             try {
                 rootDir = new File(OCSSWInfo.getInstance().getOcsswRoot());
             } catch (Exception e) {
-                SeadasLogger.getLogger().severe("error in getting ocssw root!");
+                //SeadasLogger.getLogger().severe("error in getting ocssw root!");
+                SeadasFileUtils.debug("severe: error in getting ocssw root!" );
             }
 
         }
@@ -766,7 +769,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (programName != null && verifyIFilePath(ifileName)) {
                 //ocssw.setIfileName(ifileName);
                 String ofileName = new File(ifileName).getParent() + File.separator + getOcssw().getOfileName(ifileName);
-                SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
+                //SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
                 if (ofileName != null) {
                     //programName = getOcssw().getProgramName();
                     setParamList(ParamUtils.computeParamList(getOcssw().getXmlFileName()));

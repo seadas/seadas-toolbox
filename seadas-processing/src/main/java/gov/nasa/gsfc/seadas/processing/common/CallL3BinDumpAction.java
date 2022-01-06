@@ -4,6 +4,8 @@ import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.SheetCell;
 import gov.nasa.gsfc.seadas.processing.utilities.SpreadSheet;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +17,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
-import org.esa.snap.rcp.SnapApp;
-
-import org.esa.snap.ui.ModalDialog;
 
 /**
  * Created by IntelliJ IDEA.
@@ -116,7 +115,6 @@ public class CallL3BinDumpAction extends CallCloProgramAction {
             }
         });
         content.add(buttonPanel, BorderLayout.SOUTH);
-        //frame.getContentPane().add(sp.getScrollPane());
         frame.getContentPane().add(content);
 
         frame.pack();
@@ -150,45 +148,4 @@ public class CallL3BinDumpAction extends CallCloProgramAction {
         }
 
     }
-
-//    public void createSpreadsheet(SheetCell[][] cells) {//throws BiffException, IOException, WriteException {
-//        WritableWorkbook wworkbook;
-//        try {
-//            wworkbook = Workbook.createWorkbook(new File("output.xls"));
-//            WritableSheet wsheet = wworkbook.createSheet("l3bindump output", 0);
-//            jxl.write.Label label;
-//            jxl.write.Number number;
-//
-//            /**
-//             * Create labels for the worksheet
-//             */
-//            for (int j = 0; j < cells[0].length; j++) {
-//                label = new jxl.write.Label(0, j, (String) cells[0][j].getValue());
-//                wsheet.addCell(label);
-//            }
-//            /**
-//             * Create cell values for the worksheet
-//             */
-//            for (int i = 1; i < cells.length; i++) {
-//                for (int j = 0; j < cells[i].length; j++) {
-//                    number = new jxl.write.Number(i, j, new Double((String) cells[i][j].getValue()).doubleValue());
-//                    wsheet.addCell(number);
-//                }
-//            }
-//            wworkbook.write();
-//            wworkbook.close();
-//        } catch (Exception ioe) {
-//            //System.out.println(ioe.getMessage());
-//
-//        }
-//
-////          Workbook workbook = Workbook.getWorkbook(new File("output.xls"));
-////
-////          Sheet sheet = workbook.getSheet(0);
-////          Cell cell1 = sheet.getCell(0, 2);
-////          System.out.println(cell1.getContents());
-////          Cell cell2 = sheet.getCell(3, 4);
-////          System.out.println(cell2.getContents());
-////          workbook.close();
-//    }
 }

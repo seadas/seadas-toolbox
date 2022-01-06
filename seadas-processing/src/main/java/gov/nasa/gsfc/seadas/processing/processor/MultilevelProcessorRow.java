@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.processing.processor;
 import gov.nasa.gsfc.seadas.processing.common.CloProgramUI;
 import gov.nasa.gsfc.seadas.processing.common.GridBagConstraintsCustom;
 import gov.nasa.gsfc.seadas.processing.common.ProgramUIFactory;
-import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
@@ -335,7 +334,7 @@ public class MultilevelProcessorRow {
 
         final int dialogResult = modalDialog.show();
 
-        SeadasLogger.getLogger().info("dialog result: " + dialogResult);
+        //SeadasLogger.getLogger().info("dialog result: " + dialogResult);
 
         if (dialogResult != ModalDialog.ID_OK) {
             return;

@@ -1606,14 +1606,14 @@ public class L2genData implements SeaDASProcessorModel {
                     boolean downloadSuccessful = ocssw.getIntermediateOutputFiles(processorModel);
 
                     if (!xmlFile.exists() || !downloadSuccessful) {
-                        SeadasLogger.getLogger().severe("l2gen can't find productInfo.xml file!");
+                        //SeadasLogger.getLogger().severe("l2gen can't find productInfo.xml file!");
                         Dialogs.showError("SEVERE: productInfo.xml not found!");
                         return null;
                     }
 
                     return new FileInputStream(xmlFile);
                 } catch (IOException e) {
-                    SeadasLogger.getLogger().severe(this.getClass().getName() + ": Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + e.getMessage() + "\n");
+                    //SeadasLogger.getLogger().severe(this.getClass().getName() + ": Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + e.getMessage() + "\n");
                     throw new IOException("Problem creating product XML file: " + e.getMessage());
 
                 }
@@ -1697,7 +1697,7 @@ public class L2genData implements SeaDASProcessorModel {
 
             }
             if (!xmlFile.exists()) {
-                SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+                //SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
                 Dialogs.showError("SEVERE: paramInfo.xml not found!");
                 return null;
             }
@@ -1848,15 +1848,15 @@ public class L2genData implements SeaDASProcessorModel {
 
         Path sourcePath = moduleBasePath.resolve("gov/nasa/gsfc/seadas/processing/l2gen/userInterface").toAbsolutePath();
 
-        SeadasLogger.getLogger().info(this.getClass().getName() + " Installing resource from  " + sourcePath.toString() + "   to  " + targetPath.toString());
+        //SeadasLogger.getLogger().info(this.getClass().getName() + " Installing resource from  " + sourcePath.toString() + "   to  " + targetPath.toString());
 
         final ResourceInstaller resourceInstaller = new ResourceInstaller(sourcePath, targetPath);
         try {
             resourceInstaller.install(".*.xml", ProgressMonitor.NULL);
-            SeadasLogger.getLogger().info(System.getProperty(this.getClass().getName() + ": resource install successful. All xml files are copied to ") + targetPath.toString());
+            //SeadasLogger.getLogger().info(System.getProperty(this.getClass().getName() + ": resource install successful. All xml files are copied to ") + targetPath.toString());
         } catch (IOException e) {
             e.printStackTrace();
-            SeadasLogger.getLogger().severe("Unable to install " + sourcePath + File.separator + fileName + " to " + targetPath + " " + e.getMessage());
+            //SeadasLogger.getLogger().severe("Unable to install " + sourcePath + File.separator + fileName + " to " + targetPath + " " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
