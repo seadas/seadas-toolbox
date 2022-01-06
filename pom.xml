@@ -22,7 +22,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
     <name>SeaDAS Tool Box</name>
     <description>Tools from SeaDAS</description>
     <url>https://seadas.gsfc.nasa.gov</url>
@@ -46,11 +46,11 @@
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <seadas-toolbox.version>1.2.0-SNAPSHOT</seadas-toolbox.version>
-        <seadas-contour-operator.version>8.0.0-SNAPSHOT</seadas-contour-operator.version>
-        <seadas-processing.version>8.2.0-SNAPSHOT</seadas-processing.version>
-        <seadas-watermask-operator.version>8.0.0-SNAPSHOT</seadas-watermask-operator.version>
-        <seadas-bathymetry-operator.version>8.0.0-SNAPSHOT</seadas-bathymetry-operator.version>
+        <seadas-toolbox.version>1.2.0</seadas-toolbox.version>
+        <seadas-contour-operator.version>8.0.0</seadas-contour-operator.version>
+        <seadas-processing.version>8.2.0</seadas-processing.version>
+        <seadas-watermask-operator.version>8.0.0</seadas-watermask-operator.version>
+        <seadas-bathymetry-operator.version>8.0.0</seadas-bathymetry-operator.version>
 
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
@@ -58,8 +58,6 @@
         <jersey.version>2.27</jersey.version>
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
-        <!--<seadas.reader.version>1.8-SNAPSHOT</seadas.reader.version>-->
-        <!--<seadas.reader.ui.version>1.8-SNAPSHOT</seadas.reader.ui.version>-->
     </properties>
 
     <repositories>
