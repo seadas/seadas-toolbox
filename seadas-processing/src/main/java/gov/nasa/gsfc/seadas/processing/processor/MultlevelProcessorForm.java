@@ -26,7 +26,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
 import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
@@ -1050,15 +1049,12 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         missionName = fileInfoFinder.getMissionName();
         if (missionName != null) {
             if (missionName.equals("unknown")) {
-                try {
-                    File iFile = new File(fileName);
-                    String type = Files.probeContentType(iFile.toPath());
-                    if (type == null) {
+                    if (!SeadasFileUtils.isTextFile(fileName)) { // a single file with unknown mission
                         SimpleDialogMessage dialog = new SimpleDialogMessage(null, "ERROR!! Ifile contains UNKNOWN mission");
                         dialog.setVisible(true);
                         dialog.setEnabled(true);
                         setProcessorChainFormVisible("unknown");
-                    } else if (!type.equals("text/plain")) {
+                    } else { // a list of files
                         String instrument = "unknown";
                         final ArrayList<String> fileList = SeadasGuiUtils.myReadDataFile(fileName);
                         int nonExistingFileCount = 0;
@@ -1067,7 +1063,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         for (String nextFileName : fileList) {
                             if (nextFileName.length() > 0 && (nextFileName.charAt(0) != '#')) {
                                 if (!nextFileName.contains(File.separator)) {
-//                                    File iFile = new File(fileName);
+                                    File iFile = new File(fileName);
                                     String iFilePath = iFile.getParent();
                                     String absoluteFileName = iFilePath + File.separator + nextFileName;
                                     fileInfoFinder = new FileInfoFinder(absoluteFileName, ocssw);
@@ -1146,12 +1142,10 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                             } else if (missionName.contains("HAWKEYE")) {
                                 setProcessorChainFormVisible("HAWKEYE");
                             } else if (!missionName.contains("mixed")) {
-                                setProcessorChainFormVisible("mixed");
+                                setProcessorChainFormVisible("GENERIC");
                             }
                         }
                     }
-                } catch (IOException ioe) {
-                }
             } else { //file is a single file
                     if (missionName.contains("VIIRS")) {
                         setProcessorChainFormVisible("VIIRS");
@@ -1159,6 +1153,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                         setProcessorChainFormVisible("MODIS");
                     } else if (missionName.contains("HAWKEYE")) {
                         setProcessorChainFormVisible("HAWKEYE");
+                    } else {
+                        setProcessorChainFormVisible("GENERIC");
                     }
             }
         } else {
@@ -1216,7 +1212,17 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             setRowVisible(Processor.MODIS_L1B.toString(), false);
             setRowVisible(Processor.MIXED_L1B.toString(), false);
             setRowVisible(Processor.L1BGEN.toString(), true);
-        } else if (!missionName.contains("mixed")) {
+        } else if (missionName.contains("mixed")) {
+            setRowVisible(Processor.MODIS_L1A.toString(), false);
+            setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
+            setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
+            setRowVisible(Processor.MODIS_GEO.toString(), false);
+            setRowVisible(Processor.MIXED_GEO.toString(), true);
+            setRowVisible(Processor.CALIBRATE_VIIRS.toString(), false);
+            setRowVisible(Processor.MODIS_L1B.toString(), false);
+            setRowVisible(Processor.MIXED_L1B.toString(), true);
+            setRowVisible(Processor.L1BGEN.toString(), false);
+        } else if (missionName.contains("GENERIC")) {
             setRowVisible(Processor.MODIS_L1A.toString(), false);
             setRowVisible(Processor.GEOLOCATE_VIIRS.toString(), false);
             setRowVisible(Processor.GEOLOCATE_HAWKEYE.toString(), false);
