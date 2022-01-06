@@ -58,7 +58,7 @@
         <res id="FinishPanel.finish" src="about/finish.html"/>
     </resources>
     <variables>
-        <variable name="INSTALL_PATH" value="$USER_HOME"/>
+        <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
         <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
