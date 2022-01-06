@@ -376,6 +376,10 @@ public class FileSelector {
         return jPanel;
     }
 
+    public JLabel getNameLabel() {
+        return nameLabel;
+    }
+
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
