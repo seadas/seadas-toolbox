@@ -100,7 +100,6 @@ public class CallCloProgramAction extends AbstractSnapAction {
             if (ocsswInfo.getOcsswLocation() == null || ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
-                //SeadasLogger.getLogger().fine("getting the installer GUI");
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
         }else if (programName.indexOf("update_luts") != -1   ) {
@@ -246,18 +245,14 @@ public class CallCloProgramAction extends AbstractSnapAction {
 
                 ocssw.setMonitorProgress(true);
 
-                final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
+                final Process process = ocssw.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
                 final ProcessObserver processObserver = ocssw.getOCSSWProcessObserver(process, programName, pm);
                 final ConsoleHandler ch = new ConsoleHandler(programName);
 
-                Pattern pattern = processorModel.getProgressPattern();
-
                 if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
-//                    pm.beginTask("Installing OCSSW Processors " + "Install OCSSW", 10);
-//                    pm.worked(1);
                     Preferences preferences = Config.instance("seadas").load().preferences();
                     preferences.put(SEADAS_OCSSW_TAG_PROPERTY, processorModel.getParamValue("--tag"));
                     processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));

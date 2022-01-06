@@ -221,7 +221,6 @@ public class FileSelector {
             public void insertUpdate(DocumentEvent documentEvent) {
                 //To change body of implemented methods use File | Settings | File Templates.
                 regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-                //SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
                 SeadasFileUtils.debug(regexFileFilter.getDescription());
             }
 
@@ -346,7 +345,6 @@ public class FileSelector {
         }
 
         public RegexFileFilter(String regex) throws IllegalStateException {
-            //SeadasLogger.getLogger().info("regular expression: " + regex);
             if (regex == null || regex.trim().length() == 0) {
 
                 //throw new IllegalStateException();

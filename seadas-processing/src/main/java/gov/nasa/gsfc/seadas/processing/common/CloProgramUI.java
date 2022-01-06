@@ -19,5 +19,4 @@ public interface CloProgramUI{
     public boolean isOpenOutputInApp();
     public String getParamString();
     public void setParamString(String paramString);
-    //public void destroy();
 }
