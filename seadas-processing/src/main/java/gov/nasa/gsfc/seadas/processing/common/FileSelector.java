@@ -221,7 +221,8 @@ public class FileSelector {
             public void insertUpdate(DocumentEvent documentEvent) {
                 //To change body of implemented methods use File | Settings | File Templates.
                 regexFileFilter = new RegexFileFilter(filterRegexField.getText());
-                SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                //SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+                SeadasFileUtils.debug(regexFileFilter.getDescription());
             }
 
             @Override

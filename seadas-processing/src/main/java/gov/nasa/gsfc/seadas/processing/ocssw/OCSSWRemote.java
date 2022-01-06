@@ -4,9 +4,9 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
-import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.utilities.ScrolledPane;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -1059,7 +1059,9 @@ public class OCSSWRemote extends OCSSW {
             return tempFile;
 
         } catch (IOException e) {
-            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            //SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            ScrolledPane messagePane = new ScrolledPane(programName, e.getMessage());
+            messagePane.setVisible(true);
             return null;
         }
     }
@@ -1084,7 +1086,9 @@ public class OCSSWRemote extends OCSSW {
             return tempFile;
 
         } catch (IOException e) {
-            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            //SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            ScrolledPane messagePane = new ScrolledPane(programName, e.getMessage());
+            messagePane.setVisible(true);
             return null;
         }
     }

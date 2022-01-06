@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
 import org.esa.snap.rcp.util.Dialogs;
 import org.w3c.dom.Element;
@@ -69,7 +68,7 @@ public class ParamUtils {
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName("primaryOption");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
-            SeadasLogger.getLogger().warning("primaryOptions does not exist!");
+            //SeadasLogger.getLogger().warning("primaryOptions does not exist!");
             primaryOptions.add("ifile");
             primaryOptions.add("ofile");
             return primaryOptions;
@@ -89,7 +88,7 @@ public class ParamUtils {
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName("parFileOptionName");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
-            SeadasLogger.getLogger().warning("par file option name is not specified in the xml file. 'par' is used as a default name.");
+            //SeadasLogger.getLogger().warning("par file option name is not specified in the xml file. 'par' is used as a default name.");
             return DEFAULT_PAR_FILE_NAME;
         }
         return optionNodelist.item(0).getFirstChild().getNodeValue();
@@ -102,7 +101,7 @@ public class ParamUtils {
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName("progressRegex");
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
-            SeadasLogger.getLogger().warning("progress meter regular expression is not specified in the xml file.");
+            //SeadasLogger.getLogger().warning("progress meter regular expression is not specified in the xml file.");
             return DEFAULT_PROGRESS_REGEX;
         }
         return optionNodelist.item(0).getFirstChild().getNodeValue();
@@ -116,16 +115,16 @@ public class ParamUtils {
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName(elementName);
         if (optionNodelist == null || optionNodelist.getLength() == 0) {
-            SeadasLogger.getLogger().warning(elementName + " exist: " + optionStatus);
+            //SeadasLogger.getLogger().warning(elementName + " exist: " + optionStatus);
             return optionStatus;
         }
         Element metaDataElement = (Element) optionNodelist.item(0);
 
         String name = metaDataElement.getTagName();
-        SeadasLogger.getLogger().fine("tag name: " + name);
+        //SeadasLogger.getLogger().fine("tag name: " + name);
         //   if (name.equals(elementName)) {
         optionStatus = Boolean.parseBoolean(metaDataElement.getFirstChild().getNodeValue());
-        SeadasLogger.getLogger().fine(name + " value = " + metaDataElement.getFirstChild().getNodeValue() + " " + optionStatus);
+        //SeadasLogger.getLogger().fine(name + " value = " + metaDataElement.getFirstChild().getNodeValue() + " " + optionStatus);
         //  }
 
         return optionStatus;
