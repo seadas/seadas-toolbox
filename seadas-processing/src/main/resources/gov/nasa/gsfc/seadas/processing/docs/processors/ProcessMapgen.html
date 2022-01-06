@@ -122,21 +122,6 @@
         <td>2km</td>
     </tr>
     <tr>
-        <td><b>interp</b></td>
-        <td>string</td>
-        <td>interpolation method:
-            <pre>
-        nearest: Nearest Neighbor
-        bin:     bin all of the pixels that intersect the
-                area of the output pixel
-        area:    bin weighted by area all of the pixels that
-                intersect the area of the output pixel
-            </pre>
-        </td>
-        <td>Optional</td>
-        <td>nearest</td>
-    </tr>
-    <tr>
         <td><b>north</b></td>
         <td>float</td>
         <td>Northern most Latitude</td>
@@ -246,27 +231,6 @@
         <td>0</td>
     </tr>
 
-    <tr>
-        <td><b>apply_pal</b></td>
-        <td>boolean</td>
-        <td>apply color palette:
-            <pre>
-        yes: color image
-        no: grayscale image
-            </pre>
-        </td>
-        <td>Optional</td>
-        <td>yes</td>
-    </tr>
-    <tr>
-        <td><b>use_rgb</b></td>
-        <td>boolean</td>
-        <td>generate an RGB image output</td>
-        <td>Optional</td>
-        <td>a pseudo-true color image with bands to use
-            controlled by --product_rgb option</td>
-    </tr>
-
 </table>
 
 
@@ -288,6 +252,16 @@
         <td>Button</td>
         <td>Selects ifile/ofile
         </td>
+    </tr>
+    <tr>
+        <td><b>use_rgb</b></td>
+        <td>Check Box</td>
+        <td>Generate an RGB image output</td>
+    </tr>
+    <tr>
+        <td><b>trimNSEW</b></td>
+        <td>Check Box</td>
+        <td>Do not trim output to match input NSEW range</td>
     </tr>
     <tr>
         <td><b>Load Parameters ...</b></td>

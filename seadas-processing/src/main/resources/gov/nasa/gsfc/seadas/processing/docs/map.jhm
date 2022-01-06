@@ -36,12 +36,12 @@
     <mapID target="geolocate_hawkeye" url="processors/ProcessGeolocate_hawkeye.html"/>
     <mapID target="geolocate_viirs" url="processors/ProcessGeolocate_viirs.html"/>
     <mapID target="calibrate_viirs" url="processors/ProcessCalibrate_viirs.html"/>
-    <mapID target="l1mapgen" url="processors/ProcessL1mapgen.html"/>
+<!--    <mapID target="l1mapgen" url="processors/ProcessL1mapgen.html"/>-->
     <mapID target="l1brsgen" url="processors/ProcessL1brsgen.html"/>
     <mapID target="l2extract" url="processors/ProcessExtractors.html"/>
     <mapID target="l2gen" url="processors/ProcessL2gen.html"/>
     <mapID target="l2gen_aquarius" url="processors/ProcessL2genAquarius.html"/>
-    <mapID target="l2mapgen" url="processors/ProcessL2mapgen.html"/>
+<!--    <mapID target="l2mapgen" url="processors/ProcessL2mapgen.html"/>-->
     <mapID target="l2brsgen" url="processors/ProcessL2brsgen.html"/>
     <mapID target="l2bin" url="processors/ProcessL2bin.html"/>
     <mapID target="l2bin_aquarius" url="processors/ProcessL2binAquarius.html"/>
@@ -50,7 +50,7 @@
     <mapID target="l3bindump" url="processors/ProcessL3bindump.html"/>
     <mapID target="l3mapgen" url="processors/ProcessL3mapgen.html"/>
     <mapID target="mapgen" url="processors/ProcessMapgen.html"/>
-    <mapID target="smigen" url="processors/ProcessSmigen.html"/>
+<!--    <mapID target="smigen" url="processors/ProcessSmigen.html"/>-->
     <mapID target="multilevel_processor" url="processors/ProcessMultilevel_processor.html"/>
     <mapID target="ocsswInfoConfig" url="processors/OCSSWInfoConfig.html"/>
     <mapID target="getSysInfo" url="processors/GetSysInfo.html"/>

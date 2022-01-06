@@ -4,7 +4,6 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.core.runtime.Version;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
-import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.VersionChecker;
@@ -16,6 +15,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,7 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -475,7 +475,12 @@ public abstract class OCSSW {
             boolean downloadSuccessful = getIntermediateOutputFiles(processorModel);
 
         } catch (Exception e) {
-            SeadasLogger.getLogger().log(Level.SEVERE, "Problem creating product XML file: " + e.getMessage());
+            Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+            JOptionPane.showMessageDialog(activeWindow,
+                    "Problem creating product XML file: " + e.getMessage() + "'.",
+                    "Product XML Problem",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         }
     }
     public void updateOCSSWProgramXMLFiles(){
