@@ -119,7 +119,6 @@ public class SeadasFileUtils {
     }
 
     public static boolean copyFileWithPath(String sourceFilePathName, String targetFilePathName)  {
-        //SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "copyFileWithPath");
         Path copied = Paths.get(targetFilePathName);
         Path originalPath = Paths.get(sourceFilePathName);
         SeadasFileUtils.debug("source file path: " + originalPath);
@@ -129,10 +128,7 @@ public class SeadasFileUtils {
             Files.move(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             SeadasFileUtils.debug("file copy failed:  " + e.getMessage());
-            //SeadasLogger.getLogger().log(Level.SEVERE, "copy file failed reason: ");
-            //SeadasLogger.getLogger().log(Level.SEVERE,  e.getMessage());
         }
-        //SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "copyFileWithPath");
         return new File(targetFilePathName).exists();
     }
     /**
@@ -143,7 +139,6 @@ public class SeadasFileUtils {
      * @return
      */
     public static Process cloFileCopy(String sourceFilePathName, String targetFilePathName) {
-        //SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "cloFileCopy");
         SeadasFileUtils.debug( "cloFileCopy");
         String[] commandArrayParams = new String[2];
         commandArrayParams[0] = sourceFilePathName;
@@ -156,7 +151,6 @@ public class SeadasFileUtils {
             sb.append(item + " ");
         }
         SeadasFileUtils.debug("command array content: " + sb.toString());
-        //SeadasLogger.getLogger().info("command array content: " + sb.toString());
         ProcessBuilder processBuilder = new ProcessBuilder(copyCommandArray);
         Process process = null;
         try {
@@ -164,11 +158,8 @@ public class SeadasFileUtils {
             process.waitFor();
         } catch (Exception e) {
             SeadasFileUtils.debug( e.getMessage());
-            //SeadasLogger.getLogger().log(Level.SEVERE, "copy file failed reason: ");
-            //SeadasLogger.getLogger().log(Level.SEVERE,  e.getMessage());
             e.printStackTrace();
         }
-        //SeadasLogger.getLogger().exiting(SeadasFileUtils.class.getName(), "cloFileCopy");
         return process;
     }
 
