@@ -156,7 +156,12 @@ public class CallCloProgramAction extends AbstractSnapAction {
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, cloProgramUI, ModalDialog.ID_OK_APPLY_CANCEL_HELP, programName);
         modalDialog.getButton(ModalDialog.ID_OK).setEnabled(cloProgramUI.getProcessorModel().isReadyToRun());
 
-        modalDialog.getJDialog().setPreferredSize(modalDialog.getJDialog().getPreferredSize());
+        // todo  this block of comments may be deleted at some point if GUI sizing isn't a problem - but keep for the moment just in case
+//        double resizeBoost = 1.1;  // resize the OSCCW generic GUIs to help in the case of scroll bar
+//        Dimension dim = modalDialog.getJDialog().getPreferredSize();
+//        int width = (int) Math.round(dim.width * resizeBoost);
+//        int height = (int) Math.round(dim.height * resizeBoost);
+//        modalDialog.getJDialog().setPreferredSize(new Dimension(width, height));
 
         cloProgramUI.getProcessorModel().addPropertyChangeListener(cloProgramUI.getProcessorModel().getRunButtonPropertyName(), new PropertyChangeListener() {
             @Override
