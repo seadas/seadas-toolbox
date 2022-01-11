@@ -273,28 +273,39 @@ public class GetSysInfoGUI {
         }
 
 
-        currentInfoLine = "Desktop Specification Version: " + desktopModuleInfo.getSpecificationVersion() + brandingSuffix + "\n";
+
+        currentInfoLine = "SNAP Engine Version: " + engineModuleInfo.getSpecificationVersion() + brandingSuffix + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
         if (ocsswDebug) {
-            currentInfoLine = "Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
+            currentInfoLine = "Snap Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
 
 
-        currentInfoLine = "Engine Specification Version: " + engineModuleInfo.getSpecificationVersion() + brandingSuffix + "\n";
+        currentInfoLine = "SNAP Desktop Version: " + desktopModuleInfo.getSpecificationVersion() + brandingSuffix + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
         if (ocsswDebug) {
-            currentInfoLine = "Engine Implementation Version: " + engineModuleInfo.getImplementationVersion() + "\n";
+            currentInfoLine = "SNAP Desktop Implementation Version: " + desktopModuleInfo.getImplementationVersion() + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
 
 
+
+
+
+        currentInfoLine = "SNAP Engine Build Date: " + engineModuleInfo.getBuildVersion() + "\n";
+        sysInfoText += currentInfoLine;
+        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+        currentInfoLine = "SNAP Desktop Build Date: " + desktopModuleInfo.getBuildVersion() + "\n";
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
         currentInfoLine = "Installation Directory: " + appHomeDir.toString() + "\n";
@@ -472,14 +483,21 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-        currentInfoLine = "SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
+        currentInfoLine = "SeaDAS Toolbox Version: " + seadasProcessingModuleInfo.getSpecificationVersion() + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+        currentInfoLine = "SeaDAS Toolbox Build Date: " + seadasProcessingModuleInfo.getBuildVersion() + "\n";
+        sysInfoText += currentInfoLine;
+        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
         if (ocsswDebug) {
             currentInfoLine = "SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion() + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
+
+
 
 
         if (!Files.exists(seadasProperties)) {
