@@ -304,8 +304,8 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
         currentInfoLine = "SNAP Desktop Build Date: " + desktopModuleInfo.getBuildVersion() + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
         currentInfoLine = "Installation Directory: " + appHomeDir.toString() + "\n";
