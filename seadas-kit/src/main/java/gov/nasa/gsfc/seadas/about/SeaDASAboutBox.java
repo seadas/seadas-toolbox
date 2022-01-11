@@ -7,6 +7,7 @@ package gov.nasa.gsfc.seadas.about;
 
 import com.bc.ceres.core.runtime.Version;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.about.AboutBox;
 import org.esa.snap.rcp.util.BrowserUtils;
 import org.openide.modules.ModuleInfo;
@@ -26,9 +27,8 @@ import java.awt.*;
 public class SeaDASAboutBox extends JPanel {
 
     private final static String PACKAGE = "SeaDAS-Toolbox";
-    private final static String SEADAS_VERSION = "1.1.0";
 
-    private final static String RELEASE_NOTES_URL = "https://github.com/seadas/seadas-toolbox/blob/master/docs/release-notes/seadas-toolbox/" + SEADAS_VERSION + ".md";
+    private final static String RELEASE_NOTES_URL = "https://seadas.gsfc.nasa.gov/release-notes";
 
     private final static String OCEAN_COLOR_WEB_URL = "https://oceancolor.gsfc.nasa.gov/";
     private final static String OCEAN_COLOR_WEB_URL_NAME = "NASA Ocean Color Web";
@@ -36,7 +36,6 @@ public class SeaDASAboutBox extends JPanel {
     private final static String SEADAS_WEB_URL = "https://seadas.gsfc.nasa.gov/";
     private final static String SEADAS_WEB_URL_NAME = "SeaDAS Web";
 
-    private final static String releaseNotesUrlString = "https://senbox.atlassian.net/issues/?filter=-4&jql=project%20%3D%20SIIITBX%20AND%20fixVersion%20%3D%20";
 
 
     public SeaDASAboutBox() {
@@ -112,13 +111,12 @@ public class SeaDASAboutBox extends JPanel {
 
         panel.add(new JLabel("<html><b>SeaDAS Toolbox version " + moduleInfo.getSpecificationVersion() + "</b>", SwingConstants.RIGHT));
 
-        Version specVersion = Version.parseVersion(moduleInfo.getSpecificationVersion().toString());
-        String versionString = String.format("%s.%s.%s", specVersion.getMajor(), specVersion.getMinor(), specVersion.getMicro());
-        String changelogUrl = releaseNotesUrlString + versionString;
-        changelogUrl = RELEASE_NOTES_URL;
-        final JLabel releaseNoteLabel = new JLabel("<html><a href=\"" + changelogUrl + "\">Release Notes</a>", SwingConstants.RIGHT);
+//        Version specVersion = Version.parseVersion(moduleInfo.getSpecificationVersion().toString());
+//        String versionString = String.format("%s.%s.%s", specVersion.getMajor(), specVersion.getMinor(), specVersion.getMicro());
+//        String changelogUrl = releaseNotesUrlString + versionString;
+        final JLabel releaseNoteLabel = new JLabel("<html><a href=\"" + RELEASE_NOTES_URL + "\">Release Notes</a>", SwingConstants.RIGHT);
         releaseNoteLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        releaseNoteLabel.addMouseListener(new BrowserUtils.URLClickAdaptor(changelogUrl));
+        releaseNoteLabel.addMouseListener(new BrowserUtils.URLClickAdaptor(RELEASE_NOTES_URL));
         panel.add(releaseNoteLabel);
         return panel;
     }
