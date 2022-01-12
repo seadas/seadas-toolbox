@@ -291,6 +291,15 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     if (jFileChooser.getSelectedFile() != null) {
                         defaultIFileDirectory = jFileChooser.getSelectedFile().getParentFile();
                     }
+                    for (MultilevelProcessorRow row2 : rows) { //clear out the paramList
+                        if (!row2.getName().equals(Processor.MAIN.toString())) {
+                            if (!row2.getParamList().getParamArray().isEmpty()) {
+                                row2.setParamString("plusToChain=0", retainIFileCheckbox.isSelected());
+                                row2.getParamList().clear();
+//                        row2.setParamValue(MultilevelProcessorRow.PLUS_PARAM, ParamInfo.BOOLEAN_FALSE);
+                            };
+                        }
+                    }
                     setParamString(contents, retainIFileCheckbox.isSelected(), defaultIFileDirectory);
                 }
             }
@@ -914,7 +923,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         if (!ifileName.equals(oldIFile)) {
             findMissionName(ifileName);
             row.setParamValue(IFILE, ifileName);
-            for (MultilevelProcessorRow row2 : rows) {
+            for (MultilevelProcessorRow row2 : rows) { //clear the paramList
                 if (!row2.getName().equals(Processor.MAIN.toString())) {
                     if (!row2.getParamList().getParamArray().isEmpty()) {
                         row2.setParamString("plusToChain=0", retainIFileCheckbox.isSelected());
