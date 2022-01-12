@@ -105,33 +105,34 @@ public class ContourDialog extends JDialog {
         ProductSceneView productSceneView = SnapApp.getDefault().getSelectedProductSceneView();
         ProductNodeGroup<Band> bandGroup = product.getBandGroup();
 
-        ImageInfo selectedImageInfo = productSceneView.getImageInfo();
-        Band[] bands = new Band[bandGroup.getNodeCount()];
-        bandGroup.toArray(bands);
-        for (Band band : bands) {
-            if (band.getImageInfo() != null) {
-                if (band.getImageInfo() == selectedImageInfo) {
-                    selectedUnfilteredBand = band;
+        if (productSceneView != null) {
+            ImageInfo selectedImageInfo = productSceneView.getImageInfo();
+            Band[] bands = new Band[bandGroup.getNodeCount()];
+            bandGroup.toArray(bands);
+            for (Band band : bands) {
+                if (band.getImageInfo() != null) {
+                    if (band.getImageInfo() == selectedImageInfo) {
+                        selectedUnfilteredBand = band;
+                    }
                 }
             }
+            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
+            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
+
+
+            this.activeBands = activeBands;
+            ptsToPixelsMultiplier = getPtsToPixelsMultiplier();
+            contourData = new ContourData(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
+            numberOfLevels = 1;
+            contours = new ArrayList<ContourData>();
+            propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
+            propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
+
+            propertyChangeSupport.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, getFilterButtonPropertyListener());
+            propertyChangeSupport.addPropertyChangeListener(FILTER_STATUS_CHANGED_PROPERTY, getFilterCheckboxPropertyListener());
+            noDataValue = selectedBand.getNoDataValue();
+            createContourUI();
         }
-        selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
-        raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
-
-
-
-        this.activeBands = activeBands;
-        ptsToPixelsMultiplier = getPtsToPixelsMultiplier();
-        contourData = new ContourData(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
-        numberOfLevels = 1;
-        contours = new ArrayList<ContourData>();
-        propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
-        propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
-
-        propertyChangeSupport.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, getFilterButtonPropertyListener());
-        propertyChangeSupport.addPropertyChangeListener(FILTER_STATUS_CHANGED_PROPERTY, getFilterCheckboxPropertyListener());
-        noDataValue = selectedBand.getNoDataValue();
-        createContourUI();
         contourCanceled = true;
     }
 
