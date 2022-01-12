@@ -397,6 +397,11 @@ public class MultilevelProcessorRow {
             getParamListFromCloProgramUI();
             paramList.setParamString("");
         }
+        if (paramList.getValue(PLUS_PARAM).equals(ParamInfo.BOOLEAN_TRUE)) {
+            if (paramList.getInfo(ODIR_PARAM) == null) {
+                paramList.addInfo(new ParamInfo(ODIR_PARAM, ""));
+            }
+        }
         String oldParamString = getParamString();
         paramList.setParamString(str, retainIFile, true);
         if (name.equals("main")) {
