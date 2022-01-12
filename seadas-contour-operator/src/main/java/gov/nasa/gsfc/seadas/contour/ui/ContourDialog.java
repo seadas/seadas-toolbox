@@ -8,6 +8,7 @@ import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.imgfilter.FilteredBandAction;
 import org.esa.snap.rcp.imgfilter.model.Filter;
 import org.esa.snap.ui.UIUtils;
+import org.esa.snap.ui.product.ProductSceneView;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.openide.util.HelpCtx;
 
@@ -80,20 +81,45 @@ public class ContourDialog extends JDialog {
 
         helpButton = getHelpButton();
 
-        ProductNode productNode = SnapApp.getDefault().getSelectedProductNode(SnapApp.SelectionSourceHint.VIEW);
 
-        if (productNode != null && activeBands.contains(productNode.getName())) {
-            selectedUnfilteredBand = product.getBand(productNode.getName());
-            //selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
-            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
-            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
-        } else {
-            selectedUnfilteredBand = product.getBand(activeBands.get(0));
-            //selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
-            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
-            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
+        // todo This is old block of broken code which can probably be deleted once well tested
+//        ProductNode productNode = SnapApp.getDefault().getSelectedProductNode(SnapApp.SelectionSourceHint.VIEW);
+//
+//        if (productNode != null && activeBands.contains(productNode.getName())) {
+//            selectedUnfilteredBand = product.getBand(productNode.getName());
+//            //selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
+//            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
+//            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
+//        } else {
+//            selectedUnfilteredBand = product.getBand(activeBands.get(0));
+//            //selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
+//            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
+//            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
+//
+//        }
 
+
+
+        // todo This is new block which fixes above commented out broken code 
+
+        ProductSceneView productSceneView = SnapApp.getDefault().getSelectedProductSceneView();
+        ProductNodeGroup<Band> bandGroup = product.getBandGroup();
+
+        ImageInfo selectedImageInfo = productSceneView.getImageInfo();
+        Band[] bands = new Band[bandGroup.getNodeCount()];
+        bandGroup.toArray(bands);
+        for (Band band : bands) {
+            if (band.getImageInfo() != null) {
+                if (band.getImageInfo() == selectedImageInfo) {
+                    selectedUnfilteredBand = band;
+                }
+            }
         }
+        selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
+        raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
+
+
+
         this.activeBands = activeBands;
         ptsToPixelsMultiplier = getPtsToPixelsMultiplier();
         contourData = new ContourData(selectedBand, selectedUnfilteredBand.getName(), getFilterShortHandName(), ptsToPixelsMultiplier);
