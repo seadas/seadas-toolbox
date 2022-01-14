@@ -24,6 +24,7 @@ public class OCSSWExecutionMonitor {
             protected String doInBackground(ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);
+
                 ocssw.setIfileName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
                 final Process process = ocssw.execute(processorModel.getParamList());//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
@@ -31,11 +32,22 @@ public class OCSSWExecutionMonitor {
                 }
                 final ProcessObserver processObserver = ocssw.getOCSSWProcessObserver(process, programName, pm);
                 final CallCloProgramAction.ConsoleHandler ch = new CallCloProgramAction.ConsoleHandler(programName);
-                if (programName.equals(OCSSWInfo.getInstance().OCSSW_INSTALLER_PROGRAM_NAME)) {
-                    processObserver.addHandler(new CallCloProgramAction.InstallerHandler(programName, processorModel.getProgressPattern()));
-                } else {
-                    processObserver.addHandler(new CallCloProgramAction.ProgressHandler(programName, processorModel.getProgressPattern()));
-                }
+
+                // todo Danny replaced  commented out block with following lines.  This block replicates new logic in CallCloProgramAction
+
+//                if (programName.equals(OCSSWInfo.getInstance().OCSSW_INSTALLER_PROGRAM_NAME)) {
+//                    processObserver.addHandler(new CallCloProgramAction.InstallerHandler(programName, processorModel.getProgressPattern()));
+//                } else {
+//                    processObserver.addHandler(new CallCloProgramAction.ProgressHandler(programName, processorModel.getProgressPattern()));
+//                }
+
+                pm.beginTask(programName, CallCloProgramAction.TOTAL_WORK_DEFAULT);
+                processObserver.addHandler(new CallCloProgramAction.ProgressHandler(programName, processorModel.getProgressPattern()));
+
+                // end of todo
+
+
+
                 processObserver.addHandler(ch);
                 processObserver.startAndWait();
                 processorModel.setExecutionLogMessage(ch.getExecutionErrorLog());
