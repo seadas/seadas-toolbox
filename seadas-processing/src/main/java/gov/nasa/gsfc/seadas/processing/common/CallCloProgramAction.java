@@ -56,6 +56,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
     private boolean printLogToConsole = false;
     private boolean openOutputInApp = true;
     protected OCSSW ocssw;
+    public final static int TOTAL_WORK_DEFAULT = 100;
 
     private static final Set<String> KNOWN_KEYS = new HashSet<>(Arrays.asList("displayName", "programName", "dialogTitle", "helpId", "targetProductNameSuffix"));
 
@@ -260,10 +261,12 @@ public class CallCloProgramAction extends AbstractSnapAction {
                 if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
                     Preferences preferences = Config.instance("seadas").load().preferences();
                     preferences.put(SEADAS_OCSSW_TAG_PROPERTY, processorModel.getParamValue("--tag"));
-                    processObserver.addHandler(new InstallerHandler(programName, processorModel.getProgressPattern()));
-                } else {
-                    processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
                 }
+
+                pm.beginTask(programName, TOTAL_WORK_DEFAULT);
+                processObserver.addHandler(new ProgressHandler(programName, processorModel.getProgressPattern()));
+
+
                 processObserver.addHandler(ch);
 
                 processObserver.startAndWait();
@@ -272,8 +275,8 @@ public class CallCloProgramAction extends AbstractSnapAction {
 
                 int exitCode = processObserver.getProcessExitValue();
 
+                pm.done();
                 if (exitCode == 0) {
-                    pm.done();
                     String logDir = ocssw.getOCSSWLogDirPath(); //ocsswInfo.getLogDirPath();
                     SeadasFileUtils.writeToDisk(logDir + File.separator + "OCSSW_LOG_" + programName + ".txt",
                             "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
@@ -383,60 +386,94 @@ public class CallCloProgramAction extends AbstractSnapAction {
      */
     public static class ProgressHandler implements ProcessObserver.Handler {
 
-        protected boolean progressSeen;
         protected boolean stdoutOn;
-        private int lastScan = 0;
         protected String programName;
         protected Pattern progressPattern;
-        protected String currentText = "Part 1 - ";
+        private double percentWorkedInProgressMonitor = 0;
+        private int totalSteps = -1;
+        private boolean debug = false;
+        private int NULL_MATCH_VALUE = -9999;
+
 
         public ProgressHandler(String programName, Pattern progressPattern) {
             this.programName = programName;
             this.progressPattern = progressPattern;
         }
 
-        @Override
-        public void handleLineOnStdoutRead(String line, Process process, com.bc.ceres.core.ProgressMonitor progressMonitor) {
-            stdoutOn = true;
-            if (!progressSeen) {
-                progressSeen = true;
-                progressMonitor.beginTask(programName, 1000);
-            }
+
+        private void handleLineRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
 
             Matcher matcher = progressPattern.matcher(line);
-            if (matcher.find()) {
-                int scan = Integer.parseInt(matcher.group(1));
-                int numScans = Integer.parseInt(matcher.group(2));
+            if (matcher != null && matcher.find()) {
+                int stepCurrentLine = NULL_MATCH_VALUE;
+                int totalStepsCurrentLine = NULL_MATCH_VALUE;
 
-                scan = (scan * 1000) / numScans;
-                progressMonitor.worked(scan - lastScan);
-                lastScan = scan;
-                currentText = line;
+                debugPrint("line=" + line);
+                debugPrint("pattern=" + progressPattern.toString());
+                try {
+                    stepCurrentLine = Integer.parseInt(matcher.group(1));
+                    totalStepsCurrentLine = Integer.parseInt(matcher.group(2));
+                } catch (Exception e) {
+                    debugPrint("Exception thrown on following line:");
+                }
+
+
+                if (stepCurrentLine != NULL_MATCH_VALUE && totalStepsCurrentLine != NULL_MATCH_VALUE) {
+                    debugPrint("stepCurrentLine=" + stepCurrentLine);
+                    debugPrint("totalStepsCurrentLine=" + totalStepsCurrentLine);
+
+                    // set only once
+                    if (totalSteps < 0) {
+                        totalSteps = totalStepsCurrentLine;
+                        debugPrint("totalSteps=" + totalSteps);
+                        if (totalSteps < 1) {
+                            // can't allow illegal value which would cause math errors
+                            totalSteps = 1;
+                            debugPrint("Resetting - totalSteps=" + totalSteps);
+                        }
+                    }
+
+                    // only proceed with incrementing if totalSteps matches
+                    if (totalStepsCurrentLine == totalSteps) {
+                        double percentWorkedCurrentLine = 100 * (stepCurrentLine - 1) / totalSteps;
+                        debugPrint("percentWorkedCurrentLine=" + percentWorkedCurrentLine);
+
+                        if (percentWorkedCurrentLine > percentWorkedInProgressMonitor) {
+                            int newWork = (int) Math.round(percentWorkedCurrentLine - percentWorkedInProgressMonitor);
+                            if (newWork > 0) {
+                                // don't allow progress to fill up to 100, hold it at 99%
+                                if ((percentWorkedInProgressMonitor + newWork) <= 99) {
+                                    debugPrint("percentWorkedInProgressMonitor=" + percentWorkedInProgressMonitor);
+                                    debugPrint("Adding to progress monitor newWork=" + newWork);
+
+                                    progressMonitor.worked(newWork);
+                                    percentWorkedInProgressMonitor += newWork;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             progressMonitor.setTaskName(programName);
             progressMonitor.setSubTaskName(line);
         }
 
+        private void debugPrint(String msg) {
+            if (debug) {
+                System.out.println(msg);
+            }
+        }
+
+        @Override
+        public void handleLineOnStdoutRead(String line, Process process, com.bc.ceres.core.ProgressMonitor progressMonitor) {
+            stdoutOn = true;
+            handleLineRead(line, process, progressMonitor);
+        }
+
         @Override
         public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             if (!stdoutOn) {
-                if (!progressSeen) {
-                    progressSeen = true;
-                    progressMonitor.beginTask(programName, 1000);
-                }
-
-                Matcher matcher = progressPattern.matcher(line);
-                if (matcher.find()) {
-                    int scan = Integer.parseInt(matcher.group(1));
-                    int numScans = Integer.parseInt(matcher.group(2));
-
-                    scan = (scan * 1000) / numScans;
-                    progressMonitor.worked(scan - lastScan);
-                    lastScan = scan;
-                    currentText = line;
-                }
-                progressMonitor.setTaskName(programName);
-                progressMonitor.setSubTaskName(line);
+                handleLineRead(line, process, progressMonitor);
             }
         }
     }
@@ -485,52 +522,60 @@ public class CallCloProgramAction extends AbstractSnapAction {
         }
     }
 
-    /**
-     * Handler that tries to extract progress from stderr of ocssw_installer
-     */
-    public static class InstallerHandler extends ProgressHandler {
-
-        public InstallerHandler(String programName, Pattern progressPattern) {
-            super(programName, progressPattern);
-        }
-
-        @Override
-        public void handleLineOnStdoutRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
-            stdoutOn = true;
-
-            Matcher matcher = progressPattern.matcher(line);
-            if (matcher.find()) {
-                int currentWork = Integer.parseInt(matcher.group(1));
-                int totalWork = Integer.parseInt(matcher.group(2))+1;  // note: buffer added so as not to fill
-                if (!progressSeen) {
-                    progressSeen = true;
-                    progressMonitor.beginTask(programName, totalWork);
-
-                }
-
-                // System.out.println("WORK of TOTAL=" + currentWork + "of " + totalWork);
-
-                // Note: if statement used to prevent progress monitor from filling
-                // up here so that the GUI doesn't close too early.
-                // The progress monitor will be specifically closed when finished.
-                if (currentWork < totalWork) {
-                    progressMonitor.worked(1);
-                }
-
-                currentText = line;
-            }
-
-            progressMonitor.setTaskName(programName);
-            progressMonitor.setSubTaskName(line);
-        }
-
-
-
-        @Override
-        public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
-            if (!super.stdoutOn) {
-                handleLineOnStdoutRead(line, process, progressMonitor);
-            }
-        }
-    }
+    // todo This entire block of code is needed now since ProgressHandler is being called.   This block cab be deleted sometime in future after testing
+//    /**
+//     * Handler that tries to extract progress from stderr of ocssw_installer
+//     */
+//    public static class InstallerHandler extends ProgressHandler {
+//
+//        public InstallerHandler(String programName, Pattern progressPattern) {
+//            super(programName, progressPattern);
+//        }
+//
+//
+//        public void handleLineRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
+//
+//            Matcher matcher = progressPattern.matcher(line);
+//            if (matcher.find()) {
+//                int currentWork = Integer.parseInt(matcher.group(1));
+//                int totalWork = Integer.parseInt(matcher.group(2))+1;  // note: buffer added so as not to fill
+//                if (!progressSeen) {
+//                    progressSeen = true;
+//                    progressMonitor.beginTask(programName, totalWork);
+//
+//                }
+//
+//                // System.out.println("WORK of TOTAL=" + currentWork + "of " + totalWork);
+//
+//                // Note: if statement used to prevent progress monitor from filling
+//                // up here so that the GUI doesn't close too early.
+//                // The progress monitor will be specifically closed when finished.
+//                if (currentWork < totalWork) {
+//                    progressMonitor.worked(1);
+//                }
+//
+//                currentText = line;
+//            }
+//
+//            progressMonitor.setTaskName(programName);
+//            progressMonitor.setSubTaskName(line);
+//        }
+//
+//
+//        @Override
+//        public void handleLineOnStdoutRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
+//            stdoutOn = true;
+//
+//            handleLineRead(line, process, progressMonitor);
+//        }
+//
+//
+//
+//        @Override
+//        public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
+//            if (!super.stdoutOn) {
+//                handleLineRead(line, process, progressMonitor);
+//            }
+//        }
+//    }
 }
