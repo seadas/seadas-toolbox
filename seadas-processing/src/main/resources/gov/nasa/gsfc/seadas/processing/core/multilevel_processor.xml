@@ -4,6 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <progressRegex>multilevel_processor step: (\d+) of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>odir</primaryOption>
