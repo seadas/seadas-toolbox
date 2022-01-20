@@ -87,6 +87,7 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
             }
 
             if (wavelength != NULL_WAVELENGTH) {
+                result.append('_');
                 result.append(getName());
             }
 
