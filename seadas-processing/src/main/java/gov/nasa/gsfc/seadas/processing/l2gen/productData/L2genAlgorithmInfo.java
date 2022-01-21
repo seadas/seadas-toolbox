@@ -316,7 +316,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
 
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
 
-        return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY);
+        return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
     }
 
 
