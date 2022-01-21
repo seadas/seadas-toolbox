@@ -32,6 +32,8 @@ import org.openide.util.HelpCtx;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.bc.ceres.swing.TableLayout.cell;
+
 /**
  * * Panel handling colorbar layer preferences. Sub-panel of the "Layer"-panel.
  *
@@ -40,15 +42,15 @@ import java.awt.*;
 
 
 @OptionsPanelController.SubRegistration(location = "SeaDAS",
-        displayName = "#Options_DisplayName_SeadasToolbox",
-        keywords = "#Options_Keywords_SeadasToolbox",
-        keywordsCategory = "Processors",
-        id = "OCSSW-Processors")
+        displayName = "#Options_DisplayName_SeadasToolbox2",
+        keywords = "#Options_Keywords_SeadasToolbox2",
+        keywordsCategory = "Installer",
+        id = "OCSSW-Installer")
 @org.openide.util.NbBundle.Messages({
-        "Options_DisplayName_SeadasToolbox=OCSSW-Processors",
-        "Options_Keywords_SeadasToolbox=seadas, ocssw, l2gen"
+        "Options_DisplayName_SeadasToolbox2=OCSSW-Installer",
+        "Options_Keywords_SeadasToolbox2=seadas, ocssw, l2gen"
 })
-public final class SeadasToolboxController extends DefaultConfigController {
+public final class SeadasToolboxController2 extends DefaultConfigController {
 
     Property restoreDefaults;
 
@@ -70,8 +72,7 @@ public final class SeadasToolboxController extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_KEY, true);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY, SeadasToolboxDefaults.PROPERTY_VALID_TAGS_DEFAULT);
 
 
 
@@ -88,10 +89,11 @@ public final class SeadasToolboxController extends DefaultConfigController {
         TableLayout tableLayout = new TableLayout(2);
         tableLayout.setTableAnchor(TableLayout.Anchor.NORTHWEST);
         tableLayout.setTablePadding(new Insets(4, 10, 0, 0));
-        tableLayout.setTableFill(TableLayout.Fill.BOTH);
+        tableLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         tableLayout.setColumnWeightX(1, 1.0);
 
         JPanel pageUI = new JPanel(tableLayout);
+
 
         PropertyEditorRegistry registry = PropertyEditorRegistry.getInstance();
 
@@ -105,7 +107,21 @@ public final class SeadasToolboxController extends DefaultConfigController {
             currRow++;
         }
 
+        JLabel label = new JLabel("<html><br>*See also: Menu > SeaDAS-OCSSW > Configure OCSSW Location</html>");
+        label.setForeground(Color.BLUE);
+        tableLayout.setCellWeightX(currRow, 0, 1.0);
+        tableLayout.setRowWeightY(currRow, 1.0);
+
+        pageUI.add(label, cell(currRow, 0));
+
+
+        tableLayout.setTableFill(TableLayout.Fill.BOTH);
+
         pageUI.add(tableLayout.createVerticalSpacer());
+
+
+
+
 
         JPanel parent = new JPanel(new BorderLayout());
         parent.add(pageUI, BorderLayout.CENTER);
@@ -265,21 +281,12 @@ public final class SeadasToolboxController extends DefaultConfigController {
 
 
 
-        // L2GEN Section
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_TOOLTIP)
-        boolean l2genSection = true;
 
 
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_TOOLTIP)
-        boolean l2genL2prodWavelengthShortcuts = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT;
-
-
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_TOOLTIP)
+        boolean validTags = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_DEFAULT;
 
 
 
