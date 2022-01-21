@@ -79,17 +79,17 @@ public class FilenamePatterns {
             return null;
         }
 
-        File geoFile = getGeoFile(fileInfo);
+        File geoFile = getGeoFile(fileInfo, ocssw);
 
         if (geoFile == null) {
             return null;
         }
 
-        return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo).getAbsolutePath(), false, ocssw);
+        return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo, ocssw).getAbsolutePath(), false, ocssw);
     }
 
 
-    static public File getGeoFile(FileInfo iFileInfo) {
+    static public File getGeoFile(FileInfo iFileInfo, OCSSW ocssw) {
         if (iFileInfo == null) {
             return null;
         }
@@ -117,6 +117,20 @@ public class FilenamePatterns {
 
         } else {
             ArrayList<File> possibleGeoFiles = new ArrayList<File>();
+
+            if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) || iFileInfo.isMissionId(MissionInfo.Id.MODIST)) {
+                String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
+                StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
+                possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
+            } else if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1) || iFileInfo.isMissionId(MissionInfo.Id.VIIRSN)) {
+                String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
+                StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
+                possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
+            } else if (iFileInfo.isMissionId(MissionInfo.Id.HAWKEYE)) {
+                String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
+                StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
+                possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
+            }
 
             String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP", "L1A_JPSS1", "L1B-M_JPSS1", "L1A", "L1B", "ifile"};
             String STRING_TO_INSERT[] = {"GEO", "geo", "GEO-M_SNPP", "GEO-M_JPSS1", "geofile"};
