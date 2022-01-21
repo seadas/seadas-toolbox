@@ -5,8 +5,11 @@ import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
 import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.core.util.VersionChecker;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.util.Dialogs.Answer;
 import org.json.simple.JSONArray;
@@ -32,6 +35,7 @@ import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
 import static gov.nasa.gsfc.seadas.processing.common.OCSSWInstallerForm.VALID_TAGS_OPTION_NAME;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
+
 /**
  * Created by IntelliJ IDEA. User: Aynur Abdurazik (aabduraz) Date: 3/16/12
  * Time: 2:20 PM To change this template use File | Settings | File Templates.
@@ -153,13 +157,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return new ProcessorModel(programName, xmlFileName, ocssw);
     }
 
-     void setCommandArrayPrefix() {
+    void setCommandArrayPrefix() {
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
-            cmdArrayPrefix = new String[4];
-            getCmdArrayPrefix()[0] = ocsswInfo.getOcsswRunnerScriptPath();
-            getCmdArrayPrefix()[1] = "--ocsswroot";
-            getCmdArrayPrefix()[2] = ocsswInfo.getOcsswRoot();
-            getCmdArrayPrefix()[3] = getProgramName();
+        cmdArrayPrefix = new String[4];
+        getCmdArrayPrefix()[0] = ocsswInfo.getOcsswRunnerScriptPath();
+        getCmdArrayPrefix()[1] = "--ocsswroot";
+        getCmdArrayPrefix()[2] = ocsswInfo.getOcsswRoot();
+        getCmdArrayPrefix()[3] = getProgramName();
     }
 
     private void setCommandArraySuffix() {
@@ -467,7 +471,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         EventInfo eventInfo = getEventInfo(name);
         if (eventInfo == null) {
             //SeadasLogger.getLogger().severe("enableEvent - eventInfo not found for " + name);
-            SeadasFileUtils.debug("severe: enableEvent - eventInfo not found for " + name );
+            SeadasFileUtils.debug("severe: enableEvent - eventInfo not found for " + name);
         } else {
             eventInfo.setEnabled(true);
         }
@@ -503,7 +507,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 rootDir = new File(OCSSWInfo.getInstance().getOcsswRoot());
             } catch (Exception e) {
                 //SeadasLogger.getLogger().severe("error in getting ocssw root!");
-                SeadasFileUtils.debug("severe: error in getting ocssw root!" );
+                SeadasFileUtils.debug("severe: error in getting ocssw root!");
             }
 
         }
@@ -1300,25 +1304,39 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             getCmdArrayPrefix()[1] = ocssw.TMP_OCSSW_INSTALLER;
         }
 
-        private void updateTags(){
+        private void updateTags() {
             validOcsswTags = ocssw.getOcsswTags();
             ListIterator<String> listIterator = validOcsswTags.listIterator();
             ParamValidValueInfo paramValidValueInfo;
             ArrayList<ParamValidValueInfo> tagValidValues = new ArrayList<>();
             while (listIterator.hasNext()) {
                 paramValidValueInfo = new ParamValidValueInfo(listIterator.next());
-                tagValidValues.add(paramValidValueInfo);
+                if (isValidTagsOnly()) {
+                    if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().startsWith("V")) {
+                        tagValidValues.add(paramValidValueInfo);
+                    }
+                } else {
+                    tagValidValues.add(paramValidValueInfo);
+
+                }
             }
+
             paramList.getInfo(VALID_TAGS_OPTION_NAME).setValidValueInfos(tagValidValues);
             //System.out.println(paramList.getInfo(TAG_OPTION_NAME).getName());
+        }
+
+        private boolean isValidTagsOnly() {
+            final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+            return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY, SeadasToolboxDefaults.PROPERTY_VALID_TAGS_DEFAULT);
         }
 
 
         /**
          * This method scans for valid OCSSW tags at https://oceandata.sci.gsfc.nasa.gov/manifest/tags, returns a list of tags that start with capital letter "V"
+         *
          * @return List of valid OCSSW tags for SeaDAS
          */
-        public ArrayList<String> getValidOcsswTagsFromURL(){
+        public ArrayList<String> getValidOcsswTagsFromURL() {
             ArrayList<String> validOcsswTags = new ArrayList<>();
             try {
 
@@ -1333,11 +1351,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     if (inputLine.indexOf(tokenString) != -1) {
                         sp = inputLine.indexOf(">");
                         ep = inputLine.lastIndexOf("<");
-                        tagName = inputLine.substring(sp+1, ep-1);
+                        tagName = inputLine.substring(sp + 1, ep - 1);
                         //System.out.println("tag: " + tagName);
                         if (tagName.startsWith("V") ||
                                 tagName.startsWith("R") ||
-                                tagName.startsWith("T") ) {
+                                tagName.startsWith("T")) {
                             validOcsswTags.add(tagName);
                         }
                     }
@@ -1352,7 +1370,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return validOcsswTags;
         }
 
-        public void getValidOCSSWTags4SeaDASVersion(){
+        public void getValidOCSSWTags4SeaDASVersion() {
             //JSON parser object to parse read file
             JSONParser jsonParser = new JSONParser();
             try {
@@ -1368,21 +1386,21 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 //System.out.println(validSeaDASTags);
 
                 //Iterate over seadas tag array
-                validSeaDASTags.forEach( tagObject -> parseValidSeaDASTagObject( (JSONObject) tagObject ) );
+                validSeaDASTags.forEach(tagObject -> parseValidSeaDASTagObject((JSONObject) tagObject));
                 in.close();
 
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-            }  catch (ParseException e) {
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        private static void parseValidSeaDASTagObject(JSONObject tagObject)
-        {
+
+        private static void parseValidSeaDASTagObject(JSONObject tagObject) {
             Version currentVersion = VersionChecker.getInstance().getLocalVersion();
             String seadasVersionString = currentVersion.toString();
             //Get seadas version
-            String seadasVersion = (String)tagObject.get("seadas");
+            String seadasVersion = (String) tagObject.get("seadas");
             //Get corresponding ocssw tags for seadas
             JSONArray ocsswTags = (JSONArray) tagObject.get("ocssw");
             //System.out.println(ocsswTags);
@@ -1403,7 +1421,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         @Override
-        public ParamList getParamList(){
+        public ParamList getParamList() {
             ParamInfo paramInfo;
             paramInfo = new ParamInfo(("--tag"), paramList.getInfo(VALID_TAGS_OPTION_NAME).getValue(), ParamInfo.Type.STRING);
             paramInfo.setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);

@@ -1,23 +1,35 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import com.bc.ceres.binding.PropertyContainer;
+import com.bc.ceres.core.runtime.Version;
 import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
+import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.openide.modules.ModuleInfo;
+import org.openide.modules.Modules;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 import java.util.prefs.Preferences;
 
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_SRC_DIR_NAME;
 
@@ -82,12 +94,28 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     ));
 
 
+    ArrayList<String> validOCSSWTagList = new ArrayList<>();
+    String tagDefault = "V2022.0"; // a hard default which get replace by JSON value if internet connection
+
+
     HashMap<String, Boolean> missionDataStatus;
 
 
     public OCSSWInstallerForm(AppContext appContext, String programName, String xmlFileName, OCSSW ocssw) {
         this.appContext = appContext;
         this.ocssw = ocssw;
+        getSeaDASVersionTags();
+
+
+        // set default
+        if (validOCSSWTagList != null && validOCSSWTagList.size() >= 1) {
+            tagDefault = validOCSSWTagList.get(0);
+        }
+
+        for (String tag : validOCSSWTagList) {
+            System.out.println("tag=" + tag);
+        }
+
         processorModel = ProcessorModel.valueOf(programName, xmlFileName, ocssw);
         processorModel.setReadyToRun(true);
         setMissionDataDir(OCSSWInfo.getInstance().getOcsswDataDirPath());
@@ -106,8 +134,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         });
     }
 
-    String getMissionDataDir(){
-       return missionDataDir;
+    String getMissionDataDir() {
+        return missionDataDir;
     }
 
     void setMissionDataDir(String currentMissionDataDir) {
@@ -115,6 +143,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     }
 
     abstract void updateMissionStatus();
+
     abstract void updateMissionValues();
 
     String getInstallDir() {
@@ -122,6 +151,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     }
 
     abstract void init();
+
     public ProcessorModel getProcessorModel() {
         return processorModel;
     }
@@ -175,7 +205,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
     protected void reorganizePanel(JPanel paramPanel) {
         final Preferences preferences = Config.instance("seadas").load().preferences();
-        String ocsswTagString = preferences.get(SEADAS_OCSSW_TAG_PROPERTY, SEADAS_OCSSW_TAG_DEFAULT_VALUE);
+        String ocsswTagString = preferences.get(SEADAS_OCSSW_TAG_PROPERTY, tagDefault);
 
         dirPanel = new JPanel();
         tagPanel = new JPanel();
@@ -235,15 +265,22 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     dirPanel = (JPanel) c;
 
                 }
-                if (! ocsswInfo.getOcsswLocation().equals(ocsswInfo.OCSSW_LOCATION_LOCAL)) {
+                if (!ocsswInfo.getOcsswLocation().equals(ocsswInfo.OCSSW_LOCATION_LOCAL)) {
                     //if ocssw is not local, then disable the button to choose ocssw installation directory
-                    ((JLabel)dirPanel.getComponent(0)).setText("Remote install_dir");
+                    ((JLabel) dirPanel.getComponent(0)).setText("Remote install_dir");
                 } else {
-                    ((JLabel)dirPanel.getComponent(0)).setText("Local install_dir");
+                    ((JLabel) dirPanel.getComponent(0)).setText("Local install_dir");
                 }
-                ((JLabel)dirPanel.getComponent(0)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
-                ((JTextField)dirPanel.getComponent(1)).setEditable(false);
-                ((JTextField)dirPanel.getComponent(1)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
+                ((JLabel) dirPanel.getComponent(0)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
+                ((JTextField) dirPanel.getComponent(1)).setEditable(false);
+                ((JTextField) dirPanel.getComponent(1)).setFocusable(false);
+                ((JTextField) dirPanel.getComponent(1)).setEnabled(false);
+                ((JTextField) dirPanel.getComponent(1)).setBorder(null);
+                ((JTextField) dirPanel.getComponent(1)).setDisabledTextColor(Color.BLUE);
+                ((JTextField) dirPanel.getComponent(1)).setForeground(Color.BLUE);
+                ((JTextField) dirPanel.getComponent(1)).setBackground(dirPanel.getBackground());
+//                ((JTextField) dirPanel.getComponent(1)).setBackground(new Color(250,250,250));
+                ((JTextField) dirPanel.getComponent(1)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
                 dirPanel.getComponent(2).setVisible(false);
 
             } else if (option.getName().equals("text field panel")) {
@@ -251,18 +288,45 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 JPanel tempPanel1, tempPanel2;
                 for (Component c : bps) {
                     if (c.getName().equals(VALID_TAGS_OPTION_NAME)) {
-                        tempPanel1 = (JPanel)c;
-                        ((JLabel)tempPanel1.getComponent(0)).setText("Valid OCSSW Tags:");
-                        JComboBox tags = ((JComboBox)tempPanel1.getComponent(1));
+                        tempPanel1 = (JPanel) c;
+
+
+                        try {
+                            Version latestReleaseVersion = readVersionFromStream(new URL(SystemUtils.getApplicationRemoteVersionUrl()).openStream());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        String currentVersion = SystemUtils.getReleaseVersion();
+
+
+                        if (tagDefault.equals(ocsswTagString)) {
+                            ((JLabel) tempPanel1.getComponent(0)).setText("OCSSW Tags: latest tag installed ");
+                            ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.BLACK);
+                        } else {
+                            ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tags: <br>WARNING!! latest tag is " + tagDefault + "</html>");
+                            ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.RED);
+                        }
+
+
+                        JComboBox tags = ((JComboBox) tempPanel1.getComponent(1));
+                        tags.setMaximumRowCount(15);
+                        JLabel tmp = new JLabel("12345678901234567890");
+                        tags.setMinimumSize(tmp.getPreferredSize());
+
 
                         //This segment of code is to disable tags that are not compatible with the current SeaDAS version
                         ArrayList<String> validOcsswTags = ocssw.getOcsswTagsValid4CurrentSeaDAS();
                         Font f1 = tags.getFont();
                         Font f2 = new Font("Tahoma", 0, 14);
 
-                        if( ocsswTagString!=null) {
+                        if (ocsswTagString != null) {
                             tags.setSelectedItem(ocsswTagString);
                         }
+
+                        tags.setToolTipText("Latest tag for this release is " + ocsswTagString);
+
+
 
                         tags.setRenderer(new DefaultListCellRenderer() {
                             @Override
@@ -271,31 +335,76 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                                 if (value instanceof JComponent)
                                     return (JComponent) value;
 
-                                boolean itemEnabled = validOcsswTags.contains((String)value);
+                                boolean itemEnabled = validOCSSWTagList.contains((String) value);
                                 super.getListCellRendererComponent(list, value, index,
                                         isSelected && itemEnabled, cellHasFocus);
 
-                                // Render item as disabled and with different font:
-                                setEnabled(itemEnabled);
-                                setFont(itemEnabled ? f1 : f2);
+
+                                if (itemEnabled) {
+                                    if (ocsswTagString.equals(value.toString().trim())) {
+                                        list.setToolTipText(value.toString() + " is latest operational tag for this release");
+                                    } else {
+                                        list.setToolTipText(value.toString() + " is NOT the latest operational tag for this release");
+                                    }
+                                    if (isSelected) {
+                                        setBackground(Color.blue);
+                                        setForeground(Color.white);
+                                    } else {
+                                        setBackground(Color.white);
+                                        setForeground(Color.black);
+                                    }
+                                } else {
+                                    if (value.toString().toUpperCase().startsWith("V")) {
+                                        list.setToolTipText(value.toString() + " is NOT an optimum operational tag for this release");
+                                    } else {
+                                        list.setToolTipText(value.toString() + " is NOT an operational tag");
+                                    }
+                                    if (isSelected) {
+                                        setBackground(Color.darkGray);
+                                        setForeground(Color.white);
+                                    } else {
+                                        setBackground(Color.white);
+                                        setForeground(Color.gray);
+                                    }
+                                }
 
                                 return this;
                             }
                         });
+
                         // code segment ends here
-                        tagPanel.add( tempPanel1);
-;
-                    } else if(c.getName().contains(CURRENT_TAG_OPTION_NAME)  ){
-                            //|| CURRENT_TAG_OPTION_NAME.contains(c.getName())) {
-                        tempPanel2 = (JPanel)c;
-                        ((JLabel)tempPanel2.getComponent(0)).setText("Last Installed OCSSW Tag:");
-                        tagPanel.add( tempPanel2);
+                        tagPanel.add(tempPanel1);
+                        ;
+                    } else if (c.getName().contains(CURRENT_TAG_OPTION_NAME)) {
+                        //|| CURRENT_TAG_OPTION_NAME.contains(c.getName())) {
+                        tempPanel2 = (JPanel) c;
+                        ((JLabel) tempPanel2.getComponent(0)).setText("Last Installed OCSSW Tag:");
+                        tagPanel.add(tempPanel2);
                     }
                 }
             }
         }
 
     }
+
+
+    private static Version readVersionFromStream(InputStream inputStream) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            line = reader.readLine();
+            if (line != null) {
+                return Version.parseVersion(line.toUpperCase());
+            }
+        }
+        return null;
+    }
+
+
+    private boolean isValidTagsOnly() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY);
+    }
+
 
     private Component findJPanel(Component comp, String panelName) {
         if (comp.getClass() == JPanel.class) return comp;
@@ -310,4 +419,53 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         }
         return null;
     }
+
+
+    private void getSeaDASVersionTags() {
+
+        JSONParser jsonParser = new JSONParser();
+        try {
+
+            URL tagsURL = new URL("https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json");
+            URLConnection tagsConnection = tagsURL.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(tagsConnection.getInputStream()));
+
+            //Read JSON file
+            Object obj = jsonParser.parse(in);
+
+            JSONArray validSeaDASTags = (JSONArray) obj;
+            //System.out.println(validSeaDASTags);
+
+            //Iterate over seadas tag array
+            validSeaDASTags.forEach(tagObject -> parseValidSeaDASTagObject((JSONObject) tagObject));
+            in.close();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseValidSeaDASTagObject(JSONObject tagObject) {
+        ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
+        String seadasToolboxVersion = String.valueOf(seadasProcessingModuleInfo.getSpecificationVersion());
+
+        String seadasToolboxVersionJson = (String) tagObject.get("seadas");
+
+        if (seadasToolboxVersionJson.equals(seadasToolboxVersion)) {
+            //Get corresponding ocssw tags for seadas
+            JSONArray ocsswTags = (JSONArray) tagObject.get("ocssw");
+            if (ocsswTags != null) {
+                for (int i = 0; i < ocsswTags.size(); i++) {
+                    try {
+                        validOCSSWTagList.add((String) ocsswTags.get(i));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
 }
