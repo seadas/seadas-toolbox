@@ -29,6 +29,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
@@ -1309,15 +1310,36 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             ListIterator<String> listIterator = validOcsswTags.listIterator();
             ParamValidValueInfo paramValidValueInfo;
             ArrayList<ParamValidValueInfo> tagValidValues = new ArrayList<>();
+
+            String vTagPatternString = "^V\\d\\d\\d\\d.\\d+$";
+            Pattern vTagPattern = Pattern.compile(vTagPatternString);
+            String rTagPatternString = "^R\\d\\d\\d\\d.\\d+$";
+            Pattern rTagPattern = Pattern.compile(rTagPatternString);
+            String tTagPatternString = "^T\\d\\d\\d\\d.\\d+$";
+            Pattern tTagPattern = Pattern.compile(tTagPatternString);
+
             while (listIterator.hasNext()) {
                 paramValidValueInfo = new ParamValidValueInfo(listIterator.next());
-                if (isValidTagsOnly()) {
-                    if (paramValidValueInfo.getValue() != null && paramValidValueInfo.getValue().startsWith("V")) {
+
+                boolean addTag = false;
+
+                if (paramValidValueInfo != null && paramValidValueInfo.getValue() != null) {
+                    String currTag = paramValidValueInfo.getValue().trim();
+
+                    if (!includeOfficialReleaseTagsOnly()) {
+                        addTag = true;
+                    }
+
+                    if (!addTag) {
+                        Matcher vMatcher = vTagPattern.matcher(currTag);
+                        if (vMatcher != null && vMatcher.find()) {
+                            addTag = true;
+                        }
+                    }
+
+                    if (addTag) {
                         tagValidValues.add(paramValidValueInfo);
                     }
-                } else {
-                    tagValidValues.add(paramValidValueInfo);
-
                 }
             }
 
@@ -1325,9 +1347,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             //System.out.println(paramList.getInfo(TAG_OPTION_NAME).getName());
         }
 
-        private boolean isValidTagsOnly() {
+
+
+
+        private boolean includeOfficialReleaseTagsOnly() {
             final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-            return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY, SeadasToolboxDefaults.PROPERTY_VALID_TAGS_DEFAULT);
+            return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_KEY, SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_DEFAULT);
         }
 
 
