@@ -72,7 +72,7 @@ public final class SeadasToolboxController2 extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY, SeadasToolboxDefaults.PROPERTY_VALID_TAGS_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_KEY, SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_DEFAULT);
 
 
 
@@ -118,9 +118,6 @@ public final class SeadasToolboxController2 extends DefaultConfigController {
         tableLayout.setTableFill(TableLayout.Fill.BOTH);
 
         pageUI.add(tableLayout.createVerticalSpacer());
-
-
-
 
 
         JPanel parent = new JPanel(new BorderLayout());
@@ -277,21 +274,12 @@ public final class SeadasToolboxController2 extends DefaultConfigController {
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
 
-
-
-
-
-
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_TOOLTIP)
-        boolean validTags = SeadasToolboxDefaults.PROPERTY_VALID_TAGS_DEFAULT;
-
-
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_TOOLTIP)
+        boolean miscTags = SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_DEFAULT;
 
         // Restore Defaults Section
-
 
 
 
