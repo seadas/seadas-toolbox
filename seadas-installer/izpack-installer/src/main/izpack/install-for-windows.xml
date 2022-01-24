@@ -197,6 +197,8 @@
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <os family="windows"/>
                 <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe" />
+                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt" />
+                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert" />
             </executable>
         </pack>
         <pack name="s3tbx" required="yes" preselected="true" id="pack.s3tbx">
