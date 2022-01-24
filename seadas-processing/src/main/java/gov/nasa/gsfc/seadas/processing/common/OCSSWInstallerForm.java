@@ -1,32 +1,19 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import com.bc.ceres.core.runtime.Version;
 import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
-import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.openide.modules.ModuleInfo;
-import org.openide.modules.Modules;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
-import java.util.prefs.Preferences;
 
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_SRC_DIR_NAME;
 
 /**
@@ -91,7 +78,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
 
     ArrayList<String> validOCSSWTagList = new ArrayList<>();
-    String tagDefault = "V2022.0"; // a hard default which get replace by JSON value if internet connection
+    String latestOCSSWTagForInstalledRelease; // a hard default which get replace by JSON value if internet connection
 
 
     HashMap<String, Boolean> missionDataStatus;
@@ -108,13 +95,13 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
 
         // set default
-        if (validOCSSWTagList != null && validOCSSWTagList.size() >= 1) {
-            tagDefault = seadasToolboxVersion.getLatestOCSSWTagForInstalledRelease();
-        }
+//        if (validOCSSWTagList != null && validOCSSWTagList.size() >= 1) {
+        latestOCSSWTagForInstalledRelease = seadasToolboxVersion.getLatestOCSSWTagForInstalledRelease();
+//        }
 
-        for (String tag : validOCSSWTagList) {
-            System.out.println("tag=" + tag);
-        }
+//        for (String tag : validOCSSWTagList) {
+//            System.out.println("tag=" + tag);
+//        }
 
         processorModel = ProcessorModel.valueOf(programName, xmlFileName, ocssw);
         processorModel.setReadyToRun(true);
@@ -204,8 +191,10 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     //ToDo: missionDataDir test should be differentiated for local and remote servers
 
     protected void reorganizePanel(JPanel paramPanel) {
-        String ocsswTagString = seadasToolboxVersion.getInstalledOCSSWTag();
 
+        String selectedOcsswTagString = (seadasToolboxVersion.getInstalledOCSSWTag() != null) ?
+                seadasToolboxVersion.getInstalledOCSSWTag() :
+                seadasToolboxVersion.getLatestOCSSWTagForInstalledRelease();
 
         dirPanel = new JPanel();
         tagPanel = new JPanel();
@@ -292,22 +281,27 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
 
                         if (SeadasToolboxVersion.isLatestSeadasToolboxVersion()) {
-                            if (tagDefault.equals(ocsswTagString)) {
+                            if (latestOCSSWTagForInstalledRelease == null) {
+                                ((JLabel) tempPanel1.getComponent(0)).setText("OCSSW Tag:");
+                                ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.BLACK);
+                            } else if (latestOCSSWTagForInstalledRelease.equals(selectedOcsswTagString)) {
                                 ((JLabel) tempPanel1.getComponent(0)).setText("OCSSW Tag: (latest tag installed)");
                                 ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.BLACK);
                             } else {
-                                ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> latest tag is " + tagDefault + "</html>");
+                                ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> latest tag is " + latestOCSSWTagForInstalledRelease + "</html>");
                                 ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.RED);
                             }
                         } else {
-                            if (tagDefault.equals(ocsswTagString)) {
-                                if (ocsswTagString.equals(seadasToolboxVersion.getLatestOCSSWTagForLatestRelease())) {
+                            if (latestOCSSWTagForInstalledRelease == null) {
+                                ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: <br>Newer version of SeaDAS Toolbox available</html>");
+                            } else if (latestOCSSWTagForInstalledRelease.equals(selectedOcsswTagString)) {
+                                if (selectedOcsswTagString.equals(seadasToolboxVersion.getLatestOCSSWTagForLatestRelease())) {
                                     ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag:  <br>Newer version of SeaDAS Toolbox available</html>");
                                 } else {
                                     ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> Not the latest tag<br>Newer version of SeaDAS Toolbox available</html>");
                                 }
                             } else {
-                                if (ocsswTagString.equals(seadasToolboxVersion.getLatestOCSSWTagForLatestRelease())) {
+                                if (selectedOcsswTagString.equals(seadasToolboxVersion.getLatestOCSSWTagForLatestRelease())) {
                                     ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> May not be applicable tag to installed version<br>Newer version of SeaDAS Toolbox available</html>");
                                 } else {
                                     ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> May not be latest/applicable tag<br>Newer version of SeaDAS Toolbox available</html>");
@@ -329,11 +323,11 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                         Font f1 = tags.getFont();
                         Font f2 = new Font("Tahoma", 0, 14);
 
-                        if (ocsswTagString != null) {
-                            tags.setSelectedItem(ocsswTagString);
+                        if (selectedOcsswTagString != null) {
+                            tags.setSelectedItem(selectedOcsswTagString);
                         }
 
-                        tags.setToolTipText("Latest tag for this release is " + ocsswTagString);
+                        tags.setToolTipText("Latest tag for this release is " + selectedOcsswTagString);
 
 
                         tags.setRenderer(new DefaultListCellRenderer() {
@@ -349,7 +343,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 
 
                                 if (itemEnabled) {
-                                    if (ocsswTagString.equals(value.toString().trim())) {
+                                    if (selectedOcsswTagString.equals(value.toString().trim())) {
                                         list.setToolTipText(value.toString() + " is latest operational tag for this release");
                                     } else {
                                         list.setToolTipText(value.toString() + " is NOT the latest operational tag for this release");
@@ -396,14 +390,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     }
 
 
-
-
-
-
-
-
-
-
     private Component findJPanel(Component comp, String panelName) {
         if (comp.getClass() == JPanel.class) return comp;
         if (comp instanceof Container) {
@@ -417,7 +403,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         }
         return null;
     }
-
 
 
 }

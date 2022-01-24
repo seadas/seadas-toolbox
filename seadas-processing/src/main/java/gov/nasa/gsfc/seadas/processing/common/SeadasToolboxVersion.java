@@ -27,7 +27,7 @@ public class SeadasToolboxVersion {
 
    static String SEADAS_TOOLBOX_VERSION_URL = "https://seadas.gsfc.nasa.gov/downloads/SEADAS_TOOLBOX_VERSION.txt";
 
-    public static enum Id {
+    public static enum SeadasToolboxRelease {
         INSTALLED_RELEASE,
         LATEST_RELEASE
     }
@@ -39,8 +39,8 @@ public class SeadasToolboxVersion {
     public static boolean isLatestSeadasToolboxVersion() {
         final Version remoteVersion = getSeadasToolboxLatestVersion();
         final Version localVersion = getSeadasToolboxInstalledVersion();
-        System.out.println("remoteVersion=" + remoteVersion);
-        System.out.println("localVersion=" + localVersion);
+//        System.out.println("remoteVersion=" + remoteVersion);
+//        System.out.println("localVersion=" + localVersion);
 
         if (remoteVersion != null && localVersion != null) {
             return localVersion.compareTo(remoteVersion) >= 0;
@@ -90,12 +90,12 @@ public class SeadasToolboxVersion {
 
 
     public  ArrayList<String> getOCSSWTagListForInstalledRelease() {
-        getOCSSWTagList(Id.INSTALLED_RELEASE);
+        getOCSSWTagList(SeadasToolboxRelease.INSTALLED_RELEASE);
         return OCSSWTagList;
     }
 
     public  String getLatestOCSSWTagForInstalledRelease() {
-        getOCSSWTagList(Id.INSTALLED_RELEASE);
+        getOCSSWTagList(SeadasToolboxRelease.INSTALLED_RELEASE);
 
         if (OCSSWTagList != null && OCSSWTagList.size() > 0) {
             return OCSSWTagList.get(0);
@@ -105,12 +105,12 @@ public class SeadasToolboxVersion {
     }
 
     public  ArrayList<String> getOCSSWTagListForLatestRelease() {
-        getOCSSWTagList(Id.LATEST_RELEASE);
+        getOCSSWTagList(SeadasToolboxRelease.LATEST_RELEASE);
         return OCSSWTagList;
     }
 
     public  String getLatestOCSSWTagForLatestRelease() {
-        getOCSSWTagList(Id.LATEST_RELEASE);
+        getOCSSWTagList(SeadasToolboxRelease.LATEST_RELEASE);
 
         if (OCSSWTagList != null && OCSSWTagList.size() > 0) {
             return OCSSWTagList.get(0);
@@ -121,7 +121,7 @@ public class SeadasToolboxVersion {
 
 
 
-    private  ArrayList<String> getOCSSWTagList(Id id) {
+    private  ArrayList<String> getOCSSWTagList(SeadasToolboxRelease id) {
         OCSSWTagList = new ArrayList<>();
 
         JSONParser jsonParser = new JSONParser();
@@ -150,9 +150,9 @@ public class SeadasToolboxVersion {
         return OCSSWTagList;
     }
 
-    private void parseValidSeaDASTagObject(JSONObject tagObject, Id id) {
+    private void parseValidSeaDASTagObject(JSONObject tagObject, SeadasToolboxRelease id) {
         String seadasToolboxVersion;
-        if (id == SeadasToolboxVersion.Id.LATEST_RELEASE) {
+        if (id == SeadasToolboxRelease.LATEST_RELEASE) {
             seadasToolboxVersion = getSeadasToolboxLatestVersionString();
         } else {
             seadasToolboxVersion = getSeadasToolboxInstalledVersionString();
