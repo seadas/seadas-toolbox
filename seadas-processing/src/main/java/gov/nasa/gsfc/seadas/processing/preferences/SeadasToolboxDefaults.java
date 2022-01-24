@@ -19,11 +19,12 @@ public class SeadasToolboxDefaults {
     public static final Class PROPERTY_L2GEN_SHORTCUTS_TYPE = Boolean.class;
 
 
-    public static final String PROPERTY_VALID_TAGS_KEY = ".installer" + ".operational.tags";
-    public static final String PROPERTY_VALID_TAGS_LABEL = "Show only operational release tags";
-    public static final String PROPERTY_VALID_TAGS_TOOLTIP = "Allow only operational release tags in the GUI installer";
-    public static final boolean PROPERTY_VALID_TAGS_DEFAULT = true;
-    public static final Class PROPERTY_VALID_TAGS_TYPE = Boolean.class;
+    public static final String PROPERTY_ONLY_RELEASE_TAGS_KEY = ".installer" + ".include.only.release.tags";
+    public static final String PROPERTY_ONLY_RELEASE_TAGS_LABEL = "Include only SeaDAS-OCSSW release tags";
+    public static final String PROPERTY_ONLY_RELEASE_TAGS_TOOLTIP = "Include only official SeaDAS-OCSSW release tags in the GUI installer";
+    public static final boolean PROPERTY_ONLY_RELEASE_TAGS_DEFAULT = true;
+    public static final Class PROPERTY_ONLY_RELEASE_TAGS_TYPE = Boolean.class;
+
 
 
     // Property Setting: Restore Defaults

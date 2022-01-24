@@ -400,10 +400,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     }
 
 
-    private boolean isValidTagsOnly() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_VALID_TAGS_KEY);
-    }
 
 
     private Component findJPanel(Component comp, String panelName) {
