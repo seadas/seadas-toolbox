@@ -117,7 +117,7 @@ gpt CollocateGraphEx01.xml -Pifile1=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.
         &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
             &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
             &lt;renameMasterComponents&gt;false&lt;/renameMasterComponents&gt;
-            &lt;renameSlaveComponents&gt;false&lt;/renameSlaveComponents&gt;
+            &lt;renameDependentComponents&gt;false&lt;/renameDependentComponents&gt;
             &lt;resamplingType&gt;NEAREST_NEIGHBOUR&lt;/resamplingType&gt;
         &lt;/parameters&gt;
     &lt;/node&gt;
@@ -188,9 +188,9 @@ gpt CollocateGraphEx01.xml -Pifile1=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.
             &lt;targetProductName&gt;Collocate&lt;/targetProductName&gt;
             &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
             &lt;renameMasterComponents&gt;true&lt;/renameMasterComponents&gt;
-            &lt;renameSlaveComponents&gt;true&lt;/renameSlaveComponents&gt;
+            &lt;renameDependentComponents&gt;true&lt;/renameDependentComponents&gt;
             &lt;masterComponentPattern&gt;${ORIGINAL_NAME_M}&lt;/masterComponentPattern&gt;
-            &lt;slaveComponentPattern&gt;${ORIGINAL_NAME_S}${SLAVE_NUMBER_ID}&lt;/slaveComponentPattern&gt;
+            &lt;dependentComponentPattern&gt;${ORIGINAL_NAME_S}${DEPENDENT_NUMBER_ID}&lt;/dependentComponentPattern&gt;
             &lt;resamplingType&gt;NEAREST_NEIGHBOUR&lt;/resamplingType&gt;
         &lt;/parameters&gt;
     &lt;/node&gt;
@@ -289,9 +289,9 @@ gpt CollocateGraphEx02.xml -p CollocateEx02.par -Pifile1=AQUA_MODIS.20020101_200
         &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
             &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
             &lt;renameMasterComponents&gt;${renameReference}&lt;/renameMasterComponents&gt;
-            &lt;renameSlaveComponents&gt;${renameDependent}&lt;/renameSlaveComponents&gt;
+            &lt;renameDependentComponents&gt;${renameDependent}&lt;/renameDependentComponents&gt;
             &lt;masterComponentPattern&gt;${referenceComponentPattern}&lt;/masterComponentPattern&gt;
-            &lt;slaveComponentPattern&gt;${dependentComponentPattern}&lt;/slaveComponentPattern&gt;
+            &lt;dependentComponentPattern&gt;${dependentComponentPattern}&lt;/dependentComponentPattern&gt;
             &lt;resamplingType&gt;${resamplingType}&lt;/resamplingType&gt;
         &lt;/parameters&gt;
     &lt;/node&gt;
@@ -390,9 +390,9 @@ gpt CollocateGraphEx03.xml -p CollocateEx03.par -Pifile1=AQUA_MODIS.20020101_200
         &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
             &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
             &lt;renameMasterComponents&gt;${renameReference}&lt;/renameMasterComponents&gt;
-            &lt;renameSlaveComponents&gt;${renameDependent}&lt;/renameSlaveComponents&gt;
+            &lt;renameDependentComponents&gt;${renameDependent}&lt;/renameDependentComponents&gt;
             &lt;masterComponentPattern&gt;${ORIGINAL_NAME}_${referenceSuffix}&lt;/masterComponentPattern&gt;
-            &lt;slaveComponentPattern&gt;${ORIGINAL_NAME}_${dependentSuffix}&lt;/slaveComponentPattern&gt;
+            &lt;dependentComponentPattern&gt;${ORIGINAL_NAME}_${dependentSuffix}&lt;/dependentComponentPattern&gt;
             &lt;resamplingType&gt;${resamplingType}&lt;/resamplingType&gt;
         &lt;/parameters&gt;
     &lt;/node&gt;
