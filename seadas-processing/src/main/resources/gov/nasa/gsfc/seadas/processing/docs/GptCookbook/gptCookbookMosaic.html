@@ -154,7 +154,7 @@ gpt MosaicGeneralGraph.xml -p MosaicEx01.par `cat level2Files.txt` -Pofile=AquaV
   &lt;node id="Write"&gt;
     &lt;operator&gt;Write&lt;/operator&gt;
     &lt;sources&gt;
-        &lt;sourceProduct refid="Mosaic"/&gt;
+        &lt;sourceProduct refid="MosaicNode"/&gt;
     &lt;/sources&gt;
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
         &lt;file&gt;${ofile}&lt;/file&gt;
@@ -397,7 +397,7 @@ gpt MosaicGraphEx04.xml -p MosaicEx04.par `cat level2Files.txt` -Pofile=AquaVIIR
   &lt;node id="Write"&gt;
     &lt;operator&gt;Write&lt;/operator&gt;
     &lt;sources&gt;
-        &lt;sourceProduct refid="Mosaic"/&gt;
+        &lt;sourceProduct refid="MosaicLambertNode"/&gt;
     &lt;/sources&gt;
     &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
         &lt;file&gt;${ofile}&lt;/file&gt;
@@ -479,7 +479,7 @@ gpt MosaicGraphEx05.xml -p MosaicEx05.par -Pifile=A2017023193500.L2_LAC_OC.nc -P
     &lt;/parameters&gt;
   &lt;/node&gt;
 
-  & lt;node id="Mosaic"&gt;
+  &lt;node id="Mosaic"&gt;
     &lt;operator&gt;Mosaic&lt;/operator&gt;
     &lt;sources&gt;
         &lt;sourceProduct refid="Read"/&gt;
