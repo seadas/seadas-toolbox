@@ -313,14 +313,14 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
       &lt;operator&gt;Collocate&lt;/operator&gt;
       &lt;sources&gt;
         &lt;master&gt;ReprojectNode1&lt;/master&gt;
-        &lt;slave&gt;ReprojectNode2&lt;/slave&gt;
+        &lt;dependent&gt;ReprojectNode2&lt;/dependent&gt;
       &lt;/sources&gt;
       &lt;parameters&gt;
           &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
           &lt;renameMasterComponents&gt;${renameReference}&lt;/renameMasterComponents&gt;
-          &lt;renameSlaveComponents&gt;${renameDependent}&lt;/renameSlaveComponents&gt;
+          &lt;renameDependentComponents&gt;${renameDependent}&lt;/renameDependentComponents&gt;
           &lt;masterComponentPattern&gt;${ORIGINAL_NAME}_${file1Short}&lt;/masterComponentPattern&gt;
-          &lt;slaveComponentPattern&gt;${ORIGINAL_NAME}_${file2Short}&lt;/slaveComponentPattern&gt;
+          &lt;dependentComponentPattern&gt;${ORIGINAL_NAME}_${file2Short}&lt;/dependentComponentPattern&gt;
           &lt;resamplingType&gt;${collocationResampling}&lt;/resamplingType&gt;
       &lt;/parameters&gt;
     &lt;/node&gt;
@@ -558,7 +558,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
 <pre>
 # Read operator parameters (commented out parameters are optionally being sent in at command line)
 # file1=A2010283180500.L2_LAC_SST.nc  -- this is the input file which will act as the reference/master in the collocation step
-# file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent/slave in the collocation step
+# file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent in the collocation step
 ifileExtension=nc
 
 
@@ -645,7 +645,7 @@ scaleType=linear
 <pre>
 # Read operator parameters (commented out parameters are optionally being sent in at command line)
 # file1=A2010283180500.L2_LAC_SST.nc  -- this is the input file which will act as the reference/master in the collocation step
-# file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent/slave in the collocation step
+# file2=A2010283070000.L2_LAC_SST.nc  -- this input file will act as the dependent in the collocation step
 ifileExtension=nc
 
 
