@@ -185,12 +185,12 @@ gpt CollocateGraphEx01.xml -Pifile1=V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.
         &lt;parameters class="com.bc.ceres.binding.dom.XppDomElement"&gt;
             &lt;sourceProductPaths/&gt;
             &lt;masterProductName&gt;V20172132017243.L3m_MO_SNPP_CHL_chlor_a_9km.nc&lt;/masterProductName&gt;
-            &lt;targetProductName&gt;Collocate&lt;/targetProductName&gt;
+            &lt;targetProductName&gt;_collocated&lt;/targetProductName&gt;
             &lt;targetProductType&gt;COLLOCATED&lt;/targetProductType&gt;
-            &lt;renameMasterComponents&gt;true&lt;/renameMasterComponents&gt;
-            &lt;renameDependentComponents&gt;true&lt;/renameDependentComponents&gt;
-            &lt;masterComponentPattern&gt;${ORIGINAL_NAME_M}&lt;/masterComponentPattern&gt;
-            &lt;dependentComponentPattern&gt;${ORIGINAL_NAME_S}${DEPENDENT_NUMBER_ID}&lt;/dependentComponentPattern&gt;
+            &lt;renameMasterComponents&gt;false&lt;/renameMasterComponents&gt;
+            &lt;renameDependentComponents&gt;false&lt;/renameDependentComponents&gt;
+            &lt;masterComponentPattern&gt;${ORIGINAL_NAME}_M&lt;/masterComponentPattern&gt;
+            &lt;dependentComponentPattern&gt;${ORIGINAL_NAME}_S${DEPENDENT_NUMBER_ID}&lt;/dependentComponentPattern&gt;
             &lt;resamplingType&gt;NEAREST_NEIGHBOUR&lt;/resamplingType&gt;
         &lt;/parameters&gt;
     &lt;/node&gt;

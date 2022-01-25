@@ -48,10 +48,10 @@ import java.text.MessageFormat;
  */
 @SuppressWarnings({"FieldCanBeLocal"})
 @OperatorMetadata(alias = "LandWaterMask2",
+        category = "Raster/Masks",
         version = "1.0",
-        internal = false,
         authors = "Daniel Knowles, Marco Peters",
-        copyright = "(c) 2011 by Brockmann Consult",
+        copyright = "",
         description = "Operator creating a target product with a single band containing a land/water-mask," +
                 " which is based on SRTM-shapefiles (between 60° north and 60° south) and the " +
                 "GlobCover world map (above 60° north) and therefore very accurate.")
