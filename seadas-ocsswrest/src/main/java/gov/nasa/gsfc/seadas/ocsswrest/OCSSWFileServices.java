@@ -123,9 +123,9 @@ public class OCSSWFileServices {
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
             String clientfileFullPathName = currentWorkingDir + File.separator + fileName;
-            System.out.println(clientfileFullPathName + " is created " + isDirCreated);
-            System.out.println(System.getProperty("user.home"));
-            System.out.println(new File(currentWorkingDir).getAbsolutePath());
+            //System.out.println(clientfileFullPathName + " is created " + isDirCreated);
+            //System.out.println(System.getProperty("user.home"));
+            //System.out.println(new File(currentWorkingDir).getAbsolutePath());
             try {
                 ServerSideFileUtilities.writeToFile(uploadedInputStream, clientfileFullPathName);
                 SQLiteJDBC.updateInputFilesList(jobId, clientfileFullPathName);
@@ -153,19 +153,19 @@ public class OCSSWFileServices {
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         String fileName = fileInfo.getFileName();
-        System.out.println("par file info: file name is  " + fileName);
+        //System.out.println("par file info: file name is  " + fileName);
         if (fileName == null) {
             respStatus = Response.Status.INTERNAL_SERVER_ERROR;
         } else {
             String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-            System.out.println("current working directory " + " is  " + currentWorkingDir);
+            //System.out.println("current working directory " + " is  " + currentWorkingDir);
             File newFile = new File(currentWorkingDir);
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
             String clientfileFullPathName = currentWorkingDir + File.separator + fileName;
-            System.out.println(clientfileFullPathName + " is created " + isDirCreated);
-            System.out.println(System.getProperty("user.home"));
-            System.out.println(new File(currentWorkingDir).getAbsolutePath());
+            //System.out.println(clientfileFullPathName + " is created " + isDirCreated);
+            //System.out.println(System.getProperty("user.home"));
+            //System.out.println(new File(currentWorkingDir).getAbsolutePath());
             try {
                 ServerSideFileUtilities.writeToFile(uploadedInputStream, clientfileFullPathName);
                 SQLiteJDBC.updateInputFilesList(jobId, clientfileFullPathName);
