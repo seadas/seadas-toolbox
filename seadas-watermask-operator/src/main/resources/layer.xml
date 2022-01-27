@@ -1,12 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "https://www.netbeans.org/dtds/filesystem-1_2.dtd">
+
 <filesystem>
     <folder name="Actions">
         <folder name="Operators">
             <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="LandWaterMask2"/>
-                <attr name="dialogTitle" stringvalue="LandWaterMask2"/>
-                <attr name="operatorName" stringvalue="LandWaterMask2"/>
+                <attr name="displayName" stringvalue="CoastlineLandWaterMasks"/>
+                <attr name="dialogTitle" stringvalue="CoastlineLandWaterMasks"/>
+                <attr name="operatorName" stringvalue="CoastlineLandWaterMasks"/>
                 <attr name="helpId" stringvalue="coastlineLandMasks"/>
                 <attr name="targetProductNameSuffix" stringvalue="_watermask2"/>
             </file>
