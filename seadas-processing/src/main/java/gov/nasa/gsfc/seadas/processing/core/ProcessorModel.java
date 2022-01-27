@@ -836,11 +836,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         public boolean updateOFileInfo(String ofileName) {
             updateParamInfo("--okm", ofileName.replaceAll("LAC", "LAC"));
             getParamInfo("--okm").setDefaultValue(getParamValue("--okm"));
-            updateParamInfo("--hkm", ofileName.replaceAll("LAC", "HKM"));
+            updateParamInfo("--hkm", ofileName.replaceAll("_MODIS.", "_MODIS_HKM."));
             getParamInfo("--hkm").setDefaultValue(getParamValue("--hkm"));
-            updateParamInfo("--qkm", ofileName.replaceAll("LAC", "QKM"));
+            updateParamInfo("--qkm", ofileName.replaceAll("_MODIS.", "_MODIS_QKM."));
             getParamInfo("--qkm").setDefaultValue(getParamValue("--qkm"));
-            updateParamInfo("--obc", ofileName.replaceAll("LAC", "OBC"));
+            updateParamInfo("--obc", ofileName.replaceAll("_MODIS.", "_MODIS_OBC."));
             getParamInfo("--obc").setDefaultValue(getParamValue("--obc"));
             setReadyToRun(ofileName.trim().length() == 0 ? false : true);
             return true;
