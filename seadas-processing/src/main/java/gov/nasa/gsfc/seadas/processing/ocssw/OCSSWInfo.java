@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
+import gov.nasa.gsfc.seadas.processing.common.SeadasToolboxVersion;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.runtime.Config;
@@ -303,7 +304,12 @@ public class OCSSWInfo {
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
         //ocsswTag = preferences.get(SEADAS_OCSSW_TAG_PROPERTY, null);
-        ocsswTag = SEADAS_OCSSW_TAG_DEFAULT_VALUE;
+        SeadasToolboxVersion seadasToolboxVersion = new SeadasToolboxVersion();
+        ocsswTag = seadasToolboxVersion.getLatestOCSSWTagForInstalledRelease();
+        if (ocsswTag == null) {
+            ocsswTag = SEADAS_OCSSW_TAG_DEFAULT_VALUE;
+        }
+
         System.out.println("ocssw tag = " + ocsswTag);
         try {
             jsonObject = target.path("ocssw").path("ocsswInfo").path(ocsswTag).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
