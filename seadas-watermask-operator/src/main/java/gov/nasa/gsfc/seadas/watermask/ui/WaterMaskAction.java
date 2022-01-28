@@ -33,7 +33,7 @@ import java.util.Map;
 
 
 /**
- * This registers an action which calls the "LandWaterMask2" Operator and based on its generated "water_fraction"
+ * This registers an action which calls the "CoastlineLandWaterMasks" Operator and based on its generated "water_fraction"
  * band, defines 3 masks in the currently selected product:
  * <ol>
  * <li>Water: water_fraction > 90</li>
@@ -53,7 +53,7 @@ import java.util.Map;
         @ActionReference(path = "Toolbars/Masks", position = 20)
 })
 @NbBundle.Messages({
-        "CTL_WaterMaskAction_Text=CoastlineLandWaterMask",
+        "CTL_WaterMaskAction_Text=CoastlineLandWaterMasks",
         "CTL_WaterMaskAction_Description=Add coastline, land and water masks."
 })
 
@@ -66,7 +66,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
     public static final String SMALLICON = "gov/nasa/gsfc/seadas/watermask/ui/icons/coastline.png";
     public static final String LARGEICON = "gov/nasa/gsfc/seadas/watermask/ui/icons/coastline_24.png";
 
-    public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask2";
+    public static final String LAND_WATER_MASK_OP_ALIAS = "CoastlineLandWaterMasks";
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
     private static final String HELP_ID = "watermaskScientificTool";
 
