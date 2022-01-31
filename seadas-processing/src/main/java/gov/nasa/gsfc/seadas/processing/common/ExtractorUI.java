@@ -112,7 +112,7 @@ public class ExtractorUI extends ProgramUIFactory {
             File iFile = new File(ifileName);
             FileInfo iFileInfo = new FileInfo(iFile.getParent(), iFile.getName(), ocssw);
             FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo, ocssw);
-            if (geoFileInfo.getFile().exists()) {
+            if (geoFileInfo != null && geoFileInfo.getFile().exists()) {
                 geoFileName = geoFileInfo.getFile().getAbsolutePath();
                 return geoFileName;
             }
