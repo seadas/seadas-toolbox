@@ -109,10 +109,11 @@ public class ExtractorUI extends ProgramUIFactory {
 
         try {
             String geoFileName = null;
-            FileInfo iFileInfo = new FileInfo(ifileName);
+            File iFile = new File(ifileName);
+            FileInfo iFileInfo = new FileInfo(iFile.getParent(), iFile.getName(), ocssw);
             FileInfo geoFileInfo = FilenamePatterns.getGeoFileInfo(iFileInfo, ocssw);
             if (geoFileInfo.getFile().exists()) {
-                geoFileName = geoFileInfo.getFile().getName();
+                geoFileName = geoFileInfo.getFile().getAbsolutePath();
                 return geoFileName;
             }
             if (programName.contains("l1aextract_modis")) {
