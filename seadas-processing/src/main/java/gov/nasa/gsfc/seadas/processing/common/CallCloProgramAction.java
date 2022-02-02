@@ -93,11 +93,12 @@ public class CallCloProgramAction extends AbstractSnapAction {
         } else if (programName.indexOf("modis_GEO") != -1 || programName.indexOf("modis_L1B") != -1) {
             return new ModisGEO_L1B_UI(programName, xmlFileName, ocssw);
         } else if (programName.indexOf(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) != -1) {
+            ocssw.downloadOCSSWInstaller();
+            if (!ocssw.isOcsswInstalScriptDownloadSuccessful()) {
+                return null;
+            }
+
             if (ocsswInfo.getOcsswLocation() == null || ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
-                ocssw.downloadOCSSWInstaller();
-                if (!ocssw.isOcsswInstalScriptDownloadSuccessful()) {
-                    return null;
-                }
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
