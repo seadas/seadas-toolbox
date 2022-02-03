@@ -18,6 +18,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
 
@@ -98,11 +100,88 @@ public class SeadasToolboxVersion {
         getOCSSWTagList(SeadasToolboxRelease.INSTALLED_RELEASE);
 
         if (OCSSWTagList != null && OCSSWTagList.size() > 0) {
-            return OCSSWTagList.get(0);
+            String latestTag = OCSSWTagList.get(0);
+
+            for (String tag: OCSSWTagList) {
+                if (compareOcsswTags(latestTag, tag)) {
+                    latestTag = tag;
+                }
+            }
+            return latestTag;
         } else {
             return null;
         }
     }
+
+    public boolean compareOcsswTags(String latestTag, String tag) {
+
+        boolean latestTagValid = false;
+        boolean tagValid = false;
+        boolean tagIsNewer = false;
+
+        String vTagPatternString = "^V\\d\\d\\d\\d.\\d+$";
+        Pattern vTagPattern = Pattern.compile(vTagPatternString);
+
+        int latestTagPrefixValue = -1;
+        int tagPrefixValue = -1;
+        int latestTagSuffixValue = -1;
+        int tagSuffixValue = -1;
+
+        if (latestTag != null) {
+            Matcher vMatcher = vTagPattern.matcher(latestTag);
+            if (vMatcher != null && vMatcher.find()) {
+                String latestTagPrefix = latestTag.substring(1,5);
+                String latestTagSuffix = latestTag.substring(6);
+
+                try {
+                    latestTagPrefixValue = Integer.valueOf(latestTagPrefix);
+                    latestTagSuffixValue = Integer.valueOf(latestTagSuffix);
+
+                    latestTagValid = true;
+                } catch(Exception e) {
+                }
+            }
+        }
+
+        if (tag != null) {
+            Matcher vMatcher = vTagPattern.matcher(tag);
+            if (vMatcher != null && vMatcher.find()) {
+                String tagPrefix = tag.substring(1,5);
+                String tagSuffix = tag.substring(6);
+
+                try {
+                    tagPrefixValue = Integer.valueOf(tagPrefix);
+                    tagSuffixValue = Integer.valueOf(tagSuffix);
+
+                    tagValid = true;
+                } catch(Exception e) {
+                }
+            }
+        }
+
+        if (latestTagValid && tagValid) {
+
+            if (tagPrefixValue > latestTagPrefixValue) {
+                tagIsNewer = true;
+            } else if (tagPrefixValue == latestTagPrefixValue) {
+                if (tagSuffixValue > latestTagSuffixValue) {
+                    tagIsNewer = true;
+                } else {
+                    tagIsNewer = false;
+                }
+            } else {
+                tagIsNewer = false;
+            }
+
+        } else if (tagValid) {
+            tagIsNewer = true;
+        } else {
+            tagIsNewer = false;
+        }
+
+        return tagIsNewer;
+    }
+
 
     public  ArrayList<String> getOCSSWTagListForLatestRelease() {
         getOCSSWTagList(SeadasToolboxRelease.LATEST_RELEASE);
