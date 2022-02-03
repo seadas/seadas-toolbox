@@ -657,7 +657,7 @@ public class OCSSWRemote extends OCSSW {
     }
 
     public ArrayList<String> getRemoteOcsswTags() {
-        System.out.println("getting remote tag list!");
+        //System.out.println("getting remote tag list!");
         JsonObject response;
         JsonArray jsonArray;
         ArrayList<String> tags = new ArrayList<String>();
