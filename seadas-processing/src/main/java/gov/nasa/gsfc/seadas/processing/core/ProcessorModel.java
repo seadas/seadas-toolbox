@@ -1337,6 +1337,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         }
                     }
 
+                    if (!addTag) {
+                        Matcher rMatcher = rTagPattern.matcher(currTag);
+                        if (rMatcher != null && rMatcher.find()) {
+                            addTag = true;
+                        }
+                    }
+
                     if (addTag) {
                         tagValidValues.add(paramValidValueInfo);
                     }
