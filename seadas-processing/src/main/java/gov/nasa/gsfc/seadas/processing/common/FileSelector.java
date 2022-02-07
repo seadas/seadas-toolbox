@@ -57,6 +57,8 @@ public class FileSelector {
 
     private String lastFilename = null;
 
+    boolean fireTextFieldEnabled = true;
+
     private final JPanel filterPane = new JPanel(new GridBagLayout());
 
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
@@ -152,8 +154,9 @@ public class FileSelector {
     }
 
     public void setFilename(String fileName) {
+        fireTextFieldEnabled = false;
         fileTextfield.setText(fileName);
-        handleFileTextfield();
+        fireTextFieldEnabled = true;
     }
 
     private void handleFileTextfield() {
@@ -188,7 +191,9 @@ public class FileSelector {
         jTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleFileTextfield();
+                if (fireTextFieldEnabled) {
+                    handleFileTextfield();
+                }
             }
         });
 
@@ -199,7 +204,9 @@ public class FileSelector {
 
             @Override
             public void focusLost(FocusEvent e) {
-                handleFileTextfield();
+                if (fireTextFieldEnabled) {
+                    handleFileTextfield();
+                }
             }
         });
 
