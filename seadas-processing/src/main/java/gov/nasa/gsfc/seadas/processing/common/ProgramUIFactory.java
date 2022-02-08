@@ -106,8 +106,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         for (ParamInfo pi : paramInfos) {
             //when ifile or infile changes, the values of some parameters may change.
             //ofile and geofile should not affect the param values
-//            if (!(pi.getType().equals("ifile") || pi.getType().equals("infile") || pi.getType().equals("ofile") || pi.getType().equals("geofile"))) {
-            if (pi.getType().equals("ifile") || pi.getType().equals("infile") ) {
+            if (!(pi.getType().equals("ifile") || pi.getType().equals("infile") || pi.getType().equals("ofile") || pi.getType().equals("geofile"))) {
                 processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
                     @Override
                     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
