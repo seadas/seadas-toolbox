@@ -4,12 +4,10 @@
     <programMetaData>
         <hasParFile>false</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <hasGeoFile>true</hasGeoFile>
         <progressRegex>Calibrating scan (\d+) of (\d+)</progressRegex>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>l1bfile_mod</primaryOption>
-            <primaryOption>geofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -71,11 +69,11 @@
             <usedAs>option</usedAs>
             <order>0</order>
         </option>
-        <option type="ifile">
-            <name>geofile</name>
+        <option type="ofile">
+            <name>l1bfile_img</name>
             <value></value>
             <default></default>
-            <description>geo file</description>
+            <description>output L1B IMG filename</description>
             <usedAs>option</usedAs>
             <order>1</order>
         </option>
@@ -88,20 +86,12 @@
             <order>2</order>
         </option>
         <option type="ofile">
-            <name>l1bfile_img</name>
-            <value></value>
-            <default></default>
-            <description>output L1B IMG filename</description>
-            <usedAs>option</usedAs>
-            <order>3</order>
-        </option>
-        <option type="ofile">
             <name>l1bfile_dnb</name>
             <value></value>
             <default></default>
             <description>output L1B Day Night Band filename</description>
             <usedAs>option</usedAs>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="ofile">
             <name>l1bfile_cdg</name>
@@ -110,7 +100,7 @@
             <source>default</source>
             <description>output L1B un-aggregated dual gain filename</description>
             <usedAs>option</usedAs>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="ifile">
             <name>static_lut_file</name>
@@ -120,7 +110,7 @@
             <description>static calibration LUT filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="ifile">
             <name>rsb_dynamic_lut_file</name>
@@ -130,7 +120,7 @@
             <description> RSB dynamic calibration LUT filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="ifile">
             <name>dnb_dynamic_lut_file</name>
@@ -140,7 +130,7 @@
             <description>day night band dynamic calibration LUT filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="ifile">
             <name>straylight_lut_file</name>
@@ -150,7 +140,7 @@
             <description>stray light calibration LUT filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="ifile">
             <name>cmn_lut_file</name>
@@ -160,7 +150,7 @@
             <description>common calibration LUT filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>10</order>
+            <order>9</order>
         </option>
 
         <option type="ifile">
@@ -171,7 +161,7 @@
             <description> polar wander filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>11</order>
+            <order>10</order>
         </option>
         <option type="ifile">
             <name>geo_lut_file</name>
@@ -181,7 +171,7 @@
             <description>geolocation LUT filename</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>12</order>
+            <order>11</order>
         </option>
         <option type="string">
             <name>terrain_path</name>
@@ -189,7 +179,7 @@
             <default></default>
             <description>path to the terrain height files directory </description>
             <usedAs>option</usedAs>
-            <order>13</order>
+            <order>12</order>
         </option>
         <option type="boolean">
             <name>verbose</name>
@@ -197,7 +187,7 @@
             <default>true</default>
             <description>print status messages</description>
             <usedAs>flag</usedAs>
-            <order>14</order>
+            <order>13</order>
         </option>
         <option type="string">
             <name>pversion</name>
@@ -206,7 +196,7 @@
             <description>processing version string</description>
             <source>default</source>
             <usedAs>option</usedAs>
-            <order>15</order>
+            <order>14</order>
         </option>
     </options>
 </paramInfo>

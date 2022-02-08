@@ -151,12 +151,22 @@ public class FileSelector {
         return fileTextfield;
     }
 
-    public void setFilename(String fileName) {
-        fireTextFieldEnabled = false;
-        currentFilename = fileName;
-        fileTextfield.setText(fileName);
-        fireTextFieldEnabled = true;
+    public void setFilename(String filename) {
+            fireTextFieldEnabled = false;
+            currentFilename = filename;
+            fileTextfield.setText(filename);
+            fireTextFieldEnabled = true;
     }
+
+
+    public void setFilenameAndFire(String filename) {
+        String tmpCurrentFilename = currentFilename;
+        setFilename(filename);
+        fireEvent(propertyName, tmpCurrentFilename, filename);
+    }
+
+
+
 
     private void handleFileTextfield() {
 
@@ -289,6 +299,8 @@ public class FileSelector {
         private String APPROVE_BUTTON_TEXT = "Select";
         private JFileChooser fileChooser;
 
+
+
         private FileChooserAction() {
             super("...");
             fileChooser = new SnapFileChooser();
@@ -302,15 +314,15 @@ public class FileSelector {
             }
         }
 
-        private FileChooserAction(String dialogTitle) {
-            super("...");
-            fileChooser = new SnapFileChooser();
-
-            fileChooser.setDialogTitle(dialogTitle);
-
-            fileChooser.setAcceptAllFileFilterUsed(true);
-            fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
-        }
+//        private FileChooserAction(String dialogTitle) {
+//            super("...");
+//            fileChooser = new SnapFileChooser();
+//
+//            fileChooser.setDialogTitle(dialogTitle);
+//
+//            fileChooser.setAcceptAllFileFilterUsed(true);
+//            fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+//        }
 
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -336,7 +348,8 @@ public class FileSelector {
                 if (file != null) {
                     filename = file.getAbsolutePath();
                 }
-                setFilename(filename);
+
+                setFilenameAndFire(filename);
             }
         }
 
