@@ -55,7 +55,7 @@ public class FileSelector {
     private JTextField filterRegexField;
     private JLabel filterRegexLabel;
 
-    private String lastFilename = null;
+    private String currentFilename = null;
 
     boolean fireTextFieldEnabled = true;
 
@@ -120,20 +120,18 @@ public class FileSelector {
         if (type == ParamInfo.Type.IFILE) {
             filterRegexField.setEnabled(enabled);
             filterRegexLabel.setEnabled(enabled);
-
         }
     }
 
-    public void setVisible(boolean enabled) {
-        jPanel.setVisible(enabled);
-        nameLabel.setVisible(enabled);
-        fileChooserButton.setVisible(enabled);
-        fileTextfield.setVisible(enabled);
+    public void setVisible(boolean visible) {
+        jPanel.setVisible(visible);
+        nameLabel.setVisible(visible);
+        fileChooserButton.setVisible(visible);
+        fileTextfield.setVisible(visible);
 
         if (type == ParamInfo.Type.IFILE) {
-            filterRegexField.setVisible(enabled);
-            filterRegexLabel.setVisible(enabled);
-
+            filterRegexField.setVisible(visible);
+            filterRegexLabel.setVisible(visible);
         }
     }
 
@@ -153,23 +151,34 @@ public class FileSelector {
         return fileTextfield;
     }
 
-    public void setFilename(String fileName) {
-        fireTextFieldEnabled = false;
-        fileTextfield.setText(fileName);
-        fireTextFieldEnabled = true;
+    public void setFilename(String filename) {
+            fireTextFieldEnabled = false;
+            currentFilename = filename;
+            fileTextfield.setText(filename);
+            fireTextFieldEnabled = true;
     }
+
+
+    public void setFilenameAndFire(String filename) {
+        String tmpCurrentFilename = currentFilename;
+        setFilename(filename);
+        fireEvent(propertyName, tmpCurrentFilename, filename);
+    }
+
+
+
 
     private void handleFileTextfield() {
 
-        String currentFilename = fileTextfield.getText();
+        String newFilename = fileTextfield.getText();
 
         boolean filenameChanged = false;
-        if (currentFilename != null) {
-            if (!currentFilename.equals(lastFilename)) {
+        if (newFilename != null) {
+            if (!newFilename.equals(currentFilename)) {
                 filenameChanged = true;
             }
         } else {
-            if (lastFilename != null) {
+            if (currentFilename != null) {
                 filenameChanged = true;
             }
         }
@@ -178,9 +187,9 @@ public class FileSelector {
             fileTextfield.setFocusable(true);
             fileTextfield.validate();
             fileTextfield.repaint();
-            String tmpLastFilename = lastFilename;
-            lastFilename = currentFilename;
-            fireEvent(propertyName, tmpLastFilename, currentFilename);
+            String previousFilename = currentFilename;
+            currentFilename = newFilename;
+            fireEvent(propertyName, previousFilename, newFilename);
         }
     }
 
@@ -290,6 +299,8 @@ public class FileSelector {
         private String APPROVE_BUTTON_TEXT = "Select";
         private JFileChooser fileChooser;
 
+
+
         private FileChooserAction() {
             super("...");
             fileChooser = new SnapFileChooser();
@@ -303,15 +314,15 @@ public class FileSelector {
             }
         }
 
-        private FileChooserAction(String dialogTitle) {
-            super("...");
-            fileChooser = new SnapFileChooser();
-
-            fileChooser.setDialogTitle(dialogTitle);
-
-            fileChooser.setAcceptAllFileFilterUsed(true);
-            fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
-        }
+//        private FileChooserAction(String dialogTitle) {
+//            super("...");
+//            fileChooser = new SnapFileChooser();
+//
+//            fileChooser.setDialogTitle(dialogTitle);
+//
+//            fileChooser.setAcceptAllFileFilterUsed(true);
+//            fileChooser.setFileFilter(fileChooser.getAcceptAllFileFilter());
+//        }
 
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -337,7 +348,8 @@ public class FileSelector {
                 if (file != null) {
                     filename = file.getAbsolutePath();
                 }
-                setFilename(filename);
+
+                setFilenameAndFire(filename);
             }
         }
 
