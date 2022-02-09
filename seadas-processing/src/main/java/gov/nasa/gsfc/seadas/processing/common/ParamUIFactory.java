@@ -35,6 +35,10 @@ public class ParamUIFactory {
     SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
     private String emptySpace = "  ";
 
+
+    private static int controlHandlerIntEnabled = 1;  // enabled if value 1 or greater
+    private static int eventHandlerIntEnabled = 1;  // enabled if value 1 or greater
+
     public ParamUIFactory(ProcessorModel pm) {
         this.processorModel = pm;
     }
@@ -520,61 +524,77 @@ public class ParamUIFactory {
         return values;
     }
 
-    private boolean controlHandlerEnabled = true, eventHandlerEnabled = true;
+
 
     private boolean isControlHandlerEnabled() {
-        return controlHandlerEnabled;
-    }
-
-    private boolean isEventHandlerEnabled() {
-        return eventHandlerEnabled;
+        if (controlHandlerIntEnabled >= 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void enableControlHandler() {
-        controlHandlerEnabled = true;
+        controlHandlerIntEnabled++;
     }
 
     private void disableControlHandler() {
-        controlHandlerEnabled = false;
+        controlHandlerIntEnabled--;
+    }
+
+
+
+    private boolean isEventHandlerEnabled() {
+        if (eventHandlerIntEnabled >= 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void enableEventHandler() {
-        eventHandlerEnabled = true;
+        eventHandlerIntEnabled++;
     }
 
     private void disableEventHandler() {
-        eventHandlerEnabled = false;
+        eventHandlerIntEnabled--;
     }
+
 
     private JPanel createIOFileOptionField(final ParamInfo pi) {
 
 
         final FileSelector ioFileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
         ioFileSelector.getFileTextField().setColumns(40);
+        ioFileSelector.setFilename(pi.getValue());
 
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                disableControlHandler();
-                if (isEventHandlerEnabled() || pi.getName().isEmpty()) {
-                    ioFileSelector.setFilename(pi.getValue());
+                if (isEventHandlerEnabled()) {
+                    disableControlHandler();
+//                    if (isEventHandlerEnabled() || pi.getName().isEmpty()) {
+                        ioFileSelector.setFilename(pi.getValue());
+//                    }
+                    enableControlHandler();
                 }
-                enableControlHandler();
             }
         });
 
         ioFileSelector.addPropertyChangeListener(ioFileSelector.getPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                disableEventHandler();
                 if (isControlHandlerEnabled()) {
+                    disableEventHandler();
+
                     String iofileName;
                     if (ioFileSelector.getFileName() != null) {
                         iofileName = ioFileSelector.getFileName();
                         processorModel.updateParamInfo(pi, iofileName);
                     }
+
+                    enableEventHandler();
                 }
-                enableEventHandler();
             }
         });
 

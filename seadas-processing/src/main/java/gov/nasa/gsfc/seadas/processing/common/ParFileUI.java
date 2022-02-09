@@ -102,7 +102,8 @@ public class ParFileUI {
                 Logger.getGlobal().info("current working directory: " + processorModel.getRootDir().getAbsolutePath());
 
                 String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-                String openDir =((AppContext) SnapApp.getDefault()).getPreferences().getPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                AppContext appContext =  SnapApp.getDefault().getAppContext();
+                String openDir = appContext.getPreferences().getPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                        homeDirPath);
                 final SnapFileChooser beamFileChooser = new SnapFileChooser(new File(openDir));
                 final int status = beamFileChooser.showOpenDialog(parent);
