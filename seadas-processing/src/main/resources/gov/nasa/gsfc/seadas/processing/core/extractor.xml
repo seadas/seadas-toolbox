@@ -2,7 +2,7 @@
 <paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
     <programMetaData>
-        <hasParFile>true</hasParFile>
+        <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
             <primaryOption>infile</primaryOption>
