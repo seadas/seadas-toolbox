@@ -2,7 +2,7 @@
 <paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">>
     <programMetaData>
-        <hasParFile>false</hasParFile>
+        <hasParFile>true</hasParFile>
         <parFileOptionName>--parfile</parFileOptionName>
         <progressRegex>Processing Mod Band (\d+) out of (\d+)</progressRegex>
         <primaryOptions>
