@@ -2,8 +2,7 @@
 <paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
     <programMetaData>
-        <hasParFile>true</hasParFile>
-        <parFileOptionName>--parfile</parFileOptionName>
+        <hasParFile>false</hasParFile>
         <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
         <hasGeoFile>false</hasGeoFile>
         <primaryOptions>
