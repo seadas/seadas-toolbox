@@ -427,7 +427,9 @@ public class GetSysInfoGUI {
             currentInfoLine = "Python3 Directory: ";
             while ((line = reader.readLine()) != null) {
                 currentInfoLine += line + "\n";
-                numOfLines ++;
+                if (line.trim().length() > 1) {
+                    numOfLines++;
+                }
             }
             if (numOfLines == 0) {
                 currentInfoLine += "\n";
@@ -617,33 +619,23 @@ public class GetSysInfoGUI {
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(process.getInputStream()));
                     String line;
-                    Integer numOfLines = 0;
-                    Boolean extraLine = false;
+
                     while ((line = reader.readLine()) != null) {
+                        System.out.println("line =" + line);
+
                         if (!line.contains("NASA Science Processing (OCSSW)")) {
                             if (line.contains("General System and Software")) {
                                 currentInfoLine += "\n" + DASHES + "\n";
                                 currentInfoLine += INDENT + "General System and Software: " + "\n";
                                 currentInfoLine += DASHES + "\n";
-                                numOfLines +=3;
                             } else {
                                 currentInfoLine += line + "\n";
-                                if ((numOfLines == 0) && !line.contains("NASA")) {
-                                    extraLine = true;
-                                }
-                                numOfLines++;
                             }
                         }
                     }
 
                     sysInfoText += currentInfoLine;
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-                    if (extraLine) {
-                        currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
-                        sysInfoText += currentInfoLine;
-                        appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                    }
 
                     reader.close();
                     process.destroy();
