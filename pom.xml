@@ -47,9 +47,9 @@
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
         <seadas-toolbox.version>1.2.0-SNAPSHOT</seadas-toolbox.version>
-        <seadas-contour-operator.version>8.0.0-SNAPSHOT</seadas-contour-operator.version>
+        <seadas-contour-operator.version>8.2.0-SNAPSHOT</seadas-contour-operator.version>
         <seadas-processing.version>8.2.0-SNAPSHOT</seadas-processing.version>
-        <seadas-watermask-operator.version>8.0.0-SNAPSHOT</seadas-watermask-operator.version>
+        <seadas-watermask-operator.version>8.2.0-SNAPSHOT</seadas-watermask-operator.version>
         <seadas-bathymetry-operator.version>8.0.0-SNAPSHOT</seadas-bathymetry-operator.version>
 
         <netbeans.version>RELEASE82</netbeans.version>
