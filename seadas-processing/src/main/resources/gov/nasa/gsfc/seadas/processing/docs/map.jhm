@@ -60,4 +60,7 @@
     <mapID target="importSeaDASTrack" url="FieldMeasurements/ImportSeaDASTrack.html"/>
     <mapID target="fieldMeasurementsFindMatchups" url="FieldMeasurements/FindMatchups.html"/>
     <mapID target="fieldMeasurementsMakeMatchups" url="FieldMeasurements/MakeMatchups.html"/>
+
+    <mapID target="universalPalettes" url="Topics/Palettes/UniversalPalettes.html"/>
+
 </map>
