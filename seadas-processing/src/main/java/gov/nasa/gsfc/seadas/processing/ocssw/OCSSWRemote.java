@@ -9,6 +9,7 @@ import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.utilities.ScrolledPane;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.runtime.Config;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -24,6 +25,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.prefs.Preferences;
+
+import static gov.nasa.gsfc.seadas.processing.core.L2genData.PRODUCT_XML;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -359,6 +364,8 @@ public class OCSSWRemote extends OCSSW {
 
         if (!fileExistsOnServer(ifileName)) {
             uploadClientFile(ifileName);
+        }else {
+            ifileUploadSuccess = true;
         }
 
         if (ifileUploadSuccess) {
@@ -385,6 +392,8 @@ public class OCSSWRemote extends OCSSW {
 
         if (!fileExistsOnServer(ifileName)) {
             uploadClientFile(ifileName);
+        } else {
+            ifileUploadSuccess = true;
         }
 
         String ifileNameWithoutFullPath = ifileName.substring(ifileName.lastIndexOf(File.separator) + 1);
@@ -680,6 +689,21 @@ public class OCSSWRemote extends OCSSW {
     }
 
     @Override
+    public InputStream getProductXMLFile(L2genData.Source source) throws IOException {
+        Response response = target.path("fileServices").path("downloadFile").path("productXmlFile").request().get(Response.class);
+        InputStream responseStream = (InputStream) response.getEntity();
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+        File productXMLFile = new File(preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, OCSSWConfigData.getSeadasClientServerSharedDirDefaultValue() ), PRODUCT_XML);
+        SeadasFileUtils.debug("product xml file path:" + productXMLFile.getAbsolutePath());
+        SeadasFileUtils.writeToFile(responseStream, productXMLFile.getAbsolutePath());
+        try {
+            return new FileInputStream(productXMLFile);
+        } catch (IOException e) {
+            throw new IOException("problem creating product XML file: " + e.getMessage());
+        }
+    }
+
+    @Override
     public String executeUpdateLuts(ProcessorModel processorModel) {
         this.processorModel = processorModel;
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
@@ -729,8 +753,8 @@ public class OCSSWRemote extends OCSSW {
                     fileNameWithFullPath = st.nextToken();
                     fileNameWithoutPath = fileNameWithFullPath.substring(fileNameWithFullPath.lastIndexOf(File.separator) + 1);
                     Response response = target.path("fileServices").path("downloadFile").path(jobId).path(fileNameWithoutPath).request().get(Response.class);
-                    InputStream responceStream = (InputStream) response.getEntity();
-                    SeadasFileUtils.writeToFile(responceStream, fileNameWithFullPath);
+                    InputStream responseStream = (InputStream) response.getEntity();
+                    SeadasFileUtils.writeToFile(responseStream, fileNameWithFullPath);
                 }
                 return null;
             }
