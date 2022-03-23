@@ -212,6 +212,9 @@
                     <include name="seadas.clusters"/>
                     <include name="seadas.conf"/>
                     <include name="seadas.properties"/>
+                    <include name="snap.clusters"/>
+                    <include name="snap.conf"/>
+                    <include name="snap.properties"/>
                 </fileset>
                 <os family="unix"/>
             </parsable>
