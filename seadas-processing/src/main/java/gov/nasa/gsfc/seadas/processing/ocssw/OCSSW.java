@@ -543,4 +543,6 @@ public abstract class OCSSW {
     public void setOcsswTagsValid4CurrentSeaDAS(ArrayList<String> ocsswTagsValid4CurrentSeaDAS) {
         this.ocsswTagsValid4CurrentSeaDAS = ocsswTagsValid4CurrentSeaDAS;
     }
+
+    public abstract InputStream getProductXMLFile(L2genData.Source source) throws IOException;
 }
