@@ -50,6 +50,18 @@ git checkout SEADAS-003-SNAP-8.0.3 snap-rcp/src/main/java/org/esa/snap/rcp/actio
 GIT_COMMITTER_DATE="2021-06-30 12:00" git tag -a 1.1.0 -m "Released in SeaDAS 8.1.0 Platform which implemented a modification of SNAP 8.0.3"
 GIT_COMMITTER_DATE="2021-06-30 12:00" git tag -a SEADAS-8.1.0 -m "Modification of SNAP 8.0.3 which was released in SeaDAS 8.1.0 Platform"
 
+
+snap-engine  snap-desktop
+GIT_COMMITTER_DATE="2022-03-23 13:00" git tag -a SEADAS-8.2.0 -m "Modification of SNAP 8.0.9 which is in SeaDAS 8.2.0 Platform"
+
+s3tbx
+GIT_COMMITTER_DATE="2022-03-23 13:00" git tag -a SEADAS-8.2.0 -m "Modification of S3TBX 8.0.6 which is in SeaDAS 8.2.0 Platform"
+
+seadas-toolbox
+GIT_COMMITTER_DATE="2022-03-23 13:00" git tag -a 1.2.0 -m "Released in SeaDAS 8.2.0 Platform which implemented a modification of SNAP 8.0.9"
+
+
+
 // List tags
 git tag -l
 
