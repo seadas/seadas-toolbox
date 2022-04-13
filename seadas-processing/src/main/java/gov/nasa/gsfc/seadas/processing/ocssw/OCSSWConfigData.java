@@ -2,10 +2,13 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.runtime.Config;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -42,7 +45,7 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY = "seadas.ocssw.processErrorStreamPort";
     final static String SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY = "seadas.ocssw.serverAddress";
     final static String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
-    final static String SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
+    public final static String SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
     final static String SEADAS_OCSSW_VERSION_NUMBER_PROEPRETY ="seadas.ocssw.version";
     final static String SEADAS_OCSSW_DEBUG ="seadas.ocssw.debug";
 
@@ -55,7 +58,8 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE = "6403";
     final static String SEADAS_OCSSW_SERVER_ADDRESS_DEFAULT_VALUE = "";
     final static String SEADAS_CLIENT_ID_DEFAULT_VALUE = System.getProperty("user.name");
-    final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasOCSSWSharedDir";
+    //public final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasClientServerShared";
+    final static String SEADAS_CLIENT_SERVER_SHARED_DIR_NAME = "seadasClientServerShared";
     final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "false";
     public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "V2022.0";
 
@@ -88,12 +92,18 @@ public class OCSSWConfigData {
         preferences.put(SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSINPUTSTREAMPORT_DEFAULT_VALUE);
         preferences.put(SEADAS_OCSSW_PROCESSERRORSTREAMPORT_PROPERTY, SEADAS_OCSSW_PROCESSERRORSTREAMPORT_DEFAULT_VALUE);
         preferences.put(SEADAS_CLIENT_ID_PROPERTY, SEADAS_CLIENT_ID_DEFAULT_VALUE);
-        preferences.put(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE);
+        preferences.put(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, getSeadasClientServerSharedDirDefaultValue());
         try {
             preferences.flush();
         } catch (BackingStoreException e) {
             SnapApp.getDefault().getLogger().severe(e.getMessage());
         }
+    }
+
+    public static String getSeadasClientServerSharedDirDefaultValue(){
+        Path path = Paths.get(System.getProperty("user.home"), SEADAS_CLIENT_SERVER_SHARED_DIR_NAME);
+        SeadasFileUtils.debug("seadasClientServerDIR path: " + path.toString());
+        return path.toString();
     }
 
     public void updateconfigData(PropertyContainer pc) {

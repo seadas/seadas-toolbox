@@ -303,7 +303,6 @@ public class OCSSWInfo {
         Client c = ClientBuilder.newClient(clientConfig);
         WebTarget target = c.target(resourceBaseUri);
         JsonObject jsonObject = null;
-        //ocsswTag = preferences.get(SEADAS_OCSSW_TAG_PROPERTY, null);
         SeadasToolboxVersion seadasToolboxVersion = new SeadasToolboxVersion();
         ocsswTag = seadasToolboxVersion.getLatestOCSSWTagForInstalledRelease();
         if (ocsswTag == null) {

@@ -4,10 +4,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.esa.snap.core.util.Debug;
@@ -21,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
+import static gov.nasa.gsfc.seadas.processing.core.L2genData.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME;
 
 /**
@@ -87,6 +85,32 @@ public class OCSSWLocal extends OCSSW {
     @Override
     public void updateOCSSWProgramXMLFiles() {
 
+    }
+
+    @Override
+    public InputStream getProductXMLFile(L2genData.Source source) throws IOException {
+        File ocsswShareDir = new File(OCSSWInfo.getInstance().getOcsswRoot(), SHARE_DIR);
+
+        File ocsswCommonDir = new File(ocsswShareDir, COMMON_DIR);
+
+        //todo
+        File xmlFile  = new File(ocsswCommonDir, PRODUCT_XML);
+
+        if (source == L2genData.Source.RESOURCES) {
+            try {
+                return new FileInputStream(xmlFile);
+            } catch (IOException e) {
+                throw new IOException("problem creating product XML file: " + e.getMessage());
+            }
+        }
+        else if (source == Source.L2GEN) {
+            try {
+                return new FileInputStream(xmlFile);
+            } catch (IOException e) {
+                throw new IOException("problem creating product XML file: " + e.getMessage());
+            }
+        }
+        return null;
     }
 
     @Override
