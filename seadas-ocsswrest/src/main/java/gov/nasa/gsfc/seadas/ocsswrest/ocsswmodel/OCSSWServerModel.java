@@ -26,11 +26,12 @@ public class OCSSWServerModel {
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
 
-    public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "bin";
-    public static final String OCSSW_DATA_DIR_SUFFIX = "share";
-    public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
-    public static final String OCSSW_SRC_DIR_SUFFIX = "ocssw_src";
-    public static final String OCSSW_VIIRS_DEM_SUFFIX = "share" + File.separator + "viirs" + File.separator + "dem";
+    public static final String OCSSW_SCRIPTS_DIR_NAME = "bin";
+    public static final String OCSSW_DATA_DIR_NAME = "share";
+    public static final String OCSSW_BIN_DIR_NAME = "bin";
+    public static final String OCSSW_SRC_DIR_NAME = "ocssw_src";
+    public static final String OCSSW_COMMON_DIR_NAME = "common";
+    public static final String OCSSW_VIIRS_DEM_NAME = "share" + File.separator + "viirs" + File.separator + "dem";
 
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw";
     public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
@@ -127,17 +128,17 @@ public class OCSSWServerModel {
     public static void initiliaze() {
         String ocsswRootPath = System.getProperty("ocsswroot");
         if (ocsswRootPath != null) {
-            final File dir = new File(ocsswRootPath + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
+            final File dir = new File(ocsswRootPath + File.separator + OCSSW_SCRIPTS_DIR_NAME);
             System.out.println("server ocssw root path: " + dir.getAbsoluteFile());
             ocsswExist = dir.isDirectory();
             ocsswRoot = ocsswRootPath;
-            ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
-            ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
-            ocsswBinDirPath = ocsswRoot + File.separator + OCSSW_BIN_DIR_SUFFIX;
-            ocsswSrcDirPath = ocsswRoot + File.separator + OCSSW_SRC_DIR_SUFFIX;
+            ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_NAME;
+            ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_NAME;
+            ocsswBinDirPath = ocsswRoot + File.separator + OCSSW_BIN_DIR_NAME;
+            ocsswSrcDirPath = ocsswRoot + File.separator + OCSSW_SRC_DIR_NAME;
             ocsswInstallerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_INSTALLER_PROGRAM;
             ocsswRunnerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_RUNNER_SCRIPT;
-            ocsswViirsDemPath = ocsswRoot + File.separator + OCSSW_VIIRS_DEM_SUFFIX;
+            ocsswViirsDemPath = ocsswRoot + File.separator + OCSSW_VIIRS_DEM_NAME;
             downloadOCSSWInstaller();
         }
     }

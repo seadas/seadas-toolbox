@@ -3,10 +3,8 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
-import com.bc.ceres.core.runtime.Version;
 import com.bc.ceres.swing.binding.BindingContext;
 import org.esa.snap.core.util.SystemUtils;
-import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
@@ -25,18 +23,19 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.OCSSW_INSTALLER_URL;
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.TMP_OCSSW_INSTALLER;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
@@ -364,7 +363,7 @@ public class OCSSWInfoGUI {
         ocsswSharedDir.setMinimumSize(new JTextField(10).getPreferredSize());
 
 
-        pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE)));
+        pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, OCSSWConfigData.getSeadasClientServerSharedDirDefaultValue())));
         pc.getDescriptor(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY).setDisplayName(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY);
 
         final BindingContext ctx = new BindingContext(pc);

@@ -7,7 +7,6 @@ import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWExecutionMonitor;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.SystemUtils;
@@ -1559,74 +1558,77 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
     private InputStream getProductInfoInputStream(Source source, boolean overwrite) throws IOException {
-        File ocsswShareDir = new File(OCSSWInfo.getInstance().getOcsswRoot(), SHARE_DIR);
-        File ocsswCommonDir = new File(ocsswShareDir, COMMON_DIR);
-//        ocsswCommonDir.mkdirs();
 
-        File xmlFile = new File(ocsswCommonDir, getProductXml());
-        //SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
-        //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
-
-        if (source == Source.RESOURCES) {
-//            if (!xmlFile.exists() || overwrite) {
-//                //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file does not exist!");
-//                xmlFile = installResource(getProductXml());
-//            }
+        return ocssw.getProductXMLFile(source);
+//        File ocsswShareDir = new File(OCSSWInfo.getInstance().getOcsswRoot(), SHARE_DIR);
 //
-//            if (xmlFile == null || !xmlFile.exists()) {
-//                throw new IOException("product XML file does not exist");
+//        File ocsswCommonDir = new File(ocsswShareDir, COMMON_DIR);
+//
+//        File xmlFile  = new File(ocsswCommonDir, getProductXml());
+//
+//        SeadasFileUtils.debug("l2gen xml file :" + xmlFile.getAbsolutePath());
+//        Logger.getLogger("l2gen").info(this.getClass().getName() + ": l2gen xml file:  " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + xmlFile.getAbsolutePath());
+//
+//        if (source == Source.RESOURCES) {
+////            if (!xmlFile.exists() || overwrite) {
+////                //SeadasLogger.getLogger().info(this.getClass().getName() + ": l2gen xml file does not exist!");
+////                xmlFile = installResource(getProductXml());
+////            }
+////
+////            if (xmlFile == null || !xmlFile.exists()) {
+////                throw new IOException("product XML file does not exist");
+////            }
+//
+//            try {
+//                return new FileInputStream(xmlFile);
+//            } catch (IOException e) {
+//                throw new IOException("problem creating product XML file: " + e.getMessage());
 //            }
-
-            try {
-                return new FileInputStream(xmlFile);
-            } catch (IOException e) {
-                throw new IOException("problem creating product XML file: " + e.getMessage());
-            }
-        } else if (source == Source.L2GEN) {
-            if (!xmlFile.exists() || overwrite) {
-                String executable = getGuiName();
-                //    String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
-
-                if (executable.equals("l3gen")) {
-                    executable = "l2gen";
-                }
-                ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
-
-                processorModel.setAcceptsParFile(false);
-                processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
-                processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
-
-                try {
-                    Process p = ocssw.executeSimple(processorModel);
-                    ocssw.waitForProcess();
-
-                    if (ocssw.getProcessExitValue() != 0) {
-                        throw new IOException(getGuiName() + " returned nonzero exitvalue");
-                    }
-                    boolean downloadSuccessful = ocssw.getIntermediateOutputFiles(processorModel);
-
-                    if (!xmlFile.exists() || !downloadSuccessful) {
-                        //SeadasLogger.getLogger().severe("l2gen can't find productInfo.xml file!");
-                        Dialogs.showError("SEVERE: productInfo.xml not found!");
-                        return null;
-                    }
-
-                    return new FileInputStream(xmlFile);
-                } catch (IOException e) {
-                    //SeadasLogger.getLogger().severe(this.getClass().getName() + ": Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + e.getMessage() + "\n");
-                    throw new IOException("Problem creating product XML file: " + e.getMessage());
-
-                }
-            } else {
-                try {
-                    return new FileInputStream(xmlFile);
-                } catch (IOException e) {
-                    throw new IOException("problem creating product XML file: " + e.getMessage());
-                }
-            }
-        }
-
-        return null;
+//        } else if (source == Source.L2GEN) {
+//            if (!xmlFile.exists() || overwrite) {
+//                String executable = getGuiName();
+//                //    String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+//
+//                if (executable.equals("l3gen")) {
+//                    executable = "l2gen";
+//                }
+//                ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
+//
+//                processorModel.setAcceptsParFile(false);
+//                processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+//                processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
+//
+//                try {
+//                    Process p = ocssw.executeSimple(processorModel);
+//                    ocssw.waitForProcess();
+//
+//                    if (ocssw.getProcessExitValue() != 0) {
+//                        throw new IOException(getGuiName() + " returned nonzero exitvalue");
+//                    }
+//                    boolean downloadSuccessful = ocssw.getIntermediateOutputFiles(processorModel);
+//
+//                    if (!xmlFile.exists() || !downloadSuccessful) {
+//                        //SeadasLogger.getLogger().severe("l2gen can't find productInfo.xml file!");
+//                        Dialogs.showError("SEVERE: productInfo.xml not found!");
+//                        return null;
+//                    }
+//
+//                    return new FileInputStream(xmlFile);
+//                } catch (IOException e) {
+//                    //SeadasLogger.getLogger().severe(this.getClass().getName() + ": Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + e.getMessage() + "\n");
+//                    throw new IOException("Problem creating product XML file: " + e.getMessage());
+//
+//                }
+//            } else {
+//                try {
+//                    return new FileInputStream(xmlFile);
+//                } catch (IOException e) {
+//                    throw new IOException("problem creating product XML file: " + e.getMessage());
+//                }
+//            }
+//        }
+//
+//        return null;
     }
 
     private InputStream getParamInfoInputStream() throws IOException {

@@ -22,6 +22,8 @@ import java.nio.file.Paths;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.OCSSW_ROOT_PROPERTY;
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.*;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.OCSSW_COMMON_DIR_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.getOcsswDataDirPath;
 
 /**
  * Created by IntelliJ IDEA.
@@ -123,9 +125,9 @@ public class OCSSWFileServices {
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
             String clientfileFullPathName = currentWorkingDir + File.separator + fileName;
-            System.out.println(clientfileFullPathName + " is created " + isDirCreated);
-            System.out.println(System.getProperty("user.home"));
-            System.out.println(new File(currentWorkingDir).getAbsolutePath());
+            //System.out.println(clientfileFullPathName + " is created " + isDirCreated);
+            //System.out.println(System.getProperty("user.home"));
+            //System.out.println(new File(currentWorkingDir).getAbsolutePath());
             try {
                 ServerSideFileUtilities.writeToFile(uploadedInputStream, clientfileFullPathName);
                 SQLiteJDBC.updateInputFilesList(jobId, clientfileFullPathName);
@@ -153,19 +155,19 @@ public class OCSSWFileServices {
             throws IOException {
         Response.Status respStatus = Response.Status.OK;
         String fileName = fileInfo.getFileName();
-        System.out.println("par file info: file name is  " + fileName);
+        //System.out.println("par file info: file name is  " + fileName);
         if (fileName == null) {
             respStatus = Response.Status.INTERNAL_SERVER_ERROR;
         } else {
             String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-            System.out.println("current working directory " + " is  " + currentWorkingDir);
+            //System.out.println("current working directory " + " is  " + currentWorkingDir);
             File newFile = new File(currentWorkingDir);
             Files.createDirectories(newFile.toPath());
             boolean isDirCreated = new File(currentWorkingDir).isDirectory();
             String clientfileFullPathName = currentWorkingDir + File.separator + fileName;
-            System.out.println(clientfileFullPathName + " is created " + isDirCreated);
-            System.out.println(System.getProperty("user.home"));
-            System.out.println(new File(currentWorkingDir).getAbsolutePath());
+            //System.out.println(clientfileFullPathName + " is created " + isDirCreated);
+            //System.out.println(System.getProperty("user.home"));
+            //System.out.println(new File(currentWorkingDir).getAbsolutePath());
             try {
                 ServerSideFileUtilities.writeToFile(uploadedInputStream, clientfileFullPathName);
                 SQLiteJDBC.updateInputFilesList(jobId, clientfileFullPathName);
@@ -309,6 +311,31 @@ public class OCSSWFileServices {
                                          @PathParam("ofileName") String clientOfileName) {
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String ofileName = workingFileDir + File.separator + clientOfileName;
+        StreamingOutput fileStream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream outputStream) throws WebApplicationException {
+                try {
+                    java.nio.file.Path path = Paths.get(ofileName);
+                    byte[] data = Files.readAllBytes(path);
+                    outputStream.write(data);
+                    outputStream.flush();
+                } catch (Exception e) {
+                    throw new WebApplicationException("File Not Found !!");
+                }
+            }
+        };
+        return Response
+                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                .header("content-disposition", "attachment; fileName = " + ofileName)
+                .build();
+    }
+
+
+    @GET
+    @Path("/downloadFile/productXmlFile")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadProductXmlFIle() {
+        String ofileName = getOcsswDataDirPath() + File.separator + OCSSW_COMMON_DIR_NAME + File.separator + "product.xml";
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
             public void write(OutputStream outputStream) throws WebApplicationException {
