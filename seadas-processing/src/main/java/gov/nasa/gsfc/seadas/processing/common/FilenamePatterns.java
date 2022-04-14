@@ -123,11 +123,11 @@ public class FilenamePatterns {
                 StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
                 possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
             } else if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1) || iFileInfo.isMissionId(MissionInfo.Id.VIIRSN)) {
-                String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
+                String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "geolocate_viirs");
                 StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
                 possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
             } else if (iFileInfo.isMissionId(MissionInfo.Id.HAWKEYE)) {
-                String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
+                String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "geolocate_hawkeye");
                 StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
                 possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
             }

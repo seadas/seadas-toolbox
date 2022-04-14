@@ -278,61 +278,73 @@ public class SQLiteJDBC {
             preparedStatement.setString(3, "mos");
             preparedStatement.executeUpdate();
 
-            //9. insert msi mission info
-            preparedStatement.setString(1, "MSI");
-            preparedStatement.setString(2, "MSI");
-            preparedStatement.setString(3, "msi");
+            //9. insert msi s2a mission info
+            preparedStatement.setString(1, "MSIS2A");
+            preparedStatement.setString(2, "MSI S2A");
+            preparedStatement.setString(3, "msi/s2a");
             preparedStatement.executeUpdate();
 
-            //10. insert octs mission info
+            //10. insert msi s2b mission info
+            preparedStatement.setString(1, "MSIS2A");
+            preparedStatement.setString(2, "MSI S2A");
+            preparedStatement.setString(3, "msi/s2a");
+            preparedStatement.executeUpdate();
+
+            //11. insert octs mission info
             preparedStatement.setString(1, "OCTS");
             preparedStatement.setString(2, "OCTS");
             preparedStatement.setString(3, "octs");
             preparedStatement.executeUpdate();
 
-            //11. insert osmi mission info
+            //12. insert osmi mission info
             preparedStatement.setString(1, "OSMI");
             preparedStatement.setString(2, "OSMI");
             preparedStatement.setString(3, "osmi");
             preparedStatement.executeUpdate();
 
-            //12. insert seawifs mission info
+            //13. insert seawifs mission info
             preparedStatement.setString(1, "SEAWIFS");
             preparedStatement.setString(2, "SEAWIFS SeaWiFS");
             preparedStatement.setString(3, "seawifs");
             preparedStatement.executeUpdate();
 
-            //13. insert viirs mission info
+            //14. insert viirs mission info
             preparedStatement.setString(1, "VIIRSN");
             preparedStatement.setString(2, "VIIRS VIIRSN");
             preparedStatement.setString(3, "viirs/npp");
             preparedStatement.executeUpdate();
 
-            //14. insert ocm1 mission info
+            //15. insert ocm1 mission info
             preparedStatement.setString(1, "OCM1");
             preparedStatement.setString(2, "OCM1");
             preparedStatement.setString(3, "ocm1");
             preparedStatement.executeUpdate();
 
-            //15. insert ocm2 mission info
+            //16. insert ocm2 mission info
             preparedStatement.setString(1, "OCM2");
             preparedStatement.setString(2, "OCM2");
             preparedStatement.setString(3, "ocm2");
             preparedStatement.executeUpdate();
 
-            //16. insert oli mission info
+            //17. insert oli mission info
             preparedStatement.setString(1, "OLI");
             preparedStatement.setString(2, "OLI");
             preparedStatement.setString(3, "oli");
             preparedStatement.executeUpdate();
 
-            //16. insert olci mission info
-            preparedStatement.setString(1, "OLCI");
-            preparedStatement.setString(2, "OLCI");
-            preparedStatement.setString(3, "olci");
+            //18. insert olci mission info
+            preparedStatement.setString(1, "OLCIS3A");
+            preparedStatement.setString(2, "OLCI S3A");
+            preparedStatement.setString(3, "olci/s3a");
             preparedStatement.executeUpdate();
 
-            //17. insert viirs mission info
+            //19. insert olci mission info
+            preparedStatement.setString(1, "OLCIS3B");
+            preparedStatement.setString(2, "OLCI S3B");
+            preparedStatement.setString(3, "olci/s3b");
+            preparedStatement.executeUpdate();
+
+            //20. insert viirs mission info
             preparedStatement.setString(1, "VIIRSJ1");
             preparedStatement.setString(2, "VIIRSJ1");
             preparedStatement.setString(3, "viirs/j1");
