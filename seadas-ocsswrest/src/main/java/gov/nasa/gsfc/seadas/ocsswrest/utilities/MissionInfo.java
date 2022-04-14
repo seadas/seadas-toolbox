@@ -58,10 +58,10 @@ public class MissionInfo {
     public final static String[] MERIS_NAMES = {"MERIS"};
     public final static String MERIS_DIRECTORY = "meris";
 
-    public final static String[] MSIS2A_NAMES = {"MSI S2A"};
+    public final static String[] MSIS2A_NAMES = {"MSIS2A"};
     public final static String MSIS2A_DIRECTORY = "msi/s2a";
 
-    public final static String[] MSIS2B_NAMES = {"MSI S2B"};
+    public final static String[] MSIS2B_NAMES = {"MSIS2B"};
     public final static String MSIS2B_DIRECTORY = "msi/s2b";
 
     public final static String[] CZCS_NAMES = {"CZCS"};
@@ -100,10 +100,10 @@ public class MissionInfo {
     public final static String[] OLI_NAMES = {"OLI"};
     public final static String OLI_DIRECTORY = "oli";
 
-    public final static String[] OLCIS3A_NAMES = {"OLCI S3A"};
+    public final static String[] OLCIS3A_NAMES = {"OLCIS3A"};
     public final static String OLCIS3A_DIRECTORY = "olci/s3a";
 
-    public final static String[] OLCIS3B_NAMES = {"OLCI S3B"};
+    public final static String[] OLCIS3B_NAMES = {"OLCIS3B"};
     public final static String OLCIS3B_DIRECTORY = "olci/s3b";
 
     public final static String[] SGLI_NAMES = {"SGLI"};
