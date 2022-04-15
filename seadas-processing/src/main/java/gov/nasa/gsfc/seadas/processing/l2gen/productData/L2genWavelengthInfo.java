@@ -92,6 +92,7 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
             }
 
             if (suffix != null && !suffix.isEmpty()) {
+                result.append("_");
                 result.append(suffix);
             }
         }

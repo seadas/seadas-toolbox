@@ -122,12 +122,28 @@
             <order>13</order>
         </option>
         <option type="boolean">
+            <name>--msis2a</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install MSI S2A files</description>
+            <order>14</order>
+        </option>
+        <option type="boolean">
+            <name>--msis2b</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install MSI S2B files</description>
+            <order>15</order>
+        </option>
+        <option type="boolean">
             <name>--ocm1</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM1 files</description>
-            <order>14</order>
+            <order>16</order>
         </option>
         <option type="boolean">
             <name>--ocm2</name>
@@ -135,7 +151,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM2 files</description>
-            <order>15</order>
+            <order>17</order>
         </option>
         <option type="boolean">
             <name>--ocrvc</name>
@@ -143,7 +159,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCRVC files</description>
-            <order>16</order>
+            <order>18</order>
         </option>
         <option type="boolean">
             <name>--octs</name>
@@ -151,7 +167,23 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCTS files</description>
-            <order>17</order>
+            <order>19</order>
+        </option>
+        <option type="boolean">
+            <name>--olcis3a</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install OLCI S3A files</description>
+            <order>20</order>
+        </option>
+        <option type="boolean">
+            <name>--olcis3b</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install OLCI S3B files</description>
+            <order>21</order>
         </option>
         <option type="boolean">
             <name>--oli</name>
@@ -159,7 +191,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install Landsat 8 OLI files</description>
-            <order>18</order>
+            <order>22</order>
         </option>
         <!--<option type="boolean">-->
             <!--<name>&#45;&#45;olci</name>-->
@@ -175,7 +207,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OSMI files</description>
-            <order>19</order>
+            <order>23</order>
         </option>
         <option type="boolean">
             <name>--seawifs</name>
@@ -183,7 +215,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install SeaWIFS files</description>
-            <order>20</order>
+            <order>24</order>
         </option>
         <option type="boolean">
             <name>--sgli</name>
@@ -191,7 +223,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install SGLI files</description>
-            <order>21</order>
+            <order>25</order>
         </option>
         <option type="boolean">
             <name>--viirsn</name>
@@ -199,7 +231,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRS SNPP files</description>
-            <order>22</order>
+            <order>26</order>
         </option>
         <option type="boolean">
             <name>--viirsj1</name>
@@ -207,7 +239,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRS JPSS1 files</description>
-            <order>23</order>
+            <order>27</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
@@ -215,7 +247,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>print out verbose status</description>
-            <order>24</order>
+            <order>28</order>
         </option>
         <option type="boolean">
             <name>--clean</name>
@@ -223,7 +255,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>clean install</description>
-            <order>25</order>
+            <order>29</order>
         </option>
         <option type="boolean">
             <name>--viirsdem</name>
@@ -231,7 +263,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRS DEM files needed for geolocation</description>
-            <order>26</order>
+            <order>30</order>
         </option>
     </options>
 </paramInfo>
