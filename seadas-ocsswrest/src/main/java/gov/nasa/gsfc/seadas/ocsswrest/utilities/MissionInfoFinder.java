@@ -44,12 +44,14 @@ public class MissionInfoFinder {
         MODISA("MODISA"),
         MODIST("MODIST"),
         MOS("MOS"),
-        MSI("MSI"),
+        MSIS2A("MSIS2A"),
+        MSIS2B("MSIS2B"),
         OCM1("OCM1"),
         OCM2("OCM2"),
         OCTS("OCTS"),
         OLI("OLI"),
-        OLCI("OLCI"),
+        OLCIS3A("OLCIS3A"),
+        OLCIS3B("OLCIS3B"),
         OSMI("OSMI"),
         SEAWIFS("SEAWIFS"),
         VIIRSN("VIIRSN"),
@@ -80,12 +82,14 @@ public class MissionInfoFinder {
         MODISA("modisa"),
         MODIST("modist"),
         MOS("mos"),
-        MSI("msi"),
+        MSIS2A("msi/s2a"),
+        MSIS2B("msi/s2b"),
         OCM1("ocm1"),
         OCM2("ocm2"),
         OCTS("octs"),
         OLI("oli"),
-        OLCI("olci"),
+        OLCIS3A("olci/s3a"),
+        OLCIS3B("olci/s3b"),
         OSMI("osmi"),
         SEAWIFS("seawifs"),
         VIIRSN("viirs/npp"),
@@ -240,7 +244,8 @@ public class MissionInfoFinder {
         MODISA,
         MODIST,
         MOS,
-        MSI,
+        MSIS2A,
+        MSIS2B,
         OCTS,
         OSMI,
         SEAWIFS,
@@ -249,7 +254,8 @@ public class MissionInfoFinder {
         OCM1,
         OCM2,
         OLI,
-        OLCI,
+        OLCIS3A,
+        OLCIS3B,
         SGLI,
         UNKNOWN
     }
@@ -264,7 +270,8 @@ public class MissionInfoFinder {
             Id.MODISA,
             Id.MODIST,
             Id.MOS,
-            Id.MSI,
+            Id.MSIS2A,
+            Id.MSIS2B,
             Id.OCTS,
             Id.OSMI,
             Id.SEAWIFS,
@@ -273,7 +280,8 @@ public class MissionInfoFinder {
             Id.OCM1,
             Id.OCM2,
             Id.OLI,
-            Id.OLCI,
+            Id.OLCIS3A,
+            Id.OLCIS3B,
             Id.SGLI
     };
 
@@ -310,8 +318,11 @@ public class MissionInfoFinder {
     public final static String[] MOS_NAMES = {"MOS"};
     public final static String MOS_DIRECTORY = "mos";
 
-    public final static String[] MSI_NAMES = {"MSI"};
-    public final static String MSI_DIRECTORY = "msi";
+    public final static String[] MSIS2A_NAMES = {"MSIS2A"};
+    public final static String MSIS2A_DIRECTORY = "msi/s2a";
+
+    public final static String[] MSIS2B_NAMES = {"MSIS2B"};
+    public final static String MSIS2B_DIRECTORY = "msi/s2b";
 
     public final static String[] OCM1_NAMES = {"OCM1"};
     public final static String OCM1_DIRECTORY = "ocm1";
@@ -331,8 +342,11 @@ public class MissionInfoFinder {
     public final static String[] OLI_NAMES = {"OLI"};
     public final static String OLI_DIRECTORY = "oli";
 
-    public final static String[] OLCI_NAMES = {"OLCI"};
-    public final static String OLCI_DIRECTORY = "olci";
+    public final static String[] OLCIS3A_NAMES = {"OLCIS3A"};
+    public final static String OLCIS3A_DIRECTORY = "olci/s3a";
+
+    public final static String[] OLCIS3B_NAMES = {"OLCIS3B"};
+    public final static String OLCIS3B_DIRECTORY = "olci/s3b";
 
     public final static String[] SGLI_NAMES = {"SGLI"};
     public final static String SGLI_DIRECTORY = "sgli";
@@ -368,13 +382,15 @@ public class MissionInfoFinder {
         directories.put(Id.OCTS, OCTS_DIRECTORY);
         directories.put(Id.OSMI, OSMI_DIRECTORY);
         directories.put(Id.MOS, MOS_DIRECTORY);
-        directories.put(Id.MSI, MSI_DIRECTORY);
+        directories.put(Id.MSIS2A, MSIS2A_DIRECTORY);
+        directories.put(Id.MSIS2B, MSIS2B_DIRECTORY);
         directories.put(Id.OCM1, OCM1_DIRECTORY);
         directories.put(Id.OCM2, OCM2_DIRECTORY);
         directories.put(Id.HICO, HICO_DIRECTORY);
         directories.put(Id.GOCI, GOCI_DIRECTORY);
         directories.put(Id.OLI, OLI_DIRECTORY);
-        directories.put(Id.OLCI, OLCI_DIRECTORY);
+        directories.put(Id.OLCIS3A, OLCIS3A_DIRECTORY);
+        directories.put(Id.OLCIS3B, OLCIS3B_DIRECTORY);
         directories.put(Id.HAWKEYE, HAWKEYE_DIRECTORY);
         directories.put(Id.SGLI, SGLI_DIRECTORY);
     }
@@ -391,13 +407,15 @@ public class MissionInfoFinder {
         names.put(Id.OCTS, OCTS_NAMES);
         names.put(Id.OSMI, OSMI_NAMES);
         names.put(Id.MOS, MOS_NAMES);
-        names.put(Id.MSI, MSI_NAMES);
+        names.put(Id.MSIS2A, MSIS2A_NAMES);
+        names.put(Id.MSIS2B, MSIS2B_NAMES);
         names.put(Id.OCM1, OCM1_NAMES);
         names.put(Id.OCM2, OCM2_NAMES);
         names.put(Id.HICO, HICO_NAMES);
         names.put(Id.GOCI, GOCI_NAMES);
         names.put(Id.OLI, OLI_NAMES);
-        names.put(Id.OLCI, OLCI_NAMES);
+        names.put(Id.OLCIS3A, OLCIS3A_NAMES);
+        names.put(Id.OLCIS3B, OLCIS3B_NAMES);
         names.put(Id.HAWKEYE, HAWKEYE_NAMES);
         names.put(Id.SGLI, SGLI_NAMES);
     }

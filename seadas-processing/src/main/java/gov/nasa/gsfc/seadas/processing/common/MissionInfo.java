@@ -21,6 +21,8 @@ public class MissionInfo {
         HICO,
         GOCI,
         MERIS,
+        MSIS2A,
+        MSIS2B,
         MODISA,
         MODIST,
         MOS,
@@ -55,6 +57,12 @@ public class MissionInfo {
 
     public final static String[] MERIS_NAMES = {"MERIS"};
     public final static String MERIS_DIRECTORY = "meris";
+
+    public final static String[] MSIS2A_NAMES = {"MSIS2A"};
+    public final static String MSIS2A_DIRECTORY = "msi/s2a";
+
+    public final static String[] MSIS2B_NAMES = {"MSIS2B"};
+    public final static String MSIS2B_DIRECTORY = "msi/s2b";
 
     public final static String[] CZCS_NAMES = {"CZCS"};
     public final static String CZCS_DIRECTORY = "czcs";
@@ -92,10 +100,10 @@ public class MissionInfo {
     public final static String[] OLI_NAMES = {"OLI"};
     public final static String OLI_DIRECTORY = "oli";
 
-    public final static String[] OLCIS3A_NAMES = {"OLCI S3A"};
+    public final static String[] OLCIS3A_NAMES = {"OLCIS3A"};
     public final static String OLCIS3A_DIRECTORY = "olci/s3a";
 
-    public final static String[] OLCIS3B_NAMES = {"OLCI S3B"};
+    public final static String[] OLCIS3B_NAMES = {"OLCIS3B"};
     public final static String OLCIS3B_DIRECTORY = "olci/s3b";
 
     public final static String[] SGLI_NAMES = {"SGLI"};
@@ -139,6 +147,8 @@ public class MissionInfo {
         directories.put(Id.VIIRSN, VIIRSN_DIRECTORY);
         directories.put(Id.VIIRSJ1, VIIRSJ1_DIRECTORY);
         directories.put(Id.MERIS, MERIS_DIRECTORY);
+        directories.put(Id.MSIS2A, MSIS2A_DIRECTORY);
+        directories.put(Id.MSIS2B, MSIS2B_DIRECTORY);
         directories.put(Id.CZCS, CZCS_DIRECTORY);
         directories.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
         directories.put(Id.AVHRR, AVHRR_DIRECTORY);
@@ -163,6 +173,8 @@ public class MissionInfo {
         names.put(Id.VIIRSN, VIIRSN_NAMES);
         names.put(Id.VIIRSJ1, VIIRSJ1_NAMES);
         names.put(Id.MERIS, MERIS_NAMES);
+        names.put(Id.MSIS2A, MSIS2A_NAMES);
+        names.put(Id.MSIS2B, MSIS2B_NAMES);
         names.put(Id.CZCS, CZCS_NAMES);
         names.put(Id.AQUARIUS, AQUARIUS_NAMES);
         names.put(Id.AVHRR, AVHRR_NAMES);

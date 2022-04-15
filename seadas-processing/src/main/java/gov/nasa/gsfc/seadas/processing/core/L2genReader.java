@@ -416,7 +416,7 @@ public class L2genReader {
                         if (prefix != null) {
                             algorithmInfo.setPrefix(prefix);
                         } else {
-                            algorithmInfo.setPrefix(prodName);
+                            algorithmInfo.setPrefix(prodName + "_");
                         }
 
                         algorithmInfo.setUnits(units);

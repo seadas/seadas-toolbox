@@ -171,6 +171,7 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
         result.append(L2genProductTools.convertShortcutType(shortcutType));
 
         if (suffix != null && !suffix.isEmpty()) {
+            result.append("_");
             result.append(suffix);
         }
 
