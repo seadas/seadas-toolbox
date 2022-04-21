@@ -126,7 +126,7 @@
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
-            <description>install MSI S2A files</description>
+            <description>install MSI Sentinel-2A files</description>
             <order>14</order>
         </option>
         <option type="boolean">
@@ -134,7 +134,7 @@
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
-            <description>install MSI S2B files</description>
+            <description>install MSI Sentinel-2B files</description>
             <order>15</order>
         </option>
         <option type="boolean">
@@ -174,7 +174,7 @@
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
-            <description>install OLCI S3A files</description>
+            <description>install OLCI Sentinel-3A files</description>
             <order>20</order>
         </option>
         <option type="boolean">
@@ -182,7 +182,7 @@
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
-            <description>install OLCI S3B files</description>
+            <description>install OLCI Sentinel-3B files</description>
             <order>21</order>
         </option>
         <option type="boolean">
