@@ -164,6 +164,9 @@ public class ParamUIFactory {
         optionPanel.setLayout(fieldLayout);
         optionPanel.setName(optionName);
         optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
+        if (pi.getDescription() != null) {
+            optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
 
 
         if (pi.getValue() == null || pi.getValue().length() == 0) {
@@ -222,6 +225,9 @@ public class ParamUIFactory {
         optionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         optionPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace));
+        if (pi.getDescription() != null) {
+            optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
 
 
         final PropertySet vc = new PropertyContainer();
@@ -232,10 +238,10 @@ public class ParamUIFactory {
         final JCheckBox field = new JCheckBox();
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
         field.setName(pi.getName());
+        ctx.bind(optionName, field);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
-        ctx.bind(optionName, field);
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
 
@@ -273,6 +279,9 @@ public class ParamUIFactory {
 
         singlePanel.add(optionNameLabel);
         singlePanel.setName(pi.getName());
+        if (pi.getDescription() != null) {
+            singlePanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
 
         String optionDefaultValue = pi.getValue();
 
@@ -287,7 +296,7 @@ public class ParamUIFactory {
         while (itr.hasNext()) {
             paramValidValueInfo = itr.next();
             values[i] = paramValidValueInfo.getValue();
-            toolTips.add(paramValidValueInfo.getDescription());
+            toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
             i++;
         }
 
@@ -300,7 +309,7 @@ public class ParamUIFactory {
         inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
                 inputList.getPreferredSize().height));
         if (pi.getDescription() != null) {
-            inputList.setToolTipText(pi.getDescription());
+            inputList.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
         int defaultValuePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(optionDefaultValue);
 
@@ -361,10 +370,16 @@ public class ParamUIFactory {
         });
         singlePanel.add(optionNameButton);
         singlePanel.setName(pi.getName());
+        if (pi.getDescription() != null) {
+            singlePanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
 
         final JTextField field = new JTextField();
         field.setText(pi.getValue());
         field.setColumns(8);
+        if (pi.getDescription() != null) {
+            field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -382,10 +397,12 @@ public class ParamUIFactory {
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
 
-
         final JButton actionButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
         actionButton.setName("actionButton");
         actionButton.setEnabled(false);
+        if (pi.getDescription() != null) {
+            actionButton.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
         singlePanel.add(actionButton);
         return singlePanel;
     }
@@ -468,6 +485,9 @@ public class ParamUIFactory {
         optionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         optionPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace));
+        if (paramValidValueInfo.getDescription() != null) {
+            optionPanel.setToolTipText(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+        }
 
 
         final PropertySet vc = new PropertyContainer();
@@ -518,7 +538,7 @@ public class ParamUIFactory {
         while (itr.hasNext()) {
             paramValidValueInfo = itr.next();
             values[i] = paramValidValueInfo.getValue();
-            toolTips.add(paramValidValueInfo.getDescription());
+            toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
             i++;
         }
         return values;
@@ -567,6 +587,9 @@ public class ParamUIFactory {
         final FileSelector ioFileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
         ioFileSelector.getFileTextField().setColumns(40);
         ioFileSelector.setFilename(pi.getValue());
+        if (pi.getDescription() != null) {
+            ioFileSelector.getNameLabel().setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
 
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
