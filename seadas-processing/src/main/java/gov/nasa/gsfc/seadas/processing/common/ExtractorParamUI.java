@@ -38,8 +38,10 @@ public class ExtractorParamUI extends ParamUIFactory {
         optionPanel.setLayout(fieldLayout);
         optionPanel.setName(optionName);
         optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
-
-
+        if (pi.getDescription() != null) {
+            optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
+        
         if (pi.getValue() == null || pi.getValue().length() == 0) {
             if (pi.getDefaultValue() != null) {
                 processorModel.updateParamInfo(pi, pi.getDefaultValue());
