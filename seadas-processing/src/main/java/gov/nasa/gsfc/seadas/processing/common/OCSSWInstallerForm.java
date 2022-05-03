@@ -34,6 +34,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     private AppContext appContext;
     private JPanel dirPanel;
     private JPanel tagPanel;
+    private JPanel configPanel;
     private JPanel missionPanel;
     private JPanel otherPanel;
 
@@ -170,15 +171,16 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         JPanel paramPanel = new ParamUIFactory(processorModel).createParamPanel();
         reorganizePanel(paramPanel);
 
-        add(dirPanel,
-                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        add(tagPanel,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+//        add(dirPanel,
+//                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+
+        add(configPanel,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, 3));
 
         add(missionPanel,
-                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         add(otherPanel,
-                new GridBagConstraintsCustom(0, 3, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
@@ -200,16 +202,34 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 seadasToolboxVersion.getInstalledOCSSWTag() :
                 seadasToolboxVersion.getLatestOCSSWTagForInstalledRelease();
 
+        TableLayout dirPanelTableLayout = new TableLayout(1);
+        dirPanelTableLayout.setTablePadding(0,0);
+        dirPanelTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
         dirPanel = new JPanel();
-        tagPanel = new JPanel();
-        missionPanel = new JPanel(new TableLayout(5));
-        missionPanel.setBorder(BorderFactory.createTitledBorder("Mission Data"));
 
-        otherPanel = new JPanel();
-        TableLayout otherPanelLayout = new TableLayout(3);
-        otherPanelLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
-        otherPanel.setLayout(otherPanelLayout);
-        otherPanel.setBorder(BorderFactory.createTitledBorder("Others"));
+        TableLayout tagPanelTableLayout = new TableLayout(2);
+        tagPanelTableLayout.setTablePadding(0,0);
+        tagPanelTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
+        tagPanel = new JPanel(tagPanelTableLayout);
+
+        TableLayout configPanelTableLayout = new TableLayout(1);
+        configPanelTableLayout.setTablePadding(5,10);
+        configPanelTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
+        configPanel = new JPanel(configPanelTableLayout);
+        configPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
+
+
+        TableLayout missionTableLayout = new TableLayout(5);
+        missionTableLayout.setTablePadding(35,10);
+//        missionTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
+        missionPanel = new JPanel(missionTableLayout);
+        missionPanel.setBorder(BorderFactory.createTitledBorder("Missions"));
+
+        TableLayout otherTableLayout = new TableLayout(5);
+        otherTableLayout.setTablePadding(35,10);
+//        otherTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
+        otherPanel = new JPanel(otherTableLayout);
+        otherPanel.setBorder(BorderFactory.createTitledBorder("Other"));
         OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
 
         JScrollPane jsp = (JScrollPane) paramPanel.getComponent(0);
@@ -249,7 +269,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                             }
                         }
                         otherPanel.add(c);
-                        otherPanel.add(new JLabel("      "));
+//                        otherPanel.add(new JLabel("      "));
                     }
                 }
             } else if (option.getName().equals("file parameter panel")) {
@@ -260,11 +280,11 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 }
                 if (!ocsswInfo.getOcsswLocation().equals(ocsswInfo.OCSSW_LOCATION_LOCAL)) {
                     //if ocssw is not local, then disable the button to choose ocssw installation directory
-                    ((JLabel) dirPanel.getComponent(0)).setText("Remote install_dir");
+                    ((JLabel) dirPanel.getComponent(0)).setText("Remote install_dir: ");
                 } else {
-                    ((JLabel) dirPanel.getComponent(0)).setText("Local install_dir");
+                    ((JLabel) dirPanel.getComponent(0)).setText("Local install_dir: ");
                 }
-                ((JLabel) dirPanel.getComponent(0)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
+                ((JLabel) dirPanel.getComponent(0)).setToolTipText("This directory can be set in SeaDAS-OCSSW > Configure OCSSW Location");
                 ((JTextField) dirPanel.getComponent(1)).setEditable(false);
                 ((JTextField) dirPanel.getComponent(1)).setFocusable(false);
                 ((JTextField) dirPanel.getComponent(1)).setEnabled(false);
@@ -273,7 +293,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 ((JTextField) dirPanel.getComponent(1)).setForeground(Color.BLUE);
                 ((JTextField) dirPanel.getComponent(1)).setBackground(dirPanel.getBackground());
 //                ((JTextField) dirPanel.getComponent(1)).setBackground(new Color(250,250,250));
-                ((JTextField) dirPanel.getComponent(1)).setToolTipText("This directory can be set in SeaDAS-OCSSW > OCSSW Configuration");
+                ((JTextField) dirPanel.getComponent(1)).setToolTipText("This directory can be set in SeaDAS-OCSSW > Configure OCSSW Location");
                 dirPanel.getComponent(2).setVisible(false);
 
             } else if (option.getName().equals("text field panel")) {
@@ -390,6 +410,9 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 }
             }
         }
+
+        configPanel.add(tagPanel);
+        configPanel.add(dirPanel);
 
     }
 
