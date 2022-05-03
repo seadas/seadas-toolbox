@@ -16,7 +16,7 @@
         <td class="header">&nbsp;
             Make Matchup
         </td>
-        <td class="header" align="right"><a href="../visat/index.html"><img src="../images/SeaDASHeader.png"
+        <td class="header" align="right"><a href="index.html"><img src="../images/SeaDASHeader.png"
                                                                             border=0></a></td>
     </tr>
 </table>
@@ -28,65 +28,103 @@
 
    Extracts, filters, and appends satellite match-up data to a valid SeaBASS file (requires the val_extract binary executable in the OCSSW software suite to be compiled). <br><br>
 
-    <i>Note: This is a python script <b>mk_matchup.py</b> which is included in the OCSSW installation (currently only available for use on the command line).
+    <i>Note: This is a python script <b>make_matchup</b> which is included in the OCSSW installation (currently only available for use on the command line).
     </i>
 </p>
 
 <hr>
 
 <pre>
-~/ocssw/scripts$ ./mk_matchup.py -h
-usage: mk_matchup.py [-h] -sat_file SAT_FILE -seabass_file SEABASS_FILE
-                     [-out_file OUT_FILE] [-clobber [CLOBBER]]
-                     [-box_size BOX_SIZE]
-                     [-min_valid_sat_pix MIN_VALID_SAT_PIX]
-                     [-max_time_diff MAX_TIME_DIFF]
+~/ocssw/bin$ ./make_matchup -h
+usage: make_matchup [-h] --sat_file SAT_FILE [SAT_FILE ...] --seabass_file SEABASS_FILE [SEABASS_FILE ...]
+                    [--box_size BOX_SIZE] [--min_valid_sat_pix MIN_VALID_SAT_PIX]
+                    [--max_time_diff MAX_TIME_DIFF] [--max_coeff_variation MAX_COEFF_VARIATION] [--slat SLAT]
+                    [--elat ELAT] [--slon SLON] [--elon ELON] [--verbose] [--no_header_comment]
 
       This program create and output satellite matchups from a given SeaBASS file.
+
+      REQUIRED inputs:
+          1) --sat_file=        an OB.DAAC L2 (SST, SST4, IOP, or OC) satellite file
+          2) --seabass_file=    a valid SeaBASS file with latitude, longitude, and date-time information as field entries.
+
+      Notes on OPTIONAL inputs:
+          1) --slat= --slon=    must be used together and will override any lat/lons in --seabass_file
+          2) --elat= --elon=    must be used together and with --slon= and --slat=
+                                will override any lat/lons in --seabass_file
+                                uses a lat/lon bounding box instead of --box_size=
 
       Outputs:
           1) the original SeaBASS data
           AND
-          2) collocated satellite products as additional fields as columns into -out_file
-             OR if -out_file is not specified, as -seabass_file with _matchups.sb appeneded
-
-      Required inputs:
-          1) an OB.DAAC L2 (SST, SST4, IOP, or OC) satellite file
-          2) a valid SeaBASS file with lat,lon,date,time as field entries or
-             lat,lon,year,month,day,hour,minute,second as field entries.
+          2) collocated satellite products as additional columns appended to --seabass_file
 
       Example usage call:
-         mk_matchup.py -sat_file=[OB.DAAC satellite file name].nc -seabass_file=[SeaBASS file name].sb -out_file=[OPTIONAL, output SeaBASS file name].sb
+         make_matchup --sat_file=[file name].nc --seabass_file=[file name].sb
+         make_matchup --sat_file=[file name].nc --seabass_file=[file name].sb --slat=45.3 --slon=-157.4
+         make_matchup --sat_file=[file name].nc --seabass_file=[file name].sb --slat=45.3 --elat=48.7 --slon=-157.4 --elon=-145.3
+
+      Caveats:
+        * This script is designed to work with files that have been properly
+          formatted according to SeaBASS guidelines (i.e. Files that passed FCHECK).
+          Some error checking is performed, but improperly formatted input files
+          could cause this script to error or behave unexpectedly. Files
+          downloaded from the SeaBASS database should already be properly formatted,
+          however, please email seabass@seabass.gsfc.nasa.gov and/or the contact listed
+          in the metadata header if you identify problems with specific files.
+
+        * It is always HIGHLY recommended that you check for and read any metadata
+          header comments and/or documentation accompanying data files. Information
+          from those sources could impact your analysis.
+
+        * Compatibility: This script was developed for Python 3.5.
 
 
-optional arguments:
+
+options:
   -h, --help            show this help message and exit
-  -sat_file SAT_FILE          Valid OB.DAAC L2 satellite netcdf file name.
+  --sat_file SAT_FILE [SAT_FILE ...]
+                              REQUIRED: input OB.DAAC Level-2 satellite netCDF file(s)
 
-  -seabass_file SEABASS_FILE
-                              Valid SeaBASS file name
-                              File must contain lat,lon,date,time as field entries
-                              OR
-                              lat,lon,year,month,day,hour,minute,second as field entries.
+  --seabass_file SEABASS_FILE [SEABASS_FILE ...]
+                              REQUIRED: input SeaBASS file(s)
+                              Must be a valid SeaBASS file, passing FHCHECK with no errors.
+                              Matched-up satellite variables will be appended as additional fields to the data matrix and relevant headers.
+                              File must contain latitude and longitude and date-time expressed as FIELD entries.
 
-  -out_file OUT_FILE          OPTIONAL: output SeaBASS file name
-                              Matched-up satellite variables will be appended as additional fields
-                              to the data matrix and relevant headers.
-
-  -clobber [CLOBBER]          OPTIONAL: clobber original -seabass_file and reuse as out_file
-                              Matched-up satellite variables will be APPENDED as additional fields
-                              to the data matrix and relevant headers in the -seabass_file.
-
-  -box_size BOX_SIZE          OPTIONAL: box size of the satellite data extract made around the in situ point
+  --box_size BOX_SIZE         OPTIONAL: box size of the satellite data extract made around the in situ point
                               Valid values are odd numbers between 3 and 11, default = 5
 
-  -min_valid_sat_pix MIN_VALID_SAT_PIX
+  --min_valid_sat_pix MIN_VALID_SAT_PIX
                               OPTIONAL: percent minimum valid satellite pixels required to create an extract
                               Valid value: (0.0 - 100.0), default = 50.0
 
-  -max_time_diff MAX_TIME_DIFF
+  --max_time_diff MAX_TIME_DIFF
                               OPTIONAL: maximum time difference between satellite and in situ point
-                              Valid value: (1 - 4 hours), default = 3
+                              Valid value: decimal number of hours (0 - 36 hours), default = 3
+
+  --max_coeff_variation MAX_COEFF_VARIATION
+                              OPTIONAL: maximum coefficient of variation of satellite pixels within the satellite extract
+                              Valid value: (0.0 - 1.0), default = 0.15
+
+  --slat SLAT                 OPTIONAL: Starting latitude, south-most boundary
+                              If used with --seabass_file, will override lats in the file
+                              Valid values: (-90,90N)
+
+  --elat ELAT                 OPTIONAL: Ending latitude, north-most boundary
+                              If used with --seabass_file and --slat, will override lats in the file
+                              Valid values: (-90,90N)
+
+  --slon SLON                 OPTIONAL: Starting longitude, west-most boundary
+                              If used with --seabass_file, will override lons in the file
+                              Valid values: (-180,180E)
+
+  --elon ELON                 OPTIONAL: Ending longitude, east-most boundary
+                              If used with --seabass_file and --slon, will override lons in the file
+                              Valid values: (-180,180E)
+
+  --verbose                   OPTIONAL: Displays reason for failed matchup for each in situ target called.
+
+  --no_header_comment         OPTIONAL: Flag to NOT append exclusion criteria to the OFILE header. Useful when running script repeatedly.
 
 </pre>
 </p>
