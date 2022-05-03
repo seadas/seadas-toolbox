@@ -223,7 +223,6 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     tmpString = ParamUtils.removePreceedingDashes(c.getName()).toUpperCase();
                     if (MISSIONS.contains(tmpString)) {
                         if (!DEFAULT_MISSIONS.contains(tmpString)) {
-                            ((JLabel) ((JPanel) c).getComponent(0)).setToolTipText(((JPanel) c).getComponent(1).getAccessibleContext().getAccessibleDescription());
                             if (ocssw.isMissionDirExist(tmpString) ||
                                     missionDataStatus.get(tmpString)) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
@@ -235,17 +234,14 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     } else {
                         if (tmpString.equals("SRC")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Source Code");
-                            ((JLabel) ((JPanel) c).getComponent(0)).setToolTipText("install source code");
                             if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") + OCSSW_SRC_DIR_NAME).exists()) {
                                 ((JPanel) c).getComponents()[0].setEnabled(false);
                             }
                         } else if (tmpString.equals("CLEAN")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("Clean Install");
-                            ((JLabel) ((JPanel) c).getComponent(0)).setToolTipText("clean install");
                             ((JPanel) c).getComponents()[0].setEnabled(true);
                         } else if (tmpString.equals("VIIRSDEM")) {
                             ((JLabel) ((JPanel) c).getComponent(0)).setText("VIIRS DEM files");
-                            ((JLabel) ((JPanel) c).getComponent(0)).setToolTipText("install VIIRS DEM files needed for geolocation");
                             if (new File(ocsswInfo.getOcsswRoot() + System.getProperty("file.separator") +
                                     "share" + System.getProperty("file.separator") + "viirs" +
                                     System.getProperty("file.separator") + "dem").exists()) {

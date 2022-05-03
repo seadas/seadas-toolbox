@@ -296,7 +296,9 @@ public class ParamUIFactory {
         while (itr.hasNext()) {
             paramValidValueInfo = itr.next();
             values[i] = paramValidValueInfo.getValue();
-            toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            if (paramValidValueInfo.getDescription() != null) {
+                toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            }
             i++;
         }
 
@@ -538,7 +540,9 @@ public class ParamUIFactory {
         while (itr.hasNext()) {
             paramValidValueInfo = itr.next();
             values[i] = paramValidValueInfo.getValue();
-            toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            if (paramValidValueInfo.getDescription() != null) {
+                toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            }
             i++;
         }
         return values;
@@ -637,7 +641,7 @@ public class ParamUIFactory {
             JComponent comp = (JComponent) super.getListCellRendererComponent(list,
                     value, index, isSelected, cellHasFocus);
 
-            if (-1 < index && null != value && null != tooltips) {
+            if (-1 < index && null != value && null != tooltips && !tooltips.isEmpty()) {
                 list.setToolTipText(tooltips.get(index));
             }
             return comp;
