@@ -58,7 +58,7 @@
             <name>pix_sub</name>
             <value></value>
             <default></default>
-            <description>start line number</description>
+            <description>pixel subsampling rate</description>
             <usedAs>argument</usedAs>
             <order>5</order>
         </option>
@@ -66,7 +66,7 @@
             <name>sc_sub</name>
             <value></value>
             <default></default>
-            <description>end line number (-1=the last line)</description>
+            <description>line subsampling rate</description>
             <usedAs>argument</usedAs>
             <order>6</order>
         </option>

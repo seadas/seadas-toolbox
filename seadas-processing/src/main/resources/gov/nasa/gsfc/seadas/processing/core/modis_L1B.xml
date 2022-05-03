@@ -82,7 +82,7 @@
             <name>--del-okm</name>
             <value></value>
             <default></default>
-            <description>Path of directory containing LUT files</description>
+            <description>Delete 1km resolution L1B file</description>
             <usedAs>flag</usedAs>
             <order>8</order>
         </option>
@@ -90,7 +90,7 @@
             <name>--del-hkm</name>
             <value></value>
             <default></default>
-            <description>Path of directory containing LUT files</description>
+            <description>Delete 500m resolution L1B file</description>
             <usedAs>flag</usedAs>
             <order>9</order>
         </option>
@@ -98,7 +98,7 @@
             <name>--del-qkm</name>
             <value></value>
             <default></default>
-            <description>Path of directory containing LUT files</description>
+            <description>Delete 250m resolution L1B file</description>
             <usedAs>flag</usedAs>
             <order>10</order>
         </option>
@@ -106,7 +106,7 @@
             <name>--keep-obc</name>
             <value></value>
             <default></default>
-            <description>Path of directory containing LUT files</description>
+            <description>Save onboard calibration file</description>
             <usedAs>flag</usedAs>
             <order>11</order>
         </option>
@@ -114,7 +114,7 @@
             <name>--log</name>
             <value></value>
             <default></default>
-            <description>Path of directory containing LUT files</description>
+            <description>Save processing log file(s)</description>
             <usedAs>flag</usedAs>
             <order>12</order>
         </option>
