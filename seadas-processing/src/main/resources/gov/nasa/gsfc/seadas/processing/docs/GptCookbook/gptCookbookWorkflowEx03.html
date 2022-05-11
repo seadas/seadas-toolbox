@@ -259,7 +259,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
           &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
           &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
           &lt;maskExpression&gt;${file1ReprojectMaskExpression}&lt;/maskExpression&gt;
-          &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
+          &lt;retainValidPixelExpression&gt;${retainValidPixelExpression}&lt;/retainValidPixelExpression&gt;
           &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
       &lt;/parameters&gt;
 
@@ -302,7 +302,7 @@ gpt WorkflowEx03.xml -p WorkflowEx03_OC.par -Pfile1=A2010283180500.L2_LAC_OC.nc 
           &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
           &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
           &lt;maskExpression&gt;${file2ReprojectMaskExpression}&lt;/maskExpression&gt;
-          &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
+          &lt;retainValidPixelExpression&gt;${retainValidPixelExpression}&lt;/retainValidPixelExpression&gt;
           &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
       &lt;/parameters&gt;
 
@@ -589,7 +589,7 @@ lat=37.0
 lon=-76.0
 pixelSize=1000.0
 reprojectionResampling=Bilinear
-transferValidPixelExpression=true
+retainValidPixelExpression=true
 applyValidPixelExpression=true
 
 # The reprojectMaskExpression is unique to SST products and flags.  To compare OC or IOP files you would need to alter this expression
@@ -676,7 +676,7 @@ lat=37.0
 lon=-76.0
 pixelSize=1000.0
 reprojectionResampling=Bilinear
-transferValidPixelExpression=true
+retainValidPixelExpression=true
 applyValidPixelExpression=true
 
 # The reprojectMaskExpression is unique to OC products and flags.  To compare SST files you would need to alter this expression

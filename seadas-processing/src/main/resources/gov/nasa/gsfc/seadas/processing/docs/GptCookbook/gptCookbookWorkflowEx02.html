@@ -135,7 +135,7 @@ gpt WorkflowEx01a.xml -p WorkflowEx01a.par -Pfile=A2010283070000.L2_LAC_SST
           &lt;includeTiePointGrids&gt;true&lt;/includeTiePointGrids&gt;
           &lt;addDeltaBands&gt;false&lt;/addDeltaBands&gt;
           &lt;maskExpression&gt;${maskExpression}&lt;/maskExpression&gt;
-          &lt;transferValidPixelExpression&gt;${transferValidPixelExpression}&lt;/transferValidPixelExpression&gt;
+          &lt;retainValidPixelExpression&gt;${retainValidPixelExpression}&lt;/retainValidPixelExpression&gt;
           &lt;applyValidPixelExpression&gt;${applyValidPixelExpression}&lt;/applyValidPixelExpression&gt;
       &lt;/parameters&gt;
 
@@ -177,7 +177,7 @@ lon=-76.0
 pixelSize=1000.0
 resampling=Bilinear
 maskExpression=(qual_sst == 0 or qual_sst == 1) and !l2_flags.HISATZEN
-transferValidPixelExpression=true
+retainValidPixelExpression=true
 applyValidPixelExpression=true
 </pre>
 </td></tr></table>
