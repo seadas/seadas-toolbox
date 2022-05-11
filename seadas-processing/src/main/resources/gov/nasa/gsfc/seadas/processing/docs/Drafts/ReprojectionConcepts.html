@@ -1,0 +1,123 @@
+
+<html>
+<head>
+    <title>Sentinel Toolbox Help - Reprojection Concepts</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Reprojection
+        </td>
+        <td class="header" align="right"><a href="../general/overview/SnapOverview.html">
+            <img src="../images/snap_header.jpg" border=0></a></td>
+    </tr>
+</table>
+</div>
+
+
+
+<h3>Overview</h3>
+
+<p>
+    Some helpful additional concepts for Reprojecting imagery
+</p>
+
+
+
+<h4>Valid Pixels and NaNs</h4>
+<p>There is not a one-to-one correspondance between the pixels of the input file and
+    those of the output reprojected file. To handle this, the Reproject tool masks out invalid pixels and ultimately
+    reprojects only the valid pixels of the source file. This hidden automated pixel validation step is acheived using
+    the following two
+    criteria: the <i>valid pixel expression</i> and the designation of a <i>no-data value</i>. You can view/modify this
+    criteria by
+    right-clicking on any band, and selecting <i>Properties</i>. Alternatively you can view this with the <i>Band
+        Info</i> tool (<i>Analysis > Band Info</i>)
+    when selecting the band.
+</p>
+<p>
+    In general this is the desired behavior, unless the valid pixel expression is masking on an ideal range, outside of
+    which there
+    may actually be valid data. If you wish to include this out-of-range data in the reprojection then you will need to
+    edit the
+    valid pixel expression of the band(s) of the source file before reprojecting. One example of this would be when
+    creating true color
+    imagery using surface reflectances. Because the surface reflectance product is designed based on water leaving
+    radiances for the ocean, pixels which image cloud tops
+    can exceed a reflectance value of 1. In this case, for the case of including bright clouds in your true color
+    imagery, the valid
+    pixel expression band(s) of the source file would need to be modified so as to not throw away values above 1.
+</p>
+
+
+<i><h4>Statistics and Mapped Imagery</h4></i>
+<p>
+    In general, it may be best to consider mapping a file one way for statistics and another way for displaying data.
+    For statistics you are best served using an equal area map projection (such as Albers Conic Equal Area, Lambert
+    Azimuthal
+    Equal Area, Sinusoidal, ...). With an equal area projection, the Earth surface area is the same for each resultant
+    pixel and can be treated as such with an equal per pixel weighting. However, for large scenes, an equal area map
+    projection
+    may not look natural so using a conformal projection (such as Mercator and Stereographic) is
+    more ideal when displaying this type of imagery.
+</p>
+<p>
+
+    <i>Note: selection of the "best" map projection is dependent on scene size (is it global, regional, local), scene
+        shape
+        (does it run narrow north-south, narrow west-east, or is it more square in shape), and scene location (is it at
+        the
+        equator, at one of the Poles, or some span of latitudes soemwhere between the Pole and equator.</i>
+
+</p>
+
+
+<i><h4>Upsampling</h4></i>
+<p>
+    Upsampling is the process of resampling (remapping) your data to a higher resolution. Upsampling has no inherent
+    problems,
+    other than the fact that the resultant file will be increasingly larger with higher resolutions. A remapped
+    upsampled image
+    will tend to be clearer than one remapped at a resolution comparable with the original input file. The higher the
+    resampling
+    resolution, the closer you approach to seeing the pixel shapes of the original unprojected file.
+</p>
+<p>
+    <i>Note: Ideally a remapped
+        image should not be displayed at a zoom level such that it displays the pixellation of the output file. Such a
+        visual
+        might cause a viewer to incorrectly infer a measurement of noise (or lack of noise) pixel to pixel, when
+        in fact
+        these pixels do not bear a one-to-one correspondance with the native satellite detector measurements.</i>
+</p>
+
+
+<i><h4>Downsampling</h4></i>
+<p>
+    Downsampling is the process of resampling (remapping) your data to a lower resolution. Downsampling by more than a
+    factor of 4 does have some inherent problems, at least in the SeaDAS Reproject and its related GUI tools (see note
+    1). This is because SeaDAS currently only offers 3 interpolation methods (nearest neighbor, bilinear, and bicubic)
+    which use a matrix size on the input file of 1x1, 2x2, and 4x4 respectively to generate each remapped pixel of the
+    output file. (<a href="../general/ResamplingMethods.html">See method details.</a>) Downsampling by greater factors
+    than these matrix sizes, will result in many of the pixels in the source file being ignored. Basically, in order to
+    ensure that all source data pixels are being use, if you are downsampling by a factor of 4 then use bicubic, a
+    factor of 2 then use bilinear or bicubic, and a factor of 1 then use any of the three.
+
+</p>
+<p><i>Note 1: The resampling(remapping) concept and process is the same in all of the SeaDAS visualization resampling
+    tools: Reproject, Collocate, Mosaic, and Time Series.</i>
+</p>
+<p>
+    <i>Note 2: The SeaDAS OCSSW tools for binning and mapping behave differently and do not ignore
+        any source data pixels for large factor downsampling</i>
+</p>
+
+
+
+
+</body>
+</html>
