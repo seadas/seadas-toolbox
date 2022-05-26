@@ -105,7 +105,7 @@
 <!--pixelSize=1000.0-->
 <!--resampling=Bilinear-->
 <!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
-<!--transferValidPixelExpression=true-->
+<!--retainValidPixelExpression=true-->
 <!--applyValidPixelExpression=true-->
 <!--crs=PROJCS["Oblique_Stereographic / World Geodetic System 1984",GEOGCS["World Geodetic System 1984", DATUM["World Geodetic System 1984", SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]], AUTHORITY["EPSG","6326"]], PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]], PROJECTION["Oblique_Stereographic"], PARAMETER["central_meridian", -90.0], PARAMETER["latitude_of_origin", 25.0], PARAMETER["scale_factor", 1.0], PARAMETER["false_easting", 0.0], PARAMETER["false_northing", 0.0], UNIT["m", 1.0], AXIS["Easting", EAST], AXIS["Northing", NORTH]]-->
 <!--</pre>-->
@@ -148,7 +148,7 @@
 <!--pixelSize=1000.0-->
 <!--resampling=Bilinear-->
 <!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
-<!--transferValidPixelExpression=true-->
+<!--retainValidPixelExpression=true-->
 <!--applyValidPixelExpression=true-->
 <!--crs=PROJCS["Lambert_Azimuthal_Equal_Area / World Geodetic System 1984",GEOGCS["World Geodetic System 1984",DATUM["World Geodetic System 1984",SPHEROID["WGS 84", 6378137.0, 298.257223563, AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]],UNIT["degree", 0.017453292519943295],AXIS["Geodetic longitude", EAST],AXIS["Geodetic latitude", NORTH]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center", 25.0],PARAMETER["longitude_of_center", -90.0],PARAMETER["false_easting", 0.0],PARAMETER["false_northing", 0.0],UNIT["m", 1.0],AXIS["Easting", EAST],AXIS["Northing", NORTH]]-->
 <!--</pre>-->
@@ -259,9 +259,9 @@ gpt ReprojectGraphEx01.xml -p ReprojectEx01.par -Pifile=A2017023193500.L2_LAC_OC
 <pre>
 pixelSize=0.009
 resampling=Bilinear
-<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
-<!--transferValidPixelExpression=true-->
-<!--applyValidPixelExpression=true-->
+maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+retainValidPixelExpression=true
+applyValidPixelExpression=true
 </pre>
 </td></tr></table>
 
@@ -409,9 +409,9 @@ lat=25.0
 lon=-90.0
 pixelSize=1000.0
 resampling=Bilinear
-<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
-<!--transferValidPixelExpression=true-->
-<!--applyValidPixelExpression=true-->
+maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+retainValidPixelExpression=true
+applyValidPixelExpression=true
 </pre>
 </td></tr></table>
 
@@ -621,9 +621,9 @@ lat=25.0
 lon=-90.0
 pixelSize=1000.0
 resampling=Bilinear
-    <!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
-    <!--transferValidPixelExpression=true-->
-    <!--applyValidPixelExpression=true-->
+maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+retainValidPixelExpression=true
+applyValidPixelExpression=true
 </pre>
 </td></tr></table>
 
@@ -733,9 +733,9 @@ lat=37.0
 lon=-76.0
 pixelSize=1000.0
 resampling=Bilinear
-<!--maskExpression=qual_sst == 0 or  qual_sst == 1-->
-<!--transferValidPixelExpression=true-->
-<!--applyValidPixelExpression=true-->
+maskExpression=qual_sst == 0 or  qual_sst == 1
+retainValidPixelExpression=true
+applyValidPixelExpression=true
 </pre>
 </td></tr></table>
 
@@ -753,7 +753,7 @@ resampling=Bilinear
 <!--pixelSize=1000.0-->
 <!--resampling=Bilinear-->
 <!--maskExpression='Best (SST)' or 'Good (SST)'-->
-<!--transferValidPixelExpression=true-->
+<!--retainValidPixelExpression=true-->
 <!--applyValidPixelExpression=true-->
 <!--</pre>-->
 <!--</td></tr></table>-->
@@ -952,9 +952,9 @@ gpt ReprojectGraphEx06.xml -p ReprojectEx06.par -Pifile=A2017023193500.L2_LAC_OC
 <pre>
 pixelSize=0.009
 resampling=Bilinear
-<!--maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT-->
-<!--transferValidPixelExpression=true-->
-<!--applyValidPixelExpression=true-->
+maskExpression=!l2_flags.HIGLINT and !l2_flags.HISATZEN and !l2_flags.LOWLW and !l2_flags.HILT
+retainValidPixelExpression=true
+applyValidPixelExpression=true
 crs=GEOGCS["WGS84(DD)", DATUM["WGS84", SPHEROID["WGS84", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH]]
 </pre>
 </td></tr></table>
