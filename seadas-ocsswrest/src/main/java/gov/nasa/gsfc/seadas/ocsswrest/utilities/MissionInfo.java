@@ -49,19 +49,19 @@ public class MissionInfo {
     public final static String[] MODIST_NAMES = {"MODIS Terra", "TERRA", "MODIST"};
     public final static String MODIST_DIRECTORY = "modis/terra";
 
-    public final static String[] VIIRSN_NAMES = {"VIIRSN", "VIIRS"};
+    public final static String[] VIIRSN_NAMES = {"VIIRS NPP", "VIIRSN", "VIIRS"};
     public final static String VIIRSN_DIRECTORY = "viirs/npp";
 
-    public final static String[] VIIRSJ1_NAMES = {"VIIRSJ1"};
+    public final static String[] VIIRSJ1_NAMES = {"VIIRS J1", "VIIRSJ1"};
     public final static String VIIRSJ1_DIRECTORY = "viirs/j1";
 
     public final static String[] MERIS_NAMES = {"MERIS"};
     public final static String MERIS_DIRECTORY = "meris";
 
-    public final static String[] MSIS2A_NAMES = {"MSIS2A"};
+    public final static String[] MSIS2A_NAMES = {"MSIS2A", "MSI S2A"};
     public final static String MSIS2A_DIRECTORY = "msi/s2a";
 
-    public final static String[] MSIS2B_NAMES = {"MSIS2B"};
+    public final static String[] MSIS2B_NAMES = {"MSIS2B", "MSI S2B"};
     public final static String MSIS2B_DIRECTORY = "msi/s2b";
 
     public final static String[] CZCS_NAMES = {"CZCS"};
@@ -100,10 +100,10 @@ public class MissionInfo {
     public final static String[] OLI_NAMES = {"OLI"};
     public final static String OLI_DIRECTORY = "oli";
 
-    public final static String[] OLCIS3A_NAMES = {"OLCIS3A"};
+    public final static String[] OLCIS3A_NAMES = {"OLCIS3A", "OLCI S3A"};
     public final static String OLCIS3A_DIRECTORY = "olci/s3a";
 
-    public final static String[] OLCIS3B_NAMES = {"OLCIS3B"};
+    public final static String[] OLCIS3B_NAMES = {"OLCIS3B", "OLCI S3B"};
     public final static String OLCIS3B_DIRECTORY = "olci/s3b";
 
     public final static String[] SGLI_NAMES = {"SGLI"};
