@@ -33,7 +33,6 @@ public class MissionInfo {
         VIIRSJ1,
         OCM1,
         OCM2,
-//        OLI,
         OLIL8,
         OLIL9,
         OLCIS3A,
