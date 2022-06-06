@@ -24,6 +24,21 @@
                 </folder>
             </folder>
         </folder>
+
+
+
+        <folder name="SeaDAS-Toolbox">
+            <attr name="position" intvalue="150"/>
+            <folder name="OCSSW Processors">
+                <attr name="position" intvalue="1000"/>
+            </folder>
+
+            <folder name="General Tools">
+                <attr name="position" intvalue="2000"/>
+            </folder>
+        </folder>
+
+
     </folder>
 
 

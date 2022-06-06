@@ -21,8 +21,9 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_OCSSWConfigAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 250
+        path = "Menu/SeaDAS-Toolbox",
+        position = 1101,
+        separatorBefore = 1100
 )
 @NbBundle.Messages({
         "CTL_OCSSWConfigAction_Name=Configure OCSSW Location...",

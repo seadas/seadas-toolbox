@@ -21,7 +21,7 @@ import javax.swing.*;
         popupText = "#CTL_ ExtractorAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
+        path = "Menu/SeaDAS-Toolbox/OCSSW Processors",
         position = 20
 )
 @NbBundle.Messages({
