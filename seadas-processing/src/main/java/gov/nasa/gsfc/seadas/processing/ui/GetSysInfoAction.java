@@ -26,9 +26,9 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_GetSysInfoAction_Description"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 260
-)
+        path = "Menu/SeaDAS-Toolbox",
+        position = 1500,
+        separatorAfter = 1501)
 @NbBundle.Messages({
         "CTL_GetSysInfoAction_Name=SeaDAS/System Info...",
         "CTL_GetSysInfoAction_DialogTitle=SeaDAS/System Information",

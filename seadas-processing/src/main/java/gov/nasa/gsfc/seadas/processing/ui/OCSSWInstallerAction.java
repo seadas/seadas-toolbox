@@ -20,15 +20,16 @@ import javax.swing.*;
         popupText = "#CTL_OCSSWInstallerAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 10
+        path = "Menu/SeaDAS-Toolbox",
+        position = 10,
+        separatorAfter = 11
 )
 @NbBundle.Messages({
-        "CTL_OCSSWInstallerAction_Name=Install/Update OC Processors",
+        "CTL_OCSSWInstallerAction_Name=Install/Update OCSSW Processors",
         "CTL_OCSSWInstallerAction_ProgramName=install_ocssw",
         "CTL_OCSSWInstallerAction_DialogTitle=Install/Update OCSSW",
         "CTL_OCSSWInstallerAction_XMLFileName=ocssw_installer.xml",
-        "CTL_OCSSWInstallerAction_Description=Install/Updated OCSSW package."
+        "CTL_OCSSWInstallerAction_Description=Install/Update OCSSW package."
 })
 
 public class OCSSWInstallerAction extends CallCloProgramAction

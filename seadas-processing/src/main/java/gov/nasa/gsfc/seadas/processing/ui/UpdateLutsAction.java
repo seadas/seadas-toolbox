@@ -22,8 +22,8 @@ import javax.swing.*;
         popupText = "#CTL_UpdateLutsAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 240
+        path = "Menu/SeaDAS-Toolbox",
+        position = 1200
 )
 @NbBundle.Messages({
         "CTL_UpdateLutsAction_Name=update_luts...",

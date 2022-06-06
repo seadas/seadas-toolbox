@@ -38,11 +38,11 @@ import java.awt.event.ActionEvent;
                 position = 10,
                 separatorBefore = 5,
                 separatorAfter = 15
-        ),
+        )
 //        @ActionReference(
-//                path = "Menu/SeaDAS-OCSSW/help",
-//                position = 2000,
-//                separatorAfter = 2001
+//                path = "Menu/SeaDAS-Toolbox",
+//                position = 3001,
+//                separatorBefore = 3000
 //        )
 })
 

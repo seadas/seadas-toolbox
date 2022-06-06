@@ -13,16 +13,16 @@
         </folder>
     </folder>
 
-    <folder name="Menu">
-        <folder name="Raster">
-            <folder name="Masks">
-                <file name="gov-nasa-gsfc-seadas-BathmetryOpAction.shadow">
-                    <attr name="originalFile"
-                          stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-BathymetryOpAction.instance"/>
-                </file>
-            </folder>
-        </folder>
-    </folder>
+<!--    <folder name="Menu">-->
+<!--        <folder name="Raster">-->
+<!--            <folder name="Masks">-->
+<!--                <file name="gov-nasa-gsfc-seadas-BathmetryOpAction.shadow">-->
+<!--                    <attr name="originalFile"-->
+<!--                          stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-BathymetryOpAction.instance"/>-->
+<!--                </file>-->
+<!--            </folder>-->
+<!--        </folder>-->
+<!--    </folder>-->
 
     <folder name="Services">
         <folder name="javahelp">

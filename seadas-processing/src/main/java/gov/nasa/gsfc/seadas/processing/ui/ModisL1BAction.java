@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ ModisL1BAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
+        path = "Menu/SeaDAS-Toolbox/OCSSW Processors",
         position = 50
 )
 @NbBundle.Messages({
