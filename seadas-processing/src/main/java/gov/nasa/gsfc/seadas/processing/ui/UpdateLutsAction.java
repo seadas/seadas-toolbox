@@ -26,7 +26,7 @@ import javax.swing.*;
         position = 1200
 )
 @NbBundle.Messages({
-        "CTL_UpdateLutsAction_Name=update_luts...",
+        "CTL_UpdateLutsAction_Name=Update LUTs...",
         "CTL_UpdateLutsAction_ProgramName=update_luts",
         "CTL_UpdateLutsAction_DialogTitle=update_luts",
         "CTL_UpdateLutsAction_XMLFileName=update_luts.xml",
