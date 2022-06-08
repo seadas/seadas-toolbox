@@ -23,8 +23,9 @@ import javax.swing.*;
         popupText = "#CTL_ L2GenAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/OCSSW Processors",
-        position = 110
+        path = "Menu/SeaDAS-Toolbox/Data Processors",
+        position = 110,
+        separatorBefore = 109
 )
 @NbBundle.Messages({
         "CTL_L2GenAction_Name=l2gen...",

@@ -29,8 +29,12 @@
 
         <folder name="SeaDAS-Toolbox">
             <attr name="position" intvalue="150"/>
-            <folder name="OCSSW Processors">
+            <folder name="Data Processors">
                 <attr name="position" intvalue="1000"/>
+
+                <folder name="Aquarius Processors">
+                    <attr name="position" intvalue="160"/>
+                </folder>
             </folder>
 
             <folder name="General Tools">

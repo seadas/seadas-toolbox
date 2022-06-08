@@ -22,8 +22,9 @@ import javax.swing.*;
         popupText = "#CTL_ MapGenAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/OCSSW Processors",
-        position = 140
+        path = "Menu/SeaDAS-Toolbox/Data Processors",
+        position = 401,
+        separatorBefore = 400
 )
 @NbBundle.Messages({
         "CTL_MapGenAction_Name=mapgen...",
