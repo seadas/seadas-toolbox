@@ -8,6 +8,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
+import org.openide.util.actions.Presenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,11 +31,11 @@ import java.awt.event.ActionEvent;
         position = 1500,
         separatorAfter = 1501)
 @NbBundle.Messages({
-        "CTL_GetSysInfoAction_Name=SeaDAS/System Info...",
-        "CTL_GetSysInfoAction_DialogTitle=SeaDAS/System Information",
+        "CTL_GetSysInfoAction_Name=Software & System Info...",
+        "CTL_GetSysInfoAction_DialogTitle=Software & System Information",
         "CTL_GetSysInfoAction_Description=Print SeaDAS and OCSSW info for trouble shooting."
 })
-public class GetSysInfoAction extends AbstractSnapAction implements ContextAwareAction, LookupListener {
+public class GetSysInfoAction extends AbstractSnapAction implements ContextAwareAction, LookupListener, Presenter.Menu {
 
     private final Lookup lkp;
 
@@ -73,5 +74,14 @@ public class GetSysInfoAction extends AbstractSnapAction implements ContextAware
         final Window parent = appContext.getApplicationWindow();
         GetSysInfoGUI getSysInfoGUI = new GetSysInfoGUI();
         getSysInfoGUI.init(parent);
+    }
+
+    @Override
+    public JMenuItem getMenuPresenter() {
+        JMenuItem menuItem = new JMenuItem(this);
+        menuItem.setIcon(null);
+        menuItem.setName((String) getValue(Action.NAME));
+        menuItem.setToolTipText((String) getValue(Action.SHORT_DESCRIPTION));
+        return menuItem;
     }
 }

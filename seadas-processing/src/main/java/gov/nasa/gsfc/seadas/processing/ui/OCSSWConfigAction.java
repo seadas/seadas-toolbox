@@ -8,6 +8,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
+import org.openide.util.actions.Presenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,11 +27,11 @@ import java.awt.event.ActionEvent;
         separatorBefore = 1100
 )
 @NbBundle.Messages({
-        "CTL_OCSSWConfigAction_Name=Configure OCSSW Location...",
-        "CTL_OCSSWConfigAction_DialogTitle=Configure OCSSW Location",
+        "CTL_OCSSWConfigAction_Name=Processor Location...",
+        "CTL_OCSSWConfigAction_DialogTitle=Configure Processor Location (OCSSW)",
         "CTL_OCSSWConfigAction_Description= Set values for seadas.config properties (variables)."
 })
-public class OCSSWConfigAction extends AbstractSnapAction implements ContextAwareAction, LookupListener {
+public class OCSSWConfigAction extends AbstractSnapAction implements ContextAwareAction, LookupListener, Presenter.Menu  {
 
 
     private final Lookup lkp;
@@ -65,5 +66,14 @@ public class OCSSWConfigAction extends AbstractSnapAction implements ContextAwar
         final Window parent = appContext.getApplicationWindow();
         OCSSWInfoGUI ocsswInfoGUI = new OCSSWInfoGUI();
         ocsswInfoGUI.init(parent);
+    }
+
+    @Override
+    public JMenuItem getMenuPresenter() {
+        JMenuItem menuItem = new JMenuItem(this);
+        menuItem.setIcon(null);
+        menuItem.setName((String) getValue(Action.NAME));
+        menuItem.setToolTipText((String) getValue(Action.SHORT_DESCRIPTION));
+        return menuItem;
     }
 }
