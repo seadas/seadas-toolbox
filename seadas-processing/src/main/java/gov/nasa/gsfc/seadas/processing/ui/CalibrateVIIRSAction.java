@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ CalibrateVIIRSAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/Data Processors",
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/VIIRS",
         position = 70
 )
 @NbBundle.Messages({

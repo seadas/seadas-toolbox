@@ -18,6 +18,9 @@ import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.ModalDialog;
 import org.esa.snap.ui.UIUtils;
+import org.openide.util.ContextAwareAction;
+import org.openide.util.LookupListener;
+import org.openide.util.actions.Presenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +45,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW
  * @since SeaDAS 7.0
  */
 
-public class CallCloProgramAction extends AbstractSnapAction {
+public class CallCloProgramAction extends AbstractSnapAction  implements Presenter.Menu  {
 
     public static final String CONTEXT_LOG_LEVEL_PROPERTY = SystemUtils.getApplicationContextId() + ".logLevel";
     public static final String LOG_LEVEL_PROPERTY = "logLevel";
@@ -578,4 +581,13 @@ public class CallCloProgramAction extends AbstractSnapAction {
 //            }
 //        }
 //    }
+
+    @Override
+    public JMenuItem getMenuPresenter() {
+        JMenuItem menuItem = new JMenuItem(this);
+        menuItem.setIcon(null);
+        menuItem.setName((String) getValue(Action.NAME));
+        menuItem.setToolTipText((String) getValue(Action.SHORT_DESCRIPTION));
+        return menuItem;
+    }
 }

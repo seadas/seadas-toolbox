@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ MultiLevelProcessorAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/Data Processors",
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors",
         position = 501,
         separatorBefore = 500
 )

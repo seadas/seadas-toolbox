@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ L2GenAquariusAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/Data Processors/Aquarius Processors",
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/Aquarius",
         position = 120
 )
 @NbBundle.Messages({

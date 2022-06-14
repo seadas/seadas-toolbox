@@ -29,12 +29,23 @@
 
         <folder name="SeaDAS-Toolbox">
             <attr name="position" intvalue="150"/>
-            <folder name="Data Processors">
+            <folder name="SeaDAS Processors">
                 <attr name="position" intvalue="1000"/>
 
-                <folder name="Aquarius Processors">
-                    <attr name="position" intvalue="160"/>
+                <folder name="HawkEye">
+                    <attr name="position" intvalue="20"/>
                 </folder>
+                <folder name="MODIS">
+                    <attr name="position" intvalue="30"/>
+                </folder>
+                <folder name="VIIRS">
+                    <attr name="position" intvalue="40"/>
+                </folder>
+
+                <folder name="Aquarius">
+                    <attr name="position" intvalue="300"/>
+                </folder>
+
             </folder>
 
             <folder name="General Tools">

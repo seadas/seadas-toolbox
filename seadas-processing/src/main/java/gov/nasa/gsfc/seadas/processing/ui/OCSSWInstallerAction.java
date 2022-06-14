@@ -25,11 +25,11 @@ import javax.swing.*;
         separatorAfter = 11
 )
 @NbBundle.Messages({
-        "CTL_OCSSWInstallerAction_Name=Install/Update OCSSW Processors",
+        "CTL_OCSSWInstallerAction_Name=Install/Update Processors...",
         "CTL_OCSSWInstallerAction_ProgramName=install_ocssw",
-        "CTL_OCSSWInstallerAction_DialogTitle=Install/Update OCSSW",
+        "CTL_OCSSWInstallerAction_DialogTitle=Install/Update Processors (OCSSW)",
         "CTL_OCSSWInstallerAction_XMLFileName=ocssw_installer.xml",
-        "CTL_OCSSWInstallerAction_Description=Install/Update OCSSW package."
+        "CTL_OCSSWInstallerAction_Description=Install/Update data processors and missions (OCSSW)."
 })
 
 public class OCSSWInstallerAction extends CallCloProgramAction

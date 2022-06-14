@@ -21,10 +21,9 @@ import javax.swing.*;
         popupText = "#CTL_ ExtractorAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/Data Processors",
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors",
         position = 10,
-        separatorAfter = 11
-)
+        separatorAfter = 11)
 @NbBundle.Messages({
         "CTL_ExtractorAction_Name=extractor...",
         "CTL_ExtractorAction_ProgramName=extractor",

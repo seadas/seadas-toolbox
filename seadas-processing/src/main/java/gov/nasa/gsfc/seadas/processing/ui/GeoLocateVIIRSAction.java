@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ GeoLocateVIIRSAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/Data Processors",
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/VIIRS",
         position = 60
 )
 @NbBundle.Messages({
