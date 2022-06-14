@@ -22,9 +22,8 @@ import javax.swing.*;
         popupText = "#CTL_ L3MapGenAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 190
-)
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors",
+        position = 185)
 @NbBundle.Messages({
         "CTL_L3MapGenAction_Name=l3mapgen...",
         "CTL_L3MapGenAction_ProgramName=l3mapgen",

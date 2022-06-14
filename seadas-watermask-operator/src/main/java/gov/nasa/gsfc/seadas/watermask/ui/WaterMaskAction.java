@@ -49,8 +49,9 @@ import java.util.Map;
 @ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.watermask.ui.WaterMaskAction" )
 @ActionRegistration(displayName = "#CTL_WaterMaskAction_Text", lazy = false)
 @ActionReferences({
-        @ActionReference(path = "Menu/Raster/Masks", position = 300),
-        @ActionReference(path = "Toolbars/Masks", position = 20)
+        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 300),
+        @ActionReference(path = "Menu/Raster/Masks"),
+        @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 20)
 })
 @NbBundle.Messages({
         "CTL_WaterMaskAction_Text=CoastlineLandWaterMasks",

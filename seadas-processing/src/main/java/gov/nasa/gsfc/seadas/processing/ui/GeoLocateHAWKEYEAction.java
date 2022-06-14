@@ -22,7 +22,7 @@ import javax.swing.*;
         popupText = "#CTL_ GeoLocateHAWKEYEAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/HawkEye",
         position = 60
 )
 @NbBundle.Messages({
