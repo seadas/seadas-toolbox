@@ -22,8 +22,9 @@ import javax.swing.*;
         popupText = "#CTL_ MultiLevelProcessorAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-OCSSW",
-        position = 220
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors",
+        position = 501,
+        separatorBefore = 500
 )
 @NbBundle.Messages({
         "CTL_MultiLevelProcessorAction_Name=multilevel_processor...",
