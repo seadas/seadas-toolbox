@@ -98,9 +98,6 @@ public class MissionInfo {
     public final static String[] GOCI_NAMES = {"GOCI"};
     public final static String GOCI_DIRECTORY = "goci";
 
-//    public final static String[] OLI_NAMES = {"OLI"};
-//    public final static String OLI_DIRECTORY = "oli";
-
     public final static String[] OLIL8_NAMES = {"OLIL8", "OLI L8"};
     public final static String OLIL8_DIRECTORY = "oli/l8";
 

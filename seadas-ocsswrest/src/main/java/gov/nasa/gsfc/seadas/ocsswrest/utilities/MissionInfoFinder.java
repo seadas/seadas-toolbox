@@ -49,7 +49,8 @@ public class MissionInfoFinder {
         OCM1("OCM1"),
         OCM2("OCM2"),
         OCTS("OCTS"),
-        OLI("OLI"),
+        OLIL8("OLIL8"),
+        OLIL9("OLIL9"),
         OLCIS3A("OLCIS3A"),
         OLCIS3B("OLCIS3B"),
         OSMI("OSMI"),
@@ -87,7 +88,8 @@ public class MissionInfoFinder {
         OCM1("ocm1"),
         OCM2("ocm2"),
         OCTS("octs"),
-        OLI("oli"),
+        OLIL8("oli/l8"),
+        OLIL9("oli/l9"),
         OLCIS3A("olci/s3a"),
         OLCIS3B("olci/s3b"),
         OSMI("osmi"),
@@ -253,7 +255,8 @@ public class MissionInfoFinder {
         VIIRSJ1,
         OCM1,
         OCM2,
-        OLI,
+        OLIL8,
+        OLIL9,
         OLCIS3A,
         OLCIS3B,
         SGLI,
@@ -279,7 +282,8 @@ public class MissionInfoFinder {
             Id.VIIRSJ1,
             Id.OCM1,
             Id.OCM2,
-            Id.OLI,
+            Id.OLIL8,
+            Id.OLIL9,
             Id.OLCIS3A,
             Id.OLCIS3B,
             Id.SGLI
@@ -339,8 +343,11 @@ public class MissionInfoFinder {
     public final static String[] GOCI_NAMES = {"GOCI"};
     public final static String GOCI_DIRECTORY = "goci";
 
-    public final static String[] OLI_NAMES = {"OLI"};
-    public final static String OLI_DIRECTORY = "oli";
+    public final static String[] OLIL8_NAMES = {"OLIL8", "OLI L8"};
+    public final static String OLIL8_DIRECTORY = "oli/l8";
+
+    public final static String[] OLIL9_NAMES = {"OLIL9", "OLI L9"};
+    public final static String OLIL9_DIRECTORY = "oli/l9";
 
     public final static String[] OLCIS3A_NAMES = {"OLCIS3A", "OLCI S3A"};
     public final static String OLCIS3A_DIRECTORY = "olci/s3a";
@@ -388,7 +395,8 @@ public class MissionInfoFinder {
         directories.put(Id.OCM2, OCM2_DIRECTORY);
         directories.put(Id.HICO, HICO_DIRECTORY);
         directories.put(Id.GOCI, GOCI_DIRECTORY);
-        directories.put(Id.OLI, OLI_DIRECTORY);
+        directories.put(Id.OLIL8, OLIL8_DIRECTORY);
+        directories.put(Id.OLIL9, OLIL9_DIRECTORY);
         directories.put(Id.OLCIS3A, OLCIS3A_DIRECTORY);
         directories.put(Id.OLCIS3B, OLCIS3B_DIRECTORY);
         directories.put(Id.HAWKEYE, HAWKEYE_DIRECTORY);
@@ -413,7 +421,8 @@ public class MissionInfoFinder {
         names.put(Id.OCM2, OCM2_NAMES);
         names.put(Id.HICO, HICO_NAMES);
         names.put(Id.GOCI, GOCI_NAMES);
-        names.put(Id.OLI, OLI_NAMES);
+        names.put(Id.OLIL8, OLIL8_NAMES);
+        names.put(Id.OLIL9, OLIL9_NAMES);
         names.put(Id.OLCIS3A, OLCIS3A_NAMES);
         names.put(Id.OLCIS3B, OLCIS3B_NAMES);
         names.put(Id.HAWKEYE, HAWKEYE_NAMES);
