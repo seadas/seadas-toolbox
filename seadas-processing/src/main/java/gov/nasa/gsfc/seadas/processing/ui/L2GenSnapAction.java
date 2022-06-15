@@ -32,7 +32,7 @@ import javax.swing.*;
         "CTL_L2GenAction_ProgramName=l2gen",
         "CTL_L2GenAction_DialogTitle=l2gen",
         "CTL_L2GenAction_XMLFileName=l2gen.xml",
-        "CTL_L2GenAction_Description=Process a L1 file to L2."
+        "CTL_L2GenAction_Description=Creates a L2 file from an input L1 file (and input GEO file depending on mission)"
 })
 
 public class L2GenSnapAction extends L2genAction implements ContextAwareAction, LookupListener {

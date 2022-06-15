@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_L1BGenAction_ProgramName=l1bgen_generic",
         "CTL_L1BGenAction_DialogTitle=l1bgen_generic",
         "CTL_L1BGenAction_XMLFileName=l1bgen_generic.xml",
-        "CTL_L1BGenAction_Description=Process MODIS L0 to L1A."
+        "CTL_L1BGenAction_Description=Creates a Level 1B file from an input Level 1A file"
 })
 
 public class L1BGenAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {

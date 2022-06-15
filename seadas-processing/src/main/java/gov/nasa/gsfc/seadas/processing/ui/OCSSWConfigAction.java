@@ -27,8 +27,8 @@ import java.awt.event.ActionEvent;
         separatorBefore = 1100
 )
 @NbBundle.Messages({
-        "CTL_OCSSWConfigAction_Name=Processor Location...",
-        "CTL_OCSSWConfigAction_DialogTitle=Configure Processor Location (OCSSW)",
+        "CTL_OCSSWConfigAction_Name=SeaDAS Processor Location...",
+        "CTL_OCSSWConfigAction_DialogTitle=Configure SeaDAS Processor Location (OCSSW)",
         "CTL_OCSSWConfigAction_Description= Set values for seadas.config properties (variables)."
 })
 public class OCSSWConfigAction extends AbstractSnapAction implements ContextAwareAction, LookupListener, Presenter.Menu  {

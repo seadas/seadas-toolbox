@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_L3GenAction_ProgramName=l3gen",
         "CTL_L3GenAction_DialogTitle=l3gen",
         "CTL_L3GenAction_XMLFileName=l3gen.xml",
-        "CTL_L3GenAction_Description=Process MODIS L0 to L1A."
+        "CTL_L3GenAction_Description=Creates a level 3 bin from an input RRS level 3 input file"
 })
 
 public class L3GenAction  extends L2genAction implements ContextAwareAction, LookupListener {

@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_ModisL1BAction_ProgramName=modis_L1B",
         "CTL_ModisL1BAction_DialogTitle=modis_L1B",
         "CTL_ModisL1BAction_XMLFileName=modis_L1B.xml",
-        "CTL_ModisL1BAction_Description=Process MODIS L0 to L1B."
+        "CTL_ModisL1BAction_Description=Creates a MODIS L1B file from a MODIS L1A input file"
 })
 public class ModisL1BAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
 

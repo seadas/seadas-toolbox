@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_CalibrateVIIRSAction_ProgramName=calibrate_viirs",
         "CTL_CalibrateVIIRSAction_DialogTitle=calibrate_viirs",
         "CTL_CalibrateVIIRSAction_XMLFileName=calibrate_viirs.xml",
-        "CTL_CalibrateVIIRSAction_Description=Takes a VIIRS L1A file and outputs an L1B file."
+        "CTL_CalibrateVIIRSAction_Description=Creates a VIIRS L1B file from a VIIRS L1A input file"
 })
 
 public class CalibrateVIIRSAction  extends CallCloProgramAction implements ContextAwareAction, LookupListener {

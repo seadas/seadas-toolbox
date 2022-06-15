@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_L2BinAquariusAction_ProgramName=l2bin_aquarius",
         "CTL_L2BinAquariusAction_DialogTitle=l2bin_aquarius",
         "CTL_L2BinAquariusAction_XMLFileName=l2bin_aquarius.xml",
-        "CTL_L2BinAquariusAction_Description=Create a L3 bin file from Aquarius L2 file(s)."
+        "CTL_L2BinAquariusAction_Description=Create a L3 bin file from input Aquarius L2 file(s)."
 })
 
 

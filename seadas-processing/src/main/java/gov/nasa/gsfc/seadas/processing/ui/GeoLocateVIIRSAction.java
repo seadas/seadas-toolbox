@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_GeoLocateVIIRSAction_ProgramName=geolocate_viirs",
         "CTL_GeoLocateVIIRSAction_DialogTitle=geolocate_viirs",
         "CTL_GeoLocateVIIRSAction_XMLFileName=geolocate_viirs.xml",
-        "CTL_GeoLocateVIIRSAction_Description=Takes a VIIRS L1A file and outputs geolocation files"
+        "CTL_GeoLocateVIIRSAction_Description=Creates a VIIRS GEO file from a VIIRS L1A input file"
 })
 
 public class GeoLocateVIIRSAction extends CallCloProgramAction implements ContextAwareAction, LookupListener{

@@ -23,13 +23,13 @@ import javax.swing.*;
 )
 @ActionReference(
         path = "Menu/SeaDAS-Toolbox/SeaDAS Processors",
-        position = 185)
+        position = 360)
 @NbBundle.Messages({
         "CTL_L3MapGenAction_Name=l3mapgen...",
         "CTL_L3MapGenAction_ProgramName=l3mapgen",
         "CTL_L3MapGenAction_DialogTitle=l3mapgen",
         "CTL_L3MapGenAction_XMLFileName=l3mapgen.xml",
-        "CTL_L3MapGenAction_Description=Create a L3 Mapped Image."
+        "CTL_L3MapGenAction_Description=Creates a L3 mapped file from an input L3 bin file"
 })
 
 public class L3MapGenAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
