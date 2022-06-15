@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_L2BrsGenAction_ProgramName=l2brsgen",
         "CTL_L2BrsGenAction_DialogTitle=l2brsgen",
         "CTL_L2BrsGenAction_XMLFileName=l2brsgen.xml",
-        "CTL_L2BrsGenAction_Description=Process MODIS L0 to L1A."
+        "CTL_L2BrsGenAction_Description=Creates a Level 2 Browse file"
 })
 
 public class L2BrsGenAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {

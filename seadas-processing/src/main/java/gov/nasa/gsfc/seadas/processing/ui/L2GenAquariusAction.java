@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_L2GenAquariusAction_ProgramName=l2gen_aquarius",
         "CTL_L2GenAquariusAction_DialogTitle=l2gen_aquarius",
         "CTL_L2GenAquariusAction_XMLFileName=l2gen_aquarius.xml",
-        "CTL_L2GenAquariusAction_Description=Process MODIS L0 to L1A."
+        "CTL_L2GenAquariusAction_Description=Creates a L2 file from an input Aquarius L1 file"
 })
 
 public class L2GenAquariusAction extends L2genAction implements ContextAwareAction, LookupListener {

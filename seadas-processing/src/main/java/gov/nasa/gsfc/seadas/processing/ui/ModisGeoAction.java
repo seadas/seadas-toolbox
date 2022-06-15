@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_ModisGeoAction_ProgramName=modis_GEO",
         "CTL_ModisGeoAction_DialogTitle=modis_GEO",
         "CTL_ModisGeoAction_XMLFileName=modis_GEO.xml",
-        "CTL_ModisGeoAction_Description=Process MODIS L0 to GEO."
+        "CTL_ModisGeoAction_Description=Creates a MODIS GEO file from a MODIS L1A input file"
 })
 public class ModisGeoAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
 

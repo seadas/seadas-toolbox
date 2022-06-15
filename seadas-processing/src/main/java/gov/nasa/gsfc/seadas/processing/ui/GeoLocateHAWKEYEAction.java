@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_GeoLocateHAWKEYEAction_ProgramName=geolocate_hawkeye",
         "CTL_GeoLocateHAWKEYEAction_DialogTitle=geolocate_hawkeye",
         "CTL_GeoLocateHAWKEYEAction_XMLFileName=geolocate_hawkeye.xml",
-        "CTL_GeoLocateHAWKEYEAction_Description=Takes a HAWKEYE L1A file and outputs geolocation files"
+        "CTL_GeoLocateHAWKEYEAction_Description=Creates a HawkEye GEO file from a HawkEye L1A input file"
 })
 
 public class GeoLocateHAWKEYEAction extends CallCloProgramAction implements ContextAwareAction, LookupListener{

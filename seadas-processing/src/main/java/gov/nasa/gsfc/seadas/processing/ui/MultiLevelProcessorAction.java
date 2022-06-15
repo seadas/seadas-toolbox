@@ -31,7 +31,7 @@ import javax.swing.*;
         "CTL_MultiLevelProcessorAction_ProgramName=multilevel_processor",
         "CTL_MultiLevelProcessorAction_DialogTitle=multilevel_processor",
         "CTL_MultiLevelProcessorAction_XMLFileName=multilevel_processor.xml",
-        "CTL_MultiLevelProcessorAction_Description=Process a file through many levels."
+        "CTL_MultiLevelProcessorAction_Description=Process SeaDAS files through many levels"
 })
 
 public class MultiLevelProcessorAction extends MultilevelProcessorAction implements ContextAwareAction, LookupListener {

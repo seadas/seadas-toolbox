@@ -30,7 +30,7 @@ import javax.swing.*;
         "CTL_L2BinAction_ProgramName=l2bin",
         "CTL_L2BinAction_DialogTitle=l2bin",
         "CTL_L2BinAction_XMLFileName=l2bin.xml",
-        "CTL_L2BinAction_Description=Create a L3 bin file from L2 file(s)."
+        "CTL_L2BinAction_Description=Creates a L3 bin file from input L2 file(s)"
 })
 
 public class L2BinAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {

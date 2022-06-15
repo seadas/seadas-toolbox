@@ -25,11 +25,11 @@ import javax.swing.*;
         position = 10,
         separatorAfter = 11)
 @NbBundle.Messages({
-        "CTL_ExtractorAction_Name=extractor...",
+        "CTL_ExtractorAction_Name=extractors...",
         "CTL_ExtractorAction_ProgramName=extractor",
         "CTL_ExtractorAction_DialogTitle=extractor",
         "CTL_ExtractorAction_XMLFileName=extractor.xml",
-        "CTL_ExtractorAction_Description=Create L1 and L2 Extracts."
+        "CTL_ExtractorAction_Description=Creates L1 extract from L1 input file or creates L2 extract from L2 input file"
 })
 public class ExtractorAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
 

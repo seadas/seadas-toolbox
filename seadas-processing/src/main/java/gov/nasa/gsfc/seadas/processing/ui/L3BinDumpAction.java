@@ -32,7 +32,7 @@ import javax.swing.*;
         "CTL_L3BinDumpAction_ProgramName=l3bindump",
         "CTL_L3BinDumpAction_DialogTitle=l3bindump",
         "CTL_L3BinDumpAction_XMLFileName=l3bindump.xml",
-        "CTL_L3BinDumpAction_Description=Create a L3 Mapped Image."
+        "CTL_L3BinDumpAction_Description=Creates a text file dump of a L3 binned file"
 })
 
 public class L3BinDumpAction extends CallL3BinDumpAction implements ContextAwareAction, LookupListener {

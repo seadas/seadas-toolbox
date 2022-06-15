@@ -31,7 +31,7 @@ import javax.swing.*;
         "CTL_L1BrsGenAction_ProgramName=l1brsgen",
         "CTL_L1BrsGenAction_DialogTitle=l1brsgen",
         "CTL_L1BrsGenAction_XMLFileName=l1brsgen.xml",
-        "CTL_L1BrsGenAction_Description=Process MODIS L0 to L1A."
+        "CTL_L1BrsGenAction_Description=Creates a Level 1 browse (pseudo true color - RGB) file"
 })
 
 public class L1BrsGenAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {

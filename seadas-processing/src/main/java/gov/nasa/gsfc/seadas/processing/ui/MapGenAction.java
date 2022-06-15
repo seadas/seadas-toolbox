@@ -23,13 +23,16 @@ import javax.swing.*;
 )
 @ActionReference(
         path = "Menu/SeaDAS-Toolbox/SeaDAS Processors",
-        position = 186)
+        position = 351,
+        separatorBefore = 350
+
+)
 @NbBundle.Messages({
         "CTL_MapGenAction_Name=mapgen...",
         "CTL_MapGenAction_ProgramName=mapgen",
         "CTL_MapGenAction_DialogTitle=mapgen",
         "CTL_MapGenAction_XMLFileName=mapgen.xml",
-        "CTL_MapGenAction_Description=Create a mapped output."
+        "CTL_MapGenAction_Description=Create a mapped file from various choices of input file levels"
 })
 
 
