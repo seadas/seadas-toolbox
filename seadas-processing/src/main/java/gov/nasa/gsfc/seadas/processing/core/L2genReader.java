@@ -414,7 +414,7 @@ public class L2genReader {
 
                         String prefix = XmlReader.getTextValue(algElement, "prefix");
                         if (prefix != null) {
-                            algorithmInfo.setPrefix(prefix);
+                            algorithmInfo.setPrefix(prefix + "_");
                         } else {
                             algorithmInfo.setPrefix(prodName + "_");
                         }
