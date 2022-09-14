@@ -19,8 +19,16 @@
   <guiprefs width="800" height="600" resizable="yes">
     <modifier key="useSplashScreen" value="1000"/>
     <laf name="looks">
+      <os family="unix"/>
+      <param name="variant" value="mist-aqua"/>
+    </laf>
+    <laf name="looks">
       <os family="windows"/>
       <param name="variant" value="extwin"/>
+    </laf>
+    <laf name="substance">
+      <os family="mac"/>
+      <param name="variant" value="nebula-brick-wall"/>
     </laf>
     <modifier key="useHeadingPanel" value="yes"/>
     <modifier key="useButtonIcons" value="yes"/>
@@ -56,9 +64,11 @@
     <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
     <res id="ProcessPanel.Spec.xml" src="resources/processPanelSpec.xml"/>
     <res id="FinishPanel.finish" src="about/finish.html"/>
+    <!--    <res id="packsLang.xml_eng" src="i18n/myPacksLang.xml_eng"/>-->
+
   </resources>
   <variables>
-    <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
+    <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
     <variable name="app.name" value="@{appname}"/>
     <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
     <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
@@ -83,6 +93,7 @@
     <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />
     <variable name="JDKPathPanel.skipIfValid" value="yes" />
     <variable name="extra_clusters" value="seadas-toolbox" />
+    <!--    <variable name="jdkhome" value="/home/aynur/install-snap/jre"/>-->
   </variables>
 
   <conditions>
@@ -155,7 +166,7 @@
     <panel classname="HTMLLicencePanel" id="licence" />
     <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
     <panel classname="TargetPanel" id="install_dir" />
-    <panel classname="PacksPanel" id="sdk_pack_select"/>
+   <!-- <panel classname="PacksPanel" id="sdk_pack_select"/>-->
     <panel classname="InstallPanel" id="install"/>
     <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
     <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
@@ -164,7 +175,7 @@
   </panels>
 
   <dynamicvariables>
-    <variable name="jdkhome" value="$INSTALL_PATH\jre1.8.0_201"/>
+    <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201"/>
   </dynamicvariables>
 
   <packs>
@@ -177,12 +188,21 @@
         to the following technological innovations: Extensibility, Portability, Modular Rich
         Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
         Graph Processing Framework.</description>
-      <fileset dir="packs/snap" unpack="true"
-               override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
+      <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall">
+        <os family="linux"/>
         <exclude name="bin/*"/>
         <exclude name="etc/*"/>
       </fileset>
-      <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
+      <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
+      <parsable type="plain">
+        <fileset targetdir="${INSTALL_PATH}/bin">
+          <include name="*.sh"/>
+          <include name="seadas"/>
+          <include name="seadas.desktop"/>
+          <exclude name="*.exe"/>
+        </fileset>
+        <os family="unix"/>
+      </parsable>
       <parsable encoding="UTF-8">
         <fileset targetdir="${INSTALL_PATH}/etc">
           <include name="seadas.clusters"/>
@@ -192,38 +212,33 @@
           <include name="snap.conf"/>
           <include name="snap.properties"/>
         </fileset>
-      </parsable>
-      <parsable type="shell">
-        <fileset targetdir="${INSTALL_PATH}/bin">
-          <include name="gpt.bat"/>
-          <include name="pconvert.bat"/>
-        </fileset>
+        <os family="unix"/>
       </parsable>
       <executable type="bin" stage="never" failure="warn" keep="true">
-        <os family="windows"/>
-        <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe" />
-        <fileset targetdir="$INSTALL_PATH\bin" includes="gpt.bat" />
-        <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert.bat" />
+        <os family="unix"/>
+        <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"  />
+        <fileset targetdir="$INSTALL_PATH/bin" includes="gpt" />
+        <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert" />
       </executable>
     </pack>
     <pack name="s3tbx" required="yes" preselected="true" id="pack.s3tbx">
       <description>Sentinel 3 Toolbox</description>
-      <fileset dir="packs/s3tbx" casesensitive="true" targetdir="$INSTALL_PATH\s3tbx">
+      <fileset dir="packs/s3tbx" casesensitive="true" targetdir="$INSTALL_PATH/s3tbx">
       </fileset>
     </pack>
     <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
       <description>NASA SeaDAS Toolbox</description>
-      <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH\seadas-toolbox">
+      <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
       </fileset>
     </pack>
     <pack name="Oracle JRE" required="yes" id="pack.oracle.jre">
       <description>Oracle JRE</description>
-      <file src="packs/jre/jre-8u201-windows-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
+      <file src="packs/jre/jre-8u201-linux-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
       </file>
       <executable type="bin" stage="never" failure="warn" keep="true">
         <!--        <os family="unix"/>-->
-        <fileset targetdir="$INSTALL_PATH\jre1.8.0_201\bin" includes="*" />
-        <fileset targetdir="$INSTALL_PATH\jre1.8.0_201\lib" includes="*" />
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/bin" includes="*" />
+        <fileset targetdir="$INSTALL_PATH/jre1.8.0_201/lib" includes="*" />
       </executable>
     </pack>
   </packs>
@@ -231,7 +246,7 @@
   <natives>
     <native type="izpack" name="ShellLink.dll"/>
     <native type="izpack" name="ShellLink_x64.dll"/>
-    <native type="3rdparty" name="COIOSHelper.dll" >
+    <native type="3rdparty" name="COIOSHelper.dll" stage="both">
       <os family="windows"/>
     </native>
   </natives>
