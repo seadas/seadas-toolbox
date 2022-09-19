@@ -15,4 +15,6 @@ seadas-ocsswrest/hs_err_pid43749.log
 
 # Seadas/IzPack installer related files and directories
 seadas-installer/izpack-installer/target
-seadas-installer/izpack-installer/src/main/izpack/packs
+seadas-installer/izpack-installer/src/main/izpack/packs/s3tbx/
+seadas-installer/izpack-installer/src/main/izpack/packs/seadas/
+seadas-installer/izpack-installer/src/main/izpack/packs/snap/

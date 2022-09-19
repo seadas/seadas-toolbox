@@ -1,0 +1,1 @@
+The SNAP installer should have created a symbolic link in this directory: snap --> ../../../snap

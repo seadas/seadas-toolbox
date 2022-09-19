@@ -1,0 +1,121 @@
+-------------------------------------------------------------------------------
+>Log Session: Tuesday, December 15, 2020 8:41:28 PM EST
+>System Info: 
+  Product Version         = NetBeans Platform 8.2 (Build 201609300101)
+  Operating System        = Mac OS X version 10.14.6 running on x86_64
+  Java; VM; Vendor        = 1.8.0_201; Java HotSpot(TM) 64-Bit Server VM 25.201-b09; Oracle Corporation
+  Runtime                 = Java(TM) SE Runtime Environment 1.8.0_201-b09
+  Java Home               = /Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home
+  System Locale; Encoding = en_US; UTF-8
+  Home Directory          = /Users/aabduraz
+  Current Directory       = /Users/aabduraz/dec-15/bin/seadas.app/Contents/Resources
+  User Directory          = /Users/aabduraz/dec-15/bin/seadas.app/Contents/Resources
+  Cache Directory         = /var/cache
+  Installation            = /Users/aabduraz/dec-15/platform
+  Boot & Ext. Classpath   = /Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/resources.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/rt.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/sunrsasign.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/jsse.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/jce.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/charsets.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/jfr.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/classes:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/sunec.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/nashorn.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/cldrdata.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/._jfxrt.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/jfxrt.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/dnsns.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/localedata.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/sunjce_provider.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/sunpkcs11.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/jaccess.jar:/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home/lib/ext/zipfs.jar:/System/Library/Java/Extensions/MRJToolkit.jar
+  Application Classpath   = /Users/aabduraz/dec-15/platform/lib/boot.jar:/Users/aabduraz/dec-15/platform/lib/org-openide-modules.jar:/Users/aabduraz/dec-15/platform/lib/org-openide-util-lookup.jar:/Users/aabduraz/dec-15/platform/lib/org-openide-util-ui.jar:/Users/aabduraz/dec-15/platform/lib/org-openide-util.jar:/Users/aabduraz/dec-15/platform/lib/locale/boot_ja.jar:/Users/aabduraz/dec-15/platform/lib/locale/boot_pt_BR.jar:/Users/aabduraz/dec-15/platform/lib/locale/boot_ru.jar:/Users/aabduraz/dec-15/platform/lib/locale/boot_zh_CN.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-modules_ja.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-modules_pt_BR.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-modules_ru.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-modules_zh_CN.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-lookup_ja.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-lookup_pt_BR.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-lookup_ru.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-lookup_zh_CN.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-ui_ja.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-ui_pt_BR.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-ui_ru.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util-ui_zh_CN.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util_ja.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util_pt_BR.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util_ru.jar:/Users/aabduraz/dec-15/platform/lib/locale/org-openide-util_zh_CN.jar
+  Startup Classpath       = /Users/aabduraz/dec-15/platform/core/org-netbeans-libs-asm.jar:/Users/aabduraz/dec-15/platform/core/org-openide-filesystems-compat8.jar:/Users/aabduraz/dec-15/platform/core/asm-all-5.0.1.jar:/Users/aabduraz/dec-15/platform/core/org-openide-filesystems.jar:/Users/aabduraz/dec-15/platform/core/core.jar:/Users/aabduraz/dec-15/platform/core/core-base.jar:/Users/aabduraz/dec-15/platform/core/locale/core_pt_BR.jar:/Users/aabduraz/dec-15/platform/core/locale/org-netbeans-libs-asm_pt_BR.jar:/Users/aabduraz/dec-15/platform/core/locale/core-base_zh_CN.jar:/Users/aabduraz/dec-15/platform/core/locale/core-base_ru.jar:/Users/aabduraz/dec-15/platform/core/locale/core_ru.jar:/Users/aabduraz/dec-15/platform/core/locale/core_ja.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems-compat8_zh_CN.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems_pt_BR.jar:/Users/aabduraz/dec-15/platform/core/locale/core-base_ja.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems_ja.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems-compat8_ru.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems-compat8_ja.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems_ru.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems-compat8_pt_BR.jar:/Users/aabduraz/dec-15/platform/core/locale/org-openide-filesystems_zh_CN.jar:/Users/aabduraz/dec-15/platform/core/locale/core_zh_CN.jar:/Users/aabduraz/dec-15/platform/core/locale/org-netbeans-libs-asm_ru.jar:/Users/aabduraz/dec-15/platform/core/locale/org-netbeans-libs-asm_ja.jar:/Users/aabduraz/dec-15/platform/core/locale/core-base_pt_BR.jar:/Users/aabduraz/dec-15/platform/core/locale/org-netbeans-libs-asm_zh_CN.jar
+-------------------------------------------------------------------------------
+WARNING [org.netbeans.modules.autoupdate.ui.actions.AutoupdateSettings]: The property "netbeans.default_userdir_root" was not set!
+WARNING [null]: Last record repeated again.
+INFO [org.netbeans.core.startup.NbEvents]: Turning on modules:
+	org.openide.util.lookup [8.33.1 201609300101]
+	org.openide.util [9.7.1 201609300101]
+	org.openide.util.ui [9.6.1 201609300101]
+	org.openide.modules [7.48.1 201609300101]
+	org.netbeans.api.annotations.common/1 [1.27.1 201609300101]
+	org.openide.filesystems [9.10.1 201609300101]
+	org.openide.awt [7.67.1 201609300101]
+	org.netbeans.api.progress/1 [1.47.1 201609300101]
+	org.netbeans.api.progress.nb [1.47.1 201609300101]
+	org.openide.dialogs [7.42.1 201609300101]
+	org.openide.nodes [7.45.1 201609300101]
+	org.openide.windows [6.75.1 201609300101]
+	org.netbeans.modules.editor.mimelookup/1 [1.40.1 201609300101]
+	org.openide.text [6.67.1 201609300101]
+	org.netbeans.swing.tabcontrol [1.56.1 201609300101]
+	org.netbeans.swing.outline [1.34.1 201609300101]
+	org.openide.explorer [6.62.1 201609300101]
+	org.openide.actions [6.39.1 201609300101]
+	org.netbeans.modules.queries/1 [1.43.1 201609300101]
+	org.netbeans.api.templates [1.7.1 201609300101]
+	org.openide.filesystems.nb [9.9.1 201609300101]
+	org.openide.loaders [7.66.1 201609300101]
+	org.netbeans.api.intent [1.2.1 201609300101]
+	org.netbeans.api.io [1.3.1 201609300101]
+	org.openide.io [1.49.1 201609300101]
+	org.openide.filesystems.compat8 [9.9.1 201609300101]
+	org.netbeans.swing.plaf [1.41.1 201609300101]
+	org.netbeans.spi.quicksearch [1.27.1 201609300101]
+	org.netbeans.modules.templates/1 [1.7.1 201609300101]
+	org.netbeans.libs.asm [5.3.1 201609300101]
+	org.netbeans.bootstrap/1 [2.76.1 201609300101]
+	org.netbeans.core.startup.base [1.62.1.1 1 201609300101]
+	org.netbeans.core.startup/1 [1.62.1.1 201609300101]
+	org.netbeans.modules.settings/1 [1.49.1 201609300101]
+	org.netbeans.modules.sendopts/2 [2.35.1 201609300101]
+	org.netbeans.modules.sampler [1.14.1 201609300101]
+	org.netbeans.modules.progress.ui [1.33.1 201609300101]
+	org.netbeans.modules.print [7.26.1 201609300101]
+	org.netbeans.modules.keyring [1.24.1 201609300101]
+	org.netbeans.core/2 [3.51.1 201609300101]
+	org.netbeans.modules.options.api/1 [1.45.1 201609300101]
+	org.netbeans.modules.options.keymap [1.37.1 201609300101]
+	org.netbeans.modules.masterfs/2 [2.55.1.2 2 201609300101]
+	org.netbeans.modules.masterfs.ui [2.3.1.2 201609300101]
+	org.netbeans.modules.masterfs.nio2 [1.15.1 201609300101]
+	org.netbeans.libs.jna/1 [1.44.1 201609300101]
+	org.netbeans.modules.masterfs.macosx [1.13.1 201609300101]
+	org.netbeans.modules.keyring.fallback [1.8.1 201609300101]
+	org.netbeans.modules.keyring.impl [1.24.1 201609300101]
+	org.netbeans.modules.favorites/1 [1.46.1 201609300101]
+	org.netbeans.modules.editor.mimelookup.impl/1 [1.32.1 201609300101]
+	org.netbeans.modules.autoupdate.services [1.52.1 201609300101]
+	org.netbeans.modules.autoupdate.cli [1.13.1 201609300101]
+	org.netbeans.core.windows/2 [2.81.1 201609300101]
+	org.netbeans.core.ui/1 [1.45.1 201609300101]
+	org.netbeans.libs.osgi [1.21.1 201609300101]
+	org.netbeans.libs.felix [2.15.1 201609300101]
+	org.netbeans.modules.autoupdate.ui [1.45.1 201609300101]
+	org.netbeans.modules.core.kit [1.30.1 201609300101]
+	org.netbeans.modules.applemenu/1 [1.37.1 201609300101]
+	org.netbeans.libs.jna.platform/1 [1.14.1 201609300101]
+	org.netbeans.core.output2/1 [1.41.1 201609300101]
+	org.netbeans.core.network [1.10.1 201609300101]
+	org.netbeans.core.netigso [1.31.1 201609300101]
+	org.netbeans.core.nativeaccess/1 [1.31.1 201609300101]
+	org.netbeans.core.multitabs/1 [1.12.1.1 1 201609300101]
+	org.netbeans.core.io.ui/1 [1.30.1 201609300101]
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy resolver: Mac
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy reloading failed! Trying fallback resolver.
+INFO [org.netbeans.core.network.proxy.fallback.FallbackNetworkProxy]: Fallback system proxy resolver: no http_proxy variable found
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy reloading succeeded. Fallback provider was successful.
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy - mode: direct
+INFO [org.netbeans.core.network.proxy.NetworkProxyReloader]: System network proxy: fell to default (correct if direct mode went before)
+INFO [org.netbeans.ui.metrics.laf]: USG_LOOK_AND_FEEL
+Diagnostic information
+Input arguments:
+	-Djdk.home=/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home
+	-Dnetbeans.dirs=:seadas-toolbox
+	-Dnetbeans.home=/Users/aabduraz/dec-15/platform
+	-Dcom.apple.mrj.application.apple.menu.about.name=SeaDAS
+	-DaddExports:java.desktop/com.apple.eawt=ALL-UNNAMED
+	-DaddExports:java.desktop/sun.awt=ALL-UNNAMED
+	-DaddExports:java.base/jdk.internal.jrtfs=ALL-UNNAMED
+	-DaddExports:java.desktop/apple.laf=ALL-UNNAMED
+	-DaddExports:java.desktop/java.awt.peer=ALL-UNNAMED
+	-DaddExports:java.desktop/com.sun.beans.editors=ALL-UNNAMED
+	-DaddExports:java.desktop/sun.awt.im=ALL-UNNAMED
+	-DaddExports:java.management/sun.management=ALL-UNNAMED
+	-XX:+HeapDumpOnOutOfMemoryError
+	-XX:HeapDumpPath=/var/log/heapdump.hprof
+Compiler: HotSpot 64-Bit Tiered Compilers
+Heap memory usage: initial 128.0MB maximum 1820.5MB
+Non heap memory usage: initial 2.4MB maximum -1b
+Garbage collector: PS Scavenge (Collections=4 Total time spent=0s)
+Garbage collector: PS MarkSweep (Collections=1 Total time spent=0s)
+Classes: loaded=4692 total loaded=4693 unloaded 1
+INFO [org.netbeans.core.ui.warmup.DiagnosticTask]: Total memory 8,589,934,592
+INFO [null]: Total physical memory 8,589,934,592
+WARNING [org.netbeans.Stamps]: Nonexistent cache directory: /var/cache
+WARNING [null]: Last record repeated more than 10 times, further logs of this record are ignored until the log record changes.
