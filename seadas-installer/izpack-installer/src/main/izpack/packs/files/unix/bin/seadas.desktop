@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=seadas
+Type=Application
+Exec=${INSTALL_PATH}/bin/seadas
+Icon=${INSTALL_PATH}/bin/app.png
