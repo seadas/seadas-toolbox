@@ -32,7 +32,7 @@
 
 <a name="location"><h4>Location</h4></a>
 
-<p>SeaDAS-OCSSW -> modis_L1B</p>
+<p>SeaDAS-Toolobox -> SeaDAS Processors -> MODIS -> modis_L1B</p>
 
 
 <a name="details"><h4>Details</h4></a>
@@ -235,31 +235,32 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-    Usage:
-        modis_L1B [OPTIONS] L1AFILE [GEOFILE]
-            if GEOFILE is not provided, assumed to be basename of L1AFILE + '.GEO'
-                or
-        modis_L1B --parfile=parameter_file [OPTIONS]
+    usage: modis_L1B [-h] [--version] [-p PARFILE] [-o 1KMFILE] [-k HKMFILE] [-q QKMFILE] [-c OBCFILE] [-l LUTVER]
+                     [-d LUTDIR] [-x] [-y] [-z] [--keep-obc] [-v] [--log]
+                     [L1AFILE] [GEOFILE]
 
+    positional arguments:
+      L1AFILE               Input L1A file
+      GEOFILE               INPUT GEOFILE filename - defaults to basename of L1AFILE +'.GEO'
 
-    Options:
-      --version             show program's version number and exit
+    options:
       -h, --help            show this help message and exit
-      -p PARFILE, --parfile=PARFILE
+      --version             show program's version number and exit
+      -p PARFILE, --parfile PARFILE
                             Parameter file containing program inputs
-      -o 1KMFILE, --okm=1KMFILE
-                            Output MODIS L1B 1KM HDF filename
-      -k HKMFILE, --hkm=HKMFILE
+      -o 1KMFILE, --okm 1KMFILE
+                            Output L1B 1KM filename - defaults to '(A|T)YYYYDDDHHMMSS.L1B_LAC'
+      -k HKMFILE, --hkm HKMFILE
                             Output MODIS L1B HKM HDF filename
-      -q QKMFILE, --qkm=QKMFILE
+      -q QKMFILE, --qkm QKMFILE
                             Output MODIS L1B QKM HDF filename
-      -c OBCFILE, --obc=OBCFILE
+      -c OBCFILE, --obc OBCFILE
                             Output MODIS L1B OBC HDF filename
-      -l LUTVER, --lutver=LUTVER
+      -l LUTVER, --lutver LUTVER
                             L1B LUT version number
-      -d LUTDIR, --lutdir=LUTDIR
+      -d LUTDIR, --lutdir LUTDIR
                             Path of directory containing LUT files
-      -x, --del-okm         Delete 1km  resolution L1B file
+      -x, --del-okm         Delete 1km resolution L1B file
       -y, --del-hkm         Delete 500m resolution L1B file
       -z, --del-qkm         Delete 250m resolution L1B file
       --keep-obc            Save onboard calibration file
