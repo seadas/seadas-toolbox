@@ -33,7 +33,7 @@
 
 <a name="location"><h4>Location</h4></a>
 
-<p>SeaDAS-OCSSW -> update_luts</p>
+<p>SeaDAS-Toolbox -> update_luts</p>
 
 
 <a name="details"><h4>Details</h4></a>
@@ -178,28 +178,24 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-usage: update_luts [-h] [-e] [-v] [-n] [--timeout TIMEOUT] MISSION
+    usage: update_luts [-h] [-e] [-v] [-n] [--timeout TIMEOUT] [--version] MISSION
 
-Retrieve latest lookup tables for specified sensor.
+    Retrieve latest lookup tables for specified sensor.
 
-positional arguments:
-  MISSION            sensor or platform to process; one of:
-                     seawifs, aquarius, modisa, modist, viirsn, viirsj1, aqua, terra, npp, j1
+    positional arguments:
+      MISSION            sensor or platform to process; one of:
+                         common, seawifs, aquarius, modisa, modist, viirsn, viirsj1, aqua, terra, npp, j1
 
-optional arguments:
-  -h, --help         show this help message and exit
-  -e, --eval         also download evaluation LUTs (default: False)
-  -v, --verbose      print status messages (default: False)
-  -n, --dry-run      no action; preview files to be downloaded (default: False)
-  --timeout TIMEOUT  network timeout in seconds (default: 10)
-
+    options:
+      -h, --help         show this help message and exit
+      -e, --eval         also download evaluation LUTs (default: False)
+      -v, --verbose      print status messages (default: 0)
+      -n, --dry-run      no action; preview files to be downloaded (default: False)
+      --timeout TIMEOUT  network timeout in seconds (default: 10)
+      --version          show program's version number and exit
 </pre>
 
 <hr>
-</body>
-</html></title>
-</head>
-<body>
 
 </body>
 </html>

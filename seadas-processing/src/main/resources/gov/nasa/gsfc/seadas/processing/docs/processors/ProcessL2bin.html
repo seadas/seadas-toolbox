@@ -279,66 +279,79 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-l2bin 5.0.0 (Nov 30 2018 09:52:58)
-5.0.0
-Usage: l2bin argument-list
+    l2bin 7.0.3 (Jan 11 2022 14:32:07)
+    7.0.3
+    Usage: l2bin argument-list
 
-The argument-list is a set of keyword=value pairs. The arguments can
-be specified on the commandline, or put into a parameter file, or the
-two methods can be used together, with commandline over-riding.
+      The argument-list is a set of keyword=value pairs. The arguments can
+      be specified on the commandline, or put into a parameter file, or the
+      two methods can be used together, with commandline over-riding.
 
-return value: 0=OK, 1=error, 110=north,south,east,west does not intersect
-file data.
+      return value: 0=OK, 1=error, 110=north,south,east,west does not intersect
+      file data.
 
-The list of valid keywords follows:
+    The list of valid keywords follows:
 
-help (boolean) (alias=h) (default=false) = print usage information
-version (boolean) (default=false) = print the version
-information
-dump_options (boolean) (default=false) = print
-information about each option
-dump_options_paramfile (ofile) = print
-information about each option to paramfile
-dump_options_xmlfile (ofile) = print
-information about each option to XML file
-par (ifile) (alias=parfile) = input parameter file
-ifile (ifile) (alias=infile) = input L2 file name
-ofile (ofile) (default=output) = output file name
-fileuse (ifile) = input L2 file name
-oformat (string) (default=netcdf4) = output file format
-hdf4: output a HDF4 file
-netcdf4: output a netCDF4 file
+       help (boolean) (alias=h) (default=false) = print usage information
+       version (boolean) (default=false) = print the version
+            information
+       dump_options (boolean) (default=false) = print
+            information about each option
+       dump_options_paramfile (ofile) = print
+            information about each option to paramfile
+       dump_options_xmlfile (ofile) = print
+            information about each option to XML file
+       par (ifile) (alias=parfile) = input parameter file
+       ifile (ifile) (alias=infile) = input L2 file name
+       ofile (ofile) (default=output) = output file name
+       fileuse (ofile) = write the filenames of the the input files used to this file
+       suite (string) = suite for default parameters
+       qual_prod (string) = quality product field name
+       deflate (int) (default=5) = deflation level.  0=off or 1=low through 9=high
+       verbose (boolean) (default=off) = Allow more verbose screen messages
+       night (boolean) (default=off) = set to 1 for SST night processing
+       qual_max (int) (default=2) = maximum acceptable quality
+       rowgroup (int) (default=-1) = # of bin rows to process at once.
+       sday (int) (default=1970001) = start datadate (YYYYDDD) [ignored for "regional" prodtype]
+       eday (int) (default=2038018) = end datadate (YYYYDDD) [ignored for "regional" prodtype]
+       latnorth (float) (default=90) = northern most latitude
+       latsouth (float) (default=-90) = southern most latitude
+       loneast (float) (default=0) = eastern most longitude
+       lonwest (float) (default=0) = western most longitude
+       minobs (int) (default=0) = required minimum number of observations
+       delta_crossing_time (float) (default=0.0) = equator crossing time delta in minutes
+             Caveat...if zero, the sensor default equator crossing time will be used
+             This is not necessarily noon
+       resolution (string) (alias=resolve) (default=H) = bin resolution
+             H: 0.5km
+             Q: 250m
+            HQ: 100m
+            HH: 50m
+             1: 1.1km
+             2: 2.3km
+             4: 4.6km
+             9: 9.2km
+            18: 18.5km
+            36: 36km
+            1D: 1 degree
+            HD: 0.5 degree
+            QD: 0.25 degree
+       prodtype (string) (default=day) = product type (Set to "regional" to bin all scans.)
+       pversion (string) (default=unspecified) = production version
+       composite_scheme (string) = composite scheme (min/max)
+       composite_prod (string) = composite product fieldname
+       flaguse (string) (default=ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,CHLWARN,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER) = flags masked [see /SENSOR/l2bin_defaults.par]
+       l3bprod (string) (default=ALL) = l3bprod = bin products [default=all products]
+        Set to "ALL" or "all" for all L2 products in 1st input file.
+        Use ':' or ',' or ' ' as delimiters.
+        Use ';' or '=' to delineate minimum values.
 
-eday (int) (default=2038018) = end datadate (YYYYDDD) [ignored for "regional" prodtype]
-sday (int) (default=1970001) = start datadate (YYYYDDD) [ignored for "regional" prodtype]
-latnorth (float) (default=90) = northern most latitude
-latsouth (float) (default=-90) = southern most latitude
-loneast (float) (default=0) = eastern most longitude
-lonwest (float) (default=0) = western most longitude
-resolution (string) (alias=resolve) (default=H) = bin resolution (H = 0.5km,  Q=250m, HQ=100m, HH=50m,
-1 = 1.1km, 2 = 2.3km, 4 = 4.6km,
-9 = 9.2km, 18 = 18.5km, QD = 0.25 degree,
-36 = 36km, HD = 0.5 degree, 1D = 1 degree)
-
-rowgroup (int) (default=-1) = # of bin rows to process at once.
-flaguse (string) (default=ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,CHLWARN,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER) = flags masked [see /SENSOR/l2bin_defaults.par]
-l3bprod (string) (default=ALL) = l3bprod = bin products [default=all products]
-Set to "ALL" or "all" for all L2 products in 1st input file.
-Use ':' or ',' or ' ' as delimiters.
-Use ';' or '=' to delineate minimum values.
-
-prodtype (string) (default=day) = product type (Set to "regional" to bin all scans.)
-pversion (string) (default=unspecified) = production version
-suite (string) = suite for default parameters
-average (string) = averaging scheme
-night (boolean) (default=off) = set to 1 for SST night processing
-verbose (boolean) (default=off) = Allow more verbose screen messages
-minobs (float) (default=0) = minimum observation to use.
-deflate (int) (default=5) = deflation level.  0=off or 1=low through 9=high
-qual_prod (string) = quality product field name
-composite_prod (string) = composite product fieldname
-composite_scheme (string) = composite scheme (min/max)
-qual_max (int) (default=2) = maximum acceptable quality
+       area_weighting (int) (default=0) = Enable area weighting
+            0: off
+            1: pixel box
+            2: pixel bounding box
+            3: pixel polygon
+       output_wavelengths (string) (default=ALL) = comma separated list of wavelengths for multi-wavelength products
 </pre>
 
 
