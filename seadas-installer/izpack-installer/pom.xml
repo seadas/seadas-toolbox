@@ -98,19 +98,69 @@
 
               <!-- recursive copy of all resource under src/main/izpack. this is the stuff to install as well as install.xml and panel data and such -->
 							<resources>
-								<resource>
-									<directory>src/main/izpack</directory>
-									<includes>
-										<include>**/*</include>
-									</includes>
-									<filtering>false</filtering>
-								</resource>
 
-							</resources>
+                                <resource>
+                                    <directory>../../../snap-desktop/snap-application/target/snap</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <targetPath>../../src/main/izpack/packs/snap</targetPath>
+                                    <filtering>false</filtering>
+                                </resource>
+
+                                <resource>
+                                    <directory>../../../s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <targetPath>../../src/main/izpack/packs/s3tbx</targetPath>
+                                    <filtering>false</filtering>
+                                </resource>
+
+                                <resource>
+                                    <directory>../../../seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <targetPath>../../src/main/izpack/packs/seadas</targetPath>
+                                    <filtering>false</filtering>
+                                </resource>
+
+                                <resource>
+                                    <directory>src/main/izpack</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+
+                            </resources>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+            <execution>
+<!--                <id>copy-resources</id>-->
+                <phase>validate</phase>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <target>
+                        <concat destfile="${staging.dir}/packs/snap/etc/snap.properties" append="true">${line.separator}snap.context.application.name=SeaDAS</concat>
+
+                        <concat destfile="${staging.dir}/packs/snap/etc/snap.clusters" append="true">s3tbx${line.separator}seadas-toolbox</concat>
+
+                        <concat destfile="${staging.dir}/packs/snap/etc/snap.conf" append="true">extra_clusters=${extra_clusters}</concat>
+                    </target>
+                </configuration>
+            </execution>
+        </executions>
+      </plugin>
 
       <plugin>
        <artifactId>maven-dependency-plugin</artifactId>
