@@ -325,19 +325,25 @@
 
 
 <a name="cl"><h4>Command Line Usage</h4></a>
-
+<!--AUTOMATED CODE HELP START-->
 <pre>
+
 WARNING: --tag is required to get the proper bundle list.
 
-usage: install_ocssw [-h] [--version] [--list_tags] [--installed_tag] [--status] [--update] [-t TAG] [-i INSTALL_DIR]
-                     [-b BASE_URL] [-l LOCAL_DIR] [-s SAVE_DIR] [-c] [--wget] [-a ARCH] [-v] [--bin] [--opt] [--src]
-                     [--luts] [--viirs_l1_bin] [--root] [--opt_src] [--afrt] [--aquaverse] [--avhrr] [--aviris]
-                     [--common] [--czcs] [--eval] [--goci] [--hawkeye] [--hico] [--l5tm] [--l7etmp] [--meris] [--misr]
-                     [--modisa] [--modist] [--mos] [--msis2a] [--msis2b] [--oci] [--ocia] [--ocip] [--ocis] [--ocm1]
-                     [--ocm2] [--ocrvc] [--octs] [--olcis3a] [--olcis3b] [--olil8] [--olil9] [--osmi] [--prism]
-                     [--sabiamar] [--seawifs] [--sgli] [--spexone_remotap] [--viirsdem] [--viirsj1] [--viirsj2]
-                     [--viirsn] [--wv3] [--aerosol] [--cloud] [--benchmark] [--viirs_l1_benchmark] [--direct_broadcast]
-                     [--seadas] [--odps] [--viirs_l1] [--all]
+usage: install_ocssw [-h] [--version] [--list_tags] [-t TAG] [-i INSTALL_DIR]
+                     [-b BASE_URL] [-l LOCAL_DIR] [-s SAVE_DIR] [-c] [--wget]
+                     [-a ARCH] [-v] [--bin] [--opt] [--src] [--luts]
+                     [--viirs_l1_bin] [--root] [--opt_src] [--afrt]
+                     [--aquarius] [--avhrr] [--aviris] [--common] [--czcs]
+                     [--eval] [--goci] [--hawkeye] [--hico] [--l5tm]
+                     [--l7etmp] [--meris] [--misr] [--modisa] [--modist]
+                     [--mos] [--msis2a] [--msis2b] [--oci] [--ocia] [--ocip]
+                     [--ocis] [--ocm1] [--ocm2] [--ocrvc] [--octs] [--olcis3a]
+                     [--olcia3b] [--oli] [--osmi] [--prism] [--sabiamar]
+                     [--seawifs] [--sgli] [--viirsdem] [--viirsj1] [--viirsj2]
+                     [--viirsn] [--wv3] [--aerosol] [--cloud] [--benchmark]
+                     [--viirs_l1_benchmark] [--direct_broadcast] [--seadas]
+                     [--odps] [--viirs_l1] [--all]
 
 Install OCSSW bundles
 
@@ -345,21 +351,22 @@ options:
   -h, --help            show this help message and exit
   --version             print this program's version
   --list_tags           list the tags that exist on the server
-  --installed_tag       list the currently installed tag
-  --status              compare the main tag manifest to the files in the bundle directories
-  --update              update all installed bundles to the tag given
   -t TAG, --tag TAG     tag that you want to install
   -i INSTALL_DIR, --install_dir INSTALL_DIR
-                        root directory for bundle installation (default=$OCSSWROOT)
+                        root directory for bundle installation
+                        (default=$OCSSWROOT)
   -b BASE_URL, --base_url BASE_URL
                         remote url for the bundle server
   -l LOCAL_DIR, --local_dir LOCAL_DIR
-                        local directory to use for bundle source instead of the bundle server
+                        local directory to use for bundle source instead of
+                        the bundle server
   -s SAVE_DIR, --save_dir SAVE_DIR
-                        local directory to save a copy of the downloaded bundles
+                        local directory to save a copy of the downloaded
+                        bundles
   -c, --clean           delete extra files in the destination directory
   --wget                use wget for file download
-  -a ARCH, --arch ARCH  use this architecture instead of guessing the local machine (linux_64 macosx_intel odps)
+  -a ARCH, --arch ARCH  use this architecture instead of guessing the local
+                        machine (linux_64 macosx_intel odps)
   -v, --verbose         increase output verbosity
   --bin                 install binary executables
   --opt                 install 3rd party programs and libs
@@ -369,7 +376,7 @@ options:
   --root                install random files in the root dir files
   --opt_src             install 3rd party library sources files
   --afrt                install Ahmad-Fraser RT data files
-  --aquaverse           install Algorithm based on Mixture Density Networks files
+  --aquarius            install Aquarius files
   --avhrr               install AVHRR files
   --aviris              install AVIRIS files
   --common              install common files
@@ -396,15 +403,13 @@ options:
   --ocrvc               install OC Virtual Constellation files
   --octs                install OCTS files
   --olcis3a             install OLCI Sentinel 3A files
-  --olcis3b             install OLCI Sentinel 3B files
-  --olil8               install OLI Landsat 8 files
-  --olil9               install OLI Landsat 9 files
+  --olcia3b             install OLCI Sentinel 3B files
+  --oli                 install Landsat OLI files
   --osmi                install OSMI files
   --prism               install PRISM files
   --sabiamar            install Sabiamar files
   --seawifs             install SeaWiFS files
   --sgli                install SGLI files
-  --spexone_remotap     install SPEX One RemoTAP files
   --viirsdem            install VIIRS Digital Elevation files
   --viirsj1             install VIIRS JPSS1 files
   --viirsj2             install VIIRS JPSS2 files
@@ -412,15 +417,18 @@ options:
   --wv3                 install WV3 files
   --aerosol             install aerosol processing with dtdb files
   --cloud               install cloud properties processing files
-  --benchmark           install benchmark MOSIS Aqua, level0 -> level3 Mapped files
+  --benchmark           install benchmark MOSIS Aqua, level0 -&gt; level3 Mapped
+                        files
   --viirs_l1_benchmark  install VIIRS benchmark data files
   --direct_broadcast    toggle on bundles needed for MODIS direct broadcast
   --seadas              toggle on the base set of bundles for SeaDAS
   --odps                toggle on the base set of bundles for ODPS systems
-  --viirs_l1            install everything to run and test the VIIRS executables
+  --viirs_l1            install everything to run and test the VIIRS
+                        executables
   --all                 toggle on all satellite bundles
-</pre>
 
+</pre>
+<!--AUTOMATED CODE HELP END-->
 
 
 <hr>

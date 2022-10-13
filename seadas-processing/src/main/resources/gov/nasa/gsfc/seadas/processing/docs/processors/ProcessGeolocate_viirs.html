@@ -247,8 +247,9 @@
 
 
 <a name="cl"><h4>Command Line Usage</h4></a>
+<!--AUTOMATED CODE HELP START-->
 <pre>
-geolocate_viirs 3.1 (May 31 2018 12:48:55)
+geolocate_viirs 3.1 (Jan 11 2022 14:33:38)
 Usage: geolocate_viirs argument-list
 
   This program takes a VIIRS L1A file and outputs geolocation files.
@@ -280,7 +281,7 @@ The list of valid keywords follows:
    straylight_lut_file (string) = stray light calibration LUT filename
    cmn_lut_file (string) = common calibration LUT filename
    geo_lut_file (string) = geolocation LUT filename
-   polar_wander_file (string) (default=$OCVARROOT/viirsn/polar_wander.h5) =
+   polar_wander_file (string) (default=$OCVARROOT/viirsn/polar_wander.ascii) = 
         polar wander filename
    leapsec_file (string) (default=$OCVARROOT/viirsn/IETTime.dat) = leap second
         file
@@ -290,15 +291,17 @@ The list of valid keywords follows:
         mask file directory
    verbose (boolean) (alias=v) (default=false) = turn on verbose output
    pversion (string) (default=Unspecified) = processing version string
-
+   
 This program can also accept a PCF file.  The PCF file option names take
 precedence over the standard option parameters even if the standard option
 is on the command line.  To over ride an option in a PCF file, use the PCF
 option name on the command line.
 
 use "-dump_options" on the command line to see a list of ALL option names.
-</pre>
 
+
+</pre>
+<!--AUTOMATED CODE HELP END-->
 <hr>
 </body>
 </html>
