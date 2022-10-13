@@ -84,6 +84,7 @@ public class L2genData implements SeaDASProcessorModel {
 
     private static final String L3GEN_GUI_NAME = "l3gen",
             L3GEN_PRODUCT_INFO_XML = "productInfo.xml",
+            L3GEN_PRODUCT_XML = "product.xml",
             L3GEN_PARAM_INFO_XML = "paramInfo.xml",
             L3GEN_PARAM_CATEGORY_INFO_XML = "l3genParamCategoryInfo.xml",
             L3GEN_PRODUCT_CATEGORY_INFO_XML = "l3genProductCategoryInfo.xml",
@@ -220,7 +221,8 @@ public class L2genData implements SeaDASProcessorModel {
                 processorId = SeadasProcessorInfo.Id.L3GEN;
                 setGuiName(L3GEN_GUI_NAME);
                 setParamInfoXml(L3GEN_PARAM_INFO_XML);
-                setProductInfoXml(L3GEN_PRODUCT_INFO_XML);
+//                setProductInfoXml(L3GEN_PRODUCT_INFO_XML);
+                setProductXml(L3GEN_PRODUCT_XML);
                 setParamCategoryXml(L3GEN_PARAM_CATEGORY_INFO_XML);
                 setProductCategoryXml(L3GEN_PRODUCT_CATEGORY_INFO_XML);
                 setGetanc(L3GEN_GETANC);
@@ -231,7 +233,7 @@ public class L2genData implements SeaDASProcessorModel {
                 processorId = SeadasProcessorInfo.Id.L2GEN;
                 setGuiName(GUI_NAME);
                 setParamInfoXml(PARAM_INFO_XML);
-                setProductInfoXml(PRODUCT_INFO_XML);
+//                setProductInfoXml(PRODUCT_INFO_XML);
                 setProductXml(PRODUCT_XML);
                 setParamCategoryXml(PARAM_CATEGORY_INFO_XML);
                 setProductCategoryXml(PRODUCT_CATEGORY_INFO_XML);
