@@ -530,7 +530,7 @@ The list of valid keywords follows:
                                 +lat_1=&lt;scene south latitude&gt;
                                 +lat_2=&lt;scene north latitude&gt;"
         albersconic: Albers Equal Area Conic projection
-                   projection="+proj=aea +lon_0=&lt;central_meridian>
+                   projection="+proj=aea +lon_0=&lt;central_meridian&gt;
                                 +lat_0=&lt;scene center latitude&gt;
                                 +lat_1=&lt;scene south latitude&gt;
                                 +lat_2=&lt;scene north latitude&gt;"
@@ -612,7 +612,7 @@ The list of valid keywords follows:
    quality_product (string) = product to use for quality factor processing
    use_rgb (boolean) (default=no) = should we use product_rgb to make a
         pseudo-true color image
-   product_rgb (string) (default=rhos_670,rhos_555,rhos_412) =
+   product_rgb (string) (default=rhos_670,rhos_555,rhos_412) = 
         Three products to use for RGB.  Default is sensor-specific.
    fudge (float) (default=1.0) = fudge factor used to modify size of L3 pixels
    threshold (float) (default=0) = minimum percentage of filled pixels before
@@ -623,10 +623,10 @@ The list of valid keywords follows:
    land (ifile) (default=$OCDATAROOT/common/landmask_GMT15ARC.nc) = land mask file
    full_latlon (boolean) (default=yes) = write full latitude and longitude arrays.
 
+
 </pre>
 <!--AUTOMATED CODE HELP END-->
 
 <hr>
 </body>
 </html>
-

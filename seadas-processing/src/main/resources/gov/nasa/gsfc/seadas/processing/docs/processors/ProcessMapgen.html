@@ -338,102 +338,107 @@
 
 <b>Tranverse Mercator</b>: "+proj=tmerc +lat_0={latitude_of_origin} +lon_0={longitude_of_origin}"<br>
 
-</p>
+<!--</p>-->
 
 <a name="cl"><h4>Command Line Usage</h4></a>
+<!--AUTOMATED CODE HELP START-->
 <pre>
-    usage: mapgen [-h] [--parfile PARFILE] [--ifile IFILE] [--geofile GEOFILE] [--ofile OFILE] [--logfile LOGFILE]
-                  [--use_rgb] [--product PRODUCT | --product_rgb PRODUCT_RGB] [--resolution RESOLUTION]
-                  [--oformat {netcdf4,png,ppm,tiff}] [--use_transparency] [--north NORTH] [--south SOUTH]
-                  [--east EAST] [--west WEST] [--projection PROJECTION] [--central_meridian CENTRAL_MERIDIAN]
-                  [--palfile PALFILE] [--fudge FUDGE] [--datamin DATAMIN] [--datamax DATAMAX]
-                  [--scale_type {linear,log,arctan}] [--threshold THRESHOLD] [--trimNSEW] [--write_projtext]
-                  [--keep-intermediates] [--verbose]
+usage: mapgen [-h] [--parfile PARFILE] [--ifile IFILE] [--geofile GEOFILE]
+              [--ofile OFILE] [--logfile LOGFILE] [--use_rgb]
+              [--product PRODUCT | --product_rgb PRODUCT_RGB]
+              [--resolution RESOLUTION] [--oformat {netcdf4,png,ppm,tiff}]
+              [--use_transparency] [--north NORTH] [--south SOUTH]
+              [--east EAST] [--west WEST] [--projection PROJECTION]
+              [--central_meridian CENTRAL_MERIDIAN] [--palfile PALFILE]
+              [--fudge FUDGE] [--datamin DATAMIN] [--datamax DATAMAX]
+              [--scale_type {linear,log,arctan}] [--threshold THRESHOLD]
+              [--trimNSEW] [--write_projtext] [--keep-intermediates]
+              [--verbose]
 
-    generate mapped output from a SeaDAS supported satellite data files
-    arguments can be specified on the commandline or in a parameter file
-    the two methods can be used together, with commandline over-riding the parfile
+generate mapped output from a SeaDAS supported satellite data files
+arguments can be specified on the commandline or in a parameter file
+the two methods can be used together, with commandline over-riding the parfile
 
-    options:
-      -h, --help            show this help message and exit
-      --parfile PARFILE, -p PARFILE
-                            input parameter file
-      --ifile IFILE, -i IFILE
-                            input file or text file list of files
-      --geofile GEOFILE, -g GEOFILE
-                            geolocation file or text file list of files
-      --ofile OFILE, -o OFILE
-                            output file name; default: &lt;ifile&gt;.MAP.&lt;oformat ext&gt;
-      --logfile LOGFILE, -l LOGFILE
-                            log file
-                            default: mapgen_&lt;timestamp&gt;.log
-                            &lt;timestamp&gt; is in seconds since Jan 1, 1970 00:00:00
-                            this file is deleted if verbose is not set and no errors
-                            occur during processing
-      --use_rgb             generate an RGB image output
-                            default: a pseudo-true color image with bands to use
-                                     controlled by --product_rgb option
-      --product PRODUCT     product(s) to map; comma separated
-      --product_rgb PRODUCT_RGB
-                            comma separated string of RGB products
-                            e.g., product_rgb=rhos_645,rhos_555,rhos_469
-                            default:  sensor specific, see
-                            $OCDATAROOT/&lt;sensor&gt;/l1mapgen_defaults.par
-      --resolution RESOLUTION, -r RESOLUTION
-                                 #.#:  width of a pixel in meters
-                               #.#km:  width of a pixel in kilometers
-                              #.#deg:  width of a pixel in degrees
-      --oformat {netcdf4,png,ppm,tiff}
-                            netcdf4: Network Common Data Form v4 file
-                                       can contain more than one product
-                            png:     Portable Network Graphics format image
-                            ppm:     Portable PixMap format image
-                            tiff:    Tagged Image File Format with georeference tags
-      --use_transparency, -t
-                            make missing data transparent
-                            only valid for color PNG and TIFF output
-      --north NORTH, -n NORTH
-                            northern-most latitude; default: input file max lﬂatitude
-      --south SOUTH, -s SOUTH
-                            southern-most latitude; default: input file min latitude
-      --east EAST, -e EAST  eastern-most latitude; default: input file max longitude
-      --west WEST, -w WEST  western-most latitude; default: input file min longitude
-      --projection PROJECTION
-                             "proj" projection string or one of the following:
-                                platecarree: Plate Carree (cylindrical) projection
-                                  projection="+proj=eqc +lat_0=&lt;central_meridian&gt;"
-                                mollweide:   Mollweide projection
-                                  projection="+proj=moll +lat_0=&lt;central_meridian&gt;"
-                                lambert:     Lambert conformal conic projection
-                                  projection="+proj=lcc +lat_0=&lt;central_meridian&gt;"
-                                albersconic: Albers equal-area conic projection
-                                  projection="+proj=aea +lat_0=&lt;central_meridian&gt;"
-                                mercator:    Mercator cylindrical map projection
-                                  projection="+proj=merc +lat_0=&lt;central_meridian&gt;"
-                                ease2:       Ease Grid 2 projection
-                                  projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84
-                                  +datum=WGS84 +units=m +lat_0=&lt;central_meridian&gt;"
-      --central_meridian CENTRAL_MERIDIAN
-                            central meridian to use for projection in degrees east
-      --palfile PALFILE     palette filename
-                            default: see $OCDATAROOT/common/product.xml
-      --fudge FUDGE         factor used to modify pixel search radius for mapping
-      --datamin DATAMIN     minimum value for scaling (default from product.xml)
-      --datamax DATAMAX     maximum value for scaling (default from product.xml)
-      --scale_type {linear,log,arctan}
-                            data scaling method (default from product.xml)
-      --threshold THRESHOLD
-                            minimum percentage of filled pixels for image generation
-                            default: 0
-      --trimNSEW            do not trim output to match input NSEW range
-      --write_projtext      write projection information to a text file (for mapgen_overlay script)
-      --keep-intermediates  do not delete the intermediate L2/L3B files produced
-      --verbose, -v         let's get chatty; each occurrence increases verbosity
-                            default: error
-                            -v info -vv debug'
+options:
+  -h, --help            show this help message and exit
+  --parfile PARFILE, -p PARFILE
+                        input parameter file
+  --ifile IFILE, -i IFILE
+                        input file or text file list of files
+  --geofile GEOFILE, -g GEOFILE
+                        geolocation file or text file list of files
+  --ofile OFILE, -o OFILE
+                        output file name; default: &lt;ifile&gt;.MAP.&lt;oformat ext&gt;
+  --logfile LOGFILE, -l LOGFILE
+                        log file
+                        default: mapgen_&lt;timestamp&gt;.log
+                        &lt;timestamp&gt; is in seconds since Jan 1, 1970 00:00:00
+                        this file is deleted if verbose is not set and no errors
+                        occur during processing
+  --use_rgb             generate an RGB image output
+                        default: a pseudo-true color image with bands to use
+                                 controlled by --product_rgb option
+  --product PRODUCT     product(s) to map; comma separated
+  --product_rgb PRODUCT_RGB
+                        comma separated string of RGB products
+                        e.g., product_rgb=rhos_645,rhos_555,rhos_469
+                        default:  sensor specific, see
+                        $OCDATAROOT/&lt;sensor&gt;/l1mapgen_defaults.par
+  --resolution RESOLUTION, -r RESOLUTION
+                             #.#:  width of a pixel in meters
+                           #.#km:  width of a pixel in kilometers
+                          #.#deg:  width of a pixel in degrees
+  --oformat {netcdf4,png,ppm,tiff}
+                        netcdf4: Network Common Data Form v4 file
+                                   can contain more than one product
+                        png:     Portable Network Graphics format image
+                        ppm:     Portable PixMap format image
+                        tiff:    Tagged Image File Format with georeference tags
+  --use_transparency, -t
+                        make missing data transparent
+                        only valid for color PNG and TIFF output
+  --north NORTH, -n NORTH
+                        northern-most latitude; default: input file max l√üatitude
+  --south SOUTH, -s SOUTH
+                        southern-most latitude; default: input file min latitude
+  --east EAST, -e EAST  eastern-most latitude; default: input file max longitude
+  --west WEST, -w WEST  western-most latitude; default: input file min longitude
+  --projection PROJECTION
+                         "proj" projection string or one of the following:
+                            platecarree: Plate Carree (cylindrical) projection
+                              projection="+proj=eqc +lat_0=&lt;central_meridian&gt;"
+                            mollweide:   Mollweide projection
+                              projection="+proj=moll +lat_0=&lt;central_meridian&gt;"
+                            lambert:     Lambert conformal conic projection
+                              projection="+proj=lcc +lat_0=&lt;central_meridian&gt;"
+                            albersconic: Albers equal-area conic projection
+                              projection="+proj=aea +lat_0=&lt;central_meridian&gt;"
+                            mercator:    Mercator cylindrical map projection
+                              projection="+proj=merc +lat_0=&lt;central_meridian&gt;"
+                            ease2:       Ease Grid 2 projection
+                              projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84
+                              +datum=WGS84 +units=m +lat_0=&lt;central_meridian&gt;"
+  --central_meridian CENTRAL_MERIDIAN
+                        central meridian to use for projection in degrees east
+  --palfile PALFILE     palette filename
+                        default: see $OCDATAROOT/common/product.xml
+  --fudge FUDGE         factor used to modify pixel search radius for mapping
+  --datamin DATAMIN     minimum value for scaling (default from product.xml)
+  --datamax DATAMAX     maximum value for scaling (default from product.xml)
+  --scale_type {linear,log,arctan}
+                        data scaling method (default from product.xml)
+  --threshold THRESHOLD
+                        minimum percentage of filled pixels for image generation
+                        default: 0
+  --trimNSEW            do not trim output to match input NSEW range
+  --write_projtext      write projection information to a text file (for mapgen_overlay script)
+  --keep-intermediates  do not delete the intermediate L2/L3B files produced
+  --verbose, -v         let's get chatty; each occurrence increases verbosity
+                        default: error
+                        -v info -vv debug'
 
-    You must specify an input file either on the command line or in a parameter file
 </pre>
+<!--AUTOMATED CODE HELP END-->
 <hr>
 </body>
 </html>

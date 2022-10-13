@@ -201,36 +201,41 @@
 
 
 <a name="cl"><h4>Command Line Usage</h4></a>
+<!--AUTOMATED CODE HELP START-->
 <pre>
-    usage: modis_L1A [-h] [--version] [-p PARFILE] [-o L1AFILE] [-m MISSION] [-s STARTNUDGE] [-e STOPNUDGE]
-                     [-n NEXT] [-v] [--log] [-d] [-t]
-                     [L0FILE]
+usage: modis_L1A [-h] [--version] [-p PARFILE] [-o L1AFILE] [-m MISSION]
+                 [-s STARTNUDGE] [-e STOPNUDGE] [-n NEXT] [-v] [--log] [-d]
+                 [-t]
+                 [L0FILE]
 
-    positional arguments:
-      L0FILE                Input L0 file
+positional arguments:
+  L0FILE                Input L0 file
 
-    options:
-      -h, --help            show this help message and exit
-      --version             show program's version number and exit
-      -p PARFILE, --parfile PARFILE
-                            Parameter file containing program inputs
-      -o L1AFILE, --output L1AFILE
-                            Output L1A filename - defaults to '(A|T)YYYYDDDHHMMSS.L1A_LAC'
-      -m MISSION, --mission MISSION
-                            MODIS mission - A(qua) or T(erra)
-      -s STARTNUDGE, --startnudge STARTNUDGE
-                            Level-0 start-time offset (seconds)
-      -e STOPNUDGE, --stopnudge STOPNUDGE
-                            Level-0 stop-time offset (seconds)
-      -n NEXT, --nextgranule NEXT
-                            Next L0 granule (for geolocation of last scan; sets stopnudge=0)
-      -v, --verbose         print status messages
-      --log                 Save processing log file(s)
-      -d, --disableL0fix    Disable use of l0fix_modis utility for corrupt packets
-      -t, --disablerounding
-                            Disable rounding of granule end time to 5-min boundary
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -p PARFILE, --parfile PARFILE
+                        Parameter file containing program inputs
+  -o L1AFILE, --output L1AFILE
+                        Output L1A filename - defaults to
+                        '(A|T)YYYYDDDHHMMSS.L1A_LAC'
+  -m MISSION, --mission MISSION
+                        MODIS mission - A(qua) or T(erra)
+  -s STARTNUDGE, --startnudge STARTNUDGE
+                        Level-0 start-time offset (seconds)
+  -e STOPNUDGE, --stopnudge STOPNUDGE
+                        Level-0 stop-time offset (seconds)
+  -n NEXT, --nextgranule NEXT
+                        Next L0 granule (for geolocation of last scan; sets
+                        stopnudge=0)
+  -v, --verbose         print status messages
+  --log                 Save processing log file(s)
+  -d, --disableL0fix    Disable use of l0fix_modis utility for corrupt packets
+  -t, --disablerounding
+                        Disable rounding of granule end time to 5-min boundary
+
 </pre>
-
+<!--AUTOMATED CODE HELP END-->
 <hr>
 </body>
 </html>

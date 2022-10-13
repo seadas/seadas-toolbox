@@ -553,81 +553,87 @@
 <br>
 <hr>
 <a name="cl"><h4>Command Line Usage</h4></a>
-
+<!--AUTOMATED CODE HELP START-->
 <h5>l1aextract_modis</h5>
 <pre>
-This is version 0.76 of l1aextract_modis (compiled on Nov 17 2018 15:44:30)
+This is version 0.76 of l1aextract_modis (compiled on Jan 11 2022 14:31:02)
 
 Usage: l1aextract_modis infile spixl epixl sline eline outfile
    where:
-   infile   - input MODIS L1A datafile
-   spixl    - start pixel number (1-based)
-   epixl    - end pixel number (1-based)
-   sline    - start line (1-based)
-   eline    - end line (1-based)
-   outfile  - output file name
+	infile   - input MODIS L1A datafile
+	spixl    - start pixel number (1-based)
+	epixl    - end pixel number (1-based)
+	sline    - start line (1-based)
+	eline    - end line (1-based)
+	outfile  - output file name
 
-NOTE: Enter line number NOT scan number!
+Note: Enter line number NOT scan number!
 </pre>
 
 <hr>
 <h5>l1aextract_viirs</h5>
 <pre>
-This is version 0.998 of l1aextract_viirs (compiled on May 31 2018 12:49:00)
+l1aextract_viirs 0.998 (Jan 11 2022 14:33:16)
 
-Usage: l1aextract_viirs infile spixl epixl sline eline outfile
-   where:
-   infile   - input VIIRS L1A data file
+l1aextract_viirs infile spixl epixl sline eline outfile
+
+  where:
+    infile  - input VIIRS L1A file
+
     spixl   - start pixel (1-based)
     epixl   - end pixel (1-based)
     sline   - start line (M-band resolution, 1-based)
     eline   - end line (M-band resolution, 1-based)
     outfile - output VIIRS L1A extract file
 
-NOTE: To extract entire scan line set both spixl and epixl to 0
+To extract entire scan line set both spixl and epixl to 0
 
 </pre>
 
 <hr>
 <h5>l1aextract_seawifs</h5>
 <pre>
-Usage: l1aextract_seawifs infile spix epix sscan escan pix_sub sc_sub outfile
+
+Usage: &lt;l1aextract_seawifs&gt; infile spix epix sscan escan pix_sub sc_sub outfile
    where:
-   infile   - input l1a data HDF file
-   spix     - start pixel number
-   epix     - end pixel number
-   sscan    - start scan line
-   escan    - end scan line
-   pix_sub  - pixel subsampling rate
-   sc_sub   - scan line subsampling rate
-   outfile  - output file name
+	infile   - input l1a data HDF file
+	spix     - start pixel number
+	epix     - end pixel number
+	sscan    - start scan line
+	escan    - end scan line
+	pix_sub  - pixel subsampling rate
+	sc_sub   - scan line subsampling rate
+	outfile  - output file name
 
 NOTE: Start and End pixel/scanline will be set to input file's nsamp
-    and nrec respectively, if the given values are out of range.
+	 and nrec respectively, if the given values are out of range.
+
 
 </pre>
 
 <hr>
-<h5>l2extract</h5>
+<h5>l2aextract</h5>
 <pre>
-This is version 2.0.2 of l2extract (compiled on Nov 17 2018 15:45:01)
+This is version 2.0.2 of l2extract (compiled on Jan 11 2022 14:32:02)
 
-Usage: l2extract infile spix epix sscan escan pix_sub sc_sub outfile (prodlist)
+
+
+Usage: &lt;l2extract&gt; infile spix epix sscan escan pix_sub sc_sub outfile &lt;prodlist&gt;
    where:
-   infile   - input l2 data file
-   spix     - start pixel number (1-based)
-   epix     - end pixel number (1-based)
-   sscan    - start scan line (1-based)
-   escan    - end scan line (1-based)
-   pix_sub  - pixel subsampling rate
-   sc_sub   - scan line subsampling rate
-   outfile  - output file name
-   productlist - product list, comma separated (optional)
+	infile   - input l2 data HDF file
+	spix     - start pixel number (1-based)
+	epix     - end pixel number (1-based)
+	sscan    - start line (1-based)
+	escan    - end line (1-based)
+	pix_sub  - pixel subsampling rate
+	sc_sub   - scan line subsampling rate
+	outfile  - output file name
+	prodlist  - product list, comma separated (optional)
 
-NOTE: Enter line number NOT scan number!
+Note: Enter line number NOT scan number!
 
 </pre>
-
+<!--AUTOMATED CODE HELP END-->
 
 <hr>
 </body>
