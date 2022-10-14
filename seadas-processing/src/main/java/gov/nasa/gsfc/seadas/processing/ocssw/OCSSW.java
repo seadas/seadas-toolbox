@@ -454,34 +454,34 @@ public abstract class OCSSW {
     }
 
     public void updateL2genProductInfoXMLFiles(){
-        String programName = "l2gen";
-        File dataDir = SystemUtils.getApplicationDataDir();
-        File l2genDir = new File(dataDir, OPER_DIR);
-        l2genDir.mkdirs();
-
-        File xmlFile = new File(l2genDir, L2genData.PRODUCT_INFO_XML);
-        ProcessorModel processorModel = new ProcessorModel(programName, this);
-        processorModel.setAcceptsParFile(false);
-        processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
-        processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
-
-        try {
-            Process p = executeSimple(processorModel);
-            waitForProcess();
-
-            if (getProcessExitValue() != 0) {
-                throw new IOException(programName + " returned nonzero exitvalue");
-            }
-            boolean downloadSuccessful = getIntermediateOutputFiles(processorModel);
-
-        } catch (Exception e) {
-            Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
-            JOptionPane.showMessageDialog(activeWindow,
-                    "Problem creating product XML file: " + e.getMessage() + "'.",
-                    "Product XML Problem",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-        }
+//        String programName = "l2gen";
+//        File dataDir = SystemUtils.getApplicationDataDir();
+//        File l2genDir = new File(dataDir, OPER_DIR);
+//        l2genDir.mkdirs();
+//
+//        File xmlFile = new File(l2genDir, L2genData.PRODUCT_INFO_XML);
+//        ProcessorModel processorModel = new ProcessorModel(programName, this);
+//        processorModel.setAcceptsParFile(false);
+//        processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+//        processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
+//
+//        try {
+//            Process p = executeSimple(processorModel);
+//            waitForProcess();
+//
+//            if (getProcessExitValue() != 0) {
+//                throw new IOException(programName + " returned nonzero exitvalue");
+//            }
+//            boolean downloadSuccessful = getIntermediateOutputFiles(processorModel);
+//
+//        } catch (Exception e) {
+//            Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+//            JOptionPane.showMessageDialog(activeWindow,
+//                    "Problem creating product XML file: " + e.getMessage() + "'.",
+//                    "Product XML Problem",
+//                    JOptionPane.INFORMATION_MESSAGE);
+//
+//        }
     }
     public void updateOCSSWProgramXMLFiles(){
 //        String executable = getGuiName();

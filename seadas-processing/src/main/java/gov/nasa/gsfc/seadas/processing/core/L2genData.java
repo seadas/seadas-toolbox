@@ -63,7 +63,7 @@ public class L2genData implements SeaDASProcessorModel {
 
     public static final String
             GUI_NAME = "l2gen",
-            PRODUCT_INFO_XML = "productInfo.xml",
+//            PRODUCT_INFO_XML = "productInfo.xml",
             PRODUCT_XML = "product.xml",
             PARAM_INFO_XML = "paramInfo.xml",
             PARAM_CATEGORY_INFO_XML = "paramCategoryInfo.xml",
@@ -83,7 +83,7 @@ public class L2genData implements SeaDASProcessorModel {
             AQUARIUS_DEFAULT_SUITE = "V5.0.0";
 
     private static final String L3GEN_GUI_NAME = "l3gen",
-            L3GEN_PRODUCT_INFO_XML = "productInfo.xml",
+//            L3GEN_PRODUCT_INFO_XML = "productInfo.xml",
             L3GEN_PRODUCT_XML = "product.xml",
             L3GEN_PARAM_INFO_XML = "paramInfo.xml",
             L3GEN_PARAM_CATEGORY_INFO_XML = "l3genParamCategoryInfo.xml",
