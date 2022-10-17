@@ -684,11 +684,6 @@ public class OCSSWRemote extends OCSSW {
     }
 
     @Override
-    public void updateOCSSWProgramXMLFiles() {
-
-    }
-
-    @Override
     public InputStream getProductXMLFile(L2genData.Source source) throws IOException {
         Response response = target.path("fileServices").path("downloadFile").path("productXmlFile").request().get(Response.class);
         InputStream responseStream = (InputStream) response.getEntity();
