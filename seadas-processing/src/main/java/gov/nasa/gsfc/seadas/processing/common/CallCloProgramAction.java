@@ -305,10 +305,7 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
                             enableProcessors();
                         }
                     }
-                    if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
-                        ocssw.updateOCSSWProgramXMLFiles();
-                        ocssw.updateL2genProductInfoXMLFiles();
-                    }
+
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
                         ocssw.setIfileName(secondaryProcessor.getParamValue(secondaryProcessor.getPrimaryInputFileOptionName()));
