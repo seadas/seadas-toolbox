@@ -83,11 +83,6 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
-    public void updateOCSSWProgramXMLFiles() {
-
-    }
-
-    @Override
     public InputStream getProductXMLFile(L2genData.Source source) throws IOException {
         File ocsswShareDir = new File(OCSSWInfo.getInstance().getOcsswRoot(), SHARE_DIR);
 
