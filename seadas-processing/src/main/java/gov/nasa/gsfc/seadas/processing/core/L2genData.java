@@ -1312,11 +1312,12 @@ public class L2genData implements SeaDASProcessorModel {
 
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
 
-        fireEvent(IFILE, oldIfile, ifileValue);
-
         fireEvent(PARSTRING);
         enableEvent(L2PROD);
         enableEvent(PARSTRING);
+
+        fireEvent(IFILE, oldIfile, ifileValue);
+
 
     }
 
