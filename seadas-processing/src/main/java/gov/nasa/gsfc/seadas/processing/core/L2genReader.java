@@ -343,6 +343,14 @@ public class L2genReader {
                 Element prodElement = (Element) prodNodelist.item(i);
 
                 String prodName = prodElement.getAttribute("name");
+
+                // testing debug
+                if ("chlor_a".equals(prodName)) {
+                    int junk = 1;
+                }
+                if ("Rrs".equals(prodName)) {
+                    int junk = 1;
+                }
                 L2genProductInfo productInfo = null;
 
                 L2genProductInfo integerProductInfo = null;
@@ -363,11 +371,23 @@ public class L2genReader {
                             Element paramDesignatorElement = (Element) paramDesignatorNodelist.item(j);
                             if (paramDesignatorElement != null) {
                                 String paramDesignator = paramDesignatorElement.getFirstChild().getNodeValue();
-                                if (paramDesignator.equals("emissive")) {
-                                    emissiveProd = true;
+                                if (paramDesignator.equals("uv")) {
+                                    visibleProd = true;
                                 }
+
                                 if (paramDesignator.equals("visible")) {
                                     visibleProd = true;
+                                }
+
+                                if (paramDesignator.equals("nir")) {
+                                    emissiveProd = true;
+                                }
+                                if (paramDesignator.equals("swir")) {
+                                    emissiveProd = true;
+                                }
+
+                                if (paramDesignator.equals("emissive")) {
+                                    emissiveProd = true;
                                 }
                             }
                         }
@@ -397,6 +417,9 @@ public class L2genReader {
                             algorithmName = algElement.getAttribute("name");
                             algorithmInfo.setName(algorithmName);
                         }
+
+
+                        String algorithmRank = XmlReader.getTextValue(algElement, "rank");;
 
 
                         String suffix = XmlReader.getTextValue(algElement, "suffix");
@@ -437,11 +460,24 @@ public class L2genReader {
 //                                    String paramDes = XmlReader.getTextValue(paramDesElement, "paramDesignator");
                                     String paramDes = paramDesElement.getFirstChild().getNodeValue();
                                     parameterTypeChg = true;
-                                    if (paramDes.equals("emissive")) {
-                                        emissiveAlg = true;
+
+                                    if (paramDes.equals("uv")) {
+                                        visibleAlg = true;
                                     }
                                     if (paramDes.equals("visible")) {
                                         visibleAlg = true;
+                                    }
+
+                                    if (paramDes.equals("nir")) {
+                                        emissiveAlg = true;
+                                    }
+
+                                    if (paramDes.equals("swir")) {
+                                        emissiveAlg = true;
+                                    }
+
+                                    if (paramDes.equals("emissive")) {
+                                        emissiveAlg = true;
                                     }
                                 }
                             }
@@ -454,6 +490,7 @@ public class L2genReader {
                             }
                         }
 
+
                         if (parameterTypeChg){
                             algorithmInfo.setParameterType(parameterTypeAlgStr);
                         } else {
@@ -461,21 +498,23 @@ public class L2genReader {
                         }
 
 
-                        if (algorithmInfo.getParameterType() == L2genAlgorithmInfo.ParameterType.INT) {
-                            if (integerProductInfo == null) {
-                                integerProductInfo = new L2genProductInfo(prodName);
+//                        if (!"3".equals(algorithmRank)) {
+                            if (algorithmInfo.getParameterType() == L2genAlgorithmInfo.ParameterType.INT) {
+                                if (integerProductInfo == null) {
+                                    integerProductInfo = new L2genProductInfo(prodName);
+                                }
+                                integerProductInfo.setName(prodName);
+                                integerProductInfo.addChild(algorithmInfo);
+                                algorithmInfo.setProductInfo(integerProductInfo);
+                            } else {
+                                if (productInfo == null) {
+                                    productInfo = new L2genProductInfo(prodName);
+                                }
+                                productInfo.setName(prodName);
+                                productInfo.addChild(algorithmInfo);
+                                algorithmInfo.setProductInfo(productInfo);
                             }
-                            integerProductInfo.setName(prodName);
-                            integerProductInfo.addChild(algorithmInfo);
-                            algorithmInfo.setProductInfo(integerProductInfo);
-                        } else {
-                            if (productInfo == null) {
-                                productInfo = new L2genProductInfo(prodName);
-                            }
-                            productInfo.setName(prodName);
-                            productInfo.addChild(algorithmInfo);
-                            algorithmInfo.setProductInfo(productInfo);
-                        }
+//                        }
 
                     } // for algorithms
 
