@@ -24,6 +24,7 @@ public class L2genReader {
 
 
     private L2genData l2genData;
+    private boolean enable3DProducts = false;  // Currently yields an undesired extra parent directory if enabled (as of SeaDAS Toolbox 1.3.0)
 
     public L2genReader(L2genData l2genData) {
         this.l2genData = l2genData;
@@ -344,13 +345,15 @@ public class L2genReader {
 
                 String prodName = prodElement.getAttribute("name");
 
-                // testing debug
-                if ("chlor_a".equals(prodName)) {
-                    int junk = 1;
-                }
-                if ("Rrs".equals(prodName)) {
-                    int junk = 1;
-                }
+                // testing block for debug breakpoints
+//                if ("chlor_a".equals(prodName)) {
+//                    int junk = 1;
+//                }
+//                if ("Rrs".equals(prodName)) {
+//                    int junk = 1;
+//                }
+                // end debug breakpoints
+
                 L2genProductInfo productInfo = null;
 
                 L2genProductInfo integerProductInfo = null;
@@ -405,6 +408,7 @@ public class L2genReader {
 
                 if (algNodelist != null && algNodelist.getLength() > 0) {
                     for (int j = 0; j < algNodelist.getLength(); j++) {
+                        boolean algEnabled = true;
 
                         Element algElement = (Element) algNodelist.item(j);
 
@@ -419,8 +423,11 @@ public class L2genReader {
                         }
 
 
-                        String algorithmRank = XmlReader.getTextValue(algElement, "rank");;
-
+                        String algorithmRank = XmlReader.getTextValue(algElement, "rank");
+                        // Disable if 3D product
+                        if (!enable3DProducts && "3".equals(algorithmRank)) {
+                            algEnabled = false;
+                        }
 
                         String suffix = XmlReader.getTextValue(algElement, "suffix");
                         if (suffix != null) {
@@ -498,7 +505,8 @@ public class L2genReader {
                         }
 
 
-//                        if (!"3".equals(algorithmRank)) {
+
+                        if (algEnabled) {
                             if (algorithmInfo.getParameterType() == L2genAlgorithmInfo.ParameterType.INT) {
                                 if (integerProductInfo == null) {
                                     integerProductInfo = new L2genProductInfo(prodName);
@@ -514,7 +522,7 @@ public class L2genReader {
                                 productInfo.addChild(algorithmInfo);
                                 algorithmInfo.setProductInfo(productInfo);
                             }
-//                        }
+                        }
 
                     } // for algorithms
 
