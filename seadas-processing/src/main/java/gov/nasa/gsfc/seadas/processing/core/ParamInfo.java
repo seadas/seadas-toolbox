@@ -1,11 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 
+import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.common.FileInfo;
-import gov.nasa.gsfc.seadas.processing.common.FileTypeInfo;
-import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
-import gov.nasa.gsfc.seadas.processing.common.SeadasProcessorInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -315,8 +312,10 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
                                 setValidationComment("WARNING!!! File '" + filename + "' is not a GEO file");
                             }
                         } else if (getName().equals(L2genData.IFILE)) {
-                            if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
-                                setValidationComment("# WARNING!!! file " + filename + " is not a valid input mission" + ": Mission="+ fileInfo.getMissionName() + "\n");
+                            if (filename.contains(" ")) {
+                                setValidationComment("# WARNING!!! File " + filename + " has a space in it" + "\n");
+                            } else if (!SeadasProcessorInfo.isSupportedMission(fileInfo, processorInfoId)) {
+                                setValidationComment("# WARNING!!! File " + filename + " is not a valid input mission" + ": Mission="+ fileInfo.getMissionName() + "\n");
                             } else if (!fileInfo.isMissionDirExist()) {
                                 File dir = fileInfo.getSubsensorDirectory();
                                 if(dir == null) {
@@ -328,7 +327,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
                                     setValidationComment("WARNING!!! Mission directory does not exist");
                                 }
                             } else if (!SeadasProcessorInfo.isValidFileType(fileInfo, processorInfoId)) {
-                                setValidationComment("# WARNING!!! file " + filename + " is not a valid input file type" + "\n");
+                                setValidationComment("# WARNING!!! File " + filename + " is not a valid input file type" + "\n");
                             }
                         }
                     } else {
