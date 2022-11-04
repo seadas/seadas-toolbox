@@ -450,8 +450,8 @@ public class OCSSWLocal extends OCSSW {
             if (exitCode == 0) {
                 String line = br.readLine();
                 while (line != null) {
-                    if (line.startsWith(NEXT_LEVEL_FILE_NAME_TOKEN)) {
-                        return (line.substring(NEXT_LEVEL_FILE_NAME_TOKEN.length())).trim();
+                    if (line.startsWith(GET_OUTPUT_NAME_TOKEN)) {
+                        return (line.substring(GET_OUTPUT_NAME_TOKEN.length())).trim();
                     }
                     line = br.readLine();
                 }
@@ -461,7 +461,7 @@ public class OCSSWLocal extends OCSSW {
                     System.out.println("error stream: " + line);
                     line = br.readLine();
                 }
-                Debug.trace("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
+                Debug.trace("Failed exit code on program '" + GET_OUTPUT_NAME_PROGRAM_NAME + "'");
             }
         } catch (IOException ioe) {
             Dialogs.showError(ioe.getMessage());

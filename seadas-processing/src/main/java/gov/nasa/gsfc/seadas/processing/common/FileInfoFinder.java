@@ -15,8 +15,15 @@ public class FileInfoFinder {
     private String missionDirName;
 
     public FileInfoFinder(String fileName, OCSSW ocssw){
-        ocssw.findFileInfo(fileName, this);
-        setMissionDirName(OCSSWInfo.getInstance().getOcsswDataDirPath());
+        if (fileName.contains(" ")) {
+            SimpleDialogMessage dialog = new SimpleDialogMessage(null, "WARNING!! " +
+                    " Make sure ifile name does not have a space in it");
+            dialog.setVisible(true);
+            dialog.setEnabled(true);
+        } else {
+            ocssw.findFileInfo(fileName, this);
+            setMissionDirName(OCSSWInfo.getInstance().getOcsswDataDirPath());
+        }
     }
 
     public String getFileType() {
