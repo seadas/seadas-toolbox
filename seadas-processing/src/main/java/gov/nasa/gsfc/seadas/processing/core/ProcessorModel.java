@@ -400,8 +400,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         SeadasFileUtils.debug(name + " " + value);
         if (name.trim().equals(getPrimaryInputFileOptionName())) {
             if (value.contains(" ")) {
-                SimpleDialogMessage dialog = new SimpleDialogMessage(null, "WARNING!! " +
-                        " Make sure ifile name does not have a space in it");
+                SimpleDialogMessage dialog = new SimpleDialogMessage(null, "<html><br>&nbsp;&nbsp;WARNING!!<br> " +
+                        "&nbsp;&nbsp;Directory path and/or filename cannot have a space in it&nbsp;&nbsp;<br>&nbsp;</html>");
                 dialog.setVisible(true);
                 dialog.setEnabled(true);
             } else {
@@ -409,8 +409,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         } else if (name.trim().equals(getPrimaryOutputFileOptionName())) {
             if (value.contains(" ")) {
-                SimpleDialogMessage dialog = new SimpleDialogMessage(null, "WARNING!! " +
-                        " Make sure ifile name does not have a space in it");
+                SimpleDialogMessage dialog = new SimpleDialogMessage(null, "<html><br>&nbsp;&nbsp;WARNING!!<br> " +
+                        "&nbsp;&nbsp;Directory path and/or filename cannot have a space in it&nbsp;&nbsp;<br>&nbsp;</html>");
                 dialog.setVisible(true);
                 dialog.setEnabled(true);
             } else {
