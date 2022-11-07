@@ -16,8 +16,8 @@ public class FileInfoFinder {
 
     public FileInfoFinder(String fileName, OCSSW ocssw){
         if (fileName.contains(" ")) {
-            SimpleDialogMessage dialog = new SimpleDialogMessage(null, "WARNING!! " +
-                    " Make sure ifile name does not have a space in it");
+            SimpleDialogMessage dialog = new SimpleDialogMessage(null, "<html><br>&nbsp;&nbsp;WARNING!!<br> " +
+                    "&nbsp;&nbsp;Directory path and/or filename cannot have a space in it&nbsp;&nbsp;<br>&nbsp;</html>");
             dialog.setVisible(true);
             dialog.setEnabled(true);
         } else {
