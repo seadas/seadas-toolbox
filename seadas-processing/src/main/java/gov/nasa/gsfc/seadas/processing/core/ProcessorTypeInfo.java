@@ -43,8 +43,10 @@ public class ProcessorTypeInfo {
         L3GEN,
         L2GEN_AQUARIUS,
         L3BINDUMP,
-        OBPG_FILE_TYPE_PY,
-        NEXT_LEVEL_NAME_PY,
+//        OBPG_FILE_TYPE_PY,
+        OBPG_FILE_TYPE,
+        GET_OUTPUT_NAME,
+//        NEXT_LEVEL_NAME_PY,
         UPDATE_LUTS,
         NOID
     }
@@ -85,8 +87,10 @@ public class ProcessorTypeInfo {
         put("multilevel_processor", ProcessorID.MULTILEVEL_PROCESSOR);
         put("install_ocssw", ProcessorID.OCSSW_INSTALLER);
         put("l3bindump", ProcessorID.L3BINDUMP);
-        put("obpg_file_type", ProcessorID.OBPG_FILE_TYPE_PY);
-        put("next_level_name", ProcessorID.NEXT_LEVEL_NAME_PY);
+        put("obpg_file_type", ProcessorID.OBPG_FILE_TYPE);
+//        put("obpg_file_type", ProcessorID.OBPG_FILE_TYPE_PY);
+//        put("next_level_name", ProcessorID.NEXT_LEVEL_NAME_PY);
+        put("get_output_name", ProcessorID.GET_OUTPUT_NAME);
         put("update_luts", ProcessorID.UPDATE_LUTS);
 
     }};
@@ -97,6 +101,7 @@ public class ProcessorTypeInfo {
                 "l1aextract_modis" +
                 "l1aextract_seawifs" +
                 "l2extract" +
+                "get_output_name" +
                 "next_level_name" +
                 "obpg_file_type"+
                 "lonlat2pixline";

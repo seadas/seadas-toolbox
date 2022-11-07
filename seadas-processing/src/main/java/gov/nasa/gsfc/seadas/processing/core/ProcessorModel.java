@@ -399,9 +399,23 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         SeadasFileUtils.debug("set param value: " + name + " " + value);
         SeadasFileUtils.debug(name + " " + value);
         if (name.trim().equals(getPrimaryInputFileOptionName())) {
-            updateIFileInfo(value);
+            if (value.contains(" ")) {
+                SimpleDialogMessage dialog = new SimpleDialogMessage(null, "<html><br>&nbsp;&nbsp;WARNING!!<br> " +
+                        "&nbsp;&nbsp;Directory path and/or filename cannot have a space in it&nbsp;&nbsp;<br>&nbsp;</html>");
+                dialog.setVisible(true);
+                dialog.setEnabled(true);
+            } else {
+                updateIFileInfo(value);
+            }
         } else if (name.trim().equals(getPrimaryOutputFileOptionName())) {
-            updateOFileInfo(getOFileFullPath(value));
+            if (value.contains(" ")) {
+                SimpleDialogMessage dialog = new SimpleDialogMessage(null, "<html><br>&nbsp;&nbsp;WARNING!!<br> " +
+                        "&nbsp;&nbsp;Directory path and/or filename cannot have a space in it&nbsp;&nbsp;<br>&nbsp;</html>");
+                dialog.setVisible(true);
+                dialog.setEnabled(true);
+            } else {
+                updateOFileInfo(getOFileFullPath(value));
+            }
         } else {
             updateParamInfo(name, value);
         }
