@@ -62,5 +62,6 @@
     <mapID target="fieldMeasurementsMakeMatchups" url="FieldMeasurements/MakeMatchups.html"/>
 
     <mapID target="universalPalettes" url="Topics/Palettes/UniversalPalettes.html"/>
+    <mapID target="virtualFiles" url="Topics/VirtualFiles.html"/>
 
 </map>
