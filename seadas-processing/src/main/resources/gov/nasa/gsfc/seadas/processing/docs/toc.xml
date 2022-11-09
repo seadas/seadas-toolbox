@@ -86,6 +86,7 @@
         
         <tocitem text="Topics">
             <tocitem text="Universal Palettes (Color Blind)" target="universalPalettes"/>
+            <tocitem text="Virtual, Real and System Files" target="virtualFiles"/>
         </tocitem>
 
 
