@@ -1116,16 +1116,29 @@ public class L2genData implements SeaDASProcessorModel {
 
     private File getSensorInfoFilename() {
         if (iFileInfo != null) {
-            // determine the filename which contains the wavelength
-            File dir = iFileInfo.getSubsensorDirectory();
-            if (dir == null) {
-                dir = iFileInfo.getMissionDirectory();
+            // determine the filename which contains the wavelength information
+
+            String SENSOR_INFO_FILENAME = "msl12_sensor_info.dat";
+
+            File subSensorDir = iFileInfo.getSubsensorDirectory();
+
+            if (subSensorDir != null) {
+                File filename = new File(subSensorDir.getAbsolutePath(), SENSOR_INFO_FILENAME);
+                if (filename.exists()) {
+                    return filename;
+                }
             }
-            if (dir != null) {
-                File filename = new File(dir.getAbsolutePath(), "msl12_sensor_info.dat");
-                return filename;
+
+            File missionDir = iFileInfo.getMissionDirectory();
+
+            if (missionDir != null) {
+                File filename = new File(missionDir.getAbsolutePath(), SENSOR_INFO_FILENAME);
+                if (filename.exists()) {
+                    return filename;
+                }
             }
         }
+
         return null;
     }
 
