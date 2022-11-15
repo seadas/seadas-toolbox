@@ -764,17 +764,31 @@ public class OCSSWRemoteImpl {
     }
 
     private File getSensorInfoFilename(MissionInfo missionInfo) {
+
         if (missionInfo != null) {
-            // determine the filename which contains the wavelength
-            File dir = missionInfo.getSubsensorDirectory();
-            if (dir == null) {
-                dir = missionInfo.getDirectory();
+            // determine the filename which contains the wavelength information
+
+            String SENSOR_INFO_FILENAME = "msl12_sensor_info.dat";
+
+            File subSensorDir = missionInfo.getSubsensorDirectory();
+
+            if (subSensorDir != null) {
+                File filename = new File(subSensorDir.getAbsolutePath(), SENSOR_INFO_FILENAME);
+                if (filename.exists()) {
+                    return filename;
+                }
             }
-            if (dir != null) {
-                File filename = new File(dir.getAbsolutePath(), "msl12_sensor_info.dat");
-                return filename;
+
+            File missionDir = missionInfo.getDirectory();
+
+            if (missionDir != null) {
+                File filename = new File(missionDir.getAbsolutePath(), SENSOR_INFO_FILENAME);
+                if (filename.exists()) {
+                    return filename;
+                }
             }
         }
+
         return null;
     }
 
