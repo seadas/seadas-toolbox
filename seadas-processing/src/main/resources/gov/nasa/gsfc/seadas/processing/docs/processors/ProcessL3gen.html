@@ -56,7 +56,7 @@
 
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l3gen 9.5.1-V2022.0 (Jan 11 2022 14:32:35)
+l3gen 9.6.0-V2022.1 (Nov 17 2022 15:36:07)
 Usage: l3gen argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
@@ -156,6 +156,13 @@ The list of valid keywords follows:
            aer_swir_long, aer_wave_short, aer_wave_long)
       -10: Multi-scattering with MUMM correction
            and MUMM NIR calculation
+      -17: Multi-scattering epsilon, RH-based model selection
+           and iterative NIR correction
+      -18: Spectral Matching of aerosols reflectance
+           and iterative NIR correction
+      -19: Multi-scattering epsilon (linear), RH-based model selection
+           and iterative NIR correction
+
    aer_wave_short (int) (default=765) = shortest sensor wavelength for aerosol
         model selection
    aer_wave_long (int) (default=865) = longest sensor wavelength for aerosol
@@ -193,11 +200,13 @@ The list of valid keywords follows:
         0: glint correction off
         1: standard glint correction
         2: simple glint correction
-   oxaband_opt (boolean) (default=false) = oxygen a-band correction option
-        (default On for SeaWiFS, OSMI, and OCTS, Off otherwise)
+   oxaband_opt (int) (default=0) = oxygen A-band correction
+        0: no correction
+        1: Apply Ding and Gordon (1995) correction
+        3: Apply oxygen transmittance from gas transmittance table (see gas_opt)
+
    cirrus_opt (boolean) (default=false) = cirrus cloud reflectance correction option
    filter_opt (boolean) (default=false) = filtering input data option
-        (default On for OCTS, Off otherwise)
    filter_file (ifile) (default=$OCDATAROOT/sensor/sensor_filter.dat) = 
         data file for input filtering
    brdf_opt (int) (default=0) = Bidirectional reflectance correction
@@ -215,8 +224,11 @@ The list of valid keywords follows:
         2: CO2
         4: NO2
         8: H2O
-       16: Use ATREM (H2O)
+       16: Use ATREM
        32: Use &lt;sensor&gt;_gas_transmittance.nc tables
+       64: CO
+      128: CH4
+      256: N2O
    atrem_opt (int) (default=0) = ATREM gaseous transmittance bitmask selector
         0: H2O only
         1: Ozone
@@ -447,13 +459,12 @@ The list of valid keywords follows:
         ancillary cloud albedo data file
    anc_cor_file (ifile) = ozone correction file
    pixel_anc_file (ifile) = per pixel ancillary data file
-   land (ifile) (default=$OCDATAROOT/common/landmask_GMT15ARC.nc) = land mask file
-   water (ifile) (default=$OCDATAROOT/common/watermask.dat) = 
+   land (ifile) (default=$OCDATAROOT/common/gebco_ocssw_v2020.nc) = land mask file
+   water (ifile) (default=$OCDATAROOT/common/gebco_ocssw_v2020.nc) = 
         shallow water mask file
-   demfile (ifile) (default=$OCDATAROOT/common/ETOPO1_ocssw.nc) = 
+   demfile (ifile) (default=$OCDATAROOT/common/gebco_ocssw_v2020.nc) = 
         digital elevation map file
-   elevfile (ifile) (default=$OCDATAROOT/common/ETOPO1_ocssw.nc) = global elevation netCDF file
-   elev_auxfile (ifile) = auxiliary elevation netCDF file
+   dem_auxfile (ifile) = auxiliary digital elevation map file
    mldfile (ifile) = Multi-layer depth file
    icefile (ifile) (default=$OCDATAROOT/common/ice_mask.hdf) = sea ice file
    ice_threshold (float) (default=0.1) = sea ice fraction above which will be
@@ -562,6 +573,7 @@ The list of valid keywords follows:
 
    gmpfile (ifile) = GMP geometric parameter file (MISR only)
    water_spectra_file (ifile) = water absorption/scattering coefficient file
+   shallow_water_depth (float) (default=30.0) = threshold for flagging shallow water
    avw_coef (float) (default=[0.0,0.0,0.0,0.0,0.0,0.0]) = coefficients for AVW
    cloud_hgt_file (ifile) = Cloud height and temperature file
      Currently, use the MODIS L2 cloud file (MYD06...)
