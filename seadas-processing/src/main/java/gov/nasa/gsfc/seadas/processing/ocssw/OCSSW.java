@@ -140,7 +140,7 @@ public abstract class OCSSW {
             File logDir = new File(logDirPath);
             if (!logDir.exists()) {
                 try {
-                    Files.createDirectory(Paths.get(logDirPath));
+                    Files.createDirectories(Paths.get(logDirPath));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

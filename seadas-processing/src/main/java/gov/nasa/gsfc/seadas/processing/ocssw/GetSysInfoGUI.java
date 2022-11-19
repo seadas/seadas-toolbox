@@ -179,6 +179,7 @@ public class GetSysInfoGUI {
         Path appEtcDir = appHomeDir.toPath().resolve("etc");
         Path appHomeSnapProperties = appEtcDir.resolve("snap.properties");;
         Path appHomeSnapConf = appEtcDir.resolve("snap.conf");
+        Path appHomeSeadasConf = appEtcDir.resolve("seadas.conf");
 
         boolean isSeadasPlatform = (appNameVersion != null && appNameVersion.toLowerCase().contains("seadas")) ? true : false;
 
@@ -201,7 +202,6 @@ public class GetSysInfoGUI {
         ModuleInfo engineModuleInfo = Modules.getDefault().ownerOf(Product.class);
 
 
-        Path seadasProperties = dataEtcPath.resolve("seadas.properties");
 
 //        System.out.println("\nMain Application Platform:");
 //        System.out.println("Application Name Version: " + appNameVersion);
@@ -341,13 +341,33 @@ public class GetSysInfoGUI {
 
 
 
-        currentInfoLine = "VM Configuration: " + appHomeSnapConf.toString() + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-        if (!Files.exists(appHomeSnapConf)) {
-            currentInfoLine = "    WARNING!! File '" + appHomeSnapConf.toString() + "' does not exist" + "\n";
+        if (isSeadasPlatform) {
+            currentInfoLine = "VM Configuration: " + appHomeSeadasConf.toString() + "\n";
             sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+            if (!Files.exists(appHomeSnapConf)) {
+                currentInfoLine = "    WARNING!! File '" + appHomeSeadasConf.toString() + "' does not exist" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+
+            currentInfoLine = "VM Configuration: " + appHomeSnapConf.toString() + "\n";
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+            if (!Files.exists(appHomeSnapConf)) {
+                currentInfoLine = "    WARNING!! File '" + appHomeSnapConf.toString() + "' does not exist" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+        } else {
+            currentInfoLine = "VM Configuration: " + appHomeSnapConf.toString() + "\n";
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+            if (!Files.exists(appHomeSnapConf)) {
+                currentInfoLine = "    WARNING!! File '" + appHomeSnapConf.toString() + "' does not exist" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
         }
 
 
@@ -502,12 +522,12 @@ public class GetSysInfoGUI {
 
 
 
-        if (!Files.exists(seadasProperties)) {
+        if (!Files.exists(runtimeSeadasProperties)) {
             currentInfoLine = "Configuration: null" + "\n";
             sysInfoText += currentInfoLine;
 
         } else {
-            currentInfoLine = "Configuration: " + seadasProperties.toString() + "\n";
+            currentInfoLine = "Configuration: " + runtimeSeadasProperties.toString() + "\n";
             sysInfoText += currentInfoLine;
         }
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
