@@ -130,7 +130,7 @@
             <name>update luts</name>
             <value></value>
             <default></default>
-            <description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius
+            <description>update luts for a given mission. MISSION is either seawifs, aqua, or terra
             </description>
             <usedAs>button</usedAs>
             <order>14</order>

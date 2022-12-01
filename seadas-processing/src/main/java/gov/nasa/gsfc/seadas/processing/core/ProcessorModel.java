@@ -145,8 +145,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 return new MAPGEN_Processor(programName, xmlFileName, ocssw);
             case L2BIN:
                 return new L2Bin_Processor(programName, xmlFileName, ocssw);
-            case L2BIN_AQUARIUS:
-                return new L2Bin_Processor(programName, xmlFileName, ocssw);
+//            case L2BIN_AQUARIUS:
+//                return new L2Bin_Processor(programName, xmlFileName, ocssw);
             case L3BIN:
                 return new L3Bin_Processor(programName, xmlFileName, ocssw);
             case L3BINDUMP:
