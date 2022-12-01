@@ -40,11 +40,11 @@
     <mapID target="l1brsgen" url="processors/ProcessL1brsgen.html"/>
     <mapID target="l2extract" url="processors/ProcessExtractors.html"/>
     <mapID target="l2gen" url="processors/ProcessL2gen.html"/>
-    <mapID target="l2gen_aquarius" url="processors/ProcessL2genAquarius.html"/>
+<!--    <mapID target="l2gen_aquarius" url="processors/ProcessL2genAquarius.html"/>-->
 <!--    <mapID target="l2mapgen" url="processors/ProcessL2mapgen.html"/>-->
     <mapID target="l2brsgen" url="processors/ProcessL2brsgen.html"/>
     <mapID target="l2bin" url="processors/ProcessL2bin.html"/>
-    <mapID target="l2bin_aquarius" url="processors/ProcessL2binAquarius.html"/>
+<!--    <mapID target="l2bin_aquarius" url="processors/ProcessL2binAquarius.html"/>-->
     <mapID target="l3bin" url="processors/ProcessL3bin.html"/>
     <mapID target="l3gen" url="processors/ProcessL3gen.html"/>
     <mapID target="l3bindump" url="processors/ProcessL3bindump.html"/>

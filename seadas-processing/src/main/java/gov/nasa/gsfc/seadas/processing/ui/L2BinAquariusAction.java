@@ -21,10 +21,10 @@ import javax.swing.*;
         displayName = "#CTL_ L2BinAquariusAction_Name",
         popupText = "#CTL_ L2BinAquariusAction_Name"
 )
-@ActionReference(
-        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/Aquarius",
-        position = 160
-)
+//@ActionReference(
+//        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/Aquarius",
+//        position = 160
+//)
 @NbBundle.Messages({
         "CTL_L2BinAquariusAction_Name=l2bin_aquarius...",
         "CTL_L2BinAquariusAction_ProgramName=l2bin_aquarius",

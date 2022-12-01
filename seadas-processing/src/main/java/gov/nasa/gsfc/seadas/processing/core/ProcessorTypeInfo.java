@@ -29,7 +29,7 @@ public class ProcessorTypeInfo {
 //        L1MAPGEN,
 //        L2MAPGEN,
         L2BIN,
-        L2BIN_AQUARIUS,
+//        L2BIN_AQUARIUS,
         L3BIN,
         L3MAPGEN,
         MAPGEN,
@@ -41,7 +41,7 @@ public class ProcessorTypeInfo {
         OCSSW_INSTALLER,
         L2GEN,
         L3GEN,
-        L2GEN_AQUARIUS,
+//        L2GEN_AQUARIUS,
         L3BINDUMP,
 //        OBPG_FILE_TYPE_PY,
         OBPG_FILE_TYPE,
@@ -73,10 +73,10 @@ public class ProcessorTypeInfo {
 //        put("l1mapgen", ProcessorID.L1MAPGEN);
 //        put("l2mapgen", ProcessorID.L2MAPGEN);
         put("l2bin", ProcessorID.L2BIN);
-        put("l2bin_aquarius", ProcessorID.L2BIN_AQUARIUS);
+//        put("l2bin_aquarius", ProcessorID.L2BIN_AQUARIUS);
         put("l2gen", ProcessorID.L2GEN);
         put("l3gen", ProcessorID.L3GEN);
-        put("l2gen_aquarius", ProcessorID.L2GEN_AQUARIUS);
+//        put("l2gen_aquarius", ProcessorID.L2GEN_AQUARIUS);
         put("l3bin", ProcessorID.L3BIN);
         put("l3mapgen", ProcessorID.L3MAPGEN);
         put("mapgen", ProcessorID.MAPGEN);

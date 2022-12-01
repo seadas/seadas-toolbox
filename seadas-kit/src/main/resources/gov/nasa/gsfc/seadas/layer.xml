@@ -42,10 +42,6 @@
                     <attr name="position" intvalue="40"/>
                 </folder>
 
-                <folder name="Aquarius">
-                    <attr name="position" intvalue="300"/>
-                </folder>
-
             </folder>
 
             <folder name="General Tools">
