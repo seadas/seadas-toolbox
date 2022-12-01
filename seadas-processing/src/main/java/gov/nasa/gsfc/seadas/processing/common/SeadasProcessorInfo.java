@@ -21,7 +21,7 @@ public class SeadasProcessorInfo {
         L1BRSGEN,
         L2EXTRACT,
         L2GEN,
-        L2GEN_AQUARIUS,
+//        L2GEN_AQUARIUS,
 //        L2MAPGEN,
         L2BRSGEN,
         L2BIN,
@@ -111,8 +111,8 @@ public class SeadasProcessorInfo {
                     return "l2extract";
                 case L2GEN:
                     return "l2gen";
-                case L2GEN_AQUARIUS:
-                    return "l2gen_aquarius";
+//                case L2GEN_AQUARIUS:
+//                    return "l2gen_aquarius";
 //                case L2MAPGEN:
 //                    return "l2mapgen";
                 case L2BRSGEN:
@@ -162,8 +162,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isSupportedMission();
             case L2GEN:
                 return iFileInfo.isSupportedMission();
-            case L2GEN_AQUARIUS:
-                return iFileInfo.isSupportedMission();
+//            case L2GEN_AQUARIUS:
+//                return iFileInfo.isSupportedMission();
 //            case L2MAPGEN:
 //                return iFileInfo.isSupportedMission();
             case L2BRSGEN:
@@ -209,8 +209,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L2);
             case L2GEN:
                 return isValidL2genFileType(iFileInfo);
-            case L2GEN_AQUARIUS:
-                return isValidL2genFileType(iFileInfo);
+//            case L2GEN_AQUARIUS:
+//                return isValidL2genFileType(iFileInfo);
 //            case L2MAPGEN:
 //                return iFileInfo.isTypeId(FileTypeInfo.Id.L2);
             case L2BRSGEN:

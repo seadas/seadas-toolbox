@@ -7,14 +7,14 @@
         <progressRegex>Installing .+(\d+) of (\d+)</progressRegex>
     </programMetaData>
     <options>
-        <option type="boolean">
-            <name>aquarius</name>
-            <value>true</value>
-            <default>true</default>
-            <usedAs>flag</usedAs>
-            <description>install Aquarius files</description>
-            <order>2</order>
-        </option>
+<!--        <option type="boolean">-->
+<!--            <name>aquarius</name>-->
+<!--            <value>true</value>-->
+<!--            <default>true</default>-->
+<!--            <usedAs>flag</usedAs>-->
+<!--            <description>install Aquarius files</description>-->
+<!--            <order>2</order>-->
+<!--        </option>-->
         <option type="boolean">
             <name>aqua</name>
             <value>true</value>

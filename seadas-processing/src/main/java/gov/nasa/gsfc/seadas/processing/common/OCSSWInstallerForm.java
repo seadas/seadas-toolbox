@@ -48,8 +48,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
     public OCSSW ocssw;
 
     private static final Set<String> MISSIONS = new HashSet<String>(Arrays.asList(
-            new String[]{"AQUARIUS",
-                    "AVHRR",
+            new String[]{"AVHRR",
                     "CZCS",
                     "GOCI",
                     "HAWKEYE",

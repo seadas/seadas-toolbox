@@ -42,20 +42,12 @@
             <order>3</order>
         </option>
         <option type="boolean">
-            <name>--aquarius</name>
-            <value>false</value>
-            <default>false</default>
-            <usedAs>flag</usedAs>
-            <description>install Aquarius mission bundle</description>
-            <order>4</order>
-        </option>
-        <option type="boolean">
             <name>--avhrr</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install AVHRR mission bundle</description>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="boolean">
             <name>--czcs</name>
@@ -63,7 +55,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install CZCS mission bundle</description>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="boolean">
             <name>--goci</name>
@@ -71,7 +63,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install GOCI mission bundle</description>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="boolean">
             <name>--hawkeye</name>
@@ -79,7 +71,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install HAWKEYE mission bundle</description>
-            <order>8</order>
+            <order>7</order>
         </option>
         <option type="boolean">
             <name>--hico</name>
@@ -87,7 +79,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install HICO mission bundle</description>
-            <order>9</order>
+            <order>8</order>
         </option>
         <option type="boolean">
             <name>--meris</name>
@@ -95,7 +87,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MERIS mission bundle</description>
-            <order>10</order>
+            <order>9</order>
         </option>
         <option type="boolean">
             <name>--modisa</name>
@@ -103,7 +95,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MODIS Aqua mission bundle</description>
-            <order>11</order>
+            <order>10</order>
         </option>
         <option type="boolean">
             <name>--modist</name>
@@ -111,7 +103,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MODIS Terra mission bundle</description>
-            <order>12</order>
+            <order>11</order>
         </option>
         <option type="boolean">
             <name>--mos</name>
@@ -119,7 +111,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MOS mission bundle</description>
-            <order>13</order>
+            <order>12</order>
         </option>
         <option type="boolean">
             <name>--msis2a</name>
@@ -127,7 +119,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MSI Sentinel-2A mission bundle</description>
-            <order>14</order>
+            <order>13</order>
         </option>
         <option type="boolean">
             <name>--msis2b</name>
@@ -135,7 +127,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install MSI Sentinel-2B mission bundle</description>
-            <order>15</order>
+            <order>14</order>
         </option>
         <option type="boolean">
             <name>--ocm1</name>
@@ -143,7 +135,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM1 mission bundle</description>
-            <order>16</order>
+            <order>15</order>
         </option>
         <option type="boolean">
             <name>--ocm2</name>
@@ -151,7 +143,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCM2 mission bundle</description>
-            <order>17</order>
+            <order>16</order>
         </option>
         <option type="boolean">
             <name>--ocrvc</name>
@@ -159,7 +151,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCRVC mission bundle</description>
-            <order>18</order>
+            <order>17</order>
         </option>
         <option type="boolean">
             <name>--octs</name>
@@ -167,7 +159,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OCTS mission bundle</description>
-            <order>19</order>
+            <order>18</order>
         </option>
         <option type="boolean">
             <name>--olcis3a</name>
@@ -175,7 +167,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OLCI Sentinel-3A mission bundle</description>
-            <order>20</order>
+            <order>19</order>
         </option>
         <option type="boolean">
             <name>--olcis3b</name>
@@ -183,7 +175,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OLCI Sentinel-3B mission bundle</description>
-            <order>21</order>
+            <order>20</order>
         </option>
         <option type="boolean">
             <name>--olil8</name>
@@ -191,7 +183,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install Landsat 8 OLI mission bundle</description>
-            <order>22</order>
+            <order>21</order>
         </option>
         <option type="boolean">
             <name>--olil9</name>
@@ -199,7 +191,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install Landsat 9 OLI mission bundle</description>
-            <order>23</order>
+            <order>22</order>
         </option>
         <option type="boolean">
             <name>--osmi</name>
@@ -207,7 +199,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install OSMI mission bundle</description>
-            <order>24</order>
+            <order>23</order>
         </option>
         <option type="boolean">
             <name>--seawifs</name>
@@ -215,7 +207,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install SeaWIFS mission bundle</description>
-            <order>25</order>
+            <order>24</order>
         </option>
         <option type="boolean">
             <name>--sgli</name>
@@ -223,7 +215,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install SGLI mission bundle</description>
-            <order>26</order>
+            <order>25</order>
         </option>
         <option type="boolean">
             <name>--viirsn</name>
@@ -231,7 +223,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRS SNPP mission bundle</description>
-            <order>27</order>
+            <order>26</order>
         </option>
         <option type="boolean">
             <name>--viirsj1</name>
@@ -239,7 +231,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRS JPSS1 mission bundle</description>
-            <order>28</order>
+            <order>27</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
@@ -247,7 +239,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>print out verbose messages</description>
-            <order>29</order>
+            <order>28</order>
         </option>
         <option type="boolean">
             <name>--clean</name>
@@ -255,7 +247,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>clean install</description>
-            <order>30</order>
+            <order>29</order>
         </option>
         <option type="boolean">
             <name>--viirsdem</name>
@@ -263,7 +255,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRS DEM files needed for geolocation</description>
-            <order>31</order>
+            <order>30</order>
         </option>
     </options>
 </paramInfo>
