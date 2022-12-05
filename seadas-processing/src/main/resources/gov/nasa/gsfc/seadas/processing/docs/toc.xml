@@ -52,11 +52,11 @@
             <tocitem text="l1brsgen" target="l1brsgen"/>
             <!--            <tocitem text="l1mapgen" target="l1mapgen"/>-->
             <tocitem text="L2gen" target="l2gen"/>
-            <tocitem text="L2gen_aquarius" target="l2gen_aquarius"/>
+<!--            <tocitem text="L2gen_aquarius" target="l2gen_aquarius"/>-->
             <tocitem text="l2brsgen" target="l2brsgen"/>
             <!--            <tocitem text="l2mapgen" target="l2mapgen"/>-->
             <tocitem text="l2bin" target="l2bin"/>
-            <tocitem text="l2bin_aquarius" target="l2bin_aquarius"/>
+<!--            <tocitem text="l2bin_aquarius" target="l2bin_aquarius"/>-->
             <tocitem text="l3bin" target="l3bin"/>
             <tocitem text="l3bindump" target="l3bindump"/>
             <tocitem text="l3gen" target="l3gen"/>
