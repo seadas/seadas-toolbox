@@ -458,7 +458,7 @@ public class OCSSWLocal extends OCSSW {
             } else {
                 String line = br.readLine();
                 while (line != null) {
-                    System.out.println("error stream: " + line);
+                    debug("error stream: " + line);
                     line = br.readLine();
                 }
                 Debug.trace("Failed exit code on program '" + GET_OUTPUT_NAME_PROGRAM_NAME + "'");

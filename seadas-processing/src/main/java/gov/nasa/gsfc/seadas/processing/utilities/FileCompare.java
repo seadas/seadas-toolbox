@@ -23,7 +23,7 @@ public class FileCompare {
         try
         {
             if (CompareFilesbyByte(fileName1,fileName2)==true)
-                System.out.println("No Difference encountered  using CompareFilesbyByte method");
+                 System.out.println("No Difference encountered  using CompareFilesbyByte method");
             else System.out.println("Both Files are not equal using CompareFilesbyByte method");
         }catch (IOException e)
         {
