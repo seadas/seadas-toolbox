@@ -1472,7 +1472,7 @@ public class L2genData implements SeaDASProcessorModel {
 
         pmSwingWorker.executeWithBlocking();
 
-        setParString(ancillaryFiles.toString(), true, true);
+        setParString(ancillaryFiles.toString(), true, true, true, null);
 
     }
 
