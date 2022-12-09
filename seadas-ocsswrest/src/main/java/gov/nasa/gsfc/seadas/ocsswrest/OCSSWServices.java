@@ -144,7 +144,7 @@ public class OCSSWServices {
     @Consumes(MediaType.TEXT_XML)
     public String getOfileName(@PathParam("jobId") String jobId) {
         String ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
-        System.out.println("Ofile name = " + ofileName);
+        //System.out.println("Ofile name = " + ofileName);
         return ofileName;
     }
 
@@ -351,7 +351,7 @@ public class OCSSWServices {
                                      @PathParam("programName") String programName,
                                      File parFile) {
         Response.Status respStatus = Response.Status.OK;
-        System.out.println("mlp par file path: " + parFile.getAbsolutePath());
+        ///System.out.println("mlp par file path: " + parFile.getAbsolutePath());
         if (parFile == null) {
             respStatus = Response.Status.BAD_REQUEST;
         } else {
@@ -398,7 +398,7 @@ public class OCSSWServices {
     @Produces(MediaType.TEXT_PLAIN)
     public String getProcessStatus(@PathParam("jobId") String jobId) {
         String processStatus = SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName());
-        System.out.println("process status: " + processStatus);
+        //System.out.println("process status: " + processStatus);
         return processStatus;
     }
 
@@ -478,7 +478,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response uploadNextLevelNameParams(@PathParam("jobId") String jobId, JsonObject jsonObject) {
         Response.Status responseStatus = Response.Status.ACCEPTED;
-        System.out.println("params uploaded!");
+        //System.out.println("params uploaded!");
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         String ofileName = ocsswRemote.getOfileName(jobId, jsonObject);
         System.out.println("ofileName = " + ofileName);

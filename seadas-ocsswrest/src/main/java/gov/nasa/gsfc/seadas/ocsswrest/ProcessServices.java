@@ -34,7 +34,7 @@ public class ProcessServices {
     @Produces(MediaType.TEXT_PLAIN)
     public String getProcessErrorStream(@PathParam("jobId") String jobId) {
         //TODO: get process error stream from the running process!
-        System.out.println("reached to grep standard error.");
+        //System.out.println("reached to grep standard error.");
         String stderrString = SQLiteJDBC.retrieveItem(PROCESS_TABLE_NAME, jobId, stderr);
         return stderrString == null ? "done!" : stderrString;
     }

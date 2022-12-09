@@ -67,8 +67,8 @@ public class OCSSWFileServices {
         path2 = Paths.get(fileName);
 
         try {
-            System.out.println("path1 = " + path1);
-            System.out.println("path2 = " + path2);
+            //System.out.println("path1 = " + path1);
+            //System.out.println("path2 = " + path2);
 
             //scenario one: file is in the client working directory
             if (Files.exists(path1)) {
