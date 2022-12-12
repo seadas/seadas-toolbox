@@ -1,0 +1,13 @@
+import os
+import shutil
+
+for root, dirs, files in os.walk("/Users/bingyang/snap-dev/snap-desktop"):
+    for file in files:
+        if file.endswith(".nbm"):
+            src = os.path.join(root, file)
+            place = src.find("/nbm/")
+            if(place != -1):
+                print(src)
+                dest = os.path.join("/Users/bingyang/snap-updatecenter-8.3/snap/", file)
+                print(dest)
+                shutil.copy(src, dest)
