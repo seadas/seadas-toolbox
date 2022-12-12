@@ -198,7 +198,7 @@ public class OCSSWRemote extends OCSSW {
             }
         };
         pmSwingWorker.executeWithBlocking();
-        System.out.println("par file upload process is done: " + pmSwingWorker.isDone());
+        //System.out.println("par file upload process is done: " + pmSwingWorker.isDone());
         return ifileUploadSuccess;
     }
 
@@ -1014,7 +1014,7 @@ public class OCSSWRemote extends OCSSW {
                 st2 = new StringTokenizer(token, "=");
                 key = st2.nextToken();
                 value = st2.nextToken();
-                if (new File(value).exists() && !new File(value).isDirectory()) {
+                if (new File(value).exists() && !new File(value).isDirectory() && !key.equals(processorModel.getPrimaryOutputFileOptionName())) {
                     //if item is ifile
                     if (key.equals(processorModel.getPrimaryInputFileOptionName())) {
                         ifileDir = value.substring(0, value.lastIndexOf(File.separator));
@@ -1027,6 +1027,7 @@ public class OCSSWRemote extends OCSSW {
                     //if item is ofile
                 } else if (key.equals(processorModel.getPrimaryOutputFileOptionName())) {
                     ofileDir = value.substring(0, value.lastIndexOf(File.separator));
+                    value = value.substring(value.lastIndexOf(File.separator) + 1);
                 }
                 token = key + "=" + value;
             }

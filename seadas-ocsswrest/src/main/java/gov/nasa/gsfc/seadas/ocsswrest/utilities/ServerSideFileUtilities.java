@@ -8,17 +8,10 @@ package gov.nasa.gsfc.seadas.ocsswrest.utilities;
  * To change this template use File | Settings | File Templates.
  */
 
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.file.Files;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +22,7 @@ import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRE
  */
 public class ServerSideFileUtilities {
 
-    private static boolean debug = true;
+    private static boolean debug = false;
     public static final String FILE_UPLOAD_PATH = System.getProperty("user.dir") + System.getProperty("file.separator") + "ifiles";
     public static final int BUFFER_SIZE = 1024;
 

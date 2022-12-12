@@ -296,7 +296,7 @@ public class OCSSWInfo {
         final String OCSSW_REST_SERVICES_CONTEXT_PATH = "ocsswws";
         String baseUriPortNumber = preferences.get(BASE_URI_PORT_NUMBER_PROPERTY, "6400");
         resourceBaseUri = "http://" + serverAPI + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
-        System.out.println("server URL:" + resourceBaseUri);
+        //System.out.println("server URL:" + resourceBaseUri);
         final ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(MultiPartFeature.class);
         clientConfig.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
@@ -309,7 +309,7 @@ public class OCSSWInfo {
             ocsswTag = SEADAS_OCSSW_TAG_DEFAULT_VALUE;
         }
 
-        System.out.println("ocssw tag = " + ocsswTag);
+        //System.out.println("ocssw tag = " + ocsswTag);
         try {
             jsonObject = target.path("ocssw").path("ocsswInfo").path(ocsswTag).request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         } catch (Exception e) {
@@ -335,7 +335,7 @@ public class OCSSWInfo {
             processInputStreamPort = new Integer(preferences.get(OCSSW_PROCESS_INPUT_STREAM_PORT, "6402")).intValue();
             processErrorStreamPort = new Integer(preferences.get(OCSSW_PROCESS_ERROR_STREAM_PORT, "6403")).intValue();
         }
-        System.out.println("ocsswExist = " + ocsswExist);
+        //System.out.println("ocsswExist = " + ocsswExist);
         return ocsswExist;
     }
 

@@ -300,16 +300,21 @@ public class OCSSWRemoteImpl {
         boolean isOdirdefined = true;
 
         String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
-
+        debug("server side workingFileDir: " + workingFileDir);
         while (st1.hasMoreTokens()) {
             token = st1.nextToken();
             if (token.contains("=")) {
                 st2 = new StringTokenizer(token, "=");
                 key = st2.nextToken();
                 value = st2.nextToken();
+                debug("par file tokens:" + key + " " + value);
+                File ofile = new File(workingFileDir + File.separator + value);
+                debug("Does " + ofile.getAbsolutePath() + "exists? " + new File(workingFileDir + File.separator + value).exists());
                 if (new File(workingFileDir + File.separator + value).exists()) {
                     value = workingFileDir + File.separator + value;
                     debug("server side file: " + value);
+                } else {
+                    debug("server side file: " + value + "!!! Attention !!! value is not converted! ");
                 }
                 token = key + "=" + value;
                 debug("token: " + token);
