@@ -92,7 +92,7 @@
         <option type="string">
             <name>--threshold</name>
             <value></value>
-            <default></default>
+            <default>95</default>
             <description>% of geo-populated pixels required to pass geocheck validation test</description>
             <usedAs>option</usedAs>
             <order>8</order>
@@ -106,12 +106,20 @@
             <order>9</order>
         </option>
         <option type="boolean">
+            <name>--force-download</name>
+            <value></value>
+            <default></default>
+            <description>Force download of ancillary files, even if found on hard disk</description>
+            <usedAs>flag</usedAs>
+            <order>10</order>
+        </option>
+        <option type="boolean">
             <name>--disable-download</name>
             <value></value>
             <default></default>
             <description>Disable download of ancillary files not found on hard disk</description>
             <usedAs>flag</usedAs>
-            <order>10</order>
+            <order>11</order>
         </option>
         <option type="boolean">
             <name>--enable-dem</name>
@@ -119,21 +127,13 @@
             <default></default>
             <description>Enable MODIS terrain elevation correction</description>
             <usedAs>flag</usedAs>
-            <order>11</order>
+            <order>12</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
             <value>true</value>
             <default></default>
             <description>print status messages</description>
-            <usedAs>flag</usedAs>
-            <order>12</order>
-        </option>
-        <option type="boolean">
-            <name>--entrained</name>
-            <value></value>
-            <default></default>
-            <description>Use entrained attitude for Terra</description>
             <usedAs>flag</usedAs>
             <order>13</order>
         </option>
