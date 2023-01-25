@@ -520,6 +520,9 @@ public class L2genReader {
                                 }
                                 productInfo.setName(prodName);
                                 productInfo.addChild(algorithmInfo);
+                                if (null == algorithmName && algorithmInfo.getDescription() != null) {
+                                    productInfo.setDescription(algorithmInfo.getDescription());
+                                }
                                 algorithmInfo.setProductInfo(productInfo);
                             }
                         }
