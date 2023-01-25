@@ -455,6 +455,12 @@ public class L2genAlgorithmInfo extends L2genBaseInfo {
                     wavelengthInfo.setState(state);
                 }
             }
+
+            if (wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.NIR) || wavelengthInfo.isWaveType(L2genWavelengthInfo.WaveType.SWIR)) {
+                if (shortcutType == L2genProductTools.ShortcutType.ALL) {
+                    wavelengthInfo.setState(state);
+                }
+            }
         }
     }
 }
