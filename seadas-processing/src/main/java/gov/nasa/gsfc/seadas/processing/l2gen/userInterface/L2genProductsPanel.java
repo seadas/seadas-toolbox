@@ -26,6 +26,7 @@ public class L2genProductsPanel extends JPanel {
     JPanel wavelengthsLimitorJPanel;
     JPanel selectedProductsJPanel;
     JTextArea selectedProductsJTextArea;
+    JLabel selectedProductsJLabel;
     private JButton restoreDefaultsButton;
     private JScrollPane selectedProductsJScrollPane;
 
@@ -106,12 +107,17 @@ public class L2genProductsPanel extends JPanel {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
 
+        selectedProductsJLabel = new JLabel("l2prod  ");
+        selectedProductsJLabel.setVisible(true);
+
+        mainPanel.add(selectedProductsJLabel,
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 1, 1));
+
         mainPanel.add(selectedProductsJScrollPane,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 3));
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 3, 3));
 
         return mainPanel;
     }
-
 
     private void createSelectedProductsJTextArea() {
 
@@ -120,7 +126,6 @@ public class L2genProductsPanel extends JPanel {
         selectedProductsJTextArea.setWrapStyleWord(false);
         selectedProductsJTextArea.setRows(3);
         selectedProductsJTextArea.setEditable(true);
-
 
         selectedProductsJScrollPane = new JScrollPane(selectedProductsJTextArea);
 
@@ -155,7 +160,6 @@ public class L2genProductsPanel extends JPanel {
         });
 
     }
-
 
     private JButton createDefaultsButton() {
         final JButton jButton = new JButton("Apply Defaults");
