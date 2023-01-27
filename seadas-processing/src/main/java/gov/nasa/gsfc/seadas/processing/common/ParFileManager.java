@@ -13,6 +13,7 @@ import java.util.logging.Logger;
  */
 public class ParFileManager{
     private String parFileOptionName;
+    public static String tmpParFileToDelString;
 
     ProcessorModel processorModel;
     protected ParamList paramList;
@@ -31,6 +32,7 @@ public class ParFileManager{
 
         File parFile = computeParFile();
         String parFileName = parFile.getAbsolutePath();
+        tmpParFileToDelString = parFileName;
 
         if (parFileOptionName.equals("none")) {
             parString =  parFileName;
