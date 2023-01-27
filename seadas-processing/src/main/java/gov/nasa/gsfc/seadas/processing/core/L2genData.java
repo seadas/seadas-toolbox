@@ -1707,6 +1707,8 @@ public class L2genData implements SeaDASProcessorModel {
             if (getMode() != Mode.L2GEN_AQUARIUS) {
                 Process p = ocssw.executeSimple(processorModel);
                 ocssw.waitForProcess();
+                File tmpParFileToDel = new File (ParFileManager.tmpParFileToDelString);
+                tmpParFileToDel.delete();
                 if (ocssw.getProcessExitValue() != 0) {
                     throw new IOException("l2gen failed to run");
                 }
