@@ -111,10 +111,10 @@ public class L2genProductsPanel extends JPanel {
         selectedProductsJLabel.setVisible(true);
 
         mainPanel.add(selectedProductsJLabel,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 1, 1));
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 1, 1));
 
         mainPanel.add(selectedProductsJScrollPane,
-                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 3, 3));
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 3, 3));
 
         return mainPanel;
     }
