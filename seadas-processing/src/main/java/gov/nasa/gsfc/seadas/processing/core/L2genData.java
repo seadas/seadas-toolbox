@@ -111,7 +111,7 @@ public class L2genData implements SeaDASProcessorModel {
 
     public static final String INVALID_IFILE = "INVALID_IFILE_EVENT",
             WAVE_LIMITER = "WAVE_LIMITER_EVENT",
-            RETAIN_IFILE = "RETAIN_IFILE_EVENT",
+            EXCLUDE_IOFILE = "EXCLUDE_IOFILE_EVENT",
             SHOW_DEFAULTS = "SHOW_DEFAULTS_EVENT",
             PARSTRING = "PARSTRING_EVENT",
             TAB_CHANGE = "TAB_CHANGE_EVENT";
@@ -159,7 +159,7 @@ public class L2genData implements SeaDASProcessorModel {
     private final HashMap<String, ParamInfo> paramInfoLookup = new HashMap<String, ParamInfo>();
     private L2genProductsParamInfo l2prodParamInfo = null;
 
-    public boolean retainCurrentIfile = false;
+    public boolean excludeCurrentIOfile = true;
     private boolean showDefaultsInParString = false;
 
     private ProcessorModel processorModel;
@@ -329,15 +329,15 @@ public class L2genData implements SeaDASProcessorModel {
         this.defaultSuite = defaultSuite;
     }
 
-    public boolean isRetainCurrentIfile() {
-        return retainCurrentIfile;
+    public boolean isExcludeCurrentIOfile() {
+        return excludeCurrentIOfile;
     }
 
-    public void setRetainCurrentIfile(boolean retainCurrentIfile) {
+    public void setExcludeCurrentIOfile(boolean excludeCurrentIOfile) {
 
-        if (this.retainCurrentIfile != retainCurrentIfile) {
-            this.retainCurrentIfile = retainCurrentIfile;
-            fireEvent(RETAIN_IFILE);
+        if (this.excludeCurrentIOfile != excludeCurrentIOfile) {
+            this.excludeCurrentIOfile = excludeCurrentIOfile;
+            fireEvent(EXCLUDE_IOFILE);
         }
     }
 
@@ -471,7 +471,7 @@ public class L2genData implements SeaDASProcessorModel {
             }
         }
         fireEvent(SHOW_DEFAULTS);
-        fireEvent(RETAIN_IFILE);
+        fireEvent(EXCLUDE_IOFILE);
         fireEvent(WAVE_LIMITER);
         fireEvent(PARSTRING);
 
@@ -666,13 +666,37 @@ public class L2genData implements SeaDASProcessorModel {
                 for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
 
                     if (paramInfo.getName().equals(IFILE)) {
-                        alwaysDisplay = true;
-                        currCategoryEntries.append(makeParEntry(paramInfo));
+                        if (!excludeCurrentIOfile) {
+                            alwaysDisplay = true;
+                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        }
                     } else if (paramInfo.getName().equals(OFILE)) {
-                        alwaysDisplay = true;
-                        currCategoryEntries.append(makeParEntry(paramInfo));
+                        if (!excludeCurrentIOfile) {
+                            alwaysDisplay = true;
+                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        }
                     } else if (paramInfo.getName().equals(GEOFILE)) {
-                        if (isGeofileRequired()) {
+                        if (!isGeofileRequired() && !excludeCurrentIOfile) {
+                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        }
+                    } else if (paramInfo.getName().startsWith("icefile")) {
+                        if (!excludeCurrentIOfile) {
+                            alwaysDisplay = true;
+                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        }
+                    } else if (paramInfo.getName().startsWith("met")) {
+                        if (!excludeCurrentIOfile) {
+                            alwaysDisplay = true;
+                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        }
+                    } else if (paramInfo.getName().startsWith("ozone")) {
+                        if (!excludeCurrentIOfile) {
+                            alwaysDisplay = true;
+                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        }
+                    } else if (paramInfo.getName().startsWith("sstfile")) {
+                        if (!excludeCurrentIOfile) {
+                            alwaysDisplay = true;
                             currCategoryEntries.append(makeParEntry(paramInfo));
                         }
                     } else if (paramInfo.getName().equals(SUITE)) {
@@ -697,7 +721,7 @@ public class L2genData implements SeaDASProcessorModel {
                     }
                 }
 
-                if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
+                if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName()) && !excludeCurrentIOfile) {
                     par.append("# " + paramCategoryInfo.getName().toUpperCase() + "  Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
                     par.append(currCategoryEntries.toString());
                     par.append("\n");
@@ -866,6 +890,22 @@ public class L2genData implements SeaDASProcessorModel {
             }
 
             if (newParamInfo.getName().toLowerCase().startsWith(L2PROD)) {
+                continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().startsWith("met") && ignoreIfile) {
+                continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().startsWith("ozone") && ignoreIfile) {
+                continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().startsWith("icefile") && ignoreIfile) {
+                continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().startsWith("sstfile") && ignoreIfile) {
                 continue;
             }
 

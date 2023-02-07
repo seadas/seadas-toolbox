@@ -23,7 +23,7 @@ public class L2genParfilePanel {
 
     private L2genParfileImporter parfileImporter;
     private L2genParfileExporter parfileExporter;
-    private L2genRetainIfileSpecifier retainIfileSpecifier;
+    private L2genExcludeIOfileSpecifier excludeIOfileSpecifier;
     private L2genGetAncillaryFilesSpecifier getAncillaryFilesSpecifier;
     private L2genGetAncillarySplitButton getAncillarySplitButton;
     private L2genShowDefaultsSpecifier showDefaultsSpecifier;
@@ -37,7 +37,7 @@ public class L2genParfilePanel {
 
         parfileImporter = new L2genParfileImporter(l2genData);
         parfileExporter = new L2genParfileExporter(l2genData);
-        retainIfileSpecifier = new L2genRetainIfileSpecifier(l2genData);
+        excludeIOfileSpecifier = new L2genExcludeIOfileSpecifier(l2genData);
         getAncillaryFilesSpecifier = new L2genGetAncillaryFilesSpecifier(l2genData);
         getAncillarySplitButton = new L2genGetAncillarySplitButton(l2genData);
         showDefaultsSpecifier = new L2genShowDefaultsSpecifier(l2genData);
@@ -60,36 +60,32 @@ public class L2genParfilePanel {
         jPanel.setBorder(BorderFactory.createTitledBorder("Parfile"));
 
 
-        final JPanel openButtonRetainPanel = new JPanel(new GridBagLayout());
+        final JPanel openButtonExcludePanel = new JPanel(new GridBagLayout());
 
-        openButtonRetainPanel.add(parfileImporter.getjButton(),
+        openButtonExcludePanel.add(parfileImporter.getjButton(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+        openButtonExcludePanel.add(parfileExporter.getjButton(),
+                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+
 
         // todo Danny
         if (l2genData.getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
-            openButtonRetainPanel.setBorder(BorderFactory.createEtchedBorder());
+            openButtonExcludePanel.setBorder(BorderFactory.createEtchedBorder());
 
-            openButtonRetainPanel.add(retainIfileSpecifier.getjCheckBox(),
-                    new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+            openButtonExcludePanel.add(excludeIOfileSpecifier.getjCheckBox(),
+                    new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
         }
 
 
         int subPanelGridx = 0;
         final JPanel subPanel = new JPanel(new GridBagLayout());
-        subPanel.add(openButtonRetainPanel,
+        subPanel.add(openButtonExcludePanel,
                 new GridBagConstraintsCustom(++subPanelGridx, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
         // todo Danny
         if (l2genData.getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
-
-//        subPanel.add(getAncillaryFilesSpecifier.getjButton(),
-//                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-            if (l2genData.getMode() != L2genData.Mode.L3GEN) {
-                subPanel.add(getAncillarySplitButton.getAncillarySplitButton(),
-                        new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-            }
-
 
             final JPanel defaultsPanel = new JPanel(new GridBagLayout());
             defaultsPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -112,6 +108,12 @@ public class L2genParfilePanel {
             subPanel.add(suitePanel,
                     new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
+            //        subPanel.add(getAncillaryFilesSpecifier.getjButton(),
+//                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+            if (l2genData.getMode() != L2genData.Mode.L3GEN) {
+                subPanel.add(getAncillarySplitButton.getAncillarySplitButton(),
+                        new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+            }
 
         }
 
@@ -121,11 +123,6 @@ public class L2genParfilePanel {
                     new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL));
 
         }
-
-
-        subPanel.add(parfileExporter.getjButton(),
-                new GridBagConstraintsCustom(++subPanelGridx, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-
 
         jPanel.add(subPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));

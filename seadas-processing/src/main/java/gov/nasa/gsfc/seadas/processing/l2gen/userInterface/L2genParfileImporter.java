@@ -24,10 +24,10 @@ public class L2genParfileImporter {
         L2genParfileImporter(L2genData l2genData) {
             this.l2genData = l2genData;
 
-            String NAME = "Load Parameters";
+            String NAME = "Load";
 
             jButton = new JButton(NAME);
-
+            jButton.setToolTipText("Loads parameters from an external parameter file into the GUI parfile textfield");
             jFileChooser = new JFileChooser();
 
             addControlListeners();
@@ -44,7 +44,7 @@ public class L2genParfileImporter {
                     } else {
                         parFileDir = jFileChooser.getSelectedFile().getParentFile();
                     }
-                    l2genData.setParString(contents, l2genData.isRetainCurrentIfile(), false, false,  parFileDir);
+                    l2genData.setParString(contents, l2genData.isExcludeCurrentIOfile(), false, false,  parFileDir);
                 }
             });
         }
