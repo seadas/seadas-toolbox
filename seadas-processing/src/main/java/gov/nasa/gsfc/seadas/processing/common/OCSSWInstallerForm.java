@@ -284,7 +284,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 } else {
                     ((JLabel) dirPanel.getComponent(0)).setText("Local install_dir: ");
                 }
-                ((JLabel) dirPanel.getComponent(0)).setToolTipText("This directory can be set in SeaDAS-OCSSW > Configure OCSSW Location");
+                ((JLabel) dirPanel.getComponent(0)).setToolTipText("This directory can be set in SeaDAS-Toolobox > Configure OCSSW Location");
                 ((JTextField) dirPanel.getComponent(1)).setEditable(false);
                 ((JTextField) dirPanel.getComponent(1)).setFocusable(false);
                 ((JTextField) dirPanel.getComponent(1)).setEnabled(false);
