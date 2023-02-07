@@ -15,21 +15,21 @@ import java.beans.PropertyChangeListener;
  * Time: 4:36 PM
  * To change this template use File | Settings | File Templates.
  */
-public class L2genRetainIfileSpecifier {
+public class L2genExcludeIOfileSpecifier {
 
         private final JCheckBox jCheckBox;
         private L2genData l2genData;
         private boolean controlHandlerEnabled = true;
 
-        public L2genRetainIfileSpecifier(L2genData l2genData) {
+        public L2genExcludeIOfileSpecifier(L2genData l2genData) {
 
             this.l2genData = l2genData;
-            String NAME = "Retain Selected IFILE";
-            String TOOL_TIP = "If an ifile is currently selected then any ifile entry in the parfile being opened will be ignored.";
+            String NAME = "Exclude i/o Files";
+            String TOOL_TIP = "<html>'Load/Save' parameters functionality will exclude primary i/o file fields<br>and scene dependent ancillary files<br>Useful when reusing parfile for different ifile scenes</html>";
 
             jCheckBox = new JCheckBox(NAME);
 
-            jCheckBox.setSelected(l2genData.isRetainCurrentIfile());
+            jCheckBox.setSelected(l2genData.isExcludeCurrentIOfile());
             jCheckBox.setToolTipText(TOOL_TIP);
 
 
@@ -42,18 +42,18 @@ public class L2genRetainIfileSpecifier {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
                     if (isControlHandlerEnabled()) {
-                        l2genData.setRetainCurrentIfile(jCheckBox.isSelected());
+                        l2genData.setExcludeCurrentIOfile(jCheckBox.isSelected());
                     }
                 }
             });
         }
 
         private void addEventListeners() {
-            l2genData.addPropertyChangeListener(l2genData.RETAIN_IFILE, new PropertyChangeListener() {
+            l2genData.addPropertyChangeListener(l2genData.EXCLUDE_IOFILE, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     disableControlHandler();
-                    jCheckBox.setSelected(l2genData.isRetainCurrentIfile());
+                    jCheckBox.setSelected(l2genData.isExcludeCurrentIOfile());
                     enableControlHandler();
                 }
             });

@@ -25,8 +25,9 @@ public class L2genParfileExporter {
         public L2genParfileExporter(L2genData l2genData) {
             this.l2genData = l2genData;
 
-            String NAME = "Save Parameters";
+            String NAME = "Save";
             jButton = new JButton(NAME);
+            jButton.setToolTipText("Saves parameters from the GUI parfile textfield to an external parameter file");
             jFileChooser = new JFileChooser();
 
             addControlListeners();
