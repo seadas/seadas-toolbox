@@ -38,7 +38,7 @@ public class L2genParfileExporter {
             jButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String contents = l2genData.getParString(false);
+                    String contents = l2genData.getParString(true);
                     SeadasGuiUtils.exportFile(jFileChooser, contents);
                 }
             });
