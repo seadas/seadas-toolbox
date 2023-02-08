@@ -652,7 +652,11 @@ public class L2genData implements SeaDASProcessorModel {
         return getParString(isShowDefaultsInParString());
     }
 
-    public String getParString(boolean showDefaults) {
+    public String getParString(boolean loadOrSave) {
+        return getParString(isShowDefaultsInParString(), loadOrSave);
+    }
+
+    public String getParString(boolean showDefaults, boolean loadOrSave) {
 
         StringBuilder par = new StringBuilder("");
 
@@ -666,38 +670,80 @@ public class L2genData implements SeaDASProcessorModel {
                 for (ParamInfo paramInfo : paramCategoryInfo.getParamInfos()) {
 
                     if (paramInfo.getName().equals(IFILE)) {
-                        if (!excludeCurrentIOfile) {
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
                             alwaysDisplay = true;
                             currCategoryEntries.append(makeParEntry(paramInfo));
                         }
                     } else if (paramInfo.getName().equals(OFILE)) {
-                        if (!excludeCurrentIOfile) {
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
                             alwaysDisplay = true;
                             currCategoryEntries.append(makeParEntry(paramInfo));
                         }
                     } else if (paramInfo.getName().equals(GEOFILE)) {
-                        if (!isGeofileRequired() && !excludeCurrentIOfile) {
-                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        if (isGeofileRequired()) {
+                            if (excludeCurrentIOfile && loadOrSave) {
+                                continue;
+                            } else {
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
                         }
                     } else if (paramInfo.getName().startsWith("icefile")) {
-                        if (!excludeCurrentIOfile) {
-                            alwaysDisplay = true;
-                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
+                            if (!paramInfo.isDefault()) {
+                                alwaysDisplay = true;
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
                         }
                     } else if (paramInfo.getName().startsWith("met")) {
-                        if (!excludeCurrentIOfile) {
-                            alwaysDisplay = true;
-                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
+                            if (!paramInfo.isDefault()){
+                                alwaysDisplay = true;
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
                         }
-                    } else if (paramInfo.getName().startsWith("ozone")) {
-                        if (!excludeCurrentIOfile) {
-                            alwaysDisplay = true;
-                            currCategoryEntries.append(makeParEntry(paramInfo));
+                    } else if (paramInfo.getName().startsWith("ozone1")) {
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
+                            if (!paramInfo.isDefault()) {
+                                alwaysDisplay = true;
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
+                        }
+                    } else if (paramInfo.getName().startsWith("ozone2")) {
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
+                            if (!paramInfo.isDefault()){
+                                alwaysDisplay = true;
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
+                        }
+                    } else if (paramInfo.getName().startsWith("ozone3")) {
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
+                            if (!paramInfo.isDefault()){
+                                alwaysDisplay = true;
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
                         }
                     } else if (paramInfo.getName().startsWith("sstfile")) {
-                        if (!excludeCurrentIOfile) {
-                            alwaysDisplay = true;
-                            currCategoryEntries.append(makeParEntry(paramInfo));
+                        if (excludeCurrentIOfile && loadOrSave) {
+                            continue;
+                        } else {
+                            if (!paramInfo.isDefault()){
+                                alwaysDisplay = true;
+                                currCategoryEntries.append(makeParEntry(paramInfo));
+                            }
                         }
                     } else if (paramInfo.getName().equals(SUITE)) {
                         alwaysDisplay = true;
@@ -721,7 +767,8 @@ public class L2genData implements SeaDASProcessorModel {
                     }
                 }
 
-                if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName()) && !excludeCurrentIOfile) {
+//                if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName()) && !excludeCurrentIOfile) {
+                if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
                     par.append("# " + paramCategoryInfo.getName().toUpperCase() + "  Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
                     par.append(currCategoryEntries.toString());
                     par.append("\n");
@@ -793,14 +840,14 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
     public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite) {
-        setParString(parString, ignoreIfile, ignoreSuite, false, null);
+        setParString(parString, false, ignoreIfile, ignoreSuite, false, null);
     }
 
     public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite, boolean addParamsMode) {
-        setParString(parString, ignoreIfile, ignoreSuite, addParamsMode, null);
+        setParString(parString, false, ignoreIfile, ignoreSuite, addParamsMode, null);
     }
 
-    public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite, boolean addParamsMode, File parFileDir) {
+    public void setParString(String parString, boolean loadOrSave, boolean ignoreIfile, boolean ignoreSuite, boolean addParamsMode, File parFileDir) {
 
         setParamsBeingSetViaParstring(true);
         // addParamsMode is a special mode.
@@ -873,11 +920,11 @@ public class L2genData implements SeaDASProcessorModel {
          */
         for (ParamInfo newParamInfo : parfileParamInfos) {
 
-            if (newParamInfo.getName().toLowerCase().equals(OFILE) && ignoreIfile) {
+            if (newParamInfo.getName().toLowerCase().equals(OFILE) && ignoreIfile && loadOrSave) {
                 continue;
             }
 
-            if (newParamInfo.getName().toLowerCase().equals(GEOFILE) && ignoreIfile) {
+            if (newParamInfo.getName().toLowerCase().equals(GEOFILE) && ignoreIfile && loadOrSave) {
                 continue;
             }
 
@@ -893,19 +940,27 @@ public class L2genData implements SeaDASProcessorModel {
                 continue;
             }
 
-            if (newParamInfo.getName().toLowerCase().startsWith("met") && ignoreIfile) {
+            if (newParamInfo.getName().toLowerCase().startsWith("met") && ignoreIfile && loadOrSave) {
                 continue;
             }
 
-            if (newParamInfo.getName().toLowerCase().startsWith("ozone") && ignoreIfile) {
+            if (newParamInfo.getName().toLowerCase().startsWith("ozone1") && ignoreIfile && loadOrSave) {
                 continue;
             }
 
-            if (newParamInfo.getName().toLowerCase().startsWith("icefile") && ignoreIfile) {
+            if (newParamInfo.getName().toLowerCase().startsWith("ozone2") && ignoreIfile && loadOrSave) {
                 continue;
             }
 
-            if (newParamInfo.getName().toLowerCase().startsWith("sstfile") && ignoreIfile) {
+            if (newParamInfo.getName().toLowerCase().startsWith("ozone3") && ignoreIfile && loadOrSave) {
+                continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().startsWith("icefile") && ignoreIfile && loadOrSave) {
+                continue;
+            }
+
+            if (newParamInfo.getName().toLowerCase().startsWith("sstfile") && ignoreIfile && loadOrSave) {
                 continue;
             }
 
@@ -1512,7 +1567,7 @@ public class L2genData implements SeaDASProcessorModel {
 
         pmSwingWorker.executeWithBlocking();
 
-        setParString(ancillaryFiles.toString(), true, true, true, null);
+        setParString(ancillaryFiles.toString(), false, true, true, true, null);
 
     }
 
