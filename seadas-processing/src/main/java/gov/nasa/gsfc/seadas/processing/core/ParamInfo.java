@@ -337,9 +337,13 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
                     setValidationComment("WARNING!!! File'" + getValue() + "' does not exist");
                 }
             } else {
-                fileInfo = new FileInfo(defaultFileParent, getValue(), false, ocssw);
-                if (fileInfo.getFile() != null && !fileInfo.getFile().exists()) {
-                    setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                if (!("").equals(getValue())) {
+                    fileInfo = new FileInfo(defaultFileParent, getValue(), false, ocssw);
+                    if (fileInfo.getFile() != null && !fileInfo.getFile().exists()) {
+                        setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                    }
+                } else {
+                    System.out.println("defaultFileParent= " + defaultFileParent + "getValue() is null");
                 }
             }
         }
