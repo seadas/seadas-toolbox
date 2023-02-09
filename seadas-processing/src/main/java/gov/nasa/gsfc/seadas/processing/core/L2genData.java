@@ -159,7 +159,7 @@ public class L2genData implements SeaDASProcessorModel {
     private final HashMap<String, ParamInfo> paramInfoLookup = new HashMap<String, ParamInfo>();
     private L2genProductsParamInfo l2prodParamInfo = null;
 
-    public boolean excludeCurrentIOfile = true;
+    public boolean excludeCurrentIOfile = false;
     private boolean showDefaultsInParString = false;
 
     private ProcessorModel processorModel;
@@ -767,7 +767,6 @@ public class L2genData implements SeaDASProcessorModel {
                     }
                 }
 
-//                if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName()) && !excludeCurrentIOfile) {
                 if (ANCILLARY_FILES_CATEGORY_NAME.equals(paramCategoryInfo.getName())) {
                     par.append("# " + paramCategoryInfo.getName().toUpperCase() + "  Default = climatology (select 'Get Ancillary' to download ancillary files)\n");
                     par.append(currCategoryEntries.toString());
