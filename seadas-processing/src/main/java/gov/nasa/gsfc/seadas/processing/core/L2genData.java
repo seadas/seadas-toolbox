@@ -697,6 +697,7 @@ public class L2genData implements SeaDASProcessorModel {
                         } else {
                             if (!paramInfo.isDefault()) {
                                 alwaysDisplay = true;
+                                paramInfo.validateIfileValue(null, processorId, ocssw);
                                 currCategoryEntries.append(makeParEntry(paramInfo));
                             }
                         }
@@ -706,6 +707,7 @@ public class L2genData implements SeaDASProcessorModel {
                         } else {
                             if (!paramInfo.isDefault()){
                                 alwaysDisplay = true;
+                                paramInfo.validateIfileValue(null, processorId, ocssw);
                                 currCategoryEntries.append(makeParEntry(paramInfo));
                             }
                         }
@@ -715,6 +717,7 @@ public class L2genData implements SeaDASProcessorModel {
                         } else {
                             if (!paramInfo.isDefault()) {
                                 alwaysDisplay = true;
+                                paramInfo.validateIfileValue(null, processorId, ocssw);
                                 currCategoryEntries.append(makeParEntry(paramInfo));
                             }
                         }
@@ -724,6 +727,7 @@ public class L2genData implements SeaDASProcessorModel {
                         } else {
                             if (!paramInfo.isDefault()){
                                 alwaysDisplay = true;
+                                paramInfo.validateIfileValue(null, processorId, ocssw);
                                 currCategoryEntries.append(makeParEntry(paramInfo));
                             }
                         }
@@ -733,6 +737,7 @@ public class L2genData implements SeaDASProcessorModel {
                         } else {
                             if (!paramInfo.isDefault()){
                                 alwaysDisplay = true;
+                                paramInfo.validateIfileValue(null, processorId, ocssw);
                                 currCategoryEntries.append(makeParEntry(paramInfo));
                             }
                         }
@@ -742,6 +747,7 @@ public class L2genData implements SeaDASProcessorModel {
                         } else {
                             if (!paramInfo.isDefault()){
                                 alwaysDisplay = true;
+                                paramInfo.validateIfileValue(null, processorId, ocssw);
                                 currCategoryEntries.append(makeParEntry(paramInfo));
                             }
                         }
