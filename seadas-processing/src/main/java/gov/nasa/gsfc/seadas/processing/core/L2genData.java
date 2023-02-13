@@ -970,10 +970,11 @@ public class L2genData implements SeaDASProcessorModel {
 
             /*
            Delete all params NOT contained in parString to defaults (basically set to default)
-           Except: L2PROD and IFILE  remain at current value
+           Except: IFILE, GEOFILE, OFILE and SUITE remain at current value
              */
             for (ParamInfo paramInfo : paramInfos) {
-                if (!paramInfo.getName().startsWith(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE) && !paramInfo.getName().equals(SUITE)) {
+//                if (!paramInfo.getName().startsWith(L2PROD) && !paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE) && !paramInfo.getName().equals(SUITE)) {
+                if (!paramInfo.getName().equals(IFILE) && !paramInfo.getName().equals(OFILE) && !paramInfo.getName().equals(GEOFILE) && !paramInfo.getName().equals(SUITE)) {
                     boolean paramHandled = false;
                     for (ParamInfo parfileParamInfo : parfileParamInfos) {
                         if (paramInfo.getName().toLowerCase().equals(parfileParamInfo.getName().toLowerCase())) {
