@@ -77,60 +77,6 @@ public final class BathymetryAction extends AbstractSnapAction
         this.viewResult.addLookupListener(WeakListeners.create(LookupListener.class, this, viewResult));
         updateEnabledState();
     }
-//    @Override
-//    public void start(final SnapApp snapApp) {
-//        final ExecCommand action = snapApp.getCommandManager().createExecCommand(COMMAND_ID,
-//                new ToolbarCommand(visatApp));
-//
-//       String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, BathymetryVPI.class);
-//
-//        try {
-//            URL iconUrl = new URL(iconFilename);
-//            ImageIcon imageIcon = new ImageIcon(iconUrl);
-//            action.setLargeIcon(imageIcon);
-//        } catch (MalformedURLException e) {
-//           e.printStackTrace();
-//        }
-//
-//
-//        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
-//        lwcButton.setToolTipText(TOOL_TIP);
-//
-//        visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowOpened(WindowEvent e) {
-//                CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
-//                layersBar.add(lwcButton);
-//            }
-//        });
-//
-//        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
-//        lwcButton.setToolTipText(TOOL_TIP);
-//
-//        final AbstractButton lwcButton2 = visatApp.createToolButton(COMMAND_ID);
-//        lwcButton2.setToolTipText(TOOL_TIP);
-//
-//        visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowOpened(WindowEvent e) {
-//                CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
-//                if (layersBar != null) {
-//                    layersBar.add(lwcButton);
-//                }
-//
-//
-//                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDeluxeToolsToolBar");
-//               if (seadasDefaultBar != null) {
-//                    seadasDefaultBar.add(lwcButton2);
-//                }
-//            }
-//
-//        });
-//
-//
-//    }
-
-
     private void showBathymetry(final SnapApp snapApp) {
         final Product product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
         if (product != null) {
@@ -189,20 +135,6 @@ public final class BathymetryAction extends AbstractSnapAction
 
                 if (bathymetryData.isDeleteMasks() || !useDialogs) {
                     masksCreated[0] = false;
-
-
-//                    for (String name : bandGroup.getNodeNames()) {
-//                        if (
-//                                name.equals(bathymetryData.getBathymetryBandName())) {
-//  //                          Band bathymetryBand = bandGroup.get(name);
-//
-////                            product.getBand(name).dispose();
-//
-//                            bandGroup.remove(bandGroup.get(name));
-////                            product.removeBand(bathymetryBand);
-//
-//                        }
-//                    }
 
                     for (String name : maskGroup.getNodeNames()) {
                         if (name.equals(bathymetryData.getMaskName())) {
@@ -332,13 +264,6 @@ public final class BathymetryAction extends AbstractSnapAction
         RenderedImage newImage = FormatDescriptor.create(sourceImage, dataType, renderingHints);
         band.setSourceImage(newImage);
     }
-
-//    private class ToolbarCommand extends CommandAdapter {
-//        private final VisatApp visatApp;
-
-//        public ToolbarCommand(VisatApp visatApp) {
-//            this.visatApp = visatApp;
-//        }
 
     @Override
     public void actionPerformed(ActionEvent e) {
