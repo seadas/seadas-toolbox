@@ -34,7 +34,9 @@ public class ImageAnimatorDialog extends JDialog {
 
     static final String PREF_KEY_AUTO_SHOW_NEW_BANDS = "imageAnimatorLines.autoShowNewBands";
 
-    public static final String TITLE = "Create imageAnimator Lines"; /*I18N*/
+    public static final String TITLE = "Choose Images to Animate"; /*I18N*/
+
+    public static final String BAND_IMAGES = "bandImages";
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String DELETE_BUTTON_PRESSED_PROPERTY = "deleteButtonPressed";
     static final String NEW_FILTER_SELECTED_PROPERTY = "newFilterSelected";
@@ -228,7 +230,8 @@ public class ImageAnimatorDialog extends JDialog {
 
         final JPanel imageAnimatorContainerPanel = new JPanel(new GridBagLayout());
 
-        final JPanel basicPanel = getImageAnimatorPanel();
+        //final JPanel basicPanel = getImageAnimatorPanel();
+        final JPanel basicPanel = getImageTypePanel();
 
         imageAnimatorContainerPanel.add(basicPanel,
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
@@ -286,8 +289,7 @@ public class ImageAnimatorDialog extends JDialog {
         //this will set the "Create imageAnimator Lines" button as a default button that listens to the Enter key
         mainPanel.getRootPane().setDefaultButton((JButton) ((JPanel) mainPanel.getComponent(2)).getComponent(2));
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setTitle("Create imageAnimator Lines");
-        //setTitle("imageAnimator Lines for " + selectedBand.getName() );
+        setTitle("Animate Images");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         pack();
@@ -296,6 +298,37 @@ public class ImageAnimatorDialog extends JDialog {
 
     private JPanel getImageAnimatorPanel() {
         return new JPanel();
+    }
+
+    private JPanel getImageTypePanel() {
+        final JPanel imageTypePanel = new JPanel();
+
+        JLabel imageTypePanelLable = new JLabel("Select Image Type: ");
+
+        JRadioButton bandImages = new JRadioButton("Band Images",true);
+        JRadioButton angularView = new JRadioButton("Angular View");
+        JRadioButton spectrumView = new JRadioButton("Spectrum View");
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+
+        bandImages.setBounds(120, 30, 120, 50);
+        angularView.setBounds(120, 30, 120, 50);
+        spectrumView.setBounds(120, 30, 120, 50);
+
+        //bandImages.setAction();
+        imageTypePanelLable.setBounds(120, 30, 120, 50);
+
+        imageTypePanel.add(bandImages);
+        imageTypePanel.add(angularView);
+        imageTypePanel.add(spectrumView);
+        imageTypePanel.add(imageTypePanelLable);
+
+        buttonGroup.add(bandImages);
+        buttonGroup.add(angularView);
+        buttonGroup.add(spectrumView);
+        imageTypePanel.setVisible(true);
+
+        return imageTypePanel;
     }
 
     /**
@@ -434,15 +467,12 @@ public class ImageAnimatorDialog extends JDialog {
     private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
 
-        JButton createimageAnimatorLines = new JButton("Create imageAnimator Lines");
+        JButton createimageAnimatorLines = new JButton("Animate Images");
         createimageAnimatorLines.setPreferredSize(createimageAnimatorLines.getPreferredSize());
         createimageAnimatorLines.setMinimumSize(createimageAnimatorLines.getPreferredSize());
         createimageAnimatorLines.setMaximumSize(createimageAnimatorLines.getPreferredSize());
         createimageAnimatorLines.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-//                if (imageAnimatorData.getimageAnimatorIntervals().size() == 0) {
-//                    imageAnimatorData.createimageAnimatorLevels(getMinValue(), getMaxValue(), getNumberOfLevels(), logCheckBox.isSelected());
-//                }
                 imageAnimatorCanceled = false;
                 dispose();
             }

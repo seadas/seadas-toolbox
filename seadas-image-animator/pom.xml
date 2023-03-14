@@ -15,7 +15,7 @@
     <version>1.0.0</version>
     <packaging>nbm</packaging>
 
-    <name>SEADAS Image Operator</name>
+    <name>SEADAS Image Animator</name>
 
     <description>Animates a set of selected images.
     </description>
