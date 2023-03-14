@@ -61,11 +61,7 @@ import java.util.Collection;
 })
 public class ShowImageAnimatorAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
 
-
-    final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; stroke-dasharray:%s; symbol:cross";
     Product product;
-    double noDataValue;
-    private GeoCoding geoCoding;
 //    private boolean enabled = false;
     public static final String SMALLICON = "gov/nasa/gsfc/seadas/imageAnimator/ui/icons/ImageAnimator.png";
     public static final String LARGEICON = "gov/nasa/gsfc/seadas/imageAnimator/ui/icons/ImageAnimator24.png";
@@ -102,30 +98,6 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
 
         imageAnimatorDialog.setVisible(true);
         imageAnimatorDialog.dispose();
-
-        if (imageAnimatorDialog.getFilteredBandName() != null) {
-            if (product.getBand(imageAnimatorDialog.getFilteredBandName()) != null)
-                product.getBandGroup().remove(product.getBand(imageAnimatorDialog.getFilteredBandName()));
-        }
-
-        setGeoCoding(product.getSceneGeoCoding());
-        ImageAnimatorData imageAnimatorData = imageAnimatorDialog.getImageAnimatorData();
-        noDataValue = imageAnimatorDialog.getNoDataValue();
-        try {
-            ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforImages(imageAnimatorData);
-            for (VectorDataNode vectorDataNode : vectorDataNodes) {
-                // remove the old vector data node with the same name.
-                if (product.getVectorDataGroup().contains(vectorDataNode.getName())) {
-                    product.getVectorDataGroup().remove(product.getVectorDataGroup().get(vectorDataNode.getName()));
-                }
-                product.getVectorDataGroup().add(vectorDataNode);
-                if (sceneView != null) {
-                    sceneView.setLayersVisible(vectorDataNode);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private ArrayList<String> getActiveBands(ProductNodeGroup<Band> products) {
@@ -140,130 +112,6 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
             }
         }
         return activeBandNames;
-    }
-
-    public ArrayList<VectorDataNode> createVectorDataNodesforImages(ImageAnimatorData imageAnimatorData) {
-
-
-        double scalingFactor = imageAnimatorData.getBand().getScalingFactor();
-        double scalingOffset = imageAnimatorData.getBand().getScalingOffset();
-
-        ArrayList<VectorDataNode> vectorDataNodes = new ArrayList<VectorDataNode>();
-
-        //Register "ImageAnimator" operator if it's not in the registry
-        OperationRegistry registry = JAI.getDefaultInstance().getOperationRegistry();
-        String modeName = "rendered";
-        boolean imageAnimatorIsRegistered = false;
-        for (String name : registry.getDescriptorNames(modeName)) {
-            if (name.contains("ImageAnimator")) {
-                imageAnimatorIsRegistered = true;
-            }
-        }
-        if (!imageAnimatorIsRegistered) {
-            new ImageAnimator1Spi().updateRegistry(registry);
-        }
-
-        ParameterBlockJAI pb = new ParameterBlockJAI("ImageAnimator");
-        pb.setSource("source0", imageAnimatorData.getBand().getSourceImage());
-        ArrayList<Double> noDataList = new ArrayList<>();
-        noDataList.add(noDataValue);
-        pb.setParameter("nodata", noDataList);
-        return vectorDataNodes;
-    }
-
-    private FeatureCollection<SimpleFeatureType, SimpleFeature> createImageAnimatorFeatureCollection(ParameterBlockJAI pb) {
-
-        RenderedOp dest = JAI.create("ImageAnimator", pb);
-        Collection<LineString > imageAnimators = (Collection<LineString >) dest.getProperty(ImageAnimatorDescriptor.CONTOUR_PROPERTY_NAME);
-        SimpleFeatureType featureType = null;
-        FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = null;
-        try {
-            featureType = createFeatureType(geoCoding);
-            featureCollection = new ListFeatureCollection(featureType);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        LineString lineString;
-        Coordinate[] geomCoordinates;
-        PrecisionModel geomPrecisionModel;
-        PrecisionModel precisionModel;
-        for (LineString geomLineString : imageAnimators) {
-            geomCoordinates = geomLineString.getCoordinates();
-            geomPrecisionModel = geomLineString.getPrecisionModel();
-            precisionModel = new PrecisionModel(geomPrecisionModel.getScale(), geomPrecisionModel.getOffsetX(), geomPrecisionModel.getOffsetY());
-            lineString = new LineString(transformaCoordinates(geomCoordinates), precisionModel, geomLineString.getSRID());
-            Coordinate[] coordinates = lineString.getCoordinates();
-            for (int i = 0; i < coordinates.length; i++) {
-                coordinates[i].x = coordinates[i].x + 0.5;
-                coordinates[i].y = coordinates[i].y + 0.5;
-            }
-            final SimpleFeature feature = createFeature(featureType, lineString);
-
-            if (feature != null) {
-                ((ListFeatureCollection) featureCollection).add(feature);
-            }
-        }
-
-        final CoordinateReferenceSystem mapCRS = geoCoding.getMapCRS();
-        //System.out.println("geo coding : " +  geoCoding.getImageCRS().toString());
-        if (!mapCRS.equals(DefaultGeographicCRS.WGS84) || (geoCoding instanceof CrsGeoCoding)) {
-            try {
-                transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
-            } catch (TransformException e) {
-                Dialogs.showError("transformation failed!");
-            }
-        }
-
-        return featureCollection;
-    }
-
-    private Coordinate[] transformaCoordinates(Coordinate[] geomCoordinates){
-        Coordinate[] coordinates = new Coordinate[geomCoordinates.length];
-        int i = 0;
-
-        for (Coordinate coordinate:geomCoordinates) {
-            coordinates[i++] = new Coordinate(coordinate.x, coordinate.y, coordinate.z);
-        }
-        return coordinates;
-    }
-
-    private static void transformFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection, CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws TransformException {
-        final GeometryCoordinateSequenceTransformer transform = FeatureUtils.getTransform(sourceCRS, targetCRS);
-        final FeatureIterator<SimpleFeature> features = featureCollection.features();
-        final GeometryFactory geometryFactory = new GeometryFactory();
-        while (features.hasNext()) {
-            final SimpleFeature simpleFeature = features.next();
-            //System.out.println("simple feature : " +  simpleFeature.toString());
-            final LineString sourceLine = (LineString) simpleFeature.getDefaultGeometry();
-            final LineString targetLine = transform.transformLineString((LineString) sourceLine, geometryFactory);
-            simpleFeature.setDefaultGeometry(targetLine);
-        }
-    }
-
-    private SimpleFeatureType createFeatureType(GeoCoding geoCoding) throws IOException {
-        SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
-        ftb.setName("gov.nasa.gsfc.imageAnimator.imageAnimatorVectorData");
-        ftb.add("imageAnimator_lines", LineString.class, geoCoding.getImageCRS());
-        ftb.setDefaultGeometry("imageAnimator_lines");
-        final SimpleFeatureType ft = ftb.buildFeatureType();
-        ft.getUserData().put("imageAnimatorVectorData", "true");
-        return ft;
-    }
-
-    private static SimpleFeature createFeature(SimpleFeatureType type, LineString lineString) {
-
-        SimpleFeatureBuilder fb = new SimpleFeatureBuilder(type);
-        /*0*/
-        fb.add(lineString);
-        return fb.buildFeature(null);
-    }
-
-    public GeoCoding getGeoCoding() {
-        return geoCoding;
-    }
-
-    public void setGeoCoding(GeoCoding geoCoding) {
-        this.geoCoding = geoCoding;
     }
 
     @Override
