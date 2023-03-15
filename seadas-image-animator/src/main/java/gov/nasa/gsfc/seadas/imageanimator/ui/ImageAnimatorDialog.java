@@ -262,7 +262,7 @@ public class ImageAnimatorDialog extends JDialog {
         imageTypePanel.add(bandImages, BorderLayout.NORTH);
         imageTypePanel.add(angularView, BorderLayout.CENTER);
         imageTypePanel.add(spectrumView, BorderLayout.SOUTH);
-        imageTypePanel.add(imageTypePanelLable);
+        imageTypePanel.add(imageTypePanelLable, BorderLayout.WEST);
 
         buttonGroup.add(bandImages);
         buttonGroup.add(angularView);
