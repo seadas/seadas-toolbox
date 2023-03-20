@@ -2,17 +2,13 @@ package gov.nasa.gsfc.seadas.imageanimator.ui;
 
 import gov.nasa.gsfc.seadas.contour.ui.ExGridBagConstraints;
 import gov.nasa.gsfc.seadas.imageanimator.data.ImageAnimatorData;
-import gov.nasa.gsfc.seadas.imageanimator.ui.ImageAnimatorFilteredBandAction;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.rcp.imgfilter.FilteredBandAction;
-import org.esa.snap.rcp.imgfilter.model.Filter;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.openide.util.HelpCtx;
 
-import javax.help.HelpBroker;
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
@@ -21,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +38,7 @@ public class ImageAnimatorDialog extends JDialog {
     private Product product;
 
     Band selectedBand;
-
+    RasterDataNode raster;
     ArrayList<ImageAnimatorData> imageAnimators;
     ArrayList<String> activeBands;
 
@@ -234,7 +229,7 @@ public class ImageAnimatorDialog extends JDialog {
     }
 
     private JPanel getImageTypePanel() {
-        final JPanel imageTypePanel = new JPanel(new BorderLayout());
+        final JPanel imageTypePanel = new JPanel(new GridBagLayout());
 
         JLabel imageTypePanelLable = new JLabel("Select Image Type: ");
 
@@ -259,10 +254,11 @@ public class ImageAnimatorDialog extends JDialog {
 
         bandImages.setToolTipText("Select this option if you want to animate image for multiple bands");
 
-        imageTypePanel.add(bandImages, BorderLayout.NORTH);
-        imageTypePanel.add(angularView, BorderLayout.CENTER);
-        imageTypePanel.add(spectrumView, BorderLayout.SOUTH);
-        imageTypePanel.add(imageTypePanelLable, BorderLayout.WEST);
+        imageTypePanel.add(imageTypePanelLable, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        imageTypePanel.add(bandImages, new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        imageTypePanel.add(angularView, new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        imageTypePanel.add(spectrumView,  new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
 
         buttonGroup.add(bandImages);
         buttonGroup.add(angularView);
@@ -270,6 +266,26 @@ public class ImageAnimatorDialog extends JDialog {
         imageTypePanel.setVisible(true);
 
         return imageTypePanel;
+    }
+
+    public ArrayList<Band> getActiveBands() {
+        ProductSceneView productSceneView = SnapApp.getDefault().getSelectedProductSceneView();
+        ProductNodeGroup<Band> bandGroup = product.getBandGroup();
+
+        if (productSceneView != null) {
+            ImageInfo selectedImageInfo = productSceneView.getImageInfo();
+            Band[] bands = new Band[bandGroup.getNodeCount()];
+            bandGroup.toArray(bands);
+            for (Band band : bands) {
+                if (band.getImageInfo() != null) {
+                    if (band.getImageInfo() == selectedImageInfo) {
+                        selectedBand = band;
+                    }
+                }
+            }
+            raster = product.getRasterDataNode(selectedBand.getName());
+        }
+        return null;
     }
 
     private JPanel getControllerPanel() {
@@ -301,10 +317,10 @@ public class ImageAnimatorDialog extends JDialog {
 
         controllerPanel.add(filler,
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        controllerPanel.add(cancelButton,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         controllerPanel.add(animateImages,
-                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        controllerPanel.add(cancelButton,
+                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         controllerPanel.add(helpButton,
                 new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         return controllerPanel;
@@ -317,7 +333,10 @@ public class ImageAnimatorDialog extends JDialog {
 
             if (button == bandImages) {
 
-                // option Linux is selected
+                ArrayList<Band> activeBands = getActiveBands();
+                for (Band band:activeBands) {
+                   ImageInfo imageInfo =  band.getImageInfo();
+                }
 
             } else if (button == angularView) {
 
