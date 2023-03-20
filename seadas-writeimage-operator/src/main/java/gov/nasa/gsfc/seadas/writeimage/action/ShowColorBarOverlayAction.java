@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.writeimage;
+package gov.nasa.gsfc.seadas.writeimage.action;
 
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.glayer.Layer;

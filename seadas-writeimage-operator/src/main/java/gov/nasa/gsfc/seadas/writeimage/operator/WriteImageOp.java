@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.writeimage;
+package gov.nasa.gsfc.seadas.writeimage.operator;
 
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertySet;
@@ -18,6 +18,8 @@ import com.sun.media.jai.codec.ImageEncoder;
 import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
 import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
+import gov.nasa.gsfc.seadas.writeimage.RGBUtils;
+import gov.nasa.gsfc.seadas.writeimage.action.ShowColorBarOverlayAction;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.Operator;
 import org.esa.snap.core.gpf.OperatorException;
