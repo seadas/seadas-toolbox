@@ -62,7 +62,7 @@
                       methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
                 <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
                 <attr name="url"
-                      urlvalue="https://oceandata.sci.gsfc.nasa.gov/SeaDAS/updatecenter/8.0/seadas-toolbox/updates.xml.gz"/>
+                      urlvalue="https://oceandata.sci.gsfc.nasa.gov/SeaDAS/updatecenter/8.x/seadas-toolbox/updates.xml.gz"/>
             </file>
         </folder>
     </folder>
