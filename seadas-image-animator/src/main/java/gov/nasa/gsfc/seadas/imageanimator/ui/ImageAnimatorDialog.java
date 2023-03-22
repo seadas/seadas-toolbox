@@ -68,7 +68,8 @@ public class ImageAnimatorDialog extends JDialog {
             Band[] bands = new Band[bandGroup.getNodeCount()];
             bandGroup.toArray(bands);
             for (Band band : bands) {
-                if (band.getImageInfo() != null) {
+                ImageInfo imageInfo = band.getImageInfo();
+                if (imageInfo!= null) {
                     if (band.getImageInfo() == selectedImageInfo) {
                         //selectedUnfilteredBand = band;
                     }
@@ -166,26 +167,6 @@ public class ImageAnimatorDialog extends JDialog {
 
         imageAnimatorContainerPanel.add(basicPanel,
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        JButton addButton = new JButton("+");
-        addButton.setPreferredSize(addButton.getPreferredSize());
-        addButton.setMinimumSize(addButton.getPreferredSize());
-        addButton.setMaximumSize(addButton.getPreferredSize());
-        addButton.setName("addButton");
-
-        addButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                JPanel addedPanel = getImageAnimatorPanel();
-                ((JButton) event.getSource()).getParent().add(addedPanel);
-                JPanel c = (JPanel) ((JButton) event.getSource()).getParent();
-                JPanel jPanel = (JPanel) c.getComponents()[0];
-                int numPanels = jPanel.getComponents().length;
-                jPanel.add(addedPanel,
-                        new ExGridBagConstraints(0, numPanels, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-                repaint();
-                pack();
-            }
-        });
 
         imageAnimatorContainerPanel.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, new PropertyChangeListener() {
             @Override
@@ -333,10 +314,12 @@ public class ImageAnimatorDialog extends JDialog {
 
             if (button == bandImages) {
 
-                ArrayList<Band> activeBands = getActiveBands();
-                for (Band band:activeBands) {
-                   ImageInfo imageInfo =  band.getImageInfo();
-                }
+//                ArrayList<Band> activeBands = getActiveBands();
+//                for (Band band:activeBands) {
+//                   ImageInfo imageInfo =  band.getImageInfo();
+//                }
+                Animation animation = new Animation("Band Images Animation");
+                animation.startAnimate();
 
             } else if (button == angularView) {
 
