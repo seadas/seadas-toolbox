@@ -89,8 +89,8 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
     @Override
     public void actionPerformed(ActionEvent event) {
         SnapApp snapApp = SnapApp.getDefault();
-        AppContext appContext = snapApp.getAppContext();
         final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
+        snapApp.getProductManager().getProduct(0);
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         ProductNodeGroup<Band> products = product.getBandGroup();
         ImageAnimatorDialog imageAnimatorDialog = new ImageAnimatorDialog(product, getActiveBands(products));

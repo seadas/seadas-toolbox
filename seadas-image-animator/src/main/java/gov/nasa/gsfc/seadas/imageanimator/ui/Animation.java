@@ -45,11 +45,6 @@ public class Animation {
         frame = new JFrame(frameTitle);
         thread = new Thread();
         label = new JLabel();
-
-        SnapApp snapApp = SnapApp.getDefault();
-        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-        images = new ImageIcon((Image) sceneView.getBaseImageLayer().getImage());
-        label.setIcon(images);
         Panel panel = new Panel();
         panel.add(label);
         frame.add(panel, BorderLayout.CENTER);
@@ -74,17 +69,16 @@ public class Animation {
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         ProductNodeGroup<Band> products = product.getBandGroup();
         try {
-                images = new ImageIcon((Image) sceneView.getBaseImageLayer().getImage());
+
+            for (ProductNode band : products.toArray()) {
+                images = new ImageIcon(band.getProduct().getRasterDataNode(band.getName()).getGeophysicalImage().getAsBufferedImage());
                 //images = new ImageIcon((Image) sceneView.getBaseImageLayer().getImage());
                 label.setIcon(images);
-                frame.repaint();
-
                 thread.sleep(1000);
-        } catch (InterruptedException e)
-
-    {
-        throw new RuntimeException(e);
-    }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
