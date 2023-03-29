@@ -88,23 +88,23 @@ public class Animation {
 //                }
                 ActionListener listener = new ActionListener() {
 //
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        for (int i = 0; i < tiles.length; i++) {
-                            tiles[i].paintImage();
-                            gui.repaint();
-                        }
-                    }
-
 //                    @Override
 //                    public void actionPerformed(ActionEvent e) {
-//                        for (int i = 0; i < animatedImages.length; i++) {
-//                            Graphics2D g2d = animatedImages[i].createGraphics();
-//                            AffineTransform transform = createTransform(product.getBandAt(i), animatedImages[i]);
-//                            g2d.drawRenderedImage(animatedImages[i], transform);
+//                        for (int i = 0; i < tiles.length; i++) {
+//                            tiles[i].paintImage();
 //                            gui.repaint();
 //                        }
 //                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for (int i = 0; i < animatedImages.length; i++) {
+                            Graphics2D g2d = animatedImages[i].createGraphics();
+                            AffineTransform transform = createTransform(product.getBandAt(i), animatedImages[i]);
+                            g2d.drawRenderedImage(animatedImages[i], transform);
+                            gui.repaint();
+                        }
+                    }
 
                     private AffineTransform createTransform(RasterDataNode raster, BufferedImage image) {
 
