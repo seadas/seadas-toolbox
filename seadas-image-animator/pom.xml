@@ -44,6 +44,12 @@
          </dependency>
          <dependency>
              <groupId>org.esa.snap</groupId>
+             <artifactId>ceres-glayer</artifactId>
+             <version>${snap.version}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.esa.snap</groupId>
              <artifactId>snap-gpf</artifactId>
          </dependency>
          <dependency>

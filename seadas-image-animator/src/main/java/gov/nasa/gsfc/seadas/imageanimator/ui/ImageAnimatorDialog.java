@@ -14,6 +14,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -314,12 +315,10 @@ public class ImageAnimatorDialog extends JDialog {
 
             if (button == bandImages) {
 
-//                ArrayList<Band> activeBands = getActiveBands();
-//                for (Band band:activeBands) {
-//                   ImageInfo imageInfo =  band.getImageInfo();
-//                }
-                Animation animation = new Animation("Band Images Animation");
+                //Animation animation = new Animation("Band Images Animation");
+                Animation animation = new Animation();
                 animation.startAnimate();
+
 
             } else if (button == angularView) {
 
@@ -331,4 +330,5 @@ public class ImageAnimatorDialog extends JDialog {
             }
         }
     }
+
 }

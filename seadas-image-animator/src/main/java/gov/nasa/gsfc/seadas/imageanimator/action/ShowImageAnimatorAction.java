@@ -1,48 +1,30 @@
 package gov.nasa.gsfc.seadas.imageanimator.action;
 
-import gov.nasa.gsfc.seadas.imageanimator.data.ImageAnimatorData;
-import gov.nasa.gsfc.seadas.imageanimator.operator.ImageAnimator1Spi;
-import gov.nasa.gsfc.seadas.imageanimator.operator.ImageAnimatorDescriptor;
+import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.grender.Viewport;
+import com.bc.ceres.grender.support.DefaultViewport;
 import gov.nasa.gsfc.seadas.imageanimator.ui.ImageAnimatorDialog;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.esa.snap.core.datamodel.*;
-import org.esa.snap.core.util.FeatureUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
-import org.esa.snap.rcp.util.Dialogs;
-import org.esa.snap.ui.AppContext;
 import org.esa.snap.ui.product.ProductSceneView;
-import org.geotools.data.collection.ListFeatureCollection;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 import org.openide.util.actions.Presenter;
-
-import javax.media.jai.JAI;
-import javax.media.jai.OperationRegistry;
-import javax.media.jai.ParameterBlockJAI;
-import javax.media.jai.RenderedOp;
+import javax.media.jai.*;
+import javax.media.jai.operator.FormatDescriptor;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.image.*;
 import java.util.ArrayList;
-import java.util.Collection;
+import com.bc.ceres.grender.support.BufferedImageRendering;
 
 /**
  * @author Aynur Abdurazik
