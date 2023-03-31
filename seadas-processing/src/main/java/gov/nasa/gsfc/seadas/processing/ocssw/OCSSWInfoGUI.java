@@ -192,6 +192,7 @@ public class OCSSWInfoGUI {
         }
         ocsswLocationArrayList.add(OCSSW_LOCATION_VIRTUAL_MACHINE);
         ocsswLocationArrayList.add(OCSSW_LOCATION_REMOTE_SERVER);
+        ocsswLocationArrayList.add(OCSSW_LOCATION_DOCKER);
 
         ocsswLocations = ocsswLocationArrayList.toArray(new String[ocsswLocationArrayList.size()]);
 
@@ -226,6 +227,9 @@ public class OCSSWInfoGUI {
                         break;
                     case OCSSW_LOCATION_VIRTUAL_MACHINE:
                         paramSubPanel = getVirtualMachinePanel();
+                        break;
+                    case OCSSW_LOCATION_DOCKER:
+                        paramSubPanel = getDockerPanel();
                         break;
                     case OCSSW_LOCATION_REMOTE_SERVER:
                         paramSubPanel = getRemoteServerPanel();
@@ -347,6 +351,65 @@ public class OCSSWInfoGUI {
         paramPanel.validate();
     }
 
+    private JPanel getDockerPanel() {
+
+        final Preferences preferences = Config.instance("seadas").load().preferences();
+        JPanel panel = GridBagUtils.createPanel();
+        GridBagConstraints gbc = createConstraints();
+        panel.setBorder(UIUtils.createGroupBorder("Docker"));
+
+        JLabel ocsswSharedDirLabel = new JLabel(OCSSW_SHARED_DIR_LABEL + ": ");
+        ocsswSharedDir = new JTextField(20);
+
+
+        ocsswSharedDirLabel.setMinimumSize(ocsswSharedDirLabel.getPreferredSize());
+        ocsswSharedDir.setMinimumSize(new JTextField(10).getPreferredSize());
+
+
+        pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, OCSSWConfigData.getSeadasClientServerSharedDirDefaultValue())));
+        pc.getDescriptor(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY).setDisplayName(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY);
+
+        final BindingContext ctx = new BindingContext(pc);
+
+        ctx.bind(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir);
+
+
+        JButton ocsswSharedDirButton = new JButton("...");
+
+
+        ocsswSharedDirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File newDir = getDir();
+                if (newDir != null) {
+                    ocsswSharedDir.setText(newDir.getAbsolutePath());
+                    pc.setValue(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir.getText());
+                }
+            }
+        });
+
+        ocsswSharedDirButton.setMinimumSize(ocsswSharedDirButton.getPreferredSize());
+
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswSharedDirLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(ocsswSharedDir, gbc);
+
+        gbc.gridx = 2;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(ocsswSharedDirButton, gbc);
+
+        panel.setMinimumSize(panel.getMinimumSize());
+
+
+        return panel;
+    }
 
     private JPanel getVirtualMachinePanel() {
 
@@ -825,6 +888,7 @@ public class OCSSWInfoGUI {
                 break;
 
             case OCSSW_LOCATION_VIRTUAL_MACHINE:
+            case OCSSW_LOCATION_DOCKER:
                 if (!directoryCheck(OCSSW_SHARED_DIR_LABEL, ocsswSharedDir.getText())) {
                     return false;
                 }
