@@ -50,6 +50,7 @@ public class OCSSWInfo {
     public static final String OCSSW_LOCATION_LOCAL = "local";
     public static final String OCSSW_LOCATION_VIRTUAL_MACHINE = "virtualMachine";
     public static final String OCSSW_LOCATION_REMOTE_SERVER = "remoteServer";
+    public static final String OCSSW_LOCATION_DOCKER = "docker";
     public static final String OCSSW_PROCESS_INPUT_STREAM_PORT = "seadas.ocssw.processInputStreamPort";
     public static final String OCSSW_PROCESS_ERROR_STREAM_PORT = "seadas.ocssw.processErrorStreamPort";
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
@@ -64,6 +65,7 @@ public class OCSSWInfo {
     public static final String OCSSW_SEADAS_INFO_PROGRAM_NAME = "seadas_info";
 
     public static final String VIRTUAL_MACHINE_SERVER_API = "localhost";
+    public static final String DOCKER_SERVER_API = "localhost";
 
     private static OCSSWInfo ocsswInfo = null;
 
@@ -196,6 +198,11 @@ public class OCSSWInfo {
             if (ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_VIRTUAL_MACHINE)) {
                 setOcsswLocation(OCSSW_LOCATION_VIRTUAL_MACHINE);
                 initializeRemoteOCSSW(VIRTUAL_MACHINE_SERVER_API);
+            }
+
+            else if (ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_DOCKER)) {
+                setOcsswLocation(OCSSW_LOCATION_DOCKER);
+                initializeRemoteOCSSW(DOCKER_SERVER_API);
 
             } else if (validate(ocsswLocationPropertyValue)) {
                 setOcsswLocation(OCSSW_LOCATION_REMOTE_SERVER);
@@ -225,6 +232,7 @@ public class OCSSWInfo {
     private boolean isValidOcsswLocationProperty(String ocsswLocationPropertyValue) {
         if (ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_LOCAL)
                 || ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_VIRTUAL_MACHINE)
+                || ocsswLocationPropertyValue.equalsIgnoreCase(OCSSW_LOCATION_DOCKER)
                 || validate(ocsswLocationPropertyValue)) {
             return true;
         }
