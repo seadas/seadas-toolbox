@@ -7,6 +7,7 @@ import com.bc.ceres.grender.support.BufferedImageRendering;
 import com.bc.ceres.grender.support.DefaultViewport;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.util.math.MathUtils;
+import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 
 import javax.media.jai.ImageLayout;
@@ -33,7 +34,7 @@ public class ImageAnimatorOp {
     public RenderedImage createImage(ProductSceneView view) {
         final String imageFormat = "PNG";
         final boolean useAlpha = true; //!BMP_FORMAT_DESCRIPTION[0].equals(imageFormat) && !JPEG_FORMAT_DESCRIPTION[0].equals(imageFormat);
-        final boolean entireImage = true;
+        final boolean entireImage = false;
         final boolean geoReferenced = false; //GEOTIFF_FORMAT_DESCRIPTION[0].equals(imageFormat)
         Dimension dimension = new Dimension(getImageDimensions(view, entireImage));
         return createImage(view, entireImage, dimension, useAlpha, geoReferenced);
@@ -54,7 +55,6 @@ public class ImageAnimatorOp {
 
         return bufferedImage;
     }
-
 
     private static BufferedImageRendering createRendering(ProductSceneView view, boolean fullScene,
                                                           boolean geoReferenced, BufferedImage bufferedImage) {

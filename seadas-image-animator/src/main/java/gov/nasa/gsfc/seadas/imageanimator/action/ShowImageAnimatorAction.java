@@ -76,8 +76,6 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         ProductNodeGroup<Band> products = product.getBandGroup();
         ImageAnimatorDialog imageAnimatorDialog = new ImageAnimatorDialog(product, getActiveBands(products));
-
-
         imageAnimatorDialog.setVisible(true);
         imageAnimatorDialog.dispose();
     }
