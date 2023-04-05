@@ -69,12 +69,8 @@ public class Animation {
         ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
         RenderedImage renderedImage = imageAnimatorOp.createImage(sceneView);
         BufferedImage bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
-        Product testProdcut = snapApp.getProductManager().getProduct(0);
+
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
-
-
-
-        //new code testing the image
 
 
 
@@ -84,23 +80,19 @@ public class Animation {
                 JPanel gui = new JPanel();
 
                 final AnimatedImage[] tiles = new AnimatedImage[1];
+
                 RenderedImage renderedImage;
                 BufferedImage bufferedImage;
-                //final AnimatedImage[] animatedImages = new AnimatedImage[products.getNodeCount()];
+                RasterDataNode raster = product.getRasterDataNode("chlor_a");
+                ProductSceneImage productSceneImage = new ProductSceneImage(raster, sceneView);
+                ProductSceneView currentSceneView = new ProductSceneView(productSceneImage);
+                currentSceneView.updateImage();
 
-//                for (ProductNode productNode : products.toArray()){
-//                    bufferedImage = ImageAnimatorOp.toBufferedImage(productNode.getProduct().get)
-//                }
 
-                RasterDataNode raster = product.getRasterDataNode("angstrom");
-
-                openProductSceneView(raster);
-                ProductSceneView myView = getProductSceneView(raster);
-                ProductSceneImage productSceneImage = new ProductSceneImage(raster,
-                        SnapApp.getDefault().getPreferencesPropertyMap(),
-                        SubProgressMonitor.create(pm, 1));
-                renderedImage = imageAnimatorOp.createImage(myView);
+                renderedImage = imageAnimatorOp.createImage(currentSceneView);
                 bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
+
+
 
                 for (int ii = 0; ii < tiles.length; ii++) {
                     tiles[ii] = new AnimatedImage();

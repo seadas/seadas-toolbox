@@ -32,7 +32,6 @@ public class ImageAnimatorOp {
 
    }
     public RenderedImage createImage(ProductSceneView view) {
-        final String imageFormat = "PNG";
         final boolean useAlpha = true; //!BMP_FORMAT_DESCRIPTION[0].equals(imageFormat) && !JPEG_FORMAT_DESCRIPTION[0].equals(imageFormat);
         final boolean entireImage = false;
         final boolean geoReferenced = false; //GEOTIFF_FORMAT_DESCRIPTION[0].equals(imageFormat)
@@ -42,8 +41,8 @@ public class ImageAnimatorOp {
     static RenderedImage createImage(ProductSceneView view, boolean fullScene, Dimension dimension,
                                      boolean alphaChannel, boolean geoReferenced) {
         final int imageType = alphaChannel ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR;
-        final BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, imageType);
-
+       // final BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, imageType);
+        final BufferedImage bufferedImage = new BufferedImage(804, 1739, imageType);
         final BufferedImageRendering imageRendering = createRendering(view, fullScene,
                 geoReferenced, bufferedImage);
         if (!alphaChannel) {
