@@ -19,6 +19,13 @@
 
     <description>Animates a set of selected images.
     </description>
+
+    <properties>
+        <netbeans.version>RELEASE82</netbeans.version>
+        <doc-windows.version>1.0</doc-windows.version>
+        <user.language>en</user.language>
+    </properties>
+
      <dependencies>
          <dependency>
              <groupId>org.esa.snap</groupId>
@@ -97,6 +104,11 @@
              <groupId>org.netbeans.api</groupId>
              <artifactId>org-openide-awt</artifactId>
              <version>${netbeans.version}</version>
+         </dependency>
+         <dependency>
+             <groupId>org.esa.snap.netbeans</groupId>
+             <artifactId>doc-windows</artifactId>
+             <version>${doc-windows.version}</version>
          </dependency>
      </dependencies>
 

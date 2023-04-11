@@ -67,17 +67,17 @@ public class ImageAnimatorOp {
         }
 
         final BufferedImageRendering imageRendering = new BufferedImageRendering(bufferedImage, vp2);
-        if (geoReferenced) {
-            // because image to model transform is stored with the exported image we have to invert
-            // image to view transformation
-            final AffineTransform m2iTransform = view.getBaseImageLayer().getModelToImageTransform(0);
-            final AffineTransform v2mTransform = vp2.getViewToModelTransform();
-            v2mTransform.preConcatenate(m2iTransform);
-            final AffineTransform v2iTransform = new AffineTransform(v2mTransform);
-            final Graphics2D graphics2D = imageRendering.getGraphics();
-            v2iTransform.concatenate(graphics2D.getTransform());
-            graphics2D.setTransform(v2iTransform);
-        }
+//        if (geoReferenced) {
+//            // because image to model transform is stored with the exported image we have to invert
+//            // image to view transformation
+//            final AffineTransform m2iTransform = view.getBaseImageLayer().getModelToImageTransform(0);
+//            final AffineTransform v2mTransform = vp2.getViewToModelTransform();
+//            v2mTransform.preConcatenate(m2iTransform);
+//            final AffineTransform v2iTransform = new AffineTransform(v2mTransform);
+//            final Graphics2D graphics2D = imageRendering.getGraphics();
+//            v2iTransform.concatenate(graphics2D.getTransform());
+//            graphics2D.setTransform(v2iTransform);
+//        }
         return imageRendering;
     }
 
