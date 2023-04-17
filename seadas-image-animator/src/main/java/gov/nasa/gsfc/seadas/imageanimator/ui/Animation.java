@@ -96,10 +96,10 @@ public class Animation {
 
                 ProductSceneView myView;
 
-//                ProductSceneView myView = getProductSceneView(raster1);
-//                renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
-//
-                //renderedImage = myView.getBaseImageLayer().getImage();
+                myView = getProductSceneView(raster1);
+                renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
+
+                renderedImage = myView.getBaseImageLayer().getImage();
 
                 //for (int ii = 0; ii < tiles.length; ii++) {
                     myView = getProductSceneView(raster1);
