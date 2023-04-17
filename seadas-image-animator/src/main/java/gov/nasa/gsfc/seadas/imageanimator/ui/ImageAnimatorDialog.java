@@ -318,6 +318,7 @@ public class ImageAnimatorDialog extends JDialog {
                 //Animation animation = new Animation("Band Images Animation");
                 Animation animation = new Animation();
                 animation.startAnimate();
+                //animation.animatioTest();
 
 
             } else if (button == angularView) {

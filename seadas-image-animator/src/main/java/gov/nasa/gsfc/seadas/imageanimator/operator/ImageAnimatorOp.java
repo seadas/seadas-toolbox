@@ -67,17 +67,17 @@ public class ImageAnimatorOp {
         }
 
         final BufferedImageRendering imageRendering = new BufferedImageRendering(bufferedImage, vp2);
-//        if (geoReferenced) {
-//            // because image to model transform is stored with the exported image we have to invert
-//            // image to view transformation
-//            final AffineTransform m2iTransform = view.getBaseImageLayer().getModelToImageTransform(0);
-//            final AffineTransform v2mTransform = vp2.getViewToModelTransform();
-//            v2mTransform.preConcatenate(m2iTransform);
-//            final AffineTransform v2iTransform = new AffineTransform(v2mTransform);
-//            final Graphics2D graphics2D = imageRendering.getGraphics();
-//            v2iTransform.concatenate(graphics2D.getTransform());
-//            graphics2D.setTransform(v2iTransform);
-//        }
+        if (geoReferenced) {
+            // because image to model transform is stored with the exported image we have to invert
+            // image to view transformation
+            final AffineTransform m2iTransform = view.getBaseImageLayer().getModelToImageTransform(0);
+            final AffineTransform v2mTransform = vp2.getViewToModelTransform();
+            v2mTransform.preConcatenate(m2iTransform);
+            final AffineTransform v2iTransform = new AffineTransform(v2mTransform);
+            final Graphics2D graphics2D = imageRendering.getGraphics();
+            v2iTransform.concatenate(graphics2D.getTransform());
+            graphics2D.setTransform(v2iTransform);
+        }
         return imageRendering;
     }
 
@@ -196,5 +196,35 @@ public class ImageAnimatorOp {
         return bufferedImage;
 
     }
+
+    public RenderedImage createImage(ProductSceneView view, Viewport viewPort) {
+        final boolean useAlpha = true; //!BMP_FORMAT_DESCRIPTION[0].equals(imageFormat) && !JPEG_FORMAT_DESCRIPTION[0].equals(imageFormat);
+        final boolean entireImage = false;
+        final boolean geoReferenced = false; //GEOTIFF_FORMAT_DESCRIPTION[0].equals(imageFormat)
+        Dimension dimension = new Dimension(getImageDimensions(view, entireImage, viewPort));
+        return createImage(view, entireImage, dimension, useAlpha, geoReferenced);
+    }
+
+    public Dimension getImageDimensions(ProductSceneView view, boolean full, Viewport viewPort) {
+
+        Rectangle2D bounds;
+        if (full) {
+            final ImageLayer imageLayer = view.getBaseImageLayer();
+            final Rectangle2D modelBounds = imageLayer.getModelBounds();
+            Rectangle2D imageBounds = imageLayer.getModelToImageTransform().createTransformedShape(modelBounds).getBounds2D();
+
+            final double mScale = modelBounds.getWidth() / modelBounds.getHeight();
+            final double iScale = imageBounds.getHeight() / imageBounds.getWidth();
+            double scaleFactorX = mScale * iScale;
+            bounds = new Rectangle2D.Double(0, 0, scaleFactorX * imageBounds.getWidth(), 1 * imageBounds.getHeight());
+        } else {
+            bounds = viewPort.getViewBounds();
+        }
+        imageWidth = toInteger(bounds.getWidth());
+        imageHeight = toInteger(bounds.getHeight());
+        heightWidthRatio = (double) imageHeight / (double) imageWidth;
+        return new Dimension(imageWidth, imageHeight);
+    }
+
 
 }
