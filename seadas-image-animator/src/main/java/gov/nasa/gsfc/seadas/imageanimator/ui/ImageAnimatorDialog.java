@@ -321,6 +321,8 @@ public class ImageAnimatorDialog extends JDialog {
                 //animation.animatioTest();
 
 
+
+
             } else if (button == angularView) {
 
                 // option Windows is selected
