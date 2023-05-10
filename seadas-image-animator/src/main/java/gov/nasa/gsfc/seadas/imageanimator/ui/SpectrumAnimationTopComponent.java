@@ -1,8 +1,7 @@
 package gov.nasa.gsfc.seadas.imageanimator.ui;
 
 import org.esa.snap.rcp.angularview.AngularTopComponent;
-
-import java.awt.*;
+import org.esa.snap.rcp.spectrum.SpectrumTopComponent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,9 +10,9 @@ import java.awt.*;
  * Time: 1:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AngularAnimationTopComponent extends AngularTopComponent {
+public class SpectrumAnimationTopComponent extends SpectrumTopComponent {
 
-    public AngularAnimationTopComponent() {
+    public SpectrumAnimationTopComponent() {
         super();
         open();
         requestActive();

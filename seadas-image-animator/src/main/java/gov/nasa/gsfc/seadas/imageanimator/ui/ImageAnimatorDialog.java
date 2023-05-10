@@ -293,17 +293,16 @@ public class ImageAnimatorDialog extends JDialog {
 
                 } else if (button == angularView) {
 
-                    // option Windows is selected
+                    // option Angular View is selected
                 Animation animation = new Animation();
                 animation.startAnimateAngular();
-//                int i = 3;
 
                 } else if (button == spectrumView) {
 
-                    // option Macintosh is selected
-                    int i = 3;
-//                Animation animation = new Animation();
-//                animation.startAnimateSpectrum();
+                    // option Spectrum is selected
+
+                Animation animation = new Animation();
+                animation.startAnimateSpectrum();
 
                 }
                 dispose();
