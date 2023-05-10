@@ -7,7 +7,10 @@ import gov.nasa.gsfc.seadas.imageanimator.ui.ImageAnimatorDialog;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
+import org.esa.snap.rcp.angularview.AngularTopComponent;
 import org.esa.snap.ui.product.ProductSceneView;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -118,12 +121,13 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
         final Product selectedProduct = SnapApp.getDefault().getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
         boolean productSelected = selectedProduct != null;
         boolean hasBands = false;
-        boolean hasGeoCoding = false;
+//        boolean hasGeoCoding = false;
         if (productSelected) {
             hasBands = selectedProduct.getNumBands() > 0;
-            hasGeoCoding = selectedProduct.getSceneGeoCoding() != null;
+//            hasGeoCoding = selectedProduct.getSceneGeoCoding() != null;
         }
-        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands && hasGeoCoding);
+//        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands && hasGeoCoding);
+        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands);
     }
 }
 

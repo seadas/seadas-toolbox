@@ -85,7 +85,17 @@ public class Animation {
             @Override
             public void run() {
                 JPanel gui = new JPanel();
-                final String[] names = {"angstrom", "chlor_a", "chl_ocx", "pic", "poc", "ipar", "nflh", "par"};
+                final String[] names = {"angstrom", "chlor_a", "chl_ocx", "pic", "poc", "ipar", "nflh", "par"};;
+                if (snapApp.getSelectedProductSceneView().getProduct().getName().contains("HARP2")) {
+                    names[0] = "I_-43_549";
+                    names[1] = "I_-32_549";
+                    names[2] = "I_-20_549";
+                    names[3] = "I_-6_549";
+                    names[4] = "I_0_549";
+                    names[5] = "I_15_549";
+                    names[6] = "I_28_549";
+                    names[7] = "I_-52_549";
+                }
                 final RenderedImage[] renderedImages = new RenderedImage[names.length];
                 final RasterDataNode[] rasters = new RasterDataNode[names.length];
                 ProductSceneView myView;
@@ -121,6 +131,83 @@ public class Animation {
                 JOptionPane.showMessageDialog(null, gui);
 
                 timer.stop();
+            }
+        };
+
+        SwingUtilities.invokeLater(r);
+    }
+
+    public void startAnimateAngular(){
+
+        SnapApp snapApp = SnapApp.getDefault();
+        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
+        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
+        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
+//        RenderedImage renderedImage = imageAnimatorOp.createImage(sceneView);
+//        BufferedImage bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
+//        BufferedImage bi = (BufferedImage)imageAnimatorOp.createImage(sceneView);
+        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
+
+
+        Runnable r = new Runnable() {
+            int index = 0;
+            @Override
+            public void run() {
+                JPanel gui = new JPanel();
+                final String[] names = {"angstrom", "chlor_a", "chl_ocx", "pic", "poc", "ipar", "nflh", "par"};
+                final RenderedImage[] renderedImages = new RenderedImage[names.length];
+                final RasterDataNode[] rasters = new RasterDataNode[names.length];
+                ProductSceneView myView;
+                RenderedImage renderedImage;
+
+                AngularAnimationTopComponent angularAnimationTopComponent = new AngularAnimationTopComponent();
+
+
+//                setUpAngularViews();
+//                selectAngularBands();
+
+//                final RasterDataNode currentRaster = sceneView.getRaster();
+//                final DisplayableAngularview[] allAngularViews = rasterToAngularMap.get(currentRaster);
+//                final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(ImageAnimatorDialog.getWindows()[0]), allAngularViews);
+//                if (angularViewChooser.show() == ModalDialog.ID_OK) {
+//                    final DisplayableAngularview[] angularViews = angularViewChooser.getAngularViews();
+//                    rasterToAngularMap.put(currentRaster, angularViews);
+//                }
+
+//                initUI(gui);
+//
+//                recreateChart();
+
+//                for (int i = 0; i < names.length; i++) {
+//                    RasterDataNode raster = product.getRasterDataNode(names[i]);
+//                    openProductSceneView(raster);
+//                    rasters[i] = raster;
+//                }
+
+//                for (int i = 0; i < names.length; i++) {
+//                    myView = getProductSceneView(rasters[i]);
+//                    renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
+//                    renderedImages[i] = renderedImage;
+//
+//                    if(i == 0) {
+//                        gui.add(new JLabel(new ImageIcon((BufferedImage)renderedImage)));
+//                    }
+//                }
+
+//                Timer timer = new Timer(1000, new ActionListener() {
+//                    @Override
+//                    public void actionPerformed(ActionEvent e) {
+//                        JLabel label = (JLabel) gui.getComponent(0);
+//                        label.setIcon(new ImageIcon((BufferedImage) renderedImages[++index % names.length]));
+//                        label.repaint();
+//                        gui.repaint();
+//                    }
+//                });
+//                timer.start();
+//
+//                JOptionPane.showMessageDialog(null, gui);
+//
+//                timer.stop();
             }
         };
 

@@ -50,6 +50,7 @@ public class ImageAnimatorDialog extends JDialog {
     JRadioButton bandImages = new JRadioButton("Band Images",true);
     JRadioButton angularView = new JRadioButton("Angular View");
     JRadioButton spectrumView = new JRadioButton("Spectrum View");
+    JRadioButton button;
 
     private boolean imageAnimatorCanceled;
 
@@ -280,6 +281,31 @@ public class ImageAnimatorDialog extends JDialog {
         animateImages.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 imageAnimatorCanceled = false;
+                if (button == bandImages) {
+
+                    //Animation animation = new Animation("Band Images Animation");
+                    Animation animation = new Animation();
+                    animation.startAnimate();
+                    //animation.animatioTest();
+
+
+
+
+                } else if (button == angularView) {
+
+                    // option Windows is selected
+                Animation animation = new Animation();
+                animation.startAnimateAngular();
+//                int i = 3;
+
+                } else if (button == spectrumView) {
+
+                    // option Macintosh is selected
+                    int i = 3;
+//                Animation animation = new Animation();
+//                animation.startAnimateSpectrum();
+
+                }
                 dispose();
             }
         });
@@ -311,26 +337,33 @@ public class ImageAnimatorDialog extends JDialog {
     class RadioButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent event) {
-            JRadioButton button = (JRadioButton) event.getSource();
+            button = (JRadioButton) event.getSource();
 
-            if (button == bandImages) {
-
-                //Animation animation = new Animation("Band Images Animation");
-                Animation animation = new Animation();
-                animation.startAnimate();
-                //animation.animatioTest();
-
-
-
-
-            } else if (button == angularView) {
-
-                // option Windows is selected
-
-            } else if (button == spectrumView) {
-
-                // option Macintosh is selected
-            }
+//            if (button == bandImages) {
+//
+//                //Animation animation = new Animation("Band Images Animation");
+//                Animation animation = new Animation();
+//                animation.startAnimate();
+//                //animation.animatioTest();
+//
+//
+//
+//
+//            } else if (button == angularView) {
+//
+//                // option Windows is selected
+////                Animation animation = new Animation();
+////                animation.startAnimateAngular();
+////                int i = 3;
+//
+//            } else if (button == spectrumView) {
+//
+//                // option Macintosh is selected
+//                int i = 3;
+////                Animation animation = new Animation();
+////                animation.startAnimateSpectrum();
+//
+//            }
         }
     }
 
