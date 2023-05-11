@@ -55,6 +55,14 @@
             <description>install VIIRS JPSS1 files</description>
             <order>20</order>
         </option>
+        <option type="boolean">
+            <name>viirsj2</name>
+            <value>true</value>
+            <default>true</default>
+            <usedAs>flag</usedAs>
+            <description>install VIIRS JPSS1 files</description>
+            <order>21</order>
+        </option>
         <!--<option type="button">-->
             <!--<name>update luts</name>-->
             <!--<value></value>-->

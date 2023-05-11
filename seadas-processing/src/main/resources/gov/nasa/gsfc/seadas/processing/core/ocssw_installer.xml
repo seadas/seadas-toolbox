@@ -234,12 +234,20 @@
             <order>27</order>
         </option>
         <option type="boolean">
+            <name>--viirsj2</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install VIIRS JPSS2 mission bundle</description>
+            <order>28</order>
+        </option>
+        <option type="boolean">
             <name>--verbose</name>
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>print out verbose messages</description>
-            <order>28</order>
+            <order>29</order>
         </option>
         <option type="boolean">
             <name>--clean</name>
@@ -247,7 +255,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>clean install</description>
-            <order>29</order>
+            <order>30</order>
         </option>
         <option type="boolean">
             <name>--viirsdem</name>
@@ -255,7 +263,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>install VIIRS DEM files needed for geolocation</description>
-            <order>30</order>
+            <order>31</order>
         </option>
     </options>
 </paramInfo>
