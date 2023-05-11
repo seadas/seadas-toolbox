@@ -68,7 +68,7 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
 
      * positional arguments:
      * MISSION            sensor or platform to process; one of:
-                     seawifs, aquarius, modisa, modist, viirsn, viirsj1, aqua, terra, npp, j1
+                     seawifs, aquarius, modisa, modist, viirsn, viirsj1, viirsj2, aqua, terra, npp, j1
      */
     private String getMissionName() {
         String missionName = processorModel.getOcssw().getMissionName();
@@ -83,11 +83,11 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
             } else if (missionName.contains("aquarius")) {
                 missionName = "aquarius";
             } else if (missionName.contains("viirsn") ) {
-
                 missionName = "viirsn";
-            } else if (missionName.contains("viirsji") ) {
-
+            } else if (missionName.contains("viirsj1") ) {
                 missionName = "viirsj1";
+            } else if (missionName.contains("viirsj2") ) {
+                missionName = "viirsj2";
             }
         }
         return missionName;
