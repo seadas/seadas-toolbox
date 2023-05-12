@@ -29,10 +29,10 @@
 
     <modules>
 
-<!--        <module>seadas-watermask-operator</module>-->
+        <module>seadas-watermask-operator</module>
         <module>seadas-processing</module>
         <module>seadas-contour-operator</module>
-<!--        <module>seadas-bathymetry-operator</module>-->
+        <module>seadas-bathymetry-operator</module>
         <module>seadas-kit</module>
     </modules>
 
@@ -49,8 +49,8 @@
         <seadas-toolbox.version>1.3.0-SNAPSHOT</seadas-toolbox.version>
         <seadas-contour-operator.version>8.3.0-SNAPSHOT</seadas-contour-operator.version>
         <seadas-processing.version>8.3.0-SNAPSHOT</seadas-processing.version>
-<!--        <seadas-watermask-operator.version>8.3.0-SNAPSHOT</seadas-watermask-operator.version>-->
-<!--        <seadas-bathymetry-operator.version>8.3.0-SNAPSHOT</seadas-bathymetry-operator.version>-->
+        <seadas-watermask-operator.version>8.3.0-SNAPSHOT</seadas-watermask-operator.version>
+        <seadas-bathymetry-operator.version>8.3.0-SNAPSHOT</seadas-bathymetry-operator.version>
 
         <netbeans.version>RELEASE113</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
