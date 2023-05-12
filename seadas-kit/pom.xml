@@ -27,7 +27,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <executions>
                     <execution>
@@ -66,21 +66,21 @@
             <artifactId>seadas-processing</artifactId>
             <version>${seadas-processing.version}</version>
         </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-bathymetry-operator</artifactId>
-            <version>${seadas-bathymetry-operator.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
+<!--            <artifactId>seadas-bathymetry-operator</artifactId>-->
+<!--            <version>${seadas-bathymetry-operator.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-contour-operator</artifactId>
             <version>${seadas-contour-operator.version}</version>
         </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-watermask-operator</artifactId>
-            <version>${seadas-watermask-operator.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
+<!--            <artifactId>seadas-watermask-operator</artifactId>-->
+<!--            <version>${seadas-watermask-operator.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
