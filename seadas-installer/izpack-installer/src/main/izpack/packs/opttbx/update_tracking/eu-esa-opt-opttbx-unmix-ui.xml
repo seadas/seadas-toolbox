@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.unmix.ui">
+    <module_version install_time="1684176329755" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="1393328480" name="config/Modules/eu-esa-opt-opttbx-unmix-ui.xml"/>
+        <file crc="1445869423" name="modules/docs/eu-esa-opt-opttbx-unmix-ui.jar"/>
+        <file crc="4077138675" name="modules/eu-esa-opt-opttbx-unmix-ui.jar"/>
+        <file crc="1034401977" name="update_tracking/eu-esa-opt-opttbx-unmix-ui.xml"/>
+    </module_version>
+</module>

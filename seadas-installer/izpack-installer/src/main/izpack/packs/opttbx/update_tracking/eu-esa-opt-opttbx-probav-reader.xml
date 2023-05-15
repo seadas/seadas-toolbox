@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.probav.reader">
+    <module_version install_time="1684176293373" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="2055433032" name="config/Modules/eu-esa-opt-opttbx-probav-reader.xml"/>
+        <file crc="3885609974" name="modules/eu-esa-opt-opttbx-probav-reader.jar"/>
+        <file crc="3467079959" name="modules/ext/eu.esa.opt.opttbx-probav-reader/ncsa-hdf/jhdf4obj.jar"/>
+        <file crc="1865106917" name="modules/ext/eu.esa.opt.opttbx-probav-reader/ncsa-hdf/jhdf5obj.jar"/>
+        <file crc="3270807677" name="modules/ext/eu.esa.opt.opttbx-probav-reader/ncsa-hdf/jhdfobj.jar"/>
+        <file crc="1776251188" name="update_tracking/eu-esa-opt-opttbx-probav-reader.xml"/>
+    </module_version>
+</module>

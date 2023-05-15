@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.flhmci.ui">
+    <module_version install_time="1684176201237" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="2820508940" name="config/Modules/eu-esa-opt-opttbx-flhmci-ui.xml"/>
+        <file crc="2157386153" name="modules/eu-esa-opt-opttbx-flhmci-ui.jar"/>
+        <file crc="3199044412" name="update_tracking/eu-esa-opt-opttbx-flhmci-ui.xml"/>
+    </module_version>
+</module>

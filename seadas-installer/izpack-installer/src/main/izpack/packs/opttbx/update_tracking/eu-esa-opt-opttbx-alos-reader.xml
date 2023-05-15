@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.alos.reader">
+    <module_version install_time="1684176158848" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="3902758373" name="config/Modules/eu-esa-opt-opttbx-alos-reader.xml"/>
+        <file crc="1566914599" name="modules/docs/eu-esa-opt-opttbx-alos-reader.jar"/>
+        <file crc="3650381958" name="modules/eu-esa-opt-opttbx-alos-reader.jar"/>
+        <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-alos-reader/javax-xml-parsers/jaxp-api.jar"/>
+        <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-alos-reader/org-apache-commons/commons-lang3.jar"/>
+        <file crc="2543373801" name="update_tracking/eu-esa-opt-opttbx-alos-reader.xml"/>
+    </module_version>
+</module>

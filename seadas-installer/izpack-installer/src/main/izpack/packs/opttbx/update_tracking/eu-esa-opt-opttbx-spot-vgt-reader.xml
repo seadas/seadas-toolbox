@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.spot.vgt.reader">
+    <module_version install_time="1684176320656" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="759002570" name="config/Modules/eu-esa-opt-opttbx-spot-vgt-reader.xml"/>
+        <file crc="661410979" name="modules/docs/eu-esa-opt-opttbx-spot-vgt-reader.jar"/>
+        <file crc="540237798" name="modules/eu-esa-opt-opttbx-spot-vgt-reader.jar"/>
+        <file crc="2424725385" name="modules/ext/eu.esa.opt.opttbx-spot-vgt-reader/edu-ucar/netcdfAll.jar"/>
+        <file crc="1502726957" name="update_tracking/eu-esa-opt-opttbx-spot-vgt-reader.xml"/>
+    </module_version>
+</module>

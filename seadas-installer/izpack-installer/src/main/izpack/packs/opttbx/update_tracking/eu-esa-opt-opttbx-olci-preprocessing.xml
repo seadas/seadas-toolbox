@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.olci.preprocessing">
+    <module_version install_time="1684176269610" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="2616088858" name="config/Modules/eu-esa-opt-opttbx-olci-preprocessing.xml"/>
+        <file crc="96941531" name="modules/docs/eu-esa-opt-opttbx-olci-preprocessing.jar"/>
+        <file crc="3435009210" name="modules/eu-esa-opt-opttbx-olci-preprocessing.jar"/>
+        <file crc="3292138105" name="modules/ext/eu.esa.opt.opttbx-olci-preprocessing/com-github-haifengl/smile-core.jar"/>
+        <file crc="3506756793" name="modules/ext/eu.esa.opt.opttbx-olci-preprocessing/com-github-haifengl/smile-data.jar"/>
+        <file crc="1201896813" name="modules/ext/eu.esa.opt.opttbx-olci-preprocessing/com-github-haifengl/smile-graph.jar"/>
+        <file crc="3911194630" name="modules/ext/eu.esa.opt.opttbx-olci-preprocessing/com-github-haifengl/smile-math.jar"/>
+        <file crc="3115414834" name="modules/ext/eu.esa.opt.opttbx-olci-preprocessing/com-googlecode-json-simple/json-simple.jar"/>
+        <file crc="85565670" name="update_tracking/eu-esa-opt-opttbx-olci-preprocessing.xml"/>
+    </module_version>
+</module>

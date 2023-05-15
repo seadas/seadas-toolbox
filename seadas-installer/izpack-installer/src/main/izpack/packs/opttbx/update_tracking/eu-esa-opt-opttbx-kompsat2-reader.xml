@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.kompsat2.reader">
+    <module_version install_time="1684176107356" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="1340317901" name="config/Modules/eu-esa-opt-opttbx-kompsat2-reader.xml"/>
+        <file crc="10223334" name="modules/eu-esa-opt-opttbx-kompsat2-reader.jar"/>
+        <file crc="3009121540" name="update_tracking/eu-esa-opt-opttbx-kompsat2-reader.xml"/>
+    </module_version>
+</module>

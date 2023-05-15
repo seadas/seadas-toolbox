@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.avhrr.reader">
+    <module_version install_time="1684176173352" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="3762390411" name="config/Modules/eu-esa-opt-opttbx-avhrr-reader.xml"/>
+        <file crc="2070045715" name="modules/docs/eu-esa-opt-opttbx-avhrr-reader.jar"/>
+        <file crc="3124455220" name="modules/eu-esa-opt-opttbx-avhrr-reader.jar"/>
+        <file crc="3604207773" name="update_tracking/eu-esa-opt-opttbx-avhrr-reader.xml"/>
+    </module_version>
+</module>

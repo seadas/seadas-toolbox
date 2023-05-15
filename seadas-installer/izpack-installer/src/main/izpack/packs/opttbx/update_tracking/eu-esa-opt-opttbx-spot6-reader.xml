@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.spot6.reader">
+    <module_version install_time="1684175958359" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="964490188" name="config/Modules/eu-esa-opt-opttbx-spot6-reader.xml"/>
+        <file crc="4045387481" name="modules/eu-esa-opt-opttbx-spot6-reader.jar"/>
+        <file crc="2486503428" name="modules/ext/eu.esa.opt.opttbx-spot6-reader/com-sun-xsom/xsom.jar"/>
+        <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-spot6-reader/javax-xml-parsers/jaxp-api.jar"/>
+        <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-spot6-reader/org-apache-commons/commons-lang3.jar"/>
+        <file crc="1263300550" name="modules/ext/eu.esa.opt.opttbx-spot6-reader/relaxngDatatype/relaxngDatatype.jar"/>
+        <file crc="360014050" name="update_tracking/eu-esa-opt-opttbx-spot6-reader.xml"/>
+    </module_version>
+</module>

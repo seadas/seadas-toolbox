@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.worldview2esa.reader">
+    <module_version install_time="1684176147634" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="4224145286" name="config/Modules/eu-esa-opt-opttbx-worldview2esa-reader.xml"/>
+        <file crc="925971324" name="modules/eu-esa-opt-opttbx-worldview2esa-reader.jar"/>
+        <file crc="2300047917" name="update_tracking/eu-esa-opt-opttbx-worldview2esa-reader.xml"/>
+    </module_version>
+</module>

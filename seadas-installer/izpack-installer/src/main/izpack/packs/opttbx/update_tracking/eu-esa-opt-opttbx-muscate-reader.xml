@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.muscate.reader">
+    <module_version install_time="1684176094184" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="303667832" name="config/Modules/eu-esa-opt-opttbx-muscate-reader.xml"/>
+        <file crc="541140085" name="modules/eu-esa-opt-opttbx-muscate-reader.jar"/>
+        <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-muscate-reader/javax-xml-parsers/jaxp-api.jar"/>
+        <file crc="3113473798" name="update_tracking/eu-esa-opt-opttbx-muscate-reader.xml"/>
+    </module_version>
+</module>

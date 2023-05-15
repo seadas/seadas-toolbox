@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.mosaic.ui">
+    <module_version install_time="1684176088608" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="1072990248" name="config/Modules/eu-esa-opt-opttbx-mosaic-ui.xml"/>
+        <file crc="1121634946" name="modules/eu-esa-opt-opttbx-mosaic-ui.jar"/>
+        <file crc="1377219140" name="modules/ext/eu.esa.opt.opttbx-mosaic-ui/commons-collections/commons-collections.jar"/>
+        <file crc="1374649020" name="update_tracking/eu-esa-opt-opttbx-mosaic-ui.xml"/>
+    </module_version>
+</module>

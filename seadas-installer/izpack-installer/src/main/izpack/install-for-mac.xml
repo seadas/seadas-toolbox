@@ -71,7 +71,7 @@
         <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
-        <variable name="S3TBXROOT" value="$INSTALL_PATH/seadas/s3tbx"/>
+        <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/opttbx"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>
         <variable name="WELCOME_TEXT" value="SeaDAS IzPack Installer"/>
@@ -223,9 +223,9 @@
                 <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert" />
             </executable>
         </pack>
-        <pack name="s3tbx" required="yes" preselected="true" id="pack.s3tbx">
+        <pack name="optbx" required="yes" preselected="true" id="pack.opttbx">
             <description>Sentinel 3 Toolbox</description>
-            <fileset dir="packs/s3tbx" casesensitive="true" targetdir="$INSTALL_PATH/s3tbx">
+            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH/opttbx">
             </fileset>
         </pack>
         <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">

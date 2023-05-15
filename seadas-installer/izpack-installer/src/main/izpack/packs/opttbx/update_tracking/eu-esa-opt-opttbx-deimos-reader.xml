@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.deimos.reader">
+    <module_version install_time="1684175975086" last="true" origin="installer" specification_version="10.0.0.0">
+        <file crc="1407497278" name="config/Modules/eu-esa-opt-opttbx-deimos-reader.xml"/>
+        <file crc="2092896343" name="modules/eu-esa-opt-opttbx-deimos-reader.jar"/>
+        <file crc="2915759914" name="modules/ext/eu.esa.opt.opttbx-deimos-reader/net-java-dev-jna/jna.jar"/>
+        <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-deimos-reader/org-apache-commons/commons-lang3.jar"/>
+        <file crc="2045972213" name="update_tracking/eu-esa-opt-opttbx-deimos-reader.xml"/>
+    </module_version>
+</module>
