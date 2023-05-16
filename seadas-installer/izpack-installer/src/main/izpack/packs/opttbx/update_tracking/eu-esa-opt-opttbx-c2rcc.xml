@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.c2rcc">
-    <module_version install_time="1684176182438" last="true" origin="installer" specification_version="10.0.0">
+    <module_version install_time="1684257889021" last="true" origin="installer" specification_version="10.0.0">
         <file crc="3826583779" name="config/Modules/eu-esa-opt-opttbx-c2rcc.xml"/>
-        <file crc="3825087085" name="modules/docs/eu-esa-opt-opttbx-c2rcc.jar"/>
-        <file crc="2522380695" name="modules/eu-esa-opt-opttbx-c2rcc.jar"/>
+        <file crc="3221229072" name="modules/docs/eu-esa-opt-opttbx-c2rcc.jar"/>
+        <file crc="725448613" name="modules/eu-esa-opt-opttbx-c2rcc.jar"/>
         <file crc="3961946988" name="modules/ext/eu.esa.opt.opttbx-c2rcc/org-apache-httpcomponents/httpclient.jar"/>
         <file crc="802074599" name="modules/ext/eu.esa.opt.opttbx-c2rcc/org-apache-httpcomponents/httpcore.jar"/>
-        <file crc="3031477836" name="modules/ext/eu.esa.opt.opttbx-c2rcc/org-esa-snap/snap-runtime.jar"/>
-        <file crc="3105581692" name="update_tracking/eu-esa-opt-opttbx-c2rcc.xml"/>
+        <file crc="497427071" name="modules/ext/eu.esa.opt.opttbx-c2rcc/org-esa-snap/snap-runtime.jar"/>
     </module_version>
 </module>

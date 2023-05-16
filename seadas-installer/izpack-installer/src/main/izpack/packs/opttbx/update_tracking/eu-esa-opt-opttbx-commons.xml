@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.commons">
-    <module_version install_time="1684175915212" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257587225" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="3661023411" name="config/Modules/eu-esa-opt-opttbx-commons.xml"/>
-        <file crc="2067994212" name="modules/eu-esa-opt-opttbx-commons.jar"/>
+        <file crc="144274179" name="modules/eu-esa-opt-opttbx-commons.jar"/>
         <file crc="157344583" name="modules/ext/eu.esa.opt.opttbx-commons/commons-io/commons-io.jar"/>
         <file crc="523098442" name="modules/ext/eu.esa.opt.opttbx-commons/org-xeustechnologies/jtar.jar"/>
-        <file crc="3310644830" name="update_tracking/eu-esa-opt-opttbx-commons.xml"/>
     </module_version>
 </module>

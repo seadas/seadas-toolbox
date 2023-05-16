@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.reflectance.to.radiance">
-    <module_version install_time="1684176034039" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257724719" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="3828866108" name="config/Modules/eu-esa-opt-opttbx-reflectance-to-radiance.xml"/>
-        <file crc="2779016434" name="modules/eu-esa-opt-opttbx-reflectance-to-radiance.jar"/>
-        <file crc="689285829" name="update_tracking/eu-esa-opt-opttbx-reflectance-to-radiance.xml"/>
+        <file crc="1812399567" name="modules/eu-esa-opt-opttbx-reflectance-to-radiance.jar"/>
     </module_version>
 </module>

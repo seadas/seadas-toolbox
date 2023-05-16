@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.sta.adapters.help">
-    <module_version install_time="1684175976790" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257660344" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1172466498" name="config/Modules/eu-esa-opt-opttbx-sta-adapters-help.xml"/>
-        <file crc="1219087751" name="modules/eu-esa-opt-opttbx-sta-adapters-help.jar"/>
-        <file crc="2611122818" name="update_tracking/eu-esa-opt-opttbx-sta-adapters-help.xml"/>
+        <file crc="4273143792" name="modules/eu-esa-opt-opttbx-sta-adapters-help.jar"/>
     </module_version>
 </module>

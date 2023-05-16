@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.biophysical">
-    <module_version install_time="1684176025127" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257714495" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="2886899090" name="config/Modules/eu-esa-opt-opttbx-biophysical.xml"/>
-        <file crc="2102658733" name="modules/docs/eu-esa-opt-opttbx-biophysical.jar"/>
-        <file crc="1298681857" name="modules/eu-esa-opt-opttbx-biophysical.jar"/>
+        <file crc="2379169079" name="modules/docs/eu-esa-opt-opttbx-biophysical.jar"/>
+        <file crc="2193996056" name="modules/eu-esa-opt-opttbx-biophysical.jar"/>
         <file crc="3672168838" name="modules/ext/eu.esa.opt.opttbx-biophysical/com-bc-jnn/jnn.jar"/>
-        <file crc="3495535069" name="update_tracking/eu-esa-opt-opttbx-biophysical.xml"/>
     </module_version>
 </module>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.radiometric.indices">
-    <module_version install_time="1684175980398" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257664566" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="2242272486" name="config/Modules/eu-esa-opt-opttbx-radiometric-indices.xml"/>
-        <file crc="2340756032" name="modules/eu-esa-opt-opttbx-radiometric-indices.jar"/>
-        <file crc="1613200740" name="update_tracking/eu-esa-opt-opttbx-radiometric-indices.xml"/>
+        <file crc="96240529" name="modules/eu-esa-opt-opttbx-radiometric-indices.jar"/>
     </module_version>
 </module>

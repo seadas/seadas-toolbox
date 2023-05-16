@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.forest.cover.change.ui">
-    <module_version install_time="1684176077907" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257772587" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="3592999339" name="config/Modules/eu-esa-opt-opttbx-forest-cover-change-ui.xml"/>
-        <file crc="2947326823" name="modules/eu-esa-opt-opttbx-forest-cover-change-ui.jar"/>
-        <file crc="242909704" name="update_tracking/eu-esa-opt-opttbx-forest-cover-change-ui.xml"/>
+        <file crc="407136179" name="modules/eu-esa-opt-opttbx-forest-cover-change-ui.jar"/>
     </module_version>
 </module>

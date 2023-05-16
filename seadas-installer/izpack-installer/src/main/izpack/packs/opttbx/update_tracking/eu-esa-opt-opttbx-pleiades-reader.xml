@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.pleiades.reader">
-    <module_version install_time="1684176098170" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257795044" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="10479445" name="config/Modules/eu-esa-opt-opttbx-pleiades-reader.xml"/>
-        <file crc="489025255" name="modules/eu-esa-opt-opttbx-pleiades-reader.jar"/>
+        <file crc="659823945" name="modules/eu-esa-opt-opttbx-pleiades-reader.jar"/>
         <file crc="2486503428" name="modules/ext/eu.esa.opt.opttbx-pleiades-reader/com-sun-xsom/xsom.jar"/>
         <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-pleiades-reader/javax-xml-parsers/jaxp-api.jar"/>
         <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-pleiades-reader/org-apache-commons/commons-lang3.jar"/>
         <file crc="1263300550" name="modules/ext/eu.esa.opt.opttbx-pleiades-reader/relaxngDatatype/relaxngDatatype.jar"/>
-        <file crc="2198990613" name="update_tracking/eu-esa-opt-opttbx-pleiades-reader.xml"/>
     </module_version>
 </module>

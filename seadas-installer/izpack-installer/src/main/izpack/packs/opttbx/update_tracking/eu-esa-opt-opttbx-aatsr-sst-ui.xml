@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.aatsr.sst.ui">
-    <module_version install_time="1684176154831" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257857917" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1750374637" name="config/Modules/eu-esa-opt-opttbx-aatsr-sst-ui.xml"/>
-        <file crc="2025288696" name="modules/eu-esa-opt-opttbx-aatsr-sst-ui.jar"/>
-        <file crc="2511260319" name="update_tracking/eu-esa-opt-opttbx-aatsr-sst-ui.xml"/>
+        <file crc="2238473687" name="modules/eu-esa-opt-opttbx-aatsr-sst-ui.jar"/>
     </module_version>
 </module>

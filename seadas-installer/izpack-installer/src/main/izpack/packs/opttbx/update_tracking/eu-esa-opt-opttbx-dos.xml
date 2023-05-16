@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.dos">
-    <module_version install_time="1684176186343" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257893412" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="2779591168" name="config/Modules/eu-esa-opt-opttbx-dos.xml"/>
-        <file crc="4016095969" name="modules/docs/eu-esa-opt-opttbx-dos.jar"/>
-        <file crc="632574687" name="modules/eu-esa-opt-opttbx-dos.jar"/>
-        <file crc="2027986708" name="update_tracking/eu-esa-opt-opttbx-dos.xml"/>
+        <file crc="3649783871" name="modules/docs/eu-esa-opt-opttbx-dos.jar"/>
+        <file crc="587006401" name="modules/eu-esa-opt-opttbx-dos.jar"/>
     </module_version>
 </module>

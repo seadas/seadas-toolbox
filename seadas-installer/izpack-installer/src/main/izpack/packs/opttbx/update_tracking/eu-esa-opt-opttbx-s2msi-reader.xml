@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.s2msi.reader">
-    <module_version install_time="1684175935393" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257613029" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1735856752" name="config/Modules/eu-esa-opt-opttbx-s2msi-reader.xml"/>
-        <file crc="3120523171" name="modules/docs/eu-esa-opt-opttbx-s2msi-reader.jar"/>
-        <file crc="3961079932" name="modules/eu-esa-opt-opttbx-s2msi-reader.jar"/>
+        <file crc="530217016" name="modules/docs/eu-esa-opt-opttbx-s2msi-reader.jar"/>
+        <file crc="4150035560" name="modules/eu-esa-opt-opttbx-s2msi-reader.jar"/>
         <file crc="157344583" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader/commons-io/commons-io.jar"/>
         <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader/javax-xml-parsers/jaxp-api.jar"/>
         <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader/org-apache-commons/commons-lang3.jar"/>
         <file crc="4042499722" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader/org-xerial/sqlite-jdbc.jar"/>
-        <file crc="1906062403" name="update_tracking/eu-esa-opt-opttbx-s2msi-reader.xml"/>
     </module_version>
 </module>

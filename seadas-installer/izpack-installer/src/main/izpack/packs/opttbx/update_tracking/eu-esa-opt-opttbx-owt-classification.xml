@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.owt.classification">
-    <module_version install_time="1684176289203" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684258006409" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="612743963" name="config/Modules/eu-esa-opt-opttbx-owt-classification.xml"/>
-        <file crc="3978368999" name="modules/docs/eu-esa-opt-opttbx-owt-classification.jar"/>
-        <file crc="1696639718" name="modules/eu-esa-opt-opttbx-owt-classification.jar"/>
+        <file crc="702231326" name="modules/docs/eu-esa-opt-opttbx-owt-classification.jar"/>
+        <file crc="2530212123" name="modules/eu-esa-opt-opttbx-owt-classification.jar"/>
         <file crc="2612086085" name="modules/ext/eu.esa.opt.opttbx-owt-classification/Jama/Jama.jar"/>
-        <file crc="3800453544" name="update_tracking/eu-esa-opt-opttbx-owt-classification.xml"/>
     </module_version>
 </module>

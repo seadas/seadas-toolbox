@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.flhmci">
-    <module_version install_time="1684176197498" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257905840" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="2859575040" name="config/Modules/eu-esa-opt-opttbx-flhmci.xml"/>
-        <file crc="1342199729" name="modules/eu-esa-opt-opttbx-flhmci.jar"/>
-        <file crc="3366160167" name="update_tracking/eu-esa-opt-opttbx-flhmci.xml"/>
+        <file crc="2592328005" name="modules/eu-esa-opt-opttbx-flhmci.jar"/>
     </module_version>
 </module>

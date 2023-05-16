@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.mosaic">
-    <module_version install_time="1684176082749" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684257777787" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="505131833" name="config/Modules/eu-esa-opt-opttbx-mosaic.xml"/>
-        <file crc="1746234970" name="modules/eu-esa-opt-opttbx-mosaic.jar"/>
+        <file crc="968325390" name="modules/eu-esa-opt-opttbx-mosaic.jar"/>
         <file crc="1377219140" name="modules/ext/eu.esa.opt.opttbx-mosaic/commons-collections/commons-collections.jar"/>
-        <file crc="3951064730" name="update_tracking/eu-esa-opt-opttbx-mosaic.xml"/>
     </module_version>
 </module>

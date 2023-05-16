@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.slstr.regrid">
-    <module_version install_time="1684176315518" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684258036040" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="432147269" name="config/Modules/eu-esa-opt-opttbx-slstr-regrid.xml"/>
-        <file crc="3978710778" name="modules/docs/eu-esa-opt-opttbx-slstr-regrid.jar"/>
-        <file crc="3436439566" name="modules/eu-esa-opt-opttbx-slstr-regrid.jar"/>
-        <file crc="3471808193" name="update_tracking/eu-esa-opt-opttbx-slstr-regrid.xml"/>
+        <file crc="1209954296" name="modules/docs/eu-esa-opt-opttbx-slstr-regrid.jar"/>
+        <file crc="615212230" name="modules/eu-esa-opt-opttbx-slstr-regrid.jar"/>
     </module_version>
 </module>
