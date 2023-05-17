@@ -27,8 +27,8 @@
             <param name="variant" value="extwin"/>
         </laf>
         <laf name="substance">
-            <os family="mac"/>
-            <param name="variant" value="nebula-brick-wall"/>
+            <os family="mac" />
+            <param name="variant" value="mist-aqua" />
         </laf>
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
