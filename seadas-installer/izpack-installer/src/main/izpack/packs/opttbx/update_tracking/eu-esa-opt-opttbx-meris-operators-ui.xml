@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.meris.operators.ui">
-    <module_version install_time="1684257941541" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425883339" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="2039109216" name="config/Modules/eu-esa-opt-opttbx-meris-operators-ui.xml"/>
-        <file crc="680318482" name="modules/docs/eu-esa-opt-opttbx-meris-operators-ui.jar"/>
-        <file crc="613309454" name="modules/eu-esa-opt-opttbx-meris-operators-ui.jar"/>
+        <file crc="1652365802" name="modules/docs/eu-esa-opt-opttbx-meris-operators-ui.jar"/>
+        <file crc="1361799376" name="modules/eu-esa-opt-opttbx-meris-operators-ui.jar"/>
     </module_version>
 </module>

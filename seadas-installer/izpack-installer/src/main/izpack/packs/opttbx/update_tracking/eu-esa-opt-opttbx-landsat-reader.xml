@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.landsat.reader">
-    <module_version install_time="1684257919747" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425862736" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="2152137722" name="config/Modules/eu-esa-opt-opttbx-landsat-reader.xml"/>
-        <file crc="906161400" name="modules/docs/eu-esa-opt-opttbx-landsat-reader.jar"/>
-        <file crc="4949424" name="modules/eu-esa-opt-opttbx-landsat-reader.jar"/>
+        <file crc="3071016954" name="modules/docs/eu-esa-opt-opttbx-landsat-reader.jar"/>
+        <file crc="3988283166" name="modules/eu-esa-opt-opttbx-landsat-reader.jar"/>
         <file crc="2424725385" name="modules/ext/eu.esa.opt.opttbx-landsat-reader/edu-ucar/netcdfAll.jar"/>
         <file crc="523098442" name="modules/ext/eu.esa.opt.opttbx-landsat-reader/org-xeustechnologies/jtar.jar"/>
     </module_version>

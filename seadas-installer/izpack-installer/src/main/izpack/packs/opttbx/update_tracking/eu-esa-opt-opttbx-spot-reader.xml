@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.spot.reader">
-    <module_version install_time="1684257634509" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425599850" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="3956377673" name="config/Modules/eu-esa-opt-opttbx-spot-reader.xml"/>
-        <file crc="2632043470" name="modules/eu-esa-opt-opttbx-spot-reader.jar"/>
+        <file crc="2036543779" name="modules/eu-esa-opt-opttbx-spot-reader.jar"/>
         <file crc="2486503428" name="modules/ext/eu.esa.opt.opttbx-spot-reader/com-sun-xsom/xsom.jar"/>
         <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-spot-reader/javax-xml-parsers/jaxp-api.jar"/>
         <file crc="2915759914" name="modules/ext/eu.esa.opt.opttbx-spot-reader/net-java-dev-jna/jna.jar"/>

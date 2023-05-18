@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.gdal.writer">
-    <module_version install_time="1684257736181" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425694606" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1540013768" name="config/Modules/eu-esa-opt-opttbx-gdal-writer.xml"/>
-        <file crc="565284938" name="modules/eu-esa-opt-opttbx-gdal-writer.jar"/>
+        <file crc="3821275675" name="modules/eu-esa-opt-opttbx-gdal-writer.jar"/>
         <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-gdal-writer/org-apache-commons/commons-lang3.jar"/>
     </module_version>
 </module>

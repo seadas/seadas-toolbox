@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.enmap.reader">
-    <module_version install_time="1684258056772" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425989624" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="4170419218" name="config/Modules/eu-esa-opt-opttbx-enmap-reader.xml"/>
-        <file crc="3119266930" name="modules/docs/eu-esa-opt-opttbx-enmap-reader.jar"/>
-        <file crc="1234557773" name="modules/eu-esa-opt-opttbx-enmap-reader.jar"/>
+        <file crc="2132985428" name="modules/docs/eu-esa-opt-opttbx-enmap-reader.jar"/>
+        <file crc="1312005166" name="modules/eu-esa-opt-opttbx-enmap-reader.jar"/>
         <file crc="1952854243" name="modules/ext/eu.esa.opt.opttbx-enmap-reader/com-sun-activation/jakarta.activation.jar"/>
         <file crc="3390282528" name="modules/ext/eu.esa.opt.opttbx-enmap-reader/com-sun-istack/istack-commons-runtime.jar"/>
         <file crc="2485804394" name="modules/ext/eu.esa.opt.opttbx-enmap-reader/jakarta-xml-bind/jakarta.xml.bind-api.jar"/>

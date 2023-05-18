@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.coregistration">
-    <module_version install_time="1684257827847" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425778922" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1885997231" name="config/Modules/eu-esa-opt-opttbx-coregistration.xml"/>
-        <file crc="3593110651" name="modules/eu-esa-opt-opttbx-coregistration.jar"/>
+        <file crc="439273771" name="modules/eu-esa-opt-opttbx-coregistration.jar"/>
         <file crc="1669929680" name="modules/ext/eu.esa.opt.opttbx-coregistration/it-geosolutions-jaiext-iterators/jt-iterators.jar"/>
         <file crc="3305278299" name="modules/ext/eu.esa.opt.opttbx-coregistration/it-geosolutions-jaiext-utilities/jt-utilities.jar"/>
         <file crc="2554315667" name="modules/ext/eu.esa.opt.opttbx-coregistration/org-openpnp/opencv.jar"/>

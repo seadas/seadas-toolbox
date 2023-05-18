@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.seadas.reader.ui">
-    <module_version install_time="1684258073931" last="true" origin="installer" specification_version="1.10.0">
+    <module_version install_time="1684426002489" last="true" origin="installer" specification_version="1.10.0">
         <file crc="1839179706" name="config/Modules/eu-esa-opt-opttbx-seadas-reader-ui.xml"/>
-        <file crc="2472201911" name="modules/eu-esa-opt-opttbx-seadas-reader-ui.jar"/>
+        <file crc="1517450338" name="modules/eu-esa-opt-opttbx-seadas-reader-ui.jar"/>
     </module_version>
 </module>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.s2msi.resampler">
-    <module_version install_time="1684257800649" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425753977" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="179883046" name="config/Modules/eu-esa-opt-opttbx-s2msi-resampler.xml"/>
-        <file crc="3221945198" name="modules/docs/eu-esa-opt-opttbx-s2msi-resampler.jar"/>
-        <file crc="3318493577" name="modules/eu-esa-opt-opttbx-s2msi-resampler.jar"/>
+        <file crc="1711176977" name="modules/docs/eu-esa-opt-opttbx-s2msi-resampler.jar"/>
+        <file crc="1917567965" name="modules/eu-esa-opt-opttbx-s2msi-resampler.jar"/>
     </module_version>
 </module>

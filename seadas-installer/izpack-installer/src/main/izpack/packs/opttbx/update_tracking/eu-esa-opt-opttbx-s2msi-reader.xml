@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.s2msi.reader">
-    <module_version install_time="1684257613029" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425581074" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1735856752" name="config/Modules/eu-esa-opt-opttbx-s2msi-reader.xml"/>
-        <file crc="530217016" name="modules/docs/eu-esa-opt-opttbx-s2msi-reader.jar"/>
-        <file crc="4150035560" name="modules/eu-esa-opt-opttbx-s2msi-reader.jar"/>
+        <file crc="4143539468" name="modules/docs/eu-esa-opt-opttbx-s2msi-reader.jar"/>
+        <file crc="3135401493" name="modules/eu-esa-opt-opttbx-s2msi-reader.jar"/>
         <file crc="157344583" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader/commons-io/commons-io.jar"/>
         <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader/javax-xml-parsers/jaxp-api.jar"/>
         <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader/org-apache-commons/commons-lang3.jar"/>

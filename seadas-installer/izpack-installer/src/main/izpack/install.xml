@@ -18,18 +18,18 @@
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
-        <laf name="looks">
-            <os family="unix"/>
-            <param name="variant" value="mist-aqua"/>
-        </laf>
-        <laf name="looks">
-            <os family="windows"/>
-            <param name="variant" value="extwin"/>
-        </laf>
-        <laf name="substance">
-            <os family="mac"/>
-            <param name="variant" value="nebula-brick-wall"/>
-        </laf>
+<!--        <laf name="looks">-->
+<!--            <os family="unix"/>-->
+<!--            <param name="variant" value="mist-aqua"/>-->
+<!--        </laf>-->
+<!--        <laf name="looks">-->
+<!--            <os family="windows"/>-->
+<!--            <param name="variant" value="extwin"/>-->
+<!--        </laf>-->
+<!--        <laf name="substance">-->
+<!--            <os family="mac" />-->
+<!--            <param name="variant" value="mist-aqua" />-->
+<!--        </laf>-->
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
@@ -87,9 +87,9 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
-<!--        <variable name="JDKPathPanel.minVersion" value="11" />-->
-<!--        <variable name="JDKPathPanel.maxVersion" value="11" />-->
-<!--        <variable name="JDKPathPanel.skipIfValid" value="yes" />-->
+        <variable name="JDKPathPanel.minVersion" value="11.0.11" />
+        <variable name="JDKPathPanel.maxVersion" value="11.0.19" />
+        <variable name="JDKPathPanel.skipIfValid" value="yes" />
         <variable name="extra_clusters" value="seadas-toolbox" />
     </variables>
 
@@ -176,7 +176,8 @@
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/adoptopenjdk-11.jdk/Contents/Home"/>
+<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>-->
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>
     </dynamicvariables>
 
     <packs>
@@ -233,13 +234,16 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="Temurin JRE" required="yes" id="pack.temurin.jre">
-            <description>Temurin JRE</description>
+        <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
+            <description>JDK11 JRE</description>
             <file src="packs/jre/OpenJDK11U-jre_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
+<!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">-->
             </file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/temurin-11.jre/Contents/Home/bin" includes="*" />
-                <fileset targetdir="$INSTALL_PATH/temurin-11.jre/Contents/Home/lib" includes="*" />
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*" />
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/bin" includes="*" />-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/lib" includes="*" />-->
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="*" />
             </executable>
         </pack>
     </packs>

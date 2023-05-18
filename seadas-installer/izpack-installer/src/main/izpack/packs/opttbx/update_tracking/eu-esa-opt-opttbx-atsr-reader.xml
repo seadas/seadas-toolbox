@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.atsr.reader">
-    <module_version install_time="1684257874439" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425821604" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="216021602" name="config/Modules/eu-esa-opt-opttbx-atsr-reader.xml"/>
-        <file crc="1405838505" name="modules/docs/eu-esa-opt-opttbx-atsr-reader.jar"/>
-        <file crc="522569108" name="modules/eu-esa-opt-opttbx-atsr-reader.jar"/>
+        <file crc="1842598583" name="modules/docs/eu-esa-opt-opttbx-atsr-reader.jar"/>
+        <file crc="1828271597" name="modules/eu-esa-opt-opttbx-atsr-reader.jar"/>
     </module_version>
 </module>

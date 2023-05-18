@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.grm">
-    <module_version install_time="1684257747215" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425704749" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="3056286865" name="config/Modules/eu-esa-opt-opttbx-grm.xml"/>
-        <file crc="221744888" name="modules/eu-esa-opt-opttbx-grm.jar"/>
+        <file crc="3699743357" name="modules/eu-esa-opt-opttbx-grm.jar"/>
         <file crc="2495087342" name="modules/ext/eu.esa.opt.opttbx-grm/it-unimi-dsi/fastutil.jar"/>
         <file crc="167814075" name="modules/ext/eu.esa.opt.opttbx-grm/org-apache-commons/commons-lang3.jar"/>
     </module_version>

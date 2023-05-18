@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.s2msi.mci.ui">
-    <module_version install_time="1684257647704" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425612080" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="2984694715" name="config/Modules/eu-esa-opt-opttbx-s2msi-mci-ui.xml"/>
-        <file crc="3004330543" name="modules/eu-esa-opt-opttbx-s2msi-mci-ui.jar"/>
+        <file crc="344759450" name="modules/eu-esa-opt-opttbx-s2msi-mci-ui.jar"/>
     </module_version>
 </module>

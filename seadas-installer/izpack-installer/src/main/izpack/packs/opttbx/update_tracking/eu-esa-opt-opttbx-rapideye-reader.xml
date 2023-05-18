@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.rapideye.reader">
-    <module_version install_time="1684257653713" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425617425" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="3380763821" name="config/Modules/eu-esa-opt-opttbx-rapideye-reader.xml"/>
-        <file crc="462060136" name="modules/eu-esa-opt-opttbx-rapideye-reader.jar"/>
+        <file crc="3338769956" name="modules/eu-esa-opt-opttbx-rapideye-reader.jar"/>
         <file crc="2486503428" name="modules/ext/eu.esa.opt.opttbx-rapideye-reader/com-sun-xsom/xsom.jar"/>
         <file crc="157344583" name="modules/ext/eu.esa.opt.opttbx-rapideye-reader/commons-io/commons-io.jar"/>
         <file crc="3711624524" name="modules/ext/eu.esa.opt.opttbx-rapideye-reader/javax-xml-parsers/jaxp-api.jar"/>

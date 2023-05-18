@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.s2msi.reader.ui">
-    <module_version install_time="1684257623825" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425591098" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="317308720" name="config/Modules/eu-esa-opt-opttbx-s2msi-reader-ui.xml"/>
-        <file crc="148411026" name="modules/eu-esa-opt-opttbx-s2msi-reader-ui.jar"/>
-        <file crc="497427071" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader-ui/org-esa-snap/snap-runtime.jar"/>
+        <file crc="1657303077" name="modules/eu-esa-opt-opttbx-s2msi-reader-ui.jar"/>
+        <file crc="3104067097" name="modules/ext/eu.esa.opt.opttbx-s2msi-reader-ui/org-esa-snap/snap-runtime.jar"/>
     </module_version>
 </module>

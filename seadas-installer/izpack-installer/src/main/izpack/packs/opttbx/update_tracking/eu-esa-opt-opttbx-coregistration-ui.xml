@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.coregistration.ui">
-    <module_version install_time="1684257841947" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425792487" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="3476422857" name="config/Modules/eu-esa-opt-opttbx-coregistration-ui.xml"/>
-        <file crc="1439946487" name="modules/eu-esa-opt-opttbx-coregistration-ui.jar"/>
+        <file crc="4126619675" name="modules/eu-esa-opt-opttbx-coregistration-ui.jar"/>
     </module_version>
 </module>

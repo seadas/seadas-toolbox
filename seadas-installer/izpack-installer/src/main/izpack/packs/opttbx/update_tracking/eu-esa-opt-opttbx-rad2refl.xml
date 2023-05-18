@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.rad2refl">
-    <module_version install_time="1684257994559" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425933404" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1636261011" name="config/Modules/eu-esa-opt-opttbx-rad2refl.xml"/>
-        <file crc="2359351015" name="modules/eu-esa-opt-opttbx-rad2refl.jar"/>
+        <file crc="764458438" name="modules/eu-esa-opt-opttbx-rad2refl.jar"/>
     </module_version>
 </module>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.seadas.reader">
-    <module_version install_time="1684258065338" last="true" origin="installer" specification_version="1.10.0">
+    <module_version install_time="1684425995679" last="true" origin="installer" specification_version="1.10.0">
         <file crc="443325460" name="config/Modules/eu-esa-opt-opttbx-seadas-reader.xml"/>
-        <file crc="1727936964" name="modules/eu-esa-opt-opttbx-seadas-reader.jar"/>
+        <file crc="3473760464" name="modules/eu-esa-opt-opttbx-seadas-reader.jar"/>
         <file crc="2424725385" name="modules/ext/eu.esa.opt.opttbx-seadas-reader/edu-ucar/netcdfAll.jar"/>
     </module_version>
 </module>

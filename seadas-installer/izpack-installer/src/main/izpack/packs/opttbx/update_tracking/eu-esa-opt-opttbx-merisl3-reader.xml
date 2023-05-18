@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.merisl3.reader">
-    <module_version install_time="1684257946108" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425887680" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="284119520" name="config/Modules/eu-esa-opt-opttbx-merisl3-reader.xml"/>
-        <file crc="3424253731" name="modules/docs/eu-esa-opt-opttbx-merisl3-reader.jar"/>
-        <file crc="2016206864" name="modules/eu-esa-opt-opttbx-merisl3-reader.jar"/>
+        <file crc="1055326982" name="modules/docs/eu-esa-opt-opttbx-merisl3-reader.jar"/>
+        <file crc="1306690408" name="modules/eu-esa-opt-opttbx-merisl3-reader.jar"/>
     </module_version>
 </module>

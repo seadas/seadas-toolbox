@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.land.cover">
-    <module_version install_time="1684257757616" last="true" origin="installer" specification_version="10.0.0.0">
+    <module_version install_time="1684425714460" last="true" origin="installer" specification_version="10.0.0.0">
         <file crc="1465841759" name="config/Modules/eu-esa-opt-opttbx-land-cover.xml"/>
-        <file crc="1362576656" name="modules/eu-esa-opt-opttbx-land-cover.jar"/>
+        <file crc="2857692173" name="modules/eu-esa-opt-opttbx-land-cover.jar"/>
         <file crc="2222905660" name="modules/ext/eu.esa.opt.opttbx-land-cover/classworlds/classworlds.jar"/>
         <file crc="3519622409" name="modules/ext/eu.esa.opt.opttbx-land-cover/org-codehaus-plexus/plexus-archiver.jar"/>
         <file crc="3101174138" name="modules/ext/eu.esa.opt.opttbx-land-cover/org-codehaus-plexus/plexus-container-default.jar"/>
