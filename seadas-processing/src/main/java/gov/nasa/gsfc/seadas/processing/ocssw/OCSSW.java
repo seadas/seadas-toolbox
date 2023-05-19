@@ -108,6 +108,8 @@ public abstract class OCSSW {
             return new OCSSWLocal();
         } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
             return new OCSSWVM();
+        } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_DOCKER)) {
+            return new OCSSWVM();
         } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
             return new OCSSWRemote();
         }

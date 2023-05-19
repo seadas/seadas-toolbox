@@ -249,7 +249,9 @@ public class SeadasProcessorInfo {
             return false;
         }
 
-        if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSN) || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)) {
+        if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSN)
+                || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)
+                || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ2)) {
             if (iFileInfo.isTypeId(FileTypeInfo.Id.SDR) ||
                 iFileInfo.isTypeId(FileTypeInfo.Id.L1A) ||
                 iFileInfo.isTypeId(FileTypeInfo.Id.L1B)

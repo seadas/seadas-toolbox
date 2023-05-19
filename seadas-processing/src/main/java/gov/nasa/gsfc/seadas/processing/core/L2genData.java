@@ -1376,7 +1376,10 @@ public class L2genData implements SeaDASProcessorModel {
                 getParamInfo(SUITE).setValue(suiteValue);
             }
 
-            if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS || iFileInfo.getMissionId() == MissionInfo.Id.VIIRSN || iFileInfo.getMissionId() == MissionInfo.Id.VIIRSJ1) {
+            if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS
+                    || iFileInfo.getMissionId() == MissionInfo.Id.VIIRSN
+                    || iFileInfo.getMissionId() == MissionInfo.Id.VIIRSJ1
+                    || iFileInfo.getMissionId() == MissionInfo.Id.VIIRSJ2) {
                 updateLuts(iFileInfo.getMissionName());
             }
 

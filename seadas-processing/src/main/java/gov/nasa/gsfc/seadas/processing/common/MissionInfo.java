@@ -31,6 +31,7 @@ public class MissionInfo {
         SEAWIFS,
         VIIRSN,
         VIIRSJ1,
+        VIIRSJ2,
         OCM1,
         OCM2,
         OLIL8,
@@ -55,6 +56,9 @@ public class MissionInfo {
 
     public final static String[] VIIRSJ1_NAMES = {"VIIRS J1", "VIIRSJ1"};
     public final static String VIIRSJ1_DIRECTORY = "viirs/j1";
+
+    public final static String[] VIIRSJ2_NAMES = {"VIIRS J2", "VIIRSJ2"};
+    public final static String VIIRSJ2_DIRECTORY = "viirs/j2";
 
     public final static String[] MERIS_NAMES = {"MERIS"};
     public final static String MERIS_DIRECTORY = "meris";
@@ -150,6 +154,7 @@ public class MissionInfo {
         directories.put(Id.MODIST, MODIST_DIRECTORY);
         directories.put(Id.VIIRSN, VIIRSN_DIRECTORY);
         directories.put(Id.VIIRSJ1, VIIRSJ1_DIRECTORY);
+        directories.put(Id.VIIRSJ2, VIIRSJ2_DIRECTORY);
         directories.put(Id.MERIS, MERIS_DIRECTORY);
         directories.put(Id.MSIS2A, MSIS2A_DIRECTORY);
         directories.put(Id.MSIS2B, MSIS2B_DIRECTORY);
@@ -177,6 +182,7 @@ public class MissionInfo {
         names.put(Id.MODIST, MODIST_NAMES);
         names.put(Id.VIIRSN, VIIRSN_NAMES);
         names.put(Id.VIIRSJ1, VIIRSJ1_NAMES);
+        names.put(Id.VIIRSJ2, VIIRSJ2_NAMES);
         names.put(Id.MERIS, MERIS_NAMES);
         names.put(Id.MSIS2A, MSIS2A_NAMES);
         names.put(Id.MSIS2B, MSIS2B_NAMES);
@@ -258,7 +264,9 @@ public class MissionInfo {
             return;
         }
 
-        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1) || isId(Id.HAWKEYE)) {
+        if (isId(Id.MODISA) || isId(Id.MODIST)
+                || isId(Id.VIIRSN) || isId(Id.VIIRSJ1) || isId(Id.VIIRSJ2)
+                || isId(Id.HAWKEYE)) {
             setGeofileRequired(true);
         } else {
             setGeofileRequired(false);

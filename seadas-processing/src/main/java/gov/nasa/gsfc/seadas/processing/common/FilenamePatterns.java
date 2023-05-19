@@ -58,7 +58,9 @@ public class FilenamePatterns {
 
 
         File oFile;
-        if (fileInfo.isMissionId(MissionInfo.Id.VIIRSN) || fileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)) {
+        if (fileInfo.isMissionId(MissionInfo.Id.VIIRSN)
+                || fileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)
+                || fileInfo.isMissionId(MissionInfo.Id.VIIRSJ2)) {
             oFile = getViirsOfilename(fileInfo.getFile());
         } else {
             if (fileInfo.getTypeId() == FileTypeInfo.Id.L3BIN) {
@@ -105,7 +107,10 @@ public class FilenamePatterns {
         StringBuilder geofile = new StringBuilder();
         File geoFile = null;
 
-        if ((iFileInfo.isMissionId(MissionInfo.Id.VIIRSN) || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)) && iFileInfo.isTypeId(FileTypeInfo.Id.SDR)) {
+        if ((iFileInfo.isMissionId(MissionInfo.Id.VIIRSN)
+                || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)
+                || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ2))
+                && iFileInfo.isTypeId(FileTypeInfo.Id.SDR)) {
             String VIIRS_GEOFILE_PREFIX = "GMTCO";
             geofileBasename.append(VIIRS_GEOFILE_PREFIX);
             geofileBasename.append(iFileInfo.getFile().getName().substring(VIIRS_IFILE_PREFIX.length()));
@@ -122,7 +127,9 @@ public class FilenamePatterns {
                 String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
                 StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
                 possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
-            } else if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1) || iFileInfo.isMissionId(MissionInfo.Id.VIIRSN)) {
+            } else if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)
+                    || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ2)
+                    || iFileInfo.isMissionId(MissionInfo.Id.VIIRSN)) {
                 String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "geolocate_viirs");
                 StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
                 possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
