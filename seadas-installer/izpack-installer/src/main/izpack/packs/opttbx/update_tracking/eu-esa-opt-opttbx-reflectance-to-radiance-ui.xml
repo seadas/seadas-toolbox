@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.reflectance.to.radiance.ui">
-    <module_version install_time="1684425689544" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="1961966703" name="config/Modules/eu-esa-opt-opttbx-reflectance-to-radiance-ui.xml"/>
-        <file crc="2915097613" name="modules/eu-esa-opt-opttbx-reflectance-to-radiance-ui.jar"/>
-    </module_version>
-</module>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.aatsr.sst">
-    <module_version install_time="1684425802912" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="3852190202" name="config/Modules/eu-esa-opt-opttbx-aatsr-sst.xml"/>
-        <file crc="2449458857" name="modules/eu-esa-opt-opttbx-aatsr-sst.jar"/>
-    </module_version>
-</module>

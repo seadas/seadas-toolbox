@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.sentinel3.reader">
-    <module_version install_time="1684425952934" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="3092591279" name="config/Modules/eu-esa-opt-opttbx-sentinel3-reader.xml"/>
-        <file crc="695508480" name="modules/docs/eu-esa-opt-opttbx-sentinel3-reader.jar"/>
-        <file crc="2721192186" name="modules/eu-esa-opt-opttbx-sentinel3-reader.jar"/>
-    </module_version>
-</module>

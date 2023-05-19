@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.meris.operators">
-    <module_version install_time="1684425878134" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="1643230306" name="config/Modules/eu-esa-opt-opttbx-meris-operators.xml"/>
-        <file crc="2919897909" name="modules/eu-esa-opt-opttbx-meris-operators.jar"/>
-        <file crc="3672168838" name="modules/ext/eu.esa.opt.opttbx-meris-operators/com-bc-jnn/jnn.jar"/>
-    </module_version>
-</module>

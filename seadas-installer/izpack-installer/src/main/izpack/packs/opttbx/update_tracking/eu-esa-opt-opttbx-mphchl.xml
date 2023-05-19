@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.mphchl">
-    <module_version install_time="1684425929848" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="597524717" name="config/Modules/eu-esa-opt-opttbx-mphchl.xml"/>
-        <file crc="2904138863" name="modules/docs/eu-esa-opt-opttbx-mphchl.jar"/>
-        <file crc="431690560" name="modules/eu-esa-opt-opttbx-mphchl.jar"/>
-    </module_version>
-</module>

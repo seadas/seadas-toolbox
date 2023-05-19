@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.modis.reader">
-    <module_version install_time="1684425893073" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="320100037" name="config/Modules/eu-esa-opt-opttbx-modis-reader.xml"/>
-        <file crc="2242036827" name="modules/docs/eu-esa-opt-opttbx-modis-reader.jar"/>
-        <file crc="1403202989" name="modules/eu-esa-opt-opttbx-modis-reader.jar"/>
-        <file crc="2424725385" name="modules/ext/eu.esa.opt.opttbx-modis-reader/edu-ucar/netcdfAll.jar"/>
-    </module_version>
-</module>

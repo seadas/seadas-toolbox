@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.ikonos.reader">
-    <module_version install_time="1684425796101" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="2616786918" name="config/Modules/eu-esa-opt-opttbx-ikonos-reader.xml"/>
-        <file crc="3241679128" name="modules/eu-esa-opt-opttbx-ikonos-reader.jar"/>
-    </module_version>
-</module>

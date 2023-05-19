@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.sentinel3.reader.ui">
-    <module_version install_time="1684425957165" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="3005232862" name="config/Modules/eu-esa-opt-opttbx-sentinel3-reader-ui.xml"/>
-        <file crc="793915104" name="modules/eu-esa-opt-opttbx-sentinel3-reader-ui.jar"/>
-        <file crc="3104067097" name="modules/ext/eu.esa.opt.opttbx-sentinel3-reader-ui/org-esa-snap/snap-runtime.jar"/>
-    </module_version>
-</module>

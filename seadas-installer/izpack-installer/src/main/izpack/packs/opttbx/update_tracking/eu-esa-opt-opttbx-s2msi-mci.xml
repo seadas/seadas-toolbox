@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.s2msi.mci">
-    <module_version install_time="1684425608244" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="1489408206" name="config/Modules/eu-esa-opt-opttbx-s2msi-mci.xml"/>
-        <file crc="1086292467" name="modules/eu-esa-opt-opttbx-s2msi-mci.jar"/>
-    </module_version>
-</module>

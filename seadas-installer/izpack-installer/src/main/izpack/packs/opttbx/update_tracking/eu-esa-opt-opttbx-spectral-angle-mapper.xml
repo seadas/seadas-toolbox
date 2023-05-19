@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.spectral.angle.mapper">
-    <module_version install_time="1684425766079" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="554254397" name="config/Modules/eu-esa-opt-opttbx-spectral-angle-mapper.xml"/>
-        <file crc="2561498639" name="modules/eu-esa-opt-opttbx-spectral-angle-mapper.jar"/>
-        <file crc="2495087342" name="modules/ext/eu.esa.opt.opttbx-spectral-angle-mapper/it-unimi-dsi/fastutil.jar"/>
-    </module_version>
-</module>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.fu.operator">
-    <module_version install_time="1684425857069" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="1322475957" name="config/Modules/eu-esa-opt-opttbx-fu-operator.xml"/>
-        <file crc="366598739" name="modules/docs/eu-esa-opt-opttbx-fu-operator.jar"/>
-        <file crc="2611006853" name="modules/eu-esa-opt-opttbx-fu-operator.jar"/>
-    </module_version>
-</module>

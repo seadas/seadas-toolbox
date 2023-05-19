@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.slstr.pdu.stitching.ui">
-    <module_version install_time="1684425966027" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="2573387205" name="config/Modules/eu-esa-opt-opttbx-slstr-pdu-stitching-ui.xml"/>
-        <file crc="2222695440" name="modules/eu-esa-opt-opttbx-slstr-pdu-stitching-ui.jar"/>
-    </module_version>
-</module>

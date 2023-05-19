@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="eu.esa.opt.opttbx.fub.wew">
-    <module_version install_time="1684425842855" last="true" origin="installer" specification_version="10.0.0.0">
-        <file crc="3156490065" name="config/Modules/eu-esa-opt-opttbx-fub-wew.xml"/>
-        <file crc="3564256005" name="modules/eu-esa-opt-opttbx-fub-wew.jar"/>
-    </module_version>
-</module>
