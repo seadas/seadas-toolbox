@@ -176,8 +176,8 @@
     </panels>
 
     <dynamicvariables>
-<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>-->
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
+<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>-->
     </dynamicvariables>
 
     <packs>
@@ -236,13 +236,13 @@
         </pack>
         <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
             <description>JDK11 JRE</description>
-<!--            <file src="packs/jre/OpenJDK11U-jre_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
-            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
+            <file src="packs/jre/OpenJDK11U-jre_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
+<!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
             <executable type="bin" stage="never" failure="warn" keep="true">
-<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*" />-->
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/bin" includes="*" />
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/lib" includes="*" />
-<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="*" />-->
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*" />
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/bin" includes="*" />-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/lib" includes="*" />-->
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="*" />
             </executable>
         </pack>
     </packs>
