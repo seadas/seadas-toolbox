@@ -109,7 +109,7 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>../../../optical-toolbox/opttbx-kit/target/netbeans_clusters/optical-toolbox</directory>
+                                    <directory>../../../optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
