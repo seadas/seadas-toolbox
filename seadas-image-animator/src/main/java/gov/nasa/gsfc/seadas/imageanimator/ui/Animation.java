@@ -8,21 +8,16 @@ import gov.nasa.gsfc.seadas.imageanimator.operator.ImageAnimatorOp;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.util.Debug;
 import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.rcp.windows.ProductSceneViewTopComponent;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.openide.awt.UndoRedo;
 
-import java.awt.geom.Rectangle2D;
-import java.awt.image.ImageObserver;
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.util.concurrent.ExecutionException;
 import javax.swing.*;
 
 import static org.esa.snap.rcp.actions.window.OpenImageViewAction.getProductSceneView;
@@ -60,7 +55,7 @@ public class Animation {
         Panel panel = new Panel();
         panel.add(jLabel);
         jFrame.add(panel, BorderLayout.CENTER);
-        jFrame.setSize(500, 500);
+        jFrame.setSize(1500, 1500);
         jFrame.setVisible(true);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         while (true) {
@@ -377,7 +372,7 @@ public class Animation {
         int frame = 0;
 
         AnimatedImage() {
-            super(600, 600, BufferedImage.TYPE_INT_RGB);
+            super(1000, 1200, BufferedImage.TYPE_INT_RGB);
             frameGradient = new GradientPaint[6];
             for (int i = 0; i < frameGradient.length; i++) {
                 frameGradient[i] = new GradientPaint(0f, (float) i, Color.BLUE, 0f,

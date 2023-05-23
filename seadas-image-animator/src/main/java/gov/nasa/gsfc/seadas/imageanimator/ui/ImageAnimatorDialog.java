@@ -18,6 +18,11 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Scanner;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -185,15 +190,69 @@ public class ImageAnimatorDialog extends JDialog {
         });
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
+        final JCheckBoxTree checkBoxTree = new JCheckBoxTree();
+        checkBoxTree.setEditable(true);
+        checkBoxTree.setDragEnabled(true);
+        checkBoxTree.setDropMode(DropMode.ON_OR_INSERT);
+
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode("Bands");
+        DefaultMutableTreeNode child;
+        String bandName;
+
+        Hashtable<String, DefaultMutableTreeNode> bandHash = new Hashtable<String, DefaultMutableTreeNode>();
+        Band[] bands = product.getBands();
+        // ArrayList<DefaultMutableTreeNode> folders = new ArrayList<DefaultMutableTreeNode>();
+
+        for (Band band :bands) {
+            bandName = band.getName();
+
+            String[] parts = bandName.split("_");
+
+            if (parts.length == 2 && parts[1].matches("\\d+")) { // check if filename matches prefix_number format
+                String folderName = parts[0];
+                String number = parts[1];
+
+                DefaultMutableTreeNode folder = bandHash.get(folderName);
+                if (folder == null) {
+                    folder = new DefaultMutableTreeNode(folderName);
+                    bandHash.put(folderName, folder);
+                    folder.setAllowsChildren(true);
+                    root.add(folder);
+                }
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(bandName);
+                folder.add(node);
+            } else {
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(bandName);
+                root.add(node);
+            }
+        }
+
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        checkBoxTree.setModel(model);
 
         imageAnimatorPanel.add(imageAnimatorContainerPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-
+        imageAnimatorPanel.add(checkBoxTree,
+                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 0));
         mainPanel.add(imageAnimatorPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-
         mainPanel.add(getControllerPanel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+
+
+        checkBoxTree.addCheckChangeEventListener(new JCheckBoxTree.CheckChangeEventListener() {
+            public void checkStateChanged(JCheckBoxTree.CheckChangeEvent event) {
+                System.out.println("event");
+                TreePath[] paths = checkBoxTree.getCheckedPaths();
+                for (TreePath tp : paths) {
+                    for (Object pathPart : tp.getPath()) {
+                        System.out.print(pathPart + ",");
+                    }
+                    System.out.println();
+                }
+            }
+        });
 
         add(mainPanel);
 
