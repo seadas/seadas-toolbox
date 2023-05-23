@@ -232,3 +232,12 @@ public class SliderDemo extends JPanel
         });
     }
 }
+
+/*
+~/mainwork/seadas-dev/seadas-toolbox/seadas-image-animator/src/main/java/gov/nasa/gsfc/seadas/imageanimator/ui/SliderDemo.java
+Warning:(111, 10) Method 'addWindowListener(java.awt.Window)' is never used
+Warning:(132, 24) Casting 'source.getValue()' to 'int' is redundant
+Warning:(174, 38) Parameter 'frameNum' is never used
+Warning:(228, 48) Anonymous new Runnable() can be replaced with method reference
+Warning:(228, 48) Anonymous new Runnable() can be replaced with lambda
+ */
