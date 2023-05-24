@@ -11,6 +11,7 @@ import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.openide.awt.UndoRedo;
+import sun.reflect.generics.tree.Tree;
 
 import java.text.MessageFormat;
 import java.awt.*;
@@ -18,7 +19,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.tree.TreePath;
 
 import static org.esa.snap.rcp.actions.window.OpenImageViewAction.getProductSceneView;
 import static org.esa.snap.rcp.actions.window.OpenRGBImageViewAction.openDocumentWindow;
@@ -63,46 +66,67 @@ public class Animation {
         }
     }
 
-    public void startAnimate(){
+    public void startAnimate(TreePath[] treePaths){
 
         SnapApp snapApp = SnapApp.getDefault();
         final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
         Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
         ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
-//        RenderedImage renderedImage = imageAnimatorOp.createImage(sceneView);
-//        BufferedImage bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
-//        BufferedImage bi = (BufferedImage)imageAnimatorOp.createImage(sceneView);
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
+        TreePath rootPath = treePaths[0].getParentPath();
 
+        ArrayList<String> parents = new ArrayList<String>();
+        final ArrayList<String> selectedBandsList = new ArrayList<>();
+
+        int pathCount = treePaths[0].getPathCount();
+        String currentSelectedBand;
+        for (TreePath treePath:treePaths) {
+            currentSelectedBand = String.valueOf(treePath.getLastPathComponent());
+            System.out.println("current node " + currentSelectedBand);
+            if (treePath.getParentPath() !=null){
+                System.out.println("parent node " + String.valueOf(treePath.getParentPath().getLastPathComponent()));
+                parents.add(String.valueOf(treePath.getParentPath().getLastPathComponent()));
+            }
+        }
+
+        for (TreePath treePath:treePaths) {
+            currentSelectedBand = String.valueOf(treePath.getLastPathComponent());
+            if (!parents.contains(currentSelectedBand)) {
+                System.out.println("this is the band that is selected for animation: " + currentSelectedBand);
+                selectedBandsList.add(currentSelectedBand);
+            }
+        }
 
         Runnable r = new Runnable() {
             int index = 0;
             @Override
             public void run() {
                 JPanel gui = new JPanel();
-                final String[] names = {"angstrom", "chlor_a", "chl_ocx", "pic", "poc", "ipar", "nflh", "par"};;
-                if (snapApp.getSelectedProductSceneView().getProduct().getName().contains("HARP2")) {
-                    names[0] = "I_-43_549";
-                    names[1] = "I_-32_549";
-                    names[2] = "I_-20_549";
-                    names[3] = "I_-6_549";
-                    names[4] = "I_0_549";
-                    names[5] = "I_15_549";
-                    names[6] = "I_28_549";
-                    names[7] = "I_-52_549";
-                }
-                final RenderedImage[] renderedImages = new RenderedImage[names.length];
-                final RasterDataNode[] rasters = new RasterDataNode[names.length];
+                final String[] selecteBandNames = selectedBandsList.toArray(new String[0]);
+//                if (snapApp.getSelectedProductSceneView().getProduct().getName().contains("HARP2")) {
+//                    selecteBandNames[0] = "I_-43_549";
+//                    selecteBandNames[1] = "I_-32_549";
+//                    selecteBandNames[2] = "I_-20_549";
+//                    selecteBandNames[3] = "I_-6_549";
+//                    selecteBandNames[4] = "I_0_549";
+//                    selecteBandNames[5] = "I_15_549";
+//                    selecteBandNames[6] = "I_28_549";
+//                    selecteBandNames[7] = "I_-52_549";
+//                }
+                final RenderedImage[] renderedImages = new RenderedImage[selecteBandNames.length];
+                final RasterDataNode[] rasters = new RasterDataNode[selecteBandNames.length];
                 ProductSceneView myView;
                 RenderedImage renderedImage;
 
-                for (int i = 0; i < names.length; i++) {
-                    RasterDataNode raster = product.getRasterDataNode(names[i]);
-                    openProductSceneView(raster);
+                for (int i = 0; i < selecteBandNames.length; i++) {
+                    RasterDataNode raster = product.getRasterDataNode(selecteBandNames[i]);
+                    if (product.getBand(selecteBandNames[i]).getImageInfo() == null) {
+                        openProductSceneView(raster);
+                    }
                     rasters[i] = raster;
                 }
 
-                for (int i = 0; i < names.length; i++) {
+                for (int i = 0; i < selecteBandNames.length; i++) {
                     myView = getProductSceneView(rasters[i]);
                     renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
                     renderedImages[i] = renderedImage;
@@ -116,7 +140,7 @@ public class Animation {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         JLabel label = (JLabel) gui.getComponent(0);
-                        label.setIcon(new ImageIcon((BufferedImage) renderedImages[++index % names.length]));
+                        label.setIcon(new ImageIcon((BufferedImage) renderedImages[++index % selecteBandNames.length]));
                         label.repaint();
                         gui.repaint();
                     }

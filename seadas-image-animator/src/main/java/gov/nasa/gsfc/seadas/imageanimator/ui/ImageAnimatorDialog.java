@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.imageanimator.ui;
 
+import com.jidesoft.swing.CheckBoxTreeCellRenderer;
 import gov.nasa.gsfc.seadas.contour.ui.ExGridBagConstraints;
 import gov.nasa.gsfc.seadas.imageanimator.data.ImageAnimatorData;
 import org.esa.snap.core.datamodel.*;
@@ -20,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -51,6 +53,7 @@ public class ImageAnimatorDialog extends JDialog {
     private SwingPropertyChangeSupport propertyChangeSupport;
 
     JPanel imageAnimatorPanel;
+    JCheckBoxTree bandNamesTree;
 
     JRadioButton bandImages = new JRadioButton("Band Images",true);
     JRadioButton angularView = new JRadioButton("Angular View");
@@ -190,10 +193,16 @@ public class ImageAnimatorDialog extends JDialog {
         });
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        final JCheckBoxTree checkBoxTree = new JCheckBoxTree();
-        checkBoxTree.setEditable(true);
-        checkBoxTree.setDragEnabled(true);
-        checkBoxTree.setDropMode(DropMode.ON_OR_INSERT);
+        bandNamesTree = new JCheckBoxTree();
+        bandNamesTree.setEditable(true);
+        bandNamesTree.setDragEnabled(true);
+        bandNamesTree.setDropMode(DropMode.ON_OR_INSERT);
+        bandNamesTree.setScrollsOnExpand(true);
+
+//        CheckBoxTreeCellRenderer treeCellRenderer = new CheckBoxTreeCellRenderer();
+//        treeCellRenderer.setBackground(Color.BLUE);
+//        treeCellRenderer.setPreferredSize(new Dimension(100, 20));
+//        checkBoxTree.setCellRenderer(treeCellRenderer);
 
         DefaultMutableTreeNode root=new DefaultMutableTreeNode("Bands");
         DefaultMutableTreeNode child;
@@ -228,23 +237,23 @@ public class ImageAnimatorDialog extends JDialog {
         }
 
         DefaultTreeModel model = new DefaultTreeModel(root);
-        checkBoxTree.setModel(model);
+        bandNamesTree.setModel(model);
 
         imageAnimatorPanel.add(imageAnimatorContainerPanel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        imageAnimatorPanel.add(checkBoxTree,
-                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 0));
+        imageAnimatorPanel.add(new JScrollPane(bandNamesTree),
+                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 100, 230));
         mainPanel.add(imageAnimatorPanel,
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 5));
         mainPanel.add(getControllerPanel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
 
 
-        checkBoxTree.addCheckChangeEventListener(new JCheckBoxTree.CheckChangeEventListener() {
+        bandNamesTree.addCheckChangeEventListener(new JCheckBoxTree.CheckChangeEventListener() {
             public void checkStateChanged(JCheckBoxTree.CheckChangeEvent event) {
                 System.out.println("event");
-                TreePath[] paths = checkBoxTree.getCheckedPaths();
+                TreePath[] paths = bandNamesTree.getCheckedPaths();
                 for (TreePath tp : paths) {
                     for (Object pathPart : tp.getPath()) {
                         System.out.print(pathPart + ",");
@@ -264,10 +273,6 @@ public class ImageAnimatorDialog extends JDialog {
         setLocationRelativeTo(null);
         pack();
         return mainPanel;
-    }
-
-    private JPanel getImageAnimatorPanel() {
-        return new JPanel();
     }
 
     private JPanel getImageTypePanel() {
@@ -338,35 +343,37 @@ public class ImageAnimatorDialog extends JDialog {
         animateImages.setMinimumSize(animateImages.getPreferredSize());
         animateImages.setMaximumSize(animateImages.getPreferredSize());
         animateImages.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                imageAnimatorCanceled = false;
-                if (button == bandImages) {
+                                            public void actionPerformed(ActionEvent event) {
+                                                imageAnimatorCanceled = false;
+                                                if (button == bandImages) {
 
-                    //Animation animation = new Animation("Band Images Animation");
-                    Animation animation = new Animation();
-                    animation.startAnimate();
-                    //animation.animatioTest();
+                                                    TreePath[] treePath = bandNamesTree.getCheckedPaths();
+                                                    //Animation animation = new Animation("Band Images Animation");
+                                                    Animation animation = new Animation();
+                                                    animation.startAnimate(treePath);
+                                                    //animation.animatioTest();
 
 
+//                } else if (button == angularView) {
+//
+//                    // option Angular View is selected
+//                Animation animation = new Animation();
+//                animation.startAnimateAngular();
+//
+//                } else if (button == spectrumView) {
+//
+//                    // option Spectrum is selected
+//
+//                Animation animation = new Animation();
+//                animation.startAnimateSpectrum();
+//
+//                }
+//                dispose();
+                                                }
+                                            }
 
-
-                } else if (button == angularView) {
-
-                    // option Angular View is selected
-                Animation animation = new Animation();
-                animation.startAnimateAngular();
-
-                } else if (button == spectrumView) {
-
-                    // option Spectrum is selected
-
-                Animation animation = new Animation();
-                animation.startAnimateSpectrum();
-
-                }
-                dispose();
-            }
-        });
+                                            ;
+                                        });
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
         cancelButton.setMinimumSize(cancelButton.getPreferredSize());
