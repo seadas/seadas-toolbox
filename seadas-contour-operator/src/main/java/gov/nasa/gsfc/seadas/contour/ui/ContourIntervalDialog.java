@@ -9,7 +9,8 @@ import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.util.CommonUtilities;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.ui.color.ColorComboBox;
+import org.openide.awt.ColorComboBox;
+
 import org.esa.snap.ui.color.ColorComboBoxAdapter;
 
 import javax.swing.*;
