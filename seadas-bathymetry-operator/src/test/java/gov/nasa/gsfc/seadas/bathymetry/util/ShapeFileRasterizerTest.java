@@ -17,7 +17,7 @@ import static org.esa.snap.core.util.Debug.assertNotNull;
 public class ShapeFileRasterizerTest extends TestCase {
 
     @Test
-    public void testImageCreation() throws IOException {
+    public void testImageCreation() throws Exception {
         final File targetDir = new File("");
         final ShapeFileRasterizer rasterizer = new ShapeFileRasterizer(targetDir);
         final URL shapeUrl = getClass().getResource("e000n05f.shp");
@@ -35,7 +35,7 @@ public class ShapeFileRasterizerTest extends TestCase {
     }
 
      @Test
-    public void testFromZip() throws IOException {
+    public void testFromZip() throws Exception {
         final File targetDir = new File("");
         final ShapeFileRasterizer rasterizer = new ShapeFileRasterizer(targetDir);
         final URL shapeUrl = getClass().getResource("e000n05f.zip");
