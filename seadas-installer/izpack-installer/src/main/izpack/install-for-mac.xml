@@ -18,18 +18,18 @@
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
-        <laf name="looks">
-            <os family="unix"/>
-            <param name="variant" value="mist-aqua"/>
-        </laf>
-        <laf name="looks">
-            <os family="windows"/>
-            <param name="variant" value="extwin"/>
-        </laf>
-        <laf name="substance">
-            <os family="mac"/>
-            <param name="variant" value="nebula-brick-wall"/>
-        </laf>
+<!--        <laf name="looks">-->
+<!--            <os family="unix"/>-->
+<!--            <param name="variant" value="mist-aqua"/>-->
+<!--        </laf>-->
+<!--        <laf name="looks">-->
+<!--            <os family="windows"/>-->
+<!--            <param name="variant" value="extwin"/>-->
+<!--        </laf>-->
+<!--        <laf name="substance">-->
+<!--            <os family="mac" />-->
+<!--            <param name="variant" value="mist-aqua" />-->
+<!--        </laf>-->
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
@@ -71,7 +71,7 @@
         <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
-        <variable name="S3TBXROOT" value="$INSTALL_PATH/seadas/s3tbx"/>
+        <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>
         <variable name="WELCOME_TEXT" value="SeaDAS IzPack Installer"/>
@@ -87,8 +87,8 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
-        <variable name="JDKPathPanel.minVersion" value="1.8.0_201" />
-        <variable name="JDKPathPanel.maxVersion" value="1.8.0_201" />
+        <variable name="JDKPathPanel.minVersion" value="11.0.11" />
+        <variable name="JDKPathPanel.maxVersion" value="11.0.19" />
         <variable name="JDKPathPanel.skipIfValid" value="yes" />
         <variable name="extra_clusters" value="seadas-toolbox" />
     </variables>
@@ -176,7 +176,8 @@
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
+<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>-->
     </dynamicvariables>
 
     <packs>
@@ -221,11 +222,12 @@
                 <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh" />
                 <fileset targetdir="$INSTALL_PATH/bin" includes="gpt" />
                 <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert" />
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="jspawnhelper" />
             </executable>
         </pack>
-        <pack name="s3tbx" required="yes" preselected="true" id="pack.s3tbx">
-            <description>Sentinel 3 Toolbox</description>
-            <fileset dir="packs/s3tbx" casesensitive="true" targetdir="$INSTALL_PATH/s3tbx">
+        <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
+            <description>Optical Toolbox</description>
+            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH/optical-toolbox">
             </fileset>
         </pack>
         <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
@@ -233,13 +235,15 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="Oracle JRE" required="yes" id="pack.oracle.jre">
-            <description>Oracle JRE</description>
-            <file src="packs/jre/jre-8u201-macosx-x64.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true">
-            </file>
+        <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
+            <description>JDK11 JRE</description>
+            <file src="packs/jre/OpenJDK11U-jre_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
+<!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home/bin" includes="*" />
-                <fileset targetdir="$INSTALL_PATH/jre1.8.0_201.jre/Contents/Home/lib" includes="*" />
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*" />
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/bin" includes="*" />-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/lib" includes="*" />-->
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="*" />
             </executable>
         </pack>
     </packs>

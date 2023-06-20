@@ -48,9 +48,9 @@ if [ -f "${userdir}/etc/$APPNAME".conf ] ; then
     . "${userdir}/etc/$APPNAME".conf
 fi
 
-if [ -n "/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home" -a \! -d "/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home" -a -d "$progdir/..//Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home" ]; then
+if [ -n "/Users/bingyang/jdk-11.0.19+7-jre/Contents/Home" -a \! -d "/Users/binyang/jdk-11.0.19+7-jre/Contents/Home" -a -d "$progdir/..//Users/bingyang/jdk-11.0.19+7-jre/Contents/Home" ]; then
     # #74333: permit jdkhome to be defined as relative to app dir
-    jdkhome="$progdir/..//Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home"
+    jdkhome="$progdir/..//Users/bingyang/jdk-11.0.19+7-jre/Contents/Home"
 fi
 
 readClusters() {
@@ -89,7 +89,7 @@ nbexec=`echo "$progdir"/../../../../platform*/lib/nbexec`
 case "`uname`" in
     Darwin*)
         eval exec sh '"$nbexec"' \
-            --jdkhome '"/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home"' \
+            --jdkhome '"/Users/bingyang/jdk-11.0.19+7-jre/Contents/Home"' \
             -J-Dcom.apple.mrj.application.apple.menu.about.name='"SeaDAS"' \
             -J-Xdock:name='"SeaDAS"' \
             '"-J-Xdock:icon=$progdir/$APPNAME.app/Contents/Resources/app.icns"' \
@@ -106,7 +106,7 @@ case "`uname`" in
            sh=/bin/bash
        fi
        eval exec $sh '"$nbexec"' \
-            --jdkhome '"/Users/aabduraz/dec-15/jre1.8.0_201.jre/Contents/Home"' \
+            --jdkhome '"/Users/bingyang/jdk-11.0.19+7-jre/Contents/Home"' \
             --clusters '"$clusters"' \
             --userdir '"${userdir}"' \
             ${default_options} \

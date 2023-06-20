@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.ocssw;
 
 
+import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import opendap.dap.DAS;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
@@ -26,6 +27,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 import org.openide.modules.ModuleInfo;
@@ -438,7 +440,23 @@ public class GetSysInfoGUI {
         currentInfoLine = "";   // todo temporary nulling this as later lines need editing
 
         try {
-            Process process = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
+
+            System.out.println("going to run sh which python3");
+
+//            ProcessBuilder processBuilder = new ProcessBuilder();
+//            processBuilder.command(new String[]{"/bin/echo", "hello", "world"});
+//            ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"/bin/echo", "hello", "world"});
+            ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"/bin/bash", "-c", "-l", "which python3"});
+            Process process = processBuilder.start();
+//            Process process = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
+//            Process process = Runtime.getRuntime().exec(new String[]{"/bin/bash", "-l", "-c", "which python3"}, null);
+            System.out.println("bash which python3 succeede");
+
+//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"/bin/bash", "python", "--version"});
+//                Process process = processBuilder.start();
+//                Process process = Runtime.getRuntime().exec("python --version");
+
+//            Process process = Runtime.getRuntime().exec(new String[]{"bash", "-l", "-c", "which python3"}, null);
 
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
@@ -489,6 +507,8 @@ public class GetSysInfoGUI {
             sysInfoText += currentInfoLine;
 
             e.printStackTrace();
+            System.out.println("bash which python3 succeeded");
+
         }
 
 
@@ -603,7 +623,7 @@ public class GetSysInfoGUI {
         ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
         ocsswBinDirPath = ocsswRootOcsswInfo + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
 
-        String command = ocsswRunnerScriptPath + " --ocsswroot " + ocsswRootOcsswInfo + " " + OCSSW_SEADAS_INFO_PROGRAM_NAME ;
+        String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot " , ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME };
 
         ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
@@ -631,10 +651,16 @@ public class GetSysInfoGUI {
                 printGeneralSystemInfo(ocsswDebug);
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
             } else {
-//            System.out.println("command is: " + command);
+            System.out.println("command is: " + command);
                 currentInfoLine = "";
                 try {
-                    Process process = Runtime.getRuntime().exec(command);
+                    System.out.println("going to run Bash seadas_info");
+                    ProcessBuilder processBuilder = new ProcessBuilder(command);
+                    Process process = processBuilder.start();
+//                    Process process = Runtime.getRuntime().exec(command);
+//                    Process process = Runtime.getRuntime().exec(new String[]{"/bin/bash", command}, null);
+
+                    System.out.println("seadas_info succeeded");
 
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(process.getInputStream()));
