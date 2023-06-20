@@ -7,6 +7,7 @@ import com.bc.ceres.grender.support.BufferedImageRendering;
 import com.bc.ceres.grender.support.DefaultViewport;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.util.math.MathUtils;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 
@@ -33,7 +34,7 @@ public class ImageAnimatorOp {
    }
     public RenderedImage createImage(ProductSceneView view) {
         final boolean useAlpha = true; //!BMP_FORMAT_DESCRIPTION[0].equals(imageFormat) && !JPEG_FORMAT_DESCRIPTION[0].equals(imageFormat);
-        final boolean entireImage = false;
+        final boolean entireImage = true;
         final boolean geoReferenced = false; //GEOTIFF_FORMAT_DESCRIPTION[0].equals(imageFormat)
         Dimension dimension = new Dimension(getImageDimensions(view, entireImage));
         return createImage(view, entireImage, dimension, useAlpha, geoReferenced);
@@ -148,6 +149,7 @@ public class ImageAnimatorOp {
     }
 
     public Dimension getImageDimensions(ProductSceneView view, boolean full) {
+        view = SnapApp.getDefault().getSelectedProductSceneView();
         final Rectangle2D bounds;
         if (full) {
             final ImageLayer imageLayer = view.getBaseImageLayer();

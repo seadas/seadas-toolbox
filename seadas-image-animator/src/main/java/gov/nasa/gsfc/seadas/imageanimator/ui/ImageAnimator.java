@@ -181,12 +181,12 @@ public class ImageAnimator extends JPanel
     protected void updatePicture(int frameNum) {
         //Get the image if we haven't already.
         if (images[frameNum] == null) {
-            images[frameNum] = createImageIcon(imagePaths[frameNum]);
+            //images[frameNum] = createImageIcon(imagePaths[frameNum]);
         }
 
         //Set the image.
         if (images[frameNum] != null) {
-            picture.setIcon(images[frameNum]);
+            //picture.setIcon(images[frameNum]);
         } else { //image not found
             picture.setText("image #" + frameNum + " not found");
         }
@@ -212,7 +212,7 @@ public class ImageAnimator extends JPanel
         //Create and set up the window.
         JFrame frame = new JFrame("Slider Demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ImageAnimator animator = new ImageAnimator();
+        ImageAnimator animator = new ImageAnimator(null);
 
         //Add content to the window.
         frame.add(animator, BorderLayout.CENTER);

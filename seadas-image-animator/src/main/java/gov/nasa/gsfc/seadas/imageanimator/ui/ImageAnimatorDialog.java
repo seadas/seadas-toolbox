@@ -58,7 +58,7 @@ public class ImageAnimatorDialog extends JDialog {
     JRadioButton bandImages = new JRadioButton("Band Images",true);
     JRadioButton angularView = new JRadioButton("Angular View");
     JRadioButton spectrumView = new JRadioButton("Spectrum View");
-    JRadioButton button;
+    ButtonGroup buttonGroup = new ButtonGroup();
 
     private boolean imageAnimatorCanceled;
 
@@ -74,17 +74,18 @@ public class ImageAnimatorDialog extends JDialog {
         ProductNodeGroup<Band> bandGroup = product.getBandGroup();
 
         if (productSceneView != null) {
-            ImageInfo selectedImageInfo = productSceneView.getImageInfo();
+
             Band[] bands = new Band[bandGroup.getNodeCount()];
             bandGroup.toArray(bands);
-            for (Band band : bands) {
-                ImageInfo imageInfo = band.getImageInfo();
-                if (imageInfo!= null) {
-                    if (band.getImageInfo() == selectedImageInfo) {
-                        //selectedUnfilteredBand = band;
-                    }
-                }
-            }
+            //           ImageInfo selectedImageInfo = productSceneView.getImageInfo();
+//            for (Band band : bands) {
+//                ImageInfo imageInfo = band.getImageInfo();
+//                if (imageInfo!= null) {
+//                    if (band.getImageInfo() == selectedImageInfo) {
+//                        //selectedUnfilteredBand = band;
+//                    }
+//                }
+//            }
             //raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
 
 
@@ -280,20 +281,23 @@ public class ImageAnimatorDialog extends JDialog {
 
         JLabel imageTypePanelLable = new JLabel("Select Image Type: ");
 
-        ButtonGroup buttonGroup = new ButtonGroup();
 
         bandImages.setBounds(120, 30, 120, 50);
         angularView.setBounds(120, 30, 120, 50);
         spectrumView.setBounds(120, 30, 120, 50);
 
+        bandImages.setActionCommand("bandImages");
+        angularView.setActionCommand("angularView");
+        spectrumView.setActionCommand("spectrumView");
+
         //bandImages.setAction();
         imageTypePanelLable.setBounds(120, 30, 120, 50);
 
-        RadioButtonActionListener actionListener = new RadioButtonActionListener();
-
-        bandImages.addActionListener(actionListener);
-        angularView.addActionListener(actionListener);
-        spectrumView.addActionListener(actionListener);
+//        RadioButtonActionListener actionListener = new RadioButtonActionListener();
+//
+//        bandImages.addActionListener(actionListener);
+//        angularView.addActionListener(actionListener);
+//        spectrumView.addActionListener(actionListener);
 
 //        bandImages.setForeground(Color.BLUE);
 //        bandImages.setBackground(Color.YELLOW);
@@ -345,8 +349,7 @@ public class ImageAnimatorDialog extends JDialog {
         animateImages.addActionListener(new ActionListener() {
                                             public void actionPerformed(ActionEvent event) {
                                                 imageAnimatorCanceled = false;
-                                                if (button == bandImages) {
-
+                                                if (buttonGroup.getSelection().getActionCommand().equals(bandImages.getActionCommand())) {
                                                     TreePath[] treePath = bandNamesTree.getCheckedPaths();
                                                     //Animation animation = new Animation("Band Images Animation");
                                                     Animation animation = new Animation();
@@ -399,37 +402,37 @@ public class ImageAnimatorDialog extends JDialog {
         return controllerPanel;
     }
 
-    class RadioButtonActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-            button = (JRadioButton) event.getSource();
-
-//            if (button == bandImages) {
+//    class RadioButtonActionListener implements ActionListener {
+//        @Override
+//        public void actionPerformed(ActionEvent event) {
+//            button = (JRadioButton) event.getSource();
 //
-//                //Animation animation = new Animation("Band Images Animation");
-//                Animation animation = new Animation();
-//                animation.startAnimate();
-//                //animation.animatioTest();
-//
-//
-//
-//
-//            } else if (button == angularView) {
-//
-//                // option Windows is selected
+////            if (button == bandImages) {
+////
+////                //Animation animation = new Animation("Band Images Animation");
 ////                Animation animation = new Animation();
-////                animation.startAnimateAngular();
+////                animation.startAnimate();
+////                //animation.animatioTest();
+////
+////
+////
+////
+////            } else if (button == angularView) {
+////
+////                // option Windows is selected
+//////                Animation animation = new Animation();
+//////                animation.startAnimateAngular();
+//////                int i = 3;
+////
+////            } else if (button == spectrumView) {
+////
+////                // option Macintosh is selected
 ////                int i = 3;
-//
-//            } else if (button == spectrumView) {
-//
-//                // option Macintosh is selected
-//                int i = 3;
-////                Animation animation = new Animation();
-////                animation.startAnimateSpectrum();
-//
-//            }
-        }
-    }
+//////                Animation animation = new Animation();
+//////                animation.startAnimateSpectrum();
+////
+////            }
+//        }
+//    }
 
 }

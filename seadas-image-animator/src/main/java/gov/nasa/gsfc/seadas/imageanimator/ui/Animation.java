@@ -11,7 +11,6 @@ import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.openide.awt.UndoRedo;
-import sun.reflect.generics.tree.Tree;
 
 import java.text.MessageFormat;
 import java.awt.*;
@@ -50,21 +49,21 @@ public class Animation {
         pm = ProgressMonitor.NULL;
     }
 
-    public Animation(String frameTitle) {
-        pm = ProgressMonitor.NULL;
-        jFrame = new JFrame(frameTitle);
-        thread = new Thread();
-        jLabel = new JLabel();
-        Panel panel = new Panel();
-        panel.add(jLabel);
-        jFrame.add(panel, BorderLayout.CENTER);
-        jFrame.setSize(1500, 1500);
-        jFrame.setVisible(true);
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        while (true) {
-            bandImagesAnimator();
-        }
-    }
+//    public Animation(String frameTitle) {
+//        pm = ProgressMonitor.NULL;
+//        jFrame = new JFrame(frameTitle);
+//        thread = new Thread();
+//        jLabel = new JLabel();
+//        Panel panel = new Panel();
+//        panel.add(jLabel);
+//        jFrame.add(panel, BorderLayout.CENTER);
+//        jFrame.setSize(1500, 1500);
+//        jFrame.setVisible(true);
+//        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        while (true) {
+//            bandImagesAnimator();
+//        }
+//    }
 
     public void startAnimate(TreePath[] treePaths){
 
@@ -103,16 +102,6 @@ public class Animation {
             public void run() {
                 JPanel gui = new JPanel();
                 final String[] selecteBandNames = selectedBandsList.toArray(new String[0]);
-//                if (snapApp.getSelectedProductSceneView().getProduct().getName().contains("HARP2")) {
-//                    selecteBandNames[0] = "I_-43_549";
-//                    selecteBandNames[1] = "I_-32_549";
-//                    selecteBandNames[2] = "I_-20_549";
-//                    selecteBandNames[3] = "I_-6_549";
-//                    selecteBandNames[4] = "I_0_549";
-//                    selecteBandNames[5] = "I_15_549";
-//                    selecteBandNames[6] = "I_28_549";
-//                    selecteBandNames[7] = "I_-52_549";
-//                }
                 final RenderedImage[] renderedImages = new RenderedImage[selecteBandNames.length];
                 final RasterDataNode[] rasters = new RasterDataNode[selecteBandNames.length];
                 ProductSceneView myView;
@@ -279,14 +268,14 @@ public class Animation {
         SwingUtilities.invokeLater(r);
     }
 
-    public void animatioTest() {
-        AnimationTest anim = new AnimationTest();
-        JFrame app = new JFrame("Animator test");
-        app.add(anim, BorderLayout.CENTER);
-        app.setSize(300, 300);
-        app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        app.setSize(anim.getPreferredSize().width + 10, anim.getPreferredSize().height + 30);
-    }
+//    public void animatioTest() {
+//        AnimationTest anim = new AnimationTest();
+//        JFrame app = new JFrame("Animator test");
+//        app.add(anim, BorderLayout.CENTER);
+//        app.setSize(300, 300);
+//        app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        app.setSize(anim.getPreferredSize().width + 10, anim.getPreferredSize().height + 30);
+//    }
 
     private static JFrame jFrame;
     private static JLabel jLabel;
@@ -339,82 +328,132 @@ public class Animation {
         }
     }
 
-    public void bandImagesAnimator() {
+    private static ProductSceneImage createProductSceneImage(final RasterDataNode raster, ProductSceneView existingView) {
+        Debug.assertNotNull(raster);
+        final ProductSceneImage[] sceneImage = {null};
         SnapApp snapApp = SnapApp.getDefault();
-        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
-        RenderedImage renderedImage = imageAnimatorOp.createImage(sceneView);
-        BufferedImage bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
-        snapApp.getProductManager().getProduct(0);
-        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
-        ProductNodeGroup<Band> products = product.getBandGroup();
-        try {
+        System.out.println(raster.getName());
 
-            for (ProductNode band : products.toArray()) {
-                //images = new ImageIcon(band.getProduct().getRasterDataNode(band.getName()).getGeophysicalImage().getAsBufferedImage());
-                //images = new ImageIcon((Image) sceneView.getBaseImageLayer().getImage());
-                images = new ImageIcon(bufferedImage);
-                jLabel.setIcon(images);
-                thread.sleep(1000);
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
+                "Create Product Scene Image") {
+
+            @Override
+            protected ProductSceneImage doInBackground(ProgressMonitor pm) throws Exception {
+
+
+                pm.beginTask("Creating a scene image for "  + raster.getName(), 10);
+
+                pm.worked(1);
+                try {
+
+                    if (existingView != null) {
+                        sceneImage[0] = new ProductSceneImage(raster, existingView);
+                    } else {
+                        sceneImage[0] = new ProductSceneImage(raster,
+                                SnapApp.getDefault().getPreferencesPropertyMap(),
+                                SubProgressMonitor.create(pm, 1));
+                    }
+                    sceneImage[0].initVectorDataCollectionLayer();
+                    sceneImage[0].initMaskCollectionLayer();
+                } finally {
+                    done();
+                }
+                return sceneImage[0];
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
-
-    public void test(){
-        Band[] bands = product.getBands();
-        try {
-            for (Band band : bands) {
-                images = new ImageIcon(band.getProduct().getRasterDataNode(band.getName()).getGeophysicalImage().getAsBufferedImage());
-                System.out.println(band.getName());
-                jLabel = new JLabel();
-                jLabel.setIcon(images);
-                thread.sleep(1000);
-            }
-        } catch (InterruptedException e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void swingAnimator() {
-        try {
-            for (i = 0; i < numImages; i++) {
-                images = new ImageIcon("images/img" + (i + 1) + ".png");
-                jLabel.setIcon(images);
-                thread.sleep(1000);
-            }
-        } catch (InterruptedException e) {
-        }
+//            @Override
+//            protected void done() {
+//                try {
+//                    sceneImage[0] = (ProductSceneImage) get();
+//                } catch (InterruptedException interruptedException) {
+//                    interruptedException.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+        };
+        pmSwingWorker.executeWithBlocking();
+        return sceneImage[0];
     }
 
 
+//    public void bandImagesAnimator() {
+//        SnapApp snapApp = SnapApp.getDefault();
+//        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
+//        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
+//        RenderedImage renderedImage = imageAnimatorOp.createImage(sceneView);
+//        BufferedImage bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
+//        snapApp.getProductManager().getProduct(0);
+//        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
+//        ProductNodeGroup<Band> products = product.getBandGroup();
+//        try {
+//
+//            for (ProductNode band : products.toArray()) {
+//                //images = new ImageIcon(band.getProduct().getRasterDataNode(band.getName()).getGeophysicalImage().getAsBufferedImage());
+//                //images = new ImageIcon((Image) sceneView.getBaseImageLayer().getImage());
+//                images = new ImageIcon(bufferedImage);
+//                jLabel.setIcon(images);
+//                thread.sleep(1000);
+//            }
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
-    class AnimatedImage extends BufferedImage {
-        GradientPaint[] frameGradient;
-        int frame = 0;
+//    public void test(){
+//        Band[] bands = product.getBands();
+//        try {
+//            for (Band band : bands) {
+//                images = new ImageIcon(band.getProduct().getRasterDataNode(band.getName()).getGeophysicalImage().getAsBufferedImage());
+//                System.out.println(band.getName());
+//                jLabel = new JLabel();
+//                jLabel.setIcon(images);
+//                thread.sleep(1000);
+//            }
+//        } catch (InterruptedException e){
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-        AnimatedImage() {
-            super(1000, 1200, BufferedImage.TYPE_INT_RGB);
-            frameGradient = new GradientPaint[6];
-            for (int i = 0; i < frameGradient.length; i++) {
-                frameGradient[i] = new GradientPaint(0f, (float) i, Color.BLUE, 0f,
-                        (float) i + 13, Color.RED, true);
-            }
-        }
+//    public void swingAnimator() {
+//        try {
+//            for (i = 0; i < numImages; i++) {
+//                images = new ImageIcon("images/img" + (i + 1) + ".png");
+//                jLabel.setIcon(images);
+//                thread.sleep(1000);
+//            }
+//        } catch (InterruptedException e) {
+//        }
+//    }
 
-        public void paintImage() {
-            Graphics2D g = createGraphics();
-            if (frame == frameGradient.length - 1)
-                frame = 0;
-            else
-                frame++;
-            g.setPaint(frameGradient[frame]);
-            g.fillRect(0, 0, getWidth(), getHeight());
-            g.dispose();
-        }
-    }
+
+
+//    class AnimatedImage extends BufferedImage {
+//        GradientPaint[] frameGradient;
+//        int frame = 0;
+//
+//        AnimatedImage() {
+//            super(1000, 1200, BufferedImage.TYPE_INT_RGB);
+//            frameGradient = new GradientPaint[6];
+//            for (int i = 0; i < frameGradient.length; i++) {
+//                frameGradient[i] = new GradientPaint(0f, (float) i, Color.BLUE, 0f,
+//                        (float) i + 13, Color.RED, true);
+//            }
+//        }
+//
+//        public void paintImage() {
+//            Graphics2D g = createGraphics();
+//            if (frame == frameGradient.length - 1)
+//                frame = 0;
+//            else
+//                frame++;
+//            g.setPaint(frameGradient[frame]);
+//            g.fillRect(0, 0, getWidth(), getHeight());
+//            g.dispose();
+//        }
+//    }
 
 
     public static void openProductSceneView(RasterDataNode rasterDataNode) {
@@ -427,11 +466,10 @@ public class Animation {
 
         ProductSceneView existingView = getProductSceneView(rasterDataNode);
 
-        SwingWorker<ProductSceneImage, Object> worker = new ProgressMonitorSwingWorker<ProductSceneImage, Object>(snapApp.getMainFrame(), progressMonitorTitle) {
+        ProgressMonitorSwingWorker<ProductSceneImage, Object> worker = new ProgressMonitorSwingWorker<ProductSceneImage, Object>(snapApp.getMainFrame(), progressMonitorTitle) {
 
             @Override
             public void done() {
-
                 setRootFrameDefaultCursor(snapApp.getMainFrame());
                 snapApp.setStatusBarMessage("");
                 try {
@@ -447,6 +485,8 @@ public class Animation {
 
             @Override
             protected ProductSceneImage doInBackground(com.bc.ceres.core.ProgressMonitor pm) {
+                pm.beginTask("Creating Image ", 10);
+                pm.worked(1);
                 try {
                     return createProductSceneImage(rasterDataNode, existingView, pm);
                 } finally {
@@ -456,7 +496,7 @@ public class Animation {
                 }
             }
         };
-        worker.execute();
+        worker.executeWithBlocking();
     }
 
 }
