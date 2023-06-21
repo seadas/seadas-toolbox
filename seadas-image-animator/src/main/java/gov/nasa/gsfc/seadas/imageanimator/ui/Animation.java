@@ -145,6 +145,9 @@ public class Animation {
 
                 for (int i = 0; i < selecteBandNames.length; i++) {
                     myView = getProductSceneView(rasters[i]);
+                    if (myView == null) {
+                        System.out.println("myView is null for i = " + i);
+                    }
                     renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
                     renderedImages[i] = renderedImage;
 

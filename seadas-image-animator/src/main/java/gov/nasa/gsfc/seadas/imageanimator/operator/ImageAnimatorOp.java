@@ -42,8 +42,8 @@ public class ImageAnimatorOp {
     static RenderedImage createImage(ProductSceneView view, boolean fullScene, Dimension dimension,
                                      boolean alphaChannel, boolean geoReferenced) {
         final int imageType = alphaChannel ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR;
-       // final BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, imageType);
-        final BufferedImage bufferedImage = new BufferedImage(804, 1739, imageType);
+        final BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, imageType);
+        //final BufferedImage bufferedImage = new BufferedImage(804, 1739, imageType);
         final BufferedImageRendering imageRendering = createRendering(view, fullScene,
                 geoReferenced, bufferedImage);
         if (!alphaChannel) {
