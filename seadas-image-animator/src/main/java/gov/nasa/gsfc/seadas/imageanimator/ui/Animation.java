@@ -27,15 +27,7 @@ import static org.esa.snap.rcp.actions.window.OpenRGBImageViewAction.openDocumen
 import static org.esa.snap.ui.UIUtils.*;
 
 
-
 public class Animation {
-    Thread thread;
-    ImageIcon images;
-    JFrame frame;
-    JLabel label;
-    int i = 0;
-    int j;
-    final int numImages = 3;
 
     Product product;
 
@@ -49,23 +41,58 @@ public class Animation {
         pm = ProgressMonitor.NULL;
     }
 
-//    public Animation(String frameTitle) {
-//        pm = ProgressMonitor.NULL;
-//        jFrame = new JFrame(frameTitle);
-//        thread = new Thread();
-//        jLabel = new JLabel();
-//        Panel panel = new Panel();
-//        panel.add(jLabel);
-//        jFrame.add(panel, BorderLayout.CENTER);
-//        jFrame.setSize(1500, 1500);
-//        jFrame.setVisible(true);
-//        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        while (true) {
-//            bandImagesAnimator();
-//        }
-//    }
+    public ImageIcon[] createAndOpenImages(TreePath[] treePaths) {
 
-    public void startAnimate(TreePath[] treePaths){
+        SnapApp snapApp = SnapApp.getDefault();
+        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
+        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
+        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
+        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
+
+        ArrayList<String> parents = new ArrayList<String>();
+        final ArrayList<String> selectedBandsList = new ArrayList<>();
+
+        String currentSelectedBand;
+        for (TreePath treePath : treePaths) {
+            if (treePath.getParentPath() != null) {
+                parents.add(String.valueOf(treePath.getParentPath().getLastPathComponent()));
+            }
+        }
+
+        for (TreePath treePath : treePaths) {
+            currentSelectedBand = String.valueOf(treePath.getLastPathComponent());
+            if (!parents.contains(currentSelectedBand)) {
+                selectedBandsList.add(currentSelectedBand);
+            }
+        }
+
+        final String[] selecteBandNames = selectedBandsList.toArray(new String[0]);
+        final RenderedImage[] renderedImages = new RenderedImage[selecteBandNames.length];
+        final RasterDataNode[] rasters = new RasterDataNode[selecteBandNames.length];
+        ProductSceneView myView;
+        RenderedImage renderedImage;
+
+        for (int i = 0; i < selecteBandNames.length; i++) {
+            RasterDataNode raster = product.getRasterDataNode(selecteBandNames[i]);
+            if (product.getBand(selecteBandNames[i]).getImageInfo() == null) {
+                openProductSceneView(raster);
+            }
+            rasters[i] = raster;
+        }
+
+        ImageIcon[] images = new ImageIcon[renderedImages.length];
+        for (int i = 0; i < selecteBandNames.length; i++) {
+            myView = getProductSceneView(rasters[i]);
+            renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
+            renderedImages[i] = renderedImage;
+            images[i] = new ImageIcon((BufferedImage) renderedImage);
+
+        }
+
+        return images;
+    }
+
+    public void startAnimate(TreePath[] treePaths) {
 
         SnapApp snapApp = SnapApp.getDefault();
         final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
@@ -79,16 +106,16 @@ public class Animation {
 
         int pathCount = treePaths[0].getPathCount();
         String currentSelectedBand;
-        for (TreePath treePath:treePaths) {
+        for (TreePath treePath : treePaths) {
             currentSelectedBand = String.valueOf(treePath.getLastPathComponent());
             System.out.println("current node " + currentSelectedBand);
-            if (treePath.getParentPath() !=null){
+            if (treePath.getParentPath() != null) {
                 System.out.println("parent node " + String.valueOf(treePath.getParentPath().getLastPathComponent()));
                 parents.add(String.valueOf(treePath.getParentPath().getLastPathComponent()));
             }
         }
 
-        for (TreePath treePath:treePaths) {
+        for (TreePath treePath : treePaths) {
             currentSelectedBand = String.valueOf(treePath.getLastPathComponent());
             if (!parents.contains(currentSelectedBand)) {
                 System.out.println("this is the band that is selected for animation: " + currentSelectedBand);
@@ -98,6 +125,7 @@ public class Animation {
 
         Runnable r = new Runnable() {
             int index = 0;
+
             @Override
             public void run() {
                 JPanel gui = new JPanel();
@@ -120,8 +148,8 @@ public class Animation {
                     renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
                     renderedImages[i] = renderedImage;
 
-                    if(i == 0) {
-                        gui.add(new JLabel(new ImageIcon((BufferedImage)renderedImage)));
+                    if (i == 0) {
+                        gui.add(new JLabel(new ImageIcon((BufferedImage) renderedImage)));
                     }
                 }
 
@@ -145,7 +173,7 @@ public class Animation {
         SwingUtilities.invokeLater(r);
     }
 
-    public void startAnimateAngular(){
+    public void startAnimateAngular() {
 
 //        SnapApp snapApp = SnapApp.getDefault();
 //        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
@@ -159,6 +187,7 @@ public class Animation {
 
         Runnable r = new Runnable() {
             int index = 0;
+
             @Override
             public void run() {
 //                JPanel gui = new JPanel();
@@ -207,7 +236,7 @@ public class Animation {
         SwingUtilities.invokeLater(r);
     }
 
-    public void startAnimateSpectrum(){
+    public void startAnimateSpectrum() {
 
 //        SnapApp snapApp = SnapApp.getDefault();
 //        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
@@ -221,6 +250,7 @@ public class Animation {
 
         Runnable r = new Runnable() {
             int index = 0;
+
             @Override
             public void run() {
 //                JPanel gui = new JPanel();
@@ -279,19 +309,20 @@ public class Animation {
 
     private static JFrame jFrame;
     private static JLabel jLabel;
-    public static void display(BufferedImage image){
-        if(jFrame ==null){
-            jFrame =new JFrame();
+
+    public static void display(BufferedImage image) {
+        if (jFrame == null) {
+            jFrame = new JFrame();
             jFrame.setTitle("stained_image");
             jFrame.setSize(image.getWidth(), image.getHeight());
             jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            jLabel =new JLabel();
+            jLabel = new JLabel();
             jLabel.setIcon(new ImageIcon(image));
-            jFrame.getContentPane().add(jLabel,BorderLayout.CENTER);
+            jFrame.getContentPane().add(jLabel, BorderLayout.CENTER);
             jFrame.setLocationRelativeTo(null);
             jFrame.pack();
             jFrame.setVisible(true);
-        }else jLabel.setIcon(new ImageIcon(image));
+        } else jLabel.setIcon(new ImageIcon(image));
     }
 
     public static BufferedImage redraw(BufferedImage img, Color bg) {
@@ -341,7 +372,7 @@ public class Animation {
             protected ProductSceneImage doInBackground(ProgressMonitor pm) throws Exception {
 
 
-                pm.beginTask("Creating a scene image for "  + raster.getName(), 10);
+                pm.beginTask("Creating a scene image for " + raster.getName(), 10);
 
                 pm.worked(1);
                 try {
@@ -427,7 +458,6 @@ public class Animation {
 //        } catch (InterruptedException e) {
 //        }
 //    }
-
 
 
 //    class AnimatedImage extends BufferedImage {

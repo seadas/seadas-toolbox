@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -352,10 +353,10 @@ public class ImageAnimatorDialog extends JDialog {
                                                 if (buttonGroup.getSelection().getActionCommand().equals(bandImages.getActionCommand())) {
                                                     TreePath[] treePath = bandNamesTree.getCheckedPaths();
                                                     //Animation animation = new Animation("Band Images Animation");
-                                                    Animation animation = new Animation();
-                                                    animation.startAnimate(treePath);
-                                                    //animation.animatioTest();
 
+                                                    Animation animation = new Animation();
+                                                    ImageIcon[] images = animation.createAndOpenImages(treePath);
+                                                    AnimationWithSpeedControl.animate(images);
 
 //                } else if (button == angularView) {
 //
