@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.writeimage;
+package gov.nasa.gsfc.seadas.writeimage.action;
 
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.glayer.Layer;
@@ -36,7 +36,7 @@ import java.awt.image.RenderedImage;
  * Time: 12:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ShowColorBarOverlayAction extends AbstractSnapAction {
+public class ShowWriteImageOverlayAction extends AbstractSnapAction {
 
     private static final String COLORBAR_TYPE_PROPERTY_NAME = "colorbar.type";
     private static final String DEFAULT_LAYER_TYPE = "ColorBarLayerType";
@@ -61,7 +61,7 @@ public class ShowColorBarOverlayAction extends AbstractSnapAction {
             if (colorBarLayer != null) {
                 rootLayer.getChildren().remove(colorBarLayer);
             }
-            colorBarLayer = createColorBarLayer(colorBarImage);
+            colorBarLayer = createWriteImageLayer(colorBarImage);
             colorBarLayer.setName("Color Bar");
             //put color bar layer on top of everything
             rootLayer.getChildren().add(0, colorBarLayer);
@@ -72,7 +72,7 @@ public class ShowColorBarOverlayAction extends AbstractSnapAction {
         }
     }
 
-    private Layer createColorBarLayer(RenderedImage colorBarImage) {
+    private Layer createWriteImageLayer(RenderedImage colorBarImage) {
         final LayerType layerType = getColorBarLayerType();
         final PropertySet template = layerType.createLayerConfig(null);
         template.setValue("renderedImage", colorBarImage);

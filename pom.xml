@@ -32,6 +32,7 @@
         <module>seadas-watermask-operator</module>
         <module>seadas-processing</module>
         <module>seadas-contour-operator</module>
+        <module>seadas-image-animator</module>
         <module>seadas-bathymetry-operator</module>
         <module>seadas-kit</module>
     </modules>
@@ -51,6 +52,7 @@
         <seadas-processing.version>8.3.0-SNAPSHOT</seadas-processing.version>
         <seadas-watermask-operator.version>8.3.0-SNAPSHOT</seadas-watermask-operator.version>
         <seadas-bathymetry-operator.version>8.3.0-SNAPSHOT</seadas-bathymetry-operator.version>
+        <seadas-image-animator.version>1.0.0</seadas-image-animator.version>
 
         <netbeans.version>RELEASE113</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
