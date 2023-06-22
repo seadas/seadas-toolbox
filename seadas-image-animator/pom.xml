@@ -21,7 +21,7 @@
     </description>
 
     <properties>
-        <netbeans.version>RELEASE82</netbeans.version>
+<!--        <netbeans.version>RELEASE82</netbeans.version>-->
         <doc-windows.version>1.0</doc-windows.version>
         <user.language>en</user.language>
     </properties>
@@ -115,7 +115,7 @@
     <build>
        <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>

@@ -6,7 +6,7 @@ import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.esa.snap.core.util.Debug;
 import org.esa.snap.rcp.util.Dialogs;
 
@@ -587,11 +587,14 @@ public class OCSSWLocal extends OCSSW {
     }
 
     public void updateOCSSWTags(){
-        Runtime rt = Runtime.getRuntime();
-        String[] commands = {TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+        System.out.println("going to run install_ocssw");
+//        Runtime rt = Runtime.getRuntime();
+        String[] commands = {"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+        ProcessBuilder processBuilder = new ProcessBuilder(commands);
         Process proc = null;
         try {
-            proc = rt.exec(commands);
+            proc = processBuilder.start();
+            System.out.println("install_ocssw succeeded");
         } catch (IOException e) {
             e.printStackTrace();
         }

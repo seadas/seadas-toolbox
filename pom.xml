@@ -40,7 +40,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>9.0.4</snap.version>
+        <snap.version>10.0.0-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
@@ -54,7 +54,7 @@
         <seadas-bathymetry-operator.version>8.3.0-SNAPSHOT</seadas-bathymetry-operator.version>
         <seadas-image-animator.version>1.0.0</seadas-image-animator.version>
 
-        <netbeans.version>RELEASE82</netbeans.version>
+        <netbeans.version>RELEASE113</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>
         <jersey.version>2.27</jersey.version>
@@ -66,7 +66,7 @@
         <repository>
             <id>snap-repo-public</id>
             <name>Public Maven Repository for SNAP</name>
-            <url>https://nexus.senbox.net/nexus/content/repositories/public/</url>
+            <url>https://nexus.snap-ci.ovh/repository/snap-maven-public/</url>
             <releases>
                 <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
@@ -87,7 +87,7 @@
         <pluginRepository>
             <id>snap-repo-public</id>
             <name>Public Maven Repository for SNAP</name>
-            <url>https://nexus.senbox.net/nexus/content/repositories/public/</url>
+            <url>https://nexus.snap-ci.ovh/repository/snap-maven-public/</url>
             <releases>
                 <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
@@ -104,13 +104,13 @@
         <repository>
             <id>snap-repo-public</id>
             <name>Public Maven Repository for SNAP</name>
-            <url>https://nexus.senbox.net/nexus/content/repositories/releases/</url>
+            <url>https://nexus.snap-ci.ovh/repository/snap-maven-releases/</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
         <snapshotRepository>
             <id>snap-repo-public</id>
             <name>Public Maven Snapshot Repository for SNAP</name>
-            <url>https://nexus.senbox.net/nexus/content/repositories/snapshots/</url>
+            <url>https://nexus.snap-ci.ovh/repository/snap-maven-snapshot/</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
@@ -211,7 +211,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
-                <version>1.10.19</version>
+                <version>5.3.1</version>
                 <scope>test</scope>
             </dependency>
 
@@ -305,10 +305,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <debug>true</debug>
                     <encoding>UTF-8</encoding>
                     <excludes>
@@ -318,7 +318,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
+                <version>3.3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -360,6 +360,7 @@
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.5.0</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/main/assembly/seadas-zip.xml</descriptor>
@@ -371,6 +372,7 @@
 
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
             </plugin>
 
         </plugins>
@@ -378,9 +380,9 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
+                    <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.1</version>
+                    <version>4.4</version>
                     <extensions>true</extensions>
                     <dependencies>
                         <dependency>
@@ -406,7 +408,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.10</version>
+                    <version>3.3.0</version>
                     <executions>
                         <execution>
                             <id>regex-property</id>
@@ -433,13 +435,14 @@
                         <useDefaultManifestFile>true</useDefaultManifestFile>
                     </configuration>
                 </plugin>
+
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.5.4</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.2.1</version>
                     <executions>
                         <execution>
                             <phase>verify</phase>
@@ -456,7 +459,7 @@
 
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>3.0.0</version>
                     <configuration>
                         <enableAssertions>true</enableAssertions>
                         <!--<skip>true</skip>-->
