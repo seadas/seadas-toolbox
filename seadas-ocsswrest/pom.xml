@@ -18,7 +18,7 @@
         <jersey.version>2.26</jersey.version>
         <grizzly.version>2.3.31</grizzly.version>
         <junit.version>4.12</junit.version>
-        <sqlite.version>3.20.1</sqlite.version>
+        <sqlite.version>3.41.2.2</sqlite.version>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
