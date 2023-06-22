@@ -22,7 +22,7 @@
       	<modules>
           <module>../../snap-engine</module>
           <module>../../snap-desktop</module>
-          <module>../../s3tbx</module>
+          <module>../../optical-toolbox</module>
           <module>../../seadas-toolbox</module>
 	      <module>izpack-panels</module>
           <module>izpack-installer</module>

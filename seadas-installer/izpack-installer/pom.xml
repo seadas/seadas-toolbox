@@ -109,11 +109,11 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>../../../s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx</directory>
+                                    <directory>../../../optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
-                                    <targetPath>../../src/main/izpack/packs/s3tbx</targetPath>
+                                    <targetPath>../../src/main/izpack/packs/opttbx</targetPath>
                                     <filtering>false</filtering>
                                 </resource>
 
@@ -153,7 +153,7 @@
                     <target>
                         <concat destfile="${staging.dir}/packs/snap/etc/snap.properties" append="true">${line.separator}snap.context.application.name=SeaDAS</concat>
 
-                        <concat destfile="${staging.dir}/packs/snap/etc/snap.clusters" append="true">s3tbx${line.separator}seadas-toolbox</concat>
+                        <concat destfile="${staging.dir}/packs/snap/etc/snap.clusters" append="true">optical-toolbox${line.separator}seadas-toolbox</concat>
 
                         <concat destfile="${staging.dir}/packs/snap/etc/snap.conf" append="true">extra_clusters=${extra_clusters}</concat>
                     </target>
@@ -247,8 +247,8 @@
                         <jre>
                             <bundledJre64Bit>false</bundledJre64Bit>
                             <bundledJreAsFallback>false</bundledJreAsFallback>
-                            <minVersion>1.8.0</minVersion>
-                            <maxVersion>1.8.0_201</maxVersion>
+                            <minVersion>11.0.11</minVersion>
+                            <maxVersion>11.0.19</maxVersion>
                             <jdkPreference>preferJre</jdkPreference>
                             <runtimeBits>32</runtimeBits>
                         </jre>
