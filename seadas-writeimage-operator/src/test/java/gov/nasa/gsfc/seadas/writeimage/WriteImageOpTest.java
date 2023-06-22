@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.writeimage;
 
 import com.bc.ceres.core.ProgressMonitor;
+import gov.nasa.gsfc.seadas.writeimage.operator.WriteImageOp;
 import junit.framework.TestCase;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.*;

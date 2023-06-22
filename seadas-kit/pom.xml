@@ -78,6 +78,11 @@
         </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-image-animator</artifactId>
+            <version>${seadas-image-animator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-watermask-operator</artifactId>
             <version>${seadas-watermask-operator.version}</version>
         </dependency>

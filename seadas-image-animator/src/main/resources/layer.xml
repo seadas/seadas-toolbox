@@ -1,0 +1,9 @@
+<filesystem>
+    <folder name="Services">
+        <folder name="javahelp">
+            <file name="gov-nasa-gsfc-seadas-contour-operator-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4910"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>
