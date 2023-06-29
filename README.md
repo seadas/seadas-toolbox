@@ -74,8 +74,8 @@ Setting up IntelliJ IDEA
 
    **Program arguments:**    
    `--userdir "${snap}/seadas-toolbox/target/userdir"`
-   `--clusters "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/s3tbx/s3tbx-kit/target/netbeans_clusters/s3tbx"`
-   `--patches "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/s3tbx/$/target/classes"`
+   `--clusters "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx"`
+   `--patches "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/optical-toolbox/$/target/classes"`
 
    **Working directory:** `${snap}/snap-desktop/snap-application/target/snap/`
 
