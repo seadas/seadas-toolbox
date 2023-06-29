@@ -85,18 +85,12 @@ Setting up IntelliJ IDEA
 
 SeaDAS Release Tags
 ------------------------
-SeaDAS Release: 8.1.0
+SeaDAS Release: 8.3.10
 
     seadas-toolbox: 1.1.0		
-    s3tbx: SEADAS-8.1.0	
-    snap-desktop: SEADAS-8.1.0	
-    snap-engine: SEADAS-8.1.0
+    optical-toolbox: SEADAS-8.3.10-OPTTBX-10.0.0-SNAP-10.0.0	
+    snap-desktop: SEADAS-8.3.10-SNAP-10.0.0-jide-3.7.12	
+    snap-engine: SEADAS-8.3.10-SNAP-10.0.0-jide-3.7.12	
 
-SeaDAS Release: 8.0.0
-
-    seadas-toolbox: 1.0.0		
-    s3tbx:8.0.0		
-    snap-desktop: SEADAS-8.0.0	
-    snap-engine: SEADAS-8.0.0
 
 
