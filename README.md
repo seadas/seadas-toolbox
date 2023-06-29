@@ -62,7 +62,7 @@ Setting up IntelliJ IDEA
 3. Ensure the "Root directory" is ${snap}. (Note: put your actual path).
    Select "Search for projects recursively"; Ensure **not** to enable the option *Create module groups for multi-module Maven projects*. Everything can be default values.
 
-4. Set the used SDK for the main project. A JDK 1.8.0_241 is ideally needed.
+4. Set the used SDK for the main project. SeaDAS-8.3.10 is tested with OpenJDK 11.0.9.
 
 5. Use the following configuration to run SNAP in the IDE:
 
