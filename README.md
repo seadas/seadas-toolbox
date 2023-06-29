@@ -20,7 +20,7 @@ Clone the following SeaDAS git repositories into a directory referred to here as
 
     cd ${snap}
     git clone https://github.com/seadas/seadas-toolbox.git
-    git clone https://github.com/senbox-org/s3tbx.git
+    git clone https://github.com/senbox-org/optical-toolbox.git
     git clone https://github.com/senbox-org/snap-desktop.git
     git clone https://github.com/senbox-org/snap-engine.git
 
@@ -29,26 +29,26 @@ Checkout and build the corresponding branches for your desired release.  See Sea
 SNAP-Engine:
 
     cd [SEADAS]/snap-engine
-    git checkout SEADAS-8.1.0 -b SEADAS-8.1.0-tag
+    git checkout SEADAS-8.3.10-SNAP-10.0.0-jide-3.7.12
     mvn install -Dmaven.test.skip=true
     *NOTE if mvn fails then try: 'mvn install -Dskiptests=true'
 
 SNAP-Desktop:
 
     cd [SEADAS]/snap-desktop
-    git checkout SEADAS-8.1.0 -b SEADAS-8.1.0-tag
+    git checkout  SEADAS-8.3.10-SNAP-10.0.0-jide-3.7.12
     mvn install -Dmaven.test.skip=true
 
 Sentinel-3 Toolbox:
 
-    cd [SEADAS]/s3tbx
-    git checkout SEADAS-8.1.0 -b SEADAS-8.1.0-tag
+    cd [SEADAS]/optical-toolbox
+    git checkout  SEADAS-8.3.10-OPTTBX-10.0.0-SNAP-10.0.0
     mvn install -Dmaven.test.skip=true
 
 SeaDAS Toolbox:
 
     cd [SEADAS]/seadas-toolbox
-    git checkout 1.1.0 -b 1.1.0-tag
+    git checkout master
     mvn install -Dmaven.test.skip=true
 
 
