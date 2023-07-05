@@ -18,18 +18,18 @@
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
-<!--        <laf name="looks">-->
-<!--            <os family="unix"/>-->
-<!--            <param name="variant" value="mist-aqua"/>-->
-<!--        </laf>-->
-<!--        <laf name="looks">-->
-<!--            <os family="windows"/>-->
-<!--            <param name="variant" value="extwin"/>-->
-<!--        </laf>-->
-<!--        <laf name="substance">-->
-<!--            <os family="mac" />-->
-<!--            <param name="variant" value="mist-aqua" />-->
-<!--        </laf>-->
+        <!--        <laf name="looks">-->
+        <!--            <os family="unix"/>-->
+        <!--            <param name="variant" value="mist-aqua"/>-->
+        <!--        </laf>-->
+        <!--        <laf name="looks">-->
+        <!--            <os family="windows"/>-->
+        <!--            <param name="variant" value="extwin"/>-->
+        <!--        </laf>-->
+        <!--        <laf name="substance">-->
+        <!--            <os family="mac" />-->
+        <!--            <param name="variant" value="mist-aqua" />-->
+        <!--        </laf>-->
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
@@ -177,7 +177,7 @@
 
     <dynamicvariables>
         <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
-<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>-->
+        <!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>-->
     </dynamicvariables>
 
     <packs>
@@ -222,7 +222,6 @@
                 <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh" />
                 <fileset targetdir="$INSTALL_PATH/bin" includes="gpt" />
                 <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert" />
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="jspawnhelper" />
             </executable>
         </pack>
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
@@ -238,12 +237,16 @@
         <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
             <description>JDK11 JRE</description>
             <file src="packs/jre/OpenJDK11U-jre_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
-<!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
+            <!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*" />
-<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/bin" includes="*" />-->
-<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/lib" includes="*" />-->
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin">
+                    <include name="java" />
+                </fileset>
                 <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="*" />
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib">
+                    <include name="jspawnhelper" />
+                </fileset>
             </executable>
         </pack>
     </packs>

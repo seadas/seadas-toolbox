@@ -82,6 +82,17 @@ if [ ! -z "$extra_clusters" ] ; then
     clusters="$clusters:$extra_clusters"
 fi
 
+if [ ! -x "${jdkhome}/bin/java" ] ; then
+    echo "jdkhome= "
+    echo "${jdkhome}"
+    chmod go-rwx,u+rwx "${jdkhome}/bin/java"
+    chmod go-rwx,u+rwx "${jdkhome}/lib/jspawnhelper"
+    if [ ! -x "${jdkhome}/bin/java" ] ; then
+      echo "Cannot find java. Please use the --jdkhome switch." >&2
+      exit 2
+    fi
+fi
+
 nbexec=`echo "$progdir"/../platform*/lib/nbexec`
 
 # The original configuration: '"-J-Xdock:icon=$progdir/$APPNAME.app/Contents/Resources/app.icns"' \
