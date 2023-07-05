@@ -9,9 +9,7 @@ import gov.nasa.gsfc.seadas.contour.data.ContourData;
 import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.util.CommonUtilities;
 import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.ui.color.ColorComboBoxUtil;
-import org.openide.awt.ColorComboBox;
-
+import org.esa.snap.ui.color.ColorComboBox;
 import org.esa.snap.ui.color.ColorComboBoxAdapter;
 
 import javax.swing.*;
@@ -421,7 +419,7 @@ public class ContourIntervalDialog extends JDialog {
                 }
             };
 
-            ColorComboBox contourLineColorComboBox = ColorComboBoxUtil.createColorCombobox();
+            ColorComboBox contourLineColorComboBox = new ColorComboBox();
 //            contourLineColorComboBox.setColorValueVisible(false);
 //            contourLineColorComboBox.setAllowDefaultColor(true);
             contourLineColorComboBox.setSelectedColor(interval.getLineColor());
