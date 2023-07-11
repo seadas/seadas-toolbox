@@ -116,6 +116,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
     private JCheckBox use_existingCheckBox;
     private JCheckBox deletefilesCheckBox;
     private JCheckBox use_ancillaryCheckBox;
+    private JCheckBox combine_filesCheckBox;
     private JButton exportParfileButton;
     private JTextArea parfileTextArea;
     private FileSelector odirSelectorOld;
@@ -203,7 +204,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             public void itemStateChanged(ItemEvent e) {
                 if (checkboxControlHandlerEnabled) {
                     setCheckboxControlHandlerEnabled(false);
-                    handleoverwriteCheckBox();
+                    handleOverwriteCheckBox();
                     setCheckboxControlHandlerEnabled(true);
                 }
             }
@@ -217,7 +218,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             public void itemStateChanged(ItemEvent e) {
                 if (checkboxControlHandlerEnabled) {
                     setCheckboxControlHandlerEnabled(false);
-                    handleuse_existingCheckBox();
+                    handleUse_existingCheckBox();
                     setCheckboxControlHandlerEnabled(true);
                 }
             }
@@ -231,7 +232,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             public void itemStateChanged(ItemEvent e) {
                 if (checkboxControlHandlerEnabled) {
                     setCheckboxControlHandlerEnabled(false);
-                    handledeletefilesCheckBox();
+                    handleDeletefilesCheckBox();
                     setCheckboxControlHandlerEnabled(true);
                 }
             }
@@ -245,7 +246,21 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             public void itemStateChanged(ItemEvent e) {
                 if (checkboxControlHandlerEnabled) {
                     setCheckboxControlHandlerEnabled(false);
-                    handleuse_ancillaryCheckBox();
+                    handleUse_ancillaryCheckBox();
+                    setCheckboxControlHandlerEnabled(true);
+                }
+            }
+        });
+
+        combine_filesCheckBox = new JCheckBox("combine_files");
+        combine_filesCheckBox.setToolTipText("Combine files for l2bin");
+        combine_filesCheckBox.setSelected(true);
+        combine_filesCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (checkboxControlHandlerEnabled) {
+                    setCheckboxControlHandlerEnabled(false);
+                    handleCombine_filesCheckBox();
                     setCheckboxControlHandlerEnabled(true);
                 }
             }
@@ -270,6 +285,8 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                 new GridBagConstraintsCustom(2, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
         primaryOptionPanel.add(use_ancillaryCheckBox,
                 new GridBagConstraintsCustom(3, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+        primaryOptionPanel.add(combine_filesCheckBox,
+                new GridBagConstraintsCustom(4, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
 
         primaryPanel = new JPanel(new GridBagLayout());
         primaryPanel.add(primaryIOPanel,
@@ -719,6 +736,11 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                                 } else {
                                     use_ancillaryCheckBox.setSelected(false);
                                 }
+                                if (row.getParamList().getValue("combine_files").equals(ParamInfo.BOOLEAN_TRUE)) {
+                                    combine_filesCheckBox.setSelected(true);
+                                } else {
+                                    combine_filesCheckBox.setSelected(false);
+                                }
                             }
                             stringBuilder.setLength(0);
                         } else if (!nextSection.equals(Processor.MAIN.toString())){
@@ -793,6 +815,11 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
                     use_ancillaryCheckBox.setSelected(true);
                 } else {
                     use_ancillaryCheckBox.setSelected(false);
+                }
+                if (row.getParamList().getValue("combine_files").equals(ParamInfo.BOOLEAN_TRUE)) {
+                    combine_filesCheckBox.setSelected(true);
+                } else {
+                    combine_filesCheckBox.setSelected(false);
                 }
             }
         }
@@ -1001,7 +1028,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         this.checkboxControlHandlerEnabled = checkboxControlHandlerEnabled;
     }
 
-    private void handleoverwriteCheckBox() {
+    private void handleOverwriteCheckBox() {
         ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
         String oldParamString = getParamString();
 
@@ -1015,7 +1042,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
     }
 
-    private void handleuse_existingCheckBox() {
+    private void handleUse_existingCheckBox() {
         ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
         String oldParamString = getParamString();
 
@@ -1029,7 +1056,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
     }
 
-    private void handledeletefilesCheckBox() {
+    private void handleDeletefilesCheckBox() {
         ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
         String oldParamString = getParamString();
 
@@ -1043,7 +1070,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
     }
 
-    private void handleuse_ancillaryCheckBox() {
+    private void handleUse_ancillaryCheckBox() {
         ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
         String oldParamString = getParamString();
 
@@ -1051,6 +1078,20 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
             paramList.setValue("use_ancillary", ParamInfo.BOOLEAN_TRUE);
         } else {
             paramList.setValue("use_ancillary", ParamInfo.BOOLEAN_FALSE);
+        }
+        String str = getParamString();
+        parfileTextArea.setText(str);
+        propertyChangeSupport.firePropertyChange("paramString", oldParamString, str);
+    }
+
+    private void handleCombine_filesCheckBox() {
+        ParamList paramList = getRow(Processor.MAIN.toString()).getParamList();
+        String oldParamString = getParamString();
+
+        if (combine_filesCheckBox.isSelected()) {
+            paramList.setValue("combine_files", ParamInfo.BOOLEAN_TRUE);
+        } else {
+            paramList.setValue("combine_files", ParamInfo.BOOLEAN_FALSE);
         }
         String str = getParamString();
         parfileTextArea.setText(str);

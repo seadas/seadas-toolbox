@@ -53,5 +53,11 @@
             <default>false</default>
             <description>Get the ancillary data for l2gen processing</description>
         </option>
+        <option type="boolean">
+            <name>combine_files</name>
+            <value>true</value>
+            <default>true</default>
+            <description>Combine files for l2bin</description>
+        </option>
     </options>
 </paramInfo>
