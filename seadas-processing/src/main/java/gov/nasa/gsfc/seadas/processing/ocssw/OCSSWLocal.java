@@ -203,7 +203,6 @@ public class OCSSWLocal extends OCSSW {
             env.put("PWD", ifileDir);
             processBuilder.directory(new File(ifileDir));
         }
-        System.out.println("pwd " + ifileDir);
 
         process = null;
         try {
@@ -211,12 +210,8 @@ public class OCSSWLocal extends OCSSW {
             if (process != null) {
                 debug("Running the program " + commandArray.toString());
             }
-            System.out.println("Running the program " + commandArray.toString());
-
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("The program " + commandArray.toString() + " failed");
-
         }
 
         return process;
@@ -592,19 +587,13 @@ public class OCSSWLocal extends OCSSW {
     }
 
     public void updateOCSSWTags(){
-        System.out.println("going to run install_ocssw");
-//        Runtime rt = Runtime.getRuntime();
         String[] commands = {"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
         ProcessBuilder processBuilder = new ProcessBuilder(commands);
         Process proc = null;
-        System.out.println("command is: " + commands);
-
         try {
             proc = processBuilder.start();
-            System.out.println("install_ocssw succeeded");
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("install_ocssw bailed");
         }
 
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
