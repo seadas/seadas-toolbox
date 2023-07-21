@@ -110,6 +110,10 @@
              <artifactId>doc-windows</artifactId>
              <version>${doc-windows.version}</version>
          </dependency>
+         <dependency>
+             <groupId>org.esa.snap</groupId>
+             <artifactId>snap-core</artifactId>
+         </dependency>
      </dependencies>
 
     <build>
