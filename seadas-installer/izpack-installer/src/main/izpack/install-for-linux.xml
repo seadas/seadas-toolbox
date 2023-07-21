@@ -18,7 +18,18 @@
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
-?
+        <laf name="looks">
+            <os family="unix"/>
+            <param name="variant" value="mist-aqua"/>
+        </laf>
+        <laf name="looks">
+            <os family="windows"/>
+            <param name="variant" value="extwin"/>
+        </laf>
+        <laf name="substance">
+            <os family="mac"/>
+            <param name="variant" value="nebula-brick-wall"/>
+        </laf>
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
