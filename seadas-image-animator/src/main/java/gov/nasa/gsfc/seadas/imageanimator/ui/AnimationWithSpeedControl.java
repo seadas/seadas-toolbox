@@ -23,7 +23,8 @@ public class AnimationWithSpeedControl extends JPanel
     int delay;
     Timer timer;
     boolean frozen = false;
-    boolean windowClosed = false;
+    static boolean windowClosed = false;
+    static JFrame frame;
 
     //This label uses ImageIcon to show the doggy pictures.
     JLabel picture;
@@ -251,7 +252,9 @@ public class AnimationWithSpeedControl extends JPanel
             return null;
         }
     }
-
+    public static void closeGUI() {
+        frame.dispose();
+    };
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -259,7 +262,8 @@ public class AnimationWithSpeedControl extends JPanel
      */
     public static void createAndShowGUI(ImageIcon[] images) {
         //Create and set up the window.
-        JFrame frame = new JFrame("Band Images Animation");
+//        JFrame frame = new JFrame("Band Images Animation");
+        frame = new JFrame("Band Images Animation");
         //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         AnimationWithSpeedControl animator = new AnimationWithSpeedControl(images);
 

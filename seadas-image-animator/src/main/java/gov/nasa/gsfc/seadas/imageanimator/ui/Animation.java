@@ -83,6 +83,9 @@ public class Animation {
         ImageIcon[] images = new ImageIcon[renderedImages.length];
         for (int i = 0; i < selecteBandNames.length; i++) {
             myView = getProductSceneView(rasters[i]);
+            if (myView == null) {
+                System.out.println("myView is null for i = " + i);
+            }
             renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
             renderedImages[i] = renderedImage;
             images[i] = new ImageIcon((BufferedImage) renderedImage);

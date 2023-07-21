@@ -385,6 +385,8 @@ public class ImageAnimatorDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 imageAnimatorCanceled = true;
+                AnimationWithSpeedControl.windowClosed = true;
+                AnimationWithSpeedControl.closeGUI();
                 dispose();
             }
         });
