@@ -4,14 +4,13 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
 public class AnimationWithSpeedControl extends JPanel
         implements ActionListener,
-        WindowListener,
+//        WindowListener,
         ChangeListener {
     //Set up animation parameters.
     static final int FPS_MIN = 0;
@@ -23,7 +22,7 @@ public class AnimationWithSpeedControl extends JPanel
     int delay;
     Timer timer;
     boolean frozen = false;
-    static boolean windowClosed = false;
+    static boolean windowClosedBool = false;
     static JFrame frame;
 
     //This label uses ImageIcon to show the doggy pictures.
@@ -149,33 +148,34 @@ public class AnimationWithSpeedControl extends JPanel
         this.repaint();
     }
 
-    /** Add a listener for window events. */
-    void addWindowListener(Window w) {
-        w.addWindowListener(this);
-    }
-
-    //React to window events.
-    public void windowIconified(WindowEvent e) {
-        stopAnimation();
-    }
-    public void windowDeiconified(WindowEvent e) {
-        startAnimation();
-    }
-    public void windowOpened(WindowEvent e) {}
-    public void windowClosing(WindowEvent e) {
-        windowClosed = true;
-        stopAnimation();
-    }
-    public void windowClosed(WindowEvent e) {
-        windowClosed = true;
-        stopAnimation();
-    }
-    public void windowActivated(WindowEvent e) {}
-    public void windowDeactivated(WindowEvent e) {}
+//    /** Add a listener for window events. */
+//    void addWindowListener(Window w) {
+//        w.addWindowListener(this);
+//    }
+//
+//    //React to window events.
+//    public void windowIconified(WindowEvent e) {
+//        stopAnimation();
+//    }
+//    public void windowDeiconified(WindowEvent e) {
+//        startAnimation();
+//    }
+//    public void windowOpened(WindowEvent e) {}
+//    public void windowClosing(WindowEvent e) {
+//        windowClosedBool = true;
+//        stopAnimation();
+//    }
+//    public void windowClosed(WindowEvent e) {
+//        windowClosedBool = true;
+//        stopAnimation();
+//    }
+//    public void windowActivated(WindowEvent e) {}
+//    public void windowDeactivated(WindowEvent e) {}
 
     /** Listen to the slider. */
     public void stateChanged(ChangeEvent e) {
-        if(windowClosed) {
+        if(windowClosedBool) {
+            stopAnimation();
             return;
         }
         JSlider source = (JSlider)e.getSource();
@@ -206,7 +206,7 @@ public class AnimationWithSpeedControl extends JPanel
 
     //Called when the Timer fires.
     public void actionPerformed(ActionEvent e) {
-        if(frozen || windowClosed) {
+        if(frozen || windowClosedBool) {
             return;
         }
         //Advance the animation frame.
@@ -266,7 +266,26 @@ public class AnimationWithSpeedControl extends JPanel
         frame = new JFrame("Band Images Animation");
         //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         AnimationWithSpeedControl animator = new AnimationWithSpeedControl(images);
-
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+               windowClosedBool = true;
+               animator.stopAnimation();
+            }
+            @Override
+            public void windowClosing(WindowEvent e) {
+                windowClosedBool = true;
+                animator.stopAnimation();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {
+                animator.stopAnimation();
+            }
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                animator.startAnimation();
+            }
+        });
         //Add content to the window.
         frame.add(animator, BorderLayout.CENTER);
 
