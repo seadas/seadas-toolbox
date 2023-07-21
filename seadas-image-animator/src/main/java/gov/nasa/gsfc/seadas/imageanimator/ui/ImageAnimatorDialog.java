@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.imageanimator.ui;
 
 import com.jidesoft.swing.CheckBoxTreeCellRenderer;
-import gov.nasa.gsfc.seadas.contour.ui.ExGridBagConstraints;
+import gov.nasa.gsfc.seadas.imageanimator.ui.ExGridBagConstraints;
 import gov.nasa.gsfc.seadas.imageanimator.data.ImageAnimatorData;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.rcp.SnapApp;
@@ -206,7 +206,7 @@ public class ImageAnimatorDialog extends JDialog {
 //        treeCellRenderer.setPreferredSize(new Dimension(100, 20));
 //        checkBoxTree.setCellRenderer(treeCellRenderer);
 
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode("Bands");
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode("Bands                              ");
         DefaultMutableTreeNode child;
         String bandName;
 
