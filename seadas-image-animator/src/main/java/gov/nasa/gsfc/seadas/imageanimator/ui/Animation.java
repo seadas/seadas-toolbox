@@ -347,6 +347,7 @@ public class Animation {
         Debug.assertNotNull(pm);
 
         try {
+            System.out.println("Creating image...");
             pm.beginTask("Creating image...", 1);
 
             ProductSceneImage sceneImage;
@@ -359,8 +360,10 @@ public class Animation {
             }
             sceneImage.initVectorDataCollectionLayer();
             sceneImage.initMaskCollectionLayer();
+            System.out.println("Image created... before returning");
             return sceneImage;
         } finally {
+            System.out.println("Image created... finally");
             pm.done();
         }
     }
@@ -506,17 +509,17 @@ public class Animation {
 
             @Override
             public void done() {
-//                setRootFrameDefaultCursor(snapApp.getMainFrame());
-//                snapApp.setStatusBarMessage("");
-//                try {
-//                    ProductSceneImage sceneImage = get();
-//                    UndoRedo.Manager undoManager = SnapApp.getDefault().getUndoManager(sceneImage.getProduct());
-//                    ProductSceneView view = new ProductSceneView(sceneImage, undoManager);
-//                    openDocumentWindow(view);
-//
-//                } catch (Exception e) {
-//                    snapApp.handleError(MessageFormat.format("Failed to open image view.\n\n{0}", e.getMessage()), e);
-//                }
+                setRootFrameDefaultCursor(snapApp.getMainFrame());
+                snapApp.setStatusBarMessage("");
+                try {
+                    ProductSceneImage sceneImage = get();
+                    UndoRedo.Manager undoManager = SnapApp.getDefault().getUndoManager(sceneImage.getProduct());
+                    ProductSceneView view = new ProductSceneView(sceneImage, undoManager);
+                    openDocumentWindow(view);
+
+                } catch (Exception e) {
+                    snapApp.handleError(MessageFormat.format("Failed to open image view.\n\n{0}", e.getMessage()), e);
+                }
             }
 
             @Override
@@ -533,17 +536,6 @@ public class Animation {
             }
         };
         worker.executeWithBlocking();
-        setRootFrameDefaultCursor(snapApp.getMainFrame());
-        snapApp.setStatusBarMessage("");
-        try {
-            ProductSceneImage sceneImage = worker.get();
-            UndoRedo.Manager undoManager = SnapApp.getDefault().getUndoManager(sceneImage.getProduct());
-            ProductSceneView view = new ProductSceneView(sceneImage, undoManager);
-            openDocumentWindow(view);
-
-        } catch (Exception e) {
-            snapApp.handleError(MessageFormat.format("Failed to open image view.\n\n{0}", e.getMessage()), e);
-        }
     }
 
 }
