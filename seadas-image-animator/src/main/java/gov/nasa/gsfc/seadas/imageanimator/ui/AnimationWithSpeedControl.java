@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.imageanimator.ui;
 
+import org.esa.snap.rcp.SnapApp;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -265,8 +267,9 @@ public class AnimationWithSpeedControl extends JPanel
         //Create and set up the window.
 //        JFrame frame = new JFrame("Band Images Animation");
         windowClosedBool = false;
-        frame = new JFrame("Band Images Animation");
-        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JDialog frame = new JDialog(SnapApp.getDefault().getMainFrame(), "Band Images Animation Dialog", true);
+        frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
         AnimationWithSpeedControl animator = new AnimationWithSpeedControl(images);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -289,12 +292,12 @@ public class AnimationWithSpeedControl extends JPanel
             }
         });
         //Add content to the window.
-        frame.add(animator, BorderLayout.CENTER);
+        frame.getContentPane().add(animator, BorderLayout.CENTER);
 
         //Display the window.
+        animator.startAnimation();
         frame.pack();
         frame.setVisible(true);
-        animator.startAnimation();
     }
 
     public static void animate(ImageIcon[] images){
