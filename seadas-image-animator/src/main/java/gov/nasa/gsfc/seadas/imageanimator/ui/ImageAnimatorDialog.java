@@ -5,8 +5,10 @@ import gov.nasa.gsfc.seadas.imageanimator.ui.ExGridBagConstraints;
 import gov.nasa.gsfc.seadas.imageanimator.data.ImageAnimatorData;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.angularview.AngularTopComponent;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.product.ProductSceneView;
+import org.esa.snap.ui.product.angularview.AngularViewChooser;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.openide.util.HelpCtx;
 
@@ -54,6 +56,7 @@ public class ImageAnimatorDialog extends JDialog {
     private SwingPropertyChangeSupport propertyChangeSupport;
 
     JPanel imageAnimatorPanel;
+    JPanel angularViewAnimatorPanel;
     JCheckBoxTree bandNamesTree;
 
     JRadioButton bandImages = new JRadioButton("Band Images",true);
@@ -96,7 +99,8 @@ public class ImageAnimatorDialog extends JDialog {
             propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
             propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
 
-            createImageAnimatorUI();
+                createImageAnimatorUI();
+//                createAngularViewAnimatorUI();
         }
         imageAnimatorCanceled = true;
     }
@@ -161,7 +165,6 @@ public class ImageAnimatorDialog extends JDialog {
     public HelpCtx getHelpCtx() {
         return new HelpCtx(helpId);
     }
-
 
     public final JPanel createImageAnimatorUI() {
 
@@ -294,10 +297,10 @@ public class ImageAnimatorDialog extends JDialog {
         //bandImages.setAction();
         imageTypePanelLable.setBounds(120, 30, 120, 50);
 
-//        RadioButtonActionListener actionListener = new RadioButtonActionListener();
+        RadioButtonActionListener actionListener = new RadioButtonActionListener();
 //
-//        bandImages.addActionListener(actionListener);
-//        angularView.addActionListener(actionListener);
+        bandImages.addActionListener(actionListener);
+        angularView.addActionListener(actionListener);
 //        spectrumView.addActionListener(actionListener);
 
 //        bandImages.setForeground(Color.BLUE);
@@ -358,11 +361,19 @@ public class ImageAnimatorDialog extends JDialog {
                                                     ImageIcon[] images = animation.createAndOpenImages(treePath);
                                                     AnimationWithSpeedControl.animate(images);
 
-//                } else if (button == angularView) {
+//                                                } else if (buttonGroup.getSelection().getActionCommand().equals(angularView.getActionCommand())) {
+
+                                                    // option Angular View is
+//                                                JDialog angularAnimationDialog = new JDialog(SnapApp.getDefault().getMainFrame(), "Angular View Animation", true);
+//                                                    angularAnimationDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+//                                                angularAnimationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//                                                angularAnimationDialog.setVisible(true);
 //
-//                    // option Angular View is selected
-//                Animation animation = new Animation();
-//                animation.startAnimateAngular();
+//                                                AngularAnimationTopComponent angularAnimationTopComponent = new AngularAnimationTopComponent();
+//                                                angularAnimationDialog.add(angularAnimationTopComponent);
+//                                                Animation animation = new Animation();
+//                                                ImageIcon[]images = animation.createAndOpenAngularViews();
+//                                                AnimationWithSpeedControl.animate(images);
 //
 //                } else if (button == spectrumView) {
 //
@@ -375,8 +386,6 @@ public class ImageAnimatorDialog extends JDialog {
 //                dispose();
                                                 }
                                             }
-
-                                            ;
                                         });
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
@@ -405,37 +414,52 @@ public class ImageAnimatorDialog extends JDialog {
         return controllerPanel;
     }
 
-//    class RadioButtonActionListener implements ActionListener {
-//        @Override
-//        public void actionPerformed(ActionEvent event) {
-//            button = (JRadioButton) event.getSource();
+    class RadioButtonActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            JRadioButton button = (JRadioButton) event.getSource();
+
+            if (button == bandImages) {
+
+                //Animation animation = new Animation("Band Images Animation");
+//                Animation animation = new Animation();
+//                animation.startAnimate();
+                //animation.animatioTest();
+                JDialog bandImageAnimationDialog = new JDialog(SnapApp.getDefault().getMainFrame(), "Band Image Animation", JDialog.DEFAULT_MODALITY_TYPE);
+
+
+
+
+            } else if (button == angularView) {
+
+                // option Windows is selected
+                JDialog angularAnimationDialog = new JDialog(SnapApp.getDefault().getMainFrame(), JDialog.DEFAULT_MODALITY_TYPE);
+
+                AngularAnimationTopComponent angularAnimationTopComponent = new AngularAnimationTopComponent();
+                angularAnimationDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+                angularAnimationDialog.getContentPane().add(angularAnimationTopComponent);
+                //Todo (For Bing) -- decide the size
+//                angularAnimationDialog.setPreferredSize(new Dimension(350, 250));
+                angularAnimationDialog.setPreferredSize(angularAnimationTopComponent.getPreferredSize());
+//                angularAnimationDialog.setMinimumSize(angularAnimationDialog.getPreferredSize());
+//                angularAnimationDialog.setMaximumSize(angularAnimationDialog.getPreferredSize());
+                angularAnimationDialog.setLocationRelativeTo(null);
+                angularAnimationDialog.pack();
+                angularAnimationDialog.setVisible(true);
+
+                angularAnimationDialog.dispose();
+                bandImages.setSelected(true);
 //
-////            if (button == bandImages) {
-////
-////                //Animation animation = new Animation("Band Images Animation");
+//            } else if (button == spectrumView) {
+//
+//                // option Macintosh is selected
+//                int i = 3;
 ////                Animation animation = new Animation();
-////                animation.startAnimate();
-////                //animation.animatioTest();
-////
-////
-////
-////
-////            } else if (button == angularView) {
-////
-////                // option Windows is selected
-//////                Animation animation = new Animation();
-//////                animation.startAnimateAngular();
-//////                int i = 3;
-////
-////            } else if (button == spectrumView) {
-////
-////                // option Macintosh is selected
-////                int i = 3;
-//////                Animation animation = new Animation();
-//////                animation.startAnimateSpectrum();
-////
-////            }
-//        }
-//    }
+////                animation.startAnimateSpectrum();
+//
+            }
+        }
+    }
 
 }

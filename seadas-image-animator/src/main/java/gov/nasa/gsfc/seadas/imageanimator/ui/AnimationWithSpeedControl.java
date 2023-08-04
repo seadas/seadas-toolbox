@@ -267,7 +267,7 @@ public class AnimationWithSpeedControl extends JPanel
         //Create and set up the window.
 //        JFrame frame = new JFrame("Band Images Animation");
         windowClosedBool = false;
-        JDialog frame = new JDialog(SnapApp.getDefault().getMainFrame(), "Band Images Animation Dialog", true);
+        JDialog frame = new JDialog(SnapApp.getDefault().getMainFrame(), "Animation With Speed Control", true);
         frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         AnimationWithSpeedControl animator = new AnimationWithSpeedControl(images);
