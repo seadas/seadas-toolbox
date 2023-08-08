@@ -301,7 +301,7 @@ public class ImageAnimatorDialog extends JDialog {
 //
         bandImages.addActionListener(actionListener);
         angularView.addActionListener(actionListener);
-//        spectrumView.addActionListener(actionListener);
+        spectrumView.addActionListener(actionListener);
 
 //        bandImages.setForeground(Color.BLUE);
 //        bandImages.setBackground(Color.YELLOW);
@@ -450,14 +450,27 @@ public class ImageAnimatorDialog extends JDialog {
 
                 angularAnimationDialog.dispose();
                 bandImages.setSelected(true);
-//
-//            } else if (button == spectrumView) {
-//
-//                // option Macintosh is selected
-//                int i = 3;
-////                Animation animation = new Animation();
-////                animation.startAnimateSpectrum();
-//
+
+            } else if (button == spectrumView) {
+
+                JDialog spectrumAnimationDialog = new JDialog(SnapApp.getDefault().getMainFrame(), JDialog.DEFAULT_MODALITY_TYPE);
+
+                SpectrumAnimationTopComponent spectrumAnimationTopComponent = new SpectrumAnimationTopComponent();
+                spectrumAnimationDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+                spectrumAnimationDialog.getContentPane().add(spectrumAnimationTopComponent);
+                //Todo (For Bing) -- decide the size
+//                angularAnimationDialog.setPreferredSize(new Dimension(350, 250));
+                spectrumAnimationDialog.setPreferredSize(spectrumAnimationTopComponent.getPreferredSize());
+//                angularAnimationDialog.setMinimumSize(angularAnimationDialog.getPreferredSize());
+//                angularAnimationDialog.setMaximumSize(angularAnimationDialog.getPreferredSize());
+                spectrumAnimationDialog.setLocationRelativeTo(null);
+                spectrumAnimationDialog.pack();
+                spectrumAnimationDialog.setVisible(true);
+
+                spectrumAnimationDialog.dispose();
+                bandImages.setSelected(true);
+
             }
         }
     }
