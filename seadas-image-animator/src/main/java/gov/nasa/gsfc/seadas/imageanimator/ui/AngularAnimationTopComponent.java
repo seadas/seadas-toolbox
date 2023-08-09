@@ -152,6 +152,22 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             if (currentView != null) {
                 currentView.addPropertyChangeListener(ProductSceneView.PROPERTY_NAME_SELECTED_PIN, pinSelectionChangeListener);
                 setCurrentProduct(currentView.getProduct());
+                if (currentProduct.getName().contains("HARP2")) {
+                    currentProduct.setAutoGrouping("I_*_549:I_*_669:I_*_867:I_*_441:Q_*_549:Q_*_669:Q_*_867:Q_*_441:" +
+                            "U_*_549:U_*_669:U_*_867:U_*_441:DOLP_*_549:DOLP_*_669:DOLP_*_867:DOLP_*_441:" +
+                            "I_noise_*_549:I_noise_*_669:I_noise_*_867:I_noise_*_441:Q_noise_*_549:Q_noise_*_669:Q_noise_*_867:Q_noise_*_441:" +
+                            "U_noise_*_549:U_noise_*_669:U_noise_*_867:U_noise_*_441:DOLP_noise_*_549:DOLP_noise_*_669:DOLP_noise_*_867:DOLP_noise_*_441:" +
+                            "Sensor_Zenith:Sensor_Azimuth:Solar_Zenith:Solar_Azimuth:obs_per_view:view_time_offsets");
+                };
+                if (currentProduct.getName().contains("SPEXONE")) {
+                    currentProduct.setAutoGrouping("QC:QC_bitwise:QC_polsample_bitwise:QC_polsample:" +
+                                                    "I_*_380:I_*_381:I_*_382:I_*_383:I_*_384:I_*_385:I:I_noise:I_noisefree:I_polsample:" +
+                                                    "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
+                                                    "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
+                                                    "U_over_I:U_over_I_noise:U_over_I_noisefree:scattering_angle:" +
+                                                    "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:" +
+                                                    "obs_per_view:view_time_offsets");
+                }
                 if (!rasterToAngularMap.containsKey(currentView.getRaster())) {
                     setUpAngularViews();
                 }
@@ -357,7 +373,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             recreateChart();
         });
         showAngularViewsForAllPinsButton.setName("showAngularViewsForAllPinsButton");
-        showAngularViewsForAllPinsButton.setToolTipText("Show angular Views for all pins.");
+        showAngularViewsForAllPinsButton.setToolTipText("Animate Angular Views for all pins.");
 
         showGridButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/SpectrumGrid24.gif"), true);
         showGridButton.addActionListener(e -> chartHandler.setGridVisible(showGridButton.isSelected()));
@@ -546,12 +562,8 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
     }
 
     private void animateChart() {
-        //Something need to be initialized, 2nd time click "Animate" will show empty images being animated
         List<DisplayableAngularview> angularViews = getSelectedAngularViews();
-//        List<DisplayableAngularview> singleAngularView = Collections.singletonList(angularViews.get(0));
-//        chartHandler.updateAnimationData(singleAngularView);
-//        chartHandler.updateAnimationChart(singleAngularView);
-//        chartPanel.repaint();
+
         if (!isShowingAngularViewsForAllPins()) {
             showAngularViewsForAllPinsButton.setSelected(true);
         }
@@ -566,9 +578,6 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             System.out.println("plot AngularViews i= " +i);
         }
         AnimationWithSpeedControl.animate(images);
-//        chartHandler.updateData();
-//        chartHandler.updateChart();
-//        chartPanel.repaint();
         updateUIState();
     }
 
@@ -593,13 +602,6 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         if (availableAngularBands.length == 0) {
             angularViews = new DisplayableAngularview[]{};
         } else {
-            if (currentProduct.getName().contains("HARP2")) {
-                currentProduct.setAutoGrouping("I_*_549:I_*_669:I_*_867:I_*_441:Q_*_549:Q_*_669:Q_*_867:Q_*_441:" +
-                        "U_*_549:U_*_669:U_*_867:U_*_441:DOLP_*_549:DOLP_*_669:DOLP_*_867:DOLP_*_441:" +
-                        "I_noise_*_549:I_noise_*_669:I_noise_*_867:I_noise_*_441:Q_noise_*_549:Q_noise_*_669:Q_noise_*_867:Q_noise_*_441:" +
-                        "U_noise_*_549:U_noise_*_669:U_noise_*_867:U_noise_*_441:DOLP_noise_*_549:DOLP_noise_*_669:DOLP_noise_*_867:DOLP_noise_*_441:" +
-                        "Sensor_Zenith:Sensor_Azimuth:Solar_Zenith:Solar_Azimuth:obs_per_view:view_time_offsets");
-            }
             final Product.AutoGrouping autoGrouping = currentProduct.getAutoGrouping();
             if (autoGrouping != null) {
                 final int selectedAngularViewIndex = autoGrouping.indexOf(raster.getName());

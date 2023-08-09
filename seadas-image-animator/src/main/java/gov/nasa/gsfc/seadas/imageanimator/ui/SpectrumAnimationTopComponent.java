@@ -166,6 +166,15 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
             if (currentView != null) {
                 currentView.addPropertyChangeListener(ProductSceneView.PROPERTY_NAME_SELECTED_PIN, pinSelectionChangeListener);
                 setCurrentProduct(currentView.getProduct());
+                if (currentProduct.getName().contains("SPEXONE")) {
+                    currentProduct.setAutoGrouping("QC:QC_bitwise:QC_polsample_bitwise:QC_polsample:" +
+                            "I_58_*:I_22_*:I_4_*:I_-22_*:I_-58_*:I_noise:I_noisefree:I_polsample:"  +
+                            "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
+                            "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
+                            "U_over_I:U_over_I_noise:U_over_I_noisefree:scattering_angle:" +
+                            "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:" +
+                            "obs_per_view:view_time_offsets");
+                }
                 if (!rasterToSpectraMap.containsKey(currentView.getRaster())) {
                     setUpSpectra();
                 }
@@ -346,7 +355,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
             recreateChart();
         });
         showSpectraForAllPinsButton.setName("showSpectraForAllPinsButton");
-        showSpectraForAllPinsButton.setToolTipText("Show spectra for all pins.");
+        showSpectraForAllPinsButton.setToolTipText("Animate Spectrum View for all pins.");
 
         showGridButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon("icons/SpectrumGrid24.gif"), true);
         showGridButton.addActionListener(e -> chartHandler.setGridVisible(showGridButton.isSelected()));
@@ -543,6 +552,13 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
                 List<SpectrumBand> ungroupedBandsList = new ArrayList<>();
                 for (SpectrumBand availableSpectralBand : availableSpectralBands) {
                     final String bandName = availableSpectralBand.getName();
+                    if (currentProduct.getName().contains("SPEXONE")) {
+                        if (bandName.contains("I_22") && availableSpectralBand.getOriginalBand().getDescription().equals("I")) {
+                            availableSpectralBand.setSelected(true);
+                        } else {
+                            availableSpectralBand.setSelected(false);
+                        }
+                    }
                     final int spectrumIndex = autoGrouping.indexOf(bandName);
                     if (spectrumIndex != -1) {
                         autoGroupingSpectra[spectrumIndex].addBand(availableSpectralBand);
