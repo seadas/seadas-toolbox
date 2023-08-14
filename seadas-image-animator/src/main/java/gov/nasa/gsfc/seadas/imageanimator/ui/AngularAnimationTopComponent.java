@@ -160,13 +160,24 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                             "Sensor_Zenith:Sensor_Azimuth:Solar_Zenith:Solar_Azimuth:obs_per_view:view_time_offsets");
                 };
                 if (currentProduct.getName().contains("SPEXONE")) {
-                    currentProduct.setAutoGrouping("QC:QC_bitwise:QC_polsample_bitwise:QC_polsample:" +
-                                                    "I_*_380:I_*_381:I_*_382:I_*_383:I_*_384:I_*_385:I:I_noise:I_noisefree:I_polsample:" +
-                                                    "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
-                                                    "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
-                                                    "U_over_I:U_over_I_noise:U_over_I_noisefree:scattering_angle:" +
-                                                    "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:" +
-                                                    "obs_per_view:view_time_offsets");
+                    String autoGroupingStr = "QC:QC_bitwise:QC_polsample_bitwise:QC_polsample:";
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "I_*_" + wvl + ":";
+                    }
+                    autoGroupingStr += "I:I_noise:I_noisefree:I_polsample:" +
+                            "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
+                            "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
+                            "U_over_I:U_over_I_noise:U_over_I_noisefree:scattering_angle:" +
+                            "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:" +
+                            "obs_per_view:view_time_offsets";
+                    currentProduct.setAutoGrouping(autoGroupingStr);
+//                    currentProduct.setAutoGrouping("QC:QC_bitwise:QC_polsample_bitwise:QC_polsample:" +
+//                                                    "I_*_380:I_*_381:I_*_382:I_*_383:I_*_384:I_*_385:I:I_noise:I_noisefree:I_polsample:" +
+//                                                    "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
+//                                                    "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
+//                                                    "U_over_I:U_over_I_noise:U_over_I_noisefree:scattering_angle:" +
+//                                                    "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:" +
+//                                                    "obs_per_view:view_time_offsets");
                 }
                 if (!rasterToAngularMap.containsKey(currentView.getRaster())) {
                     setUpAngularViews();
