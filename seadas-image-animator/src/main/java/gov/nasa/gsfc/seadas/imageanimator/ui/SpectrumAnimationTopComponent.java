@@ -700,7 +700,8 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
             setAutomaticRangeAdjustments(false);
             final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) chart.getXYPlot().getRenderer();
             renderer.setDefaultLinesVisible(true);
-            renderer.setDefaultShapesFilled(false);
+            renderer.setDefaultLinesVisible(true);
+            renderer.setDefaultShapesVisible(true);
             setPlotMessage(MESSAGE_NO_PRODUCT_SELECTED);
         }
 

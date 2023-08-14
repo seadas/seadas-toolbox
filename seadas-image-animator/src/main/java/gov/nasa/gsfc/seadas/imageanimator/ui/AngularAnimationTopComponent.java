@@ -784,6 +784,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             setAutomaticRangeAdjustments(false);
             final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) chart.getXYPlot().getRenderer();
             renderer.setDefaultLinesVisible(true);
+            renderer.setDefaultShapesVisible(true);
             renderer.setDefaultShapesFilled(false);
             setPlotMessage(MESSAGE_NO_PRODUCT_SELECTED);
         }
@@ -1234,7 +1235,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             final Stroke lineStyle = angularView.getLineStyle();
             renderer.setSeriesStroke(seriesIndex, lineStyle);
             Shape symbol = angularView.getScaledShape();
-            renderer.setSeriesShape(seriesIndex, symbol);
+            renderer.setSeriesShape(seriesIndex, symbol, true);
         }
 
         private double readEnergy(Placemark pin, Band angularBand) {
