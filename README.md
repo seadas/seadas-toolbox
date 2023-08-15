@@ -10,7 +10,7 @@ Building seadas-toolbox from the source
 ------------------------------
 
 Download and install the required build tools
-* Install J2SE 1.8 JDK and set JAVA_HOME accordingly.
+* Install OpenJDK 11 and set JAVA_HOME accordingly.
 * Install Maven and set MAVEN_HOME accordingly.
 * Install git
 
