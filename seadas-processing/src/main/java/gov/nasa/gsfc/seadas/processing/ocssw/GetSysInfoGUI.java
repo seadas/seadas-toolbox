@@ -54,9 +54,13 @@ public class GetSysInfoGUI {
 
     boolean windowsOS;
     private String ocsswScriptsDirPath;
+    private String ocsswDockerScriptsDirPath;
     private String ocsswSeadasInfoPath;
+    private String ocsswDockerSeadasInfoPath;
     private String ocsswRunnerScriptPath;
+    private String ocsswDockerRunnerScriptPath;
     private String ocsswBinDirPath;
+    private String ocsswDockerBinDirPath;
     private String ocsswRootEnv = System.getenv(SEADAS_OCSSW_ROOT_ENV);
 
     private String DASHES = "-----------------------------------------------------------";
@@ -171,6 +175,7 @@ public class GetSysInfoGUI {
         String appNameVersion = snapapp.getInstanceName() + " " + SystemUtils.getReleaseVersion();
         String appName = SystemUtils.getApplicationName();
         String appReleaseVersionFromPOM = SystemUtils.getReleaseVersion();
+        String ocsswRootDocker = SystemUtils.getUserHomeDir().toString() + File.separator + "ocssw";
         File appHomeDir = SystemUtils.getApplicationHomeDir();
         File appDataDir = SystemUtils.getApplicationDataDir();
 
@@ -541,20 +546,32 @@ public class GetSysInfoGUI {
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
 
-
-        currentInfoLine = "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+        if ("docker".equals(ocsswLocation)) {
+            currentInfoLine = "OCSSW Docker Root Directory: " + ocsswRootDocker + "\n";
+        } else {
+            currentInfoLine = "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+        }
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-        if ((ocsswRootOcsswInfo != null ) && !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
-            currentInfoLine = "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
-            sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+        if (ocsswRootOcsswInfo != null ) {
+            if ("docker".equals(ocsswLocation)) {
+                if (!Files.exists(Paths.get(ocsswRootDocker))) {
+                    currentInfoLine = "WARNING!! Directory '" + ocsswRootDocker + "' does not exist" + "\n";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                }
+            } else {
+                if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
+                    currentInfoLine = "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                }
+            }
         }
 
-
-        currentInfoLine = "OCSSW Log Directory: " + ocsswLogDir + "\n";
+        currentInfoLine = "OCSSW Docker Log Directory: " + ocsswLogDir + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         if ((ocsswLogDir != null ) && !Files.exists(Paths.get(ocsswLogDir))) {
@@ -570,11 +587,12 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-
+        //need to consider "docker" condition
         currentInfoLine = "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-        if ((ocsswRootOcsswInfo != null ) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv)){
+        if ((ocsswRootOcsswInfo != null ) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv) &&
+                "local".equals(ocsswLocation)) {
             currentInfoLine =  "  WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
                     "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
             sysInfoText += currentInfoLine;
@@ -600,17 +618,22 @@ public class GetSysInfoGUI {
 //        String appDir = Config.instance().installDir().toString();
 
         ocsswScriptsDirPath = ocsswRootOcsswInfo + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
+        ocsswDockerScriptsDirPath = ocsswRootDocker + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
         ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
+        ocsswDockerRunnerScriptPath = ocsswRootDocker + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
         ocsswBinDirPath = ocsswRootOcsswInfo + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
+        ocsswDockerBinDirPath = ocsswRootDocker + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
 
         String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot " , ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME };
+        String[] commandDocker = {"/bin/bash", ocsswDockerRunnerScriptPath, " --ocsswroot " , ocsswRootDocker, OCSSW_SEADAS_INFO_PROGRAM_NAME };
 
         ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
+        ocsswDockerSeadasInfoPath = ocsswDockerBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
-        if ((ocsswRootOcsswInfo == null ) || !Files.exists(Paths.get(ocsswRootOcsswInfo))) {
+        if ((ocsswRootOcsswInfo == null ) || (!Files.exists(Paths.get(ocsswRootOcsswInfo))) && "local".equals(ocsswLocation) ) {
             if ((ocsswRootEnv != null) && Files.exists(Paths.get(ocsswRootEnv))) {
                 currentInfoLine = "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
-                        "'. To configure the GUI to use this installation then update the 'local directory'  in Menu > SeaDAS-OCSSW > OCSSW Configuration";
+                        "'. To configure the GUI to use this installation then update the 'OCSSW ROOT' directory in Menu > SeaDAS-Toolbox > SeaDAS Processors Location";
                 sysInfoText += currentInfoLine;
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
             } else {
@@ -621,9 +644,23 @@ public class GetSysInfoGUI {
                 printGeneralSystemInfo(ocsswDebug);
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
             }
+        } else if ((!Files.exists(Paths.get(ocsswRootDocker))) && "docker".equals(ocsswLocation)){
+            currentInfoLine = "  Warning! Processers not installed " + "\n\n";
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+
+            printGeneralSystemInfo(ocsswDebug);
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         } else {
 
-            if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath))) {
+            if (!Files.isExecutable(Paths.get(ocsswDockerSeadasInfoPath)) && "docker".equals(ocsswLocation)) {
+                currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW DOcker bin directory" + "\n\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+
+                printGeneralSystemInfo(ocsswDebug);
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            } else if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath)) && "local".equals(ocsswLocation))  {
                 currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW bin directory" + "\n\n";
                 sysInfoText += currentInfoLine;
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
@@ -634,6 +671,7 @@ public class GetSysInfoGUI {
 //            System.out.println("command is: " + command);
                 currentInfoLine = "";
                 try {
+
                     ProcessBuilder processBuilder = new ProcessBuilder(command);
                     Process process = processBuilder.start();
 
