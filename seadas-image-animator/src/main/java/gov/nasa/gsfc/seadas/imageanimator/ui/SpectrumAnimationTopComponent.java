@@ -403,7 +403,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
         gbc.anchor = GridBagConstraints.EAST;
         buttonPane.add(helpButton, gbc);
 
-        chartPanel.setPreferredSize(new Dimension(300, 200));
+        chartPanel.setPreferredSize(new Dimension(1000, 500));
         chartPanel.setBackground(Color.white);
         chartPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createBevelBorder(BevelBorder.LOWERED),
@@ -414,7 +414,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
         mainPane.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         mainPane.add(BorderLayout.CENTER, chartPanel);
         mainPane.add(BorderLayout.EAST, buttonPane);
-        mainPane.setPreferredSize(new Dimension(320, 200));
+//        mainPane.setPreferredSize(new Dimension(320, 200));
 
         SnapApp.getDefault().getProductManager().addListener(new ProductManager.Listener() {
             @Override
