@@ -10,6 +10,7 @@ import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
 import gov.nasa.gsfc.seadas.processing.utilities.ScrolledPane;
+import org.codehaus.plexus.util.FileUtils;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -36,7 +37,7 @@ import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.UPDATE_LUTS_PROGRAM_NAME;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSW.*;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
 
 
@@ -100,7 +101,6 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
             if (!ocssw.isOcsswInstalScriptDownloadSuccessful()) {
                 return null;
             }
-
             if (ocsswInfo.getOcsswLocation() == null || ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                 return new OCSSWInstallerFormLocal(appContext, programName, xmlFileName, ocssw);
             } else {
@@ -314,6 +314,11 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
                             Dialogs.showInformation(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);
                         }
+                    }
+                    //delete the directories that temporaraly holds install_ocssw, maifest_ocssw and etc
+                    if(TMP_OCSSW_INSTALLER_DIR.exists()){
+                        FileUtils.deleteDirectory(TMP_OCSSW_INSTALLER_DIR);
+//                        TMP_OCSSW_INSTALLER_DIR.delete();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

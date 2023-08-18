@@ -49,10 +49,15 @@ public abstract class OCSSW {
     public static final String OCSSW_BOOTSTRAP_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/ocssw_bootstrap";
     public static final String OCSSW_MANIFEST_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/manifest.py";
     public static final String OCSSW_SEADAS_VERSIONS_URL = "https://oceandata.sci.gsfc.nasa.gov/manifest/seadasVersions.json";
-    public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
-    public static final String TMP_OCSSW_BOOTSTRAP = (new File(System.getProperty("java.io.tmpdir"), "ocssw_bootstrap")).getPath();
-    public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
-    public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
+    public static final File TMP_OCSSW_INSTALLER_DIR  = new File(System.getProperty("java.io.tmpdir") + File.separator + System.getProperty("user.name"));
+//    public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
+    public static final String TMP_OCSSW_INSTALLER = (new File(TMP_OCSSW_INSTALLER_DIR, "install_ocssw")).getPath();
+//    public static final String TMP_OCSSW_BOOTSTRAP = (new File(System.getProperty("java.io.tmpdir"), "ocssw_bootstrap")).getPath();
+    public static final String TMP_OCSSW_BOOTSTRAP = (new File(TMP_OCSSW_INSTALLER_DIR, "ocssw_bootstrap")).getPath();
+//    public static final String TMP_OCSSW_MANIFEST = (new File(System.getProperty("java.io.tmpdir"), "manifest.py")).getPath();
+    public static final String TMP_OCSSW_MANIFEST = (new File(TMP_OCSSW_INSTALLER_DIR, "manifest.py")).getPath();
+//    public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(System.getProperty("java.io.tmpdir"), SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
+    public static final String TMP_SEADAS_OCSSW_VERSIONS_FILE = (new File(TMP_OCSSW_INSTALLER_DIR, SEADAS_OCSSW_VERSIONS_JSON_NAME)).getPath();
 
 //    public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
     public static String GET_OUTPUT_NAME_PROGRAM_NAME = "get_output_name";
@@ -355,6 +360,9 @@ public abstract class OCSSW {
         try {
             //download install_ocssw
             URL website = new URL(OCSSW_INSTALLER_URL);
+            if(!TMP_OCSSW_INSTALLER_DIR.exists()){
+                TMP_OCSSW_INSTALLER_DIR.mkdir();
+            }
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
             fos.getChannel().transferFrom(rbc, 0, 1 << 24);
