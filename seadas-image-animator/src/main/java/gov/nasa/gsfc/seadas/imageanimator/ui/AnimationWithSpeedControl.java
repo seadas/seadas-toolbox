@@ -188,7 +188,7 @@ public class AnimationWithSpeedControl extends JPanel
             } else {
                 delay = 1000 / fps;
                 timer.setDelay(delay);
-                timer.setInitialDelay(delay * 10);
+                timer.setInitialDelay(delay * 3);
                 if (frozen) startAnimation();
             }
         }
@@ -218,8 +218,6 @@ public class AnimationWithSpeedControl extends JPanel
         } else {
             frameNumber++;
         }
-
-        System.out.println("frame number = " + frameNumber);
 
         updatePicture(frameNumber); //display the next picture
 

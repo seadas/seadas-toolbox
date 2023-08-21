@@ -81,25 +81,12 @@ public class ImageAnimatorDialog extends JDialog {
 
             Band[] bands = new Band[bandGroup.getNodeCount()];
             bandGroup.toArray(bands);
-            //           ImageInfo selectedImageInfo = productSceneView.getImageInfo();
-//            for (Band band : bands) {
-//                ImageInfo imageInfo = band.getImageInfo();
-//                if (imageInfo!= null) {
-//                    if (band.getImageInfo() == selectedImageInfo) {
-//                        //selectedUnfilteredBand = band;
-//                    }
-//                }
-//            }
-            //raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
-
-
             this.activeBands = activeBands;
 
             imageAnimators = new ArrayList<ImageAnimatorData>();
             propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
             propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
-
-                createImageAnimatorUI();
+            createImageAnimatorUI();
 //                createAngularViewAnimatorUI();
         }
         imageAnimatorCanceled = true;
@@ -204,11 +191,6 @@ public class ImageAnimatorDialog extends JDialog {
         bandNamesTree.setDropMode(DropMode.ON_OR_INSERT);
         bandNamesTree.setScrollsOnExpand(true);
 
-//        CheckBoxTreeCellRenderer treeCellRenderer = new CheckBoxTreeCellRenderer();
-//        treeCellRenderer.setBackground(Color.BLUE);
-//        treeCellRenderer.setPreferredSize(new Dimension(100, 20));
-//        checkBoxTree.setCellRenderer(treeCellRenderer);
-
         DefaultMutableTreeNode root=new DefaultMutableTreeNode("Bands                              ");
         DefaultMutableTreeNode child;
         String bandName;
@@ -257,14 +239,14 @@ public class ImageAnimatorDialog extends JDialog {
 
         bandNamesTree.addCheckChangeEventListener(new JCheckBoxTree.CheckChangeEventListener() {
             public void checkStateChanged(JCheckBoxTree.CheckChangeEvent event) {
-                System.out.println("event");
-                TreePath[] paths = bandNamesTree.getCheckedPaths();
-                for (TreePath tp : paths) {
-                    for (Object pathPart : tp.getPath()) {
-                        System.out.print(pathPart + ",");
-                    }
-                    System.out.println();
-                }
+//                System.out.println("event");
+//                TreePath[] paths = bandNamesTree.getCheckedPaths();
+//                for (TreePath tp : paths) {
+//                    for (Object pathPart : tp.getPath()) {
+//                        System.out.print(pathPart + ",");
+//                    }
+//                    System.out.println();
+//                }
             }
         });
 
