@@ -1,0 +1,3 @@
+--userdir "C:\Users\aabduraz\MainDev\seadas\seadas-toolbox\target\userdir"
+--clusters "C:\Users\aabduraz\MainDev\seadas\seadas-toolbox\seadas-kit\target\netbeans_clusters\seadas";"C:\Users\aabduraz\MainDev\seadas\optical-toolbox\opttbx-kit\target\netbeans_clusters\opttbx"
+--patches "C:\Users\aabduraz\MainDev\seadas\snap-engine\$\target\classes"; "C:\Users\aabduraz\MainDev\seadas\seadas-toolbox\$\target\classes";"C:\Users\aabduraz\MainDev\seadas\optical-toolbox\$\target\classes"
