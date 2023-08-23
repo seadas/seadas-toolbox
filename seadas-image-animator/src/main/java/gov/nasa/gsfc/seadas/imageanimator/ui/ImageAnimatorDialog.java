@@ -1,33 +1,25 @@
 package gov.nasa.gsfc.seadas.imageanimator.ui;
 
-import com.jidesoft.swing.CheckBoxTreeCellRenderer;
-import gov.nasa.gsfc.seadas.imageanimator.ui.ExGridBagConstraints;
 import gov.nasa.gsfc.seadas.imageanimator.data.ImageAnimatorData;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.rcp.angularview.AngularTopComponent;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.product.ProductSceneView;
-import org.esa.snap.ui.product.angularview.AngularViewChooser;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.openide.util.HelpCtx;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Scanner;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,6 +55,10 @@ public class ImageAnimatorDialog extends JDialog {
     JRadioButton angularView = new JRadioButton("Angular View");
     JRadioButton spectrumView = new JRadioButton("Spectrum View");
     ButtonGroup buttonGroup = new ButtonGroup();
+    JButton animateImagesButton = new JButton("Animate Images");
+    JButton createImagesButton = new JButton("Create Images");
+
+    ImageIcon[] images = new ImageIcon[5];
 
     private boolean imageAnimatorCanceled;
 
@@ -239,6 +235,17 @@ public class ImageAnimatorDialog extends JDialog {
 
         bandNamesTree.addCheckChangeEventListener(new JCheckBoxTree.CheckChangeEventListener() {
             public void checkStateChanged(JCheckBoxTree.CheckChangeEvent event) {
+                TreePath[] treePath = bandNamesTree.getCheckedPaths();
+                Animation animation = new Animation();
+                boolean imageOpened = animation.checkImages(treePath);
+                if (!imageOpened) {
+                    createImagesButton.setEnabled(true);
+                    animateImagesButton.setEnabled(false);
+                } else {
+                    createImagesButton.setEnabled(false);
+                    animateImagesButton.setEnabled(true);
+                }
+                repaint();
 //                System.out.println("event");
 //                TreePath[] paths = bandNamesTree.getCheckedPaths();
 //                for (TreePath tp : paths) {
@@ -327,12 +334,34 @@ public class ImageAnimatorDialog extends JDialog {
 
     private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
+//        JButton animateImages = new JButton("Animate Images");
 
-        JButton animateImages = new JButton("Animate Images");
-        animateImages.setPreferredSize(animateImages.getPreferredSize());
-        animateImages.setMinimumSize(animateImages.getPreferredSize());
-        animateImages.setMaximumSize(animateImages.getPreferredSize());
-        animateImages.addActionListener(new ActionListener() {
+
+//        JButton createImages =
+        createImagesButton.setEnabled(true);
+        createImagesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                if (buttonGroup.getSelection().getActionCommand().equals(bandImages.getActionCommand())) {
+                    imageAnimatorCanceled = false;
+                    TreePath[] treePath = bandNamesTree.getCheckedPaths();
+                    //Animation animation = new Animation("Band Images Animation");
+                    Animation animation = new Animation();
+//                    ImageIcon[] images = animation.createAndOpenImages(treePath);
+                    animation.createImages(treePath);
+                    animateImagesButton.setEnabled(true);
+                    createImagesButton.setEnabled(false);
+                    repaint();
+//                    AnimationWithSpeedControl.animate(images);
+                }
+            }
+        });
+
+//        JButton animateImages = new JButton("Animate Images");
+        animateImagesButton.setPreferredSize(animateImagesButton.getPreferredSize());
+        animateImagesButton.setMinimumSize(animateImagesButton.getPreferredSize());
+        animateImagesButton.setMaximumSize(animateImagesButton.getPreferredSize());
+        animateImagesButton.setEnabled(false);
+        animateImagesButton.addActionListener(new ActionListener() {
                                             public void actionPerformed(ActionEvent event) {
                                                 imageAnimatorCanceled = false;
                                                 if (buttonGroup.getSelection().getActionCommand().equals(bandImages.getActionCommand())) {
@@ -340,8 +369,12 @@ public class ImageAnimatorDialog extends JDialog {
                                                     //Animation animation = new Animation("Band Images Animation");
 
                                                     Animation animation = new Animation();
-                                                    ImageIcon[] images = animation.createAndOpenImages(treePath);
+//                                                    ImageIcon[] images = animation.createAndOpenImages(treePath);
+                                                    ImageIcon[] images = animation.openImages(treePath);
                                                     AnimationWithSpeedControl.animate(images);
+                                                    animateImagesButton.setEnabled(true);
+                                                    createImagesButton.setEnabled(false);
+                                                    repaint();
 
 //                                                } else if (buttonGroup.getSelection().getActionCommand().equals(angularView.getActionCommand())) {
 
@@ -387,12 +420,14 @@ public class ImageAnimatorDialog extends JDialog {
 
         controllerPanel.add(filler,
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-        controllerPanel.add(animateImages,
+        controllerPanel.add(createImagesButton,
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        controllerPanel.add(animateImagesButton,
+                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         controllerPanel.add(cancelButton,
-                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         controllerPanel.add(helpButton,
-                new ExGridBagConstraints(5, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(7, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
         return controllerPanel;
     }
 

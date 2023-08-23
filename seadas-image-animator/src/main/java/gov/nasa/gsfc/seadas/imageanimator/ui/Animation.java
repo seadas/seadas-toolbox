@@ -9,7 +9,6 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.util.Debug;
 import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.rcp.actions.file.CloseProductAction;
 import org.esa.snap.rcp.actions.window.OpenImageViewAction;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
@@ -22,11 +21,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.esa.snap.rcp.actions.window.OpenImageViewAction.getProductSceneView;
 import static org.esa.snap.rcp.actions.window.OpenRGBImageViewAction.openDocumentWindow;
@@ -48,7 +42,94 @@ public class Animation {
         pm = ProgressMonitor.NULL;
     }
 
-    public ImageIcon[] createAndOpenImages(TreePath[] treePaths) {
+    public boolean checkImages(TreePath[] treePaths) {
+
+        SnapApp snapApp = SnapApp.getDefault();
+        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
+//        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
+//        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
+        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
+
+        ArrayList<String> parents = new ArrayList<String>();
+        final ArrayList<String> selectedBandsList = new ArrayList<>();
+
+        String currentSelectedBand;
+        for (TreePath treePath : treePaths) {
+            if (treePath.getParentPath() != null) {
+                parents.add(String.valueOf(treePath.getParentPath().getLastPathComponent()));
+            }
+        }
+
+        for (TreePath treePath : treePaths) {
+            currentSelectedBand = String.valueOf(treePath.getLastPathComponent());
+            if (!parents.contains(currentSelectedBand)) {
+                selectedBandsList.add(currentSelectedBand);
+            }
+        }
+
+        final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
+//        final RenderedImage[] renderedImages = new RenderedImage[selectedBandNames.length];
+        final RasterDataNode[] rasters = new RasterDataNode[selectedBandNames.length];
+//        ProductSceneView myView = null;
+//        RenderedImage renderedImage;
+
+        for (int i = 0; i < selectedBandNames.length; i++) {
+            RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
+            if (!OpenImageViewAction.imageViewOpened(raster)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+//    public ImageIcon[] createAndOpenImages(TreePath[] treePaths) {
+    public void createImages(TreePath[] treePaths) {
+
+        SnapApp snapApp = SnapApp.getDefault();
+        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
+//        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
+//        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
+        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
+
+        ArrayList<String> parents = new ArrayList<String>();
+        final ArrayList<String> selectedBandsList = new ArrayList<>();
+
+        String currentSelectedBand;
+        for (TreePath treePath : treePaths) {
+            if (treePath.getParentPath() != null) {
+                parents.add(String.valueOf(treePath.getParentPath().getLastPathComponent()));
+            }
+        }
+
+        for (TreePath treePath : treePaths) {
+            currentSelectedBand = String.valueOf(treePath.getLastPathComponent());
+            if (!parents.contains(currentSelectedBand)) {
+                selectedBandsList.add(currentSelectedBand);
+            }
+        }
+
+        final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
+//        final RenderedImage[] renderedImages = new RenderedImage[selectedBandNames.length];
+        final RasterDataNode[] rasters = new RasterDataNode[selectedBandNames.length];
+//        ProductSceneView myView = null;
+//        RenderedImage renderedImage;
+
+        for (int i = 0; i < selectedBandNames.length; i++) {
+            RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
+            OpenImageViewAction.openImageView(raster);
+            rasters[i] = raster;
+        }
+//        ImageIcon[] images = new ImageIcon[renderedImages.length];
+//            for (int i = 0; i < selectedBandNames.length; i++) {
+//                myView = getProductSceneView(rasters[i]);
+//                renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
+//                renderedImages[i] = renderedImage;
+//                images[i] = new ImageIcon((BufferedImage) renderedImage);
+//            }
+//        return images;
+    }
+
+    public ImageIcon[] openImages(TreePath[] treePaths) {
 
         SnapApp snapApp = SnapApp.getDefault();
         final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
@@ -85,12 +166,12 @@ public class Animation {
             rasters[i] = raster;
         }
         ImageIcon[] images = new ImageIcon[renderedImages.length];
-            for (int i = 0; i < selectedBandNames.length; i++) {
-                myView = getProductSceneView(rasters[i]);
-                renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
-                renderedImages[i] = renderedImage;
-                images[i] = new ImageIcon((BufferedImage) renderedImage);
-            }
+        for (int i = 0; i < selectedBandNames.length; i++) {
+            myView = getProductSceneView(rasters[i]);
+            renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
+            renderedImages[i] = renderedImage;
+            images[i] = new ImageIcon((BufferedImage) renderedImage);
+        }
         return images;
     }
 
