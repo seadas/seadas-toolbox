@@ -18,26 +18,7 @@ package gov.nasa.gsfc.seadas.imageanimator.ui;
 
 import com.bc.ceres.glayer.support.ImageLayer;
 import com.bc.ceres.glevel.MultiLevelModel;
-//import org.esa.snap.rcp.spectrum.Bundle;
-import org.esa.snap.rcp.spectrum.CursorSpectrumPixelPositionListener;
-//import org.esa.snap.rcp.spectrum.SpectraExportAction;
-import org.esa.snap.ui.product.angularview.DisplayableAngularview;
-import org.jfree.chart.ui.HorizontalAlignment;
-import org.jfree.chart.ui.RectangleAnchor;
-import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.ui.RectangleInsets;
-import org.locationtech.jts.geom.Point;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.DataNode;
-import org.esa.snap.core.datamodel.PixelPos;
-import org.esa.snap.core.datamodel.Placemark;
-import org.esa.snap.core.datamodel.PlacemarkGroup;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductManager;
-import org.esa.snap.core.datamodel.ProductNodeEvent;
-import org.esa.snap.core.datamodel.ProductNodeGroup;
-import org.esa.snap.core.datamodel.ProductNodeListenerAdapter;
-import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.util.StringUtils;
@@ -49,54 +30,35 @@ import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.windows.ToolTopComponent;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
-import org.esa.snap.ui.PixelPositionListener;
 import org.esa.snap.ui.UIUtils;
-import org.esa.snap.ui.PackageDefaults;
 import org.esa.snap.ui.product.ProductSceneView;
-import org.esa.snap.ui.product.spectrum.DisplayableSpectrum;
-import org.esa.snap.ui.product.spectrum.SpectrumBand;
-import org.esa.snap.ui.product.spectrum.SpectrumChooser;
-import org.esa.snap.ui.product.spectrum.SpectrumShapeProvider;
-import org.esa.snap.ui.product.spectrum.SpectrumStrokeProvider;
+import org.esa.snap.ui.product.spectrum.*;
 import org.esa.snap.ui.tool.ToolButtonFactory;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.LegendItem;
-import org.jfree.chart.LegendItemCollection;
-import org.jfree.chart.LegendItemSource;
+import org.jfree.chart.*;
 import org.jfree.chart.annotations.XYTitleAnnotation;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.block.LineBorder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.ui.HorizontalAlignment;
+import org.jfree.chart.ui.RectangleAnchor;
+import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
+import org.locationtech.jts.geom.Point;
 import org.openide.util.HelpCtx;
-import org.openide.util.NbBundle;
-import org.openide.windows.TopComponent;
 
 import javax.media.jai.PlanarImage;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.Paint;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -105,7 +67,11 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import java.util.*;
+
+//import org.esa.snap.rcp.spectrum.Bundle;
+//import org.esa.snap.rcp.spectrum.SpectraExportAction;
 
 /**
  * A window which displays spectra at selected pixel positions.
@@ -149,6 +115,36 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
         rasterToSpectralBandsMap = new HashMap<>();
 //        pixelPositionListener = new CursorSpectrumPixelPositionListener(this);
         initUI();
+    }
+
+    //package local for testing
+    static DisplayableSpectrum[] createSpectraFromUngroupedBands(SpectrumBand[] ungroupedBands, int symbolIndex, int strokeIndex) {
+        List<String> knownUnits = new ArrayList<>();
+        List<DisplayableSpectrum> displayableSpectrumList = new ArrayList<>();
+        DisplayableSpectrum defaultSpectrum = new DisplayableSpectrum("tbd", -1);
+        for (SpectrumBand ungroupedBand : ungroupedBands) {
+            final String unit = ungroupedBand.getOriginalBand().getUnit();
+            if (StringUtils.isNullOrEmpty(unit)) {
+                defaultSpectrum.addBand(ungroupedBand);
+            } else if (knownUnits.contains(unit)) {
+                displayableSpectrumList.get(knownUnits.indexOf(unit)).addBand(ungroupedBand);
+            } else {
+                knownUnits.add(unit);
+                final DisplayableSpectrum spectrum = new DisplayableSpectrum("Bands measured in " + unit, symbolIndex++);
+                spectrum.setLineStyle(SpectrumStrokeProvider.getStroke(strokeIndex++));
+                spectrum.addBand(ungroupedBand);
+                displayableSpectrumList.add(spectrum);
+            }
+        }
+        if (strokeIndex == 0) {
+            defaultSpectrum.setName(DisplayableSpectrum.DEFAULT_SPECTRUM_NAME);
+        } else {
+            defaultSpectrum.setName(DisplayableSpectrum.REMAINING_BANDS_NAME);
+        }
+        defaultSpectrum.setSymbolIndex(symbolIndex);
+        defaultSpectrum.setLineStyle(SpectrumStrokeProvider.getStroke(strokeIndex));
+        displayableSpectrumList.add(defaultSpectrum);
+        return displayableSpectrumList.toArray(new DisplayableSpectrum[0]);
     }
 
     @Override
@@ -553,11 +549,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
                 for (SpectrumBand availableSpectralBand : availableSpectralBands) {
                     final String bandName = availableSpectralBand.getName();
                     if (currentProduct.getName().contains("SPEXONE")) {
-                        if (bandName.contains("I_22") && availableSpectralBand.getOriginalBand().getDescription().equals("I")) {
-                            availableSpectralBand.setSelected(true);
-                        } else {
-                            availableSpectralBand.setSelected(false);
-                        }
+                        availableSpectralBand.setSelected(false);
                     }
                     final int spectrumIndex = autoGrouping.indexOf(bandName);
                     if (spectrumIndex != -1) {
@@ -570,7 +562,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
                     spectra = autoGroupingSpectra;
                 } else {
                     final DisplayableSpectrum[] spectraFromUngroupedBands =
-                            createSpectraFromUngroupedBands(ungroupedBandsList.toArray(new SpectrumBand[ungroupedBandsList.size()]),
+                            createSpectraFromUngroupedBands(ungroupedBandsList.toArray(new SpectrumBand[0]),
                                     SpectrumShapeProvider.getValidIndex(i, false), i);
                     spectra = new DisplayableSpectrum[autoGroupingSpectra.length + spectraFromUngroupedBands.length];
                     System.arraycopy(autoGroupingSpectra, 0, spectra, 0, autoGroupingSpectra.length);
@@ -581,36 +573,6 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
             }
         }
         rasterToSpectraMap.put(raster, spectra);
-    }
-
-    //package local for testing
-    static DisplayableSpectrum[] createSpectraFromUngroupedBands(SpectrumBand[] ungroupedBands, int symbolIndex, int strokeIndex) {
-        List<String> knownUnits = new ArrayList<>();
-        List<DisplayableSpectrum> displayableSpectrumList = new ArrayList<>();
-        DisplayableSpectrum defaultSpectrum = new DisplayableSpectrum("tbd", -1);
-        for (SpectrumBand ungroupedBand : ungroupedBands) {
-            final String unit = ungroupedBand.getOriginalBand().getUnit();
-            if (StringUtils.isNullOrEmpty(unit)) {
-                defaultSpectrum.addBand(ungroupedBand);
-            } else if (knownUnits.contains(unit)) {
-                displayableSpectrumList.get(knownUnits.indexOf(unit)).addBand(ungroupedBand);
-            } else {
-                knownUnits.add(unit);
-                final DisplayableSpectrum spectrum = new DisplayableSpectrum("Bands measured in " + unit, symbolIndex++);
-                spectrum.setLineStyle(SpectrumStrokeProvider.getStroke(strokeIndex++));
-                spectrum.addBand(ungroupedBand);
-                displayableSpectrumList.add(spectrum);
-            }
-        }
-        if (strokeIndex == 0) {
-            defaultSpectrum.setName(DisplayableSpectrum.DEFAULT_SPECTRUM_NAME);
-        } else {
-            defaultSpectrum.setName(DisplayableSpectrum.REMAINING_BANDS_NAME);
-        }
-        defaultSpectrum.setSymbolIndex(symbolIndex);
-        defaultSpectrum.setLineStyle(SpectrumStrokeProvider.getStroke(strokeIndex));
-        displayableSpectrumList.add(defaultSpectrum);
-        return displayableSpectrumList.toArray(new DisplayableSpectrum[displayableSpectrumList.size()]);
     }
 
     private DisplayableSpectrum[] getAllSpectra() {
@@ -675,7 +637,6 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
     protected void componentClosed() {
         if (currentView != null) {
 //            currentView.removePixelPositionListener(pixelPositionListener);
-            int i = 3;
         }
     }
 
@@ -700,8 +661,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
             setAutomaticRangeAdjustments(false);
             final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) chart.getXYPlot().getRenderer();
             renderer.setDefaultLinesVisible(true);
-            renderer.setDefaultLinesVisible(true);
-            renderer.setDefaultShapesVisible(true);
+            renderer.setDefaultShapesFilled(false);
             setPlotMessage(MESSAGE_NO_PRODUCT_SELECTED);
         }
 
@@ -856,7 +816,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
         private int rasterPixelX;
         private int rasterPixelY;
         private int rasterLevel;
-        private Range[] plotBounds;
+        private final Range[] plotBounds;
         private XYSeriesCollection dataset;
         private Point2D modelP;
 
@@ -1055,12 +1015,15 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
 
 
         private void updateRenderer(int seriesIndex, Color seriesColor, DisplayableSpectrum spectrum, JFreeChart chart) {
-            final XYItemRenderer renderer = chart.getXYPlot().getRenderer();
-            renderer.setSeriesPaint(seriesIndex, seriesColor);
+            final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) chart.getXYPlot().getRenderer();
+
             final Stroke lineStyle = spectrum.getLineStyle();
             renderer.setSeriesStroke(seriesIndex, lineStyle);
             Shape symbol = spectrum.getScaledShape();
             renderer.setSeriesShape(seriesIndex, symbol);
+            renderer.setSeriesShapesVisible(seriesIndex, true);
+
+            renderer.setSeriesPaint(seriesIndex, seriesColor);
         }
 
         private double readEnergy(Placemark pin, Band spectralBand) {

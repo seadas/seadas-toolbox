@@ -27,7 +27,9 @@ import org.esa.snap.rcp.placemark.PlacemarkUtils;
 import org.esa.snap.rcp.statistics.XYPlotMarker;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.windows.ToolTopComponent;
-import org.esa.snap.ui.*;
+import org.esa.snap.ui.GridBagUtils;
+import org.esa.snap.ui.ModalDialog;
+import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.esa.snap.ui.product.angularview.*;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -36,33 +38,21 @@ import org.jfree.chart.annotations.XYTitleAnnotation;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.block.LineBorder;
-import org.jfree.chart.event.ChartChangeEvent;
-import org.jfree.chart.event.PlotChangeEvent;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.Range;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-
-
 import org.jfree.chart.ui.HorizontalAlignment;
 import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
-
-
+import org.jfree.data.Range;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.locationtech.jts.geom.Point;
-import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
-import org.openide.util.NbBundle;
-import org.openide.windows.TopComponent;
 
 import javax.media.jai.PlanarImage;
 import javax.swing.*;
@@ -80,7 +70,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.abs;
 
@@ -640,10 +629,16 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                 List<AngularBand> ungroupedBandsList = new ArrayList<>();
                 for (AngularBand availableAngularBand : availableAngularBands) {
                     final String bandName = availableAngularBand.getName();
-                    if (bandName.contains("549") && availableAngularBand.getOriginalBand().getDescription().equals("I")) {
-                        availableAngularBand.setSelected(true);
-                    } else {
-                        availableAngularBand.setSelected(false);
+                    availableAngularBand.setSelected(false);
+                    if (currentProduct.getName().contains("SPEXONE")) {
+                        if (bandName.contains("385") && availableAngularBand.getOriginalBand().getDescription().equals("I")) {
+                            availableAngularBand.setSelected(true);
+                        }
+                    }
+                    if (currentProduct.getName().contains("HARP2")) {
+                        if (bandName.contains("549") && availableAngularBand.getOriginalBand().getDescription().equals("I")) {
+                            availableAngularBand.setSelected(true);
+                        }
                     }
                     final int angularViewIndex = autoGrouping.indexOf(bandName);
                     if (angularViewIndex != -1) {
@@ -656,7 +651,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                     angularViews = autoGroupingAngularViews;
                 } else {
                     final DisplayableAngularview[] angularViewsFromUngroupedBands =
-                            createAngularViewsFromUngroupedBands(ungroupedBandsList.toArray(new AngularBand[ungroupedBandsList.size()]),
+                            createAngularViewsFromUngroupedBands(ungroupedBandsList.toArray(new AngularBand[0]),
                                     AngularViewShapeProvider.getValidIndex(i, false), i);
                     angularViews = new DisplayableAngularview[autoGroupingAngularViews.length + angularViewsFromUngroupedBands.length];
                     System.arraycopy(autoGroupingAngularViews, 0, angularViews, 0, autoGroupingAngularViews.length);
@@ -761,7 +756,6 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
     protected void componentClosed() {
         if (currentView != null) {
 //            currentView.removePixelPositionListener(pixelPositionListener);
-            int i =3;
         }
     }
 
@@ -786,7 +780,6 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             setAutomaticRangeAdjustments(false);
             final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) chart.getXYPlot().getRenderer();
             renderer.setDefaultLinesVisible(true);
-            renderer.setDefaultShapesVisible(true);
             renderer.setDefaultShapesFilled(false);
             setPlotMessage(MESSAGE_NO_PRODUCT_SELECTED);
         }
@@ -884,7 +877,6 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             if (getCurrentProduct() == null) {
                 setPlotMessage(MESSAGE_NO_PRODUCT_SELECTED);
             } else if (!chartUpdater.showsValidCursorAngularViews()) {
-                return;
             } else if (getAllAngularViews().length == 0) {
                 setPlotMessage(MESSAGE_NO_AngularView_SELECTED);
             } else {
@@ -942,7 +934,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         private int rasterPixelX;
         private int rasterPixelY;
         private int rasterLevel;
-        private Range[] plotBounds;
+        private final Range[] plotBounds;
         private XYSeriesCollection dataset;
         private Point2D modelP;
 
@@ -1232,12 +1224,16 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         }
 
         private void updateRenderer(int seriesIndex, Color seriesColor, DisplayableAngularview angularView, JFreeChart chart) {
-            final XYItemRenderer renderer = chart.getXYPlot().getRenderer();
-            renderer.setSeriesPaint(seriesIndex, seriesColor);
+            final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) chart.getXYPlot().getRenderer();
+
             final Stroke lineStyle = angularView.getLineStyle();
             renderer.setSeriesStroke(seriesIndex, lineStyle);
+
             Shape symbol = angularView.getScaledShape();
-            renderer.setSeriesShape(seriesIndex, symbol, true);
+            renderer.setSeriesShape(seriesIndex, symbol);
+            renderer.setSeriesShapesVisible(seriesIndex, true);
+
+            renderer.setSeriesPaint(seriesIndex, seriesColor);
         }
 
         private double readEnergy(Placemark pin, Band angularBand) {
