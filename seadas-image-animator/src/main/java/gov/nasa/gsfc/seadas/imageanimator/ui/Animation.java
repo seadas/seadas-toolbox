@@ -10,6 +10,7 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.util.Debug;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.file.CloseProductAction;
+import org.esa.snap.rcp.actions.window.OpenImageViewAction;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.openide.awt.UndoRedo;
@@ -80,36 +81,15 @@ public class Animation {
 
         for (int i = 0; i < selectedBandNames.length; i++) {
             RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
-            if (product.getBand(selectedBandNames[i]).getImageInfo() == null) {
-                openProductSceneView(raster);
-            }
+            OpenImageViewAction.openImageView(raster);
             rasters[i] = raster;
         }
-        try {myView = getProductSceneView(rasters[selectedBandNames.length -1]);
-            imageAnimatorOp.createImage(myView, standardViewPort);
-        }
-        catch (NullPointerException npe) {
-            System.out.println("exception is caught here!");
-            npe.printStackTrace();
-        } finally{
-            System.out.println("continue ...");
-        }
         ImageIcon[] images = new ImageIcon[renderedImages.length];
-        try {
             for (int i = 0; i < selectedBandNames.length; i++) {
                 myView = getProductSceneView(rasters[i]);
-                if (myView == null) {
-                    openProductSceneView(rasters[i]);
-                    myView = getProductSceneView(rasters[i]);
-                    System.out.println("myView is null for i = " + i);
-                }
                 renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
                 renderedImages[i] = renderedImage;
                 images[i] = new ImageIcon((BufferedImage) renderedImage);
-            }
-        }
-        catch (Exception e) {
-            System.out.println("exception is caught here!");
             }
         return images;
     }
@@ -300,7 +280,6 @@ public class Animation {
                     UndoRedo.Manager undoManager = SnapApp.getDefault().getUndoManager(sceneImage.getProduct());
                     ProductSceneView view = new ProductSceneView(sceneImage, undoManager);
                     openDocumentWindow(view);
-
                 } catch (Exception e) {
                     snapApp.handleError(MessageFormat.format("Failed to open image view.\n\n{0}", e.getMessage()), e);
                 }
