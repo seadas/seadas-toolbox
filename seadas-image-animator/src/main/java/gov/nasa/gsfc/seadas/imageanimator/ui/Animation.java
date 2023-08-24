@@ -10,13 +10,13 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.util.Debug;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.window.OpenImageViewAction;
+import org.esa.snap.rcp.windows.ProductSceneViewTopComponent;
 import org.esa.snap.ui.product.ProductSceneImage;
 import org.esa.snap.ui.product.ProductSceneView;
 import org.openide.awt.UndoRedo;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.text.MessageFormat;
@@ -45,9 +45,7 @@ public class Animation {
     public boolean checkImages(TreePath[] treePaths) {
 
         SnapApp snapApp = SnapApp.getDefault();
-        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-//        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
-//        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
+
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
 
         ArrayList<String> parents = new ArrayList<String>();
@@ -68,27 +66,22 @@ public class Animation {
         }
 
         final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
-//        final RenderedImage[] renderedImages = new RenderedImage[selectedBandNames.length];
-        final RasterDataNode[] rasters = new RasterDataNode[selectedBandNames.length];
-//        ProductSceneView myView = null;
-//        RenderedImage renderedImage;
 
         for (int i = 0; i < selectedBandNames.length; i++) {
             RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
-            if (!OpenImageViewAction.imageViewOpened(raster)) {
+            ProductSceneViewTopComponent tc = OpenImageViewAction.getProductSceneViewTopComponent(raster);
+            if (tc == null) {
                 return false;
             }
         }
         return true;
     }
 
-//    public ImageIcon[] createAndOpenImages(TreePath[] treePaths) {
     public void createImages(TreePath[] treePaths) {
 
         SnapApp snapApp = SnapApp.getDefault();
         final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-//        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
-//        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
+
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
 
         ArrayList<String> parents = new ArrayList<String>();
@@ -109,24 +102,13 @@ public class Animation {
         }
 
         final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
-//        final RenderedImage[] renderedImages = new RenderedImage[selectedBandNames.length];
         final RasterDataNode[] rasters = new RasterDataNode[selectedBandNames.length];
-//        ProductSceneView myView = null;
-//        RenderedImage renderedImage;
 
         for (int i = 0; i < selectedBandNames.length; i++) {
             RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
             OpenImageViewAction.openImageView(raster);
             rasters[i] = raster;
         }
-//        ImageIcon[] images = new ImageIcon[renderedImages.length];
-//            for (int i = 0; i < selectedBandNames.length; i++) {
-//                myView = getProductSceneView(rasters[i]);
-//                renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
-//                renderedImages[i] = renderedImage;
-//                images[i] = new ImageIcon((BufferedImage) renderedImage);
-//            }
-//        return images;
     }
 
     public ImageIcon[] openImages(TreePath[] treePaths) {
@@ -175,151 +157,11 @@ public class Animation {
         return images;
     }
 
-        public void startAnimateAngular() {
-
-//        SnapApp snapApp = SnapApp.getDefault();
-//        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-//        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
-//        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
-////        RenderedImage renderedImage = imageAnimatorOp.createImage(sceneView);
-////        BufferedImage bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
-////        BufferedImage bi = (BufferedImage)imageAnimatorOp.createImage(sceneView);
-//        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
-
-
-        Runnable r = new Runnable() {
-            int index = 0;
-
-            @Override
-            public void run() {
-//                JPanel gui = new JPanel();
-//                final String[] names = {"angstrom", "chlor_a", "chl_ocx", "pic", "poc", "ipar", "nflh", "par"};
-//                final RenderedImage[] renderedImages = new RenderedImage[names.length];
-//                final RasterDataNode[] rasters = new RasterDataNode[names.length];
-//                ProductSceneView myView;
-//                RenderedImage renderedImage;
-
-                AngularAnimationTopComponent angularAnimationTopComponent = new AngularAnimationTopComponent();
-
-
-//                for (int i = 0; i < names.length; i++) {
-//                    RasterDataNode raster = product.getRasterDataNode(names[i]);
-//                    openProductSceneView(raster);
-//                    rasters[i] = raster;
-//                }
-
-//                for (int i = 0; i < names.length; i++) {
-//                    myView = getProductSceneView(rasters[i]);
-//                    renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
-//                    renderedImages[i] = renderedImage;
-//
-//                    if(i == 0) {
-//                        gui.add(new JLabel(new ImageIcon((BufferedImage)renderedImage)));
-//                    }
-//                }
-
-//                Timer timer = new Timer(1000, new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        JLabel label = (JLabel) gui.getComponent(0);
-//                        label.setIcon(new ImageIcon((BufferedImage) renderedImages[++index % names.length]));
-//                        label.repaint();
-//                        gui.repaint();
-//                    }
-//                });
-//                timer.start();
-//
-//                JOptionPane.showMessageDialog(null, gui);
-//
-//                timer.stop();
-            }
-        };
-
-        SwingUtilities.invokeLater(r);
-    }
-
-    public void startAnimateSpectrum() {
-
-//        SnapApp snapApp = SnapApp.getDefault();
-//        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
-//        Viewport standardViewPort = sceneView.getLayerCanvas().getViewport();
-//        ImageAnimatorOp imageAnimatorOp = new ImageAnimatorOp();
-//        RenderedImage renderedImage = imageAnimatorOp.createImage(sceneView);
-//        BufferedImage bufferedImage = ImageAnimatorOp.toBufferedImage(renderedImage);
-//        BufferedImage bi = (BufferedImage)imageAnimatorOp.createImage(sceneView);
-//        product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
-
-
-        Runnable r = new Runnable() {
-            int index = 0;
-
-            @Override
-            public void run() {
-//                JPanel gui = new JPanel();
-//                final String[] names = {"angstrom", "chlor_a", "chl_ocx", "pic", "poc", "ipar", "nflh", "par"};
-//                final RenderedImage[] renderedImages = new RenderedImage[names.length];
-//                final RasterDataNode[] rasters = new RasterDataNode[names.length];
-//                ProductSceneView myView;
-//                RenderedImage renderedImage;
-
-                SpectrumAnimationTopComponent spectrumAnimationTopComponent = new SpectrumAnimationTopComponent();
-
-//                for (int i = 0; i < names.length; i++) {
-//                    RasterDataNode raster = product.getRasterDataNode(names[i]);
-//                    openProductSceneView(raster);
-//                    rasters[i] = raster;
-//                }
-
-//                for (int i = 0; i < names.length; i++) {
-//                    myView = getProductSceneView(rasters[i]);
-//                    renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
-//                    renderedImages[i] = renderedImage;
-//
-//                    if(i == 0) {
-//                        gui.add(new JLabel(new ImageIcon((BufferedImage)renderedImage)));
-//                    }
-//                }
-
-//                Timer timer = new Timer(1000, new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        JLabel label = (JLabel) gui.getComponent(0);
-//                        label.setIcon(new ImageIcon((BufferedImage) renderedImages[++index % names.length]));
-//                        label.repaint();
-//                        gui.repaint();
-//                    }
-//                });
-//                timer.start();
-//
-//                JOptionPane.showMessageDialog(null, gui);
-//
-//                timer.stop();
-            }
-        };
-
-        SwingUtilities.invokeLater(r);
-    }
-
-    private static JFrame jFrame;
-    private static JLabel jLabel;
-
-    public static BufferedImage redraw(BufferedImage img, Color bg) {
-        BufferedImage rgbImage = new BufferedImage(img.getWidth(),
-                img.getHeight(),
-                BufferedImage.TYPE_3BYTE_BGR);
-        Graphics2D g2d = rgbImage.createGraphics();
-        g2d.drawImage(img, 0, 0, bg, null);
-        g2d.dispose();
-        return rgbImage;
-    }
-
-
     private static ProductSceneImage createProductSceneImage(final RasterDataNode raster, ProductSceneView existingView, com.bc.ceres.core.ProgressMonitor pm) {
         Debug.assertNotNull(raster);
         Debug.assertNotNull(pm);
 
         try {
-            //System.out.println("Creating image...");
             pm.beginTask("Creating image...", 1);
 
             ProductSceneImage sceneImage;
@@ -332,10 +174,8 @@ public class Animation {
             }
             sceneImage.initVectorDataCollectionLayer();
             sceneImage.initMaskCollectionLayer();
-            //System.out.println("Image created... before returning");
             return sceneImage;
         } finally {
-            //System.out.println("Image created... finally");
             pm.done();
         }
     }

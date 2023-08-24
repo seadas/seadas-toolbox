@@ -58,8 +58,6 @@ public class ImageAnimatorDialog extends JDialog {
     JButton animateImagesButton = new JButton("Animate Images");
     JButton createImagesButton = new JButton("Create Images");
 
-    ImageIcon[] images = new ImageIcon[5];
-
     private boolean imageAnimatorCanceled;
 
     public ImageAnimatorDialog(Product product, ArrayList<String> activeBands) {
@@ -83,7 +81,6 @@ public class ImageAnimatorDialog extends JDialog {
             propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
             propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
             createImageAnimatorUI();
-//                createAngularViewAnimatorUI();
         }
         imageAnimatorCanceled = true;
     }
@@ -334,29 +331,22 @@ public class ImageAnimatorDialog extends JDialog {
 
     private JPanel getControllerPanel() {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
-//        JButton animateImages = new JButton("Animate Images");
 
-
-//        JButton createImages =
         createImagesButton.setEnabled(true);
         createImagesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (buttonGroup.getSelection().getActionCommand().equals(bandImages.getActionCommand())) {
                     imageAnimatorCanceled = false;
                     TreePath[] treePath = bandNamesTree.getCheckedPaths();
-                    //Animation animation = new Animation("Band Images Animation");
                     Animation animation = new Animation();
-//                    ImageIcon[] images = animation.createAndOpenImages(treePath);
                     animation.createImages(treePath);
                     animateImagesButton.setEnabled(true);
                     createImagesButton.setEnabled(false);
                     repaint();
-//                    AnimationWithSpeedControl.animate(images);
                 }
             }
         });
 
-//        JButton animateImages = new JButton("Animate Images");
         animateImagesButton.setPreferredSize(animateImagesButton.getPreferredSize());
         animateImagesButton.setMinimumSize(animateImagesButton.getPreferredSize());
         animateImagesButton.setMaximumSize(animateImagesButton.getPreferredSize());
@@ -366,39 +356,13 @@ public class ImageAnimatorDialog extends JDialog {
                                                 imageAnimatorCanceled = false;
                                                 if (buttonGroup.getSelection().getActionCommand().equals(bandImages.getActionCommand())) {
                                                     TreePath[] treePath = bandNamesTree.getCheckedPaths();
-                                                    //Animation animation = new Animation("Band Images Animation");
 
                                                     Animation animation = new Animation();
-//                                                    ImageIcon[] images = animation.createAndOpenImages(treePath);
                                                     ImageIcon[] images = animation.openImages(treePath);
                                                     AnimationWithSpeedControl.animate(images);
                                                     animateImagesButton.setEnabled(true);
                                                     createImagesButton.setEnabled(false);
                                                     repaint();
-
-//                                                } else if (buttonGroup.getSelection().getActionCommand().equals(angularView.getActionCommand())) {
-
-                                                    // option Angular View is
-//                                                JDialog angularAnimationDialog = new JDialog(SnapApp.getDefault().getMainFrame(), "Angular View Animation", true);
-//                                                    angularAnimationDialog.setModalityType(ModalityType.APPLICATION_MODAL);
-//                                                angularAnimationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//                                                angularAnimationDialog.setVisible(true);
-//
-//                                                AngularAnimationTopComponent angularAnimationTopComponent = new AngularAnimationTopComponent();
-//                                                angularAnimationDialog.add(angularAnimationTopComponent);
-//                                                Animation animation = new Animation();
-//                                                ImageIcon[]images = animation.createAndOpenAngularViews();
-//                                                AnimationWithSpeedControl.animate(images);
-//
-//                } else if (button == spectrumView) {
-//
-//                    // option Spectrum is selected
-//
-//                Animation animation = new Animation();
-//                animation.startAnimateSpectrum();
-//
-//                }
-//                dispose();
                                                 }
                                             }
                                         });
@@ -409,8 +373,6 @@ public class ImageAnimatorDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 imageAnimatorCanceled = true;
-//                AnimationWithSpeedControl.windowClosedBool = true;
-//                AnimationWithSpeedControl.closeGUI();
                 dispose();
             }
         });
@@ -437,15 +399,8 @@ public class ImageAnimatorDialog extends JDialog {
             JRadioButton button = (JRadioButton) event.getSource();
 
             if (button == bandImages) {
-
-                //Animation animation = new Animation("Band Images Animation");
-//                Animation animation = new Animation();
-//                animation.startAnimate();
-                //animation.animatioTest();
+                
                 JDialog bandImageAnimationDialog = new JDialog(SnapApp.getDefault().getMainFrame(), "Band Image Animation", JDialog.DEFAULT_MODALITY_TYPE);
-
-
-
 
             } else if (button == angularView) {
 
