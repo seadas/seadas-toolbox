@@ -1,33 +1,21 @@
 package gov.nasa.gsfc.seadas.imageanimator.action;
 
-import com.bc.ceres.glevel.MultiLevelImage;
-import com.bc.ceres.grender.Viewport;
-import com.bc.ceres.grender.support.DefaultViewport;
 import gov.nasa.gsfc.seadas.imageanimator.ui.ImageAnimatorDialog;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
-import org.esa.snap.rcp.angularview.AngularTopComponent;
 import org.esa.snap.ui.product.ProductSceneView;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 import org.openide.util.actions.Presenter;
-import javax.media.jai.*;
-import javax.media.jai.operator.FormatDescriptor;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.image.*;
 import java.util.ArrayList;
-import com.bc.ceres.grender.support.BufferedImageRendering;
 
 /**
  * @author Aynur Abdurazik
@@ -48,8 +36,8 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
 
     Product product;
 //    private boolean enabled = false;
-    public static final String SMALLICON = "gov/nasa/gsfc/seadas/imageAnimator/ui/icons/ImageAnimator.png";
-    public static final String LARGEICON = "gov/nasa/gsfc/seadas/imageAnimator/ui/icons/ImageAnimator24.png";
+    public static final String SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimator24.png";
+    public static final String LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimator24.png";
 
     private final Lookup lookup;
     private final Lookup.Result<ProductSceneView> viewResult;
