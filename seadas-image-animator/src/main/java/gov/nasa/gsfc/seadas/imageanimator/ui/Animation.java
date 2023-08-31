@@ -9,6 +9,7 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.util.Debug;
+import org.esa.snap.core.util.math.Array;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.window.OpenImageViewAction;
 import org.esa.snap.rcp.windows.ProductSceneViewTopComponent;
@@ -23,6 +24,7 @@ import java.awt.image.RenderedImage;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import static org.esa.snap.rcp.actions.window.OpenImageViewAction.getProductSceneView;
 import static org.esa.snap.rcp.actions.window.OpenRGBImageViewAction.openDocumentWindow;
@@ -251,8 +253,25 @@ public class Animation {
             renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
             renderedImages[i] = renderedImage;
             images[i] = new ImageIcon((BufferedImage) renderedImage);
+            images[i].setDescription(rasters[i].getName());
         }
-        return images;
+        return sortImages(images);
+    }
+
+    private ImageIcon[] sortImages(ImageIcon[] images){
+        ImageIcon[] sortedImages = new ImageIcon[images.length];
+        String[] imageNames = new String[images.length];
+        HashMap<String, ImageIcon> sortedImagesHashMap = new HashMap<>(images.length);
+
+        for (int i = 0; i < images.length; i++) {
+             imageNames[i] = images[i].getDescription();
+             sortedImagesHashMap.put(images[i].getDescription(), images[i]);
+        }
+        Arrays.sort(imageNames);
+        for (int i = 0; i < images.length; i++) {
+            sortedImages[i] = sortedImagesHashMap.get(imageNames[i]);
+        }
+        return sortedImages;
     }
 
     private static ProductSceneImage createProductSceneImage(final RasterDataNode raster, ProductSceneView existingView, com.bc.ceres.core.ProgressMonitor pm) {
