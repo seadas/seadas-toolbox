@@ -5,6 +5,7 @@ import com.bc.ceres.core.SubProgressMonitor;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.imageanimator.operator.ImageAnimatorOp;
+import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.util.Debug;
@@ -21,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.esa.snap.rcp.actions.window.OpenImageViewAction.getProductSceneView;
 import static org.esa.snap.rcp.actions.window.OpenRGBImageViewAction.openDocumentWindow;
@@ -31,6 +33,14 @@ import static org.esa.snap.ui.UIUtils.setRootFrameWaitCursor;
 public class Animation {
 
     Product product;
+
+    public enum Sort_Type {
+        SORT_BY_NAME,
+        SORT_BY_ANGLE,
+        SORT_BY_WAVELENGTH
+    }
+
+    ;
 
     private final ProgressMonitor pm;
 
@@ -66,9 +76,10 @@ public class Animation {
         }
 
         final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
+        final String[] sortedSelectedBandNames = getSortedBandNames(selectedBandNames, Sort_Type.SORT_BY_WAVELENGTH);
 
-        for (int i = 0; i < selectedBandNames.length; i++) {
-            RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
+        for (int i = 0; i < sortedSelectedBandNames.length; i++) {
+            RasterDataNode raster = product.getRasterDataNode(sortedSelectedBandNames[i]);
             ProductSceneViewTopComponent tc = OpenImageViewAction.getProductSceneViewTopComponent(raster);
             if (tc == null) {
                 return false;
@@ -76,6 +87,93 @@ public class Animation {
         }
         return true;
     }
+
+
+
+
+    public static String[] getSortedBandNames(String[] bandNames, Sort_Type sort_type) {
+
+        if (sort_type == Sort_Type.SORT_BY_NAME) {
+            Arrays.sort(bandNames);
+            return bandNames;
+        }
+
+
+        ArrayList<Band> unsortedBandsArrayList = new ArrayList<Band>();
+
+        for (String bandName : bandNames) {
+            Band band = SnapApp.getDefault().getSelectedProductSceneView().getProduct().getBand(bandName);
+            if (band != null) {
+                unsortedBandsArrayList.add(band);
+            }
+        }
+
+
+        Band[] unsortedBandsArray = new Band[unsortedBandsArrayList.size()];
+        unsortedBandsArrayList.toArray(unsortedBandsArray);
+
+
+        Band[] sortedBandsArray = getSortedBands(unsortedBandsArray, sort_type);
+
+
+        ArrayList<String> sortedBandNamesArrayList = new ArrayList<String>();
+
+        for (Band band : sortedBandsArray) {
+            sortedBandNamesArrayList.add(band.getName());
+        }
+
+        String[] sortedBandNamesArray = new String[sortedBandNamesArrayList.size()];
+        sortedBandNamesArrayList.toArray(sortedBandNamesArray);
+
+        return sortedBandNamesArray;
+    }
+
+
+    public static Band[] getSortedBands(Band[] bands, Sort_Type sort_type) {
+
+        ArrayList<Band> bandsArrayUnsortedList = new ArrayList<Band>();
+        ArrayList<Band> bandsArraySortedList = new ArrayList<Band>();
+
+        for (Band band : bands) {
+            if (band != null) {
+                bandsArrayUnsortedList.add(band);
+            }
+        }
+
+        while (bandsArrayUnsortedList.size() > 1) {
+            Band minBand = null;
+
+            for (Band band1 : bandsArrayUnsortedList) {
+                if (minBand == null) {
+                    minBand = band1;
+                } else {
+                    if (sort_type == Sort_Type.SORT_BY_ANGLE) {
+                        if (band1.getSpectralWavelength() < minBand.getAngularValue()) {
+                            minBand = band1;
+                        }
+                    } else if (sort_type == Sort_Type.SORT_BY_WAVELENGTH) {
+                        if (band1.getSpectralWavelength() < minBand.getSpectralWavelength()) {
+                            minBand = band1;
+                        }
+                    } else {
+
+                    }
+                }
+            }
+            bandsArrayUnsortedList.remove(minBand);
+            bandsArraySortedList.add(minBand);
+        }
+
+        for (Band band2 : bandsArrayUnsortedList) {
+            bandsArraySortedList.add(band2);
+        }
+
+        Band[] sortedBandsArray = new Band[bandsArraySortedList.size()];
+        bandsArraySortedList.toArray(sortedBandsArray);
+
+        return sortedBandsArray;
+    }
+
 
     public void createImages(TreePath[] treePaths) {
 
