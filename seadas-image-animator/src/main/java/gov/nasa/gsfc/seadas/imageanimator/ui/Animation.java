@@ -35,14 +35,8 @@ import static org.esa.snap.ui.UIUtils.setRootFrameWaitCursor;
 public class Animation {
 
     Product product;
+    String sortMethod = ImageAnimatorDialog.SORT_BY_BANDNAME;
 
-    public enum Sort_Type {
-        SORT_BY_NAME,
-        SORT_BY_ANGLE,
-        SORT_BY_WAVELENGTH
-    }
-
-    ;
 
     private final ProgressMonitor pm;
 
@@ -52,6 +46,10 @@ public class Animation {
 
     public Animation() {
         pm = ProgressMonitor.NULL;
+    }
+
+    public void setSortMethod(String sortMethod) {
+        this.sortMethod = sortMethod;
     }
 
     public boolean checkImages(TreePath[] treePaths) {
@@ -78,7 +76,7 @@ public class Animation {
         }
 
         final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
-        final String[] sortedSelectedBandNames = getSortedBandNames(selectedBandNames, Sort_Type.SORT_BY_WAVELENGTH);
+        final String[] sortedSelectedBandNames = getSortedBandNames(selectedBandNames, sortMethod);
 
         for (int i = 0; i < sortedSelectedBandNames.length; i++) {
             RasterDataNode raster = product.getRasterDataNode(sortedSelectedBandNames[i]);
@@ -93,9 +91,9 @@ public class Animation {
 
 
 
-    public static String[] getSortedBandNames(String[] bandNames, Sort_Type sort_type) {
+    public static String[] getSortedBandNames(String[] bandNames, String sort_type) {
 
-        if (sort_type == Sort_Type.SORT_BY_NAME) {
+        if (ImageAnimatorDialog.SORT_BY_BANDNAME.equals(sort_type)) {
             Arrays.sort(bandNames);
             return bandNames;
         }
@@ -131,7 +129,7 @@ public class Animation {
     }
 
 
-    public static Band[] getSortedBands(Band[] bands, Sort_Type sort_type) {
+    public static Band[] getSortedBands(Band[] bands, String sort_type) {
 
         ArrayList<Band> bandsArrayUnsortedList = new ArrayList<Band>();
         ArrayList<Band> bandsArraySortedList = new ArrayList<Band>();
@@ -149,11 +147,11 @@ public class Animation {
                 if (minBand == null) {
                     minBand = band1;
                 } else {
-                    if (sort_type == Sort_Type.SORT_BY_ANGLE) {
-                        if (band1.getSpectralWavelength() < minBand.getAngularValue()) {
+                    if (ImageAnimatorDialog.SORT_BY_ANGLE.equals(sort_type)) {
+                        if (band1.getAngularValue() < minBand.getAngularValue()) {
                             minBand = band1;
                         }
-                    } else if (sort_type == Sort_Type.SORT_BY_WAVELENGTH) {
+                    } else if (ImageAnimatorDialog.SORT_BY_WAVELENGTH.equals(sort_type)) {
                         if (band1.getSpectralWavelength() < minBand.getSpectralWavelength()) {
                             minBand = band1;
                         }
@@ -237,25 +235,28 @@ public class Animation {
         }
 
         final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
-        final RenderedImage[] renderedImages = new RenderedImage[selectedBandNames.length];
-        final RasterDataNode[] rasters = new RasterDataNode[selectedBandNames.length];
+        final String[] sortedSelectedBandNames = getSortedBandNames(selectedBandNames, sortMethod);
+
+        final RenderedImage[] renderedImages = new RenderedImage[sortedSelectedBandNames.length];
+        final RasterDataNode[] rasters = new RasterDataNode[sortedSelectedBandNames.length];
         ProductSceneView myView = null;
         RenderedImage renderedImage;
 
-        for (int i = 0; i < selectedBandNames.length; i++) {
-            RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
+        for (int i = 0; i < sortedSelectedBandNames.length; i++) {
+            RasterDataNode raster = product.getRasterDataNode(sortedSelectedBandNames[i]);
             OpenImageViewAction.openImageView(raster);
             rasters[i] = raster;
         }
         ImageIcon[] images = new ImageIcon[renderedImages.length];
-        for (int i = 0; i < selectedBandNames.length; i++) {
+        for (int i = 0; i < sortedSelectedBandNames.length; i++) {
             myView = getProductSceneView(rasters[i]);
             renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
             renderedImages[i] = renderedImage;
             images[i] = new ImageIcon((BufferedImage) renderedImage);
             images[i].setDescription(rasters[i].getName());
         }
-        return sortImages(images);
+        return images;
+//        return sortImages(images);
     }
 
     private ImageIcon[] sortImages(ImageIcon[] images){
