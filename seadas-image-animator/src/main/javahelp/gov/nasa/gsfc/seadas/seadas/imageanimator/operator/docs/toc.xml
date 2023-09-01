@@ -4,7 +4,7 @@
 <toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
     <tocitem text="SeaDAS Toolbox">
         <tocitem text="Layers &amp; Masks">
-            <tocitem text="Contour Lines" target="contourLinesHelp">
+            <tocitem text="Image Animator2" target="imageAnimator2Help">
             </tocitem>
         </tocitem>
     </tocitem>

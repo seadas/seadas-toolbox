@@ -35,7 +35,7 @@ public class ImageAnimatorDialog extends JDialog {
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String DELETE_BUTTON_PRESSED_PROPERTY = "deleteButtonPressed";
     private Component helpButton = null;
-    private final static String helpId = "imageAnimatorLinesHelp";
+    private final static String helpId = "imageAnimatorHelp";
     private final static String HELP_ICON = "icons/Help24.gif";
 
     private Product product;

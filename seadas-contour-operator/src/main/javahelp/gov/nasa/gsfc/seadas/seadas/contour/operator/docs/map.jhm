@@ -4,5 +4,6 @@
 <map version="2.0">
 
     <mapID target="contourLinesHelp" url="tools/ContourLines.html"/>
+    <mapID target="imageAnimatorHelp" url="tools/ImageAnimator.html"/>
 
 </map>

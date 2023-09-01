@@ -6,6 +6,8 @@
         <tocitem text="Layers &amp; Masks">
             <tocitem text="Contour Lines" target="contourLinesHelp">
             </tocitem>
+            <tocitem text="Image Animator" target="imageAnimatorHelp">
+            </tocitem>
         </tocitem>
     </tocitem>
 </toc>
