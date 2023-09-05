@@ -5,9 +5,11 @@ import com.bc.ceres.core.SubProgressMonitor;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.imageanimator.operator.ImageAnimatorOp;
+import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.util.Debug;
+import org.esa.snap.core.util.math.Array;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.window.OpenImageViewAction;
 import org.esa.snap.rcp.windows.ProductSceneViewTopComponent;
@@ -21,6 +23,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import static org.esa.snap.rcp.actions.window.OpenImageViewAction.getProductSceneView;
 import static org.esa.snap.rcp.actions.window.OpenRGBImageViewAction.openDocumentWindow;
@@ -31,6 +35,8 @@ import static org.esa.snap.ui.UIUtils.setRootFrameWaitCursor;
 public class Animation {
 
     Product product;
+    String sortMethod = ImageAnimatorDialog.SORT_BY_BANDNAME;
+
 
     private final ProgressMonitor pm;
 
@@ -40,6 +46,10 @@ public class Animation {
 
     public Animation() {
         pm = ProgressMonitor.NULL;
+    }
+
+    public void setSortMethod(String sortMethod) {
+        this.sortMethod = sortMethod;
     }
 
     public boolean checkImages(TreePath[] treePaths) {
@@ -66,9 +76,10 @@ public class Animation {
         }
 
         final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
+        final String[] sortedSelectedBandNames = getSortedBandNames(selectedBandNames, sortMethod);
 
-        for (int i = 0; i < selectedBandNames.length; i++) {
-            RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
+        for (int i = 0; i < sortedSelectedBandNames.length; i++) {
+            RasterDataNode raster = product.getRasterDataNode(sortedSelectedBandNames[i]);
             ProductSceneViewTopComponent tc = OpenImageViewAction.getProductSceneViewTopComponent(raster);
             if (tc == null) {
                 return false;
@@ -76,6 +87,93 @@ public class Animation {
         }
         return true;
     }
+
+
+
+
+    public static String[] getSortedBandNames(String[] bandNames, String sort_type) {
+
+        if (ImageAnimatorDialog.SORT_BY_BANDNAME.equals(sort_type)) {
+            Arrays.sort(bandNames);
+            return bandNames;
+        }
+
+
+        ArrayList<Band> unsortedBandsArrayList = new ArrayList<Band>();
+
+        for (String bandName : bandNames) {
+            Band band = SnapApp.getDefault().getSelectedProductSceneView().getProduct().getBand(bandName);
+            if (band != null) {
+                unsortedBandsArrayList.add(band);
+            }
+        }
+
+
+        Band[] unsortedBandsArray = new Band[unsortedBandsArrayList.size()];
+        unsortedBandsArrayList.toArray(unsortedBandsArray);
+
+
+        Band[] sortedBandsArray = getSortedBands(unsortedBandsArray, sort_type);
+
+
+        ArrayList<String> sortedBandNamesArrayList = new ArrayList<String>();
+
+        for (Band band : sortedBandsArray) {
+            sortedBandNamesArrayList.add(band.getName());
+        }
+
+        String[] sortedBandNamesArray = new String[sortedBandNamesArrayList.size()];
+        sortedBandNamesArrayList.toArray(sortedBandNamesArray);
+
+        return sortedBandNamesArray;
+    }
+
+
+    public static Band[] getSortedBands(Band[] bands, String sort_type) {
+
+        ArrayList<Band> bandsArrayUnsortedList = new ArrayList<Band>();
+        ArrayList<Band> bandsArraySortedList = new ArrayList<Band>();
+
+        for (Band band : bands) {
+            if (band != null) {
+                bandsArrayUnsortedList.add(band);
+            }
+        }
+
+        while (bandsArrayUnsortedList.size() > 1) {
+            Band minBand = null;
+
+            for (Band band1 : bandsArrayUnsortedList) {
+                if (minBand == null) {
+                    minBand = band1;
+                } else {
+                    if (ImageAnimatorDialog.SORT_BY_ANGLE.equals(sort_type)) {
+                        if (band1.getAngularValue() < minBand.getAngularValue()) {
+                            minBand = band1;
+                        }
+                    } else if (ImageAnimatorDialog.SORT_BY_WAVELENGTH.equals(sort_type)) {
+                        if (band1.getSpectralWavelength() < minBand.getSpectralWavelength()) {
+                            minBand = band1;
+                        }
+                    } else {
+
+                    }
+                }
+            }
+            bandsArrayUnsortedList.remove(minBand);
+            bandsArraySortedList.add(minBand);
+        }
+
+        for (Band band2 : bandsArrayUnsortedList) {
+            bandsArraySortedList.add(band2);
+        }
+
+        Band[] sortedBandsArray = new Band[bandsArraySortedList.size()];
+        bandsArraySortedList.toArray(sortedBandsArray);
+
+        return sortedBandsArray;
+    }
+
 
     public void createImages(TreePath[] treePaths) {
 
@@ -137,24 +235,44 @@ public class Animation {
         }
 
         final String[] selectedBandNames = selectedBandsList.toArray(new String[0]);
-        final RenderedImage[] renderedImages = new RenderedImage[selectedBandNames.length];
-        final RasterDataNode[] rasters = new RasterDataNode[selectedBandNames.length];
+        final String[] sortedSelectedBandNames = getSortedBandNames(selectedBandNames, sortMethod);
+
+        final RenderedImage[] renderedImages = new RenderedImage[sortedSelectedBandNames.length];
+        final RasterDataNode[] rasters = new RasterDataNode[sortedSelectedBandNames.length];
         ProductSceneView myView = null;
         RenderedImage renderedImage;
 
-        for (int i = 0; i < selectedBandNames.length; i++) {
-            RasterDataNode raster = product.getRasterDataNode(selectedBandNames[i]);
+        for (int i = 0; i < sortedSelectedBandNames.length; i++) {
+            RasterDataNode raster = product.getRasterDataNode(sortedSelectedBandNames[i]);
             OpenImageViewAction.openImageView(raster);
             rasters[i] = raster;
         }
         ImageIcon[] images = new ImageIcon[renderedImages.length];
-        for (int i = 0; i < selectedBandNames.length; i++) {
+        for (int i = 0; i < sortedSelectedBandNames.length; i++) {
             myView = getProductSceneView(rasters[i]);
             renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
             renderedImages[i] = renderedImage;
             images[i] = new ImageIcon((BufferedImage) renderedImage);
+            images[i].setDescription(rasters[i].getName());
         }
         return images;
+//        return sortImages(images);
+    }
+
+    private ImageIcon[] sortImages(ImageIcon[] images){
+        ImageIcon[] sortedImages = new ImageIcon[images.length];
+        String[] imageNames = new String[images.length];
+        HashMap<String, ImageIcon> sortedImagesHashMap = new HashMap<>(images.length);
+
+        for (int i = 0; i < images.length; i++) {
+             imageNames[i] = images[i].getDescription();
+             sortedImagesHashMap.put(images[i].getDescription(), images[i]);
+        }
+        Arrays.sort(imageNames);
+        for (int i = 0; i < images.length; i++) {
+            sortedImages[i] = sortedImagesHashMap.get(imageNames[i]);
+        }
+        return sortedImages;
     }
 
     private static ProductSceneImage createProductSceneImage(final RasterDataNode raster, ProductSceneView existingView, com.bc.ceres.core.ProgressMonitor pm) {

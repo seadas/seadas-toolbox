@@ -4,7 +4,7 @@
         "http://java.sun.com/products/javahelp/helpset_2_0.dtd">
 
 <helpset version="2.0">
-    <title>Contour Lines Help</title>
+    <title>Image Animator Help</title>
     <maps>
         <homeID>top</homeID>
         <mapref location="map.jhm"/>

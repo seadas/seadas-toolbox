@@ -35,7 +35,7 @@ public class ImageAnimatorDialog extends JDialog {
     static final String NEW_BAND_SELECTED_PROPERTY = "newBandSelected";
     static final String DELETE_BUTTON_PRESSED_PROPERTY = "deleteButtonPressed";
     private Component helpButton = null;
-    private final static String helpId = "imageAnimatorLinesHelp";
+    private final static String helpId = "imageAnimatorHelp";
     private final static String HELP_ICON = "icons/Help24.gif";
 
     private Product product;
@@ -52,11 +52,18 @@ public class ImageAnimatorDialog extends JDialog {
     JCheckBoxTree bandNamesTree;
 
     JRadioButton bandImages = new JRadioButton("Band Images",true);
+    JComboBox sortMethodJComboBox = new JComboBox();
     JRadioButton angularView = new JRadioButton("Angular View");
     JRadioButton spectrumView = new JRadioButton("Spectrum View");
     ButtonGroup buttonGroup = new ButtonGroup();
     JButton animateImagesButton = new JButton("Animate Images");
     JButton createImagesButton = new JButton("Create Images");
+
+    public static String SORT_BY_WAVELENGTH = "Sort by Wavelength";
+    public static String SORT_BY_ANGLE = "Sort by Angle";
+    public static String SORT_BY_BANDNAME = "Sort by Band Name";
+    public static String DEFAULT_SORT_BY = SORT_BY_BANDNAME;
+    String sortMethod;
 
     private boolean imageAnimatorCanceled;
 
@@ -234,6 +241,7 @@ public class ImageAnimatorDialog extends JDialog {
             public void checkStateChanged(JCheckBoxTree.CheckChangeEvent event) {
                 TreePath[] treePath = bandNamesTree.getCheckedPaths();
                 Animation animation = new Animation();
+                animation.setSortMethod((String) sortMethodJComboBox.getSelectedItem());
                 boolean imageOpened = animation.checkImages(treePath);
                 if (!imageOpened) {
                     createImagesButton.setEnabled(true);
@@ -288,17 +296,34 @@ public class ImageAnimatorDialog extends JDialog {
         bandImages.addActionListener(actionListener);
         angularView.addActionListener(actionListener);
         spectrumView.addActionListener(actionListener);
-
+        sortMethodJComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sortMethod = (String) sortMethodJComboBox.getSelectedItem();
+            }
+        });
 //        bandImages.setForeground(Color.BLUE);
 //        bandImages.setBackground(Color.YELLOW);
 //        bandImages.setFont(new java.awt.Font("Calibri", Font.BOLD, 16));
 
         bandImages.setToolTipText("Select this option if you want to animate image for multiple bands");
 
+
+        sortMethodJComboBox = new JComboBox();
+        sortMethodJComboBox.setEditable(false);
+        sortMethodJComboBox.addItem(SORT_BY_ANGLE);
+        sortMethodJComboBox.addItem(SORT_BY_WAVELENGTH);
+        sortMethodJComboBox.addItem(SORT_BY_BANDNAME);
+        sortMethodJComboBox.setSelectedItem(DEFAULT_SORT_BY);
+        sortMethodJComboBox.setName("sortMethodJComboBox");
+        sortMethodJComboBox.setToolTipText("Band sorting for animation");
+
+
         imageTypePanel.add(imageTypePanelLable, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         imageTypePanel.add(bandImages, new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        imageTypePanel.add(angularView, new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        imageTypePanel.add(spectrumView,  new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        imageTypePanel.add(sortMethodJComboBox, new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        imageTypePanel.add(angularView, new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        imageTypePanel.add(spectrumView,  new ExGridBagConstraints(1, 4, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
 
         buttonGroup.add(bandImages);
@@ -339,6 +364,7 @@ public class ImageAnimatorDialog extends JDialog {
                     imageAnimatorCanceled = false;
                     TreePath[] treePath = bandNamesTree.getCheckedPaths();
                     Animation animation = new Animation();
+                    animation.setSortMethod((String) sortMethodJComboBox.getSelectedItem());
                     animation.createImages(treePath);
                     animateImagesButton.setEnabled(true);
                     createImagesButton.setEnabled(false);
@@ -358,6 +384,7 @@ public class ImageAnimatorDialog extends JDialog {
                                                     TreePath[] treePath = bandNamesTree.getCheckedPaths();
 
                                                     Animation animation = new Animation();
+                                                    animation.setSortMethod((String) sortMethodJComboBox.getSelectedItem());
                                                     ImageIcon[] images = animation.openImages(treePath);
                                                     AnimationWithSpeedControl.animate(images);
                                                     animateImagesButton.setEnabled(true);
