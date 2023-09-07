@@ -1,0 +1,85 @@
+<!--
+  ~ Copyright (C) 2010 Brockmann Consult GmbH (info@brockmann-consult.de)
+  ~
+  ~ This program is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the Free
+  ~ Software Foundation; either version 3 of the License, or (at your option)
+  ~ any later version.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  ~ more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, see http://www.gnu.org/licenses/
+  -->
+
+<html>
+<head>
+    <title>Sentinel Toolbox Help - The Spectrum View Animation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            The Spectrum View Animation
+        </td>
+        <td class="header" align="right">
+            <a href="../general/SeaDASOverview.html">
+                <img src="../images/SeaDASHeader.png" border="0"></a></td>
+    </tr>
+</table>
+
+<p>
+    If you have opened a data product which contains spectral bands, you can use the spectrum view
+    animation to animate the spectrum view for a given pixel position. <br>
+    <p align="center"><img src="../images/image_animator_dialog.png"></p>
+    Choosing "Spectrum View" on the above Image Animator GUI opens a view which looks similar to this one:
+</p>
+
+    <p align="center"><img src="../images/spectrum_view_animation.png"></p>
+
+<p>
+    Note that the spectrum view animation can only display the intensities of <i>spectral</i> bands and animate the spectrum view.
+    The spectrum view will remain empty for products without any spectral bands.
+    By clicking <img src="../images/Filter24.gif"> you open the Spectrum Chooser
+    which allows you to define which spectra or bands to show.
+<p align="center"><img src="../images/spectrum_chooser2.png"></p>
+    You can also use the Spectrum Chooser to change the symbol and line style
+    of a spectrum.
+</p>
+
+<p class="inote">
+    <b>Tip:</b> If you press the <code>SHIFT</code> key while moving the mouse cursor, the Sentinel Toolbox adjusts the axes to the local
+    values at the current pixel position, if you release the <code>SHIFT</code> key again, then the min/max are accumulated
+    again.
+</p>
+
+<p>In the following, the tool buttons of the spectrum view animation are explained.<br><br>
+
+<table cellpadding=2 cellspacing=0 border=0>
+    <tr>
+        <td><img src="../images/Filter24.gif"></td>
+        <td>Opens the Spectrum Chooser, which allows you to choose which spectra
+        and bands to display and to alter their appearance.</td>
+    </tr>
+    <tr>
+        <td><img src="../images/PinSpectra24.gif"></td>
+        <td>Start to animate the spectrum views of the chosen bands.</td>
+    </tr>
+    <tr>
+        <td><img src="../images/SpectrumGrid24.gif"></td>
+        <td>Switches the grid lines of the diagram on and off.</td>
+    </tr>
+    <tr>
+        <td><img src="../images/Help22.png"></td>
+        <td>Displays this help page.</td>
+    </tr>
+</table>
+
+<hr>
+</body>
+</html>
