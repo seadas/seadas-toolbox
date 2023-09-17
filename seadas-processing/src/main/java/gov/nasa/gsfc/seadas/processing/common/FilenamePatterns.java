@@ -125,6 +125,7 @@ public class FilenamePatterns {
 
             if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) || iFileInfo.isMissionId(MissionInfo.Id.MODIST)) {
                 String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
+                tmpOFile = tmpOFile.lastIndexOf("/") != -1 ? tmpOFile.substring(tmpOFile.lastIndexOf("/") + 1) : tmpOFile;
                 StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
                 possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
             } else if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)
