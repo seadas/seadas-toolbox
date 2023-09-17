@@ -104,17 +104,17 @@ public class OCSSWRemoteImpl {
 
     public void executeProgram(String jobId, JsonObject jsonObject) {
         programName = SQLiteJDBC.getProgramName(jobId);
-
+        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
 
-        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), jobId);
+        executeProcessInWorkingDirectory(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), workingFileDir, jobId);
     }
 
     public void executeProgramOnDemand(String jobId, String programName, JsonObject jsonObject) {
 
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
-
-        executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), jobId);
+        String workingFileDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
+        executeProcessInWorkingDirectory(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), workingFileDir, jobId);
     }
 
     public Process executeUpdateLutsProgram(String jobId, JsonObject jsonObject)  {
@@ -429,7 +429,7 @@ public class OCSSWRemoteImpl {
         }
     }
 
-    public void executeProcess(String[] commandArray, String jobId) {
+    public void executeProcessInWorkingDirectory(String[] commandArray, String workingDir,String jobId) {
 
         debug("command array content: ");
         for (int j = 0; j < commandArray.length; j++) {
@@ -442,6 +442,12 @@ public class OCSSWRemoteImpl {
             @Override
             protected Object doInBackground() throws Exception {
                 ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+
+                Map<String, String> env = processBuilder.environment();
+
+                env.put("PWD", workingDir);
+                processBuilder.directory(new File(workingDir));
+
                 Process process = null;
                 try {
                     process = processBuilder.start();
