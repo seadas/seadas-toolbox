@@ -16,6 +16,11 @@ import java.util.GregorianCalendar;
 public class FilenamePatterns {
 
 
+
+    public static final String GEO_LOCATE_PROGRAM_NAME_VIIRS = "geolocate_viirs";
+    public static final String GEO_LOCATE_PROGRAM_NAME_MODIS = "modis_GEO";
+    public static final String GEO_LOCATE_PROGRAM_NAME_HAWKEYE = "geolocate_hawkeye";
+
 //    static public FileInfo getOFileInfo(FileInfo fileInfo) {
 //        return new FileInfo(fileInfo.getFile().getParent(), getOFile(fileInfo).getAbsolutePath(), false);
 //    }
@@ -76,7 +81,13 @@ public class FilenamePatterns {
     }
 
 
-    static public FileInfo getGeoFileInfo(FileInfo fileInfo, OCSSW ocssw) {
+    /**
+     * This program is deprecated as of 9/18/2023
+     * @param fileInfo
+     * @param ocssw
+     * @return
+     */
+    static public FileInfo getGeoFileInfoOriginal(FileInfo fileInfo, OCSSW ocssw) {
         if (fileInfo == null) {
             return null;
         }
@@ -88,6 +99,40 @@ public class FilenamePatterns {
         }
 
         return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo, ocssw).getAbsolutePath(), false, ocssw);
+    }
+
+    static public FileInfo getGeoFileInfo(FileInfo iFileInfo, OCSSW ocssw) {
+
+
+        String geoProgramName = new String();
+        if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) || iFileInfo.isMissionId(MissionInfo.Id.MODIST)) {
+            geoProgramName = GEO_LOCATE_PROGRAM_NAME_MODIS;
+
+        } else if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)
+                || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ2)
+                || iFileInfo.isMissionId(MissionInfo.Id.VIIRSN)) {
+            geoProgramName = GEO_LOCATE_PROGRAM_NAME_VIIRS;
+;
+        } else if (iFileInfo.isMissionId(MissionInfo.Id.HAWKEYE)) {
+            geoProgramName = GEO_LOCATE_PROGRAM_NAME_HAWKEYE;
+
+        }
+
+//        String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), geoProgramName);
+//        tmpOFile = tmpOFile.lastIndexOf(File.separator) != -1 ? tmpOFile.substring(tmpOFile.lastIndexOf(File.separator) + 1) : tmpOFile;
+//        StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
+//
+//
+//        possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
+
+        //File geoFile = getGeoFile(fileInfo, ocssw);
+        File geoFile = new File(ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), geoProgramName));
+
+        if (geoFile == null) {
+            return null;
+        } else {
+            return new FileInfo(iFileInfo.getFile().getParent(), geoFile.getAbsolutePath(), false, ocssw);
+        }
     }
 
 
