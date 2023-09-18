@@ -102,7 +102,7 @@ public class FilenamePatterns {
 
         String VIIRS_IFILE_PREFIX = "SVM01";
 
-        StringBuilder geofileDirectory = new StringBuilder(iFileInfo.getFile().getParent() + "/");
+        StringBuilder geofileDirectory = new StringBuilder(iFileInfo.getFile().getParent() + File.separator);
         StringBuilder geofileBasename = new StringBuilder();
         StringBuilder geofile = new StringBuilder();
         File geoFile = null;
@@ -125,7 +125,7 @@ public class FilenamePatterns {
 
             if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) || iFileInfo.isMissionId(MissionInfo.Id.MODIST)) {
                 String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), "modis_GEO");
-                tmpOFile = tmpOFile.lastIndexOf("/") != -1 ? tmpOFile.substring(tmpOFile.lastIndexOf("/") + 1) : tmpOFile;
+                tmpOFile = tmpOFile.lastIndexOf(File.separator) != -1 ? tmpOFile.substring(tmpOFile.lastIndexOf(File.separator) + 1) : tmpOFile;
                 StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
                 possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
             } else if (iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)
@@ -195,7 +195,7 @@ public class FilenamePatterns {
         }
 
 
-        StringBuilder ofile = new StringBuilder(iFile.getParent() + "/");
+        StringBuilder ofile = new StringBuilder(iFile.getParent() + File.separator);
 
         String yearString = iFile.getName().substring(11, 15);
         String monthString = iFile.getName().substring(15, 17);
@@ -247,7 +247,7 @@ public class FilenamePatterns {
 
         }
 
-        StringBuilder ofile = new StringBuilder(iFile.getParent() + "/" + ofileBasename.toString());
+        StringBuilder ofile = new StringBuilder(iFile.getParent() + File.separator + ofileBasename.toString());
 
         return new File(ofile.toString());
     }
@@ -266,7 +266,7 @@ public class FilenamePatterns {
 
         }
 
-        StringBuilder ofile = new StringBuilder(iFile.getParent() + "/" + ofileBasename.toString());
+        StringBuilder ofile = new StringBuilder(iFile.getParent() + File.separator + ofileBasename.toString());
 
         return new File(ofile.toString());
     }
