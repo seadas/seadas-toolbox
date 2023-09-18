@@ -156,17 +156,4 @@ public class ExtractorUI extends ProgramUIFactory {
         }
         return ifileName;
     }
-
-    private String getGeoLocateProgramName(String programName) {
-
-        String geoLocateProgramName = null;
-
-        if (programName.contains("modis")) {
-            geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_MODIS;
-        } else if (programName.contains("viirs")) {
-            geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_VIIRS;
-
-        }
-        return geoLocateProgramName;
-    }
 }
