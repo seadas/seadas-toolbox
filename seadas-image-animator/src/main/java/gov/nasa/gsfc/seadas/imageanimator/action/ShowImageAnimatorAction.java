@@ -36,8 +36,8 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
 
     Product product;
 //    private boolean enabled = false;
-    public static final String SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimator24.png";
-    public static final String LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimator24.png";
+    public static String SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
+    public static String LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
 
     private final Lookup lookup;
     private final Lookup.Result<ProductSceneView> viewResult;
@@ -64,9 +64,21 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
         SnapApp snapApp = SnapApp.getDefault();
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         ProductNodeGroup<Band> products = product.getBandGroup();
+        SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
+        LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
+        updateEnabledState();
+
+
         ImageAnimatorDialog imageAnimatorDialog = new ImageAnimatorDialog(product, getActiveBands(products));
         imageAnimatorDialog.setVisible(true);
         imageAnimatorDialog.dispose();
+        SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
+        LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
+        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
+        updateEnabledState();
     }
 
     private ArrayList<String> getActiveBands(ProductNodeGroup<Band> products) {
