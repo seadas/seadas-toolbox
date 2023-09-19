@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
+import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.*;
@@ -29,6 +30,7 @@ import java.util.prefs.Preferences;
 
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.PRODUCT_XML;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -498,15 +500,10 @@ public class OCSSWRemote extends OCSSW {
     }
 
     /**
-     * this method returns a command array for execution.
-     * the array is constructed using the paramList data and input/output files.
-     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
-     * assumption: order starts with 1
      *
      * @return
      */
-    @Override
-    public Process execute(ProcessorModel processorModel) {
+      public Process executeP(ProcessorModel processorModel) {
 
         this.processorModel = processorModel;
 
@@ -534,6 +531,12 @@ public class OCSSWRemote extends OCSSW {
             }
             return seadasProcess;
         }
+    }
+
+    public Process execute(ProcessorModel processorModel) {
+        setProgramName(processorModel.getProgramName());
+        setIfileName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+        return execute(getProgramCommandArray(processorModel));
     }
 
     public Process waitForServerExecution(Response response) {
@@ -981,6 +984,85 @@ public class OCSSWRemote extends OCSSW {
         return isAncFile;
     }
 
+
+    /**
+     * this method returns a command array for execution.
+     * the array is constructed using the paramList data and input/output files.
+     * the command array structure is: full pathname of the program to be executed, input file name, params in the required order and finally the output file name.
+     * assumption: order starts with 1
+     *
+     * @return
+     */
+    public String[] getProgramCommandArray(ProcessorModel processorModel) {
+
+        String[] cmdArray;
+        String[] programNameArray = {processorModel.getProgramName()};
+        String[] cmdArrayForParams;
+
+        ParFileManager parFileManager = new ParFileManager(processorModel);
+
+        if (processorModel.acceptsParFile()) {
+            cmdArrayForParams = parFileManager.getCmdArrayWithParFile();
+
+        } else {
+            cmdArrayForParams = getCommandArrayParam(processorModel.getParamList());
+        }
+
+        commandArraySuffix = processorModel.getCmdArraySuffix();
+        //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
+        //TODO: for ocssw_install commandArrayPrefix has the program name with the file path, so it can't include programNameArray again
+        if (!processorModel.getProgramName().equals(OCSSW_INSTALLER_PROGRAM_NAME)) {
+            cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, cmdArrayForParams, commandArraySuffix);
+        } else {
+            cmdArray = SeadasArrayUtils.concatAll(commandArrayPrefix, cmdArrayForParams, commandArraySuffix);
+        }
+
+        // get rid of the null strings
+        ArrayList<String> cmdList = new ArrayList<String>();
+        for (String s : cmdArray) {
+            if (s != null) {
+                cmdList.add(s);
+            }
+        }
+        cmdArray = cmdList.toArray(new String[cmdList.size()]);
+
+        return cmdArray;
+    }
+
+
+    private String[] getCommandArrayParam(ParamList paramList) {
+
+        ArrayList<String> commandArrayList = new ArrayList<>();
+
+        Iterator<ParamInfo> itr = paramList.getParamArray().iterator();
+
+        ParamInfo option;
+        int optionOrder;
+        String optionValue;
+        int i = 0;
+        while (itr.hasNext()) {
+            option = itr.next();
+            optionOrder = option.getOrder();
+            optionValue = option.getValue();
+            if (option.getType() != ParamInfo.Type.HELP) {
+                if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
+                    if (option.getValue() != null && option.getValue().length() > 0) {
+                        commandArrayList.add(optionValue);
+                    }
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
+                    commandArrayList.add(option.getName() + "=" + optionValue);
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+                    if (option.getName() != null && option.getName().length() > 0) {
+                        commandArrayList.add(option.getName());
+                    }
+                }
+            }
+        }
+        String[] commandArrayParam = new String[commandArrayList.size()];
+        commandArrayParam = commandArrayList.toArray(commandArrayParam);
+        return commandArrayParam;
+    }
+
     private void prepareToRemoteExecute(String ifileName) {
         Response response;
         String fileExtensions = processorModel.getImplicitInputFileExtensions();
@@ -1115,7 +1197,31 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public Process execute(String[] commandArray) {
-        return null;
+
+        Process seadasProcess;
+
+        JsonObject commandArrayJsonObject = null;
+
+        programName = processorModel.getProgramName();
+
+        if (programName.equals(MLP_PROGRAM_NAME)) {
+            return executeMLP(processorModel);
+        } else {
+            if (processorModel.acceptsParFile() ) {
+                String parString = processorModel.getParamList().getParamString("\n");
+                File parFile = writeParFile(convertParStringForRemoteServer(parString));
+                uploadParFile(parFile);
+                Response response = target.path("ocssw").path("executeParFile").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(parFile.getName(), MediaType.TEXT_PLAIN));
+                seadasProcess = waitForServerExecution(response);
+            } else {
+                commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+                //this is to make sure that all necessary files are uploaded to the server before execution
+                prepareToRemoteExecute(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+                Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+                seadasProcess = waitForServerExecution(response);
+            }
+            return seadasProcess;
+        }
     }
 
     @Override
