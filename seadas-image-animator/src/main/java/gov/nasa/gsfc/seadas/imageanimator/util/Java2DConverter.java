@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.contour.util;
+package gov.nasa.gsfc.seadas.imageanimator.util;
 
 /**
  * Created by IntelliJ IDEA.
