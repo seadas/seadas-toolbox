@@ -535,6 +535,8 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
         if (!isShowingSpectraForAllPins()) {
             showSpectraForAllPinsButton.setSelected(true);
         }
+        chartHandler.updateData();
+        chartHandler.updateInitialChart();
         ImageIcon[] images = new ImageIcon[spectra.size()];
         for (int i = 0; i < spectra.size(); i++) {
             List<DisplayableSpectrum> singleSpectrum = Collections.singletonList(spectra.get(i));
@@ -780,13 +782,26 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
             chart.getXYPlot().clearAnnotations();
         }
 
+        private void updateInitialChart() {
+            if (chartUpdater.isDatasetEmpty()) {
+                setEmptyPlot();
+                return;
+            }
+//            List<DisplayableAngularview> angularViews = getSelectedAngularViews();
+//            chartUpdater.updateChart(chart, angularViews);
+            chartUpdater.updatePlotBounds(chartUpdater.dataset.getDomainBounds(true),
+                    chart.getXYPlot().getDomainAxis(), 0);
+            chartUpdater.updatePlotBounds(chartUpdater.dataset.getRangeBounds(true),
+                    chart.getXYPlot().getRangeAxis(), 1);
+//            chart.getXYPlot().clearAnnotations();
+        }
         private void updateAnimationChart(List<DisplayableSpectrum> singleSpectrum) {
             if (chartUpdater.isDatasetEmpty()) {
                 setEmptyPlot();
                 return;
             }
 //            List<DisplayableSpectrum> spectra = getSelectedSpectra();
-            chartUpdater.updateChart(chart, singleSpectrum);
+            chartUpdater.updateAnimationChart(chart, singleSpectrum);
             chart.getXYPlot().clearAnnotations();
         }
 
@@ -897,16 +912,32 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
 
         private void updateChart(JFreeChart chart, List<DisplayableSpectrum> spectra) {
             final XYPlot plot = chart.getXYPlot();
-            if (!chartHandler.isAutomaticDomainAdjustmentSet() && !domainAxisAdjustmentIsFrozen) {
-                isCodeInducedAxisChange = true;
-                updatePlotBounds(dataset.getDomainBounds(true), plot.getDomainAxis(), domain_axis_index);
-                isCodeInducedAxisChange = false;
-            }
-            if (!chartHandler.isAutomaticRangeAdjustmentSet() && !rangeAxisAdjustmentIsFrozen) {
-                isCodeInducedAxisChange = true;
-                updatePlotBounds(dataset.getRangeBounds(true), plot.getRangeAxis(), range_axis_index);
-                isCodeInducedAxisChange = false;
-            }
+//            if (!chartHandler.isAutomaticDomainAdjustmentSet() && !domainAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getDomainBounds(true), plot.getDomainAxis(), domain_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
+//            if (!chartHandler.isAutomaticRangeAdjustmentSet() && !rangeAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getRangeBounds(true), plot.getRangeAxis(), range_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
+            plot.setDataset(dataset);
+            setPlotUnit(spectra, plot);
+        }
+
+        private void updateAnimationChart(JFreeChart chart, List<DisplayableSpectrum> spectra) {
+            final XYPlot plot = chart.getXYPlot();
+//            if (!chartHandler.isAutomaticDomainAdjustmentSet() && !domainAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getDomainBounds(true), plot.getDomainAxis(), domain_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
+//            if (!chartHandler.isAutomaticRangeAdjustmentSet() && !rangeAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getRangeBounds(true), plot.getRangeAxis(), range_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
             plot.setDataset(dataset);
             setPlotUnit(spectra, plot);
         }

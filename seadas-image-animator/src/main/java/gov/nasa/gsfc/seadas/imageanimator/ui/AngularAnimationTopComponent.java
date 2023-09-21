@@ -578,6 +578,8 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         if (!isShowingAngularViewsForAllPins()) {
             showAngularViewsForAllPinsButton.setSelected(true);
         }
+        chartHandler.updateData();
+        chartHandler.updateInitialChart();
         ImageIcon[] images = new ImageIcon[angularViews.size()];
         for (int i = 0; i < angularViews.size(); i++) {
             List<DisplayableAngularview> singleAngularView = Collections.singletonList(angularViews.get(i));
@@ -861,13 +863,27 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             chart.getXYPlot().clearAnnotations();
         }
 
+        private void updateInitialChart() {
+            if (chartUpdater.isDatasetEmpty()) {
+                setEmptyPlot();
+                return;
+            }
+//            List<DisplayableAngularview> angularViews = getSelectedAngularViews();
+//            chartUpdater.updateChart(chart, angularViews);
+            chartUpdater.updatePlotBounds(chartUpdater.dataset.getDomainBounds(true),
+                    chart.getXYPlot().getDomainAxis(), 0);
+            chartUpdater.updatePlotBounds(chartUpdater.dataset.getRangeBounds(true),
+                    chart.getXYPlot().getRangeAxis(), 1);
+//            chart.getXYPlot().clearAnnotations();
+        }
+
         private void updateAnimationChart(List<DisplayableAngularview> singleAngularViews) {
             if (chartUpdater.isDatasetEmpty()) {
                 setEmptyPlot();
                 return;
             }
 //            List<DisplayableAngularview> angularViews = getSelectedAngularViews();
-            chartUpdater.updateChart(chart, singleAngularViews);
+            chartUpdater.updateAnimationChart(chart, singleAngularViews);
             chart.getXYPlot().clearAnnotations();
         }
 
@@ -977,16 +993,46 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
 
         private void updateChart(JFreeChart chart, List<DisplayableAngularview> angularViews) {
             final XYPlot plot = chart.getXYPlot();
-            if (!chartHandler.isAutomaticDomainAdjustmentSet() && !domainAxisAdjustmentIsFrozen) {
-                isCodeInducedAxisChange = true;
-                updatePlotBounds(dataset.getDomainBounds(true), plot.getDomainAxis(), domain_axis_index);
-                isCodeInducedAxisChange = false;
+//            if (!chartHandler.isAutomaticDomainAdjustmentSet() && !domainAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getDomainBounds(true), plot.getDomainAxis(), domain_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
+//            if (!chartHandler.isAutomaticRangeAdjustmentSet() && !rangeAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getRangeBounds(true), plot.getRangeAxis(), range_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
+            String oldLabel = plot.getDomainAxis().getLabel();
+            String newLabel;
+            if (useSensorZenithButton.isSelected()) {
+                newLabel = "Sensor Zenith Angle";
+            } else if (useSensorAzimuthButton.isSelected()){
+                newLabel = "Sensor Azimuth Angle";
+            } else if (useScatteringAngleButton.isSelected()){
+                newLabel = "Scattering Angle";
+            } else {
+                newLabel = "View Angle";
             }
-            if (!chartHandler.isAutomaticRangeAdjustmentSet() && !rangeAxisAdjustmentIsFrozen) {
-                isCodeInducedAxisChange = true;
-                updatePlotBounds(dataset.getRangeBounds(true), plot.getRangeAxis(), range_axis_index);
-                isCodeInducedAxisChange = false;
+            if (!newLabel.equals(oldLabel)) {
+                plot.getDomainAxis().setLabel(newLabel);
             }
+            plot.setDataset(dataset);
+            setPlotUnit(angularViews, plot);
+        }
+
+        private void updateAnimationChart(JFreeChart chart, List<DisplayableAngularview> angularViews) {
+            final XYPlot plot = chart.getXYPlot();
+//            if (!chartHandler.isAutomaticDomainAdjustmentSet() && !domainAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getDomainBounds(true), plot.getDomainAxis(), domain_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
+//            if (!chartHandler.isAutomaticRangeAdjustmentSet() && !rangeAxisAdjustmentIsFrozen) {
+//                isCodeInducedAxisChange = true;
+//                updatePlotBounds(dataset.getRangeBounds(true), plot.getRangeAxis(), range_axis_index);
+//                isCodeInducedAxisChange = false;
+//            }
             String oldLabel = plot.getDomainAxis().getLabel();
             String newLabel;
             if (useSensorZenithButton.isSelected()) {
