@@ -251,16 +251,9 @@ public class ImageAnimatorDialog extends JDialog {
                     animateImagesButton.setEnabled(true);
                 }
                 repaint();
-//                System.out.println("event");
-//                TreePath[] paths = bandNamesTree.getCheckedPaths();
-//                for (TreePath tp : paths) {
-//                    for (Object pathPart : tp.getPath()) {
-//                        System.out.print(pathPart + ",");
-//                    }
-//                    System.out.println();
-//                }
             }
         });
+        bandNamesTree.setToolTipText("Check bands to be animated");
 
         add(mainPanel);
 
@@ -284,6 +277,9 @@ public class ImageAnimatorDialog extends JDialog {
         angularView.setBounds(120, 30, 120, 50);
         spectrumView.setBounds(120, 30, 120, 50);
 
+        angularView.setToolTipText("Opens a window for angular view animation");
+        spectrumView.setToolTipText("Opens a window for spectrum view animation");
+
         bandImages.setActionCommand("bandImages");
         angularView.setActionCommand("angularView");
         spectrumView.setActionCommand("spectrumView");
@@ -292,7 +288,6 @@ public class ImageAnimatorDialog extends JDialog {
         imageTypePanelLable.setBounds(120, 30, 120, 50);
 
         RadioButtonActionListener actionListener = new RadioButtonActionListener();
-//
         bandImages.addActionListener(actionListener);
         angularView.addActionListener(actionListener);
         spectrumView.addActionListener(actionListener);
@@ -358,6 +353,8 @@ public class ImageAnimatorDialog extends JDialog {
         JPanel controllerPanel = new JPanel(new GridBagLayout());
 
         createImagesButton.setEnabled(true);
+        createImagesButton.setToolTipText("Create images selected for animation");
+
         createImagesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 if (buttonGroup.getSelection().getActionCommand().equals(bandImages.getActionCommand())) {
@@ -373,6 +370,7 @@ public class ImageAnimatorDialog extends JDialog {
             }
         });
 
+        animateImagesButton.setToolTipText("Animate images selected for animation if they are opened");
         animateImagesButton.setPreferredSize(animateImagesButton.getPreferredSize());
         animateImagesButton.setMinimumSize(animateImagesButton.getPreferredSize());
         animateImagesButton.setMaximumSize(animateImagesButton.getPreferredSize());
@@ -438,11 +436,7 @@ public class ImageAnimatorDialog extends JDialog {
                 angularAnimationDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
                 angularAnimationDialog.getContentPane().add(angularAnimationTopComponent);
-                //Todo (For Bing) -- decide the size
-//                angularAnimationDialog.setPreferredSize(new Dimension(350, 250));
                 angularAnimationDialog.setPreferredSize(angularAnimationTopComponent.getPreferredSize());
-//                angularAnimationDialog.setMinimumSize(angularAnimationDialog.getPreferredSize());
-//                angularAnimationDialog.setMaximumSize(angularAnimationDialog.getPreferredSize());
                 angularAnimationDialog.setLocationRelativeTo(null);
                 angularAnimationDialog.pack();
                 angularAnimationDialog.setVisible(true);
@@ -458,11 +452,7 @@ public class ImageAnimatorDialog extends JDialog {
                 spectrumAnimationDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
                 spectrumAnimationDialog.getContentPane().add(spectrumAnimationTopComponent);
-                //Todo (For Bing) -- decide the size
-//                angularAnimationDialog.setPreferredSize(new Dimension(350, 250));
                 spectrumAnimationDialog.setPreferredSize(spectrumAnimationTopComponent.getPreferredSize());
-//                angularAnimationDialog.setMinimumSize(angularAnimationDialog.getPreferredSize());
-//                angularAnimationDialog.setMaximumSize(angularAnimationDialog.getPreferredSize());
                 spectrumAnimationDialog.setLocationRelativeTo(null);
                 spectrumAnimationDialog.pack();
                 spectrumAnimationDialog.setVisible(true);
