@@ -87,7 +87,7 @@ public class FilenamePatterns {
      * @param ocssw
      * @return
      */
-    static public FileInfo getGeoFileInfoOriginal(FileInfo fileInfo, OCSSW ocssw) {
+    static public FileInfo getGeoFileInfo(FileInfo fileInfo, OCSSW ocssw) {
         if (fileInfo == null) {
             return null;
         }
@@ -101,7 +101,7 @@ public class FilenamePatterns {
         return new FileInfo(fileInfo.getFile().getParent(), getGeoFile(fileInfo, ocssw).getAbsolutePath(), false, ocssw);
     }
 
-    static public FileInfo getGeoFileInfo(FileInfo iFileInfo, OCSSW ocssw) {
+    static public FileInfo getGeoFileInfoNew(FileInfo iFileInfo, OCSSW ocssw) {
 
 
         String geoProgramName = new String();
@@ -117,13 +117,14 @@ public class FilenamePatterns {
             geoProgramName = GEO_LOCATE_PROGRAM_NAME_HAWKEYE;
 
         }
+        StringBuilder geofileDirectory = new StringBuilder(iFileInfo.getFile().getParent() + File.separator);
 
-//        String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), geoProgramName);
-//        tmpOFile = tmpOFile.lastIndexOf(File.separator) != -1 ? tmpOFile.substring(tmpOFile.lastIndexOf(File.separator) + 1) : tmpOFile;
-//        StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
-//
-//
-//        possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
+        String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), geoProgramName);
+        tmpOFile = tmpOFile.lastIndexOf(File.separator) != -1 ? tmpOFile.substring(tmpOFile.lastIndexOf(File.separator) + 1) : tmpOFile;
+        StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
+
+
+        //possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
 
         //File geoFile = getGeoFile(fileInfo, ocssw);
         File geoFile = new File(ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), geoProgramName));
