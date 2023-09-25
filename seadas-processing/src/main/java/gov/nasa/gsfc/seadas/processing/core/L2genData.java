@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWExecutionMonitor;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.core.util.SystemUtils;
@@ -1811,8 +1812,11 @@ public class L2genData implements SeaDASProcessorModel {
             if (getMode() != Mode.L2GEN_AQUARIUS) {
                 Process p = ocssw.executeSimple(processorModel);
                 ocssw.waitForProcess();
-                File tmpParFileToDel = new File (ParFileManager.tmpParFileToDelString);
-                tmpParFileToDel.delete();
+                if (ocssw instanceof OCSSWLocal) {
+                    File tmpParFileToDel = new File(ParFileManager.tmpParFileToDelString);
+                    tmpParFileToDel.delete();
+                }
+
                 if (ocssw.getProcessExitValue() != 0) {
                     throw new IOException("l2gen failed to run");
                 }

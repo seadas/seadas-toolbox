@@ -533,10 +533,41 @@ public class OCSSWRemote extends OCSSW {
         }
     }
 
-    public Process execute(ProcessorModel processorModel) {
+    public Process executeSimilartoLocal(ProcessorModel processorModel) {
         setProgramName(processorModel.getProgramName());
         setIfileName(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
         return execute(getProgramCommandArray(processorModel));
+    }
+
+    public Process execute(ProcessorModel processorModel) {
+
+        this.processorModel = processorModel;
+
+        Process seadasProcess;
+
+        JsonObject commandArrayJsonObject = null;
+
+        programName = processorModel.getProgramName();
+
+        if (programName.equals(MLP_PROGRAM_NAME)) {
+            return executeMLP(processorModel);
+        } else {
+            //todo implement par file uploading for programs other than mlp
+            if (processorModel.acceptsParFile() ) {
+                String parString = processorModel.getParamList().getParamString("\n");
+                File parFile = writeParFile(convertParStringForRemoteServer(parString));
+                uploadParFile(parFile);
+                Response response = target.path("ocssw").path("executeParFile").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(parFile.getName(), MediaType.TEXT_PLAIN));
+                seadasProcess = waitForServerExecution(response);
+            } else {
+                commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+                //this is to make sure that all necessary files are uploaded to the server before execution
+                prepareToRemoteExecute(processorModel.getParamValue(processorModel.getPrimaryInputFileOptionName()));
+                Response response = target.path("ocssw").path("executeOcsswProgramOnDemand").path(jobId).path(programName).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+                seadasProcess = waitForServerExecution(response);
+            }
+            return seadasProcess;
+        }
     }
 
     public Process waitForServerExecution(Response response) {
@@ -579,6 +610,7 @@ public class OCSSWRemote extends OCSSW {
     }
     @Override
     public Process executeSimple(ProcessorModel processorModel) {
+
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
@@ -1007,7 +1039,6 @@ public class OCSSWRemote extends OCSSW {
         } else {
             cmdArrayForParams = getCommandArrayParam(processorModel.getParamList());
         }
-
         commandArraySuffix = processorModel.getCmdArraySuffix();
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
         //TODO: for ocssw_install commandArrayPrefix has the program name with the file path, so it can't include programNameArray again

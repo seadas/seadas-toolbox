@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWRemote;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,6 +89,10 @@ public class FilenamePatterns {
      * @return
      */
     static public FileInfo getGeoFileInfo(FileInfo fileInfo, OCSSW ocssw) {
+
+        if (ocssw instanceof OCSSWRemote) {
+            return getGeoFileInfoNew(fileInfo, ocssw);
+        }
         if (fileInfo == null) {
             return null;
         }
@@ -117,16 +122,7 @@ public class FilenamePatterns {
             geoProgramName = GEO_LOCATE_PROGRAM_NAME_HAWKEYE;
 
         }
-        StringBuilder geofileDirectory = new StringBuilder(iFileInfo.getFile().getParent() + File.separator);
 
-        String tmpOFile = ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), geoProgramName);
-        tmpOFile = tmpOFile.lastIndexOf(File.separator) != -1 ? tmpOFile.substring(tmpOFile.lastIndexOf(File.separator) + 1) : tmpOFile;
-        StringBuilder possibleNewGeofile = new StringBuilder(geofileDirectory + tmpOFile);
-
-
-        //possibleGeoFiles.add(new File(possibleNewGeofile.toString()));
-
-        //File geoFile = getGeoFile(fileInfo, ocssw);
         File geoFile = new File(ocssw.getOfileName(iFileInfo.getFile().getAbsolutePath(), geoProgramName));
 
         if (geoFile == null) {

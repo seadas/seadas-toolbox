@@ -668,7 +668,7 @@ public class GetSysInfoGUI {
                 printGeneralSystemInfo(ocsswDebug);
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
             } else {
-//            System.out.println("command is: " + command);
+            System.out.println("command is: " + command);
                 currentInfoLine = "";
                 try {
 
