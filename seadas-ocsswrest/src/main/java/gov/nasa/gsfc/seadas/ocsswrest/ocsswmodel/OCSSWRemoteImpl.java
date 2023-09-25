@@ -30,7 +30,7 @@ public class OCSSWRemoteImpl {
     final static String OCSSW_ROOT_PROPERTY = "ocsswroot";
     final static String SERVER_WORKING_DIRECTORY_PROPERTY = "serverWorkingDirectory";
 
-    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
+    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "get_output_name";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw";

@@ -22,7 +22,7 @@ public class OCSSWServerModel {
     public static final String OS_64BIT_ARCHITECTURE = "_64";
     public static final String OS_32BIT_ARCHITECTURE = "_32";
 
-    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
+    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "get_output_name";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     public static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
 

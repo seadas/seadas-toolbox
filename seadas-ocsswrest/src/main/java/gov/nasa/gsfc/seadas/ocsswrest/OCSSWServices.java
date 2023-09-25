@@ -33,7 +33,7 @@ import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.d
 public class OCSSWServices {
 
     private static final String OBPG_FILE_TYPE_PROGRAM_NAME = "obpg_file_type";
-    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name";
+    private static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "get_output_name";
     private static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
     private static String FILE_TABLE_NAME = "FILE_TABLE";
     private static String MISSION_TABLE_NAME = "MISSION_TABLE";
