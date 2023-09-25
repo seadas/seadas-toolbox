@@ -5,6 +5,7 @@ import org.esa.snap.rcp.SnapApp;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -32,54 +33,6 @@ public class AnimationWithSpeedControl extends JPanel
     public AnimationWithSpeedControl(){
 
     }
-//    public AnimationWithSpeedControl() {
-//        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-//
-//        delay = 1000 / FPS_INIT;
-//
-//        //Create the label.
-//        JLabel sliderLabel = new JLabel("Frames Per Second", JLabel.CENTER);
-//        sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-//
-//        //Create the slider.
-//        JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL,
-//                FPS_MIN, FPS_MAX, FPS_INIT);
-//
-//
-//        framesPerSecond.addChangeListener(this);
-//
-//        //Turn on labels at major tick marks.
-//
-//        framesPerSecond.setMajorTickSpacing(10);
-//        framesPerSecond.setMinorTickSpacing(1);
-//        framesPerSecond.setPaintTicks(true);
-//        framesPerSecond.setPaintLabels(true);
-//        framesPerSecond.setBorder(
-//                BorderFactory.createEmptyBorder(0,0,10,0));
-//        Font font = new Font("Serif", Font.ITALIC, 15);
-//        framesPerSecond.setFont(font);
-//
-//        //Create the label that displays the animation.
-//        picture = new JLabel();
-//        picture.setHorizontalAlignment(JLabel.CENTER);
-//        picture.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        picture.setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createLoweredBevelBorder(),
-//                BorderFactory.createEmptyBorder(10,10,10,10)));
-//        updatePicture(0); //display first frame
-//
-//        //Put everything together.
-//        add(sliderLabel);
-//        add(framesPerSecond);
-//        add(picture);
-//        setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-//
-//        //Set up a timer that calls this object's action handler.
-//        timer = new Timer(delay, this);
-//        timer.setInitialDelay(delay * 7); //We pause animation twice per cycle
-//        //by restarting the timer
-//        timer.setCoalesce(true);
-//    }
 
     public AnimationWithSpeedControl(ImageIcon[] images) {
         NUM_FRAMES = images.length;
@@ -91,12 +44,13 @@ public class AnimationWithSpeedControl extends JPanel
         //Create the label.
         JLabel sliderLabel = new JLabel("Frames Per Second", JLabel.CENTER);
         sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JButton pauseButton = new JButton("Pause");
 
         //Create the slider.
         JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL,
                 FPS_MIN, FPS_MAX, FPS_INIT);
 
-
+        framesPerSecond.setToolTipText("Slider that controls the animation speed");
         framesPerSecond.addChangeListener(this);
 
         //Turn on labels at major tick marks.
@@ -133,13 +87,6 @@ public class AnimationWithSpeedControl extends JPanel
     }
 
     protected void updatePicture(int frameNum) {
-        //Get the image if we haven't already.
-//        if (images[frameNumber] == null) {
-//            images[frameNumber] = createImageIcon("/images/A2020113184000_L2_LAC_OC_"
-//                    + frameNumber
-//                    + ".png");
-//        }
-
         //Set the image.
         if (images[frameNumber] != null) {
             picture.setIcon(images[frameNumber]);
@@ -149,30 +96,6 @@ public class AnimationWithSpeedControl extends JPanel
         picture.repaint();
         this.repaint();
     }
-
-//    /** Add a listener for window events. */
-//    void addWindowListener(Window w) {
-//        w.addWindowListener(this);
-//    }
-//
-//    //React to window events.
-//    public void windowIconified(WindowEvent e) {
-//        stopAnimation();
-//    }
-//    public void windowDeiconified(WindowEvent e) {
-//        startAnimation();
-//    }
-//    public void windowOpened(WindowEvent e) {}
-//    public void windowClosing(WindowEvent e) {
-//        windowClosedBool = true;
-//        stopAnimation();
-//    }
-//    public void windowClosed(WindowEvent e) {
-//        windowClosedBool = true;
-//        stopAnimation();
-//    }
-//    public void windowActivated(WindowEvent e) {}
-//    public void windowDeactivated(WindowEvent e) {}
 
     /** Listen to the slider. */
     public void stateChanged(ChangeEvent e) {
@@ -289,13 +212,75 @@ public class AnimationWithSpeedControl extends JPanel
                 animator.startAnimation();
             }
         });
+        JPanel controllerPanel = new JPanel(new GridBagLayout());
+
+        JLabel filler = new JLabel("                                        ");
+
+        JButton pauseButton = new JButton("Pause");
+        pauseButton.setPreferredSize(pauseButton.getPreferredSize());
+        pauseButton.setToolTipText("Pause or Resume the animation");
+        pauseButton.setMinimumSize(pauseButton.getPreferredSize());
+        pauseButton.setMaximumSize(pauseButton.getPreferredSize());
+        pauseButton.addActionListener(new ActionListener() {
+            boolean isPaused = false;
+            public void actionPerformed(ActionEvent event) {
+                if (!isPaused ) {
+                    pauseButton.setText("Resume");
+                    isPaused = true;
+                    animator.stopAnimation();
+                }
+                else {
+                    pauseButton.setText("Pause");
+                    animator.startAnimation();
+                    isPaused = false;
+                }
+            }
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setToolTipText("Close the animation window");
+        cancelButton.setPreferredSize(cancelButton.getPreferredSize());
+        cancelButton.setMinimumSize(cancelButton.getPreferredSize());
+        cancelButton.setMaximumSize(cancelButton.getPreferredSize());
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                animator.stopAnimation();
+                frame.dispose();
+            }
+        });
+
+        controllerPanel.add(filler,
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        controllerPanel.add(pauseButton,
+                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
+        controllerPanel.add(cancelButton,
+                new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
         //Add content to the window.
         frame.getContentPane().add(animator, BorderLayout.CENTER);
+        frame.getContentPane().add(controllerPanel, BorderLayout.SOUTH);
 
         //Display the window.
         animator.startAnimation();
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private static JButton getCancelButton(AnimationWithSpeedControl animator, JDialog frame) {
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setPreferredSize(cancelButton.getPreferredSize());
+        cancelButton.setMinimumSize(cancelButton.getPreferredSize());
+        cancelButton.setMaximumSize(cancelButton.getPreferredSize());
+        cancelButton.setToolTipText("Close the animation window");
+
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                animator.stopAnimation();
+                frame.dispose();
+            }
+        });
+        return cancelButton;
     }
 
     public static void animate(ImageIcon[] images){
@@ -311,18 +296,4 @@ public class AnimationWithSpeedControl extends JPanel
             }
         });
     }
-
-//    public static void main(String[] args) {
-//        /* Turn off metal's use of bold fonts */
-//        UIManager.put("swing.boldMetal", Boolean.FALSE);
-//
-//
-//        //Schedule a job for the event-dispatching thread:
-//        //creating and showing this application's GUI.
-//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                createAndShowGUI();
-//            }
-//        });
-//    }
 }

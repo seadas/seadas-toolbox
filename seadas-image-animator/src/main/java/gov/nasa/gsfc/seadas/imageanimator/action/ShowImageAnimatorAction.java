@@ -124,8 +124,8 @@ public class ShowImageAnimatorAction extends AbstractSnapAction implements Looku
             hasBands = selectedProduct.getNumBands() > 0;
 //            hasGeoCoding = selectedProduct.getSceneGeoCoding() != null;
         }
-//        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands && hasGeoCoding);
-        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands);
+//        super.setEnabled(!viewResult.allInstances().isEmpty() && hasBands);
+        super.setEnabled(hasBands);
     }
 }
 

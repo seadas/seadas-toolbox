@@ -5,5 +5,7 @@
 
     <mapID target="contourLinesHelp" url="tools/ContourLines.html"/>
     <mapID target="imageAnimatorHelp" url="tools/ImageAnimator.html"/>
+    <mapID target="showAngularViewAnimationWnd" url="tools/AngularViewAnimationWindow.html"/>
+    <mapID target="showSpectrumAnimationWnd" url="tools/SpectrumAnimationWindow.html"/>
 
 </map>
