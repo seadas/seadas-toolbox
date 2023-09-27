@@ -4,7 +4,7 @@
 
   <groupId>gov.nasa.gsfc.seadas</groupId>
   <artifactId>izpack-installer</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>SeaDAS Installer</name>
 
   <!-- seems like this needs to be "jar" to accomplish a build of java code too? a bit confused
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>gov.nasa.gsfc.seadas</groupId>
       <artifactId>izpack-panels</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
   </dependencies>
 
@@ -222,7 +222,7 @@
           <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>izpack-panels</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
           </dependency>
         </dependencies>
     </plugin>
