@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -340,7 +341,17 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
                 if (!("").equals(getValue())) {
                     fileInfo = new FileInfo(defaultFileParent, getValue(), false, ocssw);
                     if (fileInfo.getFile() != null && !fileInfo.getFile().exists()) {
-                        setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                        if ("local" == OCSSWInfo.getInstance().getOcsswLocation()) {
+                            setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                        } else {
+                            String fileName = fileInfo.getFile().toString();
+                            if (fileName != null && fileName.contains("root")) {
+                                String localFileName = fileName.replace("root", System.getProperty("user.home"));
+                                if (localFileName != null && ! (new File(localFileName)).exists()) {
+                                    setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                                }
+                            }
+                        }
                     }
                 }
             }
