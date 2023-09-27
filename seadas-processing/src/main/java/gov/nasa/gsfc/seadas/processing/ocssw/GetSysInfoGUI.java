@@ -349,7 +349,7 @@ public class GetSysInfoGUI {
             currentInfoLine = "VM Configuration: " + appHomeSeadasConf.toString() + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-            if (!Files.exists(appHomeSnapConf)) {
+            if (!Files.exists(appHomeSeadasConf)) {
                 currentInfoLine = "    WARNING!! File '" + appHomeSeadasConf.toString() + "' does not exist" + "\n";
                 sysInfoText += currentInfoLine;
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
