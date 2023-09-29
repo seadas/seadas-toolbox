@@ -56,7 +56,7 @@
 
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l3gen 9.6.0-V2022.1 (Nov 17 2022 15:36:07)
+l3gen 9.6.0-V2023.1 (Apr  4 2023 11:28:21)
 Usage: l3gen argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
@@ -162,11 +162,12 @@ The list of valid keywords follows:
            and iterative NIR correction
       -19: Multi-scattering epsilon (linear), RH-based model selection
            and iterative NIR correction
-
    aer_wave_short (int) (default=765) = shortest sensor wavelength for aerosol
         model selection
    aer_wave_long (int) (default=865) = longest sensor wavelength for aerosol
         model selection
+   aer_wave_base (int) (default=865) = base sensor wavelength for aerosol 
+         extrapolation
    aer_swir_short (int) (default=-1) = shortest sensor wavelength for
         SWIR-based NIR Lw correction
    aer_swir_long (int) (default=-1) = longest sensor wavelength for SWIR-based
@@ -195,7 +196,6 @@ The list of valid keywords follows:
         0: disabled
         1: use rhow_412 aerosol index test
         2: GMAO ancillary aerosol test
-
    glint_opt (int) (default=1) = glint correction:
         0: glint correction off
         1: standard glint correction
@@ -204,7 +204,6 @@ The list of valid keywords follows:
         0: no correction
         1: Apply Ding and Gordon (1995) correction
         3: Apply oxygen transmittance from gas transmittance table (see gas_opt)
-
    cirrus_opt (boolean) (default=false) = cirrus cloud reflectance correction option
    filter_opt (boolean) (default=false) = filtering input data option
    filter_file (ifile) (default=$OCDATAROOT/sensor/sensor_filter.dat) = 
@@ -267,11 +266,9 @@ The list of valid keywords follows:
    cphyt_opt (int) (default=1) = model for phytoplankton carbon
         1: Graff/Westberry
         2: Behrenfeld
-
    seawater_opt (int) (default=0) = seawater IOP options
         0: static values
         1: temperature & salinity-dependent seawater nw, aw, bbw
-
    polfile (ifile) = polarization sensitivities filename leader
    pol_opt (int) (default=-1) = polarization correction (sensor-specific)
         0: no correction
@@ -282,55 +279,6 @@ The list of valid keywords follows:
    band_shift_opt (int) (default=0) = bandshifting option 
         1: apply bio-optical bandshift
         0: linear interpolation
-   add_ws_noise (float) (default=-1.0) = wind speed uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use ws_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_wd_noise (float) (default=-1.0) = wind direction uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use wd_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_mw_noise (float) (default=-1.0) = meridional wind  uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use mw_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_zw_noise (float) (default=-1.0) = zonal wind uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use zw_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_rh_noise (float) (default=-1.0) = relative humidity uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use rh_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_pr_noise (float) (default=-1.0) = pressure uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use pr_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_wv_noise (float) (default=-1.0) = water vapor uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use wv_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_oz_noise (float) (default=-1.0) = ozone uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use oz_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_lt_noise (float) (default=0.0) = Lt uncertainty simulation option 
-       &gt;0.0: add random normal noise to gain
-        0.0: no random noise added
-   add_no2_tropo_noise (float) (default=-1.0) = tropospheric no2 uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use no2_tropo_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   add_no2_strat_noise (float) (default=-1.0) = stratospheric no2 uncertainty simulation option 
-       &lt;0.0: no noise added
-       =0.0: use no2_strat_unc to inform noise model
-       &gt;0.0: use input to inform noise model
-   lt_noise_scale (float) = Lt noise scale factor option 
-       !=1.0: scales noise by factoring SNR
-       =1.0: noise not scaled
-   bias_frac (float) = bias fraction factor option 
-       !=0.0: adds bias as a fraction of Lt
-       =0.0: no bias added
    giop_aph_opt (int) (default=2) = GIOP model aph function type
         0: tabulated (supplied via giop_aph_file)
         2: Bricaud et al. 1995 (chlorophyll supplied via default empirical algorithm)
@@ -434,6 +382,7 @@ The list of valid keywords follows:
    owtfile (ifile) = optical water type file
    owtchlerrfile (ifile) = chl error file associate with optical water type
    aermodfile (ifile) = aerosol model filename leader
+   uncertaintyfile (ifile) = uncertainty LUT
    aermodels (string) (default=[r30f95v01,r30f80v01,r30f50v01,r30f30v01,r30f20v01,r30f10v01,r30f05v01,r30f02v01,r30f01v01,r30f00v01,r50f95v01,r50f80v01,r50f50v01,r50f30v01,r50f20v01,r50f10v01,r50f05v01,r50f02v01,r50f01v01,r50f00v01,r70f95v01,r70f80v01,r70f50v01,r70f30v01,r70f20v01,r70f10v01,r70f05v01,r70f02v01,r70f01v01,r70f00v01,r75f95v01,r75f80v01,r75f50v01,r75f30v01,r75f20v01,r75f10v01,r75f05v01,r75f02v01,r75f01v01,r75f00v01,r80f95v01,r80f80v01,r80f50v01,r80f30v01,r80f20v01,r80f10v01,r80f05v01,r80f02v01,r80f01v01,r80f00v01,r85f95v01,r85f80v01,r85f50v01,r85f30v01,r85f20v01,r85f10v01,r85f05v01,r85f02v01,r85f01v01,r85f00v01,r90f95v01,r90f80v01,r90f50v01,r90f30v01,r90f20v01,r90f10v01,r90f05v01,r90f02v01,r90f01v01,r90f00v01,r95f95v01,r95f80v01,r95f50v01,r95f30v01,r95f20v01,r95f10v01,r95f05v01,r95f02v01,r95f01v01,r95f00v01]) = aerosol models
    met1 (ifile) (default=$OCDATAROOT/common/met_climatology.hdf) = 
         1st meteorological ancillary data file
@@ -488,7 +437,6 @@ The list of valid keywords follows:
         6: WindSat daily SST reference file
         7: WindSat 3-day SST reference file
         8: WindSat 3-day or night SST reference file
-
    sstrefdif (float) (default=100.0) = stricter sst-ref difference threshold
    viirsnv7 (int) (default=-1) = =1 to use the VIIRSN V7 high senz latband sst and sst3 equations
    viirsnosisaf (int) (default=0) = =1 to use the VIIRSN OSI-SAF sst and sst3 equations
@@ -547,7 +495,6 @@ The list of valid keywords follows:
    vcal_Lw (float) = Vicarious calibration water leaving radiances
    vcal_depth (float) (default=-1000.0) = depth to use to exclude data from target file
    e.g. -1000 excludes depths less than 1000m
-
    vcal_min_nbin (int) (default=4) = minimum # of samples in a bin for acceptance
    vcal_min_nscene (int) (default=3) = minimum # of scenes in a bin for acceptance
    owmcfile (ifile) (default=$OCDATAROOT/common/owmc_lut.hdf) = lut for OWMC
@@ -569,8 +516,7 @@ The list of valid keywords follows:
         0: no correction 
         1: Lee et al. (2013) empirical correction 
         2: Westberry et al. (2013) analytical correction 
-        3: Lee et al. (1994) analytical correction 
-
+        3: Lee et al. (1994) analytical correction
    gmpfile (ifile) = GMP geometric parameter file (MISR only)
    water_spectra_file (ifile) = water absorption/scattering coefficient file
    shallow_water_depth (float) (default=30.0) = threshold for flagging shallow water
@@ -578,7 +524,11 @@ The list of valid keywords follows:
    cloud_hgt_file (ifile) = Cloud height and temperature file
      Currently, use the MODIS L2 cloud file (MYD06...)
      from the LAADS DAAC
-
+   doi (string) = Digital Object Identifier (DOI) string
+   wavelength_3d (string) = wavelength_3d input, written in ascending order
+        with format 'wavelength_3d=nnn,nnn,nnn' where nnn is a sensor wavelength
+        or a range of wavelengths as follows 'nnn:nnn'
+   mbac_wave (int) = bands used for mbac atmospheric correction
    calfile (ifile) = system calibration file
    rad_opt (int) (default=0) = radiation correction option (sensor-specific)
         0: no correction

@@ -556,7 +556,7 @@
 <!--AUTOMATED CODE HELP START-->
 <h5>l1aextract_modis</h5>
 <pre>
-This is version 0.76 of l1aextract_modis (compiled on Nov 17 2022 15:34:32)
+This is version 0.76 of l1aextract_modis (compiled on Apr  4 2023 11:27:03)
 
 Usage: l1aextract_modis infile spixl epixl sline eline outfile
    where:
@@ -573,7 +573,7 @@ Note: Enter line number NOT scan number!
 <hr>
 <h5>l1aextract_viirs</h5>
 <pre>
-l1aextract_viirs 0.998 (Nov 17 2022 15:36:58)
+l1aextract_viirs 0.998 (Apr  4 2023 11:25:36)
 
 l1aextract_viirs infile spixl epixl sline eline outfile
 
@@ -614,23 +614,40 @@ NOTE: Start and End pixel/scanline will be set to input file's nsamp
 <hr>
 <h5>l2aextract</h5>
 <pre>
-This is version 2.0.2 of l2extract (compiled on Nov 17 2022 15:35:33)
+This is version 2.0.2 of l2extract (compiled on Apr  4 2023 11:27:50)
+l2extract 2.0.2 (Apr  4 2023 11:27:05)
+Usage: l2extract argument-list
+   or: l2extract ifile spix epix sline eline pix_sub sc_sub ofile &lt;prodlist&gt;
 
+  This program takes a product (or products if netCDF output) from an L2 file
+  and does the extraction
 
+  The argument list is a set of keyword=value pairs.  Arguments can
+  be specified on the command line, or put into a parameter file, or the
+  two methods can be used together, with command line overriding.
 
-Usage: &lt;l2extract&gt; infile spix epix sscan escan pix_sub sc_sub outfile &lt;prodlist&gt;
-   where:
-	infile   - input l2 data HDF file
-	spix     - start pixel number (1-based)
-	epix     - end pixel number (1-based)
-	sscan    - start line (1-based)
-	escan    - end line (1-based)
-	pix_sub  - pixel subsampling rate
-	sc_sub   - scan line subsampling rate
-	outfile  - output file name
-	prodlist  - product list, comma separated (optional)
+The list of valid keywords follows:
 
-Note: Enter line number NOT scan number!
+   help (boolean) (alias=h) (default=false) = print usage information
+   version (boolean) (default=false) = print the version
+        information
+   dump_options (boolean) (default=false) = print
+        information about each option
+   dump_options_paramfile (ofile) = print
+        information about each option to paramfile
+   dump_options_xmlfile (ofile) = print
+        information about each option to XML file
+   par (ifile) = input parameter file
+   ifile (ifile) = input L2 filename
+   ofile (ofile) (default=output) = output filename
+   product (string) = comma separated list of products, empty string outputs
+        all products
+   spix (int) (default=1) = start pixel number (1-based).
+   epix (int) (default=-1) = end pixel number. -1 = last pixel (1-based).
+   sline (int) (default=1) = start line (1-based).
+   eline (int) (default=-1) = end line.  -1 = last line (1-based).
+   suite (string) = suite for default parameters
+   verbose (boolean) (default=false) = more information reporting
 
 </pre>
 <!--AUTOMATED CODE HELP END-->

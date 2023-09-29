@@ -439,7 +439,7 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l3mapgen 2.3.0-V2022.1 (Nov 17 2022 15:37:41)
+l3mapgen 2.3.0-V2023.1 (Apr  4 2023 11:27:05)
 Usage: l3mapgen argument-list
 
   This program takes a product (or products if netCDF output) from an L3 bin
@@ -547,6 +547,9 @@ The list of valid keywords follows:
                           +k_0=1 +x_0=0 +y_0=0"
         ease2:     EASE-Grid 2.0 projection
                    projection="EPSG:6933"
+        ortho:     Orthographic projection
+                   projection="+proj=ortho +lat_0=&lt;lat_0&gt; +lon_0=&lt;central_meridian&gt;
+                          +ellps=GRS80 +units=m"
         stere:     Stereographic projection
                    projection="+proj=stere +lat_0=&lt;lat_0&gt; +lat_ts=&lt;lat_ts&gt;
                           +lon_0=&lt;central_meridian&gt;
@@ -584,7 +587,7 @@ The list of valid keywords follows:
    south (float) (default=-999) = Southernmost Latitude (default: file south)
    east (float) (default=-999) = Easternmost Longitude (default: file east)
    west (float) (default=-999) = Westernmost Longitude (default: file west)
-   trimNSEW (boolean) (default=yes) = should we trim output
+   trimNSEW (boolean) (default=no) = should we trim output
         to match input NSEW range
 
    interp (string) (default=nearest) = interpolation method:
@@ -623,6 +626,7 @@ The list of valid keywords follows:
    land (ifile) (default=$OCDATAROOT/common/landmask_GMT15ARC.nc) = land mask file
    full_latlon (boolean) (default=yes) = write full latitude and longitude arrays.
 
+   doi (string) = Digital Object Identifier (DOI) string
 
 </pre>
 <!--AUTOMATED CODE HELP END-->
