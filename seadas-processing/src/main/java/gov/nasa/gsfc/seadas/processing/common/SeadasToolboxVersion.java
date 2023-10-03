@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.core.runtime.Version;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import org.esa.snap.runtime.Config;
 import org.json.simple.JSONArray;
@@ -109,7 +110,7 @@ public class SeadasToolboxVersion {
             }
             return latestTag;
         } else {
-            return null;
+            return OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE;
         }
     }
 

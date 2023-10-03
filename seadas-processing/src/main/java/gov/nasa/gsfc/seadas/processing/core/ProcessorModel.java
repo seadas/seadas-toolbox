@@ -1340,7 +1340,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                 boolean addTag = false;
 
-                if (paramValidValueInfo != null && paramValidValueInfo.getValue() != null) {
+                // Special case where unexpected low number of tags so likely hard-coded defaults have been used so show all regardless if T-tag or R-Tag
+                if (tagValidValues.size() <= 3) {
+                    addTag = true;
+                }
+
+                    if (paramValidValueInfo != null && paramValidValueInfo.getValue() != null) {
                     String currTag = paramValidValueInfo.getValue().trim();
 
                     if (!includeOfficialReleaseTagsOnly()) {

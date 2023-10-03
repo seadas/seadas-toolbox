@@ -612,8 +612,25 @@ public class OCSSWLocal extends OCSSW {
             //System.out.println(s);
             tagsList.add(s);
         }
-        setOcsswTags(tagsList);
+
         getValidOCSSWTags4SeaDASVersion();
+        if (tagsList == null || tagsList.size() == 0) {
+            tagsList = getOcsswTagsValid4CurrentSeaDAS();
+
+            if (tagsList == null || tagsList.size() == 0) {
+                tagsList.add(OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE);
+
+                if (OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT != null && OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT.length() > 0) {
+                    tagsList.add(OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT);
+                }
+
+                if (OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT2 != null && OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT2.length() > 0) {
+                    tagsList.add(OCSSWConfigData.SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT2);
+                }
+            }
+        }
+
+        setOcsswTags(tagsList);
     }
 
 }
