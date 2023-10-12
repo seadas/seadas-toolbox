@@ -4,6 +4,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.SubProgressMonitor;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import eu.esa.snap.netbeans.docwin.WindowUtilities;
 import gov.nasa.gsfc.seadas.imageanimator.operator.ImageAnimatorOp;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
@@ -239,7 +240,7 @@ public class Animation {
 
         final RenderedImage[] renderedImages = new RenderedImage[sortedSelectedBandNames.length];
         final RasterDataNode[] rasters = new RasterDataNode[sortedSelectedBandNames.length];
-        ProductSceneView myView = null;
+//        ProductSceneView myView = null;
         RenderedImage renderedImage;
 
         for (int i = 0; i < sortedSelectedBandNames.length; i++) {
@@ -249,7 +250,20 @@ public class Animation {
         }
         ImageIcon[] images = new ImageIcon[renderedImages.length];
         for (int i = 0; i < sortedSelectedBandNames.length; i++) {
-            myView = getProductSceneView(rasters[i]);
+            final ProductSceneView myView = getProductSceneView(rasters[i]);
+            WindowUtilities.getOpened(ProductSceneViewTopComponent.class).forEach(topComponent -> {
+                ProductSceneView oldSceneView = topComponent.getView();
+                if (myView != null && oldSceneView != myView) {
+                    myView.synchronizeViewportIfPossible(oldSceneView);
+                }
+            });
+//            final ProductSceneView myView1 = myView;
+//            WindowUtilities.getOpened(ProductSceneViewTopComponent.class).forEach(productSceneViewTopComponent -> {
+//                final ProductSceneView view = productSceneViewTopComponent.getView();
+//                if (view != myView1) {
+//                    view.synchronizeViewportIfPossible(myView1);
+//                }
+//            });
             renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
             renderedImages[i] = renderedImage;
             images[i] = new ImageIcon((BufferedImage) renderedImage);

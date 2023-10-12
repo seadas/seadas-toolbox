@@ -77,6 +77,11 @@
              <artifactId>snap-rcp</artifactId>
          </dependency>
          <dependency>
+             <groupId>eu.esa.snap.netbeans</groupId>
+             <artifactId>snap-gui-lib</artifactId>
+             <version>1.2.0</version>
+         </dependency>
+         <dependency>
              <groupId>junit</groupId>
              <artifactId>junit</artifactId>
          </dependency>
