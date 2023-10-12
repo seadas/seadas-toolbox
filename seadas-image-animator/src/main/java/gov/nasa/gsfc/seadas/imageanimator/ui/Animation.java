@@ -257,13 +257,6 @@ public class Animation {
                     myView.synchronizeViewportIfPossible(oldSceneView);
                 }
             });
-//            final ProductSceneView myView1 = myView;
-//            WindowUtilities.getOpened(ProductSceneViewTopComponent.class).forEach(productSceneViewTopComponent -> {
-//                final ProductSceneView view = productSceneViewTopComponent.getView();
-//                if (view != myView1) {
-//                    view.synchronizeViewportIfPossible(myView1);
-//                }
-//            });
             renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
             renderedImages[i] = renderedImage;
             images[i] = new ImageIcon((BufferedImage) renderedImage);
