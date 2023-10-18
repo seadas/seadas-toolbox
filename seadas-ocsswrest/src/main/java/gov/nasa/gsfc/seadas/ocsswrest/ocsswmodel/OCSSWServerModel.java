@@ -142,7 +142,7 @@ public class OCSSWServerModel {
             ocsswInstallerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_INSTALLER_PROGRAM;
             ocsswRunnerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_RUNNER_SCRIPT;
             ocsswViirsDemPath = ocsswRoot + File.separator + OCSSW_VIIRS_DEM_NAME;
-            moveNetrcFile();
+            copyNetrcFile();
             downloadOCSSWInstaller();
         }
     }
@@ -257,15 +257,20 @@ public class OCSSWServerModel {
         }
     }
 
-    public static void moveNetrcFile(){
+    public static void copyNetrcFile(){
         Path sourcePath = Paths.get(System.getProperty("user.home") + File.separator +  "seadasClientServerShared" + File.separator +  ".netrc");
         Path targetPath = Paths.get(System.getProperty("user.home") + File.separator +  ".netrc");
-        try {
-            Files.move(sourcePath, targetPath, REPLACE_EXISTING);
-        } catch ( java.io.IOException ioException) {
-            ioException.printStackTrace();
+        File sourceFile = new File(System.getProperty("user.home") + File.separator +  ".netrc");
+        File targetFile = new File(System.getProperty("user.home") + File.separator +  "seadasClientServerShared" + File.separator +  ".netrc");
+        System.out.println(".netrc in seadasClientServer " + sourceFile.exists());
+        System.out.println(".netrc in home dir " + targetFile.exists());
+        if (!sourceFile.exists() && targetFile.exists()) {
+            try {
+                Files.copy(sourcePath, targetPath, REPLACE_EXISTING);
+            } catch (java.io.IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
-
 }
 
