@@ -251,12 +251,9 @@ public class Animation {
         ImageIcon[] images = new ImageIcon[renderedImages.length];
         for (int i = 0; i < sortedSelectedBandNames.length; i++) {
             final ProductSceneView myView = getProductSceneView(rasters[i]);
-            WindowUtilities.getOpened(ProductSceneViewTopComponent.class).forEach(topComponent -> {
-                ProductSceneView oldSceneView = topComponent.getView();
-                if (myView != null && oldSceneView != myView) {
-                    myView.synchronizeViewportIfPossible(oldSceneView);
-                }
-            });
+            if (myView != null && sceneView != myView) {
+                sceneView.synchronizeViewportIfPossible(myView);
+            }
             renderedImage = imageAnimatorOp.createImage(myView, standardViewPort);
             renderedImages[i] = renderedImage;
             images[i] = new ImageIcon((BufferedImage) renderedImage);
