@@ -4,16 +4,19 @@ import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.*;
-
+import static java.nio.file.StandardCopyOption.*;
 /**
  * Created by aabduraz on 3/27/17.
  */
@@ -139,16 +142,10 @@ public class OCSSWServerModel {
             ocsswInstallerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_INSTALLER_PROGRAM;
             ocsswRunnerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_RUNNER_SCRIPT;
             ocsswViirsDemPath = ocsswRoot + File.separator + OCSSW_VIIRS_DEM_NAME;
+            moveNetrcFile();
             downloadOCSSWInstaller();
         }
     }
-
-
-//    public static boolean isMissionDirExist(String missionName) {
-//        missionName = SQLiteJDBC.retrieveMissionDir(missionName);
-//        System.out.println("mission dir = " + ocsswDataDirPath + File.separator + missionName);
-//        return new File(ocsswDataDirPath + File.separator + missionName).exists();
-//    }
 
     public static boolean isMissionDirExist(String missionName) {
         MissionInfo missionInfo = new MissionInfo(missionName);
@@ -199,31 +196,6 @@ public class OCSSWServerModel {
         return isProgramValid;
     }
 
-//
-//    public static  boolean downloadOCSSWInstaller() {
-//        boolean ocsswInstalScriptDownloadSuccessful = false;
-//        try {
-//            URL website = new URL(OCSSW_INSTALLER_URL);
-//            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-//            FileOutputStream fos = new FileOutputStream(TMP_OCSSW_INSTALLER);
-//            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-//            fos.close();
-//            (new File(TMP_OCSSW_INSTALLER)).setExecutable(true);
-//            ocsswInstalScriptDownloadSuccessful = true;
-//        } catch (MalformedURLException malformedURLException) {
-//            System.out.println("URL for downloading install_ocssw.py is not correct!");
-//        } catch (FileNotFoundException fileNotFoundException) {
-//            System.out.println("ocssw installation script failed to download. \n" +
-//                    "Please check network connection or 'seadas.ocssw.root' variable in the 'seadas.config' file. \n" +
-//                    "possible cause of error: " + fileNotFoundException.getMessage());
-//        } catch (IOException ioe) {
-//            System.out.println("ocssw installation script failed to download. \n" +
-//                    "Please check network connection or 'seadas.ocssw.root' variable in the \"seadas.config\" file. \n" +
-//                    "possible cause of error: " + ioe.getLocalizedMessage());
-//        } finally {
-//            return ocsswInstalScriptDownloadSuccessful;
-//        }
-//    }
     public static boolean isOcsswInstalScriptDownloadSuccessful() {
     return ocsswInstalScriptDownloadSuccessful;
 }
@@ -282,6 +254,16 @@ public class OCSSWServerModel {
                     "possible cause of error: " + ioe.getLocalizedMessage());
         } finally {
             return ocsswInstalScriptDownloadSuccessful;
+        }
+    }
+
+    public static void moveNetrcFile(){
+        Path sourcePath = Paths.get(System.getProperty("user.home") + File.separator +  "seadasClientServerShared" + File.separator +  ".netrc");
+        Path targetPath = Paths.get(System.getProperty("user.home") + File.separator +  ".netrc");
+        try {
+            Files.move(sourcePath, targetPath, REPLACE_EXISTING);
+        } catch ( java.io.IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 
