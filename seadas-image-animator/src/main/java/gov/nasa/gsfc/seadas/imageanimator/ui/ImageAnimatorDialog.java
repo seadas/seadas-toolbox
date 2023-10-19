@@ -203,10 +203,24 @@ public class ImageAnimatorDialog extends JDialog {
             bandName = band.getName();
 
             String[] parts = bandName.split("_");
+            int partsNum = parts.length;
 
             if (parts.length == 2 && parts[1].matches("\\d+")) { // check if filename matches prefix_number format
                 String folderName = parts[0];
                 String number = parts[1];
+
+                DefaultMutableTreeNode folder = bandHash.get(folderName);
+                if (folder == null) {
+                    folder = new DefaultMutableTreeNode(folderName);
+                    bandHash.put(folderName, folder);
+                    folder.setAllowsChildren(true);
+                    root.add(folder);
+                }
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(bandName);
+                folder.add(node);
+            } else if (partsNum > 2 && parts[partsNum-1].matches("\\d+|-\\d+"))  {
+                String numberPart = "_" + parts[partsNum -2] + "_" + parts[partsNum -1];
+                String folderName = bandName.replace(numberPart, "");
 
                 DefaultMutableTreeNode folder = bandHash.get(folderName);
                 if (folder == null) {
