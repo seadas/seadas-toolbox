@@ -5,7 +5,7 @@ extract=0
 
 Usage() {
     # Display Help
-    echo "Usage: workflow_l2gen.sh ifile swlon swlat nelon nelat [-g geofile | -o ofile]"
+    echo "Usage: workflow_L1Aextract_modis.sh ifile swlon swlat nelon nelat [-g geofile | -o ofile]"
     echo
     #   echo "Syntax: scriptTemplate [-g|h|v|V]"
     echo "options:"
@@ -152,7 +152,7 @@ echo "# spixl=$spixl"
 echo "# epixl=$epixl"
 echo "# sline=$sline"
 echo "# eline=$eline"
-echo "# Required ofile but get_output_name suggests:"
+echo "# Field 'ofile' is required: but get_output_name suggests:"
 echo "#     Default ${default_ofile}"
 echo "#**************************************"
 echo "${command}"

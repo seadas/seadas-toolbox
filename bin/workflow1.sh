@@ -14,6 +14,9 @@ swlat=24
 nelon=-80
 nelat=31
 
+product="chlor_a"
+
+
 
 make_extract=1
 make_full=1
@@ -134,7 +137,6 @@ echo " "
 #script_dir=$(dirname "$0")
 #working_dir="${script_dir}"
 
-#product="chlor_a"
 #level1A_basename=A2023016190500.L1A_LAC
 #basename_time_part=20230116T190501
 basename_part=${basename_mission_part}.${basename_time_part}
@@ -215,6 +217,17 @@ level2_IOP_extract_file=${working_dir}/${basename_part}.L2.IOP.sub.nc
 level2_LAND_extract_file=${working_dir}/${basename_part}.L2.LAND.sub.nc
 level2_OC_extract_file=${working_dir}/${basename_part}.L2.OC.sub.nc
 level2_custom_extract_file=${working_dir}/${basename_part}.L2.custom.sub.nc
+level3binned_OC_extract_1km_file=${working_dir}/${basename_part}.L3b.OC.1km.sub.nc
+level3binned_OC_extract_2km_file=${working_dir}/${basename_part}.L3b.OC.2km.sub.nc
+level3binned_OC_extract_minflags_1km_file=${working_dir}/${basename_part}.L3b.OC.1km.minflags.sub.nc
+level3binned_OC_extract_minflags_2km_file=${working_dir}/${basename_part}.L3b.OC.2km.minflags.sub.nc
+level3mapped_OC_extract_file=${working_dir}/${basename_part}.L3m.OC.sub.nc
+level3mapped_OC_extract_minflags_file=${working_dir}/${basename_part}.L3m.OC.minflags.sub.nc
+level3mapped_OC_extract_minflags_aea_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.sub.nc
+level3mapped_OC_extract_minflags_aea_gulf_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.gulf.sub.nc
+level3mapped_OC_extract_minflags_aea_stpeter_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.stpeter.sub.nc
+level3mapped_OC_extract_minflags_aea_stpeter_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.stpeter_100m.sub.nc
+
 
 program=modis_GEO
 command="get_output_name $level1A_file ${program}"
@@ -584,3 +597,189 @@ if [ ${make_full} -eq 1 ]; then
         #        if [ $? -ne 0 ]; then echo "ERROR"; exit 1; fi; echo " "
     fi
 fi
+
+#level3binned_OC_extract_1km_file=${working_dir}/${basename_part}.L3b.OC.1km.sub.nc
+#level3binned_OC_extract_2km_file=${working_dir}/${basename_part}.L3b.OC.2km.sub.nc
+#level3binned_OC_extract_minflags_1km_file=${working_dir}/${basename_part}.L3b.OC.1km.minflags.sub.nc
+#level3binned_OC_extract_minflags_2km_file=${working_dir}/${basename_part}.L3b.OC.2km.minflags.sub.nc
+#level3mapped_OC_extract_file=${working_dir}/${basename_part}.L3m.OC.sub.nc
+#level3mapped_OC_extract_minflags_file=${working_dir}/${basename_part}.L3m.OC.minflags.sub.nc
+#level3mapped_OC_extract_minflags_aea_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.sub.nc
+#level3mapped_OC_extract_minflags_aea_gulf_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.gulf.sub.nc
+#level3mapped_OC_extract_minflags_aea_stpeter_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.stpeter.sub.nc
+#level3mapped_OC_extract_minflags_aea_stpeter_file=${working_dir}/${basename_part}.L3m.OC.minflags.proj_aea.stpeter_100m.sub.nc
+
+
+#ifile=${level2_OC_extract_file}
+#ofile=${level3binned_OC_extract_minflags_file}
+#command="l2bin ifile=${ifile} ofile=${ofile} l3bprod=${product} resolution=2 prodtype=regional flaguse=ATMFAIL,LAND,CLDICE"
+#short_command="l2bin ifile=${ifile} l3bprod=${product} resolution=2 prodtype=regional flaguse=ATMFAIL,LAND,CLDICE"
+#
+#default_ofile=$(get_output_name ${ifile} l2bin)
+#
+#    echo "#**************************************"
+#    echo "# Creating MODIS Level-3 Binned File (Extract)"
+#    echo "# ifile=$ifile"
+#    echo "# ofile=$ofile"
+#    echo "# product=${product}"
+#    echo "# Optional command without ofile:"
+#    echo "#     ${short_command}"
+#    echo "#     Default ${default_ofile}"
+#    echo "#**************************************"
+#
+#echo "${command}"
+#echo " "
+#if [ $show_commands_only -ne 1 ]; then
+#    ${command}
+#    exit_status=$?
+#    if [ ${exit_status} -ne 0 ]; then
+#            echo "ERROR: l2bin return status=${exit_status}"
+#        exit 1
+#    fi
+#fi
+#echo " "
+
+
+
+
+ifile=${level2_OC_extract_file}
+ofile=${level3binned_OC_extract_1km_file}
+parfile="../l2bin_1km.par"
+command="l2bin ifile=${ifile} ofile=${ofile} l3bprod=${product} par=${parfile}"
+
+default_ofile=$(get_output_name ${ifile} l2bin)
+
+    echo "#**************************************"
+    echo "# Creating MODIS Level-3 Binned File (Extract)"
+    echo "# ifile=$ifile"
+    echo "# ofile=$ofile"
+    echo "# product=${product}"
+    if [ ! -z ${parfile} ]; then
+        echo "# par=${parfile}"
+        sed 's/^/#     /g' ${parfile}
+    fi
+    echo "# The suggested ofile from (get_output_name)"
+    echo "#     Default ${default_ofile}"
+    echo "#**************************************"
+
+echo "${command}"
+echo " "
+if [ $show_commands_only -ne 1 ]; then
+    ${command}
+    exit_status=$?
+    if [ ${exit_status} -ne 0 ]; then
+            echo "ERROR: l2bin return status=${exit_status}"
+        exit 1
+    fi
+fi
+echo " "
+
+
+
+ifile=${level2_OC_extract_file}
+ofile=${level3binned_OC_extract_2km_file}
+parfile="../l2bin_2km.par"
+command="l2bin ifile=${ifile} ofile=${ofile} l3bprod=${product} par=${parfile}"
+
+default_ofile=$(get_output_name ${ifile} l2bin)
+
+    echo "#**************************************"
+    echo "# Creating MODIS Level-3 Binned File (Extract)"
+    echo "# ifile=$ifile"
+    echo "# ofile=$ofile"
+    echo "# product=${product}"
+    if [ ! -z ${parfile} ]; then
+        echo "# par=${parfile}"
+        sed 's/^/#     /g' ${parfile}
+    fi
+    echo "# The suggested ofile from (get_output_name)"
+    echo "#     Default ${default_ofile}"
+    echo "#**************************************"
+
+echo "${command}"
+echo " "
+if [ $show_commands_only -ne 1 ]; then
+    ${command}
+    exit_status=$?
+    if [ ${exit_status} -ne 0 ]; then
+            echo "ERROR: l2bin return status=${exit_status}"
+        exit 1
+    fi
+fi
+echo " "
+
+
+
+
+
+ifile=${level2_OC_extract_file}
+ofile=${level3binned_OC_extract_minflags_1km_file}
+parfile="../l2bin_minflags_1km.par"
+command="l2bin ifile=${ifile} ofile=${ofile} l3bprod=${product} par=${parfile}"
+
+default_ofile=$(get_output_name ${ifile} l2bin)
+
+    echo "#**************************************"
+    echo "# Creating MODIS Level-3 Binned File (Extract)"
+    echo "# ifile=$ifile"
+    echo "# ofile=$ofile"
+    echo "# product=${product}"
+    if [ ! -z ${parfile} ]; then
+        echo "# par=${parfile}"
+        sed 's/^/#     /g' ${parfile}
+    fi
+    echo "# The suggested ofile from (get_output_name)"
+    echo "#     Default ${default_ofile}"
+    echo "#**************************************"
+
+echo "${command}"
+echo " "
+if [ $show_commands_only -ne 1 ]; then
+    ${command}
+    exit_status=$?
+    if [ ${exit_status} -ne 0 ]; then
+            echo "ERROR: l2bin return status=${exit_status}"
+        exit 1
+    fi
+fi
+echo " "
+
+
+
+
+
+
+ifile=${level2_OC_extract_file}
+ofile=${level3binned_OC_extract_minflags_2km_file}
+parfile="../l2bin_minflags_2km.par"
+command="l2bin ifile=${ifile} ofile=${ofile} l3bprod=${product} par=${parfile}"
+
+default_ofile=$(get_output_name ${ifile} l2bin)
+
+    echo "#**************************************"
+    echo "# Creating MODIS Level-3 Binned File (Extract)"
+    echo "# ifile=$ifile"
+    echo "# ofile=$ofile"
+    echo "# product=${product}"
+    if [ ! -z ${parfile} ]; then
+        echo "# par=${parfile}"
+        sed 's/^/#     /g' ${parfile}
+    fi
+    echo "# The suggested ofile from (get_output_name)"
+    echo "#     Default ${default_ofile}"
+    echo "#**************************************"
+
+echo "${command}"
+echo " "
+if [ $show_commands_only -ne 1 ]; then
+    ${command}
+    exit_status=$?
+    if [ ${exit_status} -ne 0 ]; then
+            echo "ERROR: l2bin return status=${exit_status}"
+        exit 1
+    fi
+fi
+echo " "
+
+
+

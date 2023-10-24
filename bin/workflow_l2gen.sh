@@ -54,9 +54,11 @@ done
 #echo "show_commands_only=${show_commands_only}"
 
 
-if [ -z "${ifile}" ]; then echo "ERROR: ($0) ifile not specified"; Usage; exit 1; fi
-if [ ! -e "${ifile}" ]; then echo "ERROR: ($0) ifile '${ifile} does not exist"; Usage; exit 1; fi
-
+if [ ! -z "${ifile}" ]; then
+    if [ ! -e "${ifile}" ]; then
+        echo "ifile '${ifile}' does not exist" && exit 1
+    fi
+fi
 if [ ! -z "${geofile}" ]; then
     if [ ! -e "${geofile}" ]; then
         echo "geofile '${geofile}' does not exist" && exit 1
@@ -100,8 +102,18 @@ else
 fi
 
 
-command="l2gen ifile=${ifile} geofile=${geofile}"
-short_command="l2gen ifile=${ifile} geofile=${geofile}"
+command="l2gen"
+short_command="l2gen"
+
+if [ ! -z ${ifile} ]; then
+    command="${command}  ifile=${ifile}"
+    short_command="${short_command}  ifile=${ifile}"
+fi
+
+if [ ! -z ${geofile} ]; then
+    command="${command}  geofile=${geofile}"
+    short_command="${short_command}  geofile=${geofile}"
+fi
 
 if [ ! -z ${ofile} ]; then
     command="${command}  ofile=${ofile}"
@@ -127,8 +139,8 @@ fi
 default_ofile=$(get_output_name ${ifile} l2gen)
 echo "#**************************************"
 echo "# ${description}"
-echo "# ifile=${ifile}"
-echo "# geofile=${geofile}"
+if [ ! -z ${ifile} ]; then echo "# ifile=${ifile}"; fi
+if [ ! -z ${geofile} ]; then echo "# geofile=${geofile}"; fi
 if [ ! -z ${ofile} ]; then echo "# ofile=${ofile}"; fi
 if [ ! -z ${ancfile} ]; then echo "# par=${ancfile}"; fi
 if [ ! -z ${suite} ]; then echo "# suite=${suite}"; fi
@@ -137,8 +149,7 @@ if [ ! -z ${parfile} ]; then
     sed 's/^/#     /g' ${parfile}
 fi
 
-echo "# Optional command without ofile:"
-echo "#     ${short_command}"
+echo "# The suggested ofile from (get_output_name)"
 echo "#     Default ${default_ofile}"
 echo "#**************************************"
 echo "${command}"
