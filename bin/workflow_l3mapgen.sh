@@ -40,9 +40,6 @@ while getopts "h:i:o:s:p:m:r:ec" option; do
     esac
 done
 
-
-
-
 source $OCSSWROOT/OCSSW_bash.env
 if [ $show_commands_only -ne 1 ]; then
     if [ $? -ne 0 ]; then
@@ -51,9 +48,6 @@ if [ $show_commands_only -ne 1 ]; then
     fi
 fi
 echo " "
-
-
-
 
 description="Creating"
 if [ ! -z ${mission} ]; then
@@ -68,7 +62,6 @@ if [ ${extract} -eq 1 ]; then
 else
     description="${description} (Full Scene)"
 fi
-
 
 command="l3mapgen"
 
@@ -92,7 +85,6 @@ if [ ! -z ${resolution} ]; then
     command="${command}  resolution=${resolution}"
 fi
 
-
 default_ofile=$(get_output_name ${ifile} l3mapgen)
 echo "#**************************************"
 echo "# ${description}"
@@ -112,20 +104,26 @@ echo "${command}"
 echo " "
 if [ $show_commands_only -ne 1 ]; then
 
-if [ ! -z "${ifile}" ]; then
-    if [ ! -e "${ifile}" ]; then
-        echo "ifile '${ifile}' does not exist" && exit 1
+    if [ ! -z "${ifile}" ]; then
+        if [ ! -e "${ifile}" ]; then
+            echo "ERROR: ifile '${ifile}' does not exist" && exit 1
+        fi
     fi
-fi
 
-if [ ! -z "${parfile}" ]; then
-    if [ ! -e "${parfile}" ]; then
-        echo "parfile '${parfile}' does not exist" && exit 1
+    if [ ! -z "${parfile}" ]; then
+        if [ ! -e "${parfile}" ]; then
+            echo "ERROR: parfile '${parfile}' does not exist" && exit 1
+        fi
     fi
-fi
+    if [ ! -z ${ofile} ]; then
+        if [ -e ${ofile} ]; then
+            echo "INFO: Not generating ofile=${ofile} as it already exists."
+            exit 0
+        fi
+    fi
     ${command}
     if [ $? -ne 0 ]; then
-        echo "ERROR"
+        echo "ERROR: command failed: $command"
         exit 1
     fi
 fi

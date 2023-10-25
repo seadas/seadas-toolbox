@@ -21,8 +21,10 @@ Usage() {
 
 while getopts "h:i:o:s:p:m:r:ec" option; do
     case $option in
-    h) Usage
-        exit ;;
+    h)
+        Usage
+        exit
+        ;;
     i) ifile=$OPTARG ;;
     o) ofile=$OPTARG ;;
     p) parfile=$OPTARG ;;
@@ -33,13 +35,10 @@ while getopts "h:i:o:s:p:m:r:ec" option; do
     c) show_commands_only=1 ;;
     \?) # Invalid option
         echo "Error: Invalid option"
-        exit ;;
+        exit
+        ;;
     esac
 done
-
-
-
-
 
 source $OCSSWROOT/OCSSW_bash.env
 if [ $show_commands_only -ne 1 ]; then
@@ -49,9 +48,6 @@ if [ $show_commands_only -ne 1 ]; then
     fi
 fi
 echo " "
-
-
-
 
 description="Creating"
 if [ ! -z ${mission} ]; then
@@ -66,7 +62,6 @@ if [ ${extract} -eq 1 ]; then
 else
     description="${description} (Full Scene)"
 fi
-
 
 command="l2bin"
 
@@ -89,7 +84,6 @@ fi
 if [ ! -z ${resolution} ]; then
     command="${command}  resolution=${resolution}"
 fi
-
 
 default_ofile=$(get_output_name ${ifile} l2bin)
 echo "#**************************************"
@@ -118,6 +112,12 @@ if [ $show_commands_only -ne 1 ]; then
     if [ ! -z "${parfile}" ]; then
         if [ ! -e "${parfile}" ]; then
             echo "parfile '${parfile}' does not exist" && exit 1
+        fi
+    fi
+    if [ ! -z ${ofile} ]; then
+        if [ -e ${ofile} ]; then
+            echo "INFO: Not generating ofile=${ofile} as it already exists."
+            exit 0
         fi
     fi
     ${command}

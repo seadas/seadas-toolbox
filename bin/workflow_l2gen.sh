@@ -23,8 +23,10 @@ Usage() {
 
 while getopts "h:i:g:a:o:s:p:m:ec" option; do
     case $option in
-    h) Usage
-        exit ;;
+    h)
+        Usage
+        exit
+        ;;
     i) ifile=$OPTARG ;;
     g) geofile=$OPTARG ;;
     a) ancfile=$OPTARG ;;
@@ -36,10 +38,10 @@ while getopts "h:i:g:a:o:s:p:m:ec" option; do
     c) show_commands_only=1 ;;
     \?) # Invalid option
         echo "Error: Invalid option"
-        exit ;;
+        exit
+        ;;
     esac
 done
-
 
 source $OCSSWROOT/OCSSW_bash.env
 if [ $show_commands_only -ne 1 ]; then
@@ -49,9 +51,6 @@ if [ $show_commands_only -ne 1 ]; then
     fi
 fi
 echo " "
-
-
-
 
 description="Creating"
 if [ ! -z ${mission} ]; then
@@ -66,7 +65,6 @@ if [ ${extract} -eq 1 ]; then
 else
     description="${description} (Full Scene)"
 fi
-
 
 command="l2gen"
 
@@ -133,6 +131,12 @@ if [ $show_commands_only -ne 1 ]; then
     if [ ! -z "${parfile}" ]; then
         if [ ! -e "${parfile}" ]; then
             echo "parfile '${parfile}' does not exist" && exit 1
+        fi
+    fi
+    if [ ! -z ${ofile} ]; then
+        if [ -e ${ofile} ]; then
+            echo "INFO: Not generating ofile=${ofile} as it already exists."
+            exit 0
         fi
     fi
     ${command}

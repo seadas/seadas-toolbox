@@ -2,12 +2,57 @@
 
 # This script starts with a L1A file
 
-usage="Usage example: 
-./workflow1.sh A2023016190500.L1A_LAC AQUA_MODIS 20230116T190501 full\n
-./workflow1.sh A2023016190500.L1A_LAC AQUA_MODIS 20230116T190501 extract\n
-./workflow1.sh A2023016190500.L1A_LAC AQUA_MODIS 20230116T190501 both
-"
-usage="Usage example: ./workflow1.sh A2023016190500.L1A_LAC AQUA_MODIS 20230116T190501 extract 1 0"
+show_commands_only=0
+extract=0
+extras=0
+
+make_extract=0
+make_full=0
+make_extras=0
+
+Usage() {
+    # Display Help
+    echo "Usage: workflow_l2bin.sh"
+    echo
+    echo "options:"
+    echo "i     ifile"
+    echo "b     basename_mission_namepart"
+    echo "t     time_namepart"
+    echo "r     resolution"
+    echo "s     suite"
+    echo "m     mission"
+    echo "e     make_extract_files"
+    echo "f     make_full_scene_files"
+    echo "x     make_extra_files"
+    echo "c     show_commands_only"
+    echo
+    echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -c"
+    echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -f -x -c"
+    echo
+}
+
+while getopts "h:i:b:t:s:m:r:efxc" option; do
+    case $option in
+    h)
+        Usage
+        exit
+        ;;
+    i) ifile=$OPTARG ;;
+    b) basename_mission_namepart=$OPTARG ;;
+    t) time_namepart=$OPTARG ;;
+    s) suite="$OPTARG" ;;
+    m) mission="$OPTARG" ;;
+    r) resolution=$OPTARG ;;
+    e) make_extract=1 ;;
+    f) make_full=1 ;;
+    x) make_extras=1 ;;
+    c) show_commands_only=1 ;;
+    \?) # Invalid option
+        echo "Error: Invalid option"
+        exit
+        ;;
+    esac
+done
 
 swlon=-85
 swlat=24
@@ -16,72 +61,72 @@ nelat=31
 
 product="chlor_a"
 
-make_extract=1
-make_full=1
-make_extras=1
+#make_extract=1
+#make_full=1
+#make_extras=1
 
 #dir_delimitor='/';
 
-if [ ! -z $1 ]; then
-    level1A_file=$1
-    level1A_basename=$(basename "$1")
-    working_dir=$(dirname "$1")
+if [ ! -z $ifile ]; then
+    level1A_file=$ifile
+    level1A_basename=$(basename "$ifile")
+    working_dir=$(dirname "$ifile")
 else
     echo ${usage}
     exit 1
 fi
 
-if [ ! -z $2 ]; then
-    basename_mission_part=$2
+if [ ! -z ${basename_mission_namepart} ]; then
+    basename_mission_part=${basename_mission_namepart}
 else
     echo ${usage}
     exit 1
 fi
 
-if [ ! -z $3 ]; then
-    basename_time_part=$3
+if [ ! -z $time_namepart ]; then
+    basename_time_part=$time_namepart
 else
     echo ${usage}
     exit 1
 fi
 
-if [ ! -z $4 ]; then
-    if [ $4 == "full" ]; then
-        make_full=1
-        make_extract=0
-        make_extras=0
-    elif [ $4 == "full_extras" ]; then
-        make_full=1
-        make_extract=0
-        make_extras=1
-    elif [ $4 == "extract" ]; then
-        make_full=0
-        make_extract=1
-        make_extras=0
-    elif [ $4 == "extract_extras" ]; then
-        make_full=0
-        make_extract=1
-        make_extras=1
-    elif [ $4 == "both" ]; then
-        make_full=1
-        make_extract=1
-        make_extras=0
-    elif [ $4 == "both_extras" ]; then
-        make_full=1
-        make_extract=1
-        make_extras=1
-    else
-        make_full=1
-        make_extract=1
-        make_extras=1
-    fi
-fi
-
-if [ ! -z $5 ]; then
-    show_commands_only=$5
-else
-    show_commands_only=0
-fi
+#if [ ! -z $4 ]; then
+#    if [ $4 == "full" ]; then
+#        make_full=1
+#        make_extract=0
+#        make_extras=0
+#    elif [ $4 == "full_extras" ]; then
+#        make_full=1
+#        make_extract=0
+#        make_extras=1
+#    elif [ $4 == "extract" ]; then
+#        make_full=0
+#        make_extract=1
+#        make_extras=0
+#    elif [ $4 == "extract_extras" ]; then
+#        make_full=0
+#        make_extract=1
+#        make_extras=1
+#    elif [ $4 == "both" ]; then
+#        make_full=1
+#        make_extract=1
+#        make_extras=0
+#    elif [ $4 == "both_extras" ]; then
+#        make_full=1
+#        make_extract=1
+#        make_extras=1
+#    else
+#        make_full=1
+#        make_extract=1
+#        make_extras=1
+#    fi
+#fi
+#
+#if [ ! -z $5 ]; then
+#    show_commands_only=$5
+#else
+#    show_commands_only=0
+#fi
 if [ $show_commands_only -eq 1 ]; then option_c="-c"; else option_c=""; fi
 
 mission=${basename_mission_part}
@@ -165,6 +210,7 @@ if [ ! -e "${level1A_file}" ]; then
     exit 1
 fi
 
+if [ ! -z ${working_dir} ]; then
 command="cd ${working_dir}"
 echo "#**************************************"
 echo "# Changing directory to run programs in same directory as level-1A file"
@@ -177,6 +223,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 echo " "
+fi
 
 # Now working dir is the current directory so change the variable
 # Showing relative paths to make commands not dependent on any user directory tree
@@ -184,6 +231,27 @@ working_dir="."
 #echo "working_dir=${working_dir}"
 #echo "pwd=`pwd`"
 level1A_file=${working_dir}/${level1A_basename}
+
+full_scene_dir="/Full_Scene"
+extracts_dir="/Extracts"
+extracts_stpeter_dir="${extracts_dir}/L3m_SaintPeter"
+extracts_gulf_dir="${extracts_dir}/L3m_Gulf"
+extracts_global_dir="${extracts_dir}/L3m_Global"
+full_scene_global_dir="${full_scene_dir}/L3m_Global"
+extracts_scene_dir="${extracts_dir}/L3m_Scene"
+extracts_binned_dir="${extracts_dir}/L3b"
+full_scene_binned_dir="${full_scene_dir}/L3b"
+
+if [ ! -e ${working_dir}${full_scene_dir} ]; then mkdir ${working_dir}${full_scene_dir}; fi
+if [ ! -e ${working_dir}${extracts_dir} ]; then mkdir ${working_dir}${extracts_dir}; fi
+if [ ! -e ${working_dir}${extracts_stpeter_dir} ]; then mkdir ${working_dir}${extracts_stpeter_dir}; fi
+if [ ! -e ${working_dir}${extracts_gulf_dir} ]; then mkdir ${working_dir}${extracts_gulf_dir}; fi
+if [ ! -e ${working_dir}${extracts_global_dir} ]; then mkdir ${working_dir}${extracts_global_dir}; fi
+if [ ! -e ${working_dir}${extracts_scene_dir} ]; then mkdir ${working_dir}${extracts_scene_dir}; fi
+if [ ! -e ${working_dir}${extracts_binned_dir} ]; then mkdir ${working_dir}${extracts_binned_dir}; fi
+if [ ! -e ${working_dir}${full_scene_global_dir} ]; then mkdir ${working_dir}${full_scene_global_dir}; fi
+if [ ! -e ${working_dir}${full_scene_binned_dir} ]; then mkdir ${working_dir}${full_scene_binned_dir}; fi
+
 
 # Full files to be created
 geo_full_file=${working_dir}/${basename_part}.GEO.nc
@@ -199,6 +267,14 @@ level2_IOP_file=${working_dir}/${basename_part}.L2.IOP.sub.nc
 level2_LAND_file=${working_dir}/${basename_part}.L2.LAND.sub.nc
 level2_OC_file=${working_dir}/${basename_part}.L2.OC.nc
 level2_custom_file=${working_dir}/${basename_part}.L2.custom.nc
+level3binned_OC_1km_file=${working_dir}${full_scene_binned_dir}/${basename_part}.L3b.OC.${product}.1km.nc
+level3binned_OC_2km_file=${working_dir}${full_scene_binned_dir}/${basename_part}.L3b.OC.${product}.2km.nc
+level3binned_OC_1km_minflags_file=${working_dir}${full_scene_binned_dir}/${basename_part}.L3b.OC.${product}.1km.minflags.nc
+level3binned_OC_2km_minflags_file=${working_dir}${full_scene_binned_dir}/${basename_part}.L3b.OC.${product}.2km.minflags.nc
+level3mapped_OC_18km_minflags_cea_global_file=${working_dir}${full_scene_global_dir}/${basename_part}.L3m.OC.${product}.18km.minflags.cea.global.nc
+level3mapped_OC_18km_minflags_smi_global_file=${working_dir}${full_scene_global_dir}/${basename_part}.L3m.OC.${product}.18km.minflags.smi.global.nc
+level3mapped_OC_9km_minflags_cea_global_file=${working_dir}${full_scene_global_dir}/${basename_part}.L3m.OC.${product}.9km.minflags.cea.global.nc
+level3mapped_OC_9km_minflags_smi_global_file=${working_dir}${full_scene_global_dir}/${basename_part}.L3m.OC.${product}.9km.minflags.smi.global.nc
 
 # Extract files to be created
 level1A_extract_file=${working_dir}/${basename_part}.L1A.sub.nc
@@ -215,24 +291,30 @@ level2_IOP_extract_file=${working_dir}/${basename_part}.L2.IOP.sub.nc
 level2_LAND_extract_file=${working_dir}/${basename_part}.L2.LAND.sub.nc
 level2_OC_extract_file=${working_dir}/${basename_part}.L2.OC.sub.nc
 level2_custom_extract_file=${working_dir}/${basename_part}.L2.custom.sub.nc
-level3binned_LAND_extract_1km_file=${working_dir}/${basename_part}.L3b.LAND.1km.sub.nc
-level3binned_OC_extract_1km_file=${working_dir}/${basename_part}.L3b.OC.${product}.1km.sub.nc
-level3binned_OC_extract_2km_file=${working_dir}/${basename_part}.L3b.OC.${product}.2km.sub.nc
 
-level3binned_OC_extract_1km_minflags_file=${working_dir}/${basename_part}.L3b.OC.${product}.1km.minflags.sub.nc
-level3binned_OC_extract_2km_minflags_file=${working_dir}/${basename_part}.L3b.OC.${product}.2km.minflags.sub.nc
+level3binned_LAND_extract_1km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.LAND.1km.sub.nc
+level3binned_OC_extract_1km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.OC.${product}.1km.sub.nc
+level3binned_OC_extract_2km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.OC.${product}.2km.sub.nc
 
-level3mapped_OC_extract_1km_file=${working_dir}/${basename_part}.L3m.OC.${product}.1km.sub.nc
-level3mapped_OC_extract_2km_file=${working_dir}/${basename_part}.L3m.OC.${product}.2km.sub.nc
+level3binned_OC_extract_1km_minflags_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.OC.${product}.1km.minflags.sub.nc
+level3binned_OC_extract_2km_minflags_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.OC.${product}.2km.minflags.sub.nc
 
-level3mapped_OC_extract_1km_minflags_smi_scene_file=${working_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.smi.scene.sub.nc
-level3mapped_OC_extract_1km_minflags_aea_scene_file=${working_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.aea.scene.sub.nc
-level3mapped_OC_extract_1km_minflags_smi_gulf_file=${working_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.smi.gulf.sub.nc
-level3mapped_OC_extract_1km_minflags_aea_gulf_file=${working_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.aea.gulf.sub.nc
-level3mapped_OC_extract_2km_minflags_aea_gulf_file=${working_dir}/${basename_part}.L3m.OC.${product}.2km.minflags.aea.gulf.sub.nc
+level3mapped_OC_extract_1km_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.OC.${product}.1km.sub.nc
+level3mapped_OC_extract_2km_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.OC.${product}.2km.sub.nc
 
-level3mapped_OC_extract_1km_minflags_aea_stpeter_file=${working_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.proj_aea.stpeter.sub.nc
-level3mapped_OC_extract_1km_100m_minflags_aea_stpeter_file=${working_dir}/${basename_part}.L3m.OC.${product}.1km.100m.minflags.proj_aea.stpeter.sub.nc
+level3mapped_OC_extract_1km_minflags_smi_scene_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.smi.scene.sub.nc
+level3mapped_OC_extract_1km_minflags_aea_scene_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.aea.scene.sub.nc
+level3mapped_OC_extract_1km_minflags_smi_gulf_file=${working_dir}${extracts_gulf_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.smi.gulf.sub.nc
+level3mapped_OC_extract_1km_minflags_aea_gulf_file=${working_dir}${extracts_gulf_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.aea.gulf.sub.nc
+level3mapped_OC_extract_2km_minflags_aea_gulf_file=${working_dir}${extracts_gulf_dir}/${basename_part}.L3m.OC.${product}.2km.minflags.aea.gulf.sub.nc
+
+level3mapped_OC_extract_1km_minflags_aea_stpeter_file=${working_dir}${extracts_stpeter_dir}/${basename_part}.L3m.OC.${product}.1km.minflags.proj_aea.stpeter.sub.nc
+level3mapped_OC_extract_1km_100m_minflags_aea_stpeter_file=${working_dir}${extracts_stpeter_dir}/${basename_part}.L3m.OC.${product}.1km.100m.minflags.proj_aea.stpeter.sub.nc
+
+level3mapped_OC_extract_18km_minflags_cea_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.OC.${product}.18km.minflags.cea.global.sub.nc
+level3mapped_OC_extract_18km_minflags_smi_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.OC.${product}.18km.minflags.smi.global.sub.nc
+level3mapped_OC_extract_9km_minflags_cea_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.OC.${product}.9km.minflags.cea.global.sub.nc
+level3mapped_OC_extract_9km_minflags_smi_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.OC.${product}.9km.minflags.smi.global.sub.nc
 
 program=modis_GEO
 command="get_output_name $level1A_file ${program}"
@@ -428,10 +510,8 @@ if [ ${make_extract} -eq 1 ]; then
     ofile=$level2_OC_extract_file
 
     ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "OC" -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
+
     echo " "
 fi
 
@@ -444,11 +524,8 @@ if [ ${make_extract} -eq 1 ]; then
     ancfile=${extract_ancfile}
 
     ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR"
-        exit 1
-    fi
-    echo " "
+    if [ $? -ne 0 ]; then exit 1; fi
+
 fi
 
 #  Run Level-2 Gen (Extracts)
@@ -463,51 +540,28 @@ if [ ${make_extract} -eq 1 ]; then
     if [ ${make_extras} -eq 1 ]; then
         ofile=$level2_SST_extract_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "SST" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_IOP_extract_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "IOP" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_LAND_extract_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "LAND" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_SFREFL_extract_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "SFREFL" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_SFREFL500_extract_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "SFREFL500" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_SFREFL250_extract_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "SFREFL250" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
+
     fi
 
 fi
@@ -523,11 +577,20 @@ if [ ${make_full} -eq 1 ]; then
 
     ofile=$level2_OC_file
     ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "OC" -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR"
-        exit 1
-    fi
-    echo " "
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ifile=${level2_OC_file}
+    ofile=${level3binned_OC_2km_file}
+    parfile="../l2bin_${product}_2km.par"
+    ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ifile=${level2_OC_file}
+    ofile=${level3binned_OC_1km_file}
+    parfile="../l2bin_${product}_1km.par"
+    ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
 fi
 
 if [ ${make_full} -eq 1 ]; then
@@ -540,11 +603,20 @@ if [ ${make_full} -eq 1 ]; then
     ancfile=${full_ancfile}
 
     ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR"
-        exit 1
-    fi
-    echo " "
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ifile=${level2_OC_file}
+    ofile=${level3binned_OC_2km_minflags_file}
+    parfile="../l2bin_${product}_2km.par"
+    ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ifile=${level2_OC_file}
+    ofile=${level3binned_OC_1km_minflags_file}
+    parfile="../l2bin_${product}_1km.par"
+    ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
 fi
 
 #  Run Level-2 Gen (Full Scene)
@@ -559,35 +631,19 @@ if [ ${make_full} -eq 1 ]; then
     if [ ${make_extras} -eq 1 ]; then
         ofile=$level2_SST_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "SST" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_IOP_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "IOP" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_LAND_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "LAND" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         ofile=$level2_SFREFL_file
         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "SFREFL" -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR"
-            exit 1
-        fi
-        echo " "
+        if [ $? -ne 0 ]; then exit 1; fi
 
         #        ofile=$level2_SFREFL500_file
         #         ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -s "SFREFL500" -m ${mission} ${option_e} ${option_c}
@@ -599,7 +655,6 @@ if [ ${make_full} -eq 1 ]; then
     fi
 fi
 
-
 if [ ${make_extract} -eq 1 ]; then
     option_e="-e"
 
@@ -609,127 +664,134 @@ if [ ${make_extract} -eq 1 ]; then
     parfile="../l2bin_${product}_1km.par"
     #    command="l2bin ifile=${ifile} ofile=${ofile} par=${parfile}"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l2bin.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3binned_OC_extract_2km_file}
     parfile="../l2bin_${product}_2km.par"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l2bin.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3binned_OC_extract_1km_minflags_file}
     parfile="../l2bin_${product}_minflags_1km.par"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l2bin.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3binned_OC_extract_2km_minflags_file}
     parfile="../l2bin_${product}_minflags_2km.par"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l2bin.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     if [ ${make_extras} -eq 1 ]; then
         ifile=${level2_LAND_extract_file}
         ofile=${level3binned_LAND_extract_1km_file}
         ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -s "LAND" -r 1 -m ${mission} ${option_e} ${option_c}
-        if [ $? -ne 0 ]; then
-            echo "ERROR: ../workflow_l2bin.sh"
-            exit 1
-        fi
+        if [ $? -ne 0 ]; then exit 1; fi
+
     fi
 fi
 
-
 if [ ${make_extract} -eq 1 ]; then
+    option_e="-e"
 
+    ######
     ifile=${level3binned_OC_extract_1km_file}
-
+    ######
     ofile=${level3mapped_OC_extract_1km_file}
     parfile="../l3mapgen_extract_1km_chlor_a_proj_smi_scene_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${level3binned_OC_extract_2km_file}
 
     ofile=${level3mapped_OC_extract_2km_file}
     parfile="../l3mapgen_extract_2km_chlor_a_proj_smi_scene_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
+    ######
     ifile=${level3binned_OC_extract_1km_minflags_file}
-
+    ######
     ofile=${level3mapped_OC_extract_1km_minflags_aea_stpeter_file}
     parfile="../l3mapgen_extract_1km_proj_aea_stpeter_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_extract_1km_100m_minflags_aea_stpeter_file}
     parfile="../l3mapgen_extract_100m_proj_aea_stpeter_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_extract_1km_minflags_aea_gulf_file}
     parfile="../l3mapgen_extract_1km_chlor_a_proj_aea_gulf_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_extract_1km_minflags_smi_gulf_file}
     parfile="../l3mapgen_extract_1km_chlor_a_proj_smi_gulf_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_extract_1km_minflags_smi_scene_file}
     parfile="../l3mapgen_extract_1km_chlor_a_proj_smi_scene_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_extract_1km_minflags_aea_scene_file}
     parfile="../l3mapgen_extract_1km_chlor_a_proj_aea_scene_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
+    ####
     ifile=${level3binned_OC_extract_2km_minflags_file}
-
+    ####
     ofile=${level3mapped_OC_extract_2km_minflags_aea_gulf_file}
     parfile="../l3mapgen_extract_2km_chlor_a_proj_aea_gulf_bounds.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-    if [ $? -ne 0 ]; then
-        echo "ERROR: ../workflow_l3mapgen.sh"
-        exit 1
-    fi
+    if [ $? -ne 0 ]; then exit 1; fi
 
+    ofile=${level3mapped_OC_extract_18km_minflags_cea_global_file}
+    parfile="../l3mapgen_chlor_a_18km_cea_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ofile=${level3mapped_OC_extract_18km_minflags_smi_global_file}
+    parfile="../l3mapgen_chlor_a_18km_smi_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ofile=${level3mapped_OC_extract_9km_minflags_cea_global_file}
+    parfile="../l3mapgen_chlor_a_9km_cea_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ofile=${level3mapped_OC_extract_9km_minflags_smi_global_file}
+    parfile="../l3mapgen_chlor_a_9km_smi_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+fi
+
+if [ ${make_full} -eq 1 ]; then
+    option_e=""
+
+    ifile=${level3binned_OC_2km_minflags_file}
+
+    ofile=${level3mapped_OC_18km_minflags_cea_global_file}
+    parfile="../l3mapgen_chlor_a_18km_cea_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ofile=${level3mapped_OC_18km_minflags_smi_global_file}
+    parfile="../l3mapgen_chlor_a_18km_smi_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ofile=${level3mapped_OC_9km_minflags_cea_global_file}
+    parfile="../l3mapgen_chlor_a_9km_cea_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ofile=${level3mapped_OC_9km_minflags_smi_global_file}
+    parfile="../l3mapgen_chlor_a_9km_smi_global.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
 fi
