@@ -9,6 +9,7 @@ extras=0
 make_extract=0
 make_full=0
 make_extras=0
+structured_directories=0
 
 Usage() {
     # Display Help
@@ -18,6 +19,7 @@ Usage() {
     echo "i     ifile"
     echo "b     basename_mission_namepart"
     echo "t     time_namepart"
+    echo "d     structured_directories"
     echo "r     resolution"
     echo "s     suite"
     echo "m     mission"
@@ -27,11 +29,11 @@ Usage() {
     echo "c     show_commands_only"
     echo
     echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -c"
-    echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -f -x -c"
+    echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -f -x -c -d"
     echo
 }
 
-while getopts "h:i:b:t:s:m:r:efxc" option; do
+while getopts "h:i:b:t:s:m:r:efxcd" option; do
     case $option in
     h)
         Usage
@@ -41,6 +43,7 @@ while getopts "h:i:b:t:s:m:r:efxc" option; do
     b) basename_mission_namepart=$OPTARG ;;
     t) time_namepart=$OPTARG ;;
     s) suite="$OPTARG" ;;
+    d) structured_directories=1 ;;
     m) mission="$OPTARG" ;;
     r) resolution=$OPTARG ;;
     e) make_extract=1 ;;
@@ -90,6 +93,14 @@ else
     exit 1
 fi
 
+echo "####################################"
+echo "# The following is a workflow of UNIX commands to generate the SeaDAS Training Demo files"
+echo "# The input file is: ${level1A_file}"
+echo "https://oceandata.sci.gsfc.nasa.gov/getfile/A2023016190500.L1A_LAC.bz2"
+echo "# Put this Level1A file in an empty directory and then go to this directory at the command line"
+echo "# You can cut and paste each of these commands sequentially and run them"
+echo "# If you wish to do this from the GUI these commands can help aid you in filling out the GUI"
+echo "######################################"
 #if [ ! -z $4 ]; then
 #    if [ $4 == "full" ]; then
 #        make_full=1
@@ -211,18 +222,18 @@ if [ ! -e "${level1A_file}" ]; then
 fi
 
 if [ ! -z ${working_dir} ]; then
-command="cd ${working_dir}"
-echo "#**************************************"
-echo "# Changing directory to run programs in same directory as level-1A file"
-echo "#**************************************"
-echo "${command}"
-echo " "
-${command}
-if [ $? -ne 0 ]; then
-    echo "ERROR"
-    exit 1
-fi
-echo " "
+    command="cd ${working_dir}"
+    echo "#**************************************"
+    echo "# Changing directory to run programs in same directory as level-1A file"
+    echo "#**************************************"
+    echo "${command}"
+    echo " "
+    ${command}
+    if [ $? -ne 0 ]; then
+        echo "ERROR"
+        exit 1
+    fi
+    echo " "
 fi
 
 # Now working dir is the current directory so change the variable
@@ -232,26 +243,38 @@ working_dir="."
 #echo "pwd=`pwd`"
 level1A_file=${working_dir}/${level1A_basename}
 
-full_scene_dir="/Full_Scene"
-extracts_dir="/Extracts"
-extracts_stpeter_dir="${extracts_dir}/L3m_SaintPeter"
-extracts_gulf_dir="${extracts_dir}/L3m_Gulf"
-extracts_global_dir="${extracts_dir}/L3m_Global"
-full_scene_global_dir="${full_scene_dir}/L3m_Global"
-extracts_scene_dir="${extracts_dir}/L3m_Scene"
-extracts_binned_dir="${extracts_dir}/L3b"
-full_scene_binned_dir="${full_scene_dir}/L3b"
+if [ ${structured_directories} -eq 1 ]; then
+    full_scene_dir="/Full_Scene"
+    extracts_dir="/Extracts"
+    extracts_stpeter_dir="${extracts_dir}/L3m_SaintPeter"
+    extracts_gulf_dir="${extracts_dir}/L3m_Gulf"
+    extracts_global_dir="${extracts_dir}/L3m_Global"
+    full_scene_global_dir="${full_scene_dir}/L3m_Global"
+    extracts_scene_dir="${extracts_dir}/L3m_Scene"
+    extracts_binned_dir="${extracts_dir}/L3b"
+    full_scene_binned_dir="${full_scene_dir}/L3b"
 
-if [ ! -e ${working_dir}${full_scene_dir} ]; then mkdir ${working_dir}${full_scene_dir}; fi
-if [ ! -e ${working_dir}${extracts_dir} ]; then mkdir ${working_dir}${extracts_dir}; fi
-if [ ! -e ${working_dir}${extracts_stpeter_dir} ]; then mkdir ${working_dir}${extracts_stpeter_dir}; fi
-if [ ! -e ${working_dir}${extracts_gulf_dir} ]; then mkdir ${working_dir}${extracts_gulf_dir}; fi
-if [ ! -e ${working_dir}${extracts_global_dir} ]; then mkdir ${working_dir}${extracts_global_dir}; fi
-if [ ! -e ${working_dir}${extracts_scene_dir} ]; then mkdir ${working_dir}${extracts_scene_dir}; fi
-if [ ! -e ${working_dir}${extracts_binned_dir} ]; then mkdir ${working_dir}${extracts_binned_dir}; fi
-if [ ! -e ${working_dir}${full_scene_global_dir} ]; then mkdir ${working_dir}${full_scene_global_dir}; fi
-if [ ! -e ${working_dir}${full_scene_binned_dir} ]; then mkdir ${working_dir}${full_scene_binned_dir}; fi
-
+    if [ ! -e ${working_dir} ]; then mkdir ${working_dir}; fi
+    if [ ! -e ${working_dir}${full_scene_dir} ]; then mkdir ${working_dir}${full_scene_dir}; fi
+    if [ ! -e ${working_dir}${extracts_dir} ]; then mkdir ${working_dir}${extracts_dir}; fi
+    if [ ! -e ${working_dir}${extracts_stpeter_dir} ]; then mkdir ${working_dir}${extracts_stpeter_dir}; fi
+    if [ ! -e ${working_dir}${extracts_gulf_dir} ]; then mkdir ${working_dir}${extracts_gulf_dir}; fi
+    if [ ! -e ${working_dir}${extracts_global_dir} ]; then mkdir ${working_dir}${extracts_global_dir}; fi
+    if [ ! -e ${working_dir}${extracts_scene_dir} ]; then mkdir ${working_dir}${extracts_scene_dir}; fi
+    if [ ! -e ${working_dir}${extracts_binned_dir} ]; then mkdir ${working_dir}${extracts_binned_dir}; fi
+    if [ ! -e ${working_dir}${full_scene_global_dir} ]; then mkdir ${working_dir}${full_scene_global_dir}; fi
+    if [ ! -e ${working_dir}${full_scene_binned_dir} ]; then mkdir ${working_dir}${full_scene_binned_dir}; fi
+else
+    full_scene_dir=""
+    extracts_dir=""
+    extracts_stpeter_dir=""
+    extracts_gulf_dir=""
+    extracts_global_dir=""
+    full_scene_global_dir=""
+    extracts_scene_dir=""
+    extracts_binned_dir=""
+    full_scene_binned_dir=""
+fi
 
 # Full files to be created
 geo_full_file=${working_dir}/${basename_part}.GEO.nc
