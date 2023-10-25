@@ -123,10 +123,10 @@
 <!--            </java>-->
 <!--            <returnvalue type="boolean">true</returnvalue>-->
 <!--        </condition>-->
-        <condition type="and" id="standardinstallation.onwindows">
-            <condition type="ref" refid="standardinstallation"/>
-            <condition type="ref" refid="installonwindows"/>
-        </condition>
+<!--        <condition type="and" id="standardinstallation.onwindows">-->
+<!--            <condition type="ref" refid="standardinstallation"/>-->
+<!--            <condition type="ref" refid="installonwindows"/>-->
+<!--        </condition>-->
         <condition id="start-after-install" type="variable">
             <name>start.after.install</name>
             <value>true</value>
