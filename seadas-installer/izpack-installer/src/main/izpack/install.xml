@@ -102,27 +102,27 @@
             <name>setup.type</name>
             <value>expert</value>
         </condition>
-        <condition type="java" id="installonwindows">
-            <java>
-                <class>com.izforge.izpack.util.OsVersion</class>
-                <field>IS_WINDOWS</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
-        <condition type="java" id="installonmac">
-            <java>
-                <class>com.izforge.izpack.util.OsVersion</class>
-                <field>IS_MAC</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
-        <condition type="java" id="installonlinux">
-            <java>
-                <class>com.izforge.izpack.util.OsVersion</class>
-                <field>IS_LINUX</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
+<!--        <condition type="java" id="installonwindows">-->
+<!--            <java>-->
+<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
+<!--                <field>IS_WINDOWS</field>-->
+<!--            </java>-->
+<!--            <returnvalue type="boolean">true</returnvalue>-->
+<!--        </condition>-->
+<!--        <condition type="java" id="installonmac">-->
+<!--            <java>-->
+<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
+<!--                <field>IS_MAC</field>-->
+<!--            </java>-->
+<!--            <returnvalue type="boolean">true</returnvalue>-->
+<!--        </condition>-->
+<!--        <condition type="java" id="installonlinux">-->
+<!--            <java>-->
+<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
+<!--                <field>IS_LINUX</field>-->
+<!--            </java>-->
+<!--            <returnvalue type="boolean">true</returnvalue>-->
+<!--        </condition>-->
         <condition type="and" id="standardinstallation.onwindows">
             <condition type="ref" refid="standardinstallation"/>
             <condition type="ref" refid="installonwindows"/>
