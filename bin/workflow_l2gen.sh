@@ -7,7 +7,6 @@ Usage() {
     # Display Help
     echo "Usage: workflow_l2gen.sh"
     echo
-    #   echo "Syntax: scriptTemplate [-g|h|v|V]"
     echo "options:"
     echo "i     ifile"
     echo "g     geofile"
@@ -24,10 +23,8 @@ Usage() {
 
 while getopts "h:i:g:a:o:s:p:m:ec" option; do
     case $option in
-    h) # display Help
-        Usage
-        exit
-        ;;
+    h) Usage
+        exit ;;
     i) ifile=$OPTARG ;;
     g) geofile=$OPTARG ;;
     a) ancfile=$OPTARG ;;
@@ -39,41 +36,10 @@ while getopts "h:i:g:a:o:s:p:m:ec" option; do
     c) show_commands_only=1 ;;
     \?) # Invalid option
         echo "Error: Invalid option"
-        exit
-        ;;
+        exit ;;
     esac
 done
 
-#echo "ifile=${ifile}"
-#echo "geofile=${geofile}"
-#echo "ancfile=${ancfile}"
-#echo "ofile=${ofile}"
-#echo "suite=${suite}"
-#echo "parfile=${parfile}"
-#echo "extract=${extract}"
-#echo "show_commands_only=${show_commands_only}"
-
-
-if [ ! -z "${ifile}" ]; then
-    if [ ! -e "${ifile}" ]; then
-        echo "ifile '${ifile}' does not exist" && exit 1
-    fi
-fi
-if [ ! -z "${geofile}" ]; then
-    if [ ! -e "${geofile}" ]; then
-        echo "geofile '${geofile}' does not exist" && exit 1
-    fi
-fi
-if [ ! -z "${ancfile}" ]; then
-    if [ ! -e "${ancfile}" ]; then
-        echo "ancfile '${ancfile}' does not exist" && exit 1
-    fi
-fi
-if [ ! -z "${parfile}" ]; then
-    if [ ! -e "${parfile}" ]; then
-        echo "parfile '${parfile}' does not exist" && exit 1
-    fi
-fi
 
 source $OCSSWROOT/OCSSW_bash.env
 if [ $show_commands_only -ne 1 ]; then
@@ -103,16 +69,13 @@ fi
 
 
 command="l2gen"
-short_command="l2gen"
 
 if [ ! -z ${ifile} ]; then
     command="${command}  ifile=${ifile}"
-    short_command="${short_command}  ifile=${ifile}"
 fi
 
 if [ ! -z ${geofile} ]; then
     command="${command}  geofile=${geofile}"
-    short_command="${short_command}  geofile=${geofile}"
 fi
 
 if [ ! -z ${ofile} ]; then
@@ -121,17 +84,14 @@ fi
 
 if [ ! -z ${ancfile} ]; then
     command="${command}  par=${ancfile}"
-    short_command="${short_command}  par=${ancfile}"
 fi
 
 if [ ! -z ${suite} ]; then
     command="${command}  suite=${suite}"
-    short_command="${short_command}  suite=${suite}"
 fi
 
 if [ ! -z ${parfile} ]; then
     command="${command}  par=${parfile}"
-    short_command="${short_command}  par=${parfile}"
 fi
 
 #    command="l2gen ifile=${ifile} geofile=${geofile} ofile=${ofile} par=${ancfile} suite=\"${suite}\""
@@ -155,6 +115,26 @@ echo "#**************************************"
 echo "${command}"
 echo " "
 if [ $show_commands_only -ne 1 ]; then
+    if [ ! -z "${ifile}" ]; then
+        if [ ! -e "${ifile}" ]; then
+            echo "ifile '${ifile}' does not exist" && exit 1
+        fi
+    fi
+    if [ ! -z "${geofile}" ]; then
+        if [ ! -e "${geofile}" ]; then
+            echo "geofile '${geofile}' does not exist" && exit 1
+        fi
+    fi
+    if [ ! -z "${ancfile}" ]; then
+        if [ ! -e "${ancfile}" ]; then
+            echo "ancfile '${ancfile}' does not exist" && exit 1
+        fi
+    fi
+    if [ ! -z "${parfile}" ]; then
+        if [ ! -e "${parfile}" ]; then
+            echo "parfile '${parfile}' does not exist" && exit 1
+        fi
+    fi
     ${command}
     if [ $? -ne 0 ]; then
         echo "ERROR"
