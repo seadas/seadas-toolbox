@@ -23,9 +23,9 @@ Usage() {
     echo "r     resolution"
     echo "s     suite"
     echo "m     mission"
-    echo "e     make_extract_files"
+    echo "x     make_extract_files"
     echo "f     make_full_scene_files"
-    echo "x     make_extra_files"
+    echo "e     make_extra_files"
     echo "c     show_commands_only"
     echo
     echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -c"
@@ -46,9 +46,9 @@ while getopts "h:i:b:t:s:m:r:efxcd" option; do
     d) structured_directories=1 ;;
     m) mission="$OPTARG" ;;
     r) resolution=$OPTARG ;;
-    e) make_extract=1 ;;
+    x) make_extract=1 ;;
     f) make_full=1 ;;
-    x) make_extras=1 ;;
+    e) make_extras=1 ;;
     c) show_commands_only=1 ;;
     \?) # Invalid option
         echo "Error: Invalid option"
