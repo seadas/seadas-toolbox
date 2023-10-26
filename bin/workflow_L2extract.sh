@@ -84,11 +84,11 @@ echo " "
 
 
 
-command="lonlat2pixline ${geofile} ${swlon} ${swlat} ${nelon} ${nelat}"
+command="lonlat2pixline ${ifile} ${swlon} ${swlat} ${nelon} ${nelat}"
 
 echo "#**************************************"
 echo "# Getting extract pixel bounds from geo-coordinates"
-echo "# ifile=${geofile}"
+echo "# ifile=${ifile}"
 echo "# swlon=${swlon}"
 echo "# swlat=${swlat}"
 echo "# nelon=${nelon}"
