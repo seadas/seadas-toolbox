@@ -28,7 +28,7 @@ Usage() {
     echo "e     make_extra_files"
     echo "c     show_commands_only"
     echo
-    echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -c"
+    echo "Usage example: ./workflow1.sh -i Workflow1/A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -x -c"
     echo "Usage example: Workflow1/workflow1.sh -i A2023016190500.L1A_LAC -b AQUA_MODIS -t 20230116T190501 -e -f -x -c -d"
     echo
 }
@@ -57,10 +57,17 @@ while getopts "h:i:b:t:s:m:r:efxcd" option; do
     esac
 done
 
+# Old value
+#swlon=-85
+#swlat=24
+#nelon=-80
+#nelat=31
+
+# New Value
 swlon=-85
-swlat=24
-nelon=-80
-nelat=31
+swlat=24.0
+nelon=-81.5
+nelat=30.5
 
 product="chlor_a"
 
@@ -277,7 +284,7 @@ else
 fi
 
 # Full files to be created
-geo_full_file=${working_dir}/${basename_part}.GEO.nc
+geo_full_file=${working_dir}/${basename_part}.GEO.hdf
 level1B_file=${working_dir}/${basename_part}.L1B.hdf
 level1B_qkm_file=${working_dir}/${basename_mission_part}_QKM.${basename_time_part}.L1B.hdf
 level1B_hkm_file=${working_dir}/${basename_mission_part}_HKM.${basename_time_part}.L1B.hdf
@@ -289,7 +296,7 @@ level2_SST_file=${working_dir}/${basename_part}.L2.SST.nc
 level2_IOP_file=${working_dir}/${basename_part}.L2.IOP.sub.nc
 level2_LAND_file=${working_dir}/${basename_part}.L2.LAND.sub.nc
 level2_OC_file=${working_dir}/${basename_part}.L2.OC.nc
-level2_custom_file=${working_dir}/${basename_part}.L2.custom.nc
+level2_custom_file=${working_dir}/${basename_part}.L2.CUSTOM.nc
 level3binned_OC_1km_file=${working_dir}${full_scene_binned_dir}/${basename_part}.L3b.OC.${product}.1km.nc
 level3binned_OC_2km_file=${working_dir}${full_scene_binned_dir}/${basename_part}.L3b.OC.${product}.2km.nc
 level3binned_OC_1km_minflags_file=${working_dir}${full_scene_binned_dir}/${basename_part}.L3b.OC.${product}.1km.minflags.nc
@@ -300,8 +307,8 @@ level3mapped_OC_9km_minflags_cea_global_file=${working_dir}${full_scene_global_d
 level3mapped_OC_9km_minflags_smi_global_file=${working_dir}${full_scene_global_dir}/${basename_part}.L3m.OC.${product}.9km.minflags.smi.global.nc
 
 # Extract files to be created
-level1A_extract_file=${working_dir}/${basename_part}.L1A.sub.nc
-geo_extract_file=${working_dir}/${basename_part}.GEO.sub.nc
+level1A_extract_file=${working_dir}/${basename_part}.L1A.sub
+geo_extract_file=${working_dir}/${basename_part}.GEO.sub.hdf
 level1B_extract_file=${working_dir}/${basename_part}.L1B.sub.hdf
 level1B_qkm_extract_file=${working_dir}/${basename_mission_part}_QKM.${basename_time_part}.L1B.sub.hdf
 level1B_hkm_extract_file=${working_dir}/${basename_mission_part}_HKM.${basename_time_part}.L1B.sub.hdf
@@ -313,7 +320,7 @@ level2_SST_extract_file=${working_dir}/${basename_part}.L2.SST.sub.nc
 level2_IOP_extract_file=${working_dir}/${basename_part}.L2.IOP.sub.nc
 level2_LAND_extract_file=${working_dir}/${basename_part}.L2.LAND.sub.nc
 level2_OC_extract_file=${working_dir}/${basename_part}.L2.OC.sub.nc
-level2_custom_extract_file=${working_dir}/${basename_part}.L2.custom.sub.nc
+level2_custom_extract_file=${working_dir}/${basename_part}.L2.CUSTOM.sub.nc
 
 level3binned_LAND_extract_1km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.LAND.1km.sub.nc
 level3binned_OC_extract_1km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.OC.${product}.1km.sub.nc
@@ -540,7 +547,7 @@ fi
 
 if [ ${make_extract} -eq 1 ]; then
     option_e="-e"
-    parfile="../l2gen_custom.par"
+    parfile="../par/l2gen_CUSTOM.par"
     ifile=$level1B_extract_file
     geofile=$geo_extract_file
     ofile=$level2_custom_extract_file
@@ -619,7 +626,7 @@ fi
 if [ ${make_full} -eq 1 ]; then
     option_e=""
 
-    parfile="../l2gen_custom.par"
+    parfile="../par/l2gen_CUSTOM.par"
     ifile=$level1B_file
     geofile=$geo_full_file
     ofile=$level2_custom_file

@@ -4,12 +4,12 @@ show_commands_only=0
 
 Usage() {
     # Display Help
-    echo "Usage: workflow_L2extract.sh ifile swlon swlat nelon nelat [-g geofile | -o ofile]"
+    echo "Usage: workflow_L2extract.sh ifile swlon swlat nelon nelat [-l list of products | -o ofile]"
     echo
     #   echo "Syntax: scriptTemplate [-g|h|v|V]"
     echo "options:"
-    echo "g     geofile"
     echo "o     ofile"
+    echo "l     list of products"
     echo "c     show_commands_only"
     echo "v     Verbose mode."
     echo
@@ -26,13 +26,14 @@ if [ ! -z $5 ]; then nelat=$5; else echo ${usage}; exit 1; fi
 shift 5
 
 
-while getopts ":h:o:c" option; do
+while getopts ":h:o:cl:" option; do
     case $option in
     h) # display Help
         Usage
         exit
         ;;
     o) ofile=$OPTARG ;;
+    l) product=$OPTARG ;;
 
     c) show_commands_only=1 ;;
     \?) # Invalid option
@@ -132,7 +133,10 @@ done
 #sline=1074
 #eline=1864
 
-command="l2extract ifile=$ifile ofile=$ofile spix=${spixl} epix=${epixl} sline=${sline} eline=${eline} ofile=$ofile"
+command="l2extract ifile=$ifile ofile=$ofile spix=${spixl} epix=${epixl} sline=${sline} eline=${eline} ofile=${ofile}"
+if [ ! -z ${product} ]; then
+    command="${command} product=${product}"
+fi
 #command="l2extract ifile=$ifile ofile=$ofile spix=309 epix=612 sline=1074 eline=1864"
 
 default_ofile=$(get_output_name ${ifile} l2extract)
@@ -142,11 +146,14 @@ echo "# ${description}"
 echo "# Note: pixel and line info obtained from lonlat2pixline"
 echo "# ifile=${ifile}"
 echo "# ofile=${ofile}"
+if [ ! -z ${product} ]; then
+    echo "# product=${product}"
+fi
 echo "# spix=${spixl}"
 echo "# epix=${epixl}"
 echo "# sline=${sline}"
 echo "# eline=${eline}"
-echo "# Field 'ofile' is required: but get_output_name suggests:"
+echo "# The suggested ofile from (get_output_name)"
 echo "#     Default ${default_ofile}"
 echo "#**************************************"
 echo "${command}"
