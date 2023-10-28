@@ -57,11 +57,11 @@ if [ ! -z ${suite} ]; then
     description="${description} ${suite}"
 fi
 description="${description} Level-3 Mapped File"
-if [ ${extract} -eq 1 ]; then
-    description="${description} (Extract)"
-else
-    description="${description} (Full Scene)"
-fi
+#if [ ${extract} -eq 1 ]; then
+#    description="${description} (Extract)"
+#else
+#    description="${description} (Full Scene)"
+#fi
 
 command="l3mapgen"
 
