@@ -208,7 +208,7 @@ basename_part=${basename_mission_part}.${basename_time_part}
 #echo "working_dir=${working_dir}"
 
 ## Install Level1A file if not in working directory
-#level1A_file=${working_dir}/${level1A_basename}
+#level1A_file=${working_dir}${level1A_basename}
 #if [ ! -e "${level1A_file}" ]; then
 #    source_dir="${script_dir}/../../OB.DAAC"
 #    level1A_source_file=${source_dir}/${level1A_basename}
@@ -245,49 +245,56 @@ fi
 
 # Now working dir is the current directory so change the variable
 # Showing relative paths to make commands not dependent on any user directory tree
-working_dir="."
+working_dir=""
 #echo "working_dir=${working_dir}"
 #echo "pwd=`pwd`"
-level1A_file=${working_dir}/${level1A_basename}
+level1A_file=${working_dir}${level1A_basename}
 
+pardir=""
 if [ ${structured_directories} -eq 1 ]; then
-    extracts_dir="/output"
-    if [ ! -e ${working_dir} ]; then mkdir ${working_dir}; fi
+#        pardir="par/"
+
+    extracts_dir="output/"
+#    if [ ! -e ${working_dir} ]; then mkdir ${working_dir}; fi
     if [ ! -e ${working_dir}${extracts_dir} ]; then mkdir ${working_dir}${extracts_dir}; fi
 else
     extracts_dir=""
 fi
 
 # Full files to be created
-geo_full_file=${working_dir}/${basename_part}.GEO.hdf
-level1B_file=${working_dir}/${basename_part}.L1B.hdf
-level1B_qkm_file=${working_dir}/${basename_mission_part}_QKM.${basename_time_part}.L1B.hdf
-level1B_hkm_file=${working_dir}/${basename_mission_part}_HKM.${basename_time_part}.L1B.hdf
-full_ancfile=${working_dir}/${basename_part}.L1B.hdf.anc
-level2_SFREFL_file=${working_dir}${extracts_dir}/${basename_part}.L2.SFREFL.nc
-level2_SFREFL500_file=${working_dir}${extracts_dir}/${basename_part}.L2.SFREFL500.nc
-level2_SFREFL250_file=${working_dir}${extracts_dir}/${basename_part}.L2.SFREFL250.nc
-level2_SST_file=${working_dir}${extracts_dir}/${basename_part}.L2.SST.nc
-level2_IOP_file=${working_dir}${extracts_dir}/${basename_part}.L2.IOP.sub.nc
-level2_LAND_file=${working_dir}${extracts_dir}/${basename_part}.L2.LAND.sub.nc
-level2_OC_file=${working_dir}${extracts_dir}/${basename_part}.L2.OC.nc
-level2_custom_file=${working_dir}${extracts_dir}/${basename_part}.L2.CUSTOM.nc
+geo_full_file=${working_dir}${basename_part}.GEO.hdf
+level1B_file=${working_dir}${basename_part}.L1B.hdf
+level1B_qkm_file=${working_dir}${basename_mission_part}_QKM.${basename_time_part}.L1B.hdf
+level1B_hkm_file=${working_dir}${basename_mission_part}_HKM.${basename_time_part}.L1B.hdf
+full_ancfile=${working_dir}${basename_part}.L1B.hdf.anc
+level2_SFREFL_file=${working_dir}${extracts_dir}${basename_part}.L2.SFREFL.nc
+level2_SFREFL500_file=${working_dir}${extracts_dir}${basename_part}.L2.SFREFL500.nc
+level2_SFREFL250_file=${working_dir}${extracts_dir}${basename_part}.L2.SFREFL250.nc
+level2_SST_file=${working_dir}${extracts_dir}${basename_part}.L2.SST.nc
+level2_IOP_file=${working_dir}${extracts_dir}${basename_part}.L2.IOP.sub.nc
+level2_LAND_file=${working_dir}${extracts_dir}${basename_part}.L2.LAND.sub.nc
+level2_OC_file=${working_dir}${extracts_dir}${basename_part}.L2.OC.nc
+level2_custom_file=${working_dir}${extracts_dir}${basename_part}.L2.CUSTOM.nc
+level2_rgb_band_combinations_file=${working_dir}${extracts_dir}${basename_part}.L2.RGB_BAND_COMBINATIONS.nc
 
 # Extract files to be created
-level1A_extract_file=${working_dir}/${basename_part}.L1A.sub
-geo_extract_file=${working_dir}/${basename_part}.GEO.sub.hdf
-level1B_extract_file=${working_dir}/${basename_part}.L1B.sub.hdf
-level1B_qkm_extract_file=${working_dir}/${basename_mission_part}_QKM.${basename_time_part}.L1B.sub.hdf
-level1B_hkm_extract_file=${working_dir}/${basename_mission_part}_HKM.${basename_time_part}.L1B.sub.hdf
-extract_ancfile=${working_dir}/${basename_part}.L1B.sub.hdf.anc
-level2_SFREFL_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.SFREFL.sub.nc
-level2_SFREFL500_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.SFREFL500.sub.nc
-level2_SFREFL250_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.SFREFL250.sub.nc
-level2_SST_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.SST.sub.nc
-level2_IOP_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.IOP.sub.nc
-level2_LAND_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.LAND.sub.nc
-level2_OC_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.OC.sub.nc
-level2_custom_extract_file=${working_dir}${extracts_dir}/${basename_part}.L2.CUSTOM.sub.nc
+level1A_extract_file=${working_dir}${basename_part}.L1A.sub
+geo_extract_file=${working_dir}${basename_part}.GEO.sub.hdf
+level1B_extract_file=${working_dir}${basename_part}.L1B.sub.hdf
+level1B_qkm_extract_file=${working_dir}${basename_mission_part}_QKM.${basename_time_part}.L1B.sub.hdf
+level1B_hkm_extract_file=${working_dir}${basename_mission_part}_HKM.${basename_time_part}.L1B.sub.hdf
+extract_ancfile=${working_dir}${basename_part}.L1B.sub.hdf.anc
+level2_SFREFL_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.SFREFL.sub.nc
+level2_SFREFL500_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.SFREFL500.sub.nc
+level2_SFREFL250_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.SFREFL250.sub.nc
+level2_SST_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.SST.sub.nc
+level2_IOP_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.IOP.sub.nc
+level2_LAND_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.LAND.sub.nc
+level2_OC_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.OC.sub.nc
+level2_custom_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.CUSTOM.sub.nc
+level2_atmocor_swir_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.ATMOSPHERIC_CORRECTION_SWIR.sub.nc
+level2_vicarious_gain_off_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.VICARIOUS_GAIN_OFF.sub.nc
+level2_no_ancillary_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.CLIMATOLOGICAL_ANCILLARY.sub.nc
 
 l
 program=modis_GEO
@@ -487,18 +494,48 @@ if [ ${make_extract} -eq 1 ]; then
     if [ $? -ne 0 ]; then exit 1; fi
 
     echo " "
+
+
+
+        ofile=${level2_no_ancillary_extract_file}
+        ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile}  -s "OC" -m ${mission} ${option_e} ${option_c}
+        if [ $? -ne 0 ]; then exit 1; fi
+
+        echo " "
+
 fi
 
 if [ ${make_extract} -eq 1 ]; then
     option_e="-e"
-    parfile="../par/l2gen_CUSTOM.par"
     ifile=$level1B_extract_file
     geofile=$geo_extract_file
-    ofile=$level2_custom_extract_file
     ancfile=${extract_ancfile}
 
+    ofile=$level2_custom_extract_file
+    parfile="${pardir}l2gen_CUSTOM.par"
     ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
+
+
+    parfile="${pardir}l2gen_RGB_BAND_COMBINATIONS.par"
+    ofile=${level2_rgb_band_combinations_file}
+    ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+
+    parfile="${pardir}l2gen_ATMOSPHERIC_CORRECTION_SWIR.par"
+    ofile=${level2_atmocor_swir_extract_file}
+    ancfile=${extract_ancfile}
+    ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+
+    parfile="${pardir}l2gen_VICARIOUS_GAIN_OFF.par"
+    ofile=${level2_vicarious_gain_off_extract_file}
+    ancfile=${extract_ancfile}
+    ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
 
 fi
 
@@ -559,15 +596,19 @@ fi
 if [ ${make_full} -eq 1 ]; then
     option_e=""
 
-    parfile="../par/l2gen_CUSTOM.par"
-    ifile=$level1B_file
+    parfile="${pardir}l2gen_CUSTOM.par"
+    ifile=${level1B_file}
     geofile=$geo_full_file
-    ofile=$level2_custom_file
+    ofile=${level2_custom_file}
     ancfile=${full_ancfile}
 
     ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
+    parfile="${pardir}l2gen_RGB_BAND_COMBINATIONS.par"
+    ofile=${level2_rgb_band_combinations_file}
+    ../workflow_l2gen.sh -i ${ifile} -g ${geofile} -o ${ofile} -a ${ancfile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
 
 fi
 

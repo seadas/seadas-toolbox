@@ -11,6 +11,7 @@ Usage() {
     echo "i     ifile"
     echo "o     ofile"
     echo "p     parfile"
+    echo "P     parfile2"
     echo "r     resolution"
     echo "s     suite"
     echo "m     mission"
@@ -19,7 +20,7 @@ Usage() {
     echo
 }
 
-while getopts "h:i:o:s:p:m:r:ec" option; do
+while getopts "h:i:o:s:p:P:m:r:ec" option; do
     case $option in
     h) # display Help
         Usage
@@ -28,6 +29,7 @@ while getopts "h:i:o:s:p:m:r:ec" option; do
     i) ifile=$OPTARG ;;
     o) ofile=$OPTARG ;;
     p) parfile=$OPTARG ;;
+    P) parfile2=$OPTARG ;;
     s) suite="$OPTARG" ;;
     m) mission="$OPTARG" ;;
     r) resolution=$OPTARG ;;
@@ -81,6 +83,10 @@ if [ ! -z ${parfile} ]; then
     command="${command}  par=${parfile}"
 fi
 
+if [ ! -z ${parfile2} ]; then
+    command="${command}  par=${parfile2}"
+fi
+
 if [ ! -z ${resolution} ]; then
     command="${command}  resolution=${resolution}"
 fi
@@ -96,7 +102,10 @@ if [ ! -z ${parfile} ]; then
     echo "# par=${parfile}"
     sed 's/^/#     /g' ${parfile}
 fi
-
+if [ ! -z ${parfile2} ]; then
+    echo "# par=${parfile2}"
+    sed 's/^/#     /g' ${parfile2}
+fi
 echo "# The suggested ofile from (get_output_name)"
 echo "#     Default ${default_ofile}"
 echo "#**************************************"

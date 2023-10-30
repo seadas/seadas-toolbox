@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # This script starts with a L1A file
+show_info=0
 
 show_commands_only=0
 extras=0
@@ -14,7 +15,7 @@ mission_short="MODIS"
 
 product="chlor_a"
 
-only_1_file=1
+only_1_file=0
 
 Usage() {
     # Display Help
@@ -135,7 +136,7 @@ fi
 echo "####################################"
 echo "# The following is a workflow of UNIX commands to generate the SeaDAS Training Demo files"
 echo "# The input file is: ${input_level2_OC_file}"
-echo "# https://oceandata.sci.gsfc.nasa.gov/getfile/A2023016190500.L1A_LAC.bz2"
+echo "# https://oceandata.sci.gsfc.nasa.gov/getfile/${input_level2_OC_file}"
 echo "# Put this Level1A file in an empty directory and then go to this directory at the command line"
 echo "# You can cut and paste each of these commands sequentially and run them"
 echo "# If you wish to do this from the GUI these commands can help aid you in filling out the GUI"
@@ -145,11 +146,13 @@ if [ $show_commands_only -eq 1 ]; then option_c="-c"; else option_c=""; fi
 
 mission=${basename_mission_part}
 
-echo "#**************************************"
-echo "# Showing OCSSWROOT Environment Variable"
-echo "#**************************************"
-echo 'echo $OCSSWROOT'
-echo " "
+if [ $show_info -eq 1 ]; then
+    echo "#**************************************"
+    echo "# Showing OCSSWROOT Environment Variable"
+    echo "#**************************************"
+    echo 'echo $OCSSWROOT'
+    echo " "
+fi
 if [ $show_commands_only -ne 1 ]; then
     echo $OCSSWROOT
     if [ $? -ne 0 ]; then
@@ -159,11 +162,14 @@ if [ $show_commands_only -ne 1 ]; then
 fi
 echo " "
 
-echo "#**************************************"
-echo "# Setting up the SeaDAS-OCSSW Processor Environment"
-echo "#**************************************"
-echo 'source $OCSSWROOT/OCSSW_bash.env'
-echo " "
+if [ $show_info -eq 1 ]; then
+
+    echo "#**************************************"
+    echo "# Setting up the SeaDAS-OCSSW Processor Environment"
+    echo "#**************************************"
+    echo 'source $OCSSWROOT/OCSSW_bash.env'
+    echo " "
+fi
 source $OCSSWROOT/OCSSW_bash.env
 if [ $show_commands_only -ne 1 ]; then
     if [ $? -ne 0 ]; then
@@ -171,13 +177,16 @@ if [ $show_commands_only -ne 1 ]; then
         exit 1
     fi
 fi
-echo " "
 
-echo "#**************************************"
-echo "# Verifying SeaDAS-OCSSW Processors Exist in Envronment Path"
-echo "#**************************************"
-echo 'which l2gen'
-echo " "
+if [ $show_info -eq 1 ]; then
+
+    echo "#**************************************"
+    echo "# Verifying SeaDAS-OCSSW Processors Exist in Environment Path"
+    echo "#**************************************"
+    echo 'which l2gen'
+    echo " "
+fi
+
 if [ $show_commands_only -ne 1 ]; then
     which l2gen
     if [ $? -ne 0 ]; then
@@ -198,12 +207,16 @@ if [ ! -e "${input_level2_OC_file}" ]; then
 fi
 
 if [ ! -z ${working_dir} ]; then
-    command="cd ${working_dir}"
-    echo "#**************************************"
-    echo "# Changing directory to run programs in same directory as level-1A file"
-    echo "#**************************************"
-    echo "${command}"
-    echo " "
+
+        command="cd ${working_dir}"
+            if [ $show_info -eq 1 ]; then
+        echo "#**************************************"
+        echo "# Changing directory to run programs in same directory as level-1A file"
+        echo "#**************************************"
+        echo "${command}"
+        echo " "
+    fi
+
     ${command}
     if [ $? -ne 0 ]; then
         echo "ERROR"
@@ -212,24 +225,24 @@ if [ ! -z ${working_dir} ]; then
     echo " "
 fi
 
+
 # Now working dir is the current directory so change the variable
 # Showing relative paths to make commands not dependent on any user directory tree
-working_dir="."
+working_dir=""
 #echo "working_dir=${working_dir}"
 #echo "pwd=`pwd`"
-input_level2_OC_file=${working_dir}/${input_level2_OC_file_basename}
+input_level2_OC_file=${working_dir}${input_level2_OC_file_basename}
 
+pardir=""
 if [ ${structured_directories} -eq 1 ]; then
-    full_scene_dir="/Full_Scene"
-    extracts_dir="/output"
-    extracts_stpeter_dir="${extracts_dir}/L3m_SaintPeter"
-    extracts_gulf_dir="${extracts_dir}/L3m_Gulf"
-    extracts_florida_dir="${extracts_dir}/L3m_WestCoastFlorida"
-    extracts_global_dir="${extracts_dir}/L3m_Global"
-    full_scene_global_dir="${full_scene_dir}/L3m_Global"
-    extracts_scene_dir="${extracts_dir}/L3m_Scene"
-    extracts_binned_dir="${extracts_dir}/L3b"
-    full_scene_binned_dir="${full_scene_dir}/L3b"
+    pardir="par/"
+    extracts_dir="output/"
+    extracts_stpeter_dir="${extracts_dir}L3m_SaintPeter/"
+    extracts_gulf_dir="${extracts_dir}L3m_Gulf/"
+    extracts_florida_dir="${extracts_dir}L3m_WestCoastFlorida/"
+    extracts_global_dir="${extracts_dir}L3m_Global/"
+    extracts_scene_dir="${extracts_dir}L3m_Scene/"
+    extracts_binned_dir="${extracts_dir}L3b/"
 
     if [ ! -e ${working_dir} ]; then mkdir ${working_dir}; fi
     if [ ! -e ${working_dir}${full_scene_dir} ]; then mkdir ${working_dir}${full_scene_dir}; fi
@@ -240,8 +253,6 @@ if [ ${structured_directories} -eq 1 ]; then
     if [ ! -e ${working_dir}${extracts_global_dir} ]; then mkdir ${working_dir}${extracts_global_dir}; fi
     if [ ! -e ${working_dir}${extracts_scene_dir} ]; then mkdir ${working_dir}${extracts_scene_dir}; fi
     if [ ! -e ${working_dir}${extracts_binned_dir} ]; then mkdir ${working_dir}${extracts_binned_dir}; fi
-    if [ ! -e ${working_dir}${full_scene_global_dir} ]; then mkdir ${working_dir}${full_scene_global_dir}; fi
-    if [ ! -e ${working_dir}${full_scene_binned_dir} ]; then mkdir ${working_dir}${full_scene_binned_dir}; fi
 else
     full_scene_dir=""
     extracts_dir=""
@@ -249,7 +260,6 @@ else
     extracts_gulf_dir=""
     extracts_florida_dir=""
     extracts_global_dir=""
-    full_scene_global_dir=""
     extracts_scene_dir=""
     extracts_binned_dir=""
     full_scene_binned_dir=""
@@ -267,48 +277,48 @@ else
     extension="nc"
 fi
 
-level3binned_OC_250m_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.${product_name_part}.${product}.250m.${extension}
-#level3binned_OC_500m_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.${product_name_part}.${product}.500m.${extension}
-level3binned_OC_1km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.${product_name_part}.${product}.1km.${extension}
-level3binned_OC_2km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.${product_name_part}.${product}.2km.${extension}
-level3binned_OC_4km_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.${product_name_part}.${product}.4km.${extension}
+level3binned_OC_250m_file=${working_dir}${extracts_binned_dir}${basename_part}.L3b.${product_name_part}.${product}.250m.${extension}
+#level3binned_OC_500m_file=${working_dir}${extracts_binned_dir}${basename_part}.L3b.${product_name_part}.${product}.500m.${extension}
+level3binned_OC_1km_file=${working_dir}${extracts_binned_dir}${basename_part}.L3b.${product_name_part}.${product}.1km.${extension}
+level3binned_OC_2km_file=${working_dir}${extracts_binned_dir}${basename_part}.L3b.${product_name_part}.${product}.2km.${extension}
+level3binned_OC_4km_file=${working_dir}${extracts_binned_dir}${basename_part}.L3b.${product_name_part}.${product}.4km.${extension}
 
-level3binned_OC_1km_DEFAULTFLAGS_file=${working_dir}${extracts_binned_dir}/${basename_part}.L3b.${product_name_part}.${product}.1km.DEFAULTFLAGS.${extension}
+level3binned_OC_1km_DEFAULTFLAGS_file=${working_dir}${extracts_binned_dir}${basename_part}.L3b.${product_name_part}.${product}.1km.OCFLAGS.${extension}
 
-level3mapped_OC_1km_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.smi.${extension}
-level3mapped_OC_2km_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.${product_name_part}.${product}.2km.smi.${extension}
-level3mapped_OC_4km_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.${product_name_part}.${product}.4km.smi.${extension}
-level3mapped_OC_extract_1km_DEFAULTFLAGS_smi_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.${product_name_part}.${product}.OCFLAGS.1km.smi.${extension}
+level3mapped_OC_1km_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.smi.${extension}
+level3mapped_OC_2km_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.2km.smi.${extension}
+level3mapped_OC_4km_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.4km.smi.${extension}
+level3mapped_OC_extract_1km_DEFAULTFLAGS_smi_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.OCFLAGS.smi.${extension}
 
-level3mapped_chlor_a_1km_500m_smi_scene_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.500m.smi.${extension}
-level3mapped_chlor_a_1km_500m_aea_scene_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.500m.aea.${extension}
+level3mapped_chlor_a_1km_500m_smi_scene_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.500m.f2.smi.${extension}
+level3mapped_chlor_a_1km_500m_aea_scene_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.500m.f2.aea.${extension}
 
-level3mapped_OC_1km_smi_gulf_file=${working_dir}${extracts_gulf_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.smi.gulf.${extension}
-level3mapped_OC_1km_aea_gulf_file=${working_dir}${extracts_gulf_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.aea.gulf.${extension}
-level3mapped_OC_2km_smi_gulf_file=${working_dir}${extracts_gulf_dir}/${basename_part}.L3m.${product_name_part}.${product}.2km.smi.gulf.${extension}
-level3mapped_OC_2km_aea_gulf_file=${working_dir}${extracts_gulf_dir}/${basename_part}.L3m.${product_name_part}.${product}.2km.aea.gulf.${extension}
+level3mapped_OC_1km_smi_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.smi.GulfMexico.${extension}
+level3mapped_OC_1km_aea_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.aea.GulfMexico.${extension}
+level3mapped_OC_2km_smi_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.2km.smi.GulfMexico.${extension}
+level3mapped_OC_2km_aea_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.2km.aea.GulfMexico.${extension}
 
-level3mapped_chlor_a_1km_500m_smi_westcoastflorida_file=${working_dir}${extracts_florida_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.500m.smi.WestCoastFL.${extension}
-level3mapped_chlor_a_250m_smi_WestCoastFlorida_file=${working_dir}${extracts_florida_dir}/${basename_part}.L3m.${product_name_part}.${product}.250m.smi.WestCoastFL.${extension}
-level3mapped_chlor_a_1km_smi_westcoastflorida_file=${working_dir}${extracts_florida_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.smi.WestCoastFL.${extension}
-level3mapped_chlor_a_1km_aea_westcoastflorida_file=${working_dir}${extracts_florida_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.aea.WestCoastFL.${extension}
+level3mapped_chlor_a_1km_500m_smi_westcoastflorida_file=${working_dir}${extracts_florida_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.500m.f2.smi.FLwestcoast.${extension}
+level3mapped_chlor_a_250m_smi_WestCoastFlorida_file=${working_dir}${extracts_florida_dir}${basename_part}.L3m.${product_name_part}.${product}.250m.smi.FLwestcoast.${extension}
+level3mapped_chlor_a_1km_smi_westcoastflorida_file=${working_dir}${extracts_florida_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.smi.FLwestcoast.${extension}
+level3mapped_chlor_a_1km_aea_westcoastflorida_file=${working_dir}${extracts_florida_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.aea.FLwestcoast.${extension}
 
-level3mapped_chlor_a_250m_150m_smi_StPeter_file=${working_dir}${extracts_stpeter_dir}/${basename_part}.L3m.${product_name_part}.${product}.250m.150m.smi.StPeter.${extension}
-level3mapped_chlor_a_250m_smi_StPeter_file=${working_dir}${extracts_stpeter_dir}/${basename_part}.L3m.${product_name_part}.${product}.250m.smi.StPeter.${extension}
-level3mapped_chlor_a_250m_smi_scene_file=${working_dir}${extracts_scene_dir}/${basename_part}.L3m.${product_name_part}.${product}.250m.smi.${extension}
-level3mapped_OC_extract_1km_smi_stpeter_file=${working_dir}${extracts_stpeter_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.smi.StPeter.${extension}
-level3mapped_OC_extract_1km_100m_smi_stpeter_file=${working_dir}${extracts_stpeter_dir}/${basename_part}.L3m.${product_name_part}.${product}.1km.100m.smi.StPeter.${extension}
+level3mapped_chlor_a_250m_150m_smi_StPeter_file=${working_dir}${extracts_stpeter_dir}${basename_part}.L3m.${product_name_part}.${product}.250m.150m.smi.FLstpeter.${extension}
+level3mapped_chlor_a_250m_smi_StPeter_file=${working_dir}${extracts_stpeter_dir}${basename_part}.L3m.${product_name_part}.${product}.250m.smi.FLstpeter.${extension}
+level3mapped_chlor_a_250m_smi_scene_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.250m.smi.${extension}
+level3mapped_OC_extract_1km_smi_stpeter_file=${working_dir}${extracts_stpeter_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.smi.FLstpeter.${extension}
+level3mapped_OC_extract_1km_100m_smi_stpeter_file=${working_dir}${extracts_stpeter_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.100m.smi.FLstpeter.${extension}
 
-level3mapped_OC_extract_18km_cea_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.${product_name_part}.${product}.18km.cea.global.${extension}
-level3mapped_OC_extract_18km_smi_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.${product_name_part}.${product}.18km.smi.global.${extension}
-level3mapped_OC_extract_9km_cea_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.${product_name_part}.${product}.9km.cea.global.${extension}
-level3mapped_OC_extract_9km_smi_global_file=${working_dir}${extracts_global_dir}/${basename_part}.L3m.${product_name_part}.${product}.9km.smi.global.${extension}
+level3mapped_OC_extract_18km_cea_global_file=${working_dir}${extracts_global_dir}${basename_part}.L3m.${product_name_part}.${product}.18km.cea.global.${extension}
+level3mapped_OC_extract_18km_smi_global_file=${working_dir}${extracts_global_dir}${basename_part}.L3m.${product_name_part}.${product}.18km.smi.global.${extension}
+level3mapped_OC_extract_9km_cea_global_file=${working_dir}${extracts_global_dir}${basename_part}.L3m.${product_name_part}.${product}.9km.cea.global.${extension}
+level3mapped_OC_extract_9km_smi_global_file=${working_dir}${extracts_global_dir}${basename_part}.L3m.${product_name_part}.${product}.9km.smi.global.${extension}
 
 ifile=${input_level2_OC_file}
 
 if [ ${make_extract} -eq 1 ]; then
 
-    level2_OC_extract_file=${working_dir}/${basename_part}.L2.OC.chlor_a.sub.nc
+    level2_OC_extract_file=${working_dir}${basename_part}.L2.OC.chlor_a.sub.nc
 
     ofile=${level2_OC_extract_file}
     ../workflow_L2extract.sh ${ifile} ${swlon} ${swlat} ${nelon} ${nelat} -o ${ofile} ${option_c} -l "chlor_a"
@@ -331,13 +341,13 @@ fi
 
 ifile=${input_level2_OC_file}
 ofile=${level3binned_OC_1km_file}
-parfile="../par/l2bin_${product}_1km.par"
+parfile="${pardir}l2bin_${product}_1km.par"
 ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
 if [ $? -ne 0 ]; then exit 1; fi
 if [ ${make_extras} -eq 1 ]; then
     ifile=${input_level2_OC_file}
     ofile=${level3binned_OC_1km_DEFAULTFLAGS_file}
-    parfile="../par/l2bin_${product}_DEFAULTFLAGS_1km.par"
+    parfile="${pardir}l2bin_${product}_OCFLAGS_1km.par"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 fi
@@ -346,13 +356,13 @@ if [ ${make_extras} -eq 1 ]; then
 
     ifile=${input_level2_OC_file}
     ofile=${level3binned_OC_2km_file}
-    parfile="../par/l2bin_${product}_2km.par"
+    parfile="${pardir}l2bin_${product}_2km.par"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${input_level2_OC_file}
     ofile=${level3binned_OC_4km_file}
-    parfile="../par/l2bin_${product}_4km.par"
+    parfile="${pardir}l2bin_${product}_4km.par"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 fi
@@ -364,25 +374,27 @@ if [ ${mission_short} == "OLCI" ]; then
 
     ifile=${input_level2_OC_file}
     ofile=${level3binned_OC_250m_file}
-    parfile="../par/l2bin_${product}_250m.par"
+    parfile="${pardir}l2bin_${product}_250m.par"
     ../workflow_l2bin.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${level3binned_OC_250m_file}
     ofile=${level3mapped_chlor_a_250m_150m_smi_StPeter_file}
-    parfile="../par/l3mapgen_chlor_a_150m_smi_stpeter_bounds.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_150m_f2_smi.par"
+    parfile2="${pardir}l3mapgen_region_FLstpeter.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${level3binned_OC_250m_file}
     ofile=${level3mapped_chlor_a_250m_smi_StPeter_file}
-    parfile="../par/l3mapgen_chlor_a_250m_smi_stpeter_bounds.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_250m_f1.5_smi.par"
+    parfile2="${pardir}l3mapgen_region_FLstpeter.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${level3binned_OC_250m_file}
     ofile=${level3mapped_chlor_a_250m_smi_scene_file}
-    parfile="../par/l3mapgen_chlor_a_250m_smi_scene_bounds.par"
+    parfile="${pardir}l3mapgen_chlor_a_250m_smi.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 fi
@@ -390,86 +402,86 @@ fi
 if [ ${make_extras} -eq 1 ]; then
     ifile=${level3binned_OC_1km_DEFAULTFLAGS_file}
     ofile=${level3mapped_OC_extract_1km_DEFAULTFLAGS_smi_file}
-    parfile="../par/l3mapgen_chlor_a_1km_smi_scene_bounds.par"
+    parfile="${pardir}l3mapgen_chlor_a_1km_smi.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 fi
-
-
 
 if [ ${mission_short} != "OLCI" ]; then
 
-
     ifile=${level3binned_OC_1km_file}
     ofile=${level3mapped_chlor_a_1km_500m_smi_westcoastflorida_file}
-    parfile="../par/l3mapgen_chlor_a_500m_smi_WestCoastFlorida.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_500m_f2_smi.par"
+    parfile2="${pardir}l3mapgen_region_FLwestcoast.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     if [ ${only_1_file} -eq 1 ]; then
-        exit;
-        fi
+        exit
+    fi
 
     ifile=${level3binned_OC_1km_file}
     ofile=${level3mapped_chlor_a_1km_smi_westcoastflorida_file}
-    parfile="../par/l3mapgen_chlor_a_1km_smi_WestCoastFlorida.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_1km_smi.par"
+    parfile2="${pardir}l3mapgen_region_FLwestcoast.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
-
-
-ifile=${level3binned_OC_1km_file}
-ofile=${level3mapped_chlor_a_1km_500m_smi_scene_file}
-parfile="../par/l3mapgen_chlor_a_500m_smi_scene_bounds.par"
-../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-if [ $? -ne 0 ]; then exit 1; fi
-
-
+    ifile=${level3binned_OC_1km_file}
+    ofile=${level3mapped_chlor_a_1km_500m_smi_scene_file}
+    parfile="${pardir}l3mapgen_chlor_a_500m_f2_smi.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${level3binned_OC_1km_file}
     ofile=${level3mapped_OC_1km_file}
-    parfile="../par/l3mapgen_chlor_a_1km_smi_scene_bounds.par"
+    parfile="${pardir}l3mapgen_chlor_a_1km_smi.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
-
-ifile=${level3binned_OC_1km_file}
-ofile=${level3mapped_chlor_a_1km_500m_aea_scene_file}
-parfile="../par/l3mapgen_chlor_a_500m_aea_scene_bounds.par"
-../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
-if [ $? -ne 0 ]; then exit 1; fi
+    ifile=${level3binned_OC_1km_file}
+    ofile=${level3mapped_chlor_a_1km_500m_aea_scene_file}
+    parfile="${pardir}l3mapgen_chlor_a_500m_f2_aea.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
 fi
 
 if [ ${make_extras} -eq 1 ]; then
+
     ifile=${level3binned_OC_1km_file}
     ofile=${level3mapped_chlor_a_1km_aea_westcoastflorida_file}
-    parfile="../par/l3mapgen_chlor_a_1km_aea_WestCoastFlorida.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_1km_aea.par"
+    parfile2="${pardir}l3mapgen_region_FLwestcoast.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
     if [ ${mission_short} != "OLCI" ]; then
 
         ifile=${level3binned_OC_1km_file}
         ofile=${level3mapped_OC_extract_1km_smi_stpeter_file}
-        parfile="../par/l3mapgen_chlor_a_1km_smi_stpeter_bounds.par"
-        ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+        parfile="${pardir}l3mapgen_chlor_a_1km_smi.par"
+        parfile2="${pardir}l3mapgen_region_FLstpeter.par"
+        ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P${parfile2} -m ${mission} ${option_e} ${option_c}
         if [ $? -ne 0 ]; then exit 1; fi
 
         ifile=${level3binned_OC_1km_file}
         ofile=${level3mapped_OC_extract_1km_100m_smi_stpeter_file}
-        parfile="../par/l3mapgen_chlor_a_100m_smi_stpeter_bounds.par"
-        ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+        parfile="${pardir}l3mapgen_chlor_a_100m_f20_smi.par"
+        parfile2="${pardir}l3mapgen_region_FLstpeter.par"
+        ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P${parfile2} -m ${mission} ${option_e} ${option_c}
         if [ $? -ne 0 ]; then exit 1; fi
     fi
     ifile=${level3binned_OC_1km_file}
     ofile=${level3mapped_OC_1km_aea_gulf_file}
-    parfile="../par/l3mapgen_chlor_a_1km_aea_gulf_bounds.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_1km_aea.par"
+    parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${level3binned_OC_1km_file}
     ofile=${level3mapped_OC_1km_smi_gulf_file}
-    parfile="../par/l3mapgen_chlor_a_1km_smi_gulf_bounds.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_1km_smi.par"
+    parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ######
@@ -477,18 +489,20 @@ if [ ${make_extras} -eq 1 ]; then
     ######
 
     ofile=${level3mapped_OC_2km_file}
-    parfile="../par/l3mapgen_chlor_a_2km_smi_scene_bounds.par"
+    parfile="${pardir}l3mapgen_chlor_a_2km_smi.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_2km_aea_gulf_file}
-    parfile="../par/l3mapgen_chlor_a_2km_aea_gulf_bounds.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_2km_aea.par"
+    parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_2km_smi_gulf_file}
-    parfile="../par/l3mapgen_chlor_a_2km_smi_gulf_bounds.par"
-    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
+    parfile="${pardir}l3mapgen_chlor_a_2km_smi.par"
+    parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ######
@@ -496,27 +510,27 @@ if [ ${make_extras} -eq 1 ]; then
     ######
 
     ofile=${level3mapped_OC_4km_file}
-    parfile="../par/l3mapgen_chlor_a_4km_smi_scene_bounds.par"
+    parfile="${pardir}l3mapgen_chlor_a_4km_smi.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_extract_18km_cea_global_file}
-    parfile="../par/l3mapgen_chlor_a_18km_cea_global.par"
+    parfile="${pardir}l3mapgen_chlor_a_18km_cea_global.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
     ofile=${level3mapped_OC_extract_18km_smi_global_file}
-    parfile="../par/l3mapgen_chlor_a_18km_smi_global.par"
+    parfile="${pardir}l3mapgen_chlor_a_18km_smi_global.par"
     ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
     if [ $? -ne 0 ]; then exit 1; fi
 
 #    ofile=${level3mapped_OC_extract_9km_cea_global_file}
-#    parfile="../par/l3mapgen_chlor_a_9km_cea_global.par"
+#    parfile="${pardir}l3mapgen_chlor_a_9km_cea_global.par"
 #    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
 #    if [ $? -ne 0 ]; then exit 1; fi
 #
 #    ofile=${level3mapped_OC_extract_9km_smi_global_file}
-#    parfile="../par/l3mapgen_chlor_a_9km_smi_global.par"
+#    parfile="${pardir}l3mapgen_chlor_a_9km_smi_global.par"
 #    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -m ${mission} ${option_e} ${option_c}
 #    if [ $? -ne 0 ]; then exit 1; fi
 fi
