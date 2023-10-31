@@ -296,7 +296,7 @@ level2_atmocor_swir_extract_file=${working_dir}${extracts_dir}${basename_part}.L
 level2_vicarious_gain_off_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.VICARIOUS_GAIN_OFF.sub.nc
 level2_no_ancillary_extract_file=${working_dir}${extracts_dir}${basename_part}.L2.CLIMATOLOGICAL_ANCILLARY.sub.nc
 
-l
+
 program=modis_GEO
 command="get_output_name $level1A_file ${program}"
 echo "#**************************************"

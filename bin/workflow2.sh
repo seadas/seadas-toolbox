@@ -14,6 +14,8 @@ product_name_part="OC" # default
 mission_short="MODIS"
 
 product="chlor_a"
+    extract_chlor_a=1
+
 
 only_1_file=0
 
@@ -103,6 +105,18 @@ else
     swlon=-85.0
     swlat=23.5
 fi
+
+# Override with Jerome values
+#nelon=-60.0
+#nelat=46.0
+#swlon=-75.0
+#swlat=40.0
+
+#Override to not extract much and allow Gulf (set at extra 4 degrees over mapped region goal)
+    nelon=-76.0
+    nelat=35.0
+    swlon=14.0
+    swlat=23.5
 
 #echo "mission=${mission}"
 #echo "swlat=${swlat}"
@@ -208,8 +222,8 @@ fi
 
 if [ ! -z ${working_dir} ]; then
 
-        command="cd ${working_dir}"
-            if [ $show_info -eq 1 ]; then
+    command="cd ${working_dir}"
+    if [ $show_info -eq 1 ]; then
         echo "#**************************************"
         echo "# Changing directory to run programs in same directory as level-1A file"
         echo "#**************************************"
@@ -224,7 +238,6 @@ if [ ! -z ${working_dir} ]; then
     fi
     echo " "
 fi
-
 
 # Now working dir is the current directory so change the variable
 # Showing relative paths to make commands not dependent on any user directory tree
@@ -293,6 +306,9 @@ level3mapped_OC_extract_1km_DEFAULTFLAGS_smi_file=${working_dir}${extracts_scene
 level3mapped_chlor_a_1km_500m_smi_scene_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.500m.f2.smi.${extension}
 level3mapped_chlor_a_1km_500m_aea_scene_file=${working_dir}${extracts_scene_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.500m.f2.aea.${extension}
 
+level3mapped_OC_250m_smi_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.250m.smi.GulfMexico.${extension}
+level3mapped_OC_250m_f1_5_smi_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.250m.f1.5.smi.GulfMexico.${extension}
+level3mapped_OC_250m_f4_smi_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.250m.f4.smi.GulfMexico.${extension}
 level3mapped_OC_1km_smi_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.smi.GulfMexico.${extension}
 level3mapped_OC_1km_aea_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.1km.aea.GulfMexico.${extension}
 level3mapped_OC_2km_smi_gulf_file=${working_dir}${extracts_gulf_dir}${basename_part}.L3m.${product_name_part}.${product}.2km.smi.GulfMexico.${extension}
@@ -318,16 +334,29 @@ ifile=${input_level2_OC_file}
 
 if [ ${make_extract} -eq 1 ]; then
 
-    level2_OC_extract_file=${working_dir}${basename_part}.L2.OC.chlor_a.sub.nc
+    if [ ${extract_chlor_a} -eq 1 ]; then
+        level2_OC_extract_file=${working_dir}${basename_part}.L2.OC.chlor_a.sub.nc
 
-    ofile=${level2_OC_extract_file}
-    ../workflow_L2extract.sh ${ifile} ${swlon} ${swlat} ${nelon} ${nelat} -o ${ofile} ${option_c} -l "chlor_a"
-    if [ $? -ne 0 ]; then
-        echo "ERROR: workflow_2extract.sh failed"
-        echo "../workflow_2extract.sh ${ifile} ${swlon} ${swlat} ${nelon} ${nelat}  -o ${ofile} ${option_c} -l chlor_a"
-        exit 1
+        ofile=${level2_OC_extract_file}
+        ../workflow_L2extract.sh ${ifile} ${swlon} ${swlat} ${nelon} ${nelat} -o ${ofile} ${option_c} -l "chlor_a"
+        if [ $? -ne 0 ]; then
+            echo "ERROR: workflow_2extract.sh failed"
+            echo "../workflow_2extract.sh ${ifile} ${swlon} ${swlat} ${nelon} ${nelat}  -o ${ofile} ${option_c} -l chlor_a"
+            exit 1
+        fi
+        echo " "
+
+    else
+              level2_OC_extract_file=${working_dir}${basename_part}.L2.OC.sub.nc
+
+              ofile=${level2_OC_extract_file}
+              ../workflow_L2extract.sh ${ifile} ${swlon} ${swlat} ${nelon} ${nelat} -o ${ofile} ${option_c}
+              if [ $? -ne 0 ]; then
+                  echo "ERROR: workflow_2extract.sh failed"
+                  echo "../workflow_2extract.sh ${ifile} ${swlon} ${swlat} ${nelon} ${nelat} -o ${ofile} ${option_c}"
+                  exit 1
+              fi
     fi
-    echo " "
 
     input_level2_OC_file=${ofile}
 
@@ -379,6 +408,37 @@ if [ ${mission_short} == "OLCI" ]; then
     if [ $? -ne 0 ]; then exit 1; fi
 
     ifile=${level3binned_OC_250m_file}
+    ofile=${level3mapped_OC_250m_smi_gulf_file}
+    parfile="${pardir}l3mapgen_chlor_a_250m_smi.par"
+    parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+    ifile=${level3binned_OC_250m_file}
+    ofile=${level3mapped_OC_250m_f1_5_smi_gulf_file}
+    parfile="${pardir}l3mapgen_chlor_a_250m_f1.5_smi.par"
+    parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+        ifile=${level3binned_OC_250m_file}
+        ofile=${level3mapped_OC_250m_f4_smi_gulf_file}
+        parfile="${pardir}l3mapgen_chlor_a_250m_f4_smi.par"
+        parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+        ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
+        if [ $? -ne 0 ]; then exit 1; fi
+
+
+
+    ifile=${level3binned_OC_1km_file}
+    ofile=${level3mapped_OC_1km_smi_gulf_file}
+    parfile="${pardir}l3mapgen_chlor_a_1km_smi.par"
+    parfile2="${pardir}l3mapgen_region_GulfMexico.par"
+    ../workflow_l3mapgen.sh -i ${ifile} -o ${ofile} -p ${parfile} -P ${parfile2} -m ${mission} ${option_e} ${option_c}
+    if [ $? -ne 0 ]; then exit 1; fi
+
+
+    ifile=${level3binned_OC_250m_file}
     ofile=${level3mapped_chlor_a_250m_150m_smi_StPeter_file}
     parfile="${pardir}l3mapgen_chlor_a_150m_f2_smi.par"
     parfile2="${pardir}l3mapgen_region_FLstpeter.par"
@@ -408,6 +468,8 @@ if [ ${make_extras} -eq 1 ]; then
 fi
 
 if [ ${mission_short} != "OLCI" ]; then
+
+
 
     ifile=${level3binned_OC_1km_file}
     ofile=${level3mapped_chlor_a_1km_500m_smi_westcoastflorida_file}
