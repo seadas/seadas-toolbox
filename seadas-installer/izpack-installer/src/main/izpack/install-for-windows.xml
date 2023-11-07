@@ -94,31 +94,31 @@
             <name>setup.type</name>
             <value>expert</value>
         </condition>
-        <condition type="java" id="installonwindows">
-            <java>
-                <class>com.izforge.izpack.util.OsVersion</class>
-                <field>IS_WINDOWS</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
-        <condition type="java" id="installonmac">
-            <java>
-                <class>com.izforge.izpack.util.OsVersion</class>
-                <field>IS_MAC</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
-        <condition type="java" id="installonlinux">
-            <java>
-                <class>com.izforge.izpack.util.OsVersion</class>
-                <field>IS_LINUX</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
-        <condition type="and" id="standardinstallation.onwindows">
-            <condition type="ref" refid="standardinstallation"/>
-            <condition type="ref" refid="installonwindows"/>
-        </condition>
+<!--        <condition type="java" id="installonwindows">-->
+<!--            <java>-->
+<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
+<!--                <field>IS_WINDOWS</field>-->
+<!--            </java>-->
+<!--            <returnvalue type="boolean">true</returnvalue>-->
+<!--        </condition>-->
+<!--        <condition type="java" id="installonmac">-->
+<!--            <java>-->
+<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
+<!--                <field>IS_MAC</field>-->
+<!--            </java>-->
+<!--            <returnvalue type="boolean">true</returnvalue>-->
+<!--        </condition>-->
+<!--        <condition type="java" id="installonlinux">-->
+<!--            <java>-->
+<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
+<!--                <field>IS_LINUX</field>-->
+<!--            </java>-->
+<!--            <returnvalue type="boolean">true</returnvalue>-->
+<!--        </condition>-->
+<!--        <condition type="and" id="standardinstallation.onwindows">-->
+<!--            <condition type="ref" refid="standardinstallation"/>-->
+<!--            <condition type="ref" refid="installonwindows"/>-->
+<!--        </condition>-->
         <condition id="start-after-install" type="variable">
             <name>start.after.install</name>
             <value>true</value>
@@ -164,7 +164,7 @@
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH\jdk-11.0.19_7-jre"/>
+        <variable name="jdkhome" value="$INSTALL_PATH\jdk-11.0.19+7-jre"/>
 <!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>-->
     </dynamicvariables>
 
@@ -219,13 +219,13 @@
         </pack>
         <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
             <description>JDK11 JRE</description>
-            <file src="packs/jre/OpenJDK11U-jre_x64_windows_hotspot_11.0.19+7.zip" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
+            <file src="packs/jre/OpenJDK11U-jre_x64_windows_hotspot_11.0.19_7.zip" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
 <!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19_7-jre\bin" includes="*" />
+                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\bin" includes="*" />
 <!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/bin" includes="*" />-->
 <!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/lib" includes="*" />-->
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19_7.1+1-jre\lib" includes="*" />
+                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\lib" includes="*" />
             </executable>
         </pack>
     </packs>

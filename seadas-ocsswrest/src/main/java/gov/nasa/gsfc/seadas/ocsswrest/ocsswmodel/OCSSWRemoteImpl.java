@@ -18,8 +18,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWServerModel.*;
-import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_BOOTSTRAP;
-import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.*;
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
 
 /**
@@ -47,7 +46,6 @@ public class OCSSWRemoteImpl {
     public static String PROCESS_STDOUT_FILE_NAME_EXTENSION = ".log";
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw")).getPath();
-
     private static final String DEFAULTS_FILE_PREFIX = "msl12_defaults_",
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
             L3GEN_DEFAULTS_FILE_PREFIX = "msl12_defaults_";
@@ -129,6 +127,44 @@ public class OCSSWRemoteImpl {
             process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), new String[]{programName, commandArrayElement}, getCommandArraySuffix(programName)));
         }
         return process;
+    }
+
+    public String executeGetSystemInfoProgram(String jobId, JsonObject jsonObject) {
+
+        String[] command = {"/bin/bash", getOcsswRunnerScriptPath(), " --ocsswroot ", getOcsswRoot(), OCSSW_SEADAS_INFO_PROGRAM_NAME};
+        String currentInfoLine = "";
+        String DASHES = "-----------------------------------------------------------";
+        String INDENT = "  ";
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println("line =" + line);
+
+                if (!line.contains("NASA Science Processing (OCSSW)")) {
+                    if (line.contains("General System and Software")) {
+                        currentInfoLine += "\n" + DASHES + "\n";
+                        currentInfoLine += INDENT + "General System and Software: " + "\n";
+                        currentInfoLine += DASHES + "\n";
+                    } else {
+                        currentInfoLine += line + "\n";
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+       }
+        System.out.println("info line =" + currentInfoLine);
+        return currentInfoLine;
     }
 
     private String[] transformCommandArray(String jobId, JsonObject jsonObject, String programName) {
