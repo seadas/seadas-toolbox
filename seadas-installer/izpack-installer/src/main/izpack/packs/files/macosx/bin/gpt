@@ -421,7 +421,7 @@ SNAP_MODULE_JARS=$(
     | tr ' ' ':'
 )
 
-OPTTBX_MODULE_PATH=$app_home/opttbx/modules
+OPTTBX_MODULE_PATH=$app_home/optical-toolbox/modules
 
 OPTTBX_MODULE_JARS=$(
   find "${OPTTBX_MODULE_PATH}" -type f -name '*.jar' \
@@ -445,6 +445,6 @@ LD_LIBRARY_PATH=$app_home/snap/modules/lib/amd64
 
 local_classpath=$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SeaDAS_TOOLBOX_MODULE_PATH:$app_home/snap/modules/ext/ncsa.hdf.lib-hdf/ncsa-hdf/jhdf5.jar
 
-exec "$jdkhome/bin/java" -Dexe4j.moduleName="$prg_dir/$progname" -Djava.library.path=$LD_LIBRARY_PATH "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$app_home" "-Djava.awt.headless=true" -classpath "$local_classpath" org.esa.snap.runtime.Launcher  "$@"
+exec "$app_home/jdk-11.0.19+7-jre/Contents/Home/bin/java" -Dexe4j.moduleName="$prg_dir/$progname" -Djava.library.path=$LD_LIBRARY_PATH "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$app_home" "-Djava.awt.headless=true" -classpath "$local_classpath" org.esa.snap.runtime.Launcher  "$@"
 
 exit $?
