@@ -448,10 +448,10 @@ SNAP_MODULE_JARS=$(
     | tr ' ' ':'
 )
 
-S3TBX_MODULE_PATH=$app_home/s3tbx/modules
+OPTTBX_MODULE_PATH=$app_home/optical-toolbox/modules
 
-S3TBX_MODULE_JARS=$(
-  find "${S3TBX_MODULE_PATH}" -type f -name '*.jar' \
+OPTTBX_MODULE_JARS=$(
+  find "${OPTTBX_MODULE_PATH}" -type f -name '*.jar' \
     | grep -v "$EXCLUDED1" \
     | grep -v "$EXCLUDED2" \
     | xargs \

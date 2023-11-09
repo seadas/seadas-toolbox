@@ -10,12 +10,12 @@ set EXCLUDED2=%SEADAS_HOME%\snap\modules\org-esa-snap-snap-python.jar
 for %%j in (%SEADAS_HOME%\snap\modules\*.jar) do call :add_jar %%j
 
 set LOCAL_CLASSPATH=%LOCAL_CLASSPATH%;%SEADAS_HOME%\snap\modules;%SEADAS_HOME%\snap\modules\*;
-set LOCAL_CLASSPATH=%LOCAL_CLASSPATH%;%SEADAS_HOME%\s3tbx\modules;%SEADAS_HOME%\s3tbx\modules\*;
+set LOCAL_CLASSPATH=%LOCAL_CLASSPATH%;%SEADAS_HOME%\optical-toolbox\modules;%SEADAS_HOME%\optical-toolbox\modules\*;
 set LOCAL_CLASSPATH=%LOCAL_CLASSPATH%;%SEADAS_HOME%\seadas-toolbox\modules;%SEADAS_HOME%\seadas-toolbox\modules\*;
 set LOCAL_CLASSPATH=%LOCAL_CLASSPATH%;%SEADAS_HOME%\snap\modules\ext\ncsa.hdf.lib-hdf\ncsa-hdf\jhdf5.jar
 set LIBRARY_PATH=%SEADAS_HOME%\snap\modules\lib\amd64
 
-"%SEADAS_HOME%\jre1.8.0_201\bin\java.exe" ^
+"%SEADAS_HOME%\jdk-11.0.19+7-jre\bin\java.exe" ^
 	-cp "%CLASSPATH%;%LOCAL_CLASSPATH%" ^
 	-Djava.library.path="%LIBRARY_PATH%" ^
     -Xmx1024M ^
