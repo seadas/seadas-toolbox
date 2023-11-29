@@ -129,6 +129,10 @@
                     <value>raw</value>
                     <description>raw dump of the bin file</description>
                 </validValue>
+                <validValue>
+                    <value>+proj=cea +lat_ts=0.0</value>
+                    <description>Cylindrical Equal Area Projection</description>
+                </validValue>
             </validValues>
             <description>proj.4 projection string or one of the following predefined projections:</description>
             <usedAs>option</usedAs>
@@ -136,8 +140,8 @@
         </option>
         <option type="string">
             <name>resolution</name>
-            <value>9km</value>
-            <default>9km</default>
+            <value>4km</value>
+            <default></default>
             <source>default</source>
             <validValues>
                 <validValue>
@@ -227,8 +231,8 @@
         </option>
         <option type="float">
             <name>north</name>
-            <value>-999</value>
-            <default>-999</default>
+            <value></value>
+            <default></default>
             <source>default</source>
             <description>Northern most Latitude</description>
             <usedAs>option</usedAs>
@@ -236,8 +240,8 @@
         </option>
         <option type="float">
             <name>south</name>
-            <value>-999</value>
-            <default>-999</default>
+            <value></value>
+            <default></default>
             <source>default</source>
             <description>Southern most Latitude</description>
             <usedAs>option</usedAs>
@@ -245,8 +249,8 @@
         </option>
         <option type="float">
             <name>east</name>
-            <value>-999</value>
-            <default>-999</default>
+            <value></value>
+            <default></default>
             <source>default</source>
             <description>Eastern most Longitude</description>
             <usedAs>option</usedAs>
@@ -254,8 +258,8 @@
         </option>
         <option type="float">
             <name>west</name>
-            <value>-999</value>
-            <default>-999</default>
+            <value></value>
+            <default></default>
             <source>default</source>
             <description>Western most Longitude</description>
             <usedAs>option</usedAs>

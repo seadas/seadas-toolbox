@@ -111,7 +111,8 @@ public class ParamUIFactory {
                 } else {
                     switch (pi.getType()) {
                         case BOOLEAN:
-                            booleanParamPanel.add(makeBooleanOptionField(pi));
+//                            booleanParamPanel.add(makeBooleanOptionField(pi));
+                            textFieldPanel.add(makeBooleanOptionField(pi));
                             break;
                         case IFILE:
                             fileParamPanel.add(createIOFileOptionField(pi));
@@ -180,7 +181,11 @@ public class ParamUIFactory {
         vc.getDescriptor(optionName).setDisplayName(optionName);
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
-        field.setColumns(optionName.length() > 12 ? 12 : 8);
+//        field.setColumns(optionName.length() > 12 ? 12 : 8);
+        field.setColumns(12);
+        if ("l3bprod".equals(optionName) || "product".equals(optionName)) {
+            field.setColumns(20);
+        }
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());
@@ -378,7 +383,7 @@ public class ParamUIFactory {
 
         final JTextField field = new JTextField();
         field.setText(pi.getValue());
-        field.setColumns(8);
+        field.setColumns(16);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
