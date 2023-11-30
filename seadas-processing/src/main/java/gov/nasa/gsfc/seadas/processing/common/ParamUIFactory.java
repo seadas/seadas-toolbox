@@ -107,6 +107,7 @@ public class ParamUIFactory {
         gbc.gridy=0;
         gbc.gridx=0;
         gbc.insets.top = 5;
+        gbc.insets.bottom = 5;
         gbc.insets.left = 5;
         gbc.insets.right = 25;
         gbc.weighty = 0;
@@ -125,14 +126,24 @@ public class ParamUIFactory {
                     pi.getName().equals("--verbose"))) {
                 final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
 
-                if (("l2bin".equals(processorModel.getProgramName()) && "l3bprod".equals(optionName)) ||
-                        ("l3mapgen".equals(processorModel.getProgramName()) && "product".equals(optionName)) ||
-                        ("l3mapgen".equals(processorModel.getProgramName()) && "projection".equals(optionName))) {
-                    gbc.gridwidth = 2;
+                if ("l2bin".equals(processorModel.getProgramName())) {
+                    if ("l3bprod".equals(optionName)) {
+                            gbc.gridwidth = 2;
+                    }
+                }
+
+
+                if ("l3mapgen".equals(processorModel.getProgramName())) {
+                    if ("product".equals(optionName) ||
+                            "projection".equals(optionName) ||
+                            "palette_dir".equals(optionName) ||
+                            "palfile".equals(optionName) ) {
+                        gbc.gridwidth = 2;
+                    }
                 }
 
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
-                        textFieldPanel.add(makeComboBoxOptionPanel(pi), gbc);
+                        textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
                         gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                 } else {
                     switch (pi.getType()) {
@@ -149,39 +160,24 @@ public class ParamUIFactory {
                             fileParamPanel.add(createIOFileOptionField(pi));
                             break;
                         case STRING:
-                            textFieldPanel.add(makeOptionField(pi), gbc);
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
-
-//                            if (("l2bin".equals(processorModel.getProgramName()) && "l3bprod".equals(optionName)) ||
-//                                    ("l3mapgen".equals(processorModel.getProgramName()) && "product".equals(optionName)) ||
-//                                    ("l3mapgen".equals(processorModel.getProgramName()) && "projection".equals(optionName))) {
-//                                gbc.gridwidth=2;
-//                                textFieldPanel.add(makeOptionField(pi), gbc);
-//                                gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
-//                                gbc.gridwidth=1;
-//                            } else {
-//                                textFieldPanel.add(makeOptionField(pi), gbc);
-//                                gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
-//                            }
-
                             break;
                         case INT:
-                            textFieldPanel.add(makeOptionField(pi), gbc);
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLOAT:
-                            textFieldPanel.add(makeOptionField(pi), gbc);
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLAGS:
                             gbc.gridwidth=5;
-                            gbc.insets.top = 10;
-                            gbc.insets.bottom = 10;
+                            gbc.insets.top = 4;
                             textFieldPanel.add(makeButtonOptionPanel(pi), gbc);
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             gbc.gridwidth=1;
-                            gbc.insets.top = 5;
-                            gbc.insets.bottom = 5;
+                            gbc.insets.top = 0;
                             break;
                         case BUTTON:
                             buttonPanel.add(makeActionButtonPanel(pi));
@@ -214,12 +210,13 @@ public class ParamUIFactory {
         if (gbc.gridx > (numColumns - 1)) {
             gbc.gridy += 1;
             gbc.gridx = 0;
+            gbc.insets.top = 0;
         }
 
         return gbc;
     }
 
-    protected JPanel makeOptionField(final ParamInfo pi) {
+    protected JPanel makeOptionField(final ParamInfo pi, int colSpan) {
 
         final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
         final JPanel optionPanel = new JPanel();
@@ -228,7 +225,7 @@ public class ParamUIFactory {
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
         optionPanel.setName(optionName);
-        optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
+        optionPanel.add(new JLabel(optionName));
         if (pi.getDescription() != null) {
             optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -247,8 +244,11 @@ public class ParamUIFactory {
         final JTextField field = new JTextField();
 //        field.setColumns(optionName.length() > 12 ? 12 : 8);
         field.setColumns(8);
-        if ("l3bprod".equals(optionName) || "product".equals(optionName)) {
+
+        if (colSpan == 2) {
             field.setColumns(20);
+        } else if (colSpan > 2) {
+            field.setColumns(30);
         }
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
@@ -337,7 +337,7 @@ public class ParamUIFactory {
 
     }
 
-    private JPanel makeComboBoxOptionPanel(final ParamInfo pi) {
+    private JPanel makeComboBoxOptionPanel(final ParamInfo pi, int colSpan) {
         final JPanel singlePanel = new JPanel();
 
         TableLayout comboParamLayout = new TableLayout(1);
@@ -371,14 +371,28 @@ public class ParamUIFactory {
             i++;
         }
 
+        Dimension preferredComboBoxSize;
+
+        if (colSpan == 2) {
+            final String[] tmpValues = {"1234567890123456789012345"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else {
+            final String[] tmpValues = {"12345678"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        }
+
         final JComboBox<String> inputList = new JComboBox<String>(values);
         ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
         inputList.setRenderer(renderer);
         renderer.setTooltips(toolTips);
         inputList.setEditable(true);
         inputList.setName(pi.getName());
-        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
-                inputList.getPreferredSize().height));
+//        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
+//                inputList.getPreferredSize().height));
+        inputList.setPreferredSize(preferredComboBoxSize);
+
         if (pi.getDescription() != null) {
             inputList.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -447,7 +461,7 @@ public class ParamUIFactory {
 
         final JTextField field = new JTextField();
         field.setText(pi.getValue());
-        field.setColumns(48);
+        field.setColumns(50);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -458,6 +472,7 @@ public class ParamUIFactory {
             }
         });
         singlePanel.add(field);
+
         return singlePanel;
     }
 

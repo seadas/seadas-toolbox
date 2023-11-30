@@ -28,7 +28,7 @@ public class ExtractorParamUI extends ParamUIFactory {
     }
 
     @Override
-    protected JPanel makeOptionField(final ParamInfo pi) {
+    protected JPanel makeOptionField(final ParamInfo pi, int colSpan) {
 
         final String optionName = pi.getName();
         final JPanel optionPanel = new JPanel();

@@ -85,7 +85,7 @@
 
         <option type="int">
             <name>resolution</name>
-            <value>4</value>
+            <value></value>
             <default></default>
             <description>bin resolution
             </description>
