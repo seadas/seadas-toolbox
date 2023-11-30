@@ -220,15 +220,7 @@
             <usedAs>option</usedAs>
             <order>5</order>
         </option>
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <default>Unspecified</default>
-            <source>default</source>
-            <description>processing version string</description>
-            <usedAs>option</usedAs>
-            <order>6</order>
-        </option>
+
         <option type="float">
             <name>north</name>
             <value></value>
@@ -236,7 +228,7 @@
             <source>default</source>
             <description>Northern most Latitude</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>6</order>
         </option>
         <option type="float">
             <name>south</name>
@@ -244,6 +236,15 @@
             <default></default>
             <source>default</source>
             <description>Southern most Latitude</description>
+            <usedAs>option</usedAs>
+            <order>7</order>
+        </option>
+        <option type="float">
+            <name>west</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>Western most Longitude</description>
             <usedAs>option</usedAs>
             <order>8</order>
         </option>
@@ -256,15 +257,7 @@
             <usedAs>option</usedAs>
             <order>9</order>
         </option>
-        <option type="float">
-            <name>west</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>Western most Longitude</description>
-            <usedAs>option</usedAs>
-            <order>10</order>
-        </option>
+
         <option type="string">
             <name>oformat</name>
             <value>netCDF4</value>
@@ -429,6 +422,16 @@
             <description>minimum percentage of filled pixels before an image is generated</description>
             <usedAs>option</usedAs>
             <order>24</order>
+        </option>
+
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default>Unspecified</default>
+            <source>default</source>
+            <description>processing version string</description>
+            <usedAs>option</usedAs>
+            <order>25</order>
         </option>
     </options>
 </paramInfo>

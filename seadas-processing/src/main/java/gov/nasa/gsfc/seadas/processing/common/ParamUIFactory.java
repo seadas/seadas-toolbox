@@ -7,6 +7,7 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
@@ -51,7 +52,7 @@ public class ParamUIFactory {
 
         final JPanel parameterComponent = new JPanel(new BorderLayout());
 
-        parameterComponent.add(textScrollPane, BorderLayout.CENTER);
+        parameterComponent.add(textScrollPane, BorderLayout.NORTH);
 
 
         parameterComponent.setPreferredSize(parameterComponent.getPreferredSize());
@@ -77,7 +78,9 @@ public class ParamUIFactory {
         ArrayList<ParamInfo> paramList = processorModel.getProgramParamList();
         JPanel paramPanel = new JPanel();
         paramPanel.setName("param panel");
-        JPanel textFieldPanel = new JPanel();
+//        JPanel textFieldPanel = new JPanel();
+        final JPanel textFieldPanel = GridBagUtils.createPanel();
+        GridBagConstraints gbc = GridBagUtils.createConstraints();
         textFieldPanel.setName("text field panel");
         JPanel booleanParamPanel = new JPanel();
         booleanParamPanel.setName("boolean field panel");
@@ -94,9 +97,23 @@ public class ParamUIFactory {
         fileParamPanel.setLayout(fileParamLayout);
 
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
-        TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
-        textFieldPanelLayout.setTablePadding(5,5);
-        textFieldPanel.setLayout(textFieldPanelLayout);
+        if ("l3mapgen".equals(processorModel.getProgramName())) {
+            numberOfOptionsPerLine = 6;
+        }
+//        TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
+//        textFieldPanelLayout.setTablePadding(5,5);
+//        textFieldPanel.setLayout(textFieldPanelLayout);
+
+        gbc.gridy=0;
+        gbc.gridx=0;
+        gbc.insets.top = 5;
+        gbc.insets.left = 5;
+        gbc.insets.right = 25;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+
+
 
         Iterator<ParamInfo> itr = paramList.iterator();
         while (itr.hasNext()) {
@@ -106,13 +123,21 @@ public class ParamUIFactory {
                     pi.getName().equals(L2genData.GEOFILE) ||
                     pi.getName().equals("verbose") ||
                     pi.getName().equals("--verbose"))) {
+                final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
+
+                if (("l2bin".equals(processorModel.getProgramName()) && "l3bprod".equals(optionName)) ||
+                        ("l3mapgen".equals(processorModel.getProgramName()) && "product".equals(optionName)) ||
+                        ("l3mapgen".equals(processorModel.getProgramName()) && "projection".equals(optionName))) {
+                    gbc.gridwidth = 2;
+                }
+
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
-                    textFieldPanel.add(makeComboBoxOptionPanel(pi));
+                        textFieldPanel.add(makeComboBoxOptionPanel(pi), gbc);
+                        gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                 } else {
                     switch (pi.getType()) {
                         case BOOLEAN:
-//                            booleanParamPanel.add(makeBooleanOptionField(pi));
-                            textFieldPanel.add(makeBooleanOptionField(pi));
+                            booleanParamPanel.add(makeBooleanOptionField(pi));
                             break;
                         case IFILE:
                             fileParamPanel.add(createIOFileOptionField(pi));
@@ -124,23 +149,51 @@ public class ParamUIFactory {
                             fileParamPanel.add(createIOFileOptionField(pi));
                             break;
                         case STRING:
-                            textFieldPanel.add(makeOptionField(pi));
+                            textFieldPanel.add(makeOptionField(pi), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+
+//                            if (("l2bin".equals(processorModel.getProgramName()) && "l3bprod".equals(optionName)) ||
+//                                    ("l3mapgen".equals(processorModel.getProgramName()) && "product".equals(optionName)) ||
+//                                    ("l3mapgen".equals(processorModel.getProgramName()) && "projection".equals(optionName))) {
+//                                gbc.gridwidth=2;
+//                                textFieldPanel.add(makeOptionField(pi), gbc);
+//                                gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+//                                gbc.gridwidth=1;
+//                            } else {
+//                                textFieldPanel.add(makeOptionField(pi), gbc);
+//                                gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+//                            }
+
                             break;
                         case INT:
-                            textFieldPanel.add(makeOptionField(pi));
+                            textFieldPanel.add(makeOptionField(pi), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLOAT:
-                            textFieldPanel.add(makeOptionField(pi));
+                            textFieldPanel.add(makeOptionField(pi), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLAGS:
-                            textFieldPanel.add(makeButtonOptionPanel(pi));
+                            gbc.gridwidth=5;
+                            gbc.insets.top = 10;
+                            gbc.insets.bottom = 10;
+                            textFieldPanel.add(makeButtonOptionPanel(pi), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            gbc.gridwidth=1;
+                            gbc.insets.top = 5;
+                            gbc.insets.bottom = 5;
                             break;
                         case BUTTON:
                             buttonPanel.add(makeActionButtonPanel(pi));
                             break;
                     }
+
+
                     //paramPanel.add(makeOptionField(pi));
                 }
+
+                gbc.gridwidth = 1;
+
             }
         }
 
@@ -153,6 +206,17 @@ public class ParamUIFactory {
         paramPanel.add(buttonPanel);
 
         return paramPanel;
+    }
+
+
+    GridBagConstraints incrementGridxGridy(GridBagConstraints gbc, int numColumns) {
+        gbc.gridx += gbc.gridwidth;
+        if (gbc.gridx > (numColumns - 1)) {
+            gbc.gridy += 1;
+            gbc.gridx = 0;
+        }
+
+        return gbc;
     }
 
     protected JPanel makeOptionField(final ParamInfo pi) {
@@ -182,7 +246,7 @@ public class ParamUIFactory {
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
 //        field.setColumns(optionName.length() > 12 ? 12 : 8);
-        field.setColumns(12);
+        field.setColumns(8);
         if ("l3bprod".equals(optionName) || "product".equals(optionName)) {
             field.setColumns(20);
         }
@@ -383,7 +447,7 @@ public class ParamUIFactory {
 
         final JTextField field = new JTextField();
         field.setText(pi.getValue());
-        field.setColumns(16);
+        field.setColumns(48);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -606,7 +670,7 @@ public class ParamUIFactory {
                 if (isEventHandlerEnabled()) {
                     disableControlHandler();
 //                    if (isEventHandlerEnabled() || pi.getName().isEmpty()) {
-                        ioFileSelector.setFilename(pi.getValue());
+                    ioFileSelector.setFilename(pi.getValue());
 //                    }
                     enableControlHandler();
                 }
