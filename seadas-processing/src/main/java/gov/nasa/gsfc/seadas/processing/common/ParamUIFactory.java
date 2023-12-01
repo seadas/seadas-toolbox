@@ -142,6 +142,12 @@ public class ParamUIFactory {
                     }
                 }
 
+                if ("l3bin".equals(processorModel.getProgramName())) {
+                    if ("prod".equals(optionName)) {
+                        gbc.gridwidth = 2;
+                    }
+                }
+
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
                         textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
                         gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
