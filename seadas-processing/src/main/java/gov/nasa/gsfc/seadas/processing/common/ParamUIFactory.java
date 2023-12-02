@@ -74,13 +74,23 @@ public class ParamUIFactory {
         return parameterComponent;
     }
 
+
+
     protected JPanel createParamPanel(ProcessorModel processorModel) {
         ArrayList<ParamInfo> paramList = processorModel.getProgramParamList();
         JPanel paramPanel = new JPanel();
         paramPanel.setName("param panel");
 //        JPanel textFieldPanel = new JPanel();
         final JPanel textFieldPanel = GridBagUtils.createPanel();
-        GridBagConstraints gbc = GridBagUtils.createConstraints();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+
         textFieldPanel.setName("text field panel");
         JPanel booleanParamPanel = new JPanel();
         booleanParamPanel.setName("boolean field panel");

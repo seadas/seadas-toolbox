@@ -99,39 +99,83 @@
             <validValues>
                 <validValue>
                     <value>smi</value>
-                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
+                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lon_0=<central_meridian>"]]></description>
                 </validValue>
                 <validValue>
                     <value>platecarree</value>
-                    <description><![CDATA[ Plate Carree image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lat_0=<central_meridian>"]]></description>
+                    <description><![CDATA[ Plate Carree image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lon_0=<central_meridian>"]]></description>
                 </validValue>
                 <validValue>
                     <value>mollweide</value>
-                    <description><![CDATA[Mollweide projection projection="+proj=moll +lat_0=<central_meridian>"]]></description>
+                    <description><![CDATA[Mollweide projection projection="+proj=moll +lon_0=<central_meridian>"]]></description>
                 </validValue>
                 <validValue>
                     <value>lambert</value>
-                    <description><![CDATA[Lambert conformal conic projection, uses central_meridian, projection="+proj=lcc +lat_0=<central_meridian>"]]></description>
+                    <description><![CDATA[Lambert conformal conic projection, uses central_meridian, projection="+proj=lcc +lon_0=<central_meridian>"]]></description>
                 </validValue>
                 <validValue>
                     <value>albersconic</value>
-                    <description><![CDATA[Albers equal-area conic projection, uses central_meridian projection="+proj=aea +lat_0=<central_meridian>"]]></description>
+                    <description><![CDATA[Albers equal-area conic projection, uses central_meridian projection="+proj=aea +lon_0=<central_meridian>"]]></description>
                 </validValue>
                 <validValue>
                     <value>mercator</value>
-                    <description><![CDATA[ Mercator cylindrical map projection, uses central_meridian projection="+proj=merc +lat_0=<central_meridian>"]]></description>
+                    <description><![CDATA[ Mercator cylindrical map projection, uses central_meridian projection="+proj=merc +lon_0=<central_meridian>"]]></description>
                 </validValue>
                 <validValue>
                     <value>ease2</value>
                     <description><![CDATA[Ease Grid 2 projection, uses central_meridian,  projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84 +datum=WGS84 +units=m +lat_0=<central_meridian>"]]></description>
                 </validValue>
                 <validValue>
+                    <value>conus</value>
+                    <description>USA Contiguous Albers Equal Area Conic USGS version</description>
+                </validValue>
+                <validValue>
                     <value>raw</value>
                     <description>raw dump of the bin file</description>
                 </validValue>
                 <validValue>
-                    <value>+proj=cea +lat_ts=0.0</value>
-                    <description>Cylindrical Equal Area Projection</description>
+                    <value>+proj=cea +lon_0=0.0</value>
+                    <description>Lambert Cylindrical Equal Area</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=robin +lon_0=0.0</value>
+                    <description>Robinson Projection</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=eck4 +lon_0=0.0</value>
+                    <description>Eckert IV Projection</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=wag4 +lon_0=0.0</value>
+                    <description>Wagner IV Projection</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=eqearth +lon_0=0.0</value>
+                    <description>Equal Earth Projection</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=geos +lon_0=0.0 +h=705000.0</value>
+                    <description>&lt;html&gt;Geostationary Satellite View&lt;br&gt;Example shown at orbit altitude of 705km&lt;/html&gt;</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=laea +lon_0=0.0 +lat_0=0.0</value>
+                    <description>Lambert Azimuthal Equal Area</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=moll +lon_0=0.0</value>
+                    <description>Mollweide</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=ortho +lon_0=0.0 +lat_0=0.0</value>
+                    <description>Orthographic</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=patterson +lon_0=0.0</value>
+                    <description>Patterson</description>
+                </validValue>
+                <validValue>
+                    <value>+proj=sinu +lon_0=0.0</value>
+                    <description>Sinusoidal</description>
                 </validValue>
             </validValues>
             <description>proj.4 projection string or one of the following predefined projections:</description>
