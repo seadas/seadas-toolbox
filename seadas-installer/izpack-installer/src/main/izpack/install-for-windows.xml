@@ -68,7 +68,7 @@
         <variable name="InstallerFrame.logfilePath" value="Default"/>
         <variable name="WELCOME_TEXT" value="SeaDAS IzPack Installer"/>
         <variable name="WELCOME_VERSION" value="Version: 1"/>
-        <variable name="FINISH_TEXT" value="SeaDAS 8.4.0 is successfuly installed. Enjoy!"/>
+        <variable name="FINISH_TEXT" value="SeaDAS 9.0.0 is successfuly installed. Enjoy!"/>
         <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
         <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
