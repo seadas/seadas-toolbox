@@ -177,6 +177,10 @@
                     <value>+proj=sinu +lon_0=0.0</value>
                     <description>Sinusoidal</description>
                 </validValue>
+                <validValue>
+                    <value>+proj=eqc +lon_0=0.0</value>
+                    <description>Equidistant Cylindrical (Plate Carrée)</description>
+                </validValue>
             </validValues>
             <description>proj.4 projection string or one of the following predefined projections:</description>
             <usedAs>option</usedAs>
@@ -184,7 +188,7 @@
         </option>
         <option type="string">
             <name>resolution</name>
-            <value>4km</value>
+            <value></value>
             <default></default>
             <source>default</source>
             <validValues>
@@ -243,7 +247,7 @@
         </option>
         <option type="string">
             <name>interp</name>
-            <value>nearest</value>
+            <value>bin</value>
             <default>nearest</default>
             <source>default</source>
             <validValues>
@@ -270,7 +274,7 @@
             <value></value>
             <default></default>
             <source>default</source>
-            <description>Northern most Latitude</description>
+            <description>Northernmost Latitude</description>
             <usedAs>option</usedAs>
             <order>6</order>
         </option>
@@ -279,7 +283,7 @@
             <value></value>
             <default></default>
             <source>default</source>
-            <description>Southern most Latitude</description>
+            <description>Southernmost Latitude</description>
             <usedAs>option</usedAs>
             <order>7</order>
         </option>
@@ -288,7 +292,7 @@
             <value></value>
             <default></default>
             <source>default</source>
-            <description>Western most Longitude</description>
+            <description>Westernmost Longitude</description>
             <usedAs>option</usedAs>
             <order>8</order>
         </option>
@@ -297,7 +301,7 @@
             <value></value>
             <default></default>
             <source>default</source>
-            <description>Eastern most Longitude</description>
+            <description>Easternmost Longitude</description>
             <usedAs>option</usedAs>
             <order>9</order>
         </option>

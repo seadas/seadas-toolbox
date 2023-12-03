@@ -73,6 +73,16 @@ public final class SeadasToolboxController extends DefaultConfigController {
         initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_KEY, true);
         initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
 
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_KEY, true);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_DEFAULT);
+
 
 
         initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_KEY, true);
@@ -280,6 +290,55 @@ public final class SeadasToolboxController extends DefaultConfigController {
         boolean l2genL2prodWavelengthShortcuts = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT;
 
 
+
+        // L3mapgen Section
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_TOOLTIP)
+        boolean l3mapgenSection = true;
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP)
+        String l3mapgenProductDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT;
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP)
+        String l3mapgenProjectionDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT;
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP)
+        String l3mapgenResolutionDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT;
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_TOOLTIP)
+        String l3mapgenInterpDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_DEFAULT;
+
+
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_TOOLTIP)
+        String l3mapgenNorthDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_DEFAULT;
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_TOOLTIP)
+        String l3mapgenSouthDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_DEFAULT;
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_TOOLTIP)
+        String l3mapgenWestDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_DEFAULT;
+
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_TOOLTIP)
+        String l3mapgenEastDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_DEFAULT;
 
 
 

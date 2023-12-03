@@ -76,8 +76,8 @@ public final class SeadasToolboxController2 extends DefaultConfigController {
 
 
 
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_KEY, true);
-        restoreDefaults =  initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_DEFAULT);
+        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_SECTION_KEY, true);
+        restoreDefaults =  initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_KEY, SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_DEFAULT);
 
 
 
@@ -205,7 +205,7 @@ public final class SeadasToolboxController2 extends DefaultConfigController {
             }
             propertyValueChangeEventsEnabled = true;
 
-            context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, false);
+            context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_KEY, false);
         }
     }
 
@@ -228,7 +228,7 @@ public final class SeadasToolboxController2 extends DefaultConfigController {
             propertyValueChangeEventsEnabled = false;
             try {
                 restoreDefaults.setValue(isDefaults(context));
-                context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, !isDefaults(context));
+                context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_KEY, !isDefaults(context));
             } catch (ValidationException e) {
                 e.printStackTrace();
             }
@@ -283,15 +283,15 @@ public final class SeadasToolboxController2 extends DefaultConfigController {
 
 
 
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_TOOLTIP)
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_SECTION_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_SECTION_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_SECTION_TOOLTIP)
         boolean restoreDefaultsSection = true;
 
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_TOOLTIP)
-        boolean restoreDefaults = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_DEFAULT;
+        @Preference(label = SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_LABEL,
+                key = SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_KEY,
+                description = SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_TOOLTIP)
+        boolean restoreDefaults = SeadasToolboxDefaults.PROPERTY_INSTALLER_RESTORE_DEFAULTS_DEFAULT;
 
     }
 

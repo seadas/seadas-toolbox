@@ -6,6 +6,8 @@ import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
+import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
@@ -254,7 +256,44 @@ public class ParamUIFactory {
         }
 
         final PropertyContainer vc = new PropertyContainer();
-        vc.addProperty(Property.create(optionName, pi.getValue()));
+
+        String optionDefaultValue = pi.getValue();
+
+        // todo config
+            if ("l3mapgen".equals(processorModel.getProgramName())) {
+                switch (optionName) {
+                    case "product":
+                        optionDefaultValue = l3mapgenPreferenceProduct();
+                        break;
+                    case "projection":
+                        optionDefaultValue = l3mapgenPreferenceProjection();
+                        break;
+                    case "resolution":
+                        optionDefaultValue = l3mapgenPreferenceResolution();
+                        break;
+                    case "interp":
+                        optionDefaultValue = l3mapgenPreferenceInterp();
+                        break;
+                    case "north":
+                        optionDefaultValue = l3mapgenPreferenceNorth();
+                        break;
+                    case "south":
+                        optionDefaultValue = l3mapgenPreferenceSouth();
+                        break;
+                    case "west":
+                        optionDefaultValue = l3mapgenPreferenceWest();
+                        break;
+                    case "east":
+                        optionDefaultValue = l3mapgenPreferenceEast();
+                        break;
+                }
+            }
+
+
+//        vc.addProperty(Property.create(optionName, pi.getValue()));
+        vc.addProperty(Property.create(optionName, optionDefaultValue));
+
+
         vc.getDescriptor(optionName).setDisplayName(optionName);
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
@@ -294,6 +333,46 @@ public class ParamUIFactory {
         optionPanel.add(field);
 
         return optionPanel;
+    }
+
+    private String l3mapgenPreferenceProduct() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
+    }
+
+    private String l3mapgenPreferenceProjection() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
+    }
+
+    private String l3mapgenPreferenceResolution() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
+    }
+
+    private String l3mapgenPreferenceInterp() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_DEFAULT);
+    }
+
+    private String l3mapgenPreferenceNorth() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_DEFAULT);
+    }
+
+    private String l3mapgenPreferenceSouth() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
+    }
+
+    private String l3mapgenPreferenceWest() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_DEFAULT);
+    }
+
+    private String l3mapgenPreferenceEast() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_DEFAULT);
     }
 
     private JPanel makeBooleanOptionField(final ParamInfo pi) {
@@ -356,6 +435,8 @@ public class ParamUIFactory {
     private JPanel makeComboBoxOptionPanel(final ParamInfo pi, int colSpan) {
         final JPanel singlePanel = new JPanel();
 
+        String optionName = ParamUtils.removePreceedingDashes(pi.getName());
+
         TableLayout comboParamLayout = new TableLayout(1);
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
@@ -369,6 +450,24 @@ public class ParamUIFactory {
         }
 
         String optionDefaultValue = pi.getValue();
+
+        if ("l3mapgen".equals(processorModel.getProgramName())) {
+            switch (optionName) {
+                case "product":
+                    optionDefaultValue = l3mapgenPreferenceProduct();
+                    break;
+                case "projection":
+                    optionDefaultValue = l3mapgenPreferenceProjection();
+                    break;
+                case "resolution":
+                    optionDefaultValue = l3mapgenPreferenceResolution();
+                    break;
+                case "interp":
+                    optionDefaultValue = l3mapgenPreferenceInterp();
+                    break;
+            }
+        }
+
 
 
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
@@ -418,11 +517,10 @@ public class ParamUIFactory {
             inputList.setSelectedIndex(defaultValuePosition);
         }
 
-        String optionName = pi.getName();
 
 
         final PropertyContainer vc = new PropertyContainer();
-        vc.addProperty(Property.create(optionName, pi.getValue()));
+        vc.addProperty(Property.create(optionName, optionDefaultValue));
         vc.getDescriptor(optionName).setDisplayName(optionName);
 
         final BindingContext ctx = new BindingContext(vc);
