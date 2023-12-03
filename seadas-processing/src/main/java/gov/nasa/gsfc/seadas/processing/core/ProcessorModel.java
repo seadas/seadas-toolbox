@@ -1192,7 +1192,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         L3MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
-            setOpenInSeadas(false);
+            setOpenInSeadas(true);
 
             addPropertyChangeListener("product", new PropertyChangeListener() {
                 @Override

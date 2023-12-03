@@ -1,6 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
+import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -248,12 +251,87 @@ public class ParamUtils {
 
             }
 
+            final String optionName = ParamUtils.removePreceedingDashes(paramInfo.getName());
+
+            if ("l3mapgen.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case "product":
+                        paramInfo.setValue(l3mapgenPreferenceProduct());
+                        break;
+                    case "projection":
+                        paramInfo.setValue(l3mapgenPreferenceProjection());
+                        break;
+                    case "resolution":
+                        paramInfo.setValue(l3mapgenPreferenceResolution());
+                        break;
+                    case "interp":
+                        paramInfo.setValue(l3mapgenPreferenceInterp());
+                        break;
+                    case "north":
+                        paramInfo.setValue(l3mapgenPreferenceNorth());
+                        break;
+                    case "south":
+                        paramInfo.setValue(l3mapgenPreferenceSouth());
+                        break;
+                    case "west":
+                        paramInfo.setValue(l3mapgenPreferenceWest());
+                        break;
+                    case "east":
+                        paramInfo.setValue(l3mapgenPreferenceEast());
+                        break;
+                }
+            }
+
+
             paramList.add(paramInfo);
 
         }
 
         return paramList;
     }
+
+
+
+    private static String l3mapgenPreferenceProduct() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
+    }
+
+    private static String l3mapgenPreferenceProjection() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
+    }
+
+    private static String l3mapgenPreferenceResolution() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
+    }
+
+    private static String l3mapgenPreferenceInterp() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_DEFAULT);
+    }
+
+    private static String l3mapgenPreferenceNorth() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_DEFAULT);
+    }
+
+    private static String l3mapgenPreferenceSouth() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
+    }
+
+    private static String l3mapgenPreferenceWest() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_DEFAULT);
+    }
+
+    private static String l3mapgenPreferenceEast() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_DEFAULT);
+    }
+
 
 
     /**
