@@ -1,9 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
-import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
-import org.esa.snap.core.util.PropertyMap;
-import org.esa.snap.rcp.SnapApp;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
 import org.esa.snap.rcp.util.Dialogs;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -256,31 +255,67 @@ public class ParamUtils {
             if ("l3mapgen.xml".equals(paramXmlFileName)) {
                 switch (optionName) {
                     case "product":
-                        paramInfo.setValue(l3mapgenPreferenceProduct());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProduct());
                         break;
                     case "projection":
-                        paramInfo.setValue(l3mapgenPreferenceProjection());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProjection());
                         break;
                     case "resolution":
-                        paramInfo.setValue(l3mapgenPreferenceResolution());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceResolution());
                         break;
                     case "interp":
-                        paramInfo.setValue(l3mapgenPreferenceInterp());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceInterp());
                         break;
                     case "north":
-                        paramInfo.setValue(l3mapgenPreferenceNorth());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceNorth());
                         break;
                     case "south":
-                        paramInfo.setValue(l3mapgenPreferenceSouth());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceSouth());
                         break;
                     case "west":
-                        paramInfo.setValue(l3mapgenPreferenceWest());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWest());
                         break;
                     case "east":
-                        paramInfo.setValue(l3mapgenPreferenceEast());
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceEast());
                         break;
                 }
             }
+
+
+            if ("l2bin.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case "l3bprod":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceL3bprod());
+                        break;
+                    case "prodtype":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceProdtype());
+                        break;
+                    case "resolution":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceResolution());
+                        break;
+                    case "area_weighting":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceAreaWeighting());
+                        break;
+                    case "flaguse":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceFlaguse());
+                        break;
+                    case "latnorth":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLatnorth());
+                        break;
+                    case "latsouth":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLatsouth());
+                        break;
+                    case "lonwest":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLonwest());
+                        break;
+                    case "loneast":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLoneast());
+                        break;
+                }
+            }
+
+
+
 
 
             paramList.add(paramInfo);
@@ -290,47 +325,6 @@ public class ParamUtils {
         return paramList;
     }
 
-
-
-    private static String l3mapgenPreferenceProduct() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
-    }
-
-    private static String l3mapgenPreferenceProjection() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
-    }
-
-    private static String l3mapgenPreferenceResolution() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
-    }
-
-    private static String l3mapgenPreferenceInterp() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_DEFAULT);
-    }
-
-    private static String l3mapgenPreferenceNorth() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_DEFAULT);
-    }
-
-    private static String l3mapgenPreferenceSouth() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
-    }
-
-    private static String l3mapgenPreferenceWest() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_DEFAULT);
-    }
-
-    private static String l3mapgenPreferenceEast() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_DEFAULT);
-    }
 
 
 

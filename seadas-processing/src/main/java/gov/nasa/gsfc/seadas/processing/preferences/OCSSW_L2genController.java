@@ -24,6 +24,8 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import com.bc.ceres.swing.binding.PropertyEditorRegistry;
 import com.bc.ceres.swing.binding.PropertyPane;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.preferences.DefaultConfigController;
 import org.esa.snap.rcp.preferences.Preference;
 import org.netbeans.spi.options.OptionsPanelController;
@@ -33,22 +35,22 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * * Panel handling colorbar layer preferences. Sub-panel of the "Layer"-panel.
+ * * Panel handling l2gen preferences. Sub-panel of the "SeaDAS-Toolbox"-panel.
  *
  * @author Daniel Knowles
  */
 
 
 @OptionsPanelController.SubRegistration(location = "SeaDAS",
-        displayName = "#Options_DisplayName_SeadasToolbox",
-        keywords = "#Options_Keywords_SeadasToolbox",
+        displayName = "#Options_DisplayName_OCSSW_L2gen",
+        keywords = "#Options_Keywords_OCSSW_L2gen",
         keywordsCategory = "Processors",
-        id = "OCSSW-Processors")
+        id = "L2gen")
 @org.openide.util.NbBundle.Messages({
-        "Options_DisplayName_SeadasToolbox=OCSSW-Processors",
-        "Options_Keywords_SeadasToolbox=seadas, ocssw, l2gen"
+        "Options_DisplayName_OCSSW_L2gen=L2gen",
+        "Options_Keywords_OCSSW_L2gen=seadas, ocssw, l2gen"
 })
-public final class SeadasToolboxController extends DefaultConfigController {
+public final class OCSSW_L2genController extends DefaultConfigController {
 
     Property restoreDefaults;
 
@@ -60,6 +62,27 @@ public final class SeadasToolboxController extends DefaultConfigController {
         return createPropertySet(new SeadasToolboxBean());
     }
 
+    // Preferences property prefix
+    private static final String PROPERTY_L2GEN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l2gen";
+
+    // Property Setting: Restore Defaults
+
+    private static final String PROPERTY_RESTORE_KEY_SUFFIX = PROPERTY_L2GEN_ROOT_KEY + ".restore.defaults";
+
+    public static final String PROPERTY_RESTORE_SECTION_KEY = PROPERTY_RESTORE_KEY_SUFFIX + ".section";
+    public static final String PROPERTY_RESTORE_SECTION_LABEL = "Restore";
+    public static final String PROPERTY_RESTORE_SECTION_TOOLTIP = "Restores preferences to the package defaults";
+
+    public static final String PROPERTY_RESTORE_DEFAULTS_KEY = PROPERTY_RESTORE_KEY_SUFFIX + ".apply";
+    public static final String PROPERTY_RESTORE_DEFAULTS_LABEL = "Default (L2gen Preferences)";
+    public static final String PROPERTY_RESTORE_DEFAULTS_TOOLTIP = "Restore all l2gen preferences to the original default";
+    public static final boolean PROPERTY_RESTORE_DEFAULTS_DEFAULT = false;
+
+
+    public static final String PROPERTY_L2GEN_SHORTCUTS_KEY = PROPERTY_L2GEN_ROOT_KEY + ".shortcuts";
+    public static final String PROPERTY_L2GEN_SHORTCUTS_LABEL = "L2prod Wavelength Shortcuts";
+    public static final String PROPERTY_L2GEN_SHORTCUTS_TOOLTIP = "Use wavelength shortcuts (i.e. Rrs_vvv, Rrs_iii) in l2prod";
+    public static final boolean PROPERTY_L2GEN_SHORTCUTS_DEFAULT = true;
 
 
     @Override
@@ -70,23 +93,10 @@ public final class SeadasToolboxController extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_KEY, true);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2GEN_SHORTCUTS_KEY, PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
 
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_KEY, true);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_DEFAULT);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_DEFAULT);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_DEFAULT);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_KEY, SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_DEFAULT);
-
-
-
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_KEY, true);
-        restoreDefaults =  initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_RESTORE_SECTION_KEY, true);
+        restoreDefaults =  initPropertyDefaults(context, PROPERTY_RESTORE_DEFAULTS_KEY, PROPERTY_RESTORE_DEFAULTS_DEFAULT);
 
 
 
@@ -202,7 +212,7 @@ public final class SeadasToolboxController extends DefaultConfigController {
             }
             propertyValueChangeEventsEnabled = true;
 
-            context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, false);
+            context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, false);
         }
     }
 
@@ -225,7 +235,7 @@ public final class SeadasToolboxController extends DefaultConfigController {
             propertyValueChangeEventsEnabled = false;
             try {
                 restoreDefaults.setValue(isDefaults(context));
-                context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, !isDefaults(context));
+                context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, !isDefaults(context));
             } catch (ValidationException e) {
                 e.printStackTrace();
             }
@@ -265,98 +275,36 @@ public final class SeadasToolboxController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("seadasToolboxPreferences");
+        return new HelpCtx("OCSSW_L2gen_preferences");
     }
 
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
 
 
-
-
-
-        // L2GEN Section
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_TOOLTIP)
-        boolean l2genSection = true;
-
-
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_TOOLTIP)
-        boolean l2genL2prodWavelengthShortcuts = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT;
-
-
-
-        // L3mapgen Section
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SECTION_TOOLTIP)
-        boolean l3mapgenSection = true;
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP)
-        String l3mapgenProductDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT;
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP)
-        String l3mapgenProjectionDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT;
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP)
-        String l3mapgenResolutionDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT;
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_TOOLTIP)
-        String l3mapgenInterpDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_INTERP_DEFAULT;
-
-
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_TOOLTIP)
-        String l3mapgenNorthDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_NORTH_DEFAULT;
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_TOOLTIP)
-        String l3mapgenSouthDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_SOUTH_DEFAULT;
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_TOOLTIP)
-        String l3mapgenWestDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_WEST_DEFAULT;
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_TOOLTIP)
-        String l3mapgenEastDefault = SeadasToolboxDefaults.PROPERTY_L3MAPGEN_EAST_DEFAULT;
+        @Preference(key = PROPERTY_L2GEN_SHORTCUTS_KEY,
+                label = PROPERTY_L2GEN_SHORTCUTS_LABEL,
+                description = PROPERTY_L2GEN_SHORTCUTS_TOOLTIP)
+        boolean l2genL2prodWavelengthShortcuts = PROPERTY_L2GEN_SHORTCUTS_DEFAULT;
 
 
 
         // Restore Defaults Section
 
-
-
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_TOOLTIP)
+        @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
+                label = PROPERTY_RESTORE_SECTION_LABEL,
+                description = PROPERTY_RESTORE_SECTION_TOOLTIP)
         boolean restoreDefaultsSection = true;
 
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_TOOLTIP)
-        boolean restoreDefaults = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_DEFAULT;
-
+        @Preference(key = PROPERTY_RESTORE_DEFAULTS_KEY,
+                label = PROPERTY_RESTORE_DEFAULTS_LABEL,
+                description = PROPERTY_RESTORE_DEFAULTS_TOOLTIP)
+        boolean restoreDefaultsDefault = PROPERTY_RESTORE_DEFAULTS_DEFAULT;
     }
 
+
+    public static boolean getPreferenceUseWavelengthShortcuts() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2GEN_SHORTCUTS_KEY, PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
+    }
 }
