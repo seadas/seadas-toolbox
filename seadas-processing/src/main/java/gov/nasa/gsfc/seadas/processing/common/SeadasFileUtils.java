@@ -202,7 +202,7 @@ public class SeadasFileUtils {
     }
 
     public static boolean isTextFile(String fileName){
-        String fileType = identifyFileTypeUsingMimetypesFileTypeMap(fileName);
+        String fileType = identifyFileTypeUsingFilesProbeContentType(fileName);
         if (fileType.startsWith("text")) {
             return true;
         }  else {
