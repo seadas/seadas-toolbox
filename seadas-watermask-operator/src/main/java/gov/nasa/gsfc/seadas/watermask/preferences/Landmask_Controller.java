@@ -14,17 +14,18 @@
  * with this program; if not, see http://www.gnu.org/licenses/
  */
 
-package gov.nasa.gsfc.seadas.processing.preferences;
+package gov.nasa.gsfc.seadas.watermask.preferences;
 
-import com.bc.ceres.binding.*;
+import com.bc.ceres.binding.Property;
+import com.bc.ceres.binding.PropertyDescriptor;
+import com.bc.ceres.binding.PropertySet;
+import com.bc.ceres.binding.ValidationException;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import com.bc.ceres.swing.binding.PropertyEditorRegistry;
 import com.bc.ceres.swing.binding.PropertyPane;
-import org.esa.snap.core.layer.MetaDataLayerType;
 import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.rcp.SnapApp;
-import org.esa.snap.rcp.actions.layer.overlay.OverlaySoftButtonLayerAction;
 import org.esa.snap.rcp.preferences.DefaultConfigController;
 import org.esa.snap.rcp.preferences.Preference;
 import org.netbeans.spi.options.OptionsPanelController;
@@ -34,78 +35,73 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * * Panel handling l3mapgen preferences. Sub-panel of the "SeaDAS-Toolbox"-panel.
+ * * Panel handling LandCoastMask preferences. Sub-panel of the "SeaDAS-Toolbox"-panel.
  *
  * @author Daniel Knowles
  */
 
 
 @OptionsPanelController.SubRegistration(location = "SeaDAS",
-        displayName = "#Options_DisplayName_OCSSW_L3mapgen",
-        keywords = "#Options_Keywords_OCSSW_L3mapgen",
-        keywordsCategory = "Processors",
-        id = "L3mapgen")
+        displayName = "#Options_DisplayName_LandCoastMask",
+        keywords = "#Options_Keywords_LandCoastMask",
+        keywordsCategory = "General Tools",
+        id = "LandCoastMask")
 @org.openide.util.NbBundle.Messages({
-        "Options_DisplayName_OCSSW_L3mapgen=L3mapgen",
-        "Options_Keywords_OCSSW_L3mapgen=seadas, ocssw, l3mapgen"
+        "Options_DisplayName_LandCoastMask=Land Coast Mask",
+        "Options_Keywords_LandCoastMask=seadas, Land Coast Mask"
 })
-public final class OCSSW_L3mapgenController extends DefaultConfigController {
+public final class Landmask_Controller extends DefaultConfigController {
 
     Property restoreDefaults;
 
     boolean propertyValueChangeEventsEnabled = true;
 
 
+    public static final String RESOLUTION_50m = "50 m (SRTM_GC)";
+    public static final String RESOLUTION_150m = "150 m (SRTM_GC)";
+    public static final String RESOLUTION_1km = "1 km (GSHHS)";
+    public static final String RESOLUTION_10km = "10 km (GSHHS)";
+
     // Preferences property prefix
-    private static final String PROPERTY_L3MAPGEN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l3mapgen";
+    private static final String PROPERTY_LANDMASK_ROOT_KEY = "seadas.toolbox.landcoast";
 
 
-    public static final String PROPERTY_L3MAPGEN_PRODUCT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".product";
-    public static final String PROPERTY_L3MAPGEN_PRODUCT_LABEL = "product";
-    public static final String PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP = "Product(s)";
-    public static final String PROPERTY_L3MAPGEN_PRODUCT_DEFAULT = "";
+    public static final String PROPERTY_LANDMASK_RESOLUTION_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.resolution";
+    public static final String PROPERTY_LANDMASK_RESOLUTION_LABEL = "Resolution";
+    public static final String PROPERTY_LANDMASK_RESOLUTION_TOOLTIP = "Resolution";
+    public static final String PROPERTY_LANDMASK_RESOLUTION_DEFAULT = RESOLUTION_1km;
 
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".projection";
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_LABEL = "projection";
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP = "Projection";
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_DEFAULT = "platecarree";
 
-    public static final String PROPERTY_L3MAPGEN_RESOLUTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".resolution";
-    public static final String PROPERTY_L3MAPGEN_RESOLUTION_LABEL = "resolution";
-    public static final String PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP = "Resolution";
-    public static final String PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT = "";
 
-    public static final String PROPERTY_L3MAPGEN_INTERP_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".interp";
-    public static final String PROPERTY_L3MAPGEN_INTERP_LABEL = "interp";
-    public static final String PROPERTY_L3MAPGEN_INTERP_TOOLTIP = "Interpolation type";
-    public static final String PROPERTY_L3MAPGEN_INTERP_DEFAULT = "nearest";
+    public static final String PROPERTY_LANDMASK_SECTION_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.section";
+    public static final String PROPERTY_LANDMASK_SECTION_LABEL = "Land Mask Options";
+    public static final String PROPERTY_LANDMASK_SECTION_TOOLTIP = "Land mask options";
 
-    public static final String PROPERTY_L3MAPGEN_NORTH_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".north";
-    public static final String PROPERTY_L3MAPGEN_NORTH_LABEL = "north";
-    public static final String PROPERTY_L3MAPGEN_NORTH_TOOLTIP = "Northernmost boundary";
-    public static final String PROPERTY_L3MAPGEN_NORTH_DEFAULT = "";
+    public static final String PROPERTY_LANDMASK_NAME_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.name";
+    public static final String PROPERTY_LANDMASK_NAME_LABEL = "Land Mask Name";
+    public static final String PROPERTY_LANDMASK_NAME_TOOLTIP = "Land mask name";
+    public static final String PROPERTY_LANDMASK_NAME_DEFAULT = "LandMask";
 
-    public static final String PROPERTY_L3MAPGEN_SOUTH_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".south";
-    public static final String PROPERTY_L3MAPGEN_SOUTH_LABEL = "south";
-    public static final String PROPERTY_L3MAPGEN_SOUTH_TOOLTIP = "Southernmost boundary";
-    public static final String PROPERTY_L3MAPGEN_SOUTH_DEFAULT = "";
+    public static final String PROPERTY_LANDMASK_COLOR_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.color";
+    public static final String PROPERTY_LANDMASK_COLOR_LABEL = "Land Mask Color";
+    public static final String PROPERTY_LANDMASK_COLOR_TOOLTIP = "Land mask color";
+    public static final Color PROPERTY_LANDMASK_COLOR_DEFAULT = new Color(70,70,0);
 
-    public static final String PROPERTY_L3MAPGEN_WEST_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".west";
-    public static final String PROPERTY_L3MAPGEN_WEST_LABEL = "west";
-    public static final String PROPERTY_L3MAPGEN_WEST_TOOLTIP = "Westernmost boundary";
-    public static final String PROPERTY_L3MAPGEN_WEST_DEFAULT = "";
+    public static final String PROPERTY_LANDMASK_TRANSPARENCY_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.transparency";
+    public static final String PROPERTY_LANDMASK_TRANSPARENCY_LABEL = "Land Mask Transparency";
+    public static final String PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP = "Land mask transparency ";
+    public static final double PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT = 0.0;
 
-    public static final String PROPERTY_L3MAPGEN_EAST_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".east";
-    public static final String PROPERTY_L3MAPGEN_EAST_LABEL = "east";
-    public static final String PROPERTY_L3MAPGEN_EAST_TOOLTIP = "Easternmost boundary";
-    public static final String PROPERTY_L3MAPGEN_EAST_DEFAULT = "";
-    
+    public static final String PROPERTY_LANDMASK_SHOW_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.show";
+    public static final String PROPERTY_LANDMASK_SHOW_LABEL = "Land Mask Show";
+    public static final String PROPERTY_LANDMASK_SHOW_TOOLTIP = "Land mask will be displayed in all bands ";
+    public static final boolean PROPERTY_LANDMASK_SHOW_DEFAULT = true;
 
 
 
     // Property Setting: Restore Defaults
 
-    private static final String PROPERTY_RESTORE_KEY_SUFFIX = PROPERTY_L3MAPGEN_ROOT_KEY + ".restore.defaults";
+    private static final String PROPERTY_RESTORE_KEY_SUFFIX = PROPERTY_LANDMASK_ROOT_KEY + ".restore.defaults";
 
     public static final String PROPERTY_RESTORE_SECTION_KEY = PROPERTY_RESTORE_KEY_SUFFIX + ".section";
     public static final String PROPERTY_RESTORE_SECTION_LABEL = "Restore";
@@ -126,25 +122,18 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     @Override
     protected JPanel createPanel(BindingContext context) {
 
-        String[] interpOptionsArray = {"  ",
-                "nearest",
-                "bin",
-                "area"};
-
 
         //
         // Initialize the default value contained within each property descriptor
         // This is done so subsequently the restoreDefaults actions can be performed
         //
-        
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_KEY, PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_PROJECTION_KEY, PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_RESOLUTION_KEY, PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_INTERP_KEY, PROPERTY_L3MAPGEN_INTERP_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_NORTH_KEY, PROPERTY_L3MAPGEN_NORTH_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_SOUTH_KEY, PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_WEST_KEY, PROPERTY_L3MAPGEN_WEST_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_EAST_KEY, PROPERTY_L3MAPGEN_EAST_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_LANDMASK_RESOLUTION_KEY, PROPERTY_LANDMASK_RESOLUTION_DEFAULT);
+
+        initPropertyDefaults(context, PROPERTY_LANDMASK_SECTION_KEY, true);
+        initPropertyDefaults(context, PROPERTY_LANDMASK_COLOR_KEY, PROPERTY_LANDMASK_COLOR_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_LANDMASK_NAME_KEY, PROPERTY_LANDMASK_NAME_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_LANDMASK_TRANSPARENCY_KEY, PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_LANDMASK_SHOW_KEY, PROPERTY_LANDMASK_SHOW_DEFAULT);
 
 
 
@@ -328,55 +317,44 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("OCSSW_L3mapgenPreferences");
+        return new HelpCtx("LandCoast");
     }
 
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
 
 
-        @Preference(label = PROPERTY_L3MAPGEN_PRODUCT_LABEL,
-                key = PROPERTY_L3MAPGEN_PRODUCT_KEY,
-                description = PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP)
-        String l3mapgenProductDefault = PROPERTY_L3MAPGEN_PRODUCT_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_PROJECTION_LABEL,
-                key = PROPERTY_L3MAPGEN_PROJECTION_KEY,
-                description = PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP)
-        String l3mapgenProjectionDefault = PROPERTY_L3MAPGEN_PROJECTION_DEFAULT;
+        @Preference(key = PROPERTY_LANDMASK_RESOLUTION_KEY,
+                label = PROPERTY_LANDMASK_RESOLUTION_LABEL,
+                valueSet = {RESOLUTION_50m, RESOLUTION_150m, RESOLUTION_1km, RESOLUTION_10km},
+                description = PROPERTY_LANDMASK_RESOLUTION_TOOLTIP)
+        String landmaskResolutionDefault = PROPERTY_LANDMASK_RESOLUTION_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_RESOLUTION_LABEL,
-                key = PROPERTY_L3MAPGEN_RESOLUTION_KEY,
-                description = PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP)
-        String l3mapgenResolutionDefault = PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT;
+        @Preference(key = PROPERTY_LANDMASK_SECTION_KEY,
+                label = PROPERTY_LANDMASK_SECTION_LABEL,
+                description = PROPERTY_LANDMASK_SECTION_TOOLTIP)
+        boolean landmaskSectionDefault = true;
 
-        @Preference(label = PROPERTY_L3MAPGEN_INTERP_LABEL,
-                key = PROPERTY_L3MAPGEN_INTERP_KEY,
-                valueSet = {" ", "nearest", "bin", "area"},
-                description = PROPERTY_L3MAPGEN_INTERP_TOOLTIP)
-        String l3mapgenInterpDefault = PROPERTY_L3MAPGEN_INTERP_DEFAULT;
+        @Preference(key = PROPERTY_LANDMASK_NAME_KEY,
+                label = PROPERTY_LANDMASK_NAME_LABEL,
+                description = PROPERTY_LANDMASK_NAME_TOOLTIP)
+        String landmaskNameDefault = PROPERTY_LANDMASK_NAME_DEFAULT;
 
+        @Preference(key = PROPERTY_LANDMASK_COLOR_KEY,
+                label = PROPERTY_LANDMASK_COLOR_LABEL,
+                description = PROPERTY_LANDMASK_COLOR_TOOLTIP)
+        Color landmaskColorDefault = PROPERTY_LANDMASK_COLOR_DEFAULT;
 
+        @Preference(key = PROPERTY_LANDMASK_TRANSPARENCY_KEY,
+                label = PROPERTY_LANDMASK_TRANSPARENCY_LABEL,
+                description = PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP)
+        double landmaskTransparencyDefault = PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_NORTH_LABEL,
-                key = PROPERTY_L3MAPGEN_NORTH_KEY,
-                description = PROPERTY_L3MAPGEN_NORTH_TOOLTIP)
-        String l3mapgenNorthDefault = PROPERTY_L3MAPGEN_NORTH_DEFAULT;
-
-        @Preference(label = PROPERTY_L3MAPGEN_SOUTH_LABEL,
-                key = PROPERTY_L3MAPGEN_SOUTH_KEY,
-                description = PROPERTY_L3MAPGEN_SOUTH_TOOLTIP)
-        String l3mapgenSouthDefault = PROPERTY_L3MAPGEN_SOUTH_DEFAULT;
-
-        @Preference(label = PROPERTY_L3MAPGEN_WEST_LABEL,
-                key = PROPERTY_L3MAPGEN_WEST_KEY,
-                description = PROPERTY_L3MAPGEN_WEST_TOOLTIP)
-        String l3mapgenWestDefault = PROPERTY_L3MAPGEN_WEST_DEFAULT;
-
-        @Preference(label = PROPERTY_L3MAPGEN_EAST_LABEL,
-                key = PROPERTY_L3MAPGEN_EAST_KEY,
-                description = PROPERTY_L3MAPGEN_EAST_TOOLTIP)
-        String l3mapgenEastDefault = PROPERTY_L3MAPGEN_EAST_DEFAULT;
+        @Preference(key = PROPERTY_LANDMASK_SHOW_KEY,
+                label = PROPERTY_LANDMASK_SHOW_LABEL,
+                description = PROPERTY_LANDMASK_SHOW_TOOLTIP)
+        boolean landmaskShowDefault = PROPERTY_LANDMASK_SHOW_DEFAULT;
 
 
 
@@ -395,46 +373,39 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-    public static String getPreferenceProduct() {
+    public static String getPreferenceLandMaskResolution() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
+        return preferences.getPropertyString(PROPERTY_LANDMASK_RESOLUTION_KEY, PROPERTY_LANDMASK_RESOLUTION_DEFAULT);
     }
 
 
-    public static String getPreferenceProjection() {
+    public static String getPreferenceLandMaskName() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
+        String landMaskName = preferences.getPropertyString(PROPERTY_LANDMASK_NAME_KEY, PROPERTY_LANDMASK_NAME_DEFAULT);
+
+        if (landMaskName != null && landMaskName.length() > 2) {
+            return landMaskName;
+        } else {
+            return PROPERTY_LANDMASK_NAME_DEFAULT;
+        }
     }
 
-    public static String getPreferenceResolution() {
+
+    public static Color getPreferenceLandMaskColor() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RESOLUTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
+        return preferences.getPropertyColor(PROPERTY_LANDMASK_COLOR_KEY, PROPERTY_LANDMASK_COLOR_DEFAULT);
     }
 
-    public static String getPreferenceInterp() {
+    public static double getPreferenceLandMaskTransparency() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_DEFAULT);
+        return preferences.getPropertyDouble(PROPERTY_LANDMASK_TRANSPARENCY_KEY, PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT);
     }
 
-    public static String getPreferenceNorth() {
+    public static boolean getPreferenceLandMaskShow() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_DEFAULT);
+        return preferences.getPropertyBool(PROPERTY_LANDMASK_SHOW_KEY, PROPERTY_LANDMASK_SHOW_DEFAULT);
     }
 
-    public static String getPreferenceSouth() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SOUTH_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
-    }
-
-    public static String getPreferenceWest() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WEST_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WEST_DEFAULT);
-    }
-
-    public static String getPreferenceEast() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_DEFAULT);
-    }
-
+    
 
 }
