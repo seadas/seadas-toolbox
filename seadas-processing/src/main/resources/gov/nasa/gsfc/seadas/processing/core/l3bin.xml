@@ -36,6 +36,7 @@
             <value></value>
             <default></default>
             <description>data products list</description>
+            <colSpan>2</colSpan>
             <order>2</order>
         </option>
         <!--<option type="string">-->

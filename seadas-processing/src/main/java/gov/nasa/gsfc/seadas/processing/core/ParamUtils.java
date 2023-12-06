@@ -214,6 +214,7 @@ public class ParamUtils {
             }
 
             String description = XmlReader.getTextValue(optionElement, "description");
+            String colSpan = XmlReader.getTextValue(optionElement, "colSpan");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
@@ -222,10 +223,32 @@ public class ParamUtils {
             //ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, value) : new ParamInfo(name, value, type, value);
             ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, defaultValue) : new ParamInfo(name, value, type, defaultValue);
             paramInfo.setDescription(description);
+
+            if (colSpan != null) {
+                try {
+                    int colSpanInt = Integer.parseInt(colSpan);
+                    if (colSpanInt > 0) {
+                        paramInfo.setColSpan(colSpanInt);
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR: colSpan not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+                }
+            } else {
+                paramInfo.setColSpan(1);
+            }
+
+
             paramInfo.setSource(source);
 
             if (order != null) {
-                paramInfo.setOrder(new Integer(order).intValue());
+                try {
+                    int orderInt = Integer.parseInt(order);
+                    if (orderInt >= 0) {
+                        paramInfo.setOrder(orderInt);
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR: order not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+                }
             }
 
             if (usedAs != null) {

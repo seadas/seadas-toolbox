@@ -44,6 +44,7 @@
                 Use ';' or '=' to delineate minimum values.
             </description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>2</order>
         </option>
         <option type="string">
@@ -322,6 +323,7 @@
             </validValue>
             <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
             <usedAs>option</usedAs>
+            <colSpan>5</colSpan>
             <order>6</order>
         </option>
 

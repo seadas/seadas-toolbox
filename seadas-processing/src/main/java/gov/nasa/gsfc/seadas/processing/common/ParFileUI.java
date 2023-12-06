@@ -35,6 +35,11 @@ public class ParFileUI {
         processorModel = pm;
         openInAppCheckBox = new JCheckBox("Open in " + SnapApp.getDefault().getAppContext().getApplicationName());
         openInAppCheckBox.setSelected(pm.isOpenInSeadas());
+        if ("l2bin".equals(pm.getProgramName()) ||
+                "l3bin".equals(pm.getProgramName())) {
+            openInAppCheckBox.setSelected(false);
+            openInAppCheckBox.setVisible(false);
+        }
         parStringPanel = new JPanel(new GridBagLayout());
         showDefaultCheckBox = new JCheckBox("Show Default Values");
         createParStringButtonPanel();

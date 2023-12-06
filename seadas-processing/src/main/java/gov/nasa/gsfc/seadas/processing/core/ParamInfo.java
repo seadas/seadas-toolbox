@@ -53,6 +53,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     private String source = NULL_STRING;
     private boolean isBit = false;
     private int order = 0;
+    private int colSpan = 1;
     private String validationComment = null;
     private String usedAs = USED_IN_COMMAND_AS_OPTION;
 
@@ -362,6 +363,14 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public void setColSpan(int colSpan) {
+        this.colSpan = colSpan;
+    }
+
+    public int getColSpan() {
+         return colSpan;
     }
 
     public int getOrder() {

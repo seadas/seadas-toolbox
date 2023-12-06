@@ -37,10 +37,12 @@ public class ParamUIFactory {
     ProcessorModel processorModel;
     SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
     private String emptySpace = "  ";
-
+    protected Boolean flaguseTextfieldIgnore = false;
+    private JTextField field = new JTextField();
 
     private static int controlHandlerIntEnabled = 1;  // enabled if value 1 or greater
     private static int eventHandlerIntEnabled = 1;  // enabled if value 1 or greater
+
 
     public ParamUIFactory(ProcessorModel pm) {
         this.processorModel = pm;
@@ -136,28 +138,11 @@ public class ParamUIFactory {
                     pi.getName().equals(L2genData.GEOFILE) ||
                     pi.getName().equals("verbose") ||
                     pi.getName().equals("--verbose"))) {
-                final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
 
-                if ("l2bin".equals(processorModel.getProgramName())) {
-                    if ("l3bprod".equals(optionName)) {
-                            gbc.gridwidth = 2;
-                    }
-                }
-
-
-                if ("l3mapgen".equals(processorModel.getProgramName())) {
-                    if ("product".equals(optionName) ||
-                            "projection".equals(optionName) ||
-                            "palette_dir".equals(optionName) ||
-                            "palfile".equals(optionName) ) {
-                        gbc.gridwidth = 2;
-                    }
-                }
-
-                if ("l3bin".equals(processorModel.getProgramName())) {
-                    if ("prod".equals(optionName)) {
-                        gbc.gridwidth = 2;
-                    }
+                if (pi.getColSpan() > numberOfOptionsPerLine) {
+                    gbc.gridwidth = numberOfOptionsPerLine;
+                } else {
+                    gbc.gridwidth = pi.getColSpan();
                 }
 
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
@@ -190,7 +175,7 @@ public class ParamUIFactory {
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLAGS:
-                            gbc.gridwidth=5;
+//                            gbc.gridwidth=5;
                             gbc.insets.top = 4;
                             textFieldPanel.add(makeButtonOptionPanel(pi), gbc);
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
@@ -463,6 +448,7 @@ public class ParamUIFactory {
 
     private JPanel makeButtonOptionPanel(final ParamInfo pi) {
         final JPanel singlePanel = new JPanel();
+        final JTextField field = new JTextField();
 
         TableLayout comboParamLayout = new TableLayout(8);
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
@@ -473,26 +459,49 @@ public class ParamUIFactory {
         optionNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                String flaguseTextfield = field.getText();
+                processorModel.updateParamInfo(pi, field.getText());
+                String value = pi.getValue();
                 String selectedFlags = chooseValidValues(pi);
-                processorModel.updateParamInfo(pi, selectedFlags);
+                if (!"-1".equals(selectedFlags)) {
+                    processorModel.updateParamInfo(pi, selectedFlags);
+                    String value2 = pi.getValue();
+                }
             }
         });
+
+
         singlePanel.add(optionNameButton);
         singlePanel.setName(pi.getName());
         if (pi.getDescription() != null) {
             singlePanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
 
-        final JTextField field = new JTextField();
         field.setText(pi.getValue());
         field.setColumns(50);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
+        field.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                flaguseTextfieldIgnore = true;
+                String flaguse = field.getText();
+                processorModel.updateParamInfo(pi, field.getText());
+                String value = pi.getValue();
+                flaguseTextfieldIgnore = false;
+            }
+        });
+
+
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                field.setText(pi.getValue());
+                if (!flaguseTextfieldIgnore) {
+                    String flaguse = field.getText();
+                    field.setText(pi.getValue());
+                    String value = pi.getValue();
+                }
             }
         });
         singlePanel.add(field);
@@ -551,6 +560,19 @@ public class ParamUIFactory {
         while (itr.hasNext()) {
             paramValidValueInfo = itr.next();
             if (!paramValidValueInfo.getValue().trim().equals("SPARE")) {
+                // todo set this based on textfield
+
+                if (pi.getValue() != null && pi.getValue().length() > 0) {
+                    paramValidValueInfo.setSelected(false);
+
+                    String[] values = pi.getValue().split("[,\\s]");
+                    for (String value : values) {
+//                        if (pi.getValue().contains(paramValidValueInfo.getValue().trim())) {
+                        if (value.trim().toUpperCase().equals(paramValidValueInfo.getValue().trim().toUpperCase())) {
+                            paramValidValueInfo.setSelected(true);
+                        }
+                    }
+                }
                 validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
             }
         }
@@ -559,10 +581,28 @@ public class ParamUIFactory {
 
         final Window parent = SnapApp.getDefault().getMainFrame();
         String dialogTitle = null;
+
+
+
+        String origChosenValues = "";
+        itr = validValues.iterator();
+
+        while (itr.hasNext()) {
+            paramValidValueInfo = itr.next();
+            if (paramValidValueInfo.isSelected()) {
+                origChosenValues = origChosenValues + paramValidValueInfo.getValue() + ",";
+            }
+        }
+        if (choosenValues.indexOf(",") != -1) {
+            origChosenValues = origChosenValues.substring(0, origChosenValues.lastIndexOf(","));
+        }
+
+
+
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, validValuesPanel, ModalDialog.ID_OK, "test");
         final int dialogResult = modalDialog.show();
         if (dialogResult != ModalDialog.ID_OK) {
-
+            return "-1";
         }
 
         itr = validValues.iterator();

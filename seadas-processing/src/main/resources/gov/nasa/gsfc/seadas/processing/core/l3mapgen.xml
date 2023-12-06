@@ -89,6 +89,7 @@
             <source>default</source>
             <description>product(s) to map</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>2</order>
         </option>
         <option type="string">
@@ -351,6 +352,7 @@
             </validValues>
             <description>proj.4 projection string or one of the following predefined projections:</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>3</order>
         </option>
         <option type="string">
@@ -647,6 +649,7 @@
             <source>default</source>
             <description>directory containing the palette files</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>23</order>
         </option>
         <option type="string">
@@ -655,6 +658,7 @@
             <source>default</source>
             <description>palette filename.  (default = means the palette is chosen using the product.xml file</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>24</order>
         </option>
 
