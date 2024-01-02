@@ -2,6 +2,7 @@ import subprocess
 import os
 import os.path
 import requests
+import re
 
 
 
@@ -180,8 +181,9 @@ def get_l2_filename(viirs_sensor, timepart):
 
 
 
-def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, extend_south, southernmost_lat, extend_north, northernmost_lat):
+def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, sunzen, satzen):
   if (daynight != "Day" and daynight != "Both"):
+    print("Returning due to daynight=" + daynight)
     return 0
 
   print("daynight=" + daynight)
@@ -197,24 +199,45 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, e
     l2prod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz,solz"
            #print(l3bprod)
   else:
-    return Fail
+    print ("unknown viirs sensor " + viirs_sensor)
+    return None
 
   l2prod_arg = "l2prod=" + l2prod
-  satzen_arg = "satzen=48.0"
-  sunzen_arg = "sunzen=76.0"
+  satzen_arg = "satzen=" + satzen
+  sunzen_arg = "sunzen=" + sunzen
 
-  if (extend_south == True and float(southernmost_lat) < -40):
-    sunzen_arg = "sunzen=82.0"
-
-  if (extend_north == True and float(northernmost_lat) > 40):
-    sunzen_arg = "sunzen=82.0"
-
+#   if (extend_south == True and float(southernmost_lat) < -40):
+#     sunzen_arg = "sunzen=82.0"
+#
+#   if (extend_north == True and float(northernmost_lat) > 40):
+#     sunzen_arg = "sunzen=82.0"
+#
 
   suite_arg = "suite=SFREFL"
 
   ofile_arg = "ofile=" + l2_filename
 
-  command = program_name + " " + l2prod_arg + " " + satzen_arg + " " + sunzen_arg + " " + suite_arg + " " + ifile_arg + " " + geofile_arg + " " + ofile_arg
+  par_lines = []
+  par_lines.append(ifile_arg)
+  par_lines.append(geofile_arg)
+  par_lines.append(ofile_arg)
+  par_lines.append(l2prod_arg)
+  par_lines.append(satzen_arg)
+  par_lines.append(sunzen_arg)
+  par_lines.append(suite_arg)
+  parfile = get_par_filename(l2_filename)
+
+  status = create_parfile_from_list(par_lines, parfile)
+
+  if (status == None): return None
+
+
+  parfile_arg = "par=" + parfile
+
+
+
+#   command = program_name + " " + l2prod_arg + " " + satzen_arg + " " + sunzen_arg + " " + suite_arg + " " + ifile_arg + " " + geofile_arg + " " + ofile_arg
+  command = program_name + " " + parfile_arg
 
 
 # Example:
@@ -223,7 +246,8 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, e
   
   print("Running: " + command)
 
-  subprocess.run([program_name, ifile_arg, geofile_arg, ofile_arg, satzen_arg, sunzen_arg, suite_arg, l2prod_arg]) 
+#   subprocess.run([program_name, ifile_arg, geofile_arg, ofile_arg, satzen_arg, sunzen_arg, suite_arg, l2prod_arg])
+  subprocess.run([program_name, parfile_arg ])
 
   if (os.path.isfile(l2_filename) != True):
     print("Level-2 file " + l2_filename + " DOES NOT EXIST")
@@ -262,6 +286,21 @@ def get_global_l3mapped_filename(global_l3binned_filename, mapped_resolution, lo
   return global_l3mapped_filename
 
 
+def get_par_filename(filename):
+    print("filename=" + filename)
+    parfilename = re.sub('\.nc$', '.par', filename.strip())
+    return parfilename
+
+
+def create_parfile_from_list(par_lines, parfile):
+  with open(parfile, 'w') as f:
+     for line in par_lines:
+       f.write(f"{line}\n")
+
+     if (os.path.isfile(parfile) != True):
+       print("ERROR: failed to create file " + parfile)
+       return None
+  return 0
 
 
 
@@ -275,7 +314,7 @@ def run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor):
      l3bprod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz,solz"
      #print(l3bprod)
   else:
-    return Fail
+    return None
 
 
 # ifile=level2_files.txt
@@ -286,30 +325,45 @@ def run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor):
 # resolution=2
 # area_weighting=0
 # rowgroup=1080
-# #latnorth=80
-# #latsouth=60
-# #lonwest=15
-# #loneast=65
 # verbose=1
 
   program_name = "l2bin"
-  ifile_arg = "ifile=" + l2_filename
-  ofile_arg = "ofile=" + l3_binned_filename
-  flaguse_arg = "flaguse=NAVFAIL,BOWTIEDEL,HISOLZEN"
-  l3bprod_arg = "l3bprod=" + l3bprod
-  prodtype_arg = "prodtype=regional"
-  resolution_arg = "resolution=" + resolution
-  area_weighting_arg = "area_weighting=0"
-  rowgroup_arg = "rowgroup=1080"
-  verbose_arg = "verbose=1"
+#   ifile_arg = "ifile=" + l2_filename
+#   ofile_arg = "ofile=" + l3_binned_filename
+#   l3bprod_arg = "l3bprod=" + l3bprod
+#   prodtype_arg = "prodtype=regional"
+#   flaguse_arg = "flaguse=NAVFAIL,BOWTIEDEL,HISOLZEN"
+#   resolution_arg = "resolution=" + resolution
+#   area_weighting_arg = "area_weighting=0"
+#   rowgroup_arg = "rowgroup=1080"
+#   verbose_arg = "verbose=1"
 
 
-  command = program_name + " " + ifile_arg + " " + ofile_arg + " " + flaguse_arg + " " + l3bprod_arg + " " + prodtype_arg + " " + resolution_arg + " " + area_weighting_arg + " "  + rowgroup_arg + " " + verbose_arg
+#   command = program_name + " " + ifile_arg + " " + ofile_arg + " " + flaguse_arg + " " + l3bprod_arg + " " + prodtype_arg + " " + resolution_arg + " " + area_weighting_arg + " "  + rowgroup_arg + " " + verbose_arg
 
+  parfile = get_par_filename(l3_binned_filename)
+  parfile_arg = "par=" + parfile
+
+  par_lines = []
+  par_lines.append("ifile=" + l2_filename)
+  par_lines.append("ofile=" + l3_binned_filename)
+  par_lines.append("l3bprod=" + l3bprod)
+  par_lines.append("prodtype=regional")
+  par_lines.append("flaguse=NAVFAIL,BOWTIEDEL,HISOLZEN")
+  par_lines.append("resolution=" + resolution)
+  par_lines.append("area_weighting=0")
+  par_lines.append("rowgroup=1080")
+  par_lines.append("verbose=1")
+
+  status = create_parfile_from_list(par_lines, parfile)
+  if (status == None): return None
+
+  command = program_name + " " + parfile_arg
   print("Running: " + command)
+  subprocess.run([program_name, parfile_arg ])
+#   print("exit_status=" + exit_status)
 
-  subprocess.run([ program_name, ifile_arg, ofile_arg, flaguse_arg, l3bprod_arg, prodtype_arg, resolution_arg, area_weighting_arg, rowgroup_arg, verbose_arg ])
-
+#   subprocess.run([ program_name, ifile_arg, ofile_arg, flaguse_arg, l3bprod_arg, prodtype_arg, resolution_arg, area_weighting_arg, rowgroup_arg, verbose_arg ])
 
   if (os.path.isfile(l3_binned_filename) != True):
     print("WARNING!  Level-3binned file " + l3_binned_filename + " DOES NOT EXIST")
@@ -328,7 +382,7 @@ def run_l3bin(l3_binned_filename_ifile, l3_binned_filename_ofile, reduce_fac, vi
      prod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
      #print(l3bprod)
   else:
-    return Fail
+    return None
 
 #
 #         cat par/l3bin.JPSS1.20230812.2km.wraplon0.senzmin.par
@@ -353,11 +407,34 @@ def run_l3bin(l3_binned_filename_ifile, l3_binned_filename_ofile, reduce_fac, vi
   reduce_fac_arg = "reduce_fac=" + reduce_fac
   verbose_arg = "verbose=1"
 
-  command = program_name + " " + ifile_arg + " " + ofile_arg + " " + prod_arg + " " + composite_scheme_arg + " " + composite_prod_arg + " " + reduce_fac_arg + " " + verbose_arg
+#   command = program_name + " " + ifile_arg + " " + ofile_arg + " " + prod_arg + " " + composite_scheme_arg + " " + composite_prod_arg + " " + reduce_fac_arg + " " + verbose_arg
+#
+#   print("Running: " + command)
+#
+#   subprocess.run([ program_name, ifile_arg, ofile_arg, prod_arg, composite_scheme_arg, composite_prod_arg, reduce_fac_arg, verbose_arg ])
+#
 
+
+
+  parfile = get_par_filename(l3_binned_filename_ofile)
+  parfile_arg = "par=" + parfile
+
+  par_lines = []
+  par_lines.append(ifile_arg)
+  par_lines.append(ofile_arg)
+  par_lines.append(prod_arg)
+  par_lines.append(composite_scheme_arg)
+  par_lines.append(composite_prod_arg)
+  par_lines.append(reduce_fac_arg)
+  par_lines.append(verbose_arg)
+
+  status = create_parfile_from_list(par_lines, parfile)
+  if (status == None): return None
+
+  command = program_name + " " + parfile_arg
   print("Running: " + command)
+  subprocess.run([program_name, parfile_arg ])
 
-  subprocess.run([ program_name, ifile_arg, ofile_arg, prod_arg, composite_scheme_arg, composite_prod_arg, reduce_fac_arg, verbose_arg ])
 
 
   if (os.path.isfile(l3_binned_filename_ofile) != True):
@@ -379,7 +456,7 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
      product = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
      #print(l3bprod)
   else:
-    return Fail
+    return None
 
 
 # ifile=JPSS1.202308012.L3b.2km.wraplon0.senzmin.nc
@@ -406,11 +483,38 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
   east_arg = "east=180"
   num_cache_arg = "num_cache=2000"
 
-  command = program_name + " " + ifile_arg + " " + ofile_arg + " " + product_arg + " " + projection_arg + " " + north_arg + " " + south_arg + " " + west_arg + " " + east_arg + " " + resolution_arg + " " + num_cache_arg
 
+
+  parfile = get_par_filename(l3_mapped_filename_ofile)
+  parfile_arg = "par=" + parfile
+
+  par_lines = []
+  par_lines.append(ifile_arg)
+  par_lines.append(ofile_arg)
+  par_lines.append(product_arg)
+  par_lines.append(projection_arg)
+  par_lines.append(resolution_arg)
+  par_lines.append(north_arg)
+  par_lines.append(south_arg)
+  par_lines.append(west_arg)
+  par_lines.append(east_arg)
+  par_lines.append(num_cache_arg)
+
+  status = create_parfile_from_list(par_lines, parfile)
+  if (status == None): return None
+
+  command = program_name + " " + parfile_arg
   print("Running: " + command)
+  subprocess.run([program_name, parfile_arg ])
 
-  subprocess.run([ program_name, ifile_arg, ofile_arg, product_arg, projection_arg, north_arg, south_arg, west_arg, east_arg, resolution_arg, num_cache_arg ])
+
+#
+#
+#   command = program_name + " " + ifile_arg + " " + ofile_arg + " " + product_arg + " " + projection_arg + " " + north_arg + " " + south_arg + " " + west_arg + " " + east_arg + " " + resolution_arg + " " + num_cache_arg
+#
+#   print("Running: " + command)
+#
+#   subprocess.run([ program_name, ifile_arg, ofile_arg, product_arg, projection_arg, north_arg, south_arg, west_arg, east_arg, resolution_arg, num_cache_arg ])
 
 
   if (os.path.isfile(l3_mapped_filename_ofile) != True):
@@ -437,208 +541,303 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
 #  print("Make files")
 #  subprocess.run(["ls", "-1", "*L1A*"]) 
 #  print("Make files")
-        
+
+
+# def create_scene_files(scene_file_list, sunzen, sunzen_polar, satzen, satzen_polar, binned_list_file, resolution):
+def create_scene_files(scene_file_list, binned_list_file, binned_resolution, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south ):
+
+    viirs_sensor = None
+    timepart = None
+
+    binned_files = []
+
+
+    with open(scene_file_list) as file:
+      filelines = file.read().splitlines()
+      for l1a_filename_entry in filelines:
+        if (len(l1a_filename_entry.strip()) < 2):
+          continue
+        if (l1a_filename_entry.strip().startswith("#")):
+          continue
+        print(" ")
+        print(l1a_filename_entry)
+        l1a_filename_url = get_url(l1a_filename_entry)
+        print(l1a_filename_url)
+
+        viirs_sensor = get_viirs_sensor_from_url(l1a_filename_url)
+        if (viirs_sensor == None):
+          print("WARNING! not a viirs sensor " + viirs_sensor)
+          continue
+
+        l1a_filename =  get_l1a_filename_from_url(l1a_filename_url, viirs_sensor)
+        if (l1a_filename == None):
+          print("WARNING! viirs level-1A filename not found in URL")
+          continue
+        print(l1a_filename)
 
 
 
-binned_files = []
+        #viirs_sensor = get_viirs_sensor(l1a_filename)
+
+        timepart = get_timepart(l1a_filename, viirs_sensor)
+        if (timepart == None):
+          print("WARNING! could not derived timepart from " + l1a_filename)
+          continue
+        print(timepart)
 
 
-with open("test.txt") as file:
-  filelines = file.read().splitlines()
-  for l1a_filename_entry in filelines:
-    if (len(l1a_filename_entry.strip()) < 2):
-      continue
-    if (l1a_filename_entry.strip().startswith("#")):
-      continue
-    print(" ")
-    print(l1a_filename_entry)
-    l1a_filename_url = get_url(l1a_filename_entry)
-    print(l1a_filename_url)
+        l1b_filename = get_l1b_filename(viirs_sensor, timepart)
+        if (l1b_filename == None):
+          print("WARNING! could not derive l1b_filename")
+          continue
+        print(l1b_filename)
 
-    viirs_sensor = get_viirs_sensor_from_url(l1a_filename_url)
-    if (viirs_sensor == None):
-      print("WARNING! not a viirs sensor")
-      continue
-#    print(viirs_sensor)
+        geo_filename = get_geo_filename(viirs_sensor, timepart)
+        if (geo_filename == None):
+          print("WARNING! could not derive geo_filename")
+          continue
+        print(geo_filename)
 
-    l1a_filename =  get_l1a_filename_from_url(l1a_filename_url, viirs_sensor)
-    if (l1a_filename == None):
-      print("WARNING! viirs level-1A filename not found in URL")
-      continue
-    print(l1a_filename)
-    
-
- 
-    #viirs_sensor = get_viirs_sensor(l1a_filename)
-
-    timepart = get_timepart(l1a_filename, viirs_sensor)
-    if (timepart == None):
-      print("WARNING! could not derived timepart from " + l1a_filename)
-      continue
-    print(timepart)
+        l2_filename = get_l2_filename(viirs_sensor, timepart)
+        if (l2_filename == None):
+          print("WARNING! could not derive l2_filename")
+          continue
+        print(l2_filename)
 
 
-    l1b_filename = get_l1b_filename(viirs_sensor, timepart)
-    if (l1b_filename == None):
-      print("WARNING! could not derive l1b_filename")
-      continue
-    print(l1b_filename)
-
-    geo_filename = get_geo_filename(viirs_sensor, timepart)
-    if (geo_filename == None):
-      print("WARNING! could not derive geo_filename")
-      continue
-    print(geo_filename)
-
-    l2_filename = get_l2_filename(viirs_sensor, timepart)
-    if (l2_filename == None):
-      print("WARNING! could not derive l2_filename")
-      continue
-    print(l2_filename)
-
-    resolution = "2"
-    l3_binned_filename = get_l3binned_filename(viirs_sensor, timepart, resolution)
-    if (l3_binned_filename == None):
-      print("WARNING! could not derive l3_binned_filename")
-      continue
-    print(l3_binned_filename)
+        l3_binned_filename = get_l3binned_filename(viirs_sensor, timepart, binned_resolution)
+        if (l3_binned_filename == None):
+          print("WARNING! could not derive l3_binned_filename")
+          continue
+        print(l3_binned_filename)
 
 
-#    print("viirs_sensor=" + viirs_sensor)
-#    print("timepart=" + timepart)
-#    print("l1b_filename=" + l1b_filename)
-#    print("geo_filename=" + geo_filename)
+    #    print("viirs_sensor=" + viirs_sensor)
+    #    print("timepart=" + timepart)
+    #    print("l1b_filename=" + l1b_filename)
+    #    print("geo_filename=" + geo_filename)
 
 
-    need_l3_binned_file = False
-    need_l2_file = False
-    need_l1b_file = False
-    need_geo_file = False
-    need_l1a_file = False
-
-    if (os.path.isfile(l3_binned_filename) != True):
-      print("Level-3 Binned file " + l3_binned_filename + " DOES NOT EXIST")
-      need_l3_binned_file = True
-
-    if (need_l3_binned_file and os.path.isfile(l2_filename) != True):
-      print("Level-2 file " + l2_filename + " DOES NOT EXIST")
-      need_l2_file = True
-
-    if (need_l2_file):
-      if (os.path.isfile(l1b_filename)!= True):
-       print("Level-1B file " + l1b_filename + " DOES NOT EXIST")
-       need_l1b_file = True
-
-      if (os.path.isfile(geo_filename) != True):
-        print("GEO file " + geo_filename + " DOES NOT EXIST")
-        need_geo_file = True
-
-    if (need_l1b_file and os.path.isfile(l1a_filename) != True):
-      print("Level-1A file " + l1a_filename + " DOES NOT EXIST")
-      need_l1a_file = True
-
-
-    if (need_l1a_file):
-      download_obdaac_file(l1a_filename)
-      if (os.path.isfile(l1a_filename) != True):
-        print("ERROR: Failed to download Level-1A file " + l1a_filename)
-        continue
-
-
-    if (need_l1b_file):
-      run_calibrate_viirs(l1a_filename, l1b_filename)
-      if (os.path.isfile(l1b_filename) != True):
-        print("ERROR: Failed to generate Level-1B file " + l1b_filename)
-        continue
-
-
-    if (need_geo_file):
-      download_obdaac_file(geo_filename)
-      if (os.path.isfile(geo_filename) != True):
-        print("ERROR: Failed to download GEO file " + geo_filename)
-        continue
-
-
-    if (need_l2_file):
-
-      lines = get_l1info(l1b_filename, geo_filename)
-#      print(lines)
-      if (lines == None):
-        print("WARNING! could not get info from files " + l1b_filename + " " +  geo_filename)
-        continue
-
-    
-      sensor = get_param(lines, "Sensor") 
-      orbit_number = get_param(lines, "Orbit_Number") 
-      center_lat = get_param(lines, "Center_Lat") 
-      center_lon = get_param(lines, "Center_Lon") 
-      northernmost_lat = get_param(lines, "Northernmost_Lat") 
-      southernmost_lat = get_param(lines, "Southernmost_Lat") 
-      daynight = get_param(lines, "Daynight") 
-      start_date = get_param(lines, "Start_Date") 
-      end_date = get_param(lines, "End_Date") 
-
-
-
-#      print("Sensor=" + sensor)
-#      print("Orbit_Number=" + orbit_number)
-#      print("Center_Lat=" + center_lat)
-#      print("Center_Lon=" + center_lon)
-#      print("Northernmost_Lat=" + northernmost_lat)
-#      print("Southernmost_Lat=" + southernmost_lat)
-#      print("Daynight=" + daynight)
-#      print("Start_Date=" + start_date)
-#      print("End_Date=" + end_date)
-
-
-
-      run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, False, southernmost_lat, True, northernmost_lat)
-      if (os.path.isfile(l2_filename) != True):
-        print("ERROR: Failed to generate Level-2 file " + l2_filename)
-        continue
-
-
-      if (os.path.isfile(l2_filename)):
-        cleanup_files(l1a_filename)
-        cleanup_files(l1b_filename)
-        cleanup_files(geo_filename)
+        need_l3_binned_file = False
         need_l2_file = False
+        need_l1b_file = False
+        need_geo_file = False
+        need_l1a_file = False
+
+        if (os.path.isfile(l3_binned_filename) != True):
+          print("Level-3 Binned file " + l3_binned_filename + " DOES NOT EXIST")
+          need_l3_binned_file = True
+
+        if (need_l3_binned_file and os.path.isfile(l2_filename) != True):
+          print("Level-2 file " + l2_filename + " DOES NOT EXIST")
+          need_l2_file = True
+
+        if (need_l2_file):
+          if (os.path.isfile(l1b_filename)!= True):
+           print("Level-1B file " + l1b_filename + " DOES NOT EXIST")
+           need_l1b_file = True
+
+          if (os.path.isfile(geo_filename) != True):
+            print("GEO file " + geo_filename + " DOES NOT EXIST")
+            need_geo_file = True
+
+        if (need_l1b_file and os.path.isfile(l1a_filename) != True):
+          print("Level-1A file " + l1a_filename + " DOES NOT EXIST")
+          need_l1a_file = True
 
 
-    if (need_l2_file != True):
-      cleanup_files(l1a_filename)
-      cleanup_files(l1b_filename)
-      cleanup_files(geo_filename)
+        if (need_l1a_file):
+          download_obdaac_file(l1a_filename)
+          if (os.path.isfile(l1a_filename) != True):
+            print("ERROR: Failed to download Level-1A file " + l1a_filename)
+            continue
 
 
-    if (need_l3_binned_file):
-      run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor)
-      if (os.path.isfile(l3_binned_filename) != True):
-        print("ERROR: Failed to generate Level-3 binned file " + l3_binned_filename)
-        continue
+        if (need_l1b_file):
+          run_calibrate_viirs(l1a_filename, l1b_filename)
+          if (os.path.isfile(l1b_filename) != True):
+            print("ERROR: Failed to generate Level-1B file " + l1b_filename)
+            continue
+
+
+        if (need_geo_file):
+          download_obdaac_file(geo_filename)
+          if (os.path.isfile(geo_filename) != True):
+            print("ERROR: Failed to download GEO file " + geo_filename)
+            continue
+
+
+        if (need_l2_file):
+
+          lines = get_l1info(l1b_filename, geo_filename)
+    #      print(lines)
+          if (lines == None):
+            print("WARNING! could not get info from files " + l1b_filename + " " +  geo_filename)
+            continue
+
+
+          sensor = get_param(lines, "Sensor")
+          orbit_number = get_param(lines, "Orbit_Number")
+          center_lat = get_param(lines, "Center_Lat")
+          center_lon = get_param(lines, "Center_Lon")
+          northernmost_lat = get_param(lines, "Northernmost_Lat")
+          southernmost_lat = get_param(lines, "Southernmost_Lat")
+          daynight = get_param(lines, "Daynight")
+          start_date = get_param(lines, "Start_Date")
+          end_date = get_param(lines, "End_Date")
 
 
 
-    if (os.path.isfile(l3_binned_filename) == True):
-      binned_files.append(l3_binned_filename)
+    #      print("Sensor=" + sensor)
+    #      print("Orbit_Number=" + orbit_number)
+    #      print("Center_Lat=" + center_lat)
+    #      print("Center_Lon=" + center_lon)
+    #      print("Northernmost_Lat=" + northernmost_lat)
+    #      print("Southernmost_Lat=" + southernmost_lat)
+    #      print("Daynight=" + daynight)
+    #      print("Start_Date=" + start_date)
+    #      print("End_Date=" + end_date)
 
 
-print("Binned Files List:")
-print(binned_files)
+          sunzen_curr = sunzen
+          satzen_curr = satzen
+
+          if (southernmost_lat is None):
+              print("southernmost_lat=" + southernmost_lat)
+          else:
+              if (float(southernmost_lat) < -40):
+                sunzen_curr = sunzen_south
+                satzen_curr = satzen_south
+
+          if (northernmost_lat is None):
+              print("northernmost_lat=" + northernmost_lat)
+          else:
+              if (float(northernmost_lat) > 40):
+                sunzen_curr = sunzen_north
+                satzen_curr = satzen_north
+
+
+
+          run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, sunzen_curr, satzen_curr)
+
+          if (os.path.isfile(l2_filename) != True):
+            print("ERROR: Failed to generate Level-2 file " + l2_filename)
+            continue
+
+
+          if (os.path.isfile(l2_filename)):
+            cleanup_files(l1a_filename)
+            cleanup_files(l1b_filename)
+            cleanup_files(geo_filename)
+            need_l2_file = False
+
+
+        if (need_l2_file != True):
+          cleanup_files(l1a_filename)
+          cleanup_files(l1b_filename)
+          cleanup_files(geo_filename)
+
+
+        if (need_l3_binned_file):
+          run_l2bin(l2_filename, l3_binned_filename, binned_resolution, viirs_sensor)
+          if (os.path.isfile(l3_binned_filename) != True):
+            print("ERROR: Failed to generate Level-3 binned file " + l3_binned_filename)
+            continue
+
+
+
+        if (os.path.isfile(l3_binned_filename) == True):
+          binned_files.append(l3_binned_filename)
+
+
+        print("Binned Files List:")
+        print(binned_files)
+
+
+        with open(binned_list_file, 'w') as f:
+            for line in binned_files:
+                f.write(f"{line}\n")
+
+        if (os.path.isfile(binned_list_file) != True):
+          print("ERROR: failed to create file " + binned_list_file)
+
+    return viirs_sensor, timepart
+
+
+
+scene_file_list_front = "front_files.txt"
+binned_list_file_front = 'binned_files_front.txt'
+
+sunzen_north = "82"
+sunzen = "82"
+sunzen_south = "82"
+
+satzen_north = "48"
+satzen = "48"
+satzen_south = "40"
+
+binned_resolution = "2"
+
+viirs_sensor, timepart = create_scene_files(scene_file_list_front, binned_list_file_front, binned_resolution, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south )
+
+
+scene_file_list_back = "back_files.txt"
+binned_list_file_back = 'binned_files_back.txt'
+
+sunzen_north = "82"
+sunzen = "82"
+sunzen_south = "60"
+
+satzen_north = "48"
+satzen = "48"
+satzen_south = "40"
+
+viirs_sensor2, timepart2 = create_scene_files(scene_file_list_back, binned_list_file_back, binned_resolution, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south )
+
+# viirs_sensor, timepart = create_scene_files(scene_file_list_back, sunzen, sunzen_polar, satzen, satzen_polar, binned_list_file_back, binned_resolution)
+
 
 binned_list_file = 'binned_files.txt'
 
-with open(binned_list_file, 'w') as f:
-    for line in binned_files:
-        f.write(f"{line}\n")
+# file1 = open(binned_list_file_front, 'r')
+# file2 = open(binned_list_file_back, 'r')
+# content1 = file1.read()
+# content2 = file2.read()
+# file1.close()
+# file2.close()
+# destination_file = open(binned_list_file, 'w')
+# destination_file.write(content1 + content2)
+# destination_file.close()
 
-if (os.path.isfile(binned_list_file) != True):
-  print("ERROR: failed to create file " + binned_list_file)
+
+
+file1 = open(binned_list_file_front, 'r')
+content1 = file1.read()
+file1.close()
+destination_file = open(binned_list_file, 'w')
+destination_file.write(content1)
+destination_file.close()
+
+if (viirs_sensor2 is not None):
+    file2 = open(binned_list_file_back, 'r')
+    content2 = file2.read()
+    file2.close()
+    destination_file = open(binned_list_file, 'a')
+    destination_file.write(content2)
+    destination_file.close()
+
+
+
+
+# subprocess.run([ "cat", binned_list_file_front, ">", binned_list_file ])
+# subprocess.run([ "cat", binned_list_file_front, ">>", binned_list_file ])
+
+print("viirs_sensor=" + viirs_sensor)
+print("timepart=" + timepart)
 
 
 wraplon = "0"
-global_l3binned_filename = get_global_l3binned_filename(viirs_sensor, timepart, resolution, wraplon)
+global_l3binned_filename = get_global_l3binned_filename(viirs_sensor, timepart, binned_resolution, wraplon)
 print("global_l3binned_filename=" + global_l3binned_filename)
 
 
