@@ -5,6 +5,9 @@ import requests
 import re
 
 
+FRONTSIDE = "frontside"
+BACKSIDE = "backside"
+
 
 def get_command_output(command):
 
@@ -172,12 +175,21 @@ def run_calibrate_viirs(l1a_filename, l1b_filename):
 
 
 
-def get_l2_filename(viirs_sensor, timepart):
-  if (viirs_sensor == None or timepart == None):
-    return None
+def get_l2_filename(viirs_sensor, timepart, side):
+    if (viirs_sensor == None or timepart == None):
+            return None
 
-  l2_filename = viirs_sensor + "." + timepart + ".L2.SFREFL.nc"
-  return l2_filename
+    l2_basename = viirs_sensor + "." + timepart + ".L2.SFREFL"
+
+    if (side is None):
+        # do nothing
+        do_nothing = 1
+    elif (side.strip() == BACKSIDE):
+        l2_basename = l2_basename + "." + "backside"
+
+    l2_filename = l2_basename + ".nc"
+
+    return l2_filename
 
 
 
@@ -194,6 +206,7 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, s
   l2prod = ""
   if (viirs_sensor == "JPSS1_VIIRS" or viirs_sensor == "JPSS2_VIIRS"):
     l2prod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz,solz"
+    l2prod = "rhos_489,rhos_556,rhos_667,rhos_868,rhos_1238,rhos_1604,rhos_2258,rhot_489,rhot_556,rhot_667,senz,solz"
     #print(l3bprod)
   elif (viirs_sensor == "SNPP_VIIRS"):
     l2prod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz,solz"
@@ -205,13 +218,6 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, s
   l2prod_arg = "l2prod=" + l2prod
   satzen_arg = "satzen=" + satzen
   sunzen_arg = "sunzen=" + sunzen
-
-#   if (extend_south == True and float(southernmost_lat) < -40):
-#     sunzen_arg = "sunzen=82.0"
-#
-#   if (extend_north == True and float(northernmost_lat) > 40):
-#     sunzen_arg = "sunzen=82.0"
-#
 
   suite_arg = "suite=SFREFL"
 
@@ -225,6 +231,9 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, s
   par_lines.append(satzen_arg)
   par_lines.append(sunzen_arg)
   par_lines.append(suite_arg)
+  par_lines.append("cloud_thresh=0.044")
+  par_lines.append("cloud_wave=1604")
+
   parfile = get_par_filename(l2_filename)
 
   status = create_parfile_from_list(par_lines, parfile)
@@ -234,9 +243,6 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, s
 
   parfile_arg = "par=" + parfile
 
-
-
-#   command = program_name + " " + l2prod_arg + " " + satzen_arg + " " + sunzen_arg + " " + suite_arg + " " + ifile_arg + " " + geofile_arg + " " + ofile_arg
   command = program_name + " " + parfile_arg
 
 
@@ -246,7 +252,6 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, s
   
   print("Running: " + command)
 
-#   subprocess.run([program_name, ifile_arg, geofile_arg, ofile_arg, satzen_arg, sunzen_arg, suite_arg, l2prod_arg])
   subprocess.run([program_name, parfile_arg ])
 
   if (os.path.isfile(l2_filename) != True):
@@ -308,7 +313,8 @@ def run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor):
 
   l3bprod = ""
   if (viirs_sensor == "JPSS1_VIIRS" or viirs_sensor == "JPSS2_VIIRS"):
-    l3bprod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz,solz"
+#     l3bprod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz,solz"
+    l3bprod = "rhos_489,rhos_556,rhos_667,rhos_868,rhos_1238,rhos_1604,rhos_2258,rhot_489,rhot_556,rhot_667,senz,solz"
     #print(l3bprod)
   elif (viirs_sensor == "SNPP_VIIRS"):
      l3bprod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz,solz"
@@ -328,18 +334,6 @@ def run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor):
 # verbose=1
 
   program_name = "l2bin"
-#   ifile_arg = "ifile=" + l2_filename
-#   ofile_arg = "ofile=" + l3_binned_filename
-#   l3bprod_arg = "l3bprod=" + l3bprod
-#   prodtype_arg = "prodtype=regional"
-#   flaguse_arg = "flaguse=NAVFAIL,BOWTIEDEL,HISOLZEN"
-#   resolution_arg = "resolution=" + resolution
-#   area_weighting_arg = "area_weighting=0"
-#   rowgroup_arg = "rowgroup=1080"
-#   verbose_arg = "verbose=1"
-
-
-#   command = program_name + " " + ifile_arg + " " + ofile_arg + " " + flaguse_arg + " " + l3bprod_arg + " " + prodtype_arg + " " + resolution_arg + " " + area_weighting_arg + " "  + rowgroup_arg + " " + verbose_arg
 
   parfile = get_par_filename(l3_binned_filename)
   parfile_arg = "par=" + parfile
@@ -361,9 +355,6 @@ def run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor):
   command = program_name + " " + parfile_arg
   print("Running: " + command)
   subprocess.run([program_name, parfile_arg ])
-#   print("exit_status=" + exit_status)
-
-#   subprocess.run([ program_name, ifile_arg, ofile_arg, flaguse_arg, l3bprod_arg, prodtype_arg, resolution_arg, area_weighting_arg, rowgroup_arg, verbose_arg ])
 
   if (os.path.isfile(l3_binned_filename) != True):
     print("WARNING!  Level-3binned file " + l3_binned_filename + " DOES NOT EXIST")
@@ -376,7 +367,8 @@ def run_l3bin(l3_binned_filename_ifile, l3_binned_filename_ofile, reduce_fac, vi
 
   prod = ""
   if (viirs_sensor == "JPSS1_VIIRS" or viirs_sensor == "JPSS2_VIIRS"):
-    prod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
+#     prod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
+    prod = "rhos_489,rhos_556,rhos_667,rhos_1238,rhos_2258,rhot_489,rhot_556,rhot_667,senz"
     #print(l3bprod)
   elif (viirs_sensor == "SNPP_VIIRS"):
      prod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
@@ -407,12 +399,7 @@ def run_l3bin(l3_binned_filename_ifile, l3_binned_filename_ofile, reduce_fac, vi
   reduce_fac_arg = "reduce_fac=" + reduce_fac
   verbose_arg = "verbose=1"
 
-#   command = program_name + " " + ifile_arg + " " + ofile_arg + " " + prod_arg + " " + composite_scheme_arg + " " + composite_prod_arg + " " + reduce_fac_arg + " " + verbose_arg
-#
-#   print("Running: " + command)
-#
-#   subprocess.run([ program_name, ifile_arg, ofile_arg, prod_arg, composite_scheme_arg, composite_prod_arg, reduce_fac_arg, verbose_arg ])
-#
+
 
 
 
@@ -450,7 +437,8 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
 
   product = ""
   if (viirs_sensor == "JPSS1_VIIRS" or viirs_sensor == "JPSS2_VIIRS"):
-    product = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
+#     product = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
+    product = "rhos_489,rhos_556,rhos_667,rhos_1238,rhos_2258,rhot_489,rhot_556,rhot_667,senz"
     #print(l3bprod)
   elif (viirs_sensor == "SNPP_VIIRS"):
      product = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
@@ -508,14 +496,6 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
   subprocess.run([program_name, parfile_arg ])
 
 
-#
-#
-#   command = program_name + " " + ifile_arg + " " + ofile_arg + " " + product_arg + " " + projection_arg + " " + north_arg + " " + south_arg + " " + west_arg + " " + east_arg + " " + resolution_arg + " " + num_cache_arg
-#
-#   print("Running: " + command)
-#
-#   subprocess.run([ program_name, ifile_arg, ofile_arg, product_arg, projection_arg, north_arg, south_arg, west_arg, east_arg, resolution_arg, num_cache_arg ])
-
 
   if (os.path.isfile(l3_mapped_filename_ofile) != True):
     print("WARNING!  Level-3 mapped file " + l3_mapped_filename_ofile + " DOES NOT EXIST")
@@ -543,8 +523,7 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
 #  print("Make files")
 
 
-# def create_scene_files(scene_file_list, sunzen, sunzen_polar, satzen, satzen_polar, binned_list_file, resolution):
-def create_scene_files(scene_file_list, binned_list_file, binned_resolution, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south ):
+def create_scene_files(scene_file_list, binned_list_file, binned_resolution, side, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south ):
 
     viirs_sensor = None
     timepart = None
@@ -577,8 +556,6 @@ def create_scene_files(scene_file_list, binned_list_file, binned_resolution, sun
 
 
 
-        #viirs_sensor = get_viirs_sensor(l1a_filename)
-
         timepart = get_timepart(l1a_filename, viirs_sensor)
         if (timepart == None):
           print("WARNING! could not derived timepart from " + l1a_filename)
@@ -598,7 +575,7 @@ def create_scene_files(scene_file_list, binned_list_file, binned_resolution, sun
           continue
         print(geo_filename)
 
-        l2_filename = get_l2_filename(viirs_sensor, timepart)
+        l2_filename = get_l2_filename(viirs_sensor, timepart, side)
         if (l2_filename == None):
           print("WARNING! could not derive l2_filename")
           continue
@@ -778,7 +755,7 @@ satzen_south = "40"
 
 binned_resolution = "2"
 
-viirs_sensor, timepart = create_scene_files(scene_file_list_front, binned_list_file_front, binned_resolution, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south )
+viirs_sensor, timepart = create_scene_files(scene_file_list_front, binned_list_file_front, binned_resolution, FRONTSIDE, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south )
 
 
 scene_file_list_back = "back_files.txt"
@@ -790,11 +767,10 @@ sunzen_south = "60"
 
 satzen_north = "48"
 satzen = "48"
-satzen_south = "40"
+satzen_south = "48"
 
-viirs_sensor2, timepart2 = create_scene_files(scene_file_list_back, binned_list_file_back, binned_resolution, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south )
+viirs_sensor2, timepart2 = create_scene_files(scene_file_list_back, binned_list_file_back, binned_resolution, BACKSIDE, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south )
 
-# viirs_sensor, timepart = create_scene_files(scene_file_list_back, sunzen, sunzen_polar, satzen, satzen_polar, binned_list_file_back, binned_resolution)
 
 
 binned_list_file = 'binned_files.txt'
@@ -827,10 +803,6 @@ if (viirs_sensor2 is not None):
     destination_file.close()
 
 
-
-
-# subprocess.run([ "cat", binned_list_file_front, ">", binned_list_file ])
-# subprocess.run([ "cat", binned_list_file_front, ">>", binned_list_file ])
 
 print("viirs_sensor=" + viirs_sensor)
 print("timepart=" + timepart)
