@@ -10,6 +10,8 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.util.Debug;
+import org.esa.snap.core.util.PreferencesPropertyMap;
+import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.core.util.math.Array;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.window.OpenImageViewAction;
@@ -26,6 +28,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.prefs.Preferences;
 
 import static org.esa.snap.rcp.actions.window.OpenImageViewAction.getProductSceneView;
 import static org.esa.snap.rcp.actions.window.OpenRGBImageViewAction.openDocumentWindow;
@@ -290,8 +293,11 @@ public class Animation {
             if (existingView != null) {
                 sceneImage = new ProductSceneImage(raster, existingView);
             } else {
+                final Preferences preferences = SnapApp.getDefault().getPreferences();
+                PropertyMap propertyMap = new PreferencesPropertyMap(preferences);
+
                 sceneImage = new ProductSceneImage(raster,
-                        SnapApp.getDefault().getPreferencesPropertyMap(),
+                        propertyMap,
                         SubProgressMonitor.create(pm, 1));
             }
             sceneImage.initVectorDataCollectionLayer();
