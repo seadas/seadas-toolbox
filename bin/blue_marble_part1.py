@@ -194,7 +194,10 @@ def get_l2_filename(viirs_sensor, timepart, side):
 
 
 def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, sunzen, satzen):
-  if (daynight != "Day" and daynight != "Both"):
+  if (daynight == None):
+    print("Returning due to daynight=None")
+    return 0
+  elif (daynight != "Day" and daynight != "Both"):
     print("Returning due to daynight=" + daynight)
     return 0
 
@@ -680,14 +683,14 @@ def create_scene_files(scene_file_list, binned_list_file, binned_resolution, sid
           satzen_curr = satzen
 
           if (southernmost_lat is None):
-              print("southernmost_lat=" + southernmost_lat)
+              print("CAUTION!: southernmost_lat=None")
           else:
               if (float(southernmost_lat) < -40):
                 sunzen_curr = sunzen_south
                 satzen_curr = satzen_south
 
           if (northernmost_lat is None):
-              print("northernmost_lat=" + northernmost_lat)
+              print("CAUTION!: northernmost_lat=None")
           else:
               if (float(northernmost_lat) > 40):
                 sunzen_curr = sunzen_north
