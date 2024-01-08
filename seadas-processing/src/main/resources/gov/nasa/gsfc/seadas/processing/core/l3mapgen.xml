@@ -416,7 +416,7 @@
         </option>
         <option type="string">
             <name>interp</name>
-            <value>bin</value>
+            <value>nearest</value>
             <default>nearest</default>
             <source>default</source>
             <validValues>
@@ -581,38 +581,15 @@
         </option>
 
 
-        <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
-            <default>netCDF4</default>
+        <option type="int">
+            <name>num_cache</name>
+            <value></value>
+            <default></default>
             <source>default</source>
-            <validValues>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF file, can contain more than one product</description>
-                </validValue>
-                <validValue>
-                    <value>HDF4</value>
-                    <description>HDF4 file (old SMI format)</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>TIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
-            <description>color file format</description>
+            <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
             <order>19</order>
         </option>
-
 
         <option type="boolean">
             <name>use_rgb</name>
@@ -660,6 +637,39 @@
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
             <order>24</order>
+        </option>
+
+
+        <option type="string">
+            <name>oformat</name>
+            <value>netCDF4</value>
+            <default>netCDF4</default>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value>netCDF4</value>
+                    <description>netCDF file, can contain more than one product</description>
+                </validValue>
+                <validValue>
+                    <value>HDF4</value>
+                    <description>HDF4 file (old SMI format)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>TIFF</value>
+                    <description>TIFF file with georeference tags</description>
+                </validValue>
+            </validValues>
+            <description>color file format</description>
+            <usedAs>option</usedAs>
+            <order>25</order>
         </option>
 
     </options>

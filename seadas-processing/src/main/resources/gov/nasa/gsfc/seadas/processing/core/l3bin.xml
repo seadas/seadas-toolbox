@@ -131,5 +131,23 @@
             <description>Easternmost longitude (default=+180)</description>
             <order>10</order>
         </option>
+
+        <option type="string">
+            <name>composite_scheme</name>
+            <value></value>
+            <default></default>
+            <description>composite scheme (min/max)</description>
+            <usedAs>option</usedAs>
+            <order>11</order>
+        </option>
+
+        <option type="string">
+            <name>composite_prod</name>
+            <value></value>
+            <default></default>
+            <description>composite product field name</description>
+            <usedAs>option</usedAs>
+            <order>12</order>
+        </option>
     </options>
 </paramInfo>

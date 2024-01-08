@@ -455,6 +455,25 @@
         </option>
 
         <option type="string">
+            <name>composite_scheme</name>
+            <value></value>
+            <default></default>
+            <description>composite scheme (min/max)</description>
+            <usedAs>option</usedAs>
+            <order>19</order>
+        </option>
+
+        <option type="string">
+            <name>composite_prod</name>
+            <value></value>
+            <default></default>
+            <description>composite product field name</description>
+            <usedAs>option</usedAs>
+            <order>20</order>
+        </option>
+
+
+        <option type="string">
             <name>oformat</name>
             <value>netCDF4</value>
             <default>netCDF4</default>
@@ -471,7 +490,7 @@
             </validValues>
             <description>color file format; default is the same format as input file(s)</description>
             <usedAs>option</usedAs>
-            <order>19</order>
+            <order>21</order>
         </option>
 
         <option type="boolean">
@@ -480,7 +499,7 @@
             <default>false</default>
             <description>set to 1 for SST night processing [default=0]</description>
             <usedAs>option</usedAs>
-            <order>20</order>
+            <order>22</order>
         </option>
     </options>
 </paramInfo>
