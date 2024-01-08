@@ -602,7 +602,7 @@ public class ParamUIFactory {
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, validValuesPanel, ModalDialog.ID_OK, "test");
         final int dialogResult = modalDialog.show();
         if (dialogResult != ModalDialog.ID_OK) {
-            return "-1";
+
         }
 
         itr = validValues.iterator();
