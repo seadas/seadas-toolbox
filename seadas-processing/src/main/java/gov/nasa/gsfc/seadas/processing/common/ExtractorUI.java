@@ -53,8 +53,13 @@ public class ExtractorUI extends ProgramUIFactory {
         lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                processorModel.updateParamInfo(START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(START_PIXEL_PARAM_NAME));
-                processorModel.updateParamInfo(END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(END_PIXEL_PARAM_NAME));
+                if (processorModel.getProgramName().equals(("l2extract"))) {  //"l2extract" takes option "spix" and "epix"
+                    processorModel.updateParamInfo("spix", lonlat2pixline.getParamValue(START_PIXEL_PARAM_NAME));
+                    processorModel.updateParamInfo("epix", lonlat2pixline.getParamValue(END_PIXEL_PARAM_NAME));
+                } else {
+                    processorModel.updateParamInfo(START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(START_PIXEL_PARAM_NAME));
+                    processorModel.updateParamInfo(END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(END_PIXEL_PARAM_NAME));
+                }
                 processorModel.updateParamInfo(START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(START_LINE_PARAM_NAME));
                 processorModel.updateParamInfo(END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(END_LINE_PARAM_NAME));
             }
