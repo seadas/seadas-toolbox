@@ -23,6 +23,11 @@ import org.esa.snap.rcp.util.Dialogs;
 public class ExtractorParamUI extends ParamUIFactory {
 
     private final String NON_INTERGER_VARS = "prod_list";
+    private final String PRODUCT_VARS = "product";
+    private final String WAVE_LIST_VARS = "wave_list";
+    private final String SUITE_VARS = "suite";
+
+
     public ExtractorParamUI(ProcessorModel pm) {
         super(pm);
     }
@@ -70,7 +75,12 @@ public class ExtractorParamUI extends ParamUIFactory {
             public void propertyChange(PropertyChangeEvent pce) {
                 String value = field.getText();
                 if (!field.getText().trim().equals(pi.getValue().trim())) {
-                    if (NON_INTERGER_VARS.contains(pi.getName()) || new Double(field.getText()).doubleValue() > 0 ) {
+                    if (NON_INTERGER_VARS.contains(pi.getName())
+                            || PRODUCT_VARS.contains(pi.getName())
+                            || WAVE_LIST_VARS.contains(pi.getName())
+                            || SUITE_VARS.contains(pi.getName())
+                            || new Double(field.getText()).doubleValue() > 0 )
+                    {
                         processorModel.updateParamInfo(pi, field.getText());
                     } else {
                         Dialogs.showError("Please enter a value greater than zero!");
