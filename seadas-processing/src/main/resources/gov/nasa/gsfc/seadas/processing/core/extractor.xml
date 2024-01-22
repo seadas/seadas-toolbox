@@ -5,13 +5,13 @@
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
-            <primaryOption>infile</primaryOption>
-            <primaryOption>outfile</primaryOption>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
-            <name>infile</name>
+            <name>ifile</name>
             <value></value>
             <default></default>
             <description>input SEAWIFS L1A datafile</description>
@@ -22,21 +22,29 @@
             <usedAs>argument</usedAs>
             <order>0</order>
         </option>
-        <option type="int">
-            <name>spixl</name>
+        <option type="ofile">
+            <name>ofile</name>
             <value></value>
-            <default></default>
-            <description>start pixel number</description>
+            <default>output</default>
+            <description>output L2 file name</description>
             <usedAs>argument</usedAs>
             <order>1</order>
         </option>
         <option type="int">
-            <name>epixl</name>
+            <name>spix</name>
+            <value></value>
+            <default></default>
+            <description>start pixel number</description>
+            <usedAs>argument</usedAs>
+            <order>2</order>
+        </option>
+        <option type="int">
+            <name>epix</name>
             <value></value>
             <default></default>
             <description>end pixel number (-1=the last pixel)</description>
             <usedAs>argument</usedAs>
-            <order>2</order>
+            <order>3</order>
         </option>
         <option type="int">
             <name>sline</name>
@@ -44,7 +52,7 @@
             <default></default>
             <description>start line number</description>
             <usedAs>argument</usedAs>
-            <order>3</order>
+            <order>4</order>
         </option>
         <option type="int">
             <name>eline</name>
@@ -52,7 +60,7 @@
             <default></default>
             <description>end line number (-1=the last line)</description>
             <usedAs>argument</usedAs>
-            <order>4</order>
+            <order>5</order>
         </option>
         <option type="int">
             <name>pix_sub</name>
@@ -60,21 +68,13 @@
             <default></default>
             <description>pixel subsampling rate</description>
             <usedAs>argument</usedAs>
-            <order>5</order>
+            <order>6</order>
         </option>
         <option type="int">
             <name>sc_sub</name>
             <value></value>
             <default></default>
             <description>line subsampling rate</description>
-            <usedAs>argument</usedAs>
-            <order>6</order>
-        </option>
-        <option type="ofile">
-            <name>outfile</name>
-            <value></value>
-            <default>output</default>
-            <description>output L2 file name</description>
             <usedAs>argument</usedAs>
             <order>7</order>
         </option>
