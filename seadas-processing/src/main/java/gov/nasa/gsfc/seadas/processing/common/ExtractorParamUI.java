@@ -24,7 +24,7 @@ public class ExtractorParamUI extends ParamUIFactory {
 
     private final String NON_INTERGER_VARS = "prod_list";
     private final String PRODUCT_VARS = "product";
-    private final String WAVE_LIST_VARS = "wave_list";
+    private final String WAVE_LIST_VARS = "wavelist";
     private final String SUITE_VARS = "suite";
 
 

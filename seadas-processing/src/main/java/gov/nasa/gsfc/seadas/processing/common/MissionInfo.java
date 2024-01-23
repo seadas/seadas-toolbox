@@ -26,6 +26,7 @@ public class MissionInfo {
         MODISA,
         MODIST,
         MOS,
+        OCI,
         OCTS,
         OSMI,
         SEAWIFS,
@@ -77,6 +78,9 @@ public class MissionInfo {
 
     public final static String[] AVHRR_NAMES = {"AVHRR"};
     public final static String AVHRR_DIRECTORY = "avhrr";
+
+    public final static String[] OCI_NAMES = {"OCI"};
+    public final static String OCI_DIRECTORY = "oci";
 
     public final static String[] OCTS_NAMES = {"OCTS"};
     public final static String OCTS_DIRECTORY = "octs";
@@ -161,6 +165,7 @@ public class MissionInfo {
         directories.put(Id.CZCS, CZCS_DIRECTORY);
         directories.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
         directories.put(Id.AVHRR, AVHRR_DIRECTORY);
+        directories.put(Id.OCI, OCI_DIRECTORY);
         directories.put(Id.OCTS, OCTS_DIRECTORY);
         directories.put(Id.OSMI, OSMI_DIRECTORY);
         directories.put(Id.MOS, MOS_DIRECTORY);
@@ -189,6 +194,7 @@ public class MissionInfo {
         names.put(Id.CZCS, CZCS_NAMES);
         names.put(Id.AQUARIUS, AQUARIUS_NAMES);
         names.put(Id.AVHRR, AVHRR_NAMES);
+        names.put(Id.OCI, OCI_NAMES);
         names.put(Id.OCTS, OCTS_NAMES);
         names.put(Id.OSMI, OSMI_NAMES);
         names.put(Id.MOS, MOS_NAMES);
