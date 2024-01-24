@@ -237,6 +237,18 @@ public class AnimationWithSpeedControl extends JPanel
             }
         });
 
+        JButton videoButton = new JButton("Save as Video");
+        videoButton.setToolTipText("Close the animation window");
+        videoButton.setPreferredSize(videoButton.getPreferredSize());
+        videoButton.setMinimumSize(videoButton.getPreferredSize());
+        videoButton.setMaximumSize(videoButton.getPreferredSize());
+        videoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                animator.stopAnimation();
+                frame.dispose();
+            }
+        });
+
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setToolTipText("Close the animation window");
         cancelButton.setPreferredSize(cancelButton.getPreferredSize());
@@ -253,8 +265,10 @@ public class AnimationWithSpeedControl extends JPanel
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         controllerPanel.add(pauseButton,
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
-        controllerPanel.add(cancelButton,
+        controllerPanel.add(videoButton,
                 new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        controllerPanel.add(cancelButton,
+                new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
         //Add content to the window.
