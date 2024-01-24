@@ -259,6 +259,7 @@ public class OCSSWServerModel {
 
     public static void copyNetrcFile(){
         File targetFile = new File(System.getProperty("user.home") + File.separator +  ".netrc");
+        targetFile.createNewFile();
         Path targetPath = targetFile.toPath();
         File sourceFile = new File(System.getProperty("user.home") + File.separator +  "seadasClientServerShared" + File.separator +  ".netrc");
         Path sourcePath = sourceFile.toPath();
@@ -267,6 +268,7 @@ public class OCSSWServerModel {
         if (sourceFile.exists() && !targetFile.exists()) {
             try {
                 Files.copy(sourcePath, targetPath, REPLACE_EXISTING);
+
             } catch (java.io.IOException ioException) {
                 ioException.printStackTrace();
             }
