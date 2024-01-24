@@ -5,6 +5,7 @@ import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_InstallerController;
 import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.PropertyMap;
@@ -1192,7 +1193,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         L3MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
-            setOpenInSeadas(false);
+            setOpenInSeadas(true);
 
             addPropertyChangeListener("product", new PropertyChangeListener() {
                 @Override
@@ -1380,8 +1381,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
         private boolean includeOfficialReleaseTagsOnly() {
-            final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-            return preferences.getPropertyBool(SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_KEY, SeadasToolboxDefaults.PROPERTY_ONLY_RELEASE_TAGS_DEFAULT);
+            return OCSSW_InstallerController.getPreferenceUseReleaseTagsOnly();
         }
 
 

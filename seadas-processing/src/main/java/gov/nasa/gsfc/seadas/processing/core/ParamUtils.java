@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
 import org.esa.snap.rcp.util.Dialogs;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -212,6 +214,7 @@ public class ParamUtils {
             }
 
             String description = XmlReader.getTextValue(optionElement, "description");
+            String colSpan = XmlReader.getTextValue(optionElement, "colSpan");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
@@ -220,10 +223,32 @@ public class ParamUtils {
             //ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, value) : new ParamInfo(name, value, type, value);
             ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, defaultValue) : new ParamInfo(name, value, type, defaultValue);
             paramInfo.setDescription(description);
+
+            if (colSpan != null) {
+                try {
+                    int colSpanInt = Integer.parseInt(colSpan);
+                    if (colSpanInt > 0) {
+                        paramInfo.setColSpan(colSpanInt);
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR: colSpan not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+                }
+            } else {
+                paramInfo.setColSpan(1);
+            }
+
+
             paramInfo.setSource(source);
 
             if (order != null) {
-                paramInfo.setOrder(new Integer(order).intValue());
+                try {
+                    int orderInt = Integer.parseInt(order);
+                    if (orderInt >= 0) {
+                        paramInfo.setOrder(orderInt);
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR: order not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+                }
             }
 
             if (usedAs != null) {
@@ -248,12 +273,82 @@ public class ParamUtils {
 
             }
 
+            final String optionName = ParamUtils.removePreceedingDashes(paramInfo.getName());
+
+            if ("l3mapgen.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case "product":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProduct());
+                        break;
+                    case "projection":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProjection());
+                        break;
+                    case "resolution":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceResolution());
+                        break;
+                    case "interp":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceInterp());
+                        break;
+                    case "north":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceNorth());
+                        break;
+                    case "south":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceSouth());
+                        break;
+                    case "west":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWest());
+                        break;
+                    case "east":
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceEast());
+                        break;
+                }
+            }
+
+
+            if ("l2bin.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case "l3bprod":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceL3bprod());
+                        break;
+                    case "prodtype":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceProdtype());
+                        break;
+                    case "resolution":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceResolution());
+                        break;
+                    case "area_weighting":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceAreaWeighting());
+                        break;
+                    case "flaguse":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceFlaguse());
+                        break;
+                    case "latnorth":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLatnorth());
+                        break;
+                    case "latsouth":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLatsouth());
+                        break;
+                    case "lonwest":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLonwest());
+                        break;
+                    case "loneast":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceLoneast());
+                        break;
+                }
+            }
+
+
+
+
+
             paramList.add(paramInfo);
 
         }
 
         return paramList;
     }
+
+
 
 
     /**

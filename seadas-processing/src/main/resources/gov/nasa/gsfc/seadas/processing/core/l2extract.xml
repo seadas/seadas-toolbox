@@ -5,13 +5,13 @@
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
-            <primaryOption>infile</primaryOption>
-            <primaryOption>outfile</primaryOption>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
-            <name>infile</name>
+            <name>ifile</name>
             <value></value>
             <value></value>
             <default></default>
@@ -20,72 +20,90 @@
             <aliases>
                 <alias>ifile1</alias>
             </aliases>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>0</order>
         </option>
-        <option type="int">
-            <name>spixl</name>
+        <option type="ofile">
+            <name>ofile</name>
             <value></value>
             <default></default>
-            <description>start pixel number (1-based)</description>
-            <usedAs>argument</usedAs>
+            <description>output L2 file name</description>
+            <usedAs>option</usedAs>
             <order>1</order>
         </option>
         <option type="int">
-            <name>epixl</name>
+            <name>spix</name>
+            <value></value>
+            <default></default>
+            <description>start pixel number (1-based)</description>
+            <usedAs>option</usedAs>
+            <order>2</order>
+        </option>
+        <option type="int">
+            <name>epix</name>
             <value></value>
             <default></default>
             <description>end pixel number (1-based)</description>
-            <usedAs>argument</usedAs>
-            <order>2</order>
+            <usedAs>option</usedAs>
+            <order>3</order>
         </option>
         <option type="int">
             <name>sline</name>
             <value></value>
             <default></default>
             <description>start line (1-based)</description>
-            <usedAs>argument</usedAs>
-            <order>3</order>
+            <usedAs>option</usedAs>
+            <order>4</order>
         </option>
         <option type="int">
             <name>eline</name>
             <value></value>
             <default></default>
             <description>end line (1-based)</description>
-            <usedAs>argument</usedAs>
-            <order>4</order>
-        </option>
-        <option type="int">
-            <name>pix_sub</name>
-            <value>1</value>
-            <default></default>
-            <description>pixel subsampling rate</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
             <order>5</order>
         </option>
-        <option type="int">
-            <name>sc_sub</name>
-            <value>1</value>
-            <default></default>
-            <description>scan line subsampling rate</description>
-            <usedAs>argument</usedAs>
-            <order>6</order>
-        </option>
-        <option type="ofile">
-            <name>outfile</name>
-            <value></value>
-            <default></default>
-            <description>output L2 file name</description>
-            <usedAs>argument</usedAs>
-            <order>7</order>
-        </option>
+<!--        <option type="int">-->
+<!--            <name>pix_sub</name>-->
+<!--            <value>1</value>-->
+<!--            <default></default>-->
+<!--            <description>pixel subsampling rate</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>5</order>-->
+<!--        </option>-->
+<!--        <option type="int">-->
+<!--            <name>sc_sub</name>-->
+<!--            <value>1</value>-->
+<!--            <default></default>-->
+<!--            <description>scan line subsampling rate</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>6</order>-->
+<!--        </option>-->
         <option type="string">
-            <name>prod_list</name>
+            <name>product</name>
             <value></value>
             <default></default>
             <description>product list (optional)</description>
-            <usedAs>argument</usedAs>
+            <usedAs>option</usedAs>
+            <order>6</order>
+        </option>
+        <option type="string">
+            <name>wavelist</name>
+            <value></value>
+            <default></default>
+            <description>product list (optional)</description>
+            <usedAs>option</usedAs>
+            <colSpan>5</colSpan>
+            <order>7</order>
+        </option>
+        <option type="string">
+            <name>suite</name>
+            <value></value>
+            <default></default>
+            <description></description>
+            <usedAs>option</usedAs>
             <order>8</order>
         </option>
+
     </options>
 </paramInfo>

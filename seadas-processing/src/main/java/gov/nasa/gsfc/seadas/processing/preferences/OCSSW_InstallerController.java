@@ -24,6 +24,8 @@ import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import com.bc.ceres.swing.binding.PropertyEditorRegistry;
 import com.bc.ceres.swing.binding.PropertyPane;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.preferences.DefaultConfigController;
 import org.esa.snap.rcp.preferences.Preference;
 import org.netbeans.spi.options.OptionsPanelController;
@@ -32,28 +34,54 @@ import org.openide.util.HelpCtx;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.bc.ceres.swing.TableLayout.cell;
+
 /**
- * * Panel handling colorbar layer preferences. Sub-panel of the "Layer"-panel.
+ * * Panel handling OCSSW-Installer preferences. Sub-panel of the "SeaDAS-Toolbox"-panel.
  *
  * @author Daniel Knowles
  */
 
 
 @OptionsPanelController.SubRegistration(location = "SeaDAS",
-        displayName = "#Options_DisplayName_SeadasToolbox",
-        keywords = "#Options_Keywords_SeadasToolbox",
-        keywordsCategory = "Processors",
-        id = "OCSSW-Processors")
+        displayName = "#Options_DisplayName_OCSSW_Installer",
+        keywords = "#Options_Keywords_OCSSW_Installer",
+        keywordsCategory = "Installer",
+        id = "OCSSW-Installer")
 @org.openide.util.NbBundle.Messages({
-        "Options_DisplayName_SeadasToolbox=OCSSW-Processors",
-        "Options_Keywords_SeadasToolbox=seadas, ocssw, l2gen"
+        "Options_DisplayName_OCSSW_Installer=OCSSW-Installer",
+        "Options_Keywords_OCSSW_Installer=seadas, ocssw, installer"
 })
-public final class SeadasToolboxController extends DefaultConfigController {
+public final class OCSSW_InstallerController extends DefaultConfigController {
 
     Property restoreDefaults;
 
 
     boolean propertyValueChangeEventsEnabled = true;
+
+
+    // Preferences property prefix
+    private static final String PROPERTY_INSTALLER_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".ocssw.installer";
+
+    // Property Setting: Restore Defaults
+
+    private static final String PROPERTY_RESTORE_KEY_SUFFIX = PROPERTY_INSTALLER_ROOT_KEY + ".restore.defaults";
+
+    public static final String PROPERTY_RESTORE_SECTION_KEY = PROPERTY_RESTORE_KEY_SUFFIX + ".section";
+    public static final String PROPERTY_RESTORE_SECTION_LABEL = "Restore";
+    public static final String PROPERTY_RESTORE_SECTION_TOOLTIP = "Restores preferences to the package defaults";
+
+    public static final String PROPERTY_RESTORE_DEFAULTS_KEY = PROPERTY_RESTORE_KEY_SUFFIX + ".apply";
+    public static final String PROPERTY_RESTORE_DEFAULTS_LABEL = "Default (OCSSW Installer Preferences)";
+    public static final String PROPERTY_RESTORE_DEFAULTS_TOOLTIP = "Restore all OCSSW Installer preferences to the original default";
+    public static final boolean PROPERTY_RESTORE_DEFAULTS_DEFAULT = false;
+
+
+    public static final String PROPERTY_ONLY_RELEASE_TAGS_KEY = PROPERTY_INSTALLER_ROOT_KEY + ".include.only.release.tags";
+    public static final String PROPERTY_ONLY_RELEASE_TAGS_LABEL = "Include only SeaDAS-OCSSW release tags";
+    public static final String PROPERTY_ONLY_RELEASE_TAGS_TOOLTIP = "Include only official SeaDAS-OCSSW release tags in the GUI installer";
+    public static final boolean PROPERTY_ONLY_RELEASE_TAGS_DEFAULT = true;
+
 
 
     protected PropertySet createPropertySet() {
@@ -70,13 +98,12 @@ public final class SeadasToolboxController extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_KEY, true);
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY, SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_ONLY_RELEASE_TAGS_KEY, PROPERTY_ONLY_RELEASE_TAGS_DEFAULT);
 
 
 
-        initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_KEY, true);
-        restoreDefaults =  initPropertyDefaults(context, SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_RESTORE_SECTION_KEY, true);
+        restoreDefaults =  initPropertyDefaults(context, PROPERTY_RESTORE_DEFAULTS_KEY, PROPERTY_RESTORE_DEFAULTS_DEFAULT);
 
 
 
@@ -192,7 +219,7 @@ public final class SeadasToolboxController extends DefaultConfigController {
             }
             propertyValueChangeEventsEnabled = true;
 
-            context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, false);
+            context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, false);
         }
     }
 
@@ -215,7 +242,7 @@ public final class SeadasToolboxController extends DefaultConfigController {
             propertyValueChangeEventsEnabled = false;
             try {
                 restoreDefaults.setValue(isDefaults(context));
-                context.setComponentsEnabled(SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY, !isDefaults(context));
+                context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, !isDefaults(context));
             } catch (ValidationException e) {
                 e.printStackTrace();
             }
@@ -255,49 +282,37 @@ public final class SeadasToolboxController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("seadasToolboxPreferences");
+        return new HelpCtx("OCSSW_InstallerPreferences");
     }
 
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
 
-
-
-
-
-        // L2GEN Section
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L2GEN_SECTION_TOOLTIP)
-        boolean l2genSection = true;
-
-
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_TOOLTIP)
-        boolean l2genL2prodWavelengthShortcuts = SeadasToolboxDefaults.PROPERTY_L2GEN_SHORTCUTS_DEFAULT;
-
-
+        @Preference(key = PROPERTY_ONLY_RELEASE_TAGS_KEY,
+                label = PROPERTY_ONLY_RELEASE_TAGS_LABEL,
+                description = PROPERTY_ONLY_RELEASE_TAGS_TOOLTIP)
+        boolean miscTags = PROPERTY_ONLY_RELEASE_TAGS_DEFAULT;
 
 
 
         // Restore Defaults Section
 
-
-
-
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_RESTORE_SECTION_TOOLTIP)
+        @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
+                label = PROPERTY_RESTORE_SECTION_LABEL,
+                description = PROPERTY_RESTORE_SECTION_TOOLTIP)
         boolean restoreDefaultsSection = true;
 
-        @Preference(label = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_LABEL,
-                key = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_KEY,
-                description = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_TOOLTIP)
-        boolean restoreDefaults = SeadasToolboxDefaults.PROPERTY_RESTORE_DEFAULTS_DEFAULT;
+        @Preference(key = PROPERTY_RESTORE_DEFAULTS_KEY,
+                label = PROPERTY_RESTORE_DEFAULTS_LABEL,
+                description = PROPERTY_RESTORE_DEFAULTS_TOOLTIP)
+        boolean restoreDefaultsDefault = PROPERTY_RESTORE_DEFAULTS_DEFAULT;
+    }
 
+
+
+    public static boolean getPreferenceUseReleaseTagsOnly() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_ONLY_RELEASE_TAGS_KEY, PROPERTY_ONLY_RELEASE_TAGS_DEFAULT);
     }
 
 }

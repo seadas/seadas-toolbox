@@ -5,13 +5,13 @@
         <hasParFile>false</hasParFile>
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
-            <primaryOption>infile</primaryOption>
-            <primaryOption>outfile</primaryOption>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
         <option type="ifile">
-            <name>infile</name>
+            <name>ifile</name>
             <value></value>
             <default></default>
             <description>input MODIS L1A datafile</description>
@@ -59,10 +59,10 @@
             <usedAs>argument</usedAs>
         </option>
         <option type="ofile">
-            <name>outfile</name>
+            <name>ofile</name>
             <value></value>
             <default>output</default>
-            <description>output L2 file name</description>
+            <description>output extracted file name</description>
             <usedAs>argument</usedAs>
             <order>5</order>
         </option>

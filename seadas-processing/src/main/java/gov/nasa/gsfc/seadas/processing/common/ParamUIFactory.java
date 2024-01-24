@@ -6,7 +6,10 @@ import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
+import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
@@ -34,10 +37,12 @@ public class ParamUIFactory {
     ProcessorModel processorModel;
     SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
     private String emptySpace = "  ";
-
+    protected Boolean flaguseTextfieldIgnore = false;
+    private JTextField field = new JTextField();
 
     private static int controlHandlerIntEnabled = 1;  // enabled if value 1 or greater
     private static int eventHandlerIntEnabled = 1;  // enabled if value 1 or greater
+
 
     public ParamUIFactory(ProcessorModel pm) {
         this.processorModel = pm;
@@ -51,7 +56,7 @@ public class ParamUIFactory {
 
         final JPanel parameterComponent = new JPanel(new BorderLayout());
 
-        parameterComponent.add(textScrollPane, BorderLayout.CENTER);
+        parameterComponent.add(textScrollPane, BorderLayout.NORTH);
 
 
         parameterComponent.setPreferredSize(parameterComponent.getPreferredSize());
@@ -73,11 +78,23 @@ public class ParamUIFactory {
         return parameterComponent;
     }
 
+
+
     protected JPanel createParamPanel(ProcessorModel processorModel) {
         ArrayList<ParamInfo> paramList = processorModel.getProgramParamList();
         JPanel paramPanel = new JPanel();
         paramPanel.setName("param panel");
-        JPanel textFieldPanel = new JPanel();
+//        JPanel textFieldPanel = new JPanel();
+        final JPanel textFieldPanel = GridBagUtils.createPanel();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+
         textFieldPanel.setName("text field panel");
         JPanel booleanParamPanel = new JPanel();
         booleanParamPanel.setName("boolean field panel");
@@ -94,9 +111,24 @@ public class ParamUIFactory {
         fileParamPanel.setLayout(fileParamLayout);
 
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
-        TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
-        textFieldPanelLayout.setTablePadding(5,5);
-        textFieldPanel.setLayout(textFieldPanelLayout);
+        if ("l3mapgen".equals(processorModel.getProgramName())) {
+            numberOfOptionsPerLine = 6;
+        }
+//        TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
+//        textFieldPanelLayout.setTablePadding(5,5);
+//        textFieldPanel.setLayout(textFieldPanelLayout);
+
+        gbc.gridy=0;
+        gbc.gridx=0;
+        gbc.insets.top = 5;
+        gbc.insets.bottom = 5;
+        gbc.insets.left = 5;
+        gbc.insets.right = 25;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+
+
 
         Iterator<ParamInfo> itr = paramList.iterator();
         while (itr.hasNext()) {
@@ -106,8 +138,16 @@ public class ParamUIFactory {
                     pi.getName().equals(L2genData.GEOFILE) ||
                     pi.getName().equals("verbose") ||
                     pi.getName().equals("--verbose"))) {
+
+                if (pi.getColSpan() > numberOfOptionsPerLine) {
+                    gbc.gridwidth = numberOfOptionsPerLine;
+                } else {
+                    gbc.gridwidth = pi.getColSpan();
+                }
+
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
-                    textFieldPanel.add(makeComboBoxOptionPanel(pi));
+                        textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
+                        gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                 } else {
                     switch (pi.getType()) {
                         case BOOLEAN:
@@ -123,23 +163,36 @@ public class ParamUIFactory {
                             fileParamPanel.add(createIOFileOptionField(pi));
                             break;
                         case STRING:
-                            textFieldPanel.add(makeOptionField(pi));
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case INT:
-                            textFieldPanel.add(makeOptionField(pi));
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLOAT:
-                            textFieldPanel.add(makeOptionField(pi));
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLAGS:
-                            textFieldPanel.add(makeButtonOptionPanel(pi));
+//                            gbc.gridwidth=5;
+                            gbc.insets.top = 4;
+                            textFieldPanel.add(makeButtonOptionPanel(pi), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            gbc.gridwidth=1;
+                            gbc.insets.top = 0;
                             break;
                         case BUTTON:
                             buttonPanel.add(makeActionButtonPanel(pi));
                             break;
                     }
+
+
                     //paramPanel.add(makeOptionField(pi));
                 }
+
+                gbc.gridwidth = 1;
+
             }
         }
 
@@ -154,7 +207,19 @@ public class ParamUIFactory {
         return paramPanel;
     }
 
-    protected JPanel makeOptionField(final ParamInfo pi) {
+
+    GridBagConstraints incrementGridxGridy(GridBagConstraints gbc, int numColumns) {
+        gbc.gridx += gbc.gridwidth;
+        if (gbc.gridx > (numColumns - 1)) {
+            gbc.gridy += 1;
+            gbc.gridx = 0;
+            gbc.insets.top = 0;
+        }
+
+        return gbc;
+    }
+
+    protected JPanel makeOptionField(final ParamInfo pi, int colSpan) {
 
         final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
         final JPanel optionPanel = new JPanel();
@@ -163,7 +228,7 @@ public class ParamUIFactory {
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
         optionPanel.setName(optionName);
-        optionPanel.add(new JLabel(ParamUtils.removePreceedingDashes(optionName)));
+        optionPanel.add(new JLabel(optionName));
         if (pi.getDescription() != null) {
             optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -176,11 +241,23 @@ public class ParamUIFactory {
         }
 
         final PropertyContainer vc = new PropertyContainer();
+
+
+
         vc.addProperty(Property.create(optionName, pi.getValue()));
+
+
         vc.getDescriptor(optionName).setDisplayName(optionName);
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
-        field.setColumns(optionName.length() > 12 ? 12 : 8);
+//        field.setColumns(optionName.length() > 12 ? 12 : 8);
+        field.setColumns(8);
+
+        if (colSpan == 2) {
+            field.setColumns(20);
+        } else if (colSpan > 2) {
+            field.setColumns(30);
+        }
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());
@@ -210,6 +287,7 @@ public class ParamUIFactory {
 
         return optionPanel;
     }
+
 
     private JPanel makeBooleanOptionField(final ParamInfo pi) {
 
@@ -268,8 +346,10 @@ public class ParamUIFactory {
 
     }
 
-    private JPanel makeComboBoxOptionPanel(final ParamInfo pi) {
+    private JPanel makeComboBoxOptionPanel(final ParamInfo pi, int colSpan) {
         final JPanel singlePanel = new JPanel();
+
+        String optionName = ParamUtils.removePreceedingDashes(pi.getName());
 
         TableLayout comboParamLayout = new TableLayout(1);
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
@@ -284,7 +364,6 @@ public class ParamUIFactory {
         }
 
         String optionDefaultValue = pi.getValue();
-
 
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
         final String[] values = new String[validValues.size()];
@@ -302,14 +381,28 @@ public class ParamUIFactory {
             i++;
         }
 
+        Dimension preferredComboBoxSize;
+
+        if (colSpan == 2) {
+            final String[] tmpValues = {"1234567890123456789012345"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else {
+            final String[] tmpValues = {"12345678"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        }
+
         final JComboBox<String> inputList = new JComboBox<String>(values);
         ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
         inputList.setRenderer(renderer);
         renderer.setTooltips(toolTips);
         inputList.setEditable(true);
         inputList.setName(pi.getName());
-        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
-                inputList.getPreferredSize().height));
+//        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
+//                inputList.getPreferredSize().height));
+        inputList.setPreferredSize(preferredComboBoxSize);
+
         if (pi.getDescription() != null) {
             inputList.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -319,11 +412,10 @@ public class ParamUIFactory {
             inputList.setSelectedIndex(defaultValuePosition);
         }
 
-        String optionName = pi.getName();
 
 
         final PropertyContainer vc = new PropertyContainer();
-        vc.addProperty(Property.create(optionName, pi.getValue()));
+        vc.addProperty(Property.create(optionName, optionDefaultValue));
         vc.getDescriptor(optionName).setDisplayName(optionName);
 
         final BindingContext ctx = new BindingContext(vc);
@@ -356,6 +448,7 @@ public class ParamUIFactory {
 
     private JPanel makeButtonOptionPanel(final ParamInfo pi) {
         final JPanel singlePanel = new JPanel();
+        final JTextField field = new JTextField();
 
         TableLayout comboParamLayout = new TableLayout(8);
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
@@ -366,29 +459,53 @@ public class ParamUIFactory {
         optionNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                String flaguseTextfield = field.getText();
+                processorModel.updateParamInfo(pi, field.getText());
+                String value = pi.getValue();
                 String selectedFlags = chooseValidValues(pi);
-                processorModel.updateParamInfo(pi, selectedFlags);
+                if (!"-1".equals(selectedFlags)) {
+                    processorModel.updateParamInfo(pi, selectedFlags);
+                    String value2 = pi.getValue();
+                }
             }
         });
+
+
         singlePanel.add(optionNameButton);
         singlePanel.setName(pi.getName());
         if (pi.getDescription() != null) {
             singlePanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
 
-        final JTextField field = new JTextField();
         field.setText(pi.getValue());
-        field.setColumns(8);
+        field.setColumns(50);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
+        field.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                flaguseTextfieldIgnore = true;
+                String flaguse = field.getText();
+                processorModel.updateParamInfo(pi, field.getText());
+                String value = pi.getValue();
+                flaguseTextfieldIgnore = false;
+            }
+        });
+
+
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                field.setText(pi.getValue());
+                if (!flaguseTextfieldIgnore) {
+                    String flaguse = field.getText();
+                    field.setText(pi.getValue());
+                    String value = pi.getValue();
+                }
             }
         });
         singlePanel.add(field);
+
         return singlePanel;
     }
 
@@ -443,6 +560,19 @@ public class ParamUIFactory {
         while (itr.hasNext()) {
             paramValidValueInfo = itr.next();
             if (!paramValidValueInfo.getValue().trim().equals("SPARE")) {
+                // todo set this based on textfield
+
+                if (pi.getValue() != null && pi.getValue().length() > 0) {
+                    paramValidValueInfo.setSelected(false);
+
+                    String[] values = pi.getValue().split("[,\\s]");
+                    for (String value : values) {
+//                        if (pi.getValue().contains(paramValidValueInfo.getValue().trim())) {
+                        if (value.trim().toUpperCase().equals(paramValidValueInfo.getValue().trim().toUpperCase())) {
+                            paramValidValueInfo.setSelected(true);
+                        }
+                    }
+                }
                 validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
             }
         }
@@ -451,6 +581,24 @@ public class ParamUIFactory {
 
         final Window parent = SnapApp.getDefault().getMainFrame();
         String dialogTitle = null;
+
+
+
+        String origChosenValues = "";
+        itr = validValues.iterator();
+
+        while (itr.hasNext()) {
+            paramValidValueInfo = itr.next();
+            if (paramValidValueInfo.isSelected()) {
+                origChosenValues = origChosenValues + paramValidValueInfo.getValue() + ",";
+            }
+        }
+        if (choosenValues.indexOf(",") != -1) {
+            origChosenValues = origChosenValues.substring(0, origChosenValues.lastIndexOf(","));
+        }
+
+
+
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, validValuesPanel, ModalDialog.ID_OK, "test");
         final int dialogResult = modalDialog.show();
         if (dialogResult != ModalDialog.ID_OK) {
@@ -601,7 +749,7 @@ public class ParamUIFactory {
                 if (isEventHandlerEnabled()) {
                     disableControlHandler();
 //                    if (isEventHandlerEnabled() || pi.getName().isEmpty()) {
-                        ioFileSelector.setFilename(pi.getValue());
+                    ioFileSelector.setFilename(pi.getValue());
 //                    }
                     enableControlHandler();
                 }

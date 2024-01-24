@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
 import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
+import gov.nasa.gsfc.seadas.watermask.preferences.Landmask_Controller;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
@@ -73,6 +74,13 @@ class LandMasksData {
 
     public LandMasksData() {
 
+        landMaskName = Landmask_Controller.getPreferenceLandMaskName();
+        landMaskColor = Landmask_Controller.getPreferenceLandMaskColor();
+        showLandMaskAllBands = Landmask_Controller.getPreferenceLandMaskShow();
+        landMaskTransparency = Landmask_Controller.getPreferenceLandMaskTransparency();
+
+        String landMaskResolution = Landmask_Controller.getPreferenceLandMaskResolution();
+
         SourceFileInfo sourceFileInfo;
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_50m,
@@ -80,27 +88,38 @@ class LandMasksData {
                 WatermaskClassifier.Mode.SRTM_GC,
                 WatermaskClassifier.FILENAME_SRTM_GC_50m);
         getSourceFileInfos().add(sourceFileInfo);
+        if (sourceFileInfo.toString().equals(landMaskResolution)) {
+            this.sourceFileInfo = sourceFileInfo;
+        }
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_150m,
                 SourceFileInfo.Unit.METER,
                 WatermaskClassifier.Mode.SRTM_GC,
                 WatermaskClassifier.FILENAME_SRTM_GC_150m);
         getSourceFileInfos().add(sourceFileInfo);
-
+        if (sourceFileInfo.toString().equals(landMaskResolution)) {
+            this.sourceFileInfo = sourceFileInfo;
+        }
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_1km,
                 SourceFileInfo.Unit.METER,
                 WatermaskClassifier.Mode.GSHHS,
                 WatermaskClassifier.FILENAME_GSHHS_1km);
         getSourceFileInfos().add(sourceFileInfo);
+        if (sourceFileInfo.toString().equals(landMaskResolution)) {
+            this.sourceFileInfo = sourceFileInfo;
+        }
         // set the default
-        this.sourceFileInfo = sourceFileInfo;
+//        this.sourceFileInfo = sourceFileInfo;
 
         sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_10km,
                 SourceFileInfo.Unit.METER,
                 WatermaskClassifier.Mode.GSHHS,
                 WatermaskClassifier.FILENAME_GSHHS_10km);
         getSourceFileInfos().add(sourceFileInfo);
+        if (sourceFileInfo.toString().equals(landMaskResolution)) {
+            this.sourceFileInfo = sourceFileInfo;
+        }
 
 
 //        sourceFileInfo = new SourceFileInfo(WatermaskClassifier.RESOLUTION_50m,
