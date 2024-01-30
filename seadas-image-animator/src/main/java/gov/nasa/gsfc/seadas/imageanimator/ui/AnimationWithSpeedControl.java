@@ -244,7 +244,7 @@ public class AnimationWithSpeedControl extends JPanel
             }
         });
 
-        JButton videoButton = new JButton("Save as Video");
+        JButton videoButton = new JButton("Save2Video");
         videoButton.setToolTipText("Save the animation as video.");
         videoButton.setPreferredSize(videoButton.getPreferredSize());
         videoButton.setMinimumSize(videoButton.getPreferredSize());
