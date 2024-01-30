@@ -1,13 +1,20 @@
 package gov.nasa.gsfc.seadas.imageanimator.ui;
 
+import gov.nasa.gsfc.seadas.imageanimator.util.GifSequenceWriter;
 import org.esa.snap.rcp.SnapApp;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
@@ -238,14 +245,35 @@ public class AnimationWithSpeedControl extends JPanel
         });
 
         JButton videoButton = new JButton("Save as Video");
-        videoButton.setToolTipText("Close the animation window");
+        videoButton.setToolTipText("Save the animation as video.");
         videoButton.setPreferredSize(videoButton.getPreferredSize());
         videoButton.setMinimumSize(videoButton.getPreferredSize());
         videoButton.setMaximumSize(videoButton.getPreferredSize());
         videoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                animator.stopAnimation();
-                frame.dispose();
+                // grab the output image type from the first image in the sequence
+                BufferedImage firstImage = (BufferedImage) images[0].getImage();
+                ImageOutputStream output = null;
+                GifSequenceWriter writer = null;
+                try {
+                    // create a new BufferedOutputStream with the output file name
+                    //todo This should be done differently
+                    output = new FileImageOutputStream(new File("AnimationVideoOutput"));
+
+                    // create a gif sequence with the type of the first image, 1 second between frames, which loops continuously
+                    writer = new GifSequenceWriter(output, firstImage.getType(), 1, false);
+                    // write out the first image to our sequence...
+                    writer.writeToSequence(firstImage);
+
+                    for (int i = 1; i < images.length; i++) {
+                        BufferedImage nextImage = (BufferedImage) images[i].getImage();
+                        writer.writeToSequence(nextImage);
+                    }
+                    writer.close();
+                    output.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
