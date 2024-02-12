@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -63,6 +64,7 @@ public class ImageAnimatorDialog extends JDialog {
     public static String SORT_BY_ANGLE = "Sort by Angle";
     public static String SORT_BY_BANDNAME = "Sort by Band Name";
     public static String DEFAULT_SORT_BY = SORT_BY_BANDNAME;
+    File inputFile;
     String sortMethod;
 
     private boolean imageAnimatorCanceled;
@@ -77,6 +79,7 @@ public class ImageAnimatorDialog extends JDialog {
 
         ProductSceneView productSceneView = SnapApp.getDefault().getSelectedProductSceneView();
         ProductNodeGroup<Band> bandGroup = product.getBandGroup();
+        inputFile = product.getFileLocation();
 
         if (productSceneView != null) {
 
@@ -398,6 +401,7 @@ public class ImageAnimatorDialog extends JDialog {
                                                     Animation animation = new Animation();
                                                     animation.setSortMethod((String) sortMethodJComboBox.getSelectedItem());
                                                     ImageIcon[] images = animation.openImages(treePath);
+                                                    AnimationWithSpeedControl.setInputFileLocation(inputFile.getParent());
                                                     AnimationWithSpeedControl.animate(images);
                                                     animateImagesButton.setEnabled(true);
                                                     createImagesButton.setEnabled(false);

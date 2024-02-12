@@ -33,6 +33,7 @@ public class AnimationWithSpeedControl extends JPanel
     Timer timer;
     boolean frozen = false;
     static boolean windowClosedBool;
+    private static String inputFileLocation;
     static JFrame frame;
 
     //This label uses ImageIcon to show the doggy pictures.
@@ -91,6 +92,14 @@ public class AnimationWithSpeedControl extends JPanel
         timer.setInitialDelay(delay * 7); //We pause animation twice per cycle
         //by restarting the timer
         timer.setCoalesce(true);
+    }
+
+    public static String getInputFileLocation() {
+        return inputFileLocation;
+    }
+
+    public static void setInputFileLocation(String inputFileLocation) {
+        AnimationWithSpeedControl.inputFileLocation = inputFileLocation;
     }
 
     protected void updatePicture(int frameNum) {
@@ -244,7 +253,7 @@ public class AnimationWithSpeedControl extends JPanel
             }
         });
 
-        JButton videoButton = new JButton("Save2Video");
+        JButton videoButton = new JButton("Save");
         videoButton.setToolTipText("Save the animation as video.");
         videoButton.setPreferredSize(videoButton.getPreferredSize());
         videoButton.setMinimumSize(videoButton.getPreferredSize());
@@ -258,10 +267,10 @@ public class AnimationWithSpeedControl extends JPanel
                 try {
                     // create a new BufferedOutputStream with the output file name
                     //todo This should be done differently
-                    output = new FileImageOutputStream(new File("AnimationVideoOutput"));
+                    output = new FileImageOutputStream(new File(inputFileLocation + File.separator + "animation"));
 
                     // create a gif sequence with the type of the first image, 1 second between frames, which loops continuously
-                    writer = new GifSequenceWriter(output, firstImage.getType(), 1, false);
+                    writer = new GifSequenceWriter(output, firstImage.getType(), 1, true);
                     // write out the first image to our sequence...
                     writer.writeToSequence(firstImage);
 
