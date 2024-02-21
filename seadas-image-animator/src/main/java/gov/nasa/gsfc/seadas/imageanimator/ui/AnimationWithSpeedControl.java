@@ -267,7 +267,7 @@ public class AnimationWithSpeedControl extends JPanel
                 try {
                     // create a new BufferedOutputStream with the output file name
                     //todo This should be done differently
-                    output = new FileImageOutputStream(new File(inputFileLocation + File.separator + "animation"));
+                    output = new FileImageOutputStream(new File(inputFileLocation + File.separator + "animation1"));
 
                     // create a gif sequence with the type of the first image, 1 second between frames, which loops continuously
                     writer = new GifSequenceWriter(output, firstImage.getType(), 1, true);
