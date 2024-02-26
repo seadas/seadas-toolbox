@@ -32,18 +32,18 @@ snap-desktop/etc/snap.conf
 snap-engine/etc/seadas.auxdata.properties
 snap-engine/etc/snap.auxdata.properties
 
-seadas8 defined ( this also may force seadas8.properties)
-/Users/seadas/seadas8/snap-engine/snap-runtime/src/main/java/org/esa/snap/runtime/EngineConfig.java
+seadas9 defined ( this also may force seadas9.properties)
+/Users/seadas/seadas9/snap-engine/snap-runtime/src/main/java/org/esa/snap/runtime/EngineConfig.java
 
 
 
 The binding context (this is where the fix to colorComboBox binding could be added:
-/Users/seadas/seadas8/snap-engine/ceres-ui/src/main/java/com/bc/ceres/swing/binding/BindingContext.java
+/Users/seadas/seadas9/snap-engine/ceres-ui/src/main/java/com/bc/ceres/swing/binding/BindingContext.java
 
 These branding files need to be updated each release is snap changes their respective file:
-/Users/seadas/seadas8/snap-desktop/etc/seadas.conf
-/Users/seadas/seadas8/snap-engine/etc/seadas.auxdata.properties
-/Users/seadas/seadas8/snap-engine/etc/seadas.properties
+/Users/seadas/seadas9/snap-desktop/etc/seadas.conf
+/Users/seadas/seadas9/snap-engine/etc/seadas.auxdata.properties
+/Users/seadas/seadas9/snap-engine/etc/seadas.properties
 //todo There is a snap.clusters files somewhere which might need to be seadas.clusters
 
 
@@ -79,8 +79,8 @@ Example:
 })
 
 Toolbar Configuration:
-/Users/seadas/seadas8/snap-desktop/snap-rcp/src/main/resources/org/esa/snap/rcp/toolbars/Standard.xml
-/Users/seadas/seadas8/snap-desktop/snap-rcp/src/main/resources/org/esa/snap/rcp/layer.xml
+/Users/seadas/seadas9/snap-desktop/snap-rcp/src/main/resources/org/esa/snap/rcp/toolbars/Standard.xml
+/Users/seadas/seadas9/snap-desktop/snap-rcp/src/main/resources/org/esa/snap/rcp/layer.xml
 
 
 https://seadas.gsfc.nasa.gov/downloads/VERSION/txt
@@ -90,6 +90,6 @@ contents ?:
 
 Versioning Files:
 http://wiki.netbeans.org/DevFaqVersionNumber
-/Users/seadas/seadas8/snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core.jar/org/netbeans/core/ui/Bundle.properties
-/Users/seadas/seadas8/snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
-/Users/seadas/seadas8/snap-desktop/snap-branding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+/Users/seadas/seadas9/snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core.jar/org/netbeans/core/ui/Bundle.properties
+/Users/seadas/seadas9/snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
+/Users/seadas/seadas9/snap-desktop/snap-branding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties

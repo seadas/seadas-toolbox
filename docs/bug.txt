@@ -8,7 +8,7 @@ There is no progress monitor.
 
 
 This is the GUI that appears at finish:
-execution exception: java.io.FileNotFoundException: /Users/seadas/.seadas8/seadas_logs/OCSSW_LOG_install_ocssw.txt (No such file or directory)
+execution exception: java.io.FileNotFoundException: /Users/seadas/.seadas9/seadas_logs/OCSSW_LOG_install_ocssw.txt (No such file or directory)
 “------ top of file .bash_profile”
 “------ top of file .profile”
 “------ bottom of file .profile”
