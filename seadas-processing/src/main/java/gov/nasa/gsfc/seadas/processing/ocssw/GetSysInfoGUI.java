@@ -62,6 +62,8 @@ public class GetSysInfoGUI {
     private String ocsswBinDirPath;
     private String ocsswDockerBinDirPath;
     private String ocsswRootEnv = System.getenv(SEADAS_OCSSW_ROOT_ENV);
+    String ocsswRootDocker = SystemUtils.getUserHomeDir().toString() + File.separator + "ocssw";
+
 
     private String DASHES = "-----------------------------------------------------------";
     private String INDENT = "  ";
@@ -80,6 +82,7 @@ public class GetSysInfoGUI {
         String operatingSystem = System.getProperty("os.name");
         if (operatingSystem.toLowerCase().contains("windows")) {
             windowsOS = true;
+            ocsswRootEnv = ocsswRootDocker;
         } else {
             windowsOS = false;
         }
@@ -175,7 +178,7 @@ public class GetSysInfoGUI {
         String appNameVersion = snapapp.getInstanceName() + " " + SystemUtils.getReleaseVersion();
         String appName = SystemUtils.getApplicationName();
         String appReleaseVersionFromPOM = SystemUtils.getReleaseVersion();
-        String ocsswRootDocker = SystemUtils.getUserHomeDir().toString() + File.separator + "ocssw";
+
         File appHomeDir = SystemUtils.getApplicationHomeDir();
         File appDataDir = SystemUtils.getApplicationDataDir();
 
@@ -645,7 +648,7 @@ public class GetSysInfoGUI {
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
             }
         } else if ((!Files.exists(Paths.get(ocsswRootDocker))) && "docker".equals(ocsswLocation)){
-            currentInfoLine = "  Warning! Processers not installed " + "\n\n";
+            currentInfoLine = "  Warning (for docker)! Processers not installed " + "\n\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
 
@@ -654,7 +657,7 @@ public class GetSysInfoGUI {
         } else {
 
             if (!Files.isExecutable(Paths.get(ocsswDockerSeadasInfoPath)) && "docker".equals(ocsswLocation)) {
-                currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW DOcker bin directory" + "\n\n";
+                currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW Docker bin directory" + "\n\n";
                 sysInfoText += currentInfoLine;
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
 
@@ -668,7 +671,7 @@ public class GetSysInfoGUI {
                 printGeneralSystemInfo(ocsswDebug);
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
             } else {
-            System.out.println("command is: " + command);
+            System.out.println("command is: " + command.toString());
                 currentInfoLine = "";
                 try {
 
@@ -713,7 +716,7 @@ public class GetSysInfoGUI {
                     }
 
                 } catch (IOException e) {
-                    String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command + "\' failed";
+                    String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command.toString() + "\' failed";
                     currentInfoLine = warning + "\n";
                     currentInfoLine += e.toString() + "\n";
                     sysInfoText += currentInfoLine;
