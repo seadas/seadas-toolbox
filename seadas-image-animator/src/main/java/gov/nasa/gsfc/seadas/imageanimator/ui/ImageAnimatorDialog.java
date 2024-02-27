@@ -401,7 +401,8 @@ public class ImageAnimatorDialog extends JDialog {
                                                     Animation animation = new Animation();
                                                     animation.setSortMethod((String) sortMethodJComboBox.getSelectedItem());
                                                     ImageIcon[] images = animation.openImages(treePath);
-                                                    AnimationWithSpeedControl.setInputFileLocation(inputFile.getParent());
+                                                    //AnimationWithSpeedControl.setInputFileLocation(inputFile.getParent());
+                                                    AnimationWithSpeedControl.setInputFileLocation(inputFile.getAbsolutePath());
                                                     AnimationWithSpeedControl.animate(images);
                                                     animateImagesButton.setEnabled(true);
                                                     createImagesButton.setEnabled(false);

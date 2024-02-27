@@ -264,10 +264,10 @@ public class AnimationWithSpeedControl extends JPanel
                 BufferedImage firstImage = (BufferedImage) images[0].getImage();
                 ImageOutputStream output = null;
                 GifSequenceWriter writer = null;
+                String animationFileName = inputFileLocation + "_animation.gif";
                 try {
                     // create a new BufferedOutputStream with the output file name
-                    //todo This should be done differently
-                    output = new FileImageOutputStream(new File(inputFileLocation + File.separator + "animation1"));
+                    output = new FileImageOutputStream(new File(animationFileName));
 
                     // create a gif sequence with the type of the first image, 1 second between frames, which loops continuously
                     writer = new GifSequenceWriter(output, firstImage.getType(), 1, true);
@@ -280,6 +280,7 @@ public class AnimationWithSpeedControl extends JPanel
                     }
                     writer.close();
                     output.close();
+                    JOptionPane.showMessageDialog(null, "Animation is saved as " + animationFileName );
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
