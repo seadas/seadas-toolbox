@@ -162,6 +162,30 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                     for (int wvl = 380; wvl < 390; wvl++) {
                         autoGroupingStr += "I_*_" + wvl + ":";
                     }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "i_*_" + wvl + ":";
+                    }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "aolp_*_" + wvl + ":";
+                    }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "dolp_*_" + wvl + ":";
+                    }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "q_*_" + wvl + ":";
+                    }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "u_*_" + wvl + ":";
+                    }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "qc_*_" + wvl + ":";
+                    }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "q_over_i_*_" + wvl + ":";
+                    }
+                    for (int wvl = 380; wvl < 390; wvl++) {
+                        autoGroupingStr += "u_over_i_*_" + wvl + ":";
+                    }
                     autoGroupingStr += "I:I_noise:I_noisefree:I_polsample:" +
                             "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
                             "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
