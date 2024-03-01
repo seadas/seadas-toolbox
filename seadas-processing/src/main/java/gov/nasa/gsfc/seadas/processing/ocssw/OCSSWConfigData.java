@@ -61,8 +61,8 @@ public class OCSSWConfigData {
     //public final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasClientServerShared";
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_NAME = "seadasClientServerShared";
     final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "false";
-    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "T2023.33";
-    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT = "V2023.3";
+    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "T2024.9";
+    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT = "";
     public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT2 = "";
 
 
