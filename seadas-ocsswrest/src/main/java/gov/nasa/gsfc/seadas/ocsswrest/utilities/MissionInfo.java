@@ -26,6 +26,7 @@ public class MissionInfo {
         MOS,
         MSIS2A,
         MSIS2B,
+        OCI,
         OCTS,
         OSMI,
         SEAWIFS,
@@ -64,6 +65,9 @@ public class MissionInfo {
 
     public final static String[] MSIS2B_NAMES = {"MSIS2B", "MSI S2B"};
     public final static String MSIS2B_DIRECTORY = "msi/s2b";
+
+    public final static String[] OCI_NAMES = {"OCI};
+    public final static String OCI_DIRECTORY = "oci";
 
     public final static String[] CZCS_NAMES = {"CZCS"};
     public final static String CZCS_DIRECTORY = "czcs";
@@ -153,6 +157,7 @@ public class MissionInfo {
         directories.put(Id.MERIS, MERIS_DIRECTORY);
         directories.put(Id.MSIS2A, MSIS2A_DIRECTORY);
         directories.put(Id.MSIS2B, MSIS2B_DIRECTORY);
+        directories.put(Id.OCI, OCI_DIRECTORY);
         directories.put(Id.CZCS, CZCS_DIRECTORY);
         directories.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
         directories.put(Id.AVHRR, AVHRR_DIRECTORY);
@@ -180,6 +185,7 @@ public class MissionInfo {
         names.put(Id.MERIS, MERIS_NAMES);
         names.put(Id.MSIS2A, MSIS2A_NAMES);
         names.put(Id.MSIS2B, MSIS2B_NAMES);
+        names.put(Id.OCI, OCI_NAMES);
         names.put(Id.CZCS, CZCS_NAMES);
         names.put(Id.AQUARIUS, AQUARIUS_NAMES);
         names.put(Id.AVHRR, AVHRR_NAMES);

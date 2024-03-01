@@ -56,6 +56,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     "MERIS",
                     "MSIS2A",
                     "MSIS2B",
+                    "OCI",
                     "MODISA",
                     "MODIST",
                     "MOS",

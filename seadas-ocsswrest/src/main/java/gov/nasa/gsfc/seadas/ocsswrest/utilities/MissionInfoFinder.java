@@ -46,6 +46,7 @@ public class MissionInfoFinder {
         MOS("MOS"),
         MSIS2A("MSIS2A"),
         MSIS2B("MSIS2B"),
+        OCI("OCI"),
         OCM1("OCM1"),
         OCM2("OCM2"),
         OCTS("OCTS"),
@@ -86,6 +87,7 @@ public class MissionInfoFinder {
         MOS("mos"),
         MSIS2A("msi/s2a"),
         MSIS2B("msi/s2b"),
+        OCI("oci"),
         OCM1("ocm1"),
         OCM2("ocm2"),
         OCTS("octs"),
@@ -250,6 +252,7 @@ public class MissionInfoFinder {
         MOS,
         MSIS2A,
         MSIS2B,
+        OCI,
         OCTS,
         OSMI,
         SEAWIFS,
@@ -278,6 +281,7 @@ public class MissionInfoFinder {
             Id.MOS,
             Id.MSIS2A,
             Id.MSIS2B,
+            Id.OCI,
             Id.OCTS,
             Id.OSMI,
             Id.SEAWIFS,
@@ -333,6 +337,9 @@ public class MissionInfoFinder {
 
     public final static String[] MSIS2B_NAMES = {"MSIS2B", "MSI 2B"};
     public final static String MSIS2B_DIRECTORY = "msi/s2b";
+
+    public final static String[] OCI_NAMES = {"OCI"};
+    public final static String OCI_DIRECTORY = "oci";
 
     public final static String[] OCM1_NAMES = {"OCM1"};
     public final static String OCM1_DIRECTORY = "ocm1";
@@ -398,6 +405,7 @@ public class MissionInfoFinder {
         directories.put(Id.MOS, MOS_DIRECTORY);
         directories.put(Id.MSIS2A, MSIS2A_DIRECTORY);
         directories.put(Id.MSIS2B, MSIS2B_DIRECTORY);
+        directories.put(Id.OCI, OCI_DIRECTORY);
         directories.put(Id.OCM1, OCM1_DIRECTORY);
         directories.put(Id.OCM2, OCM2_DIRECTORY);
         directories.put(Id.HICO, HICO_DIRECTORY);
@@ -425,6 +433,7 @@ public class MissionInfoFinder {
         names.put(Id.MOS, MOS_NAMES);
         names.put(Id.MSIS2A, MSIS2A_NAMES);
         names.put(Id.MSIS2B, MSIS2B_NAMES);
+        names.put(Id.OCI, OCI_NAMES);
         names.put(Id.OCM1, OCM1_NAMES);
         names.put(Id.OCM2, OCM2_NAMES);
         names.put(Id.HICO, HICO_NAMES);
