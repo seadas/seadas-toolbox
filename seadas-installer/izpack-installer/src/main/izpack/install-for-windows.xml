@@ -203,8 +203,8 @@
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <os family="windows"/>
                 <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe" />
-                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt.bat" />
-                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert.bat" />
+                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt" />
+                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert" />
             </executable>
         </pack>
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
