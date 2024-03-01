@@ -30,7 +30,7 @@ class LandMasksData {
     private boolean createMasks = false;
     private boolean deleteMasks = false;
 
-    private int superSampling = 3;
+    private int superSampling = 1;
     private int coastalGridSize = 3;
     private int coastalSizeTolerance = 50;
 
@@ -42,6 +42,7 @@ class LandMasksData {
     private boolean showLandMaskAllBands = true;
     private boolean showWaterMaskAllBands = false;
     private boolean showCoastlineMaskAllBands = false;
+    private boolean createCoastline = false;
 
     private Color landMaskColor = new Color(51, 51, 51);
     private Color waterMaskColor = new Color(0, 125, 255);
@@ -218,6 +219,15 @@ class LandMasksData {
     public void setShowCoastlineMaskAllBands(boolean showCoastlineMaskAllBands) {
         this.showCoastlineMaskAllBands = showCoastlineMaskAllBands;
     }
+
+    public boolean isCreateCoastline() {
+        return createCoastline;
+    }
+
+    public void setCreateCoastline(boolean createCoastline) {
+        this.createCoastline = createCoastline;
+    }
+
 
     public Color getLandMaskColor() {
         return landMaskColor;

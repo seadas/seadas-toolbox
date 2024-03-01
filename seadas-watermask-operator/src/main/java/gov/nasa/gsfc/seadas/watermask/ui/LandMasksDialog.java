@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.watermask.ui;
 
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
+import org.openide.awt.ColorComboBox;
 import org.openide.util.HelpCtx;
 
 import javax.help.HelpBroker;
@@ -10,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -125,6 +128,8 @@ class LandMasksDialog extends JDialog {
 
         final int rightInset = 5;
 
+        final CoastlineCreateCheckbox coastlineCreateCheckbox = new CoastlineCreateCheckbox(landMasksData);
+
         final CoastlineEnabledAllBandsCheckbox coastlineEnabledAllBandsCheckbox = new CoastlineEnabledAllBandsCheckbox(landMasksData);
         final WaterEnabledAllBandsCheckbox waterEnabledAllBandsCheckbox = new WaterEnabledAllBandsCheckbox(landMasksData);
         final LandEnabledAllBandsCheckbox landEnabledAllBandsCheckbox = new LandEnabledAllBandsCheckbox(landMasksData);
@@ -185,45 +190,106 @@ class LandMasksDialog extends JDialog {
         coastlineNameTextfield.setEditable(false);
         coastlineNameTextfield.setToolTipText("Name of the mask (this field is not editable)");
 
+        JLabel coastlineNameLabel = new JLabel("Mask Name");
 
-        coastlineJPanel.add(new JLabel("Mask Name"),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        coastlineJPanel.add(coastlineCreateCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        coastlineJPanel.add(coastlineCreateCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        coastlineJPanel.add(coastlineNameLabel,
+                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         coastlineJPanel.add(coastlineNameTextfield,
-                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
         coastlineJPanel.add(coastalGridSizeSpinner.getjLabel(),
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        coastlineJPanel.add(coastalGridSizeSpinner.getjSpinner(),
-                new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        coastlineJPanel.add(coastalSizeToleranceSpinner.getjLabel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        coastlineJPanel.add(coastalSizeToleranceSpinner.getjSpinner(),
+        coastlineJPanel.add(coastalGridSizeSpinner.getjSpinner(),
                 new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        coastlineJPanel.add(coastalSizeToleranceSpinner.getjLabel(),
+                new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        coastlineJPanel.add(coastalSizeToleranceSpinner.getjSpinner(),
+                new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
         coastlineJPanel.add(coastlineColorComboBox.getjLabel(),
-                new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
-
-        coastlineJPanel.add(coastlineColorComboBox.getColorExComboBox(),
-                new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
-
-        coastlineJPanel.add(coastlineTransparencySpinner.getjLabel(),
                 new ExGridBagConstraints(0, 4, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        coastlineJPanel.add(coastlineTransparencySpinner.getjSpinner(),
+        coastlineJPanel.add(coastlineColorComboBox.getColorExComboBox(),
                 new ExGridBagConstraints(1, 4, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjLabel(),
+        coastlineJPanel.add(coastlineTransparencySpinner.getjLabel(),
                 new ExGridBagConstraints(0, 5, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjCheckBox(),
+        coastlineJPanel.add(coastlineTransparencySpinner.getjSpinner(),
                 new ExGridBagConstraints(1, 5, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 6, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        coastlineJPanel.add(coastlineEnabledAllBandsCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, 6, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+
+        coastlineNameLabel.setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastlineNameTextfield.setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastalGridSizeSpinner.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastalGridSizeSpinner.getjSpinner().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastalSizeToleranceSpinner.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastalSizeToleranceSpinner.getjSpinner().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastlineColorComboBox.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastlineColorComboBox.getColorExComboBox().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastlineTransparencySpinner.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastlineTransparencySpinner.getjSpinner().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastlineEnabledAllBandsCheckbox.getjCheckBox().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+        coastlineEnabledAllBandsCheckbox.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+
+
+
+        coastlineCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                coastlineNameLabel.setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastlineNameTextfield.setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastalGridSizeSpinner.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastalGridSizeSpinner.getjSpinner().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastalSizeToleranceSpinner.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastalSizeToleranceSpinner.getjSpinner().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastlineColorComboBox.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastlineColorComboBox.getColorExComboBox().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                if (coastlineCreateCheckbox.getjCheckBox().isSelected()) {
+//                    ((ColorComboBox) coastlineColorComboBox.getColorExComboBox()).setSelectedColor(landMasksData.getCoastlineMaskColor());
+//                } else {
+//                    ((ColorComboBox) coastlineColorComboBox.getColorExComboBox()).setSelectedColor(Color.lightGray);
+//                }
+                coastlineTransparencySpinner.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastlineTransparencySpinner.getjSpinner().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastlineEnabledAllBandsCheckbox.getjCheckBox().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+                coastlineEnabledAllBandsCheckbox.getjLabel().setEnabled(coastlineCreateCheckbox.getjCheckBox().isSelected());
+
+
+//                coastlineNameLabel.setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineNameTextfield.setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastalGridSizeSpinner.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastalGridSizeSpinner.getjSpinner().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastalSizeToleranceSpinner.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastalSizeToleranceSpinner.getjSpinner().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineColorComboBox.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineColorComboBox.getColorExComboBox().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineTransparencySpinner.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineTransparencySpinner.getjSpinner().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineEnabledAllBandsCheckbox.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineEnabledAllBandsCheckbox.getjCheckBox().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//                coastlineEnabledAllBandsCheckbox.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+            }
+        });
 
 
         JPanel waterJPanel = new JPanel(new GridBagLayout());
@@ -363,6 +429,22 @@ class LandMasksDialog extends JDialog {
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
         setSize(getPreferredSize());
+
+
+//        coastlineNameLabel.setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineNameTextfield.setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastalGridSizeSpinner.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastalGridSizeSpinner.getjSpinner().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastalSizeToleranceSpinner.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastalSizeToleranceSpinner.getjSpinner().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineColorComboBox.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineColorComboBox.getColorExComboBox().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineTransparencySpinner.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineTransparencySpinner.getjSpinner().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineEnabledAllBandsCheckbox.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineEnabledAllBandsCheckbox.getjCheckBox().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+//        coastlineEnabledAllBandsCheckbox.getjLabel().setVisible(coastlineCreateCheckbox.getjCheckBox().isSelected());
+
     }
 }
 

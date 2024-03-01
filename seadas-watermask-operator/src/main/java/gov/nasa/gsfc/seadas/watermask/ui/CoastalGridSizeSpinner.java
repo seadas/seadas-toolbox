@@ -21,7 +21,7 @@ public class CoastalGridSizeSpinner {
 
         jLabel.setToolTipText("Coastal pixel grid size");
 
-        jSpinner.setModel(new SpinnerNumberModel(19, 1, 19, 2));
+        jSpinner.setModel(new SpinnerNumberModel(19, 2, 19, 2));
 
         jSpinner.setPreferredSize(jSpinner.getPreferredSize());
         jSpinner.setSize(jSpinner.getPreferredSize());

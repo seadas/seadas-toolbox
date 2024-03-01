@@ -95,7 +95,7 @@ public final class Landmask_Controller extends DefaultConfigController {
     public static final String PROPERTY_LANDMASK_SHOW_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.show";
     public static final String PROPERTY_LANDMASK_SHOW_LABEL = "Land Mask Show";
     public static final String PROPERTY_LANDMASK_SHOW_TOOLTIP = "Land mask will be displayed in all bands ";
-    public static final boolean PROPERTY_LANDMASK_SHOW_DEFAULT = true;
+    public static final boolean PROPERTY_LANDMASK_SHOW_DEFAULT = false;
 
 
 

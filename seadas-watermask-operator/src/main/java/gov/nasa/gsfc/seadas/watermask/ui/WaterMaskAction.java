@@ -238,15 +238,19 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                                     //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
 
-
+                                    boolean createCoastBand = landMasksData.isCreateCoastline();
+                                    Mask coastlineMask = null;
                                     int boxSize = landMasksData.getCoastalGridSize();
-                                    final Filter meanFilter = new Filter("Mean " + Integer.toString(boxSize) + "x" + Integer.toString(boxSize), "mean" + Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
-                                    final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
-                                            meanFilter.getKernelHeight(),
-                                            meanFilter.getKernelOffsetX(),
-                                            meanFilter.getKernelOffsetY(),
-                                            1.0 / meanFilter.getKernelQuotient(),
-                                            meanFilter.getKernelElements());
+
+                                    if (createCoastBand && boxSize > 1) {
+
+                                        final Filter meanFilter = new Filter("Mean " + Integer.toString(boxSize) + "x" + Integer.toString(boxSize), "mean" + Integer.toString(boxSize), Filter.Operation.MEAN, boxSize, boxSize);
+                                        final Kernel meanKernel = new Kernel(meanFilter.getKernelWidth(),
+                                                meanFilter.getKernelHeight(),
+                                                meanFilter.getKernelOffsetX(),
+                                                meanFilter.getKernelOffsetY(),
+                                                1.0 / meanFilter.getKernelQuotient(),
+                                                meanFilter.getKernelElements());
 
 
 //                                    final Kernel arithmeticMean3x3Kernel = new Kernel(3, 3, 1.0 / 9.0,
@@ -256,31 +260,32 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 //                                                    +1, +1, +1,
 //                                            });
 //todo: 4th argument to ConvolutionFilterBand is a dummy value added to make it compile...may want to look at this...
-                                    int count = 1;
+                                        int count = 1;
 //                                    final ConvolutionFilterBand filteredCoastlineBand = new ConvolutionFilterBand(
 //                                            landMasksData.getWaterFractionSmoothedName(),
 //                                            waterFractionBand,
 //                                            arithmeticMean3x3Kernel, count);
 
-                                    final FilterBand filteredCoastlineBand = new GeneralFilterBand(landMasksData.getWaterFractionSmoothedName(), waterFractionBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
-                                    if (waterFractionBand instanceof Band) {
-                                        ProductUtils.copySpectralBandProperties((Band) waterFractionBand, filteredCoastlineBand);
+                                        final FilterBand filteredCoastlineBand = new GeneralFilterBand(landMasksData.getWaterFractionSmoothedName(), waterFractionBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
+                                        if (waterFractionBand instanceof Band) {
+                                            ProductUtils.copySpectralBandProperties((Band) waterFractionBand, filteredCoastlineBand);
+                                        }
+
+
+                                        product.addBand(filteredCoastlineBand);
+
+
+                                        coastlineMask = Mask.BandMathsType.create(
+                                                landMasksData.getCoastlineMaskName(),
+                                                landMasksData.getCoastlineMaskDescription(),
+                                                product.getSceneRasterWidth(),
+                                                product.getSceneRasterHeight(),
+                                                landMasksData.getCoastalMath(),
+                                                landMasksData.getCoastlineMaskColor(),
+                                                landMasksData.getCoastlineMaskTransparency());
+                                        maskGroup.add(coastlineMask);
+
                                     }
-
-
-                                    product.addBand(filteredCoastlineBand);
-
-
-                                    Mask coastlineMask = Mask.BandMathsType.create(
-                                            landMasksData.getCoastlineMaskName(),
-                                            landMasksData.getCoastlineMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            landMasksData.getCoastalMath(),
-                                            landMasksData.getCoastlineMaskColor(),
-                                            landMasksData.getCoastlineMaskTransparency());
-                                    maskGroup.add(coastlineMask);
-
 
                                     Mask landMask = Mask.BandMathsType.create(
                                             landMasksData.getLandMaskName(),
@@ -310,8 +315,10 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                     String[] bandNames = product.getBandNames();
                                     for (String bandName : bandNames) {
                                         RasterDataNode raster = product.getRasterDataNode(bandName);
-                                        if (landMasksData.isShowCoastlineMaskAllBands()) {
-                                            raster.getOverlayMaskGroup().add(coastlineMask);
+                                        if (createCoastBand && coastlineMask != null) {
+                                            if (landMasksData.isShowCoastlineMaskAllBands()) {
+                                                raster.getOverlayMaskGroup().add(coastlineMask);
+                                            }
                                         }
                                         if (landMasksData.isShowLandMaskAllBands()) {
                                             raster.getOverlayMaskGroup().add(landMask);

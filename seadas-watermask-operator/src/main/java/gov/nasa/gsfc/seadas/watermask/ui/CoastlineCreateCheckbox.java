@@ -11,23 +11,23 @@ import java.awt.event.ItemListener;
  * Time: 10:27 AM
  * To change this template use File | Settings | File Templates.
  */
-public class CoastlineEnabledAllBandsCheckbox {
+public class CoastlineCreateCheckbox {
     private LandMasksData landMasksData;
 
     private JLabel jLabel;
     private JCheckBox jCheckBox = new JCheckBox();
 
-    private static String DEFAULT_NAME = "Enabled in All Bands";
-    private static String DEFAULT_TOOLTIPS = "Set Coastline Mask Enabled in All Bands";
+    private static String DEFAULT_NAME = "Create Coastline Mask/Bands";
+    private static String DEFAULT_TOOLTIPS = "Note: this can take longer to run";
 
-    public CoastlineEnabledAllBandsCheckbox(LandMasksData landMasksData) {
+    public CoastlineCreateCheckbox(LandMasksData landMasksData) {
 
 
         this.landMasksData = landMasksData;
 
         jLabel = new JLabel(DEFAULT_NAME);
         jLabel.setToolTipText(DEFAULT_TOOLTIPS);
-        jCheckBox.setSelected(landMasksData.isShowCoastlineMaskAllBands());
+        jCheckBox.setSelected(landMasksData.isCreateCoastline());
 
         addControlListeners();
     }
@@ -36,7 +36,7 @@ public class CoastlineEnabledAllBandsCheckbox {
         jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                landMasksData.setShowCoastlineMaskAllBands(jCheckBox.isSelected());
+                landMasksData.setCreateCoastline(jCheckBox.isSelected());
             }
         });
     }
