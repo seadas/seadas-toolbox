@@ -22,9 +22,9 @@ import javax.swing.*;
         popupText = "#CTL_ L3BinDumpAction_Name"
 )
 @ActionReference(
-        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors",
-        position = 451,
-        separatorBefore = 450
+        path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/Tools",
+        position = 451
+//        separatorBefore = 450
 
 )
 @NbBundle.Messages({

@@ -27,6 +27,9 @@ public class FileTypeInfo {
         L2MAP,
         L2BRS,
         L2BIN,
+        L2MERGE,
+        L3BINMERGE,
+        GEOMASKGEN,
         L3,
         L3BIN,
         L3SMI,
@@ -48,6 +51,9 @@ public class FileTypeInfo {
     private final static String[] L2MAP_NAMES = null;
     private final static String[] L2BRS_NAMES = {"Level 2 Browse Data"};
     private final static String[] L2BIN_NAMES = null;
+    private final static String[] L2MERGE_NAMES = null;
+    private final static String[] L3BINMERGE_NAMES = null;
+    private final static String[] GEOMASKGEN_NAMES = null;
     private final static String[] L3_NAMES = {"Level 3"};
     private final static String[] L3BIN_NAMES = {"Level 3 Binned"};
     private final static String[] L3SMI_NAMES = {"Level 3 SMI"};
@@ -87,6 +93,9 @@ public class FileTypeInfo {
         nameLookup.put(Id.L2MAP, L2MAP_NAMES);
         nameLookup.put(Id.L2BRS, L2BRS_NAMES);
         nameLookup.put(Id.L2BIN, L2BIN_NAMES);
+        nameLookup.put(Id.L2MERGE, L2MERGE_NAMES);
+        nameLookup.put(Id.L3BINMERGE, L3BINMERGE_NAMES);
+        nameLookup.put(Id.GEOMASKGEN, GEOMASKGEN_NAMES);
         nameLookup.put(Id.L3BIN, L3BIN_NAMES);
         nameLookup.put(Id.L3, L3_NAMES);
         nameLookup.put(Id.L3SMI, L3SMI_NAMES);

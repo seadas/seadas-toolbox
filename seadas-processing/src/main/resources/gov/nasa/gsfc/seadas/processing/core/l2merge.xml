@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value></value>
+            <default></default>
+            <description>list of input L2 files</description>
+            <source>command line</source>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
+            <usedAs>argument</usedAs>
+            <order>0</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value>l2merged.nc</value>
+            <default></default>
+            <description>merged level-2 file</description>
+            <alias>ofile1</alias>
+            <usedAs>argument</usedAs>
+            <order>1</order>
+        </option>
+        <option type="string">
+            <name>product</name>
+            <value></value>
+            <default></default>
+            <description>
+            </description>
+            <usedAs>option_minusminus</usedAs>
+            <colSpan>4</colSpan>
+            <order>2</order>
+        </option>
+
+        <option type="boolean">
+            <name>verbose</name>
+            <value>true</value>
+            <default>false</default>
+            <description>Allow more verbose screen messages [default should be true for GUI]</description>
+            <usedAs>flag_minusminus</usedAs>
+            <order>3</order>
+        </option>
+
+    </options>
+</paramInfo>

@@ -32,6 +32,10 @@
             <folder name="SeaDAS Processors">
                 <attr name="position" intvalue="1000"/>
 
+                <folder name="Tools">
+                    <attr name="position" intvalue="10"/>
+                </folder>
+
                 <folder name="HawkEye">
                     <attr name="position" intvalue="20"/>
                 </folder>

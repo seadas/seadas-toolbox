@@ -32,6 +32,8 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
 
     public static final String USED_IN_COMMAND_AS_ARGUMENT = "argument";
     public static final String USED_IN_COMMAND_AS_OPTION = "option";
+    public static final String USED_IN_COMMAND_AS_OPTION_MINUSMINUS = "option_minusminus";
+    public static final String USED_IN_COMMAND_AS_FLAG_MINUSMINUS = "flag_minusminus";
     public static final String USED_IN_COMMAND_AS_FLAG = "flag";
 
     public static final String[] FILE_COMPRESSION_SUFFIXES = {"bz2", "bzip2", "gz", "gzip", "zip", "tar", "tgz", "z"};
@@ -424,6 +426,18 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
                     return name + "=\"" + value + "\"";
                 } else {
                     return name + "=" + value;
+                }
+            case USED_IN_COMMAND_AS_OPTION_MINUSMINUS:
+                if (value.contains(" ")) {
+                    return "--" + name + " \"" + value + "\"";
+                } else {
+                    return "--" + name + " " + value;
+                }
+            case USED_IN_COMMAND_AS_FLAG_MINUSMINUS:
+                if (isTrue()) {
+                    return "--" + name;
+                } else {
+                    return "";
                 }
              default:
                  return "";

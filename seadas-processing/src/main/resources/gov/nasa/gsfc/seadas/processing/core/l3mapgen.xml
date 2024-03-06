@@ -352,7 +352,7 @@
             </validValues>
             <description>proj.4 projection string or one of the following predefined projections:</description>
             <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
+            <colSpan>3</colSpan>
             <order>3</order>
         </option>
         <option type="string">

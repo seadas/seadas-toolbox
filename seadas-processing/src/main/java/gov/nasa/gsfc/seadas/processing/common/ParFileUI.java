@@ -36,7 +36,9 @@ public class ParFileUI {
         openInAppCheckBox = new JCheckBox("Open in " + SnapApp.getDefault().getAppContext().getApplicationName());
         openInAppCheckBox.setSelected(pm.isOpenInSeadas());
         if ("l2bin".equals(pm.getProgramName()) ||
-                "l3bin".equals(pm.getProgramName())) {
+                "l3bin".equals(pm.getProgramName()) ||
+                "l3binmerge".equals(pm.getProgramName())
+        ) {
             openInAppCheckBox.setSelected(false);
             openInAppCheckBox.setVisible(false);
         }

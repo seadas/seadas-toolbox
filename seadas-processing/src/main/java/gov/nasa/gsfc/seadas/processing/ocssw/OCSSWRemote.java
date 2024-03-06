@@ -1080,6 +1080,12 @@ public class OCSSWRemote extends OCSSW {
                     if (option.getValue() != null && option.getValue().length() > 0) {
                         commandArrayList.add(optionValue);
                     }
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION_MINUSMINUS) && !option.getDefaultValue().equals(option.getValue())) {
+                    commandArrayList.add("--" + option.getName() + " " + optionValue);
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG_MINUSMINUS) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+                    if (option.getName() != null && option.getName().length() > 0) {
+                        commandArrayList.add("--" + option.getName());
+                    }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
                     commandArrayList.add(option.getName() + "=" + optionValue);
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {

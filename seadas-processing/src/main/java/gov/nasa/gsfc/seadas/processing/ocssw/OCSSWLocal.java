@@ -324,6 +324,15 @@ public class OCSSWLocal extends OCSSW {
         if(programName.equals("l1bgen_generic")){
             programName = "l1bgen";
         }
+        if (programName.equals("l2merge")) {
+            return "l2merge_output.nc";
+        }
+        if (programName.equals("l3binmerge")) {
+            return "l3binmerge_output.nc";
+        }
+        if (programName.equals("geomask_gen")) {
+            return "geomask_output.nc";
+        }
         String[] commandArrayParams = {GET_OUTPUT_NAME_PROGRAM_NAME, ifileName, programName};
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
         return ofileName;
@@ -510,6 +519,12 @@ public class OCSSWLocal extends OCSSW {
                 if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_ARGUMENT)) {
                     if (option.getValue() != null && option.getValue().length() > 0) {
                         commandArrayList.add(optionValue);
+                    }
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION_MINUSMINUS) && !option.getDefaultValue().equals(option.getValue())) {
+                    commandArrayList.add("--" + option.getName() + " " + optionValue);
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG_MINUSMINUS) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+                    if (option.getName() != null && option.getName().length() > 0) {
+                        commandArrayList.add("--" + option.getName());
                     }
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue())) {
                     commandArrayList.add(option.getName() + "=" + optionValue);

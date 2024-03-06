@@ -29,6 +29,9 @@ public class ProcessorTypeInfo {
 //        L1MAPGEN,
 //        L2MAPGEN,
         L2BIN,
+        L2MERGE,
+        L3BINMERGE,
+        GEOMASKGEN,
 //        L2BIN_AQUARIUS,
         L3BIN,
         L3MAPGEN,
@@ -73,6 +76,9 @@ public class ProcessorTypeInfo {
 //        put("l1mapgen", ProcessorID.L1MAPGEN);
 //        put("l2mapgen", ProcessorID.L2MAPGEN);
         put("l2bin", ProcessorID.L2BIN);
+        put("l2merge", ProcessorID.L2MERGE);
+        put("l3binmerge", ProcessorID.L3BINMERGE);
+        put("geomask_gen", ProcessorID.GEOMASKGEN);
 //        put("l2bin_aquarius", ProcessorID.L2BIN_AQUARIUS);
         put("l2gen", ProcessorID.L2GEN);
         put("l3gen", ProcessorID.L3GEN);

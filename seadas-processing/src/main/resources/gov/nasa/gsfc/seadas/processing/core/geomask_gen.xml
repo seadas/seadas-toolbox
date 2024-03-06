@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifiles</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifiles</name>
+            <value></value>
+            <default></default>
+            <description>input (either WKT or Shapefiles)</description>
+            <source>command line</source>
+            <aliases>
+                <alias>ifile1</alias>
+            </aliases>
+            <usedAs>option_minusminus</usedAs>
+            <order>0</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value>l2merged.nc</value>
+            <default></default>
+            <description>region masked output file</description>
+            <alias>ofile1</alias>
+            <usedAs>option_minusminus</usedAs>
+            <order>1</order>
+        </option>
+
+        <option type="float">
+            <name>stepsize</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>stepsize along latitude (resolution in degrees)</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>2</order>
+        </option>
+
+        <option type="boolean">
+            <name>wkt</name>
+            <value>false</value>
+            <default>false</default>
+            <description>indicate that input files are ASCII files which contains WKT strings</description>
+            <usedAs>flag_minusminus</usedAs>
+            <order>3</order>
+        </option>
+
+        <option type="boolean">
+            <name>global_set</name>
+            <value>false</value>
+            <default>false</default>
+            <description>indicate global coverage</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>4</order>
+        </option>
+    </options>
+</paramInfo>
