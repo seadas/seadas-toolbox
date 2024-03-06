@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.imageanimator.ui;
 
-import gov.nasa.gsfc.seadas.imageanimator.data.ImageAnimatorData;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
@@ -43,7 +42,7 @@ public class ImageAnimatorDialog extends JDialog {
 
     Band selectedBand;
     RasterDataNode raster;
-    ArrayList<ImageAnimatorData> imageAnimators;
+//    ArrayList<ImageAnimatorData> imageAnimators;
     ArrayList<String> activeBands;
 
     private SwingPropertyChangeSupport propertyChangeSupport;
@@ -87,24 +86,24 @@ public class ImageAnimatorDialog extends JDialog {
             bandGroup.toArray(bands);
             this.activeBands = activeBands;
 
-            imageAnimators = new ArrayList<ImageAnimatorData>();
-            propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
+//            imageAnimators = new ArrayList<ImageAnimatorData>();
+//            propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
             propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
             createImageAnimatorUI();
         }
         imageAnimatorCanceled = true;
     }
 
-    private PropertyChangeListener getBandPropertyListener() {
-        return new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                for (ImageAnimatorData imageAnimatorData : imageAnimators) {
-                    imageAnimatorData.setBand(selectedBand);
-                }
-            }
-        };
-    }
+//    private PropertyChangeListener getBandPropertyListener() {
+//        return new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                for (ImageAnimatorData imageAnimatorData : imageAnimators) {
+//                    imageAnimatorData.setBand(selectedBand);
+//                }
+//            }
+//        };
+//    }
 
     private PropertyChangeListener getDeleteButtonPropertyListener() {
         return new PropertyChangeListener() {
