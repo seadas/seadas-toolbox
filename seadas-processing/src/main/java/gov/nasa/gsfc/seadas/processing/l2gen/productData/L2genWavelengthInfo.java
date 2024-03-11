@@ -43,7 +43,10 @@ public class L2genWavelengthInfo extends L2genBaseInfo {
     public L2genWavelengthInfo(String wavelengthStr) {
         super(wavelengthStr);
         try {
-            this.wavelength = Integer.parseInt(wavelengthStr);
+            double wavelengthDouble = Double.valueOf(wavelengthStr);
+            long wavelengthRounded = Math.round(wavelengthDouble);
+            String wavelengthRoundedString = String.valueOf(wavelengthRounded);
+            this.wavelength = Integer.parseInt(wavelengthRoundedString);
         } catch (Exception e) {
             this.wavelength = NULL_WAVELENGTH;
         }
