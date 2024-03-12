@@ -66,7 +66,7 @@ public class MissionInfo {
     public final static String[] MSIS2B_NAMES = {"MSIS2B", "MSI S2B"};
     public final static String MSIS2B_DIRECTORY = "msi/s2b";
 
-    public final static String[] OCI_NAMES = {"OCI};
+    public final static String[] OCI_NAMES = {"OCI"};
     public final static String OCI_DIRECTORY = "oci";
 
     public final static String[] CZCS_NAMES = {"CZCS"};

@@ -17,6 +17,7 @@ import java.nio.channels.ReadableByteChannel;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.*;
 import static java.nio.file.StandardCopyOption.*;
+
 /**
  * Created by aabduraz on 3/27/17.
  */
@@ -150,10 +151,10 @@ public class OCSSWServerModel {
     public static boolean isMissionDirExist(String missionName) {
         MissionInfo missionInfo = new MissionInfo(missionName);
         File dir = missionInfo.getSubsensorDirectory();
-        if(dir == null) {
+        if (dir == null) {
             dir = missionInfo.getDirectory();
         }
-        if(dir != null) {
+        if (dir != null) {
             return dir.isDirectory();
         }
         return false;
@@ -197,10 +198,12 @@ public class OCSSWServerModel {
     }
 
     public static boolean isOcsswInstalScriptDownloadSuccessful() {
-    return ocsswInstalScriptDownloadSuccessful;
-}
+        return ocsswInstalScriptDownloadSuccessful;
+    }
+
     /**
      * This method downloads the ocssw installer program ocssw_install to a tmp directory
+     *
      * @return
      */
     public static boolean downloadOCSSWInstaller() {
@@ -257,21 +260,18 @@ public class OCSSWServerModel {
         }
     }
 
-    public static void copyNetrcFile(){
-        File targetFile = new File(System.getProperty("user.home") + File.separator +  ".netrc");
-        targetFile.createNewFile();
-        Path targetPath = targetFile.toPath();
-        File sourceFile = new File(System.getProperty("user.home") + File.separator +  "seadasClientServerShared" + File.separator +  ".netrc");
-        Path sourcePath = sourceFile.toPath();
-        System.out.println(".netrc in seadasClientServer " + sourceFile.exists());
-        System.out.println(".netrc in home dir " + targetFile.exists());
-        if (sourceFile.exists() && !targetFile.exists()) {
-            try {
-                Files.copy(sourcePath, targetPath, REPLACE_EXISTING);
-
-            } catch (java.io.IOException ioException) {
-                ioException.printStackTrace();
-            }
+    public static void copyNetrcFile() {
+        File targetFile = new File(System.getProperty("user.home") + File.separator + ".netrc");
+        try {
+            targetFile.createNewFile();
+            Path targetPath = targetFile.toPath();
+            File sourceFile = new File(System.getProperty("user.home") + File.separator + "seadasClientServerShared" + File.separator + ".netrc");
+            Path sourcePath = sourceFile.toPath();
+            System.out.println(".netrc in seadasClientServer " + sourceFile.exists());
+            System.out.println(".netrc in home dir " + targetFile.exists());
+            Files.copy(sourcePath, targetPath, REPLACE_EXISTING);
+        } catch (java.io.IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 }
