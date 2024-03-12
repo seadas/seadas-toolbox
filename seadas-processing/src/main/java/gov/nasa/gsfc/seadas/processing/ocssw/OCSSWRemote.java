@@ -975,11 +975,19 @@ public class OCSSWRemote extends OCSSW {
                     } else if (option.getValue() != null && option.getValue().length() > 0) {
                         commandItem = option.getValue();
                     }
-                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) && !option.getDefaultValue().equals(option.getValue()) && !option.getValue().trim().isEmpty()) {
-                    if ((option.getType().equals(ParamInfo.Type.IFILE) && !isAncFile(option.getValue())) || option.getType().equals(ParamInfo.Type.OFILE)) {
-                        commandItem = option.getName() + "=" + option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
+                } else if ((option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION) || option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION_MINUSMINUS)) && !option.getDefaultValue().equals(option.getValue()) && !option.getValue().trim().isEmpty()) {
+                    if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_OPTION_MINUSMINUS)) {
+                        if ((option.getType().equals(ParamInfo.Type.IFILE) && !isAncFile(option.getValue())) || option.getType().equals(ParamInfo.Type.OFILE)) {
+                            commandItem = "--" + option.getName() + " " + option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
+                        } else {
+                            commandItem = "--" + option.getName() + " " + option.getValue();
+                        }
                     } else {
-                        commandItem = option.getName() + "=" + option.getValue();
+                        if ((option.getType().equals(ParamInfo.Type.IFILE) && !isAncFile(option.getValue())) || option.getType().equals(ParamInfo.Type.OFILE)) {
+                            commandItem = option.getName() + "=" + option.getValue().substring(option.getValue().lastIndexOf(File.separator) + 1);
+                        } else {
+                            commandItem = option.getName() + "=" + option.getValue();
+                        }
                     }
                     if (option.getType().equals(ParamInfo.Type.OFILE)) {
                         ofileDir = option.getValue().substring(0, option.getValue().lastIndexOf(File.separator));
@@ -999,6 +1007,10 @@ public class OCSSWRemote extends OCSSW {
                 } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
                     if (option.getName() != null && option.getName().length() > 0) {
                         commandItem = option.getName();
+                    }
+                } else if (option.getUsedAs().equals(ParamInfo.USED_IN_COMMAND_AS_FLAG_MINUSMINUS) && (option.getValue().equals("true") || option.getValue().equals("1"))) {
+                    if (option.getName() != null && option.getName().length() > 0) {
+                        commandItem = "--" + option.getName();
                     }
                 }
             }
