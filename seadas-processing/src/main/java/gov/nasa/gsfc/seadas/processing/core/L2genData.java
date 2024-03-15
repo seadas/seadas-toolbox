@@ -71,7 +71,8 @@ public class L2genData implements SeaDASProcessorModel {
             PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml",
             DEFAULTS_FILE_PREFIX = "msl12_defaults_",
             GETANC = "getanc",
-            DEFAULT_SUITE = "OC";
+            DEFAULT_SUITE = "OC",
+            DEFAULT_SUITE_PACE = "BGC";
 
     public static final String
             AQUARIUS_GUI_NAME = "l2gen_aquarius",
@@ -1112,7 +1113,14 @@ public class L2genData implements SeaDASProcessorModel {
                 }
 
             } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
+                String origSuite = paramInfo.getValue();
                 setIfileAndSuiteParamValues(null, value);
+                disableEvent(PARSTRING);
+                disableEvent(L2PROD);
+                fireEvent(L2genData.SUITE, origSuite, value);
+                enableEvent(L2PROD);
+                enableEvent(PARSTRING);
+
             } else {
                 if (value.length() > 0 || paramInfo.getName().toLowerCase().equals(L2PROD)) {
 
