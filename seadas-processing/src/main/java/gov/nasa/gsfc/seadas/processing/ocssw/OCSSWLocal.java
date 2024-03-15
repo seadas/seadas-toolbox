@@ -330,8 +330,8 @@ public class OCSSWLocal extends OCSSW {
         if (programName.equals("l3binmerge")) {
             return "l3binmerge_output.nc";
         }
-        if (programName.equals("geomask_gen")) {
-            return "geomask_output.nc";
+        if (programName.equals("georegion_gen")) {
+            return "georegion_output.nc";
         }
         String[] commandArrayParams = {GET_OUTPUT_NAME_PROGRAM_NAME, ifileName, programName};
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
