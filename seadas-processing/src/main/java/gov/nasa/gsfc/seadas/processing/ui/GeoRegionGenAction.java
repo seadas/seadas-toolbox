@@ -15,33 +15,33 @@ import javax.swing.*;
  * @see
  */
 @ActionID(
-        category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.GeomaskgenAction"
+        category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.GeoRegionGenAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_ GeomaskgenAction_Name",
-        popupText = "#CTL_ GeomaskgenAction_Name"
+        displayName = "#CTL_GeoRegionGenAction_Name",
+        popupText = "#CTL_GeoRegionGenAction_Description"
 )
 @ActionReference(
         path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/Tools",
         position = 150
 )
 @NbBundle.Messages({
-        "CTL_GeomaskgenAction_Name=geomask_gen...",
-        "CTL_GeomaskgenAction_ProgramName=geomask_gen",
-        "CTL_GeomaskgenAction_DialogTitle=geomask_gen",
-        "CTL_GeomaskgenAction_XMLFileName=geomask_gen.xml",
-        "CTL_GeomaskgenAction_Description=Generates a mask file from input WKT or Shapefiles"
+        "CTL_GeoRegionGenAction_Name=georegion_gen...",
+        "CTL_GeoRegionGenAction_ProgramName=georegion_gen",
+        "CTL_GeoRegionGenAction_DialogTitle=georegion_gen",
+        "CTL_GeoRegionGenAction_XMLFileName=georegion_gen.xml",
+        "CTL_GeoRegionGenAction_Description=Generates a mask file from input WKT or Shapefiles"
 })
 
-public class GeomaskgenAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
+public class GeoRegionGenAction extends CallCloProgramAction implements ContextAwareAction, LookupListener {
 
     private final Lookup lkp;
 
-    public GeomaskgenAction() {
+    public GeoRegionGenAction() {
         this(Utilities.actionsGlobalContext());
     }
 
-    public GeomaskgenAction(Lookup lkp) {
+    public GeoRegionGenAction(Lookup lkp) {
         this.lkp = lkp;
         Lookup.Result<ProductNode> lkpContext = lkp.lookupResult(ProductNode.class);
         lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
@@ -59,6 +59,6 @@ public class GeomaskgenAction extends CallCloProgramAction implements ContextAwa
 
     @Override
     public Action createContextAwareInstance(Lookup actionContext) {
-        return new GeomaskgenAction(actionContext);
+        return new GeoRegionGenAction(actionContext);
     }
 }
