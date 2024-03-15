@@ -45,11 +45,11 @@ public class GeoRegionGenAction extends CallCloProgramAction implements ContextA
         this.lkp = lkp;
         Lookup.Result<ProductNode> lkpContext = lkp.lookupResult(ProductNode.class);
         lkpContext.addLookupListener(WeakListeners.create(LookupListener.class, this, lkpContext));
-        putValue(Action.NAME, Bundle.CTL_GeomaskgenAction_Name());
-        putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_GeomaskgenAction_Description());
-        setProgramName(Bundle.CTL_GeomaskgenAction_ProgramName());
-        setDialogTitle(Bundle.CTL_GeomaskgenAction_DialogTitle());
-        setXmlFileName(Bundle.CTL_GeomaskgenAction_XMLFileName());
+        putValue(Action.NAME, Bundle.CTL_GeoRegionGenAction_Name());
+        putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_GeoRegionGenAction_Description());
+        setProgramName(Bundle.CTL_GeoRegionGenAction_ProgramName());
+        setDialogTitle(Bundle.CTL_GeoRegionGenAction_DialogTitle());
+        setXmlFileName(Bundle.CTL_GeoRegionGenAction_XMLFileName());
     }
 
     @Override
