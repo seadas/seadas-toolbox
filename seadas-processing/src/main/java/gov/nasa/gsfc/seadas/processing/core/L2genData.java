@@ -1113,14 +1113,7 @@ public class L2genData implements SeaDASProcessorModel {
                 }
 
             } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
-                String origSuite = paramInfo.getValue();
                 setIfileAndSuiteParamValues(null, value);
-                disableEvent(PARSTRING);
-                disableEvent(L2PROD);
-                fireEvent(L2genData.SUITE, origSuite, value);
-                enableEvent(L2PROD);
-                enableEvent(PARSTRING);
-
             } else {
                 if (value.length() > 0 || paramInfo.getName().toLowerCase().equals(L2PROD)) {
 
@@ -1442,6 +1435,7 @@ public class L2genData implements SeaDASProcessorModel {
         enableEvent(L2PROD);
         enableEvent(PARSTRING);
 
+        oldIfile = "";  // force receiving event listeners to treat as new ifile to account for possible SUITE change instead of IFILE change
         fireEvent(IFILE, oldIfile, ifileValue);
 
 

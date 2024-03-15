@@ -445,14 +445,7 @@ public class L2genProductTreeSelectorPanel extends JPanel {
                 updateProductTreePanel();
             }
         });
-
-        l2genData.addPropertyChangeListener(L2genData.SUITE, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                updateProductTreePanel();
-            }
-        });
-
+        
         l2genData.addPropertyChangeListener(L2genData.L2PROD, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
