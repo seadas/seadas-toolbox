@@ -251,12 +251,18 @@ public class ParamUIFactory {
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
 //        field.setColumns(optionName.length() > 12 ? 12 : 8);
-        field.setColumns(8);
+
 
         if (colSpan == 2) {
             field.setColumns(20);
-        } else if (colSpan > 2) {
-            field.setColumns(30);
+        } else if (colSpan == 3) {
+            field.setColumns(32);
+        } else if (colSpan == 4) {
+            field.setColumns(44);
+        } else if (colSpan >= 5) {
+            field.setColumns(56);
+        }else {
+            field.setColumns(8);
         }
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
@@ -383,7 +389,19 @@ public class ParamUIFactory {
 
         Dimension preferredComboBoxSize;
 
-        if (colSpan == 2) {
+        if (colSpan >= 5) {
+            final String[] tmpValues = {"1234567890123456789012345901234567890123456789012345678901234567890123456789"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else if (colSpan == 4) {
+            final String[] tmpValues = {"12345678901234567890123459012345678901234567890123456789012"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else if (colSpan == 3) {
+            final String[] tmpValues = {"123456789012345678901234590123456789012345"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else if (colSpan == 2) {
             final String[] tmpValues = {"1234567890123456789012345"};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
