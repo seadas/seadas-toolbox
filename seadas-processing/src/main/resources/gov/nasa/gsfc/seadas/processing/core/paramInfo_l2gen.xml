@@ -587,7 +587,7 @@
             </validValue>
             <description>out-of-band correction for water-leaving radiances</description>
         </option>
-        <option type="boolean">
+        <option type="int">
             <name>oxaband_opt</name>
             <value>1</value>
             <type>boolean</type>

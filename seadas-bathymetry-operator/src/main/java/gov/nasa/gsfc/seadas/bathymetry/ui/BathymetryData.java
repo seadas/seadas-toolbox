@@ -55,6 +55,8 @@ public class BathymetryData {
 
 
     private int superSampling = 1;
+    private boolean createTopographyBand = false;
+    private boolean createElevationBand = false;
 
 
     //   private String bathymetryBandName = "elevation";
@@ -106,6 +108,25 @@ public class BathymetryData {
         }
 
         return null;
+    }
+
+
+
+
+    public boolean isCreateTopographyBand() {
+        return createTopographyBand;
+    }
+
+    public void setCreateTopographyBand(boolean createTopographyBand) {
+        this.createTopographyBand = createTopographyBand;
+    }
+
+    public boolean isCreateElevationBand() {
+        return createElevationBand;
+    }
+
+    public void setCreateElevationBand(boolean createElevationBand) {
+        this.createElevationBand = createElevationBand;
     }
 
 

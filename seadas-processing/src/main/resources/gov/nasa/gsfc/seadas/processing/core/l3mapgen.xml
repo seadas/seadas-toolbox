@@ -89,7 +89,7 @@
             <source>default</source>
             <description>product(s) to map</description>
             <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
+            <colSpan>3</colSpan>
             <order>2</order>
         </option>
         <option type="string">

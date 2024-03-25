@@ -18,8 +18,8 @@ import javax.swing.*;
         category = "Processing", id = "gov.nasa.gsfc.seadas.processing.ui.L3BinMergeAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_ L3BinMergeAction_Name",
-        popupText = "#CTL_ L3BinMergeAction_Name"
+        displayName = "#CTL_L3BinMergeAction_Name",
+        popupText = "#CTL_L3BinMergeAction_Description"
 )
 @ActionReference(
         path = "Menu/SeaDAS-Toolbox/SeaDAS Processors/Tools",

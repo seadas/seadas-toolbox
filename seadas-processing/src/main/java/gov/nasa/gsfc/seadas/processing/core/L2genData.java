@@ -71,7 +71,8 @@ public class L2genData implements SeaDASProcessorModel {
             PRODUCT_CATEGORY_INFO_XML = "productCategoryInfo.xml",
             DEFAULTS_FILE_PREFIX = "msl12_defaults_",
             GETANC = "getanc",
-            DEFAULT_SUITE = "OC";
+            DEFAULT_SUITE = "OC",
+            DEFAULT_SUITE_PACE = "BGC";
 
     public static final String
             AQUARIUS_GUI_NAME = "l2gen_aquarius",
@@ -1434,6 +1435,7 @@ public class L2genData implements SeaDASProcessorModel {
         enableEvent(L2PROD);
         enableEvent(PARSTRING);
 
+        oldIfile = "";  // force receiving event listeners to treat as new ifile to account for possible SUITE change instead of IFILE change
         fireEvent(IFILE, oldIfile, ifileValue);
 
 

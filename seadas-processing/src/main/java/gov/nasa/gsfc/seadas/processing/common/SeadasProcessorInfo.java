@@ -23,7 +23,7 @@ public class SeadasProcessorInfo {
         L2GEN,
         L2MERGE,
         L3BINMERGE,
-        GEOMASKGEN,
+        GEOREGION_GEN,
 //        L2GEN_AQUARIUS,
 //        L2MAPGEN,
         L2BRSGEN,
@@ -116,8 +116,8 @@ public class SeadasProcessorInfo {
                     return "l2merge";
                 case L3BINMERGE:
                     return "l3binmerge";
-                case GEOMASKGEN:
-                    return "geomask_gen";
+                case GEOREGION_GEN:
+                    return "georegion_gen";
                 case L2GEN:
                     return "l2gen";
 //                case L2GEN_AQUARIUS:
@@ -173,7 +173,7 @@ public class SeadasProcessorInfo {
                 return true;
             case L3BINMERGE:
                 return true;
-            case GEOMASKGEN:
+            case GEOREGION_GEN:
                 return true;
             case L2GEN:
                 return iFileInfo.isSupportedMission();
@@ -236,7 +236,7 @@ public class SeadasProcessorInfo {
                 return true;
             case L3BINMERGE:
                 return true;
-            case GEOMASKGEN:
+            case GEOREGION_GEN:
                 return true;
             case L3BIN:
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L3);

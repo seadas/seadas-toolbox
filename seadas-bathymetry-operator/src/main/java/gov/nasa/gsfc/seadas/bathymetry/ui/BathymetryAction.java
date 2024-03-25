@@ -166,8 +166,8 @@ public final class BathymetryAction extends AbstractSnapAction
 
 
             for (String name : bandGroup.getNodeNames()) {
-                if (name.equals(BathymetryOp.ELEVATION_BAND_NAME)) {
-                    masksCreated[0] = true;
+                if (name.equals(BathymetryOp.BATHYMETRY_BAND_NAME)) {
+                    bandCreated[0] = true;
                 }
             }
 
@@ -258,11 +258,20 @@ public final class BathymetryAction extends AbstractSnapAction
                                         Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
 
 
-                                        Band topographyBand = bathymetryProduct.getBand(BathymetryOp.TOPOGRAPHY_BAND_NAME);
-                                        reformatSourceImage(topographyBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                        topographyBand.setName(BathymetryOp.TOPOGRAPHY_BAND_NAME);
-                                        product.addBand(topographyBand);
+                                        if (bathymetryData.isCreateTopographyBand()) {
+                                            Band topographyBand = bathymetryProduct.getBand(BathymetryOp.TOPOGRAPHY_BAND_NAME);
+                                            reformatSourceImage(topographyBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                            topographyBand.setName(BathymetryOp.TOPOGRAPHY_BAND_NAME);
+                                            product.addBand(topographyBand);
+                                        }
 
+
+                                        if (bathymetryData.isCreateElevationBand()) {
+                                            Band elevationBand = bathymetryProduct.getBand(BathymetryOp.ELEVATION_BAND_NAME);
+                                            reformatSourceImage(elevationBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                            elevationBand.setName(BathymetryOp.ELEVATION_BAND_NAME);
+                                            product.addBand(elevationBand);
+                                        }
 
                                         Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
                                         reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
@@ -270,14 +279,8 @@ public final class BathymetryAction extends AbstractSnapAction
                                         product.addBand(bathymetryBand);
 
 
-                                        Band elevationBand = bathymetryProduct.getBand(BathymetryOp.ELEVATION_BAND_NAME);
-                                        reformatSourceImage(elevationBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                        elevationBand.setName(BathymetryOp.ELEVATION_BAND_NAME);
-                                        product.addBand(elevationBand);
-
-
-                                        pm.worked(1);
                                     }
+                                    pm.worked(1);
 
 
                                     Mask bathymetryMask = Mask.BandMathsType.create(

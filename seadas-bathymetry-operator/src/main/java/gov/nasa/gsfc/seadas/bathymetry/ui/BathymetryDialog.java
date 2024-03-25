@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 //import org.esa.beam.framework.help.HelpSys;
 
@@ -137,6 +139,9 @@ class BathymetryDialog extends JDialog {
 
 
         final int rightInset = 5;
+
+        final TopographyBandCreateCheckbox topographyBandCreateCheckbox = new TopographyBandCreateCheckbox(bathymetryData);
+        final ElevationBandCreateCheckbox elevationBandCreateCheckbox = new ElevationBandCreateCheckbox(bathymetryData);
 
         final MaskEnabledAllBandsCheckbox maskEnabledAllBandsCheckbox = new MaskEnabledAllBandsCheckbox(bathymetryData);
         final MaskTransparencySpinner maskTransparencySpinner = new MaskTransparencySpinner(bathymetryData);
@@ -269,21 +274,63 @@ class BathymetryDialog extends JDialog {
         bandsJPanel.add(bathymetryBandNameTextfield,
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        gridy++;
+        bandsJPanel.add(topographyBandCreateCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        bandsJPanel.add(topographyBandCreateCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        JLabel topographyBandLabel = new  JLabel("Topography Band");
+        JLabel elevationBandLabel = new  JLabel("Elevation Band");
 
         gridy++;
-        bandsJPanel.add(new JLabel("Topography Band"),
+        bandsJPanel.add(topographyBandLabel,
                 new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         bandsJPanel.add(topographyBandNameTextfield,
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        gridy++;
+        bandsJPanel.add(elevationBandCreateCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        bandsJPanel.add(elevationBandCreateCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
 
         gridy++;
-        bandsJPanel.add(new JLabel("Elevation Band"),
+        bandsJPanel.add(elevationBandLabel,
                 new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         bandsJPanel.add(elevationBandNameTextfield,
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+
+        topographyBandLabel.setEnabled(topographyBandCreateCheckbox.getjCheckBox().isSelected());
+        topographyBandNameTextfield.setEnabled(topographyBandCreateCheckbox.getjCheckBox().isSelected());
+        elevationBandLabel.setEnabled(elevationBandCreateCheckbox.getjCheckBox().isSelected());
+        elevationBandNameTextfield.setEnabled(elevationBandCreateCheckbox.getjCheckBox().isSelected());
+
+
+        topographyBandCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                topographyBandLabel.setEnabled(topographyBandCreateCheckbox.getjCheckBox().isSelected());
+                topographyBandNameTextfield.setEnabled(topographyBandCreateCheckbox.getjCheckBox().isSelected());
+            }
+        });
+
+        elevationBandCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                elevationBandLabel.setEnabled(elevationBandCreateCheckbox.getjCheckBox().isSelected());
+                elevationBandNameTextfield.setEnabled(elevationBandCreateCheckbox.getjCheckBox().isSelected());
+            }
+        });
+
 
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
