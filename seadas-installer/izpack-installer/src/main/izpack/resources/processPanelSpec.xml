@@ -11,13 +11,13 @@
 <!--                <arg>$variable</arg>-->
             </executefile>
         </job>
-<!--    <job name="Run SeaDAS" final="true">-->
-<!--        <os family="unix"/>-->
-<!--        <executefile name="$INSTALL_PATH/bin/snap">-->
-<!--&lt;!&ndash;            <arg>doit</arg>&ndash;&gt;-->
-<!--&lt;!&ndash;            <arg>$variable</arg>&ndash;&gt;-->
-<!--        </executefile>-->
-<!--    </job>-->
+    <job name="Run SeaDAS" final="true">
+        <os family="unix"/>
+        <executefile name="$INSTALL_PATH/bin/seadas">
+<!--            <arg>doit</arg>-->
+<!--            <arg>$variable</arg>-->
+        </executefile>
+    </job>
 <!--    <onFail previous="true" next="false"/>-->
 <!--    <onSuccess previous="true" next="true" condition="runSeaDAS"/>-->
 <!--    <onSuccess previous="false" next="true" condition="!runSeaDAS"/>-->
