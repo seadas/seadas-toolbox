@@ -6,8 +6,8 @@
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.1.0</appversion>
-        <javaversion>jdk-11.0.19+7-jre</javaversion>
-<!--        <requiresjdk>yes</requiresjdk>-->
+        <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
+        <!--        <requiresjdk>no</requiresjdk>-->
         <url>https://seadas.gsfc.nasa.gov</url>
         <authors>
             <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
@@ -116,9 +116,6 @@
     </conditions>
 
 
-    <!-- pull in the built jar file for our custom panel -->
-    <jar src="custom/izpack-panels.jar" stage="both"/>
-
     <panels>
 
         <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
@@ -141,7 +138,7 @@
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <panel classname="ProcessPanel" id="processPaneSpec.xml" />
+        <!--        <panel classname="ProcessPanel" id="processPaneSpec.xml" />-->
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 

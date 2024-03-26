@@ -22,7 +22,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <staging.dir>${project.build.directory}/staging</staging.dir>
-    <izpack.version>5.2</izpack.version>
+    <izpack.version>5.1.3</izpack.version>
     <installer-output-filename>seadas-izpack-installer.jar</installer-output-filename>
   </properties>
 
@@ -38,13 +38,6 @@
 
   <!-- must have a dependency on our separate package that contains the custom
   panels -->
-  <dependencies>
-    <dependency>
-      <groupId>gov.nasa.gsfc.seadas</groupId>
-      <artifactId>izpack-panels</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
 
   <build>
 
@@ -213,18 +206,18 @@
        <!-- must have a dependency here on any code used in the installer, otherwise the classloader
        will not find it.  So in this case we need our panels and then the package that contains the base classes
        for the panels -->
-       <dependencies>
-          <dependency>
-            <groupId>org.codehaus.izpack</groupId>
-            <artifactId>izpack-panel</artifactId>
-            <version>${izpack.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>izpack-panels</artifactId>
-            <version>1.0-SNAPSHOT</version>
-          </dependency>
-        </dependencies>
+<!--       <dependencies>-->
+<!--          <dependency>-->
+<!--            <groupId>org.codehaus.izpack</groupId>-->
+<!--            <artifactId>izpack-panel</artifactId>-->
+<!--            <version>${izpack.version}</version>-->
+<!--          </dependency>-->
+<!--          <dependency>-->
+<!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
+<!--            <artifactId>izpack-panels</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--          </dependency>-->
+<!--        </dependencies>-->
     </plugin>
    <plugin>
        <groupId>com.akathist.maven.plugins.launch4j</groupId>
