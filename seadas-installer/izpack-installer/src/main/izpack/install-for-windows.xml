@@ -6,9 +6,9 @@
     >
     <info>
         <appname>SeaDAS IzPack Installer</appname>
-        <appversion>1.0.0</appversion>
-        <javaversion>1.8.0_201</javaversion>
-        <requiresjdk>yes</requiresjdk>
+        <appversion>1.1.0</appversion>
+        <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
+        <!--        <requiresjdk>no</requiresjdk>-->
         <url>https://seadas.gsfc.nasa.gov</url>
         <authors>
             <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
@@ -54,7 +54,7 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.Spec.xml" src="resources/processPanelSpec.xml"/>
+        <res id="ProcessPanel.processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
         <res id="FinishPanel.finish" src="about/finish.html"/>
     </resources>
     <variables>
@@ -66,8 +66,8 @@
         <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>
-        <variable name="WELCOME_TEXT" value="SeaDAS IzPack Installer"/>
-        <variable name="WELCOME_VERSION" value="Version: 1"/>
+        <variable name="WELCOME_TEXT" value="SeaDAS 9.0.0 Installer"/>
+        <variable name="WELCOME_VERSION" value="Version: 1.1"/>
         <variable name="FINISH_TEXT" value="SeaDAS 9.0.0 is successfuly installed. Enjoy!"/>
         <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
         <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
@@ -79,10 +79,10 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
-        <variable name="JDKPathPanel.minVersion" value="11.0.11" />
-        <variable name="JDKPathPanel.maxVersion" value="11.0.19" />
-        <variable name="JDKPathPanel.skipIfValid" value="yes" />
-        <variable name="extra_clusters" value="seadas-toolbox" />
+        <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
+        <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
+        <variable name="JDKPathPanel.skipIfValid" value="yes"/>
+        <variable name="extra_clusters" value="seadas-toolbox"/>
     </variables>
 
     <conditions>
@@ -94,31 +94,6 @@
             <name>setup.type</name>
             <value>expert</value>
         </condition>
-<!--        <condition type="java" id="installonwindows">-->
-<!--            <java>-->
-<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
-<!--                <field>IS_WINDOWS</field>-->
-<!--            </java>-->
-<!--            <returnvalue type="boolean">true</returnvalue>-->
-<!--        </condition>-->
-<!--        <condition type="java" id="installonmac">-->
-<!--            <java>-->
-<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
-<!--                <field>IS_MAC</field>-->
-<!--            </java>-->
-<!--            <returnvalue type="boolean">true</returnvalue>-->
-<!--        </condition>-->
-<!--        <condition type="java" id="installonlinux">-->
-<!--            <java>-->
-<!--                <class>com.izforge.izpack.util.OsVersion</class>-->
-<!--                <field>IS_LINUX</field>-->
-<!--            </java>-->
-<!--            <returnvalue type="boolean">true</returnvalue>-->
-<!--        </condition>-->
-<!--        <condition type="and" id="standardinstallation.onwindows">-->
-<!--            <condition type="ref" refid="standardinstallation"/>-->
-<!--            <condition type="ref" refid="installonwindows"/>-->
-<!--        </condition>-->
         <condition id="start-after-install" type="variable">
             <name>start.after.install</name>
             <value>true</value>
@@ -131,11 +106,9 @@
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
         </condition>
+        >
     </conditions>
 
-
-    <!-- pull in the built jar file for our custom panel -->
-    <jar src="custom/izpack-panels.jar" stage="both"/>
 
     <panels>
 
@@ -152,20 +125,19 @@
 
 
         <panel classname="InstallationTypePanel"/>
-        <panel classname="HTMLLicencePanel" id="licence" />
+        <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
-        <panel classname="TargetPanel" id="install_dir" />
+        <panel classname="TargetPanel" id="install_dir"/>
         <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <!--    <panel classname="ProcessPanel" id="processPanel"/>-->
+        <!--        <panel classname="ProcessPanel" id="processPaneSpec.xml" />-->
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
     <dynamicvariables>
         <variable name="jdkhome" value="$INSTALL_PATH\jdk-11.0.19+7-jre"/>
-<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home"/>-->
     </dynamicvariables>
 
     <packs>
@@ -177,13 +149,15 @@
                 The SNAP architecture is ideal for Earth Observation processing and analysis due
                 to the following technological innovations: Extensibility, Portability, Modular Rich
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
-                Graph Processing Framework.</description>
+                Graph Processing Framework.
+            </description>
             <fileset dir="packs/snap" unpack="true"
                      override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall"/>
+            <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows"
+                     condition="izpack.windowsinstall"/>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
                     <include name="seadas.clusters"/>
@@ -202,9 +176,9 @@
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <os family="windows"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe" />
-                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt" />
-                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert" />
+                <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe"/>
+                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt"/>
+                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert"/>
             </executable>
         </pack>
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
@@ -219,13 +193,11 @@
         </pack>
         <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
             <description>JDK11 JRE</description>
-            <file src="packs/jre/OpenJDK11U-jre_x64_windows_hotspot_11.0.19_7.zip" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
-<!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
+            <file src="packs/jre/OpenJDK11U-jre_x64_windows_hotspot_11.0.19_7.zip" targetdir="${INSTALL_PATH}"
+                  unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\bin" includes="*" />
-<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/bin" includes="*" />-->
-<!--                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7/Contents/Home/lib" includes="*" />-->
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\lib" includes="*" />
+                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\lib" includes="*"/>
             </executable>
         </pack>
     </packs>
@@ -233,7 +205,7 @@
     <natives>
         <native type="izpack" name="ShellLink.dll"/>
         <native type="izpack" name="ShellLink_x64.dll"/>
-        <native type="3rdparty" name="COIOSHelper.dll" >
+        <native type="3rdparty" name="COIOSHelper.dll">
             <os family="windows"/>
         </native>
     </natives>

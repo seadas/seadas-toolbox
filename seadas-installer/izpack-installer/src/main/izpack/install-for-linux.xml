@@ -2,7 +2,7 @@
 <izpack:installation version="5.0"
                      xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd" >
+                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.1.0</appversion>
@@ -86,10 +86,10 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
-        <variable name="JDKPathPanel.minVersion" value="11.0.11" />
-        <variable name="JDKPathPanel.maxVersion" value="11.0.19" />
-        <variable name="JDKPathPanel.skipIfValid" value="yes" />
-        <variable name="extra_clusters" value="seadas-toolbox" />
+        <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
+        <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
+        <variable name="JDKPathPanel.skipIfValid" value="yes"/>
+        <variable name="extra_clusters" value="seadas-toolbox"/>
     </variables>
 
     <conditions>
@@ -112,7 +112,8 @@
         <condition type="variable" id="runSeaDAS">
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
-        </condition>>
+        </condition>
+        >
     </conditions>
 
 
@@ -131,9 +132,9 @@
 
 
         <panel classname="InstallationTypePanel"/>
-        <panel classname="HTMLLicencePanel" id="licence" />
+        <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
-        <panel classname="TargetPanel" id="install_dir" />
+        <panel classname="TargetPanel" id="install_dir"/>
         <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
@@ -155,13 +156,16 @@
                 The SNAP architecture is ideal for Earth Observation processing and analysis due
                 to the following technological innovations: Extensibility, Portability, Modular Rich
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
-                Graph Processing Framework.</description>
-            <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall">
+                Graph Processing Framework.
+            </description>
+            <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux"
+                     condition="izpack.linuxinstall">
                 <os family="linux"/>
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux" condition="izpack.linuxinstall"/>
+            <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux"
+                     condition="izpack.linuxinstall"/>
             <parsable type="plain">
                 <fileset targetdir="${INSTALL_PATH}/bin">
                     <include name="*.sh"/>
@@ -184,9 +188,9 @@
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <os family="unix"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"  />
-                <fileset targetdir="$INSTALL_PATH/bin" includes="gpt" />
-                <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert" />
+                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>
             </executable>
         </pack>
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
@@ -201,10 +205,11 @@
         </pack>
         <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
             <description>JDK11 JRE</description>
-            <file src="packs/jre/OpenJDK11U-jre_x64_linux_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>
+            <file src="packs/jre/OpenJDK11U-jre_x64_linux_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
+                  unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/bin" includes="*" />
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/lib" includes="*" />
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/lib" includes="*"/>
             </executable>
         </pack>
     </packs>
