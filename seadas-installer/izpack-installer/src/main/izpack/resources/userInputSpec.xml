@@ -1,6 +1,6 @@
 <izpack:userinput xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:izpack="http://izpack.org/schema/userinput"
-                  version="5.2"
-                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.2/izpack-userinput-5.2.xsd">
+                  version="5.0"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.0/izpack-userinput-5.0.xsd">
       <panel id="finish">
 
           <field type="check" variable="checkSelection.1">
