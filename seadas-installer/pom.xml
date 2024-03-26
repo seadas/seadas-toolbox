@@ -24,7 +24,6 @@
           <module>../../snap-desktop</module>
           <module>../../optical-toolbox</module>
           <module>../../seadas-toolbox</module>
-	      <module>izpack-panels</module>
           <module>izpack-installer</module>
 	    </modules>
        </profile>
