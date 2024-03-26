@@ -9,12 +9,13 @@ FRONTSIDE = "frontside"
 BACKSIDE = "backside"
 
 cleanup_files_bool = True
-make_leve2_files_only = True
+make_level2_files_only = False
+make_scene_bins_only = False
 
-binned_resolution = "2"
-mapped_resolution = "2"
-lon_0 = "-45"
-lat_0 = "-10"
+binned_resolution = "1"
+mapped_resolution = "1"
+lon_0 = "-35"
+lat_0 = "0"
 frontside_files_list = "front_files.txt"
 backside_files_list = "back_files.txt"
 
@@ -373,8 +374,9 @@ def run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor):
 
   l3bprod = ""
   if (viirs_sensor == "JPSS1_VIIRS" or viirs_sensor == "JPSS2_VIIRS"):
-#     l3bprod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz,solz"
-    l3bprod = "rhos_489,rhos_556,rhos_667,rhos_868,rhos_1238,rhos_1604,rhos_2258,rhot_489,rhot_556,rhot_667,senz,solz"
+    l3bprod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
+
+#     l3bprod = "rhos_489,rhos_556,rhos_667,rhos_868,rhos_1238,rhos_1604,rhos_2258,rhot_489,rhot_556,rhot_667,senz,solz"
     #print(l3bprod)
   elif (viirs_sensor == "SNPP_VIIRS"):
     l3bprod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz,solz"
@@ -429,8 +431,8 @@ def run_l3bin(l3_binned_filename_ifile, l3_binned_filename_ofile, reduce_fac, vi
 
   prod = ""
   if (viirs_sensor == "JPSS1_VIIRS" or viirs_sensor == "JPSS2_VIIRS"):
-#     prod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
-    prod = "rhos_489,rhos_556,rhos_667,rhos_1238,rhos_2258,rhot_489,rhot_556,rhot_667,senz"
+    prod = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
+#     prod = "rhos_489,rhos_556,rhos_667,rhos_1238,rhos_2258,rhot_489,rhot_556,rhot_667,senz"
     #print(l3bprod)
   elif (viirs_sensor == "SNPP_VIIRS"):
     prod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
@@ -503,8 +505,8 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
   product = ""
 
   if (viirs_sensor == "JPSS1_VIIRS" or viirs_sensor == "JPSS2_VIIRS"):
-#     product = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
-    product = "rhos_489,rhos_556,rhos_667,rhos_1238,rhos_2258,rhot_489,rhot_556,rhot_667,senz"
+    product = "rhos_489,rhos_556,rhos_667,rhot_489,rhot_556,rhot_667,senz"
+#     product = "rhos_489,rhos_556,rhos_667,rhos_1238,rhos_2258,rhot_489,rhot_556,rhot_667,senz"
     #print(l3bprod)
   elif (viirs_sensor == "SNPP_VIIRS"):
     product = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
@@ -601,6 +603,13 @@ def create_scene_files(scene_file_list, binned_list_file, binned_resolution, sid
 
     binned_files = []
 
+
+    l1a_filename = None
+    l1b_filename = None
+    timepart = None
+    geo_filename = None
+    l2_filename = None
+    l3_binned_filename = None
 
     with open(scene_file_list) as file:
       filelines = file.read().splitlines()
@@ -850,7 +859,7 @@ def create_scene_files(scene_file_list, binned_list_file, binned_resolution, sid
             cleanup_files(geo_filename)
 
 
-        if (make_leve2_files_only == True):
+        if (make_level2_files_only == True):
           continue
   
         if (need_l3_binned_file):
@@ -918,9 +927,11 @@ satzen_south = "48"
 viirs_sensor2, timepart2 = create_scene_files(backside_files_list, binned_list_file_back, binned_resolution, BACKSIDE, sunzen_north, sunzen, sunzen_south, satzen_north, satzen, satzen_south )
 
 
-if (make_leve2_files_only == True):
+if (make_level2_files_only == True):
   exit(0)
 
+if (make_scene_bins_only == True):
+  exit(0)
 
 binned_list_file = 'binned_files.txt'
 
