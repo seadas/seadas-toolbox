@@ -144,7 +144,7 @@
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
     </dynamicvariables>
 
     <packs>
