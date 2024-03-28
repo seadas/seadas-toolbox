@@ -533,12 +533,12 @@ public class GetSysInfoGUI {
 
 
         if (ocsswRootOcsswInfo != null) {
-            if ("docker".equals(ocsswLocation)) {
-                if (!Files.exists(Paths.get(ocsswRootDocker))) {
-                    currentInfoLine = "WARNING!! Directory '" + ocsswRootDocker + "' does not exist" + "\n";
-                    sysInfoText += currentInfoLine;
-                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                }
+            if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
+//                if (!Files.exists(Paths.get(ocsswRootDocker))) {
+//                    currentInfoLine = "WARNING!! Directory '" + ocsswRootDocker + "' does not exist" + "\n";
+//                    sysInfoText += currentInfoLine;
+//                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+//                }
             } else {
                 if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
                     currentInfoLine = "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
