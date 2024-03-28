@@ -37,7 +37,6 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 /**
  * @author Aynur Abdurazik
  * @author Bing Yang
- *
  */
 // May 2020 - Yang - print out relevant system info for SeaDAS or OCSSW troubleshooting
 
@@ -54,20 +53,15 @@ public class GetSysInfoGUI {
 
     boolean windowsOS;
     private String ocsswScriptsDirPath;
-    private String ocsswDockerScriptsDirPath;
     private String ocsswSeadasInfoPath;
-    private String ocsswDockerSeadasInfoPath;
     private String ocsswRunnerScriptPath;
-    private String ocsswDockerRunnerScriptPath;
     private String ocsswBinDirPath;
-    private String ocsswDockerBinDirPath;
     private String ocsswRootEnv = System.getenv(SEADAS_OCSSW_ROOT_ENV);
     String ocsswRootDocker = SystemUtils.getUserHomeDir().toString() + File.separator + "ocssw";
 
 
     private String DASHES = "-----------------------------------------------------------";
     private String INDENT = "  ";
-
 
 
     public static void main(String args[]) {
@@ -90,10 +84,10 @@ public class GetSysInfoGUI {
 
         JPanel mainPanel = GridBagUtils.createPanel();
 
-        modalDialog = new ModalDialog(parent, PANEL_NAME, mainPanel, ModalDialog.ID_OK_CANCEL_HELP, HELP_ID){
+        modalDialog = new ModalDialog(parent, PANEL_NAME, mainPanel, ModalDialog.ID_OK_CANCEL_HELP, HELP_ID) {
             @Override
 
-            protected void onOK(){
+            protected void onOK() {
                 SystemUtils.copyToClipboard(sysInfoText);
             }
         };
@@ -152,7 +146,7 @@ public class GetSysInfoGUI {
 
     }
 
-    protected JPanel sysInfoPanel(){
+    protected JPanel sysInfoPanel() {
 
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
@@ -184,12 +178,12 @@ public class GetSysInfoGUI {
 
         Path appBinDir = appHomeDir.toPath().resolve("bin");
         Path appEtcDir = appHomeDir.toPath().resolve("etc");
-        Path appHomeSnapProperties = appEtcDir.resolve("snap.properties");;
+        Path appHomeSnapProperties = appEtcDir.resolve("snap.properties");
+        ;
         Path appHomeSnapConf = appEtcDir.resolve("snap.conf");
         Path appHomeSeadasConf = appEtcDir.resolve("seadas.conf");
 
         boolean isSeadasPlatform = (appNameVersion != null && appNameVersion.toLowerCase().contains("seadas")) ? true : false;
-
 
 
         Path dataDirPath = appDataDir.toPath();
@@ -202,12 +196,11 @@ public class GetSysInfoGUI {
 
         String jre = System.getProperty("java.runtime.name") + " " + System.getProperty("java.runtime.version");
         String jvm = System.getProperty("java.vm.name") + " by " + System.getProperty("java.vendor");
-        String memory = Math.round(Runtime.getRuntime().maxMemory() /1024. /1024.) + " MiB";
+        String memory = Math.round(Runtime.getRuntime().maxMemory() / 1024. / 1024.) + " MiB";
 
         ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
         ModuleInfo desktopModuleInfo = Modules.getDefault().ownerOf(SnapAboutBox.class);
         ModuleInfo engineModuleInfo = Modules.getDefault().ownerOf(Product.class);
-
 
 
 //        System.out.println("\nMain Application Platform:");
@@ -238,9 +231,9 @@ public class GetSysInfoGUI {
         String ocsswLocation = ocsswInfo.getOcsswLocation();
         String ocsswDebugInfo = ocsswInfo.getOcsswDebugInfo();
         Boolean ocsswDebug;
-        if (ocsswDebugInfo.equals("true")){
+        if (ocsswDebugInfo.equals("true")) {
             ocsswDebug = true;
-        } else{
+        } else {
             ocsswDebug = false;
         }
 
@@ -251,7 +244,6 @@ public class GetSysInfoGUI {
 
 
         sysInfoText = "";
-
 
 
         currentInfoLine = DASHES + "\n";
@@ -265,20 +257,15 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-
         currentInfoLine = "Application Version: " + appNameVersion + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-
-
 
 
         String brandingSuffix = "";
         if (isSeadasPlatform) {
             brandingSuffix = "* (SeaDAS Platform modified)";
         }
-
 
 
         currentInfoLine = "SNAP Engine Version: " + engineModuleInfo.getSpecificationVersion() + brandingSuffix + "\n";
@@ -303,16 +290,13 @@ public class GetSysInfoGUI {
         }
 
 
-
-
-
         currentInfoLine = "SNAP Engine Build Date: " + engineModuleInfo.getBuildVersion() + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
         currentInfoLine = "SNAP Desktop Build Date: " + desktopModuleInfo.getBuildVersion() + "\n";
-            sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+        sysInfoText += currentInfoLine;
+        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
         currentInfoLine = "Installation Directory: " + appHomeDir.toString() + "\n";
@@ -335,7 +319,6 @@ public class GetSysInfoGUI {
         }
 
 
-
         currentInfoLine = "Configuration: " + appHomeSnapProperties.toString() + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
@@ -344,8 +327,6 @@ public class GetSysInfoGUI {
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
         }
-
-
 
 
         if (isSeadasPlatform) {
@@ -398,7 +379,6 @@ public class GetSysInfoGUI {
         }
 
 
-
         if (!Files.exists(runtimeSnapProperties)) {
             currentInfoLine = "Runtime Configuration: null" + "\n";
             sysInfoText += currentInfoLine;
@@ -436,70 +416,66 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-
-        currentInfoLine = "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-
-        currentInfoLine = "";   // todo temporary nulling this as later lines need editing
-
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"/bin/bash", "-c", "-l", "which python3"});
-            Process process = processBuilder.start();
-
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
-            String line;
-            Integer numOfLines = 0;
-            currentInfoLine = "Python3 Directory: ";
-            while ((line = reader.readLine()) != null) {
-                currentInfoLine += line + "\n";
-                if (line.trim().length() > 1) {
-                    numOfLines++;
-                }
-            }
-            if (numOfLines == 0) {
-                currentInfoLine += "\n";
-            }
+        if (ocsswInfo.getOcsswLocation() == OCSSW_LOCATION_LOCAL) {
+            currentInfoLine = "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
-            if (numOfLines > 1) {
-                currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+
+            currentInfoLine = "";   // todo temporary nulling this as later lines need editing
+
+            try {
+                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"/bin/bash", "-c", "-l", "which python3"});
+                Process process = processBuilder.start();
+
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+                String line;
+                Integer numOfLines = 0;
+                currentInfoLine = "Python3 Directory: ";
+                while ((line = reader.readLine()) != null) {
+                    currentInfoLine += line + "\n";
+                    if (line.trim().length() > 1) {
+                        numOfLines++;
+                    }
+                }
+                if (numOfLines == 0) {
+                    currentInfoLine += "\n";
+                }
                 sysInfoText += currentInfoLine;
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+                if (numOfLines > 1) {
+                    currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                }
+
+                reader.close();
+
+                process.destroy();
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+
+                if (process.exitValue() != 0) {
+                    System.out.println("  WARNING!: Non zero exit code returned for 'which python3' ");
+                }
+
+            } catch (IOException e) {
+                String warning = "  WARNING!! Could not retrieve system parameters because 'which python3' failed";
+                currentInfoLine = warning + "\n";
+                sysInfoText += currentInfoLine;
+
+                currentInfoLine = e.toString() + "\n";
+                sysInfoText += currentInfoLine;
+
+                e.printStackTrace();
             }
-
-            reader.close();
-
-            process.destroy();
-
-            try
-            {
-                Thread.sleep(10);
-            }
-            catch(InterruptedException ex)
-            {
-                Thread.currentThread().interrupt();
-            }
-
-            if (process.exitValue() != 0) {
-                System.out.println("  WARNING!: Non zero exit code returned for 'which python3' ");
-            }
-
-        } catch (IOException e) {
-            String warning = "  WARNING!! Could not retrieve system parameters because 'which python3' failed";
-            currentInfoLine = warning + "\n";
-            sysInfoText += currentInfoLine;
-
-            currentInfoLine = e.toString() + "\n";
-            sysInfoText += currentInfoLine;
-
-            e.printStackTrace();
         }
-
-
 
 
         currentInfoLine = "\n\n" + DASHES + "\n";
@@ -528,8 +504,6 @@ public class GetSysInfoGUI {
         }
 
 
-
-
         if (!Files.exists(runtimeSeadasProperties)) {
             currentInfoLine = "Configuration: null" + "\n";
             sysInfoText += currentInfoLine;
@@ -541,7 +515,7 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-        if(ocsswDebug) {
+        if (ocsswDebug) {
             final Preferences preferences = Config.instance("seadas").load().preferences();
             String ocsswRootSeadasProperties = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
             currentInfoLine = "seadas.ocssw.root (seadas.properties): " + ocsswRootSeadasProperties + "\n";
@@ -558,7 +532,7 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-        if (ocsswRootOcsswInfo != null ) {
+        if (ocsswRootOcsswInfo != null) {
             if ("docker".equals(ocsswLocation)) {
                 if (!Files.exists(Paths.get(ocsswRootDocker))) {
                     currentInfoLine = "WARNING!! Directory '" + ocsswRootDocker + "' does not exist" + "\n";
@@ -577,12 +551,11 @@ public class GetSysInfoGUI {
         currentInfoLine = "OCSSW Docker Log Directory: " + ocsswLogDir + "\n";
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-        if ((ocsswLogDir != null ) && !Files.exists(Paths.get(ocsswLogDir))) {
+        if ((ocsswLogDir != null) && !Files.exists(Paths.get(ocsswLogDir))) {
             currentInfoLine = "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
         }
-
 
 
         currentInfoLine = "OCSSW Location: " + ocsswLocation + "\n";
@@ -591,19 +564,19 @@ public class GetSysInfoGUI {
 
 
         //need to consider "docker" condition
-        currentInfoLine = "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-        if ((ocsswRootOcsswInfo != null ) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv) &&
+        if (ocsswInfo.getOcsswLocation() == OCSSW_LOCATION_LOCAL) {
+            currentInfoLine = "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+        }
+
+        if ((ocsswRootOcsswInfo != null) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv) &&
                 "local".equals(ocsswLocation)) {
-            currentInfoLine =  "  WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
+            currentInfoLine = "  WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
                     "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
         }
-
-
-
 
 
         currentInfoLine = "\n\n" + DASHES + "\n";
@@ -616,115 +589,108 @@ public class GetSysInfoGUI {
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
-
-
-//        String appDir = Config.instance().installDir().toString();
-
         ocsswScriptsDirPath = ocsswRootOcsswInfo + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
-        ocsswDockerScriptsDirPath = ocsswRootDocker + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
         ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
-        ocsswDockerRunnerScriptPath = ocsswRootDocker + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
         ocsswBinDirPath = ocsswRootOcsswInfo + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
-        ocsswDockerBinDirPath = ocsswRootDocker + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
 
-        String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot " , ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME };
-        String[] commandDocker = {"/bin/bash", ocsswDockerRunnerScriptPath, " --ocsswroot " , ocsswRootDocker, OCSSW_SEADAS_INFO_PROGRAM_NAME };
-
+        String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
         ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
-        ocsswDockerSeadasInfoPath = ocsswDockerBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
-        if ((ocsswRootOcsswInfo == null ) || (!Files.exists(Paths.get(ocsswRootOcsswInfo))) && "local".equals(ocsswLocation) ) {
-            if ((ocsswRootEnv != null) && Files.exists(Paths.get(ocsswRootEnv))) {
-                currentInfoLine = "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
-                        "'. To configure the GUI to use this installation then update the 'OCSSW ROOT' directory in Menu > SeaDAS-Toolbox > SeaDAS Processors Location";
-                sysInfoText += currentInfoLine;
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-            } else {
-                currentInfoLine = "  Warning! Processers not installed " + "\n\n";
+        if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
+            currentInfoLine = ocsswInfo.getRemoteSeaDASInfo();
+            System.out.println(currentInfoLine);
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+        } else {
+            if ((ocsswRootOcsswInfo == null) || (!Files.exists(Paths.get(ocsswRootOcsswInfo))) && "local".equals(ocsswLocation)) {
+                if ((ocsswRootEnv != null) && Files.exists(Paths.get(ocsswRootEnv))) {
+                    currentInfoLine = "WARNING! Processing not configured in the GUI but an installation currently exists in the directory '" + ocsswRootEnv +
+                            "'. To configure the GUI to use this installation then update the 'OCSSW ROOT' directory in Menu > SeaDAS-Toolbox > SeaDAS Processors Location";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                } else {
+                    currentInfoLine = "  Warning! Processers not installed " + "\n\n";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+
+                    printGeneralSystemInfo(ocsswDebug);
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+                }
+            } else if ((!Files.exists(Paths.get(ocsswRootDocker))) && "docker".equals(ocsswLocation)) {
+                currentInfoLine = "  Warning (for docker)! Processers not installed " + "\n\n";
                 sysInfoText += currentInfoLine;
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
 
                 printGeneralSystemInfo(ocsswDebug);
                 appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-            }
-        } else if ((!Files.exists(Paths.get(ocsswRootDocker))) && "docker".equals(ocsswLocation)){
-            currentInfoLine = "  Warning (for docker)! Processers not installed " + "\n\n";
-            sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-
-            printGeneralSystemInfo(ocsswDebug);
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-        } else {
-
-            if (!Files.isExecutable(Paths.get(ocsswDockerSeadasInfoPath)) && "docker".equals(ocsswLocation)) {
-                currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW Docker bin directory" + "\n\n";
-                sysInfoText += currentInfoLine;
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-
-                printGeneralSystemInfo(ocsswDebug);
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-            } else if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath)) && "local".equals(ocsswLocation))  {
-                currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW bin directory" + "\n\n";
-                sysInfoText += currentInfoLine;
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-
-                printGeneralSystemInfo(ocsswDebug);
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
             } else {
-            System.out.println("command is: " + command.toString());
-                currentInfoLine = "";
-                try {
 
-                    ProcessBuilder processBuilder = new ProcessBuilder(command);
-                    Process process = processBuilder.start();
-
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(process.getInputStream()));
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        System.out.println("line =" + line);
-
-                        if (!line.contains("NASA Science Processing (OCSSW)")) {
-                            if (line.contains("General System and Software")) {
-                                currentInfoLine += "\n" + DASHES + "\n";
-                                currentInfoLine += INDENT + "General System and Software: " + "\n";
-                                currentInfoLine += DASHES + "\n";
-                            } else {
-                                currentInfoLine += line + "\n";
-                            }
-                        }
-                    }
-
-                    sysInfoText += currentInfoLine;
-                    appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-                    reader.close();
-                    process.destroy();
-
-                    try
-                    {
-                        Thread.sleep(10);
-                    }
-                    catch(InterruptedException ex)
-                    {
-                        Thread.currentThread().interrupt();
-                    }
-
-                    if (process.exitValue() != 0) {
-                        System.out.println("  WARNING!: Non zero exit code returned for \'" + command + "\' ");
-                    }
-
-                } catch (IOException e) {
-                    String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command.toString() + "\' failed";
-                    currentInfoLine = warning + "\n";
-                    currentInfoLine += e.toString() + "\n";
+                if ("docker".equals(ocsswLocation)) {
+                    currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW Docker bin directory" + "\n\n";
                     sysInfoText += currentInfoLine;
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                    e.printStackTrace();
+
+                    printGeneralSystemInfo(ocsswDebug);
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                }
+            else if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath)) && "local".equals(ocsswLocation)) {
+                    currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW bin directory" + "\n\n";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+
+                    printGeneralSystemInfo(ocsswDebug);
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                } else {
+                    currentInfoLine = "";
+                    try {
+
+                        ProcessBuilder processBuilder = new ProcessBuilder(command);
+                        Process process = processBuilder.start();
+
+                        BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(process.getInputStream()));
+                        String line;
+
+                        while ((line = reader.readLine()) != null) {
+                            if (!line.contains("NASA Science Processing (OCSSW)")) {
+                                if (line.contains("General System and Software")) {
+                                    currentInfoLine += "\n" + DASHES + "\n";
+                                    currentInfoLine += INDENT + "General System and Software: " + "\n";
+                                    currentInfoLine += DASHES + "\n";
+                                } else {
+                                    currentInfoLine += line + "\n";
+                                }
+                            }
+                        }
+
+                        sysInfoText += currentInfoLine;
+                        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+                        reader.close();
+                        process.destroy();
+
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                        }
+
+                        if (process.exitValue() != 0) {
+                            System.out.println("  WARNING!: Non zero exit code returned for \'" + command + "\' ");
+                        }
+
+                    } catch (IOException e) {
+                        String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command.toString() + "\' failed";
+                        currentInfoLine = warning + "\n";
+                        currentInfoLine += e.toString() + "\n";
+                        sysInfoText += currentInfoLine;
+                        appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                        e.printStackTrace();
+                    }
                 }
             }
         }
+
         sysInfoTextpane.setEditable(false);
         sysInfoTextpane.setCaretPosition(0);
 
@@ -733,7 +699,7 @@ public class GetSysInfoGUI {
         gbc.weightx = 1;
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        sysInfoTextpane.setPreferredSize(new Dimension(750,750));
+        sysInfoTextpane.setPreferredSize(new Dimension(750, 750));
 
         panel.add(scroll, gbc);
 
@@ -779,8 +745,7 @@ public class GetSysInfoGUI {
         sysInfoText += currentInfoLine;
     }
 
-    private void appendToPane(JTextPane tp, String msg, Color c)
-    {
+    private void appendToPane(JTextPane tp, String msg, Color c) {
         StyleContext sc = StyleContext.getDefaultStyleContext();
         AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
 

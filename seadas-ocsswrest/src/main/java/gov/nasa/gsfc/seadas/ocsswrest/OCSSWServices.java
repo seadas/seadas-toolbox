@@ -163,7 +163,6 @@ public class OCSSWServices {
         return fileInfo;
     }
 
-
     @GET
     @Path("/getFileCharSet/{jobId}/{fileName}")
     @Consumes(MediaType.TEXT_XML)
@@ -463,6 +462,23 @@ public class OCSSWServices {
     public OCSSWInfo getOCSSWInfo() {
         OCSSWInfo ocsswInfo = new OCSSWInfo();
         return ocsswInfo;
+    }
+
+
+    @GET
+    @Path("/getSystemInfo")
+    @Consumes(MediaType.TEXT_XML)
+    public String getSystemInfo() {
+        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+        String systemInfoString = ocsswRemote.executeGetSystemInfoProgram();
+        return systemInfoString;
+    }
+
+    @GET
+    @Path("/getJavaVersion")
+    @Consumes(MediaType.TEXT_XML)
+    public String getJavaVersion() {
+        return System.getProperty("java.version");
     }
 
     @GET

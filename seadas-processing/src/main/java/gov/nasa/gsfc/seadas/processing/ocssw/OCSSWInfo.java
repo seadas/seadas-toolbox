@@ -88,6 +88,8 @@ public class OCSSWInfo {
     private String resourceBaseUri;
     private String ocsswTag;
 
+    private String remoteSeaDASInfo;
+
     private static String seadasVersion;
 
     public static String getSessionId() {
@@ -342,6 +344,8 @@ public class OCSSWInfo {
             // }
             processInputStreamPort = new Integer(preferences.get(OCSSW_PROCESS_INPUT_STREAM_PORT, "6402")).intValue();
             processErrorStreamPort = new Integer(preferences.get(OCSSW_PROCESS_ERROR_STREAM_PORT, "6403")).intValue();
+
+            remoteSeaDASInfo = target.path("ocssw").path("getSystemInfo").request().get(String.class);
         }
         //System.out.println("ocsswExist = " + ocsswExist);
         return ocsswExist;
@@ -427,5 +431,13 @@ public class OCSSWInfo {
 
     public String getOcsswDebugInfo(){
         return preferences.get(SEADAS_OCSSW_DEBUG, SEADAS_OCSSW_DEBUG_DEFAULT_VALUE);
+    }
+
+    public String getRemoteSeaDASInfo() {
+        return remoteSeaDASInfo;
+    }
+
+    public void setRemoteSeaDASInfo(String remoteSeaDASInfo) {
+        this.remoteSeaDASInfo = remoteSeaDASInfo;
     }
 }
