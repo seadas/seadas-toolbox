@@ -598,7 +598,6 @@ public class GetSysInfoGUI {
 
         if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
             currentInfoLine = ocsswInfo.getRemoteSeaDASInfo();
-            System.out.println(currentInfoLine);
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         } else {

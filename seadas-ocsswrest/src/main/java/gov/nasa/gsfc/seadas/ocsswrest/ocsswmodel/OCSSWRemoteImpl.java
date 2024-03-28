@@ -145,8 +145,6 @@ public class OCSSWRemoteImpl {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                System.out.println("line =" + line);
-
                 if (!line.contains("NASA Science Processing (OCSSW)")) {
                     if (line.contains("General System and Software")) {
                         currentInfoLine += "\n" + DASHES + "\n";
@@ -165,7 +163,6 @@ public class OCSSWRemoteImpl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("info line =" + currentInfoLine);
         return currentInfoLine;
     }
 
