@@ -22,7 +22,7 @@ import java.util.Arrays;
  */
 public class ServerSideFileUtilities {
 
-    private static boolean debug = true;
+    private static boolean debug = false;
     public static final String FILE_UPLOAD_PATH = System.getProperty("user.dir") + System.getProperty("file.separator") + "ifiles";
     public static final int BUFFER_SIZE = 1024;
 
