@@ -342,6 +342,7 @@ private String convertClientParFileForRemoteServer(File parFile, String jobId) {
             st2 = new StringTokenizer(token, "=");
             key = st2.nextToken();
             value = st2.nextToken();
+            value = value.replace("\\", File.separator);
             debug("par file tokens:" + key + " " + value);
             File ofile = new File(workingFileDir + File.separator + value);
             debug("Does " + ofile.getAbsolutePath() + "exists? " + new File(workingFileDir + File.separator + value).exists());
@@ -388,6 +389,7 @@ private String convertClientMLPParFilForRemoteServer(File parFile, String jobId)
             st2 = new StringTokenizer(token, "=");
             key = st2.nextToken();
             value = st2.nextToken();
+            value = value.replace("\\", File.separator);
             if (new File(mlpDir + File.separator + value).exists()) {
                 value = mlpDir + File.separator + value;
                 debug("mlp file: " + value);
