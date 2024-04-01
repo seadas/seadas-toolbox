@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.PRODUCT_XML;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_CLIENT_SERVER_SHARED_DIR_NAME;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY;
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME;
 
@@ -555,7 +556,7 @@ public class OCSSWRemote extends OCSSW {
             //todo implement par file uploading for programs other than mlp
             if (processorModel.acceptsParFile() ) {
                 String parString = processorModel.getParamList().getParamString("\n");
-                File parFile = writeParFile(convertParStringForRemoteServer(parString));
+                File parFile = writeParFile(convertParStringForRemoteServerSpecialMissions(parString));
                 uploadParFile(parFile);
                 Response response = target.path("ocssw").path("executeParFile").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(parFile.getName(), MediaType.TEXT_PLAIN));
                 seadasProcess = waitForServerExecution(response);
@@ -1159,6 +1160,47 @@ public class OCSSWRemote extends OCSSW {
                 } else if (key.equals(processorModel.getPrimaryOutputFileOptionName())) {
                     ofileDir = value.substring(0, value.lastIndexOf(File.separator));
                     value = value.substring(value.lastIndexOf(File.separator) + 1);
+                }
+                token = key + "=" + value;
+            }
+            stringBuilder.append(token);
+            stringBuilder.append("\n");
+        }
+
+        String newParString = stringBuilder.toString();
+        //remove empty lines
+        String adjusted = newParString.replaceAll("(?m)^[ \t]*\r?\n", "");
+        return adjusted;
+    }
+
+    protected String convertParStringForRemoteServerSpecialMissions(String parString) {
+        setCommandArray(new String[]{parString});
+        StringTokenizer st1 = new StringTokenizer(parString, "\n");
+        StringTokenizer st2;
+        StringBuilder stringBuilder = new StringBuilder();
+        String token;
+        String key, value;
+        String fileTypeString;
+        while (st1.hasMoreTokens()) {
+            token = st1.nextToken();
+            if (token.contains("=")) {
+                st2 = new StringTokenizer(token, "=");
+                key = st2.nextToken();
+                value = st2.nextToken();
+                if (new File(value).exists() && !new File(value).isDirectory() && !key.equals(processorModel.getPrimaryOutputFileOptionName())) {
+                    //if item is ifile
+                    if (key.equals(processorModel.getPrimaryInputFileOptionName())) {
+                        ifileDir = value.substring(0, value.lastIndexOf(File.separator));
+                    }
+                    //uploadClientFile(value);
+                    value = value.substring(value.indexOf(SEADAS_CLIENT_SERVER_SHARED_DIR_NAME) + SEADAS_CLIENT_SERVER_SHARED_DIR_NAME.length() + 1);
+
+                } else if (key.equals(MLP_PAR_FILE_ODIR_KEY_NAME) && new File(value).isDirectory()) {
+                    ofileDir = value;
+                    //if item is ofile
+                } else if (key.equals(processorModel.getPrimaryOutputFileOptionName())) {
+                    ofileDir = value.substring(0, value.lastIndexOf(File.separator));
+                    value = value.substring(value.indexOf(SEADAS_CLIENT_SERVER_SHARED_DIR_NAME) + SEADAS_CLIENT_SERVER_SHARED_DIR_NAME.length() + 1);
                 }
                 token = key + "=" + value;
             }
