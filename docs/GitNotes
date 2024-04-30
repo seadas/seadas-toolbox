@@ -77,3 +77,7 @@ git push --delete origin 1.1.0
 // Delete local tag
 git tag -d <tag_name>
 git tag -d 1.1.0
+
+
+// Example of copying a tag SEADAS-9.0.0-RC9 to SEADAS-9.0.0 and giving it the release date
+GIT_COMMITTER_DATE="2024-04-11 13:00" git tag -a SEADAS-9.0.0 SEADAS-9.0.0-RC9^{} -m "SeaDAS 9.0.0 Release - based on unreleased SNAP 10 (Jan 5, 2024) development code"
