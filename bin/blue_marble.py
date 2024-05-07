@@ -8,14 +8,14 @@ import re
 FRONTSIDE = "frontside"
 BACKSIDE = "backside"
 
-cleanup_files_bool = True
+cleanup_files_bool = False
 make_level2_files_only = False
 make_scene_bins_only = False
 
-binned_resolution = "1"
-mapped_resolution = "1"
-lon_0 = "-35"
-lat_0 = "0"
+binned_resolution = "H"
+mapped_resolution = "4"
+lon_0 = "-60"
+lat_0 = "-30"
 frontside_files_list = "front_files.txt"
 backside_files_list = "back_files.txt"
 
@@ -232,7 +232,7 @@ def get_l2_filename(viirs_sensor, timepart, side):
     if (viirs_sensor == None or timepart == None):
             return None
 
-    l2_basename = viirs_sensor + "." + timepart + ".L2.TC.rhos_t"
+    l2_basename = viirs_sensor + "." + timepart + ".L2.TC.rhos"
 
     if (side is None):
         # do nothing
@@ -267,7 +267,8 @@ def run_l2gen(l1b_filename, geo_filename, l2_filename, viirs_sensor, daynight, s
     l2prod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz,solz"
            #print(l3bprod)
   elif (viirs_sensor == "PACE_OCI"):
-    l2prod = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+#     l2prod = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+    l2prod = "rhos_465,rhos_555,rhos_645,senz"
            #print(l3bprod)
   else:
     print ("unknown viirs sensor " + viirs_sensor)
@@ -382,7 +383,8 @@ def run_l2bin(l2_filename, l3_binned_filename, resolution, viirs_sensor):
     l3bprod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz,solz"
     #print(l3bprod)
   elif (viirs_sensor == "PACE_OCI"):
-    l3bprod = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+#     l3bprod = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+    l3bprod = "rhos_465,rhos_555,rhos_645,senz"
   else:
     return None
 
@@ -438,7 +440,8 @@ def run_l3bin(l3_binned_filename_ifile, l3_binned_filename_ofile, reduce_fac, vi
     prod = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
     #print(l3bprod)
   elif (viirs_sensor == "PACE_OCI"):
-    prod = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+#     prod = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+    prod = "rhos_465,rhos_555,rhos_645,senz"
     #print(l3bprod)
   else:
     return None
@@ -512,7 +515,8 @@ def run_l3mapgen(l3_binned_filename_ifile, l3_mapped_filename_ofile, resolution,
     product = "rhos_486,rhos_551,rhos_671,rhot_486,rhot_551,rhot_671,senz"
     #print(l3bprod)
   elif (viirs_sensor == "PACE_OCI"):
-    product = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+#     product = "rhos_465,rhos_555,rhos_645,rhot_465,rhot_555,rhot_645,senz"
+    product = "rhos_465,rhos_555,rhos_645,senz"
     #print(l3bprod)  else:
   else:
     return None
