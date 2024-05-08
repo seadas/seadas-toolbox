@@ -140,7 +140,7 @@
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
         <panel classname="ProcessPanel" id="ProcessPanel.processPanelSpec.xml" />
-        <panel classname="FinishPanel" id="finish"/>
+        <panel classname="FinishPanel" id="FinishPanel.finish"/>
     </panels>
 
     <dynamicvariables>
