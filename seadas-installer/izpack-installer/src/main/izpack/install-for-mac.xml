@@ -139,7 +139,7 @@
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <!--        <panel classname="ProcessPanel" id="processPaneSpec.xml" />-->
+        <panel classname="ProcessPanel" id="ProcessPanel.processPanelSpec.xml" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
