@@ -61,8 +61,8 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
-        <res id="FinishPanel.finish" src="about/finish.html"/>
+        <res id="ProcessPanel.Spec.xml" src="resources/processPanelSpec.xml"/>
+        <res id="finish" src="about/finish.html"/>
     </resources>
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
@@ -139,8 +139,8 @@
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <panel classname="ProcessPanel" id="ProcessPanel.processPanelSpec.xml" />
-        <panel classname="FinishPanel" id="FinishPanel.finish"/>
+        <panel classname="ProcessPanel" id="processPanelSpec.xml" />
+        <panel classname="FinishPanel" id="finish"/>
     </panels>
 
     <dynamicvariables>
