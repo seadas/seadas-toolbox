@@ -64,7 +64,7 @@ public class L2genProductsParamInfo extends ParamInfo {
             l2prod.add(integerL2prod);
         }
 
-        Collections.sort(l2prod);
+//        Collections.sort(l2prod);
 
         for (String remnant: userRemnants) {
             l2prod.add(remnant);
