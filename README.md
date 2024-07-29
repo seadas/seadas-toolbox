@@ -32,6 +32,7 @@ SNAP-Engine:
     git checkout SEADAS-9.0.2-SNAP-11.0.0-04-30-24
     mvn install -Dmaven.test.skip=true
     *NOTE if mvn fails then try: 'mvn install'
+    * Also you could try this:  mvn clean -U compile install  -Dmaven.test.skip=true
 
 SNAP-Desktop:
 
