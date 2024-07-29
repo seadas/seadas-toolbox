@@ -29,20 +29,20 @@ Checkout and build the corresponding branches for your desired release.  See Sea
 SNAP-Engine:
 
     cd [SEADAS]/snap-engine
-    git checkout SEADAS-8.3.10-SNAP-10.0.0-jide-3.7.12
+    git checkout SEADAS-9.0.2-SNAP-11.0.0-04-30-24
     mvn install -Dmaven.test.skip=true
     *NOTE if mvn fails then try: 'mvn install -Dskiptests=true'
 
 SNAP-Desktop:
 
     cd [SEADAS]/snap-desktop
-    git checkout  SEADAS-8.3.10-SNAP-10.0.0-jide-3.7.12
+    git checkout  SEADAS-9.0.2-SNAP-11.0.0-04-30-24
     mvn install -Dmaven.test.skip=true
 
 Sentinel-3 Toolbox:
 
     cd [SEADAS]/optical-toolbox
-    git checkout  SEADAS-8.3.10-OPTTBX-10.0.0-SNAP-10.0.0
+    git checkout  SEADAS-9.0.2-SNAP-11.0.0-04-30-24
     mvn install -Dmaven.test.skip=true
 
 SeaDAS Toolbox:
