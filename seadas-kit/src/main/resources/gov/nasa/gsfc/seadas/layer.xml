@@ -53,6 +53,13 @@
             </folder>
         </folder>
 
+        <folder name="EarthData-Cloud-Toolbox">
+            <attr name="position" intvalue="150"/>
+            <folder name="Harmony Services">
+                <attr name="position" intvalue="1000"/>
+            </folder>
+        </folder>
+
 
     </folder>
 
