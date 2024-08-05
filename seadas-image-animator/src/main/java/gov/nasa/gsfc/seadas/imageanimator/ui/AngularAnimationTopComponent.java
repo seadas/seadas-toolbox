@@ -17,6 +17,7 @@ package gov.nasa.gsfc.seadas.imageanimator.ui;
 
 import com.bc.ceres.glayer.support.ImageLayer;
 import com.bc.ceres.glevel.MultiLevelModel;
+import eu.esa.snap.core.datamodel.group.BandGroup;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.util.ProductUtils;
@@ -639,7 +640,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         if (availableAngularBands.length == 0) {
             angularViews = new DisplayableAngularview[]{};
         } else {
-            final Product.AutoGrouping autoGrouping = currentProduct.getAutoGrouping();
+            final BandGroup autoGrouping = currentProduct.getAutoGrouping();
             if (autoGrouping != null) {
                 final int selectedAngularViewIndex = autoGrouping.indexOf(raster.getName());
                 DisplayableAngularview[] autoGroupingAngularViews = new DisplayableAngularview[autoGrouping.size()];
@@ -1510,7 +1511,8 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
 
         private void addBandToAngularViews(Band band) {
             DisplayableAngularview[] allAngularViews = rasterToAngularMap.get(currentView.getRaster());
-            Product.AutoGrouping autoGrouping = currentProduct.getAutoGrouping();
+            final BandGroup autoGrouping = currentProduct.getAutoGrouping();
+
             if (autoGrouping != null) {
                 final int bandIndex = autoGrouping.indexOf(band.getName());
                 final DisplayableAngularview angularView;
