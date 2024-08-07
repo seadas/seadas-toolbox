@@ -20,13 +20,13 @@ import java.util.ArrayList;
 @ActionID(category = "View", id = "EarthCloudDataAction")
 @ActionRegistration(displayName = "#CTL_EarthCloudDataActionName")
 @ActionReferences({
-        @ActionReference(path = "Menu/EarthData-Cloud-Toolbox", position = 100),
+        @ActionReference(path = "Menu/Earthdata-Cloud", position = 360),
         @ActionReference(path = "Menu/View", position = 600),
         @ActionReference(path = "Toolbars", position = 100)
 })
 @NbBundle.Messages({
-        "CTL_EarthCloudDataActionName=EarthData Cloud Toolbox",
-        "CTL_EarthDataCloudActionToolTip=Show/hide EarthData Cloud Toolbox"
+        "CTL_EarthCloudDataActionName=Earthdata-Cloud",
+        "CTL_EarthDataCloudActionToolTip=Show/hide Earthdata-Cloud"
 })
 
 public class ShowEarthDataCloudMenuAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {

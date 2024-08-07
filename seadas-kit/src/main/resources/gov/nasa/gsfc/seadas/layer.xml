@@ -28,7 +28,7 @@
 
 
         <folder name="SeaDAS-Toolbox">
-            <attr name="position" intvalue="150"/>
+            <attr name="position" intvalue="350"/>
             <folder name="SeaDAS Processors">
                 <attr name="position" intvalue="1000"/>
 
@@ -53,8 +53,8 @@
             </folder>
         </folder>
 
-        <folder name="EarthData-Cloud-Toolbox">
-            <attr name="position" intvalue="160"/>
+        <folder name="Earthdata-Cloud">
+            <attr name="position" intvalue="360"/>
             <folder name="Harmony Services">
                 <attr name="position" intvalue="1000"/>
             </folder>
