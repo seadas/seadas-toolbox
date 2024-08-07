@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 )
 
 @ActionReference(
-        path = "Menu/EarthData-Cloud/Harmony Services",
+        path = "Menu/Earthdata-Cloud/Harmony Services",
         position = 100
 )
 
