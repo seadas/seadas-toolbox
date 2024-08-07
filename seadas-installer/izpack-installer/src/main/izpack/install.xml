@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <izpack:installation version="5.0"
-                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
-
+                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS IzPack Installer</appname>
-        <appversion>1.1.0</appversion>
+        <appversion>1.2</appversion>
         <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
         <!--        <requiresjdk>no</requiresjdk>-->
         <url>https://seadas.gsfc.nasa.gov</url>
@@ -19,8 +18,16 @@
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
         <laf name="looks">
+            <os family="unix"/>
+            <param name="variant" value="mist-aqua"/>
+        </laf>
+        <laf name="looks">
             <os family="windows"/>
             <param name="variant" value="extwin"/>
+        </laf>
+        <laf name="substance">
+            <os family="mac"/>
+            <param name="variant" value="nebula-brick-wall"/>
         </laf>
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
@@ -58,7 +65,7 @@
         <res id="FinishPanel.finish" src="about/finish.html"/>
     </resources>
     <variables>
-        <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
+        <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
         <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
@@ -66,9 +73,9 @@
         <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>
-        <variable name="WELCOME_TEXT" value="SeaDAS 9.0.2 Installer"/>
-        <variable name="WELCOME_VERSION" value="Version: 1.1"/>
-        <variable name="FINISH_TEXT" value="SeaDAS 9.0.2 is successfuly installed. Enjoy!"/>
+        <variable name="WELCOME_TEXT" value="SeaDAS 9.1.0 Installer"/>
+        <variable name="WELCOME_VERSION" value="Version: 1.2"/>
+        <variable name="FINISH_TEXT" value="SeaDAS 9.1.0 is successfuly installed. Enjoy!"/>
         <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
         <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
@@ -124,20 +131,20 @@
         <!--    </panel>-->
 
 
-        <panel classname="InstallationTypePanel"/>
+        <!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
         <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-        <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <!--        <panel classname="ProcessPanel" id="processPaneSpec.xml" />-->
+        <panel classname="UserInputPanel" id="userInputPanel4Run"/>
+        <panel classname="ProcessPanel" id="processPanelForRemoveDotSeaDAS.xml" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH\jdk-11.0.19+7-jre"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre"/>
     </dynamicvariables>
 
     <packs>
@@ -151,13 +158,23 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" unpack="true"
-                     override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
+            <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux"
+                     condition="izpack.linuxinstall">
+                <os family="linux"/>
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows"
-                     condition="izpack.windowsinstall"/>
+            <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux"
+                     condition="izpack.linuxinstall"/>
+            <parsable type="plain">
+                <fileset targetdir="${INSTALL_PATH}/bin">
+                    <include name="*.sh"/>
+                    <include name="seadas"/>
+                    <include name="seadas.desktop"/>
+                    <exclude name="*.exe"/>
+                </fileset>
+                <os family="unix"/>
+            </parsable>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
                     <include name="seadas.clusters"/>
@@ -167,37 +184,32 @@
                     <include name="snap.conf"/>
                     <include name="snap.properties"/>
                 </fileset>
-            </parsable>
-            <parsable type="shell">
-                <fileset targetdir="${INSTALL_PATH}/bin">
-                    <include name="gpt.bat"/>
-                    <include name="pconvert.bat"/>
-                </fileset>
+                <os family="unix"/>
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <os family="windows"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert"/>
+                <os family="unix"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>
             </executable>
         </pack>
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
             <description>Optical Toolbox</description>
-            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH\optical-toolbox">
+            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH/optical-toolbox">
             </fileset>
         </pack>
         <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
             <description>NASA SeaDAS Toolbox</description>
-            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH\seadas-toolbox">
+            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
         <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
             <description>JDK11 JRE</description>
-            <file src="packs/jre/OpenJDK11U-jre_x64_windows_hotspot_11.0.19_7.zip" targetdir="${INSTALL_PATH}"
+            <file src="packs/jre/OpenJDK11U-jre_x64_linux_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\bin" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\lib" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/lib" includes="*"/>
             </executable>
         </pack>
     </packs>
@@ -205,7 +217,7 @@
     <natives>
         <native type="izpack" name="ShellLink.dll"/>
         <native type="izpack" name="ShellLink_x64.dll"/>
-        <native type="3rdparty" name="COIOSHelper.dll">
+        <native type="3rdparty" name="COIOSHelper.dll" stage="both">
             <os family="windows"/>
         </native>
     </natives>

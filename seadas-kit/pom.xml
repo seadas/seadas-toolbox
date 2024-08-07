@@ -85,6 +85,11 @@
         </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-earthdata-cloud-toolbox</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-watermask-operator</artifactId>
             <version>${seadas-watermask-operator.version}</version>
         </dependency>

@@ -21,7 +21,12 @@ public class ShapeFileRasterizerTest extends TestCase {
         final URL shapeUrl = getClass().getResource("e000n05f.shp");
         final File shapeFile = new File(shapeUrl.getFile());
         final int resolution = WatermaskUtils.computeSideLength(150);
-        final BufferedImage image = rasterizer.createImage(shapeFile, resolution);
+        final BufferedImage image;
+        try {
+            image = rasterizer.createImage(shapeFile, resolution);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // test some known values
         final Raster imageData = image.getData();
@@ -49,7 +54,11 @@ public class ShapeFileRasterizerTest extends TestCase {
          BufferedImage image = null;
          for (File file : tempFiles) {
              if (file.getName().endsWith("shp")) {
-                 image = rasterizer.createImage(file, tileSize);
+                 try {
+                     image = rasterizer.createImage(file, tileSize);
+                 } catch (Exception e) {
+                     throw new RuntimeException(e);
+                 }
              }
          }
          assertNotNull(image);

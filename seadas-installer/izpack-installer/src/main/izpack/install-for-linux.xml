@@ -131,7 +131,7 @@
         <!--    </panel>-->
 
 
-        <panel classname="InstallationTypePanel"/>
+<!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
