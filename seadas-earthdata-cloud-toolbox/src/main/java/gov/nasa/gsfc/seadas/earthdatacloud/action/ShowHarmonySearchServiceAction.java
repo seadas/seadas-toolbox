@@ -14,22 +14,28 @@ import org.openide.util.actions.Presenter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 
 
-@ActionID(category = "View", id = "EarthCloudDataAction")
-@ActionRegistration(displayName = "#CTL_EarthCloudDataActionName")
-@ActionReferences({
-        @ActionReference(path = "Menu/EarthData-Cloud-Toolbox", position = 100),
-        @ActionReference(path = "Menu/View", position = 600),
-        @ActionReference(path = "Toolbars", position = 100)
-})
+@ActionID(
+        category = "View", id = "HarmonySearchServiceAction"
+)
+
+@ActionRegistration(
+        displayName = "#CTL_HarmonySearchServiceActionName",
+        popupText = "#CTL_HarmonySearchServiceActionName"
+)
+
+@ActionReference(
+        path = "Menu/EarthData-Cloud-Toolbox/Harmony Services",
+        position = 100
+)
+
 @NbBundle.Messages({
-        "CTL_EarthCloudDataActionName=EarthData Cloud Toolbox",
-        "CTL_EarthDataCloudActionToolTip=Show/hide EarthData Cloud Toolbox"
+        "CTL_HarmonySearchServiceActionName=Search Service",
+        "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
 })
 
-public class ShowEarthDataCloudMenuAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
+public class ShowHarmonySearchServiceAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
 
     Product product;
     //    private boolean enabled = false;
@@ -38,17 +44,17 @@ public class ShowEarthDataCloudMenuAction extends AbstractSnapAction implements 
 
     private final Lookup lookup;
 
-    public  ShowEarthDataCloudMenuAction() {
+    public  ShowHarmonySearchServiceAction() {
         this(null);
     }
 
-    public   ShowEarthDataCloudMenuAction(Lookup lookup) {
+    public   ShowHarmonySearchServiceAction(Lookup lookup) {
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
-        putValue(NAME, Bundle.CTL_ImageAnimatorActionName());
+        putValue(NAME, Bundle.CTL_HarmonySearchServiceActionName());
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
         putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
-        putValue(SHORT_DESCRIPTION, Bundle.CTL_ImageAnimatorActionToolTip());
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_HarmonySearchServiceActionToolTip());
         this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
         updateEnabledState();
     }
@@ -63,8 +69,6 @@ public class ShowEarthDataCloudMenuAction extends AbstractSnapAction implements 
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
         putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
-
-
         SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
         LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
@@ -83,11 +87,16 @@ public class ShowEarthDataCloudMenuAction extends AbstractSnapAction implements 
 
     @Override
     public JMenuItem getMenuPresenter() {
-        return null;
+        JMenuItem menuItem = new JMenuItem(this);
+        menuItem.setIcon(null);
+        return menuItem;
     }
 
     @Override
     public Component getToolbarPresenter() {
-        return null;
+        JButton button = new JButton(this);
+        button.setText(null);
+        button.setIcon(ImageUtilities.loadImageIcon(LARGEICON,false));
+        return button;
     }
 }
