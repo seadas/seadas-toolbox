@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<izpack:processing version="5.0"
+                   xmlns:izpack="http://izpack.org/schema/processing"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://izpack.org/schema/processing http://izpack.org/schema/5.0/izpack-processing-5.0.xsd">
+
+    <job name="Create Symbolic Link">
+        <os family="mac"/>
+        <executefile name="$INSTALL_PATH/bin/removeSeaDAS.sh" workingDir="$INSTALL_PATH/bin">
+            <!--                <arg>doit</arg>-->
+            <!--                <arg>$variable</arg>-->
+        </executefile>
+    </job>
+</izpack:processing>
