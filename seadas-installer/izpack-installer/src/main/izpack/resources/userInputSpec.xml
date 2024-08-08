@@ -4,7 +4,7 @@
 
       <panel id="userInputPanel4Run">
           <field type="check" variable="checkSelection.1">
-                <spec txt="Run SeaDAS after Install" id="runSeaDASAfterInstall" true="on" false="off" set="true"/>
+                <spec txt="Run SeaDAS after Install" id="runSeaDASAfterInstallCheckBox" true="on" false="off" set="true"/>
           </field>
           <field type="check" variable="checkSelection.2">
               <spec txt="Remove the existing .seadas directory" id="removeDotSeaDASDir" true="true" false="false" set="false"/>
@@ -23,6 +23,15 @@
         <field type="check" variable="checkSelection.2">
             <spec txt="Remove the existing .seadas directory" id="removeDotSeaDASDir" true="true" false="false" set="false"/>
         </field>
+
+        <field type="radio" variable="radioSelection">
+            <description txt="This is a description for radio buttons" id="description.radio"/>
+            <spec>
+                <choice txt="remove .seadas9" id="radio.label.1" value="1 selected" />
+                <choice txt="archive .seadas9" id="radio.label.2" value="2 selected" set="true" />
+            </spec>
+        </field>
+
     </panel>
 
 </izpack:userinput>
