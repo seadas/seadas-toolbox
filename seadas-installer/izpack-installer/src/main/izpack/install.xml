@@ -60,9 +60,10 @@
         <res id="Installer.image" src="images/seadas-installer.png"/>
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
-        <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
+        <res id="userInputSpec.xml" src="resources/userInputSpec.xml" parse="yes" type="xml"/>
         <res id="processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
-        <res id="processPanelForDotSeaDAS.xml" src="resources/processPanelForDotSeaDAS.xml"/>
+<!--        <res id="processPanelForDotSeaDAS.xml" src="resources/processPanelForDotSeaDAS.xml"/>-->
+        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
         <res id="finish.xml" src="about/finish.html"/>
     </resources>
     <variables>
@@ -85,13 +86,18 @@
         <variable name="maxHeapSize" value="4096M"/>
         <variable name="installer:maxHeapSize" value="4096M"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
-        <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
-
         <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
         <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
+
     </variables>
+
+    <dynamicvariables>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre"/>
+        <variable name="dotSeaDASDirStatus" value="$dotSeaDASStatusSelection" />
+        <variable name="runSeaDASAfterInstall" value="${checkSelection.1}"/>
+    </dynamicvariables>
 
     <conditions>
         <condition type="variable" id="standardinstallation">
@@ -112,15 +118,15 @@
         </condition>
         <condition type="variable" id="runSeaDAS">
             <name>runSeaDASAfterInstall</name>
-            <value>${runSeaDASAfterInstallCheckBox}</value>
+            <value>true</value>
         </condition>
-        <condition type="variable" id="removeDotSeaDAS">
-            <name>removeDotSeaDAS</name>
-            <value>${runSeaDASAfterInstallCheckBox}</value>
+        <condition type="contains" id="deleteDotSeaDAS">
+            <variable>dotSeaDASDirStatus</variable>
+            <value>delete</value>
         </condition>
-        <condition type="variable" id="removeDotSeaDAS">
-            <name>archiveDotSeaDAS</name>
-            <value>${runSeaDASAfterInstallCheckBox}</value>
+        <condition type="contains" id="archiveDotSeaDAS">
+            <variable>dotSeaDASDirStatus</variable>
+            <value>archive</value>
         </condition>
     </conditions>
 
@@ -143,17 +149,14 @@
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
+        <panel classname="UserInputPanel" id="userInputPanel4Run"/>
         <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-        <panel classname="UserInputPanel" id="userInputPanel4Run"/>
+
         <panel classname="ProcessPanel" id="processPanel" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>
-
-    <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre"/>
-    </dynamicvariables>
 
     <packs>
         <pack name="snap" preselected="yes" required="yes">

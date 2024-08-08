@@ -62,6 +62,7 @@
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
         <res id="ProcessPanel.processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
+        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
         <res id="finish" src="about/finish.html"/>
     </resources>ss
     <variables>
