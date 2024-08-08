@@ -1,6 +1,6 @@
-<izpack:userinput xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:izpack="http://izpack.org/schema/userinput"
+<izpack:userinput xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:izpack="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0"
                   version="5.0"
-                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.0/izpack-userinput-5.0.xsd">
+                  xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
 
       <panel id="userInputPanel4Run">
           <field type="check" variable="checkSelection.1">
@@ -10,7 +10,16 @@
               <spec txt="Remove the existing .seadas directory" id="removeDotSeaDASDir" true="true" false="false" set="false"/>
           </field>
 
+          <field type="radio" variable="radioSelection">
+              <description txt="This is a description for radio buttons" id="description.radio"/>
+              <spec>
+                  <choice txt="Delete .seadas" id="radio.label.1" value="1 selected" />
+                  <choice txt="Archive .seadas" id="radio.label.2" value="2 selected" set="true" />
+q          </spec>
+          </field>
+
       </panel>
+
 
     <panel id="finish">
         <field type="check" variable="checkSelection.1">
