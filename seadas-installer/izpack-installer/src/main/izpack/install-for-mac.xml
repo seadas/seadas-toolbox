@@ -61,9 +61,9 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.Spec.xml" src="resources/processPanelSpec.xml"/>
+        <res id="ProcessPanel.processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
         <res id="finish" src="about/finish.html"/>
-    </resources>
+    </resources>ss
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
@@ -131,7 +131,7 @@
         <!--    </panel>-->
 
 
-        <panel classname="InstallationTypePanel"/>
+<!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>

@@ -61,8 +61,9 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
-        <res id="FinishPanel.finish" src="about/finish.html"/>
+        <res id="processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
+        <res id="processPanelForDotSeaDAS.xml" src="resources/processPanelForDotSeaDAS.xml"/>
+        <res id="finish.xml" src="about/finish.html"/>
     </resources>
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
@@ -111,9 +112,16 @@
         </condition>
         <condition type="variable" id="runSeaDAS">
             <name>runSeaDASAfterInstall</name>
-            <value>${runSeaDASAfterInstall}</value>
+            <value>${runSeaDASAfterInstallCheckBox}</value>
         </condition>
-        >
+        <condition type="variable" id="removeDotSeaDAS">
+            <name>removeDotSeaDAS</name>
+            <value>${runSeaDASAfterInstallCheckBox}</value>
+        </condition>
+        <condition type="variable" id="removeDotSeaDAS">
+            <name>archiveDotSeaDAS</name>
+            <value>${runSeaDASAfterInstallCheckBox}</value>
+        </condition>
     </conditions>
 
 
@@ -139,7 +147,7 @@
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <panel classname="UserInputPanel" id="userInputPanel4Run"/>
-        <panel classname="ProcessPanel" id="processPanelForRemoveDotSeaDAS.xml" />
+        <panel classname="ProcessPanel" id="processPanel" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 

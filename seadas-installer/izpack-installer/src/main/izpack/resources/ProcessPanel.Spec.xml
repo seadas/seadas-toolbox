@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<izpack:processing version="5.0"
+                   xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
+
+    <logfiledir>$INSTALL_PATH</logfiledir>
+    <job name="Manage .seadas directory" condition="">
+        <os family="mac"/>
+        <executefile name="$INSTALL_PATH/bin/removeDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin">
+            <!--                <arg>doit</arg>-->
+            <!--                <arg>$variable</arg>-->
+        </executefile>
+    </job>
+
+        <job name="Run SeaDAS" final="true">
+            <os family="unix"/>
+            <executefile name="$INSTALL_PATH/bin/seadas">
+    <!--            <arg>doit</arg>-->
+    <!--            <arg>$variable</arg>-->
+            </executefile>
+        </job>
+
+    <job name="Create Symbolic Link" final="true">
+        <os family="mac"/>
+        <executefile name="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/createSymLink.sh" workingDir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/">
+            <!--                <arg>doit</arg>-->
+            <!--                <arg>$variable</arg>-->
+        </executefile>
+    </job>
+
+
+</izpack:processing>
