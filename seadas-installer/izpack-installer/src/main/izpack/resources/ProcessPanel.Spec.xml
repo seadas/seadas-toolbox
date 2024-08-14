@@ -4,21 +4,29 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://izpack.org/schema/processing http://izpack.org/schema/5.0/izpack-processing-5.0.xsd">
 
-<!--    <job name="Archive .seadas9 directory">-->
-<!--        <os family="unix" />-->
-<!--        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">-->
-<!--            &lt;!&ndash;                <arg>doit</arg>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <arg>$variable</arg>&ndash;&gt;-->
-<!--        </executefile>-->
-<!--    </job>-->
-
-    <job name="Delete .seadas9 directory">
+    <job name="Archive .seadas9 directory">
         <os family="unix" />
-        <executefile name="$INSTALL_PATH/bin/removeDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="removeDotSeaDAS">
+        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
             <!--                <arg>doit</arg>-->
             <!--                <arg>$variable</arg>-->
         </executefile>
     </job>
+
+    <job name="Archive .seadas9 directory">
+        <os family="mac" />
+        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
+            <!--                <arg>doit</arg>-->
+            <!--                <arg>$variable</arg>-->
+        </executefile>
+    </job>
+
+<!--    <job name="Delete .seadas9 directory">-->
+<!--        <os family="unix" />-->
+<!--        <executefile name="$INSTALL_PATH/bin/removeDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="removeDotSeaDAS">-->
+<!--            &lt;!&ndash;                <arg>doit</arg>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <arg>$variable</arg>&ndash;&gt;-->
+<!--        </executefile>-->
+<!--    </job>-->
 
 <!--    <job name="Run SeaDAS" >-->
 <!--        <os family="unix"/>-->
