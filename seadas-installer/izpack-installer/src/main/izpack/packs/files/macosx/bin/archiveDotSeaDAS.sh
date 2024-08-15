@@ -18,8 +18,9 @@ if [ -d "$SEADAS_DATA_DIR" ]; then
   mv $SEADAS_DATA_DIR $SEADAS_ARCHIVE_DIR 2> /dev/null
   echo "Existing ~/$SEADAS_DATA_DIR directory has"
   echo "been archived in ~/$SEADAS_ARCHIVE_DIR"
+
+  if [ -d "$SEADAS_DATA_DIR" ]; then
+    echo "WARNING: Failed to remove ~/$SEADAS_DATA_DIR"
+  fi
 fi
 
-if [ -d "$SEADAS_DATA_DIR" ]; then
-  echo "WARNING: Failed to remove ~/$SEADAS_DATA_DIR"
-fi
