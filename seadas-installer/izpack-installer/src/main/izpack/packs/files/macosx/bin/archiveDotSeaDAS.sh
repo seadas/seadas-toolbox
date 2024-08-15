@@ -7,8 +7,19 @@ function GET_RECORDS()
 echo $(GET_RECORDS);
 
 echo ""
-cd ~
-rm -rf ~/.seadas_archive
- mv  ~/.seadas9 ~/.seadas_archive 2> /dev/null
-echo "The .seadas9 directory has been moved to"
-echo "the .seadas_archive directory."
+
+cd ~/.
+
+SEADAS_DATA_DIR='.seadas9'
+SEADAS_ARCHIVE_DIR='.seadas_archive'
+
+if [ -d "$SEADAS_DATA_DIR" ]; then
+  rm -rf $SEADAS_ARCHIVE_DIR
+  mv $SEADAS_DATA_DIR $SEADAS_ARCHIVE_DIR 2> /dev/null
+  echo "Existing ~/$SEADAS_DATA_DIR directory has"
+  echo "been archived in ~/$SEADAS_ARCHIVE_DIR"
+fi
+
+if [ -d "$SEADAS_DATA_DIR" ]; then
+  echo "WARNING: Failed to remove ~/$SEADAS_DATA_DIR"
+fi
