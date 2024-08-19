@@ -10,17 +10,14 @@ echo ""
 
 cd ~/.
 
-SEADAS_DATA_DIR='.seadas9'
-SEADAS_ARCHIVE_DIR='.seadas_archive'
+if [ -d ".seadas9" ]; then
+  rm -rf .seadas_archive
+  mv .seadas9 .seadas_archive 2> /dev/null
+  echo "Existing ~/.seadas9 directory has been archived"
+  echo "in ~/.seadas_archive"
 
-if [ -d "$SEADAS_DATA_DIR" ]; then
-  rm -rf $SEADAS_ARCHIVE_DIR
-  mv $SEADAS_DATA_DIR $SEADAS_ARCHIVE_DIR 2> /dev/null
-  echo "Existing ~/$SEADAS_DATA_DIR directory has"
-  echo "been archived in ~/$SEADAS_ARCHIVE_DIR"
-
-  if [ -d "$SEADAS_DATA_DIR" ]; then
-    echo "WARNING: Failed to remove ~/$SEADAS_DATA_DIR"
+  if [ -d ".seadas9" ]; then
+    echo "WARNING: Failed to remove ~/.seadas9"
   fi
 fi
 
