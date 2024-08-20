@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <izpack:processing version="5.0"
-                   xmlns:izpack="http://izpack.org/schema/processing"
+                   xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://izpack.org/schema/processing http://izpack.org/schema/5.0/izpack-processing-5.0.xsd">
+                   xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
 
     <job name="Archive .seadas9 directory">
         <os family="unix" />
@@ -20,13 +20,9 @@
         </executefile>
     </job>
 
-<!--    <job name="Delete .seadas9 directory">-->
-<!--        <os family="unix" />-->
-<!--        <executefile name="$INSTALL_PATH/bin/removeDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="removeDotSeaDAS">-->
-<!--            &lt;!&ndash;                <arg>doit</arg>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <arg>$variable</arg>&ndash;&gt;-->
-<!--        </executefile>-->
-<!--    </job>-->
+    <onFail previous="true" next="false" />
+    <onSuccess previous="true" next="true" condition="mycondition" />
+    <onSuccess previous="false" next="true" condition="!mycondition" />
 
 <!--    <job name="Run SeaDAS" >-->
 <!--        <os family="unix"/>-->
