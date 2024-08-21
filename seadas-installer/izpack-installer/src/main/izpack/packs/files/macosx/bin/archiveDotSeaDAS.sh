@@ -6,12 +6,12 @@ function GET_RECORDS()
 
 function ARCHIVE_SEADAS9_MSG()
 {
-   echo -e "Previous ~/.seadas9 has been archived in ~/.seadas_archive/seadas9";
+   echo -e "Previous ~/.seadas9 has been archived in ~/.seadas_archive/.seadas9";
 }
 
 function ARCHIVE_SEADAS8_MSG()
 {
-   echo -e "Previous ~/.seadas8 has been archived in ~/.seadas_archive/seadas8";
+   echo -e "Previous ~/.seadas8 has been archived in ~/.seadas_archive/.seadas8";
 }
 
 function RETAIN_SEADAS9_MSG()
