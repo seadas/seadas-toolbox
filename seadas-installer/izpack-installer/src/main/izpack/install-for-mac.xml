@@ -186,6 +186,8 @@
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <os family="mac"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="archiveDotSeaDAS.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="*.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="seadas"/>
                 <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
