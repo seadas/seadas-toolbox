@@ -61,10 +61,9 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
         <res id="finish" src="about/finish.html"/>
-    </resources>ss
+    </resources>
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
@@ -86,7 +85,6 @@
         <variable name="installer:maxHeapSize" value="8G"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
-
         <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
         <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
