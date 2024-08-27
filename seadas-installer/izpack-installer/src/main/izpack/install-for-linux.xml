@@ -135,16 +135,6 @@
 
         <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
         <panel classname="HTMLInfoPanel" id="welcome"/>
-
-        <!-- this is our custom panel, loaded from the panels.jar file -->
-        <!--    <panel classname="com.izforge.izpack.panels.mypanels.MyHelloPanel" id="myHello">-->
-        <!--      <configuration>-->
-        <!--        <param name="welcome1" value="Welcome to SeaDAS Installation."/>-->
-        <!--        <param name="welcome2" value="Enjoy!"/>-->
-        <!--      </configuration>-->
-        <!--    </panel>-->
-
-
         <!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
@@ -153,7 +143,6 @@
         <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-
         <panel classname="ProcessPanel" id="processPanel" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>

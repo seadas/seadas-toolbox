@@ -80,8 +80,6 @@ if [ -d ".seadas8" ]; then
     cp -Rpf .seadas_archive/.seadas8/graphs .seadas9 2> /dev/null
     echo $(TRANSFER_SEADAS8_MSG);
   fi
-
 fi
-
 
 
