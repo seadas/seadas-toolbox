@@ -5,7 +5,6 @@ import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 import org.openide.util.*;
@@ -62,8 +61,8 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
     @Override
     public void actionPerformed(ActionEvent event) {
         SnapApp snapApp = SnapApp.getDefault();
+        //product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
-
         SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
         LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
@@ -74,6 +73,8 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
         putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
+
+
     }
 
     protected void updateEnabledState() {
