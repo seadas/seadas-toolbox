@@ -81,29 +81,14 @@ public class ImageAnimatorDialog extends JDialog {
         inputFile = product.getFileLocation();
 
         if (productSceneView != null) {
-
             Band[] bands = new Band[bandGroup.getNodeCount()];
             bandGroup.toArray(bands);
             this.activeBands = activeBands;
-
-//            imageAnimators = new ArrayList<ImageAnimatorData>();
-//            propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
             propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
             createImageAnimatorUI();
         }
         imageAnimatorCanceled = true;
     }
-
-//    private PropertyChangeListener getBandPropertyListener() {
-//        return new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                for (ImageAnimatorData imageAnimatorData : imageAnimators) {
-//                    imageAnimatorData.setBand(selectedBand);
-//                }
-//            }
-//        };
-//    }
 
     private PropertyChangeListener getDeleteButtonPropertyListener() {
         return new PropertyChangeListener() {
