@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.action;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySearchServiceDiaglog;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -74,6 +75,10 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
 
+        HarmonySearchServiceDiaglog harmonySearchServiceDiaglog = new HarmonySearchServiceDiaglog();
+        harmonySearchServiceDiaglog.setVisible(true);
+        harmonySearchServiceDiaglog.dispose();
+        updateEnabledState();
 
     }
 
