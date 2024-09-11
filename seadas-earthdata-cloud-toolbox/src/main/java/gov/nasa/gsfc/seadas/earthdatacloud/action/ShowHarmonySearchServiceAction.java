@@ -83,7 +83,7 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
     }
 
     protected void updateEnabledState() {
-
+        super.setEnabled(true);
     }
 
     @Override
