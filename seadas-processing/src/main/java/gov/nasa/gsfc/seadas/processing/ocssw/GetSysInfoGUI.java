@@ -425,7 +425,8 @@ public class GetSysInfoGUI {
             currentInfoLine = "";   // todo temporary nulling this as later lines need editing
 
             try {
-                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), "-c", "-l", "which python3"});
+                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"which", "python3"});
+//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), "-c", "-l", "which python3"});
                 Process process = processBuilder.start();
 
                 BufferedReader reader = new BufferedReader(
@@ -594,7 +595,7 @@ public class GetSysInfoGUI {
         ocsswBinDirPath = ocsswRootOcsswInfo + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
 
 //        String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
-        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), ocsswRunnerScriptPath, " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
+        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
         ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
         if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
