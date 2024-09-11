@@ -196,26 +196,6 @@ public class ContourDialog extends JDialog {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
     }
 
-
-    public SwingPropertyChangeSupport getPropertyChangeSupport() {
-        return propertyChangeSupport;
-    }
-
-    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-        for (int i = 0; i < pr.length; i++) {
-            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
-        }
-    }
-
-    public void clearPropertyChangeSupport() {
-        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-        for (int i = 0; i < pr.length; i++) {
-            this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
-        }
-
-    }
-
     protected AbstractButton getHelpButton() {
         if (helpId != null) {
             final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
