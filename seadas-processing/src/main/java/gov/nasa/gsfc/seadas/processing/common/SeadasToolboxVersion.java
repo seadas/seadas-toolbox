@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.core.runtime.Version;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import org.esa.snap.runtime.Config;
 import org.json.simple.JSONArray;
@@ -11,6 +12,7 @@ import org.json.simple.parser.ParseException;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_TAG_PROPERTY;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.SEADAS_OCSSW_ROOT_PROPERTY;
+import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
 // Purpose: returns installation info/status on SeaDAS Toolbox version and OCSSW tag version.
 
@@ -264,8 +268,53 @@ public class SeadasToolboxVersion {
 
 
     public String getInstalledOCSSWTagGUI() {
-        final Preferences preferences = Config.instance("seadas").load().preferences();
-        return preferences.get(SEADAS_OCSSW_TAG_PROPERTY, null);
+//        final Preferences preferences = Config.instance("seadas").load().preferences();
+//        String ocsswroot = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
+//        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", ocsswroot, "install_ocssw"};
+        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "install_ocssw", "--installed_tag"};
+
+        System.out.println("command=" + command);
+        String tag = null;
+
+        try {
+
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+
+            while ((line = reader.readLine()) != null && tag == null) {
+                if (line != null && line.contains("installedTag")) {
+                    String[] tagLine = line.split("=");
+                    if (tagLine.length == 2) {
+                        tag = tagLine[1].trim();
+                    }
+                }
+            }
+
+            reader.close();
+            process.destroy();
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (process.exitValue() != 0) {
+                System.out.println("  WARNING!: Non zero exit code returned for \'" + command + "\' ");
+            }
+
+        } catch (IOException e) {
+            String warning = "  WARNING!! Exception occurred and could not retrieve tag from command \'" + command.toString() + "\' failed";
+            e.printStackTrace();
+        }
+
+        return tag;
+
+//        return preferences.get(SEADAS_OCSSW_TAG_PROPERTY, null);
     }
 
 

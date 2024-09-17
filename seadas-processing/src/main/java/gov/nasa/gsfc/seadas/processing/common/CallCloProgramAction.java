@@ -263,7 +263,8 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
 
                 if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
                     Preferences preferences = Config.instance("seadas").load().preferences();
-                    preferences.put(SEADAS_OCSSW_TAG_PROPERTY, processorModel.getParamValue("--tag"));
+                    // todo removed this as we now get tag directly from ocssw ---  leaving code temporarily in place here but commented out in case for some reason it is needed
+//                    preferences.put(SEADAS_OCSSW_TAG_PROPERTY, processorModel.getParamValue("--tag"));
                 }
 
                 pm.beginTask(programName, TOTAL_WORK_DEFAULT);
