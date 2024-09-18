@@ -604,8 +604,31 @@ public class OCSSWLocal extends OCSSW {
 
     public void updateOCSSWTags(){
 //        String[] commands = {"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-        String[] commands = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-        ProcessBuilder processBuilder = new ProcessBuilder(commands);
+
+        ProcessBuilder processBuilder = null;
+        if (OCSSWInfo.getInstance() != null && OCSSWInfo.getInstance().getOcsswRunnerScriptPath() != null) {
+            File ocsswRunner = new File(OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
+            if (ocsswRunner.exists()) {
+                String[] commands = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+                processBuilder = new ProcessBuilder(commands);
+            }
+        }
+
+        if (processBuilder == null) {
+            String zsh = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "zsh"; //     /bin/zsh
+            String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash"; //   /bin/bash
+
+            File zshFile = new File(zsh);
+            if (zshFile.exists()) {
+                String[] commands = new String[]{zsh, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+                processBuilder = new ProcessBuilder(commands);
+            } else {
+                String[] commands = new String[]{bash, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+                processBuilder = new ProcessBuilder(commands);
+            }
+        }
+
+
         Process proc = null;
         try {
             proc = processBuilder.start();
