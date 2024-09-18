@@ -595,7 +595,17 @@ public class GetSysInfoGUI {
         ocsswBinDirPath = ocsswRootOcsswInfo + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
 
 //        String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
-        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
+        String[] command = null;
+        if (OCSSWInfo.getInstance() != null && OCSSWInfo.getInstance().getOcsswRunnerScriptPath() != null) {
+            File ocsswRunner = new File(OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
+            if (ocsswRunner.exists()) {
+                String install_ocssw = OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME; //   /bin/bash
+
+                command = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), OCSSW_SEADAS_INFO_PROGRAM_NAME};
+            }
+        }
+
+
         ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
         if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
@@ -633,8 +643,7 @@ public class GetSysInfoGUI {
 
                     printGeneralSystemInfo(ocsswDebug);
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                }
-            else if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath)) && "local".equals(ocsswLocation)) {
+                } else if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath)) && "local".equals(ocsswLocation)) {
                     currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW bin directory" + "\n\n";
                     sysInfoText += currentInfoLine;
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
@@ -643,50 +652,51 @@ public class GetSysInfoGUI {
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
                 } else {
                     currentInfoLine = "";
-                    try {
+                    if (command != null) {
+                        try {
+                            ProcessBuilder processBuilder = new ProcessBuilder(command);
+                            Process process = processBuilder.start();
 
-                        ProcessBuilder processBuilder = new ProcessBuilder(command);
-                        Process process = processBuilder.start();
+                            BufferedReader reader = new BufferedReader(
+                                    new InputStreamReader(process.getInputStream()));
+                            String line;
 
-                        BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(process.getInputStream()));
-                        String line;
-
-                        while ((line = reader.readLine()) != null) {
-                            if (!line.contains("NASA Science Processing (OCSSW)")) {
-                                if (line.contains("General System and Software")) {
-                                    currentInfoLine += "\n" + DASHES + "\n";
-                                    currentInfoLine += INDENT + "General System and Software: " + "\n";
-                                    currentInfoLine += DASHES + "\n";
-                                } else {
-                                    currentInfoLine += line + "\n";
+                            while ((line = reader.readLine()) != null) {
+                                if (!line.contains("NASA Science Processing (OCSSW)")) {
+                                    if (line.contains("General System and Software")) {
+                                        currentInfoLine += "\n" + DASHES + "\n";
+                                        currentInfoLine += INDENT + "General System and Software: " + "\n";
+                                        currentInfoLine += DASHES + "\n";
+                                    } else {
+                                        currentInfoLine += line + "\n";
+                                    }
                                 }
                             }
+
+                            sysInfoText += currentInfoLine;
+                            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+                            reader.close();
+                            process.destroy();
+
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                            }
+
+                            if (process.exitValue() != 0) {
+                                System.out.println("  WARNING!: Non zero exit code returned for \'" + command + "\' ");
+                            }
+
+                        } catch (IOException e) {
+                            String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command.toString() + "\' failed";
+                            currentInfoLine = warning + "\n";
+                            currentInfoLine += e.toString() + "\n";
+                            sysInfoText += currentInfoLine;
+                            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                            e.printStackTrace();
                         }
-
-                        sysInfoText += currentInfoLine;
-                        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-                        reader.close();
-                        process.destroy();
-
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        }
-
-                        if (process.exitValue() != 0) {
-                            System.out.println("  WARNING!: Non zero exit code returned for \'" + command + "\' ");
-                        }
-
-                    } catch (IOException e) {
-                        String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command.toString() + "\' failed";
-                        currentInfoLine = warning + "\n";
-                        currentInfoLine += e.toString() + "\n";
-                        sysInfoText += currentInfoLine;
-                        appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                        e.printStackTrace();
                     }
                 }
             }

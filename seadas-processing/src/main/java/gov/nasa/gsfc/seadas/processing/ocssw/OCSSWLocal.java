@@ -603,34 +603,31 @@ public class OCSSWLocal extends OCSSW {
     }
 
     public void updateOCSSWTags(){
-//        String[] commands = {"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+//        String[] commands = {"/bin/bash", "-l", TMP_OCSSW_INSTALLER, "--list_tags"};
 
-        ProcessBuilder processBuilder = null;
+        String[] command = null;
+
         if (OCSSWInfo.getInstance() != null && OCSSWInfo.getInstance().getOcsswRunnerScriptPath() != null) {
             File ocsswRunner = new File(OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
             if (ocsswRunner.exists()) {
-                String[] commands = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-                processBuilder = new ProcessBuilder(commands);
+//                String install_ocssw = OCSSWInfo.getInstance().getOcsswRoot() + System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "install_ocssw"; //   /bin/bash
+                command = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "install_ocssw", "--list_tags"};
+
             }
         }
 
-        if (processBuilder == null) {
-            String zsh = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "zsh"; //     /bin/zsh
-            String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash"; //   /bin/bash
+        if (command == null) {
+            String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
+//            command = new String[]{bash, "-l", TMP_OCSSW_INSTALLER, "--list_tags"};
+//            command = new String[]{"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+            command = new String[]{bash, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
 
-            File zshFile = new File(zsh);
-            if (zshFile.exists()) {
-                String[] commands = new String[]{zsh, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-                processBuilder = new ProcessBuilder(commands);
-            } else {
-                String[] commands = new String[]{bash, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-                processBuilder = new ProcessBuilder(commands);
-            }
         }
 
 
         Process proc = null;
         try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
             proc = processBuilder.start();
         } catch (IOException e) {
             e.printStackTrace();
