@@ -620,7 +620,8 @@ public class OCSSWLocal extends OCSSW {
             String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
 //            command = new String[]{bash, "-l", TMP_OCSSW_INSTALLER, "--list_tags"};
 //            command = new String[]{"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-            command = new String[]{bash, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+//            command = new String[]{bash, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+            command = new String[]{bash, "-c", "-l", TMP_OCSSW_INSTALLER + " --list_tags"};
 
         }
 

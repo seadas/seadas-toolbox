@@ -416,16 +416,21 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-        if (ocsswInfo.getOcsswLocation() == OCSSW_LOCATION_LOCAL) {
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
             currentInfoLine = "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+        }
 
 
             currentInfoLine = "";   // todo temporary nulling this as later lines need editing
 
             try {
-                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"which", "python3"});
+                String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
+
+                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{bash, "-l", "-c", "which python3"});
+//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"which", "python3"});
+
 //                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), "-c", "-l", "which python3"});
                 Process process = processBuilder.start();
 
@@ -476,7 +481,7 @@ public class GetSysInfoGUI {
 
                 e.printStackTrace();
             }
-        }
+
 
 
         currentInfoLine = "\n\n" + DASHES + "\n";
