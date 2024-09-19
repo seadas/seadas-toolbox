@@ -422,65 +422,45 @@ public class GetSysInfoGUI {
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
 
+        String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
+        String[] commandArray = new String[]{bash, "-l", "-c", "which python3"};
+        runCommandArray(sysInfoTextpane, "Python3 Directory (SeaDAS Application): " , commandArray, "python");
 
-            currentInfoLine = "";   // todo temporary nulling this as later lines need editing
+//        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+//            commandArray = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "which", "python3"};
+//            runCommandArray(sysInfoTextpane, "Python3 Directory (OCSSW - Local): " , commandArray, "python");
+//        }
 
-            try {
-                String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " which python3"};
+            runCommandArray(sysInfoTextpane, "Python3 Directory (OCSSW-Local): " , commandArray, "python");
+        }
 
-                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{bash, "-l", "-c", "which python3"});
-//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"which", "python3"});
 
-//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), "-c", "-l", "which python3"});
-                Process process = processBuilder.start();
+        // todo add Docker messages
+//        if (OCSSW_LOCATION_DOCKER.equals(ocsswInfo.getOcsswLocation())) {
+//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + ocsswRootDocker + " which python3"};
+//            runCommandArray(sysInfoTextpane, "Python3 Directory: (OCSSW - Local - Alt Docker)" , commandArray, "python");
+//        }
 
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
-                String line;
-                Integer numOfLines = 0;
-                currentInfoLine = "Python3 Directory: ";
-                while ((line = reader.readLine()) != null) {
-                    currentInfoLine += line + "\n";
-                    if (line.trim().length() > 1) {
-                        numOfLines++;
-                    }
-                }
-                if (numOfLines == 0) {
-                    currentInfoLine += "\n";
-                }
-                sysInfoText += currentInfoLine;
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
-                if (numOfLines > 1) {
-                    currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
-                    sysInfoText += currentInfoLine;
-                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                }
+        commandArray = new String[]{bash, "-l", "-c", " cat ~" + System.getProperty("file.separator") + ".netrc"};
+        runCommandArray(sysInfoTextpane, "Earthdata Netrc Entry (SeaDAS Application): " , commandArray, "urs.earthdata.nasa.gov", false);
 
-                reader.close();
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~/.netrc \\| grep \"urs.earthdata.nasa.gov\" \\| wc -l"};
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
+            runCommandArray(sysInfoTextpane, "Earthdata Netrc Entry (OCSSW-Local): " , commandArray, "urs.earthdata.nasa.gov", false);
+        }
 
-                process.destroy();
 
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+        commandArray = new String[]{bash, "-l", "-c", " python3 -m pip list"};
+        runCommandArray(sysInfoTextpane, "Python Requests Library (SeaDAS Application): " , commandArray, "requests ", false);
 
-                if (process.exitValue() != 0) {
-                    System.out.println("  WARNING!: Non zero exit code returned for 'which python3' ");
-                }
-
-            } catch (IOException e) {
-                String warning = "  WARNING!! Could not retrieve system parameters because 'which python3' failed";
-                currentInfoLine = warning + "\n";
-                sysInfoText += currentInfoLine;
-
-                currentInfoLine = e.toString() + "\n";
-                sysInfoText += currentInfoLine;
-
-                e.printStackTrace();
-            }
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+            runCommandArray(sysInfoTextpane, "Python Requests Library (OCSSW-Local): " , commandArray, "requests", false);
+        }
 
 
 
@@ -787,6 +767,91 @@ public class GetSysInfoGUI {
         return selectedFile;
     }
 
+    private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray, String grepString) {
+        runCommandArray(sysInfoTextpane, label, commandArray, grepString,  true);
+    }
+
+    private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray, String grepString, boolean showResults) {
+        currentInfoLine = "";   // todo temporary nulling this as later lines need editing
+
+        try {
+            String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
+
+            ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"which", "python3"});
+
+//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), "-c", "-l", "which python3"});
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+            Integer numOfLines = 0;
+            currentInfoLine = label;
+//            currentInfoLine = "Python3 Directory: ";
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                if (grepString != null && grepString.length() > 0 && line.contains(grepString)) {
+                    if (showResults) {
+                        currentInfoLine += line + "\n";
+                        if (line.trim().length() > 1) {
+                            numOfLines++;
+                        }
+                    } else {
+                        found = true;
+                    }
+                }
+
+            }
+
+            if (!showResults) {
+                if (found) {
+                    currentInfoLine += "FOUND" + "\n";
+                } else {
+                    currentInfoLine += "NOT FOUND" + "\n";
+                }
+                numOfLines++;
+            }
+
+
+            if (numOfLines == 0) {
+                currentInfoLine += "\n";
+            }
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+            if (numOfLines > 1) {
+                currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+
+            reader.close();
+
+            process.destroy();
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (process.exitValue() != 0) {
+                System.out.println("  WARNING!: Non zero exit code returned for " + commandArray.toString());
+            }
+
+        } catch (IOException e) {
+            String warning = "  WARNING!! Could not retrieve system parameters because " + commandArray.toString() + " failed";
+            currentInfoLine = warning + "\n";
+            sysInfoText += currentInfoLine;
+
+            currentInfoLine = e.toString() + "\n";
+            sysInfoText += currentInfoLine;
+
+            e.printStackTrace();
+        }
+
+    }
 
     public static GridBagConstraints createConstraints() {
         GridBagConstraints gbc = new GridBagConstraints();
