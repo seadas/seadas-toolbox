@@ -417,50 +417,31 @@ public class GetSysInfoGUI {
 
 
         if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
-            currentInfoLine = "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n";
+            currentInfoLine = "OCSSWROOT (Environment Variable): " + ocsswRootEnv + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
 
         String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
-        String[] commandArray = new String[]{bash, "-l", "-c", "which python3"};
-        runCommandArray(sysInfoTextpane, "Python3 Directory (SeaDAS Application): " , commandArray, "python");
 
-//        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
-//            commandArray = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "which", "python3"};
-//            runCommandArray(sysInfoTextpane, "Python3 Directory (OCSSW - Local): " , commandArray, "python");
-//        }
+        String[] commandArray = new String[]{bash, "-l", "-c", "python3 -VV"};
+        runCommandArray(sysInfoTextpane, "Python3 Version: " , commandArray, "Python");
 
-        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " which python3"};
-            runCommandArray(sysInfoTextpane, "Python3 Directory (OCSSW-Local): " , commandArray, "python");
-        }
+        commandArray = new String[]{bash, "-l", "-c", "which python3"};
+        runCommandArray(sysInfoTextpane, "Python3 Directory: " , commandArray);
+//
+//        commandArray = new String[]{bash, "-l", "-c", "type -a python3"};
+//        runCommandArray(sysInfoTextpane, "Python3 Alias Detected: " , commandArray, "alias", false);
 
+        commandArray = new String[]{bash, "-l", "-c", " python3 -m pip list"};
+        runCommandArray(sysInfoTextpane, "Python3 Requests Installed: " , commandArray, "requests ", false);
 
-        // todo add Docker messages
-//        if (OCSSW_LOCATION_DOCKER.equals(ocsswInfo.getOcsswLocation())) {
-//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + ocsswRootDocker + " which python3"};
-//            runCommandArray(sysInfoTextpane, "Python3 Directory: (OCSSW - Local - Alt Docker)" , commandArray, "python");
-//        }
 
 
         commandArray = new String[]{bash, "-l", "-c", " cat ~" + System.getProperty("file.separator") + ".netrc"};
-        runCommandArray(sysInfoTextpane, "Earthdata Netrc Entry (SeaDAS Application): " , commandArray, "urs.earthdata.nasa.gov", false);
-
-        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
-//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~/.netrc \\| grep \"urs.earthdata.nasa.gov\" \\| wc -l"};
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
-            runCommandArray(sysInfoTextpane, "Earthdata Netrc Entry (OCSSW-Local): " , commandArray, "urs.earthdata.nasa.gov", false);
-        }
+        runCommandArray(sysInfoTextpane, "Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
 
 
-        commandArray = new String[]{bash, "-l", "-c", " python3 -m pip list"};
-        runCommandArray(sysInfoTextpane, "Python Requests Library (SeaDAS Application): " , commandArray, "requests ", false);
-
-        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
-            runCommandArray(sysInfoTextpane, "Python Requests Library (OCSSW-Local): " , commandArray, "requests", false);
-        }
 
 
 
@@ -501,6 +482,13 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
+
+
+        currentInfoLine = "OCSSW Location: " + ocsswLocation + "\n";
+        sysInfoText += currentInfoLine;
+        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+
         if (ocsswDebug) {
             final Preferences preferences = Config.instance("seadas").load().preferences();
             String ocsswRootSeadasProperties = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
@@ -510,58 +498,118 @@ public class GetSysInfoGUI {
         }
 
         if ("docker".equals(ocsswLocation)) {
-            currentInfoLine = "OCSSW Docker Root Directory: " + ocsswRootDocker + "\n";
+            currentInfoLine = "[OCSSW-Docker] Root Directory: " + ocsswRootDocker + "\n";
         } else {
-            currentInfoLine = "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+            currentInfoLine = "[OCSSW-Local] Root Directory: " + ocsswRootOcsswInfo + "\n";
         }
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
+
+
+        //need to consider "docker" condition
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+//            currentInfoLine = "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
+//            sysInfoText += currentInfoLine;
+//            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+            if ((ocsswRootOcsswInfo != null) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv) &&
+                    "local".equals(ocsswLocation)) {
+                currentInfoLine = "[OCSSW-Local] WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
+                        "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+        }
+
+
+
+
+
         if (ocsswRootOcsswInfo != null) {
-            if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
+            if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+                if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
+                    currentInfoLine = "[OCSSW-Local] WARNING!! OCSSW Root Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                }
+
+            } else {
 //                if (!Files.exists(Paths.get(ocsswRootDocker))) {
 //                    currentInfoLine = "WARNING!! Directory '" + ocsswRootDocker + "' does not exist" + "\n";
 //                    sysInfoText += currentInfoLine;
 //                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
 //                }
-            } else {
-                if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
-                    currentInfoLine = "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
-                    sysInfoText += currentInfoLine;
-                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                }
             }
         }
 
-        currentInfoLine = "OCSSW Docker Log Directory: " + ocsswLogDir + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-        if ((ocsswLogDir != null) && !Files.exists(Paths.get(ocsswLogDir))) {
-            currentInfoLine = "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
-            sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+
+
+
+
+
+
+
+
+
+
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -VV"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Version: " , commandArray, "Python");
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " which python3"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Directory: " , commandArray);
+//
+//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " type -a python3"};
+//            runCommandArray(sysInfoTextpane, "OCSSW-Local: Python3 Alias Detected: " , commandArray, "alias", false);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Requests Installed: " , commandArray, "requests", false);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
         }
 
 
-        currentInfoLine = "OCSSW Location: " + ocsswLocation + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+        //        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+//            commandArray = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "which", "python3"};
+//            runCommandArray(sysInfoTextpane, "Python3 Directory (OCSSW - Local): " , commandArray, "python");
+//        }
 
 
-        //need to consider "docker" condition
-        if (ocsswInfo.getOcsswLocation() == OCSSW_LOCATION_LOCAL) {
-            currentInfoLine = "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
+
+        // todo add Docker messages
+//        if (OCSSW_LOCATION_DOCKER.equals(ocsswInfo.getOcsswLocation())) {
+//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + ocsswRootDocker + " which python3"};
+//            runCommandArray(sysInfoTextpane, "Python3 Directory: (OCSSW - Local - Alt Docker)" , commandArray, "python");
+//        }
+
+
+
+        if (OCSSW_LOCATION_DOCKER.equals(ocsswInfo.getOcsswLocation())) {
+            currentInfoLine = "[OCSSW-Docker] Log Directory: " + ocsswLogDir + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
 
-        if ((ocsswRootOcsswInfo != null) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv) &&
-                "local".equals(ocsswLocation)) {
-            currentInfoLine = "  WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
-                    "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
+
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            currentInfoLine = "[OCSSW-Local] Log Directory: " + ocsswLogDir + "\n";
             sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+            if ((ocsswLogDir != null) && !Files.exists(Paths.get(ocsswLogDir))) {
+                currentInfoLine = "[OCSSW-Local] WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+        } else {
+            if ((ocsswLogDir != null) && !Files.exists(Paths.get(ocsswLogDir))) {
+                currentInfoLine = "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
         }
 
 
@@ -767,6 +815,10 @@ public class GetSysInfoGUI {
         return selectedFile;
     }
 
+    private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray) {
+        runCommandArray(sysInfoTextpane, label, commandArray, null,  true);
+    }
+
     private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray, String grepString) {
         runCommandArray(sysInfoTextpane, label, commandArray, grepString,  true);
     }
@@ -775,12 +827,8 @@ public class GetSysInfoGUI {
         currentInfoLine = "";   // todo temporary nulling this as later lines need editing
 
         try {
-            String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
-
             ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
-//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"which", "python3"});
 
-//                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), "-c", "-l", "which python3"});
             Process process = processBuilder.start();
 
             BufferedReader reader = new BufferedReader(
@@ -788,10 +836,10 @@ public class GetSysInfoGUI {
             String line;
             Integer numOfLines = 0;
             currentInfoLine = label;
-//            currentInfoLine = "Python3 Directory: ";
+
             boolean found = false;
             while ((line = reader.readLine()) != null) {
-                if (grepString != null && grepString.length() > 0 && line.contains(grepString)) {
+                if (grepString == null || (grepString != null && grepString.length() > 0 && line.contains(grepString))) {
                     if (showResults) {
                         currentInfoLine += line + "\n";
                         if (line.trim().length() > 1) {
@@ -804,11 +852,13 @@ public class GetSysInfoGUI {
 
             }
 
+            Color color = Color.BLACK;
             if (!showResults) {
                 if (found) {
-                    currentInfoLine += "FOUND" + "\n";
+                    currentInfoLine += "YES" + "\n";
                 } else {
-                    currentInfoLine += "NOT FOUND" + "\n";
+                    currentInfoLine += "NO" + "\n";
+                    color = Color.RED;
                 }
                 numOfLines++;
             }
@@ -818,7 +868,7 @@ public class GetSysInfoGUI {
                 currentInfoLine += "\n";
             }
             sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+            appendToPane(sysInfoTextpane, currentInfoLine, color);
 
             if (numOfLines > 1) {
                 currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
