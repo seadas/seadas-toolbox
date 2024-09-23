@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.action.WebPageFetcherWithJWT;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -26,6 +27,8 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
     public HarmonySearchServiceDiaglog(){
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
+        setLayout(new BorderLayout());
+        setSize(1000, 1000);
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -118,10 +121,45 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         dataLevelPanel.add(checkBox2);
         dataLevelPanel.add(statusLabel);
 
+
+        JButton searchButton = new JButton("Search");
+        searchButton.setEnabled(true);
+        searchButton.setName("searchButton");
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setEnabled(true);
+        cancelButton.setName("cancelButton");
+
+        final JScrollPane[] scrollPane = {new JScrollPane()};
+
+
+        ActionListener searchButtonActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT();
+                scrollPane[0] =new JScrollPane(webPageFetcherWithJWT.getSearchDataListTable());
+                add(scrollPane[0], BorderLayout.SOUTH);
+                pack();
+                repaint();
+            }
+        };
+
+        ActionListener cancelButtonActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+            }
+        };
+
+        searchButton.addActionListener(searchButtonActionListener);
+        cancelButton.addActionListener(cancelButtonActionListener);
+
         searchInputMainPanel.add(missionSelectionPanel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         searchInputMainPanel.add(dataLevelPanel, new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(searchButton, new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(cancelButton, new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        //searchInputMainPanel.add(scrollPane[0]);
 
-        add(searchInputMainPanel);
+        add(searchInputMainPanel, BorderLayout.NORTH);
 
         //searchInputMainPanel.getRootPane().setDefaultButton((JButton) ((JPanel) searchInputMainPanel.getComponent(1)).getComponent(1));
         setModalityType(ModalityType.APPLICATION_MODAL);
