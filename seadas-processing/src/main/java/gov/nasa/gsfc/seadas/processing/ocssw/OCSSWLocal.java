@@ -603,11 +603,32 @@ public class OCSSWLocal extends OCSSW {
     }
 
     public void updateOCSSWTags(){
-//        String[] commands = {"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-        String[] commands = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
-        ProcessBuilder processBuilder = new ProcessBuilder(commands);
+//        String[] commands = {"/bin/bash", "-l", TMP_OCSSW_INSTALLER, "--list_tags"};
+
+        String[] command = null;
+
+        if (OCSSWInfo.getInstance() != null && OCSSWInfo.getInstance().getOcsswRunnerScriptPath() != null) {
+            File ocsswRunner = new File(OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
+            if (ocsswRunner.exists()) {
+//                String install_ocssw = OCSSWInfo.getInstance().getOcsswRoot() + System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "install_ocssw"; //   /bin/bash
+                command = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "install_ocssw", "--list_tags"};
+
+            }
+        }
+
+        if (command == null) {
+            String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
+//            command = new String[]{bash, "-l", TMP_OCSSW_INSTALLER, "--list_tags"};
+//            command = new String[]{"/bin/bash", TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+//            command = new String[]{bash, TMP_OCSSW_BOOTSTRAP, TMP_OCSSW_INSTALLER, "--list_tags"};
+            command = new String[]{bash, "-c", "-l", TMP_OCSSW_INSTALLER + " --list_tags"};
+
+        }
+
+
         Process proc = null;
         try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
             proc = processBuilder.start();
         } catch (IOException e) {
             e.printStackTrace();

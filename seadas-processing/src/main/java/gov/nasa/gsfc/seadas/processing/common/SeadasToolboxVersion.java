@@ -13,10 +13,7 @@ import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -268,13 +265,27 @@ public class SeadasToolboxVersion {
 
 
     public String getInstalledOCSSWTagGUI() {
+
+        String tag = null;
 //        final Preferences preferences = Config.instance("seadas").load().preferences();
 //        String ocsswroot = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
 //        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", ocsswroot, "install_ocssw"};
-        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "install_ocssw", "--installed_tag"};
+        String[] command = null;
 
-        System.out.println("command=" + command);
-        String tag = null;
+        if (OCSSWInfo.getInstance() != null && OCSSWInfo.getInstance().getOcsswRunnerScriptPath() != null) {
+            File ocsswRunner = new File(OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
+            if (ocsswRunner.exists()) {
+                String install_ocssw = OCSSWInfo.getInstance().getOcsswRoot() + System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "install_ocssw"; //   /bin/bash
+                command = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "install_ocssw", "--installed_tag"};
+            }
+        }
+
+        if (command == null) {
+            return tag;
+        }
+
+//        System.out.println("command=" + command);
+
 
         try {
 
