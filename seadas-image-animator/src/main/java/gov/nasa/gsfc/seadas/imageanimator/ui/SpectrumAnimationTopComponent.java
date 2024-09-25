@@ -18,7 +18,6 @@ package gov.nasa.gsfc.seadas.imageanimator.ui;
 
 import com.bc.ceres.glayer.support.ImageLayer;
 import com.bc.ceres.glevel.MultiLevelModel;
-import eu.esa.snap.core.datamodel.group.BandGroup;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.util.ProductUtils;
@@ -70,6 +69,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.*;
+
+//import org.esa.snap.rcp.spectrum.Bundle;
+//import org.esa.snap.rcp.spectrum.SpectraExportAction;
 
 /**
  * A window which displays spectra at selected pixel positions.
@@ -616,7 +618,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
         if (availableSpectralBands.length == 0) {
             spectra = new DisplayableSpectrum[]{};
         } else {
-            final BandGroup autoGrouping = currentProduct.getAutoGrouping();
+            final Product.AutoGrouping autoGrouping = currentProduct.getAutoGrouping();
             if (autoGrouping != null) {
                 final int selectedSpectrumIndex = autoGrouping.indexOf(raster.getName());
                 DisplayableSpectrum[] autoGroupingSpectra = new DisplayableSpectrum[autoGrouping.size()];
@@ -1343,8 +1345,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
 
         private void addBandToSpectra(Band band) {
             DisplayableSpectrum[] allSpectra = rasterToSpectraMap.get(currentView.getRaster());
-            final BandGroup autoGrouping = currentProduct.getAutoGrouping();
-
+            Product.AutoGrouping autoGrouping = currentProduct.getAutoGrouping();
             if (autoGrouping != null) {
                 final int bandIndex = autoGrouping.indexOf(band.getName());
                 final DisplayableSpectrum spectrum;
