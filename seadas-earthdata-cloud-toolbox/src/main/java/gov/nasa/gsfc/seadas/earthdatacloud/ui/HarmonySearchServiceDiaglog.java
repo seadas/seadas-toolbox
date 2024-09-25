@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.action.DataRetrievalTask;
 import gov.nasa.gsfc.seadas.earthdatacloud.action.WebPageFetcherWithJWT;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
@@ -8,11 +9,11 @@ import org.openide.util.HelpCtx;
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
+import java.util.concurrent.ExecutionException;
 
 public class HarmonySearchServiceDiaglog extends JDialog{
 
@@ -34,12 +35,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
         helpButton = getHelpButton();
         createSearchServiceInputPanel();
-
-//        propertyChangeSupport.addPropertyChangeListener(NEW_BAND_SELECTED_PROPERTY, getBandPropertyListener());
-//        propertyChangeSupport.addPropertyChangeListener(DELETE_BUTTON_PRESSED_PROPERTY, getDeleteButtonPropertyListener());
-//
-//        propertyChangeSupport.addPropertyChangeListener(NEW_FILTER_SELECTED_PROPERTY, getFilterButtonPropertyListener());
-//        propertyChangeSupport.addPropertyChangeListener(FILTER_STATUS_CHANGED_PROPERTY, getFilterCheckboxPropertyListener());
     }
 
     protected AbstractButton getHelpButton() {
@@ -125,39 +120,65 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         JButton searchButton = new JButton("Search");
         searchButton.setEnabled(true);
         searchButton.setName("searchButton");
+
+        JLabel label = new JLabel("Retrieving data from server...");
+
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setEnabled(true);
         cancelButton.setName("cancelButton");
 
         final JScrollPane[] scrollPane = {new JScrollPane()};
+        final DataRetrievalTask[] task = new DataRetrievalTask[1];
+        // Create a JProgressBar
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+        add(progressBar, BorderLayout.CENTER);
+
+        searchButton.addActionListener(e -> {
+            // Disable the start button while downloading
+            searchButton.setEnabled(false);
+            cancelButton.setEnabled(true);
+
+            // Start a SwingWorker to download data and update the progress bar
+            task[0] = new DataRetrievalTask(progressBar, label, searchButton, cancelButton, scrollPane[0]);
+            task[0].execute();// Executes the task in the background
+            new Thread(() -> {
+                try {
+                    // Wait for the task to finish and get the result
+                    String content = task[0].get().toString();  // This blocks until doInBackground() is done
+                    // Update the label in the EDT with the result
+                    SwingUtilities.invokeLater(() -> {
+                        //resultLabel.setText(result);
+                        searchButton.setEnabled(true); // Re-enable the button after the task
+                        WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT(content.toString());
+                        scrollPane[0] =new JScrollPane(webPageFetcherWithJWT.getSearchDataListTable());
+                        add(scrollPane[0], BorderLayout.SOUTH);
+                        pack();
+                        repaint();
+                    });
+                } catch (InterruptedException | ExecutionException ex) {
+                    ex.printStackTrace();
+                }
+            }).start();
 
 
-        ActionListener searchButtonActionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT();
-                scrollPane[0] =new JScrollPane(webPageFetcherWithJWT.getSearchDataListTable());
-                add(scrollPane[0], BorderLayout.SOUTH);
-                pack();
-                repaint();
+        });
+
+        // Action listener for the "Cancel" button
+        cancelButton.addActionListener(e -> {
+            if (task[0] != null && !task[0].isDone()) {
+                task[0].cancel(true); // Request cancellation of the task
+                label.setText("Download canceled.");
+                cancelButton.setEnabled(false);
+                searchButton.setEnabled(true);
             }
-        };
-
-        ActionListener cancelButtonActionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-
-            }
-        };
-
-        searchButton.addActionListener(searchButtonActionListener);
-        cancelButton.addActionListener(cancelButtonActionListener);
+        });
 
         searchInputMainPanel.add(missionSelectionPanel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         searchInputMainPanel.add(dataLevelPanel, new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         searchInputMainPanel.add(searchButton, new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         searchInputMainPanel.add(cancelButton, new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        //searchInputMainPanel.add(scrollPane[0]);
 
         add(searchInputMainPanel, BorderLayout.NORTH);
 
