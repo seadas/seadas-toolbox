@@ -100,7 +100,7 @@ public class WebPageFetcherWithJWT {
         JTable jTable = null;
         try {
             // Fetch the webContent of the webpage
-            //String webContent = fetchContent(url, bearerToken);
+            String webContent = fetchContent(url, bearerToken);
 
             // Parse the response as JSON
             jsonResponse = new JSONObject(webContent);
@@ -113,7 +113,7 @@ public class WebPageFetcherWithJWT {
                 counter++;
                 Thread.sleep(SLEEP_INTERVAL);
 
-                //webContent = fetchContent(jobUrl, bearerToken);
+                webContent = fetchContent(jobUrl, bearerToken);
                 jsonResponse = new JSONObject(webContent);
 
                 // Check if the "status" field is equal to "successful"
@@ -139,7 +139,7 @@ public class WebPageFetcherWithJWT {
 
     }
 
-    public JTable getSearchDataList(String webContent){
+    public JTable getSearchDataList(){
         String url = "https://harmony.uat.earthdata.nasa.gov/C1265136924-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
         String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfdWF0IiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMxMDI1Mzc5LCJpYXQiOjE3MjU4NDEzNzksImlzcyI6Imh0dHBzOi8vdWF0LnVycy5lYXJ0aGRhdGEubmFzYS5nb3YifQ.E2NQ3ZwN3n440M1cWNsl0kkjl61a_6vcSlUW0Ef1NTRqWneioTFu9R09eXhdvj3yy2_j7YadZBbPoi-UNVLSq6KZ8IW-NBkOcnx4izhWxluoYkZ0lcB5V8UNhGh2meX-VVoTROitms5X0InRWNyhg6OzAvyBpD7JCRH-erO-NZ9FsPucrSP6vwT0NgvUUOs2tKAvQ2-0meoX9zELL63M47qBgbcgOt4Bh1VQRqoAONXwubGLT-bGf1RVnV_L3xscryp6kbbAO8v6ORnyzNfFxuX5Oc6Kuko2EzGUbXXoBmGOef0BZnjIl7eBmspvClr0hzYOSX4DkeU-giGAt_JAhg";
         final int MAX_ITERATIONS = 100;
@@ -150,7 +150,7 @@ public class WebPageFetcherWithJWT {
         JTable jTable = null;
         try {
             // Fetch the webContent of the webpage
-            //String webContent = fetchContent(url, bearerToken);
+            String webContent = fetchContent(url, bearerToken);
 
             // Parse the response as JSON
             jsonResponse = new JSONObject(webContent);
@@ -163,7 +163,7 @@ public class WebPageFetcherWithJWT {
                 counter++;
                 Thread.sleep(SLEEP_INTERVAL);
 
-                //webContent = fetchContent(jobUrl, bearerToken);
+                webContent = fetchContent(jobUrl, bearerToken);
                 jsonResponse = new JSONObject(webContent);
 
                 // Check if the "status" field is equal to "successful"

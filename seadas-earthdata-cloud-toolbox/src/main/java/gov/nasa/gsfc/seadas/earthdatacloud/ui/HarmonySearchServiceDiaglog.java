@@ -121,11 +121,11 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         searchButton.setEnabled(true);
         searchButton.setName("searchButton");
 
-        JLabel label = new JLabel("Retrieving data from server...");
-
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setEnabled(true);
         cancelButton.setName("cancelButton");
+
+        SpinningImagePanel panel = new SpinningImagePanel("path_to_image.jpg");
 
         final JScrollPane[] scrollPane = {new JScrollPane()};
         final DataRetrievalTask[] task = new DataRetrievalTask[1];
@@ -139,39 +139,37 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             // Disable the start button while downloading
             searchButton.setEnabled(false);
             cancelButton.setEnabled(true);
-
             // Start a SwingWorker to download data and update the progress bar
-            task[0] = new DataRetrievalTask(progressBar, label, searchButton, cancelButton, scrollPane[0]);
+            task[0] = new DataRetrievalTask(progressBar, searchButton, cancelButton);
             task[0].execute();// Executes the task in the background
             new Thread(() -> {
                 try {
                     // Wait for the task to finish and get the result
-                    String content = task[0].get().toString();  // This blocks until doInBackground() is done
+                    JTable table = task[0].get();    // This blocks until doInBackground() is done
                     // Update the label in the EDT with the result
-                    SwingUtilities.invokeLater(() -> {
-                        //resultLabel.setText(result);
-                        searchButton.setEnabled(true); // Re-enable the button after the task
-                        WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT(content.toString());
-                        scrollPane[0] =new JScrollPane(webPageFetcherWithJWT.getSearchDataListTable());
-                        add(scrollPane[0], BorderLayout.SOUTH);
-                        pack();
-                        repaint();
-                    });
+                    if (table != null ) {
+                        SwingUtilities.invokeLater(() -> {
+                            //resultLabel.setText(result);
+                            searchButton.setEnabled(true); // Re-enable the button after the task
+                            scrollPane[0] = new JScrollPane(table);
+                            add(scrollPane[0], BorderLayout.SOUTH);
+                            pack();
+                            repaint();
+                        });
+                    } else {
+                        System.out.println("Task returned null");
+                    }
                 } catch (InterruptedException | ExecutionException ex) {
                     ex.printStackTrace();
                 }
             }).start();
-
-
         });
 
         // Action listener for the "Cancel" button
         cancelButton.addActionListener(e -> {
             if (task[0] != null && !task[0].isDone()) {
                 task[0].cancel(true); // Request cancellation of the task
-                label.setText("Download canceled.");
-                cancelButton.setEnabled(false);
-                searchButton.setEnabled(true);
+                dispose();
             }
         });
 
@@ -182,7 +180,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
         add(searchInputMainPanel, BorderLayout.NORTH);
 
-        //searchInputMainPanel.getRootPane().setDefaultButton((JButton) ((JPanel) searchInputMainPanel.getComponent(1)).getComponent(1));
         setModalityType(ModalityType.APPLICATION_MODAL);
         setTitle("Search OB-CLOUD Data");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
