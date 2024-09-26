@@ -5,6 +5,7 @@ import gov.nasa.gsfc.seadas.earthdatacloud.action.WebPageFetcherWithJWT;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
+import org.json.JSONObject;
 import org.openide.util.HelpCtx;
 
 import javax.swing.*;
@@ -145,13 +146,14 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             new Thread(() -> {
                 try {
                     // Wait for the task to finish and get the result
-                    JTable table = task[0].get();    // This blocks until doInBackground() is done
+                    JSONObject jsonObject = task[0].get();    // This blocks until doInBackground() is done
                     // Update the label in the EDT with the result
-                    if (table != null ) {
+                    if (jsonObject != null ) {
                         SwingUtilities.invokeLater(() -> {
                             //resultLabel.setText(result);
                             searchButton.setEnabled(true); // Re-enable the button after the task
-                            scrollPane[0] = new JScrollPane(table);
+                            WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT();
+                            scrollPane[0] = new JScrollPane(webPageFetcherWithJWT.getSearchDataList(jsonObject));
                             add(scrollPane[0], BorderLayout.SOUTH);
                             pack();
                             repaint();
@@ -170,6 +172,8 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             if (task[0] != null && !task[0].isDone()) {
                 task[0].cancel(true); // Request cancellation of the task
                 dispose();
+                pack();
+                repaint();
             }
         });
 

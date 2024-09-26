@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
-public class DataRetrievalTask extends SwingWorker<JTable, Void> {
+public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
     private JProgressBar progressBar;
     private String urlString;
     private String bearerToken;
@@ -70,19 +70,86 @@ public class DataRetrievalTask extends SwingWorker<JTable, Void> {
         return content.toString();
     }
 
-    @Override
-    protected JTable doInBackground() throws Exception {
+//    @Override
+//    protected JTable doInBackground() throws Exception {
+//        String webContent = null;
+//        JTable jTable = null;
+//
+//        // String url = "https://harmony.uat.earthdata.nasa.gov/C1265136924-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
+//        //String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
+//        String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/";
+//        //String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfdWF0IiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMxMDI1Mzc5LCJpYXQiOjE3MjU4NDEzNzksImlzcyI6Imh0dHBzOi8vdWF0LnVycy5lYXJ0aGRhdGEubmFzYS5nb3YifQ.E2NQ3ZwN3n440M1cWNsl0kkjl61a_6vcSlUW0Ef1NTRqWneioTFu9R09eXhdvj3yy2_j7YadZBbPoi-UNVLSq6KZ8IW-NBkOcnx4izhWxluoYkZ0lcB5V8UNhGh2meX-VVoTROitms5X0InRWNyhg6OzAvyBpD7JCRH-erO-NZ9FsPucrSP6vwT0NgvUUOs2tKAvQ2-0meoX9zELL63M47qBgbcgOt4Bh1VQRqoAONXwubGLT-bGf1RVnV_L3xscryp6kbbAO8v6ORnyzNfFxuX5Oc6Kuko2EzGUbXXoBmGOef0BZnjIl7eBmspvClr0hzYOSX4DkeU-giGAt_JAhg";
+//        String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfb3BzIiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMyNTQ1OTMwLCJpYXQiOjE3MjczNjE5MzAsImlzcyI6Imh0dHBzOi8vdXJzLmVhcnRoZGF0YS5uYXNhLmdvdiJ9.SXsxzcndQZd45BtHojTyzLDDmQc_buyZOcpxatK6p3Sn6K99Hn_UYXRXvsOAZixNtGkLW5e5IWEoIBm9xnnPHgCNHKYKT0kKAvKz1ZmVST_txUGoetIApU77Ysh5yESHVwbvx971hCjDUK0oLgVPsggpnv9ljlt0Mte3Mfc9ZZXdWT-tGIYASLcf8Yy-QUG7xICbBiJ4D7tatOEFBpoEzamKqQMhc5kQt14H3-KiOfWXCoKlJ_kZ_f_3dVszruAAT7zQ1D6jR6IQHl_uebIz_WO0ajdSXj3j37FJ0C3UfiIYMCDMACx-u2-5oUx1zDm3gnpIf_38AMDbzdKECSgtGw";
+//        final int MAX_ITERATIONS = 1000;
+//        final int SLEEP_INTERVAL = 10;
+//
+//        JSONObject jsonResponse = null;
+//        JSONArray tableArray = null;
+//
+//
+//        try {
+//
+//            // Fetch the webContent of the webpage
+//            webContent = fetchContent(url, bearerToken);
+//            // Parse the response as JSON
+//            jsonResponse = new JSONObject(webContent);
+//                boolean done = false;
+//                int counter = 0;
+//            String jobId = jsonResponse.getString("jobID");
+//            //String jobUrl = "https://harmony.uat.earthdata.nasa.gov/jobs/" + jobId;
+//            String jobUrl = "https://harmony.earthdata.nasa.gov/jobs/" + jobId;
+//            int progress = jsonResponse.getInt("progress");
+//
+//                while(!done && counter < MAX_ITERATIONS) {
+//                    counter++;
+//                    System.out.println(counter);
+//                    System.out.println("progress =" + progress);
+//
+//                    int progressIndicator = progress > 0 ? progress : counter % 100;
+//                    progressBar.setValue(progressIndicator);
+//                    // Thread.sleep(SLEEP_INTERVAL);
+//
+//                    webContent = fetchContent(jobUrl, bearerToken);
+//                    jsonResponse = new JSONObject(webContent);
+//                    progress = jsonResponse.getInt("progress");
+//
+//                    // Check if the "status" field is equal to "successful"
+//                    if (jsonResponse.has("status") && "successful".equals(jsonResponse.getString("status"))) {
+//                        done = true;
+//                    }
+//                }
+//
+//                if(done) {
+//                    System.out.println("Status is successful!");
+//                    tableArray = (JSONArray) jsonResponse.get("links");
+//                    System.out.println("Response: " + jsonResponse.toString(4)); // Pretty print the JSON
+//                    jTable = getJTableNew(tableArray);
+//                } else {
+//                    // Job did not finish after MAX_ITERATIONS * SLEEP_INTERVAL milliseconds
+//                    // output error message
+//                }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//         return jTable;
+//    }
+
+    public JSONObject doInBackground() throws Exception {
         String webContent = null;
         JTable jTable = null;
 
-        String url = "https://harmony.uat.earthdata.nasa.gov/C1265136924-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
-        String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfdWF0IiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMxMDI1Mzc5LCJpYXQiOjE3MjU4NDEzNzksImlzcyI6Imh0dHBzOi8vdWF0LnVycy5lYXJ0aGRhdGEubmFzYS5nb3YifQ.E2NQ3ZwN3n440M1cWNsl0kkjl61a_6vcSlUW0Ef1NTRqWneioTFu9R09eXhdvj3yy2_j7YadZBbPoi-UNVLSq6KZ8IW-NBkOcnx4izhWxluoYkZ0lcB5V8UNhGh2meX-VVoTROitms5X0InRWNyhg6OzAvyBpD7JCRH-erO-NZ9FsPucrSP6vwT0NgvUUOs2tKAvQ2-0meoX9zELL63M47qBgbcgOt4Bh1VQRqoAONXwubGLT-bGf1RVnV_L3xscryp6kbbAO8v6ORnyzNfFxuX5Oc6Kuko2EzGUbXXoBmGOef0BZnjIl7eBmspvClr0hzYOSX4DkeU-giGAt_JAhg";
+        // String url = "https://harmony.uat.earthdata.nasa.gov/C1265136924-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
+        //String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
+        //String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/";
+        String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset?maxresults=10";
+        //String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfdWF0IiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMxMDI1Mzc5LCJpYXQiOjE3MjU4NDEzNzksImlzcyI6Imh0dHBzOi8vdWF0LnVycy5lYXJ0aGRhdGEubmFzYS5nb3YifQ.E2NQ3ZwN3n440M1cWNsl0kkjl61a_6vcSlUW0Ef1NTRqWneioTFu9R09eXhdvj3yy2_j7YadZBbPoi-UNVLSq6KZ8IW-NBkOcnx4izhWxluoYkZ0lcB5V8UNhGh2meX-VVoTROitms5X0InRWNyhg6OzAvyBpD7JCRH-erO-NZ9FsPucrSP6vwT0NgvUUOs2tKAvQ2-0meoX9zELL63M47qBgbcgOt4Bh1VQRqoAONXwubGLT-bGf1RVnV_L3xscryp6kbbAO8v6ORnyzNfFxuX5Oc6Kuko2EzGUbXXoBmGOef0BZnjIl7eBmspvClr0hzYOSX4DkeU-giGAt_JAhg";
+        String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfb3BzIiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMyNTQ1OTMwLCJpYXQiOjE3MjczNjE5MzAsImlzcyI6Imh0dHBzOi8vdXJzLmVhcnRoZGF0YS5uYXNhLmdvdiJ9.SXsxzcndQZd45BtHojTyzLDDmQc_buyZOcpxatK6p3Sn6K99Hn_UYXRXvsOAZixNtGkLW5e5IWEoIBm9xnnPHgCNHKYKT0kKAvKz1ZmVST_txUGoetIApU77Ysh5yESHVwbvx971hCjDUK0oLgVPsggpnv9ljlt0Mte3Mfc9ZZXdWT-tGIYASLcf8Yy-QUG7xICbBiJ4D7tatOEFBpoEzamKqQMhc5kQt14H3-KiOfWXCoKlJ_kZ_f_3dVszruAAT7zQ1D6jR6IQHl_uebIz_WO0ajdSXj3j37FJ0C3UfiIYMCDMACx-u2-5oUx1zDm3gnpIf_38AMDbzdKECSgtGw";
         final int MAX_ITERATIONS = 1000;
         final int SLEEP_INTERVAL = 10;
 
         JSONObject jsonResponse = null;
         JSONArray tableArray = null;
-
 
         try {
 
@@ -90,46 +157,53 @@ public class DataRetrievalTask extends SwingWorker<JTable, Void> {
             webContent = fetchContent(url, bearerToken);
             // Parse the response as JSON
             jsonResponse = new JSONObject(webContent);
-                boolean done = false;
-                int counter = 0;
-            String jobId = jsonResponse.getString("jobID");
-            String jobUrl = "https://harmony.uat.earthdata.nasa.gov/jobs/" + jobId;
+            boolean done = false;
+            int counter = 0;
+            String jobId;
+            String jobUrl;
+            if (jsonResponse.has("jobID")) {
+                jobId = jsonResponse.getString("jobID");
+                jobUrl = "https://harmony.earthdata.nasa.gov/jobs/" + jobId;
+            } else {
+                jobUrl = url;
+            }
+
             int progress = jsonResponse.getInt("progress");
 
-                while(!done && counter < MAX_ITERATIONS) {
-                    counter++;
-                    System.out.println(counter);
-                    System.out.println("progress =" + progress);
-                    //setProgress(counter);
-                    progressBar.setValue(counter * 10);
-                    //Thread.sleep(SLEEP_INTERVAL);
+            while(!done && counter < MAX_ITERATIONS) {
+                counter++;
+                System.out.println(counter);
+                System.out.println("progress =" + progress);
 
-                    webContent = fetchContent(jobUrl, bearerToken);
-                    jsonResponse = new JSONObject(webContent);
-                    progress = jsonResponse.getInt("progress");
+                int progressIndicator = progress > 0 ? progress : counter % 100;
+                progressBar.setValue(progressIndicator);
+                // Thread.sleep(SLEEP_INTERVAL);
 
-                    // Check if the "status" field is equal to "successful"
-                    if (jsonResponse.has("status") && "successful".equals(jsonResponse.getString("status"))) {
-                        done = true;
-                    }
+                webContent = fetchContent(jobUrl, bearerToken);
+                jsonResponse = new JSONObject(webContent);
+                progress = jsonResponse.getInt("progress");
+
+                // Check if the "status" field is equal to "successful"
+                if (jsonResponse.has("status") && "successful".equals(jsonResponse.getString("status"))) {
+                    done = true;
                 }
+            }
 
-                if(done) {
-                    System.out.println("Status is successful!");
-                    tableArray = (JSONArray) jsonResponse.get("links");
-                    System.out.println("Response: " + jsonResponse.toString(4)); // Pretty print the JSON
-                    jTable = getJTableNew(tableArray);
-                } else {
-                    // Job did not finish after MAX_ITERATIONS * SLEEP_INTERVAL milliseconds
-                    // output error message
-                }
+            if(done) {
+                System.out.println("Status is successful!");
+                tableArray = (JSONArray) jsonResponse.get("links");
+                System.out.println("Response: " + jsonResponse.toString(4)); // Pretty print the JSON
+                jTable = getJTableNew(tableArray);
+            } else {
+                // Job did not finish after MAX_ITERATIONS * SLEEP_INTERVAL milliseconds
+                // output error message
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-         return jTable;
+        return jsonResponse;
     }
-
     public JTable getJTableNew(JSONArray dataArray){
 
         //String[] columnNames = { "Rel", "HREF", "Title", "Temporal", "BBox" };
@@ -210,8 +284,6 @@ public static void removeEmptyRows(DefaultTableModel model) {
             progressBar.setValue(100); // Ensure progress bar is full
             JOptionPane.showMessageDialog(null, "Search completed!");
         }
-        cancelButton.setEnabled(true);
-        startButton.setEnabled(true);
     }
 
     public String getUrlString() {
