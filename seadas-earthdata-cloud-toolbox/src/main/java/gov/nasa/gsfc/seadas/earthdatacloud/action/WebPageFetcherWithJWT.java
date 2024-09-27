@@ -9,12 +9,19 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
+import java.util.Base64;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class WebPageFetcherWithJWT {
 
@@ -39,6 +46,110 @@ public class WebPageFetcherWithJWT {
                 model.removeRow(row);
             }
         }
+    }
+
+    public static String[] getCredentials(String machineName) {
+        File netrcFile = new File(System.getProperty("user.home"), ".netrc");
+        String[] credentials = new String[2];  // [0]: username, [1]: password
+        boolean machineFound = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(netrcFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Split the line by spaces
+                String[] tokens = line.trim().split("\\s+");
+
+                // Check if we are reading the credentials for the specific machine
+                if (tokens.length >= 2 && "machine".equalsIgnoreCase(tokens[0])) {
+                    machineFound = machineName.equals(tokens[1]);
+                }
+
+                // If the machine is found, extract the login and password
+                if (machineFound) {
+                    if (tokens.length >= 2 && "login".equalsIgnoreCase(tokens[0])) {
+                        credentials[0] = tokens[1];  // Set the username
+                    } else if (tokens.length >= 2 && "password".equalsIgnoreCase(tokens[0])) {
+                        credentials[1] = tokens[1];  // Set the password
+                        break;  // Credentials found, exit the loop
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the .netrc file: " + e.getMessage());
+        }
+
+        if (credentials[0] != null && credentials[1] != null) {
+            return credentials;  // Return username and password if found
+        } else {
+            System.err.println("Credentials for machine " + machineName + " not found.");
+            return null;  // Return null if credentials not found
+        }
+    }
+
+    public static String getAccessToken(String endpoint) throws Exception {
+        URL url = new URL("https://" + endpoint + "/api/users/tokens");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        StringBuilder content = new StringBuilder();
+
+        String[] credentials = getCredentials(endpoint);
+        String username;
+        String password;
+
+        // Output the credentials (username and password)
+        if (credentials == null) {
+            throw new Exception("Failed to retrieve user credentials for endpoint: " + endpoint);
+        }
+
+        username = credentials[0];
+        password = credentials[1];
+
+        // Combine username and password into a single string
+        String auth = username + ":" + password;
+
+        // Encode the string into Base64
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+
+        // Set request method to GET and add Bearer token to the Authorization header
+        connection.setRequestMethod("GET");
+        // Set the Authorization header with Basic authentication
+        connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
+
+        int status = connection.getResponseCode();
+
+        // Check if the response is OK (200)
+        if (status == HttpURLConnection.HTTP_OK) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine).append("\n");
+                }
+            }
+        } else {
+            throw new Exception("Failed to fetch content. HTTP status code: " + status);
+        }
+
+        String access_token = "empty";
+        JSONArray tokenJSonArray = new JSONArray(content.toString());
+        try {
+            // Loop through the array
+            for (int i = 0; i < tokenJSonArray.length(); i++) {
+                // Get each JSONObject (each row of the table)
+                JSONObject jsonObject = tokenJSonArray.getJSONObject(i);
+
+                // Access individual elements (columns) from the JSONObject
+                if (jsonObject.has("access_token")) {
+                    access_token = jsonObject.getString("access_token");
+                     i = tokenJSonArray.length() + 1;
+                }
+
+
+            }
+        }catch (JSONException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        System.out.print("access_token: " + access_token + "  !!! end of access token!");
+
+        return access_token;
     }
 
     public JTable getCollectionList(JSONObject jsonResponse) {
@@ -84,6 +195,7 @@ public class WebPageFetcherWithJWT {
         DefaultTableModel model = new DefaultTableModel(dataSearchResult, columnNames);
 
         JTable searchResultTable = new JTable(model);
+        searchResultTable.setSize(1000,1000);
 
         // Set a custom renderer for the 'Link' column to display as a clickable link
         searchResultTable.getColumnModel().getColumn(1).setCellRenderer(new LinkCellRenderer());

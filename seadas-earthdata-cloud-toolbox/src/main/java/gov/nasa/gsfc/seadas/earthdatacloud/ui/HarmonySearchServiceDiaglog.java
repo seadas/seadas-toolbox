@@ -13,6 +13,8 @@ import java.awt.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.util.concurrent.ExecutionException;
 
@@ -30,7 +32,8 @@ public class HarmonySearchServiceDiaglog extends JDialog{
     public HarmonySearchServiceDiaglog(){
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         setLayout(new BorderLayout());
-        setSize(1000, 1000);
+        setSize(2000, 1000);
+        //setPreferredSize(new Dimension(1000, 1000));
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -57,17 +60,21 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
     public JPanel createSearchServiceInputPanel() {
 
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createTitledBorder(""));
+
         searchInputMainPanel = new JPanel(new GridBagLayout());
         searchInputMainPanel.setBorder(BorderFactory.createTitledBorder(""));
 
         JPanel missionSelectionPanel = new JPanel(new GridBagLayout());
 
         JPanel dataLevelPanel = new JPanel();
-        dataLevelPanel.setLayout(new GridLayout(3, 1, 10, 10)); // GridLayout with 3 rows, 1 column
+        dataLevelPanel.setLayout(new GridBagLayout());
 
         // Create an array of strings for the dropdown options
         String[] options = {"PACE", "Hawkeye", "SeaWIFS"};
-
+        boolean[] disabledItems = {false, true, true};
         // Create the JComboBox and populate it with options
         JComboBox<String> comboBox = new JComboBox<>(options);
         comboBox.setBounds(50, 50, 200, 10); // Set position and size
@@ -75,48 +82,68 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         comboBox.setSelectedItem(DEFAULT_SELECTED_MISSION);
         comboBox.setName("selectMissionJComboBox");
         comboBox.setToolTipText("Select mission for search");
-
-        // Add an ActionListener to respond to user selections
-        comboBox.addActionListener(new ActionListener() {
+        comboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get selected item
-                String selectedItem = (String) comboBox.getSelectedItem();
-                // Show a message dialog with the selected item
-                JOptionPane.showMessageDialog(dataLevelPanel, "You selected: " + selectedItem);
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                // If the item is disabled, make it gray and non-selectable
+                if (index >= 0 && disabledItems[index]) {
+                    component.setEnabled(false);
+                    component.setForeground(Color.GRAY);
+                } else {
+                    component.setEnabled(true);
+                    component.setForeground(Color.BLACK);
+                }
+
+                return component;
             }
         });
+
+        // Add an ItemListener to prevent selecting disabled items
+        comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // If the item is disabled, reset the selection to the last valid item
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    int selectedIndex = comboBox.getSelectedIndex();
+                    if (disabledItems[selectedIndex]) {
+                        JOptionPane.showMessageDialog(null, "This item is disabled.");
+                        comboBox.setSelectedIndex(0); // Change to a valid selection (here, the first item)
+                    }
+                }
+            }
+        });
+
+
+         JLabel missionSelectionLabel = new JLabel("Missions:");
+
+//        // Add an ActionListener to respond to user selections
+//        comboBox.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // Get selected item
+//                String selectedItem = (String) comboBox.getSelectedItem();
+//                // Show a message dialog with the selected item
+//                JOptionPane.showMessageDialog(dataLevelPanel, "You selected: " + selectedItem);
+//            }
+//        });
 
 
         // Create the checkboxes with labels
         JCheckBox checkBox1 = new JCheckBox("Level 2");
         JCheckBox checkBox2 = new JCheckBox("Level 3");
+        checkBox2.setEnabled(false);
 
         // Create a label to display the state of the checkboxes
-        JLabel statusLabel = new JLabel("Select an option and checkboxes:");
+        JLabel statusLabel = new JLabel("Select data level:");
 
-        // Add an ActionListener to handle checkbox state changes
-        ActionListener actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get the state of the checkboxes
-                boolean isChecked1 = checkBox1.isSelected();
-                boolean isChecked2 = checkBox2.isSelected();
+        missionSelectionPanel.add(missionSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        missionSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
-                // Update the label text based on checkbox states
-                statusLabel.setText("Level 2: " + (isChecked1 ? "Checked" : "Not Checked") +
-                        ", Level 3: " + (isChecked2 ? "Checked" : "Not Checked"));
-            }
-        };
-
-        // Add the ActionListener to the checkboxes
-        checkBox1.addActionListener(actionListener);
-        checkBox2.addActionListener(actionListener);
-        missionSelectionPanel.add(comboBox);
-        dataLevelPanel.add(checkBox1);
-        dataLevelPanel.add(checkBox2);
-        dataLevelPanel.add(statusLabel);
-
+        dataLevelPanel.add(statusLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, 5));
+        dataLevelPanel.add(checkBox1, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, 5));
+        dataLevelPanel.add(checkBox2, new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, 5));
 
         JButton searchButton = new JButton("Search");
         searchButton.setEnabled(true);
@@ -126,12 +153,13 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         cancelButton.setEnabled(true);
         cancelButton.setName("cancelButton");
 
-        SpinningImagePanel panel = new SpinningImagePanel("path_to_image.jpg");
-
         final JScrollPane[] scrollPane = {new JScrollPane()};
         final DataRetrievalTask[] task = new DataRetrievalTask[1];
         // Create a JProgressBar
         JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setMinimumSize(new Dimension(200, 20)); // Min size
+        progressBar.setMaximumSize(new Dimension(350, 50)); // Max size
+        progressBar.setPreferredSize(new Dimension(300, 40));
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
         add(progressBar, BorderLayout.CENTER);
@@ -154,12 +182,14 @@ public class HarmonySearchServiceDiaglog extends JDialog{
                             searchButton.setEnabled(true); // Re-enable the button after the task
                             WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT();
                             scrollPane[0] = new JScrollPane(webPageFetcherWithJWT.getSearchDataList(jsonObject));
-                            add(scrollPane[0], BorderLayout.SOUTH);
+                            scrollPane[0].setSize(new Dimension(1000, 1000));
+                            mainPanel.add(scrollPane[0], new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 10));
+                            revalidate();
                             pack();
                             repaint();
                         });
                     } else {
-                        System.out.println("Task returned null");
+                        System.out.println("Task returned null!");
                     }
                 } catch (InterruptedException | ExecutionException ex) {
                     ex.printStackTrace();
@@ -171,21 +201,25 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         cancelButton.addActionListener(e -> {
             if (task[0] != null && !task[0].isDone()) {
                 task[0].cancel(true); // Request cancellation of the task
-                dispose();
-                pack();
-                repaint();
             }
+            dispose();
+            pack();
+            repaint();
         });
 
         searchInputMainPanel.add(missionSelectionPanel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        searchInputMainPanel.add(dataLevelPanel, new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        searchInputMainPanel.add(searchButton, new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        searchInputMainPanel.add(cancelButton, new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(dataLevelPanel, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(searchButton, new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(cancelButton, new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
-        add(searchInputMainPanel, BorderLayout.NORTH);
+        mainPanel.add(searchInputMainPanel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 5));
+        mainPanel.add(progressBar, new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+
+        add(mainPanel);
 
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setTitle("Search OB-CLOUD Data");
+        setTitle("Browse OB-CLOUD Data through the Harmony Search Service");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 

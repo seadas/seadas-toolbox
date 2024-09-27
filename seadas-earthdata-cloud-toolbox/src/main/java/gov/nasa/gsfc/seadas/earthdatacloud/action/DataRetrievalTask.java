@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -74,12 +75,12 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
         String webContent = null;
         JTable jTable = null;
 
-        // String url = "https://harmony.uat.earthdata.nasa.gov/C1265136924-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
+        //String url = "https://harmony.uat.earthdata.nasa.gov/C1265136924-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
         //String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset"; // Replace with your URL
         //String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/";
         String url = "https://harmony.earthdata.nasa.gov/C3020920290-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset?maxresults=25";
         //String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfdWF0IiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMxMDI1Mzc5LCJpYXQiOjE3MjU4NDEzNzksImlzcyI6Imh0dHBzOi8vdWF0LnVycy5lYXJ0aGRhdGEubmFzYS5nb3YifQ.E2NQ3ZwN3n440M1cWNsl0kkjl61a_6vcSlUW0Ef1NTRqWneioTFu9R09eXhdvj3yy2_j7YadZBbPoi-UNVLSq6KZ8IW-NBkOcnx4izhWxluoYkZ0lcB5V8UNhGh2meX-VVoTROitms5X0InRWNyhg6OzAvyBpD7JCRH-erO-NZ9FsPucrSP6vwT0NgvUUOs2tKAvQ2-0meoX9zELL63M47qBgbcgOt4Bh1VQRqoAONXwubGLT-bGf1RVnV_L3xscryp6kbbAO8v6ORnyzNfFxuX5Oc6Kuko2EzGUbXXoBmGOef0BZnjIl7eBmspvClr0hzYOSX4DkeU-giGAt_JAhg";
-        String bearerToken = "eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfb3BzIiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImF5bnVyIiwiZXhwIjoxNzMyNTQ1OTMwLCJpYXQiOjE3MjczNjE5MzAsImlzcyI6Imh0dHBzOi8vdXJzLmVhcnRoZGF0YS5uYXNhLmdvdiJ9.SXsxzcndQZd45BtHojTyzLDDmQc_buyZOcpxatK6p3Sn6K99Hn_UYXRXvsOAZixNtGkLW5e5IWEoIBm9xnnPHgCNHKYKT0kKAvKz1ZmVST_txUGoetIApU77Ysh5yESHVwbvx971hCjDUK0oLgVPsggpnv9ljlt0Mte3Mfc9ZZXdWT-tGIYASLcf8Yy-QUG7xICbBiJ4D7tatOEFBpoEzamKqQMhc5kQt14H3-KiOfWXCoKlJ_kZ_f_3dVszruAAT7zQ1D6jR6IQHl_uebIz_WO0ajdSXj3j37FJ0C3UfiIYMCDMACx-u2-5oUx1zDm3gnpIf_38AMDbzdKECSgtGw";
+        String bearerToken = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
         final int MAX_ITERATIONS = 1000;
         final int SLEEP_INTERVAL = 10;
 
@@ -105,11 +106,8 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
 
             int progress = jsonResponse.getInt("progress");
 
-            while(!done && counter < MAX_ITERATIONS) {
+            while (!done && counter < MAX_ITERATIONS) {
                 counter++;
-                System.out.println(counter);
-                System.out.println("progress =" + progress);
-
                 int progressIndicator = progress > 0 ? progress : counter % 100;
                 progressBar.setValue(progressIndicator);
                 // Thread.sleep(SLEEP_INTERVAL);
@@ -124,7 +122,7 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
                 }
             }
 
-            if(done) {
+            if (done) {
                 System.out.println("Status is successful!");
                 tableArray = (JSONArray) jsonResponse.get("links");
                 System.out.println("Response: " + jsonResponse.toString(4)); // Pretty print the JSON
@@ -139,17 +137,18 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
         }
         return jsonResponse;
     }
-    public JTable getJTableNew(JSONArray dataArray){
+
+    public JTable getJTableNew(JSONArray dataArray) {
 
         //String[] columnNames = { "Rel", "HREF", "Title", "Temporal", "BBox" };
-        String[] columnNames = { "Title", "HREF"  };
+        String[] columnNames = {"Title", "HREF"};
         Object[][] dataSearchResult = new Object[dataArray.length()][2];
 
 
         // Iterate over the students array and add each row to the searchResultTable
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject dataURL = dataArray.getJSONObject(i);
-            if (dataURL.has("temporal") ) {
+            if (dataURL.has("temporal")) {
                 dataSearchResult[i][0] = dataURL.getString("title");
                 dataSearchResult[i][1] = dataURL.getString("href");
             }
@@ -158,6 +157,7 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
         DefaultTableModel model = new DefaultTableModel(dataSearchResult, columnNames);
 
         JTable searchResultTable = new JTable(model);
+        //searchResultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         // Set a custom renderer for the 'Link' column to display as a clickable link
         searchResultTable.getColumnModel().getColumn(1).setCellRenderer(new LinkCellRenderer());
@@ -185,30 +185,41 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
         });
 
         removeEmptyRows(model);
+
+//        // Adjust column widths automatically based on content
+//        for (int col = 0; col < searchResultTable.getColumnCount(); col++) {
+//            int preferredWidth = 500; // Minimum width
+//            for (int row = 0; row < searchResultTable.getRowCount(); row++) {
+//                Component comp = searchResultTable.prepareRenderer(searchResultTable.getCellRenderer(row, col), row, col);
+//                preferredWidth = Math.max(comp.getPreferredSize().width + 1, preferredWidth);
+//            }
+//            searchResultTable.getColumnModel().getColumn(col).setPreferredWidth(preferredWidth);
+//        }
+
         return searchResultTable;
     }
 
-// Method to remove empty rows from the JTable's model
-public static void removeEmptyRows(DefaultTableModel model) {
-    for (int row = model.getRowCount() - 1; row >= 0; row--) {
-        boolean isEmpty = true;
-        // Check if all cells in the row are empty (null or empty string)
-        for (int col = 0; col < model.getColumnCount(); col++) {
-            Object value = model.getValueAt(row, col);
-            if (value != null && !value.toString().trim().isEmpty()) {
-                isEmpty = false; // Found a non-empty value
-                break;
+    // Method to remove empty rows from the JTable's model
+    public static void removeEmptyRows(DefaultTableModel model) {
+        for (int row = model.getRowCount() - 1; row >= 0; row--) {
+            boolean isEmpty = true;
+            // Check if all cells in the row are empty (null or empty string)
+            for (int col = 0; col < model.getColumnCount(); col++) {
+                Object value = model.getValueAt(row, col);
+                if (value != null && !value.toString().trim().isEmpty()) {
+                    isEmpty = false; // Found a non-empty value
+                    break;
+                }
+            }
+            // If the row is empty, remove it from the model
+            if (isEmpty) {
+                model.removeRow(row);
             }
         }
-        // If the row is empty, remove it from the model
-        if (isEmpty) {
-            model.removeRow(row);
-        }
     }
-}
 
 
-@Override
+    @Override
     protected void process(java.util.List<Void> chunks) {
         // This method can be used to update UI periodically if needed
     }
@@ -217,7 +228,8 @@ public static void removeEmptyRows(DefaultTableModel model) {
     protected void done() {
         if (!isCancelled()) {
             progressBar.setValue(100); // Ensure progress bar is full
-            JOptionPane.showMessageDialog(null, "Search completed!");
+            progressBar.setString("Search completed!");
+            //JOptionPane.showMessageDialog(null, "Search completed!");
         }
     }
 
@@ -229,12 +241,7 @@ public static void removeEmptyRows(DefaultTableModel model) {
         this.urlString = urlString;
     }
 
-    public String getBearerToken() {
-        return bearerToken;
-    }
-
     public void setBearerToken(String bearerToken) {
         this.bearerToken = bearerToken;
     }
-
 }
