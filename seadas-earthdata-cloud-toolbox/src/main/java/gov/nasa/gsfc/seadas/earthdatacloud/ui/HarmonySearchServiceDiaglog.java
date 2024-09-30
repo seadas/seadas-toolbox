@@ -153,13 +153,12 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         cancelButton.setEnabled(true);
         cancelButton.setName("cancelButton");
 
-        final JScrollPane[] scrollPane = {new JScrollPane()};
         final DataRetrievalTask[] task = new DataRetrievalTask[1];
         // Create a JProgressBar
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setMinimumSize(new Dimension(200, 20)); // Min size
-        progressBar.setMaximumSize(new Dimension(350, 50)); // Max size
-        progressBar.setPreferredSize(new Dimension(300, 40));
+        progressBar.setMaximumSize(new Dimension(350, 20)); // Max size
+        progressBar.setPreferredSize(new Dimension(300, 20));
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
         add(progressBar, BorderLayout.CENTER);
@@ -181,9 +180,10 @@ public class HarmonySearchServiceDiaglog extends JDialog{
                             //resultLabel.setText(result);
                             searchButton.setEnabled(true); // Re-enable the button after the task
                             WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT();
-                            scrollPane[0] = new JScrollPane(webPageFetcherWithJWT.getSearchDataList(jsonObject));
-                            scrollPane[0].setSize(new Dimension(1000, 1000));
-                            mainPanel.add(scrollPane[0], new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 10));
+                            var pane = new JScrollPane();
+                            pane.getViewport().add(webPageFetcherWithJWT.getSearchDataList(jsonObject));
+
+                            mainPanel.add(pane, new ExGridBagConstraints(0, 2, 2, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 10));
                             revalidate();
                             pack();
                             repaint();
@@ -208,12 +208,12 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         });
 
         searchInputMainPanel.add(missionSelectionPanel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        searchInputMainPanel.add(dataLevelPanel, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        searchInputMainPanel.add(searchButton, new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        searchInputMainPanel.add(cancelButton, new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(dataLevelPanel, new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(searchButton, new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 50));
+        searchInputMainPanel.add(cancelButton, new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
         mainPanel.add(searchInputMainPanel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, 5));
-        mainPanel.add(progressBar, new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        mainPanel.add(progressBar, new ExGridBagConstraints(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 5));
 
 
         add(mainPanel);

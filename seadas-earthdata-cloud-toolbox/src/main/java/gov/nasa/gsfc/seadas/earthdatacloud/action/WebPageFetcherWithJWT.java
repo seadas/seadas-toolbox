@@ -18,6 +18,8 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -144,12 +146,66 @@ public class WebPageFetcherWithJWT {
 
 
             }
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             System.out.println("Error: " + e.getMessage());
         }
         System.out.print("access_token: " + access_token + "  !!! end of access token!");
 
+        if (access_token.contains("empty")) {
+            access_token = generateAccessToken(endpoint);
+        }
         return access_token;
+    }
+
+    public static String generateAccessToken(String endpoint) throws Exception {
+        URL url = new URL("https://" + endpoint + "/api/users/token");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        StringBuilder content = new StringBuilder();
+
+        String[] credentials = getCredentials(endpoint);
+        String username;
+        String password;
+
+        // Output the credentials (username and password)
+        if (credentials == null) {
+            throw new Exception("Failed to retrieve user credentials for endpoint: " + endpoint);
+        }
+
+        username = credentials[0];
+        password = credentials[1];
+
+        // Combine username and password into a single string
+        String auth = username + ":" + password;
+
+        // Encode the string into Base64
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+
+        // Set request method to GET and add Bearer token to the Authorization header
+        connection.setRequestMethod("POST");
+        // Set the Authorization header with Basic authentication
+        connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
+
+        int status = connection.getResponseCode();
+
+        // Check if the response is OK (200)
+        if (status == HttpURLConnection.HTTP_OK) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine).append("\n");
+                }
+            }
+        } else {
+            throw new Exception("Failed to fetch content. HTTP status code: " + status);
+        }
+
+        String access_token = "empty";
+        var jsonObject = new JSONObject(content.toString());
+
+        if (jsonObject.has("access_token")) {
+            return jsonObject.getString("access_token");
+        }
+        throw new Exception("Could not generate an access token using netrc credentials. Server response: " + content);
     }
 
     public JTable getCollectionList(JSONObject jsonResponse) {
@@ -175,7 +231,6 @@ public class WebPageFetcherWithJWT {
 
     }
 
-
     public JTable getJTableNew(JSONArray dataArray) {
 
         //String[] columnNames = { "Rel", "HREF", "Title", "Temporal", "BBox" };
@@ -195,7 +250,6 @@ public class WebPageFetcherWithJWT {
         DefaultTableModel model = new DefaultTableModel(dataSearchResult, columnNames);
 
         JTable searchResultTable = new JTable(model);
-        searchResultTable.setSize(1000,1000);
 
         // Set a custom renderer for the 'Link' column to display as a clickable link
         searchResultTable.getColumnModel().getColumn(1).setCellRenderer(new LinkCellRenderer());
