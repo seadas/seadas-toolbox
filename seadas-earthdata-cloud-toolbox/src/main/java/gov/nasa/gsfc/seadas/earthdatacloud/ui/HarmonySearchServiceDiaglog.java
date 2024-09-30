@@ -132,6 +132,7 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
         // Create the checkboxes with labels
         JCheckBox checkBox1 = new JCheckBox("Level 2");
+        checkBox1.setSelected(true);
         JCheckBox checkBox2 = new JCheckBox("Level 3");
         checkBox2.setEnabled(false);
 

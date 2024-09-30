@@ -50,7 +50,8 @@ public class WebPageFetcherWithJWT {
         }
     }
 
-    public static String[] getCredentials(String machineName) {
+    public static String[]
+    getCredentials(String machineName) {
         File netrcFile = new File(System.getProperty("user.home"), ".netrc");
         String[] credentials = new String[2];  // [0]: username, [1]: password
         boolean machineFound = false;
@@ -68,7 +69,11 @@ public class WebPageFetcherWithJWT {
 
                 // If the machine is found, extract the login and password
                 if (machineFound) {
-                    if (tokens.length >= 2 && "login".equalsIgnoreCase(tokens[0])) {
+                    if(tokens.length >= 6) { // one-line netrc format: machine <machine-name> login <login> password <password>
+                        credentials[0] = tokens[3];
+                        credentials[1] = tokens[5];
+                        break;
+                    } else if (tokens.length >= 2 && "login".equalsIgnoreCase(tokens[0])) {
                         credentials[0] = tokens[1];  // Set the username
                     } else if (tokens.length >= 2 && "password".equalsIgnoreCase(tokens[0])) {
                         credentials[1] = tokens[1];  // Set the password
