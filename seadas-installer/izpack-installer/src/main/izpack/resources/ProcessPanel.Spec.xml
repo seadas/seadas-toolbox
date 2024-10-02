@@ -11,6 +11,21 @@
             <!--                <arg>$variable</arg>-->
         </executefile>
     </job>
+    <job name="Archive .seadas9 directory">
+        <os family="mac" />
+        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
+            <!--                <arg>doit</arg>-->
+            <!--                <arg>$variable</arg>-->
+        </executefile>
+    </job>
+
+    <job name="Archive .seadas9 directory">
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS_windows.bat" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
+            <!--                <arg>doit</arg>-->
+            <!--                <arg>$variable</arg>-->
+        </executefile>
+    </job>
 
     <onFail previous="true" next="false" />
     <onSuccess previous="true" next="true" condition="mycondition" />
