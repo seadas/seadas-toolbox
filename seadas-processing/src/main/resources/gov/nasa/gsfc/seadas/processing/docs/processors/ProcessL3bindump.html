@@ -205,8 +205,8 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-L3BIN 5.13 (Apr  4 2023 11:27:40)
-5.13
+L3BIN 5.14 (Nov 14 2024 12:14:14)
+5.14
 l3bin ifile=input-file ofile=output-file prod=prodlist
 
   The input file is a list of L3 binned files.
@@ -254,6 +254,20 @@ The list of valid keywords follows:
    composite_scheme (string) = composite scheme (min/max)
    composite_prod (string) = composite product fieldname
    reduce_fac (int) (default=1) = scale reduction factor (power of 2)
+   resolve (string) = bin resolution, overrides reduce_frac if defined
+         H: 0.5km
+         Q: 250m
+        HQ: 100m
+        HH: 50m
+         1: 1.1km
+         2: 2.3km
+         4: 4.6km
+         9: 9.2km
+        18: 18.5km
+        36: 36km
+        1D: 1 degree
+        HD: 0.5 degree
+        QD: 0.25 degree
    prod (string) (alias=out_parm) (default=DEFAULT) = bin products
         [default=all products in L3 file]
 

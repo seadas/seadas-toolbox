@@ -439,7 +439,7 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l3mapgen 2.3.0-V2023.1 (Apr  4 2023 11:27:05)
+l3mapgen 2.4.0-V2024.8 (Nov 14 2024 12:13:34)
 Usage: l3mapgen argument-list
 
   This program takes a product (or products if netCDF output) from an L3 bin
@@ -495,6 +495,7 @@ The list of valid keywords follows:
             obs_time  average observation time (TAI93)
             bin_num   bin ID number
 
+   wavelength_3d (string) = comma separated list of wavelengths for 3D products
    resolution (string) = size of output pixel (default from input file)
         in meters or SMI dimensions
         90km: 432 x 216 image for full globe
@@ -534,6 +535,9 @@ The list of valid keywords follows:
                                 +lat_0=&lt;scene center latitude&gt;
                                 +lat_1=&lt;scene south latitude&gt;
                                 +lat_2=&lt;scene north latitude&gt;"
+        aeqd:      Azimuthal Equidistant projection
+                   projection="+proj=aeqd +lon_0=&lt;central_meridian&gt;
+                                +lat_0=&lt;scene center latitude&gt;"
         mercator:  Mercator cylindrical map projection
                    projection="+proj=merc +lon_0=&lt;central_meridian&gt;"
         transmerc:  Transverse Mercator cylindrical map projection

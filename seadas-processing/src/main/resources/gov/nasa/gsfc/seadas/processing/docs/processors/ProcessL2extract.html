@@ -232,8 +232,8 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-This is version 2.0.2 of l2extract (compiled on Apr  4 2023 11:27:50)
-l2extract 2.0.2 (Apr  4 2023 11:27:05)
+This is version 3.1 of l2extract (compiled on Nov 14 2024 12:14:30)
+l2extract 3.1 (Nov 14 2024 12:13:34)
 Usage: l2extract argument-list
    or: l2extract ifile spix epix sline eline pix_sub sc_sub ofile &lt;prodlist&gt;
 
@@ -258,7 +258,7 @@ The list of valid keywords follows:
    par (ifile) = input parameter file
    ifile (ifile) = input L2 filename
    ofile (ofile) (default=output) = output filename
-   product (string) = comma separated list of products, empty string outputs
+   product (string) = comma separated list of products, empty string outputs all
         all products
    spix (int) (default=1) = start pixel number (1-based).
    epix (int) (default=-1) = end pixel number. -1 = last pixel (1-based).
@@ -266,6 +266,9 @@ The list of valid keywords follows:
    eline (int) (default=-1) = end line.  -1 = last line (1-based).
    suite (string) = suite for default parameters
    verbose (boolean) (default=false) = more information reporting
+   wavelist (string) = comma separated list of 3D wavelengths and/or colon
+        separated nnn:nnn range of wavelengths, empty string outputs all
+        3D wavelengths (i.e. wavelist=353,355,358,360,360:370,450:600,700)
 
 </pre>
 <!--AUTOMATED CODE HELP END-->
