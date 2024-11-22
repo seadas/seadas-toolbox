@@ -13,7 +13,7 @@ if args.directory is None:
     parser.print_help()
     sys.exit(1)
 directory = args.directory
-# directory = "/Users/bingyang/snap-dev/seadas-toolbox/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/docs/processors"
+# directory = "/Users/bingyangbyang8/snap-11/seadas-toolbox/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/docs/processors"
 path_html = os.path.join(directory, "ProcessExtractors.html")
 file_opened = open(path_html).read()
 help_content_old = re.findall(r'<!--AUTOMATED CODE HELP START-->([\s\S]+?)<!--AUTOMATED CODE HELP END-->', file_opened)

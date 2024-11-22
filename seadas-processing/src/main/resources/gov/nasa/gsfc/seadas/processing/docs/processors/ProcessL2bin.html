@@ -279,8 +279,8 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l2bin 7.0.4 (Apr  4 2023 11:27:55)
-7.0.4
+l2bin 7.1.0 (Nov 14 2024 12:14:51)
+7.1.0
 Usage: l2bin argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
@@ -304,7 +304,7 @@ The list of valid keywords follows:
    par (ifile) (alias=parfile) = input parameter file
    ifile (ifile) (alias=infile) = input L2 file name
    ofile (ofile) (default=output) = output file name
-   fileuse (ofile) = write the filenames of the the input files used to this file
+   fileuse (ofile) = write filenames of the input files used into this file
    suite (string) = suite for default parameters
    qual_prod (string) = quality product field name
    deflate (int) (default=5) = deflation level.  0=off or 1=low through 9=high
@@ -319,7 +319,8 @@ The list of valid keywords follows:
    loneast (float) (default=0) = eastern most longitude
    lonwest (float) (default=0) = western most longitude
    minobs (int) (default=0) = required minimum number of observations
-   delta_crossing_time (float) (default=0.0) = equator crossing time delta in minutes
+   delta_crossing_time (float) (default=0.0) = equator crossing time delta in
+         minutes
          Caveat...if zero, the sensor default equator crossing time will be used
          This is not necessarily noon
    resolution (string) (alias=resolve) (default=H) = bin resolution
@@ -342,17 +343,20 @@ The list of valid keywords follows:
    composite_prod (string) = composite product fieldname
    flaguse (string) (default=ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,CHLWARN,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER) = flags masked [see /SENSOR/l2bin_defaults.par]
    l3bprod (string) (default=ALL) = l3bprod = bin products [default=all products]
-    Set to "ALL" or "all" for all L2 products in 1st input file.
-    Use ':' or ',' or ' ' as delimiters.
-    Use ';' or '=' to delineate minimum values.
-
+        Set to "ALL" or "all" for all L2 products in 1st input file.
+        Use ':' or ',' or ' ' as delimiters.
+        Use ';' or '=' to delineate minimum values.
    area_weighting (int) (default=0) = Enable area weighting
         0: off
         1: pixel box
         2: pixel bounding box
         3: pixel polygon
-   output_wavelengths (string) (default=ALL) = comma separated list of wavelengths for multi-wavelength products
+   output_wavelengths (string) (default=ALL) = comma separated list of
+        wavelengths for multi-wavelength products
    doi (string) = Digital Object Identifier (DOI) string
+   oprodname (string) = comma separated list of output L3 product names.
+        This option allows the user to specify the output product names which differ from the original l2 product names.
+        Usage: original_l2_name:output_l3_name, i.e. oprodname=cloud_flag:cloud_fraction
 
 </pre>
 <!--AUTOMATED CODE HELP END-->
