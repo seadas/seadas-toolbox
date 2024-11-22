@@ -67,84 +67,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         searchInputMainPanel = new JPanel(new GridBagLayout());
         searchInputMainPanel.setBorder(BorderFactory.createTitledBorder(""));
 
-        JPanel missionSelectionPanel = new JPanel(new GridBagLayout());
-
-        JPanel dataLevelPanel = new JPanel();
-        dataLevelPanel.setLayout(new GridBagLayout());
-
-        // Create an array of strings for the dropdown options
-        String[] options = {"PACE", "Hawkeye", "SeaWIFS"};
-        boolean[] disabledItems = {false, true, true};
-        // Create the JComboBox and populate it with options
-        JComboBox<String> comboBox = new JComboBox<>(options);
-        comboBox.setBounds(50, 50, 200, 10); // Set position and size
-        comboBox.setEditable(false);
-        comboBox.setSelectedItem(DEFAULT_SELECTED_MISSION);
-        comboBox.setName("selectMissionJComboBox");
-        comboBox.setToolTipText("Select mission for search");
-        comboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-                // If the item is disabled, make it gray and non-selectable
-                if (index >= 0 && disabledItems[index]) {
-                    component.setEnabled(false);
-                    component.setForeground(Color.GRAY);
-                } else {
-                    component.setEnabled(true);
-                    component.setForeground(Color.BLACK);
-                }
-
-                return component;
-            }
-        });
-
-        // Add an ItemListener to prevent selecting disabled items
-        comboBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                // If the item is disabled, reset the selection to the last valid item
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    int selectedIndex = comboBox.getSelectedIndex();
-                    if (disabledItems[selectedIndex]) {
-                        JOptionPane.showMessageDialog(null, "This item is disabled.");
-                        comboBox.setSelectedIndex(0); // Change to a valid selection (here, the first item)
-                    }
-                }
-            }
-        });
-
-
-         JLabel missionSelectionLabel = new JLabel("Missions:");
-
-//        // Add an ActionListener to respond to user selections
-//        comboBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // Get selected item
-//                String selectedItem = (String) comboBox.getSelectedItem();
-//                // Show a message dialog with the selected item
-//                JOptionPane.showMessageDialog(dataLevelPanel, "You selected: " + selectedItem);
-//            }
-//        });
-
-
-        // Create the checkboxes with labels
-        JCheckBox checkBox1 = new JCheckBox("Level 2");
-        checkBox1.setSelected(true);
-        JCheckBox checkBox2 = new JCheckBox("Level 3");
-        checkBox2.setEnabled(false);
-
-        // Create a label to display the state of the checkboxes
-        JLabel statusLabel = new JLabel("Select data level:");
-
-        missionSelectionPanel.add(missionSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        missionSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-
-        dataLevelPanel.add(statusLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, 5));
-        dataLevelPanel.add(checkBox1, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, 5));
-        dataLevelPanel.add(checkBox2, new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, 5));
 
         JButton searchButton = new JButton("Search");
         searchButton.setEnabled(true);
@@ -208,8 +130,9 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             repaint();
         });
 
-        searchInputMainPanel.add(missionSelectionPanel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
-        searchInputMainPanel.add(dataLevelPanel, new ExGridBagConstraints(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(getMissionsPanel(), new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(getProductsPanel(), new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        searchInputMainPanel.add(getDataLevelPanel(), new ExGridBagConstraints(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         searchInputMainPanel.add(searchButton, new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 50));
         searchInputMainPanel.add(cancelButton, new ExGridBagConstraints(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
 
@@ -236,5 +159,167 @@ public class HarmonySearchServiceDiaglog extends JDialog{
     @Override
     public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
+    }
+
+    private JPanel getMissionsPanel(){
+        JPanel missionSelectionPanel = new JPanel(new GridBagLayout());
+
+        // Create an array of strings for the dropdown options
+        String[] options = {"PACE", "Hawkeye", "SeaWIFS"};
+        boolean[] disabledItems = {false, true, true};
+        // Create the JComboBox and populate it with options
+        JComboBox<String> comboBox = new JComboBox<>(options);
+        comboBox.setBounds(50, 50, 200, 10); // Set position and size
+        comboBox.setEditable(false);
+        comboBox.setSelectedItem(DEFAULT_SELECTED_MISSION);
+        comboBox.setName("selectMissionJComboBox");
+        comboBox.setToolTipText("Select mission for search");
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                // If the item is disabled, make it gray and non-selectable
+                if (index >= 0 && disabledItems[index]) {
+                    component.setEnabled(false);
+                    component.setForeground(Color.GRAY);
+                } else {
+                    component.setEnabled(true);
+                    component.setForeground(Color.BLACK);
+                }
+
+                return component;
+            }
+        });
+
+        // Add an ItemListener to prevent selecting disabled items
+        comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // If the item is disabled, reset the selection to the last valid item
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    int selectedIndex = comboBox.getSelectedIndex();
+                    if (disabledItems[selectedIndex]) {
+                        JOptionPane.showMessageDialog(null, "This item is disabled.");
+                        comboBox.setSelectedIndex(0); // Change to a valid selection (here, the first item)
+                    }
+                }
+            }
+        });
+
+
+        JLabel missionSelectionLabel = new JLabel("Missions:");
+
+        missionSelectionPanel.add(missionSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        missionSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+        return missionSelectionPanel;
+    }
+    private JPanel getProductsPanel() {
+
+        JPanel productSelectionPanel = new JPanel(new GridBagLayout());
+
+        // Create an array of strings for the dropdown productOptions
+        String[] productOptions = {"BGC", "OIP", "OAP"};
+        boolean[] disabledItems = {false, true, true};
+        // Create the JComboBox and populate it with productOptions
+        JComboBox<String> comboBox = new JComboBox<>(productOptions);
+        comboBox.setBounds(50, 50, 200, 10); // Set position and size
+        comboBox.setEditable(false);
+        comboBox.setSelectedItem(DEFAULT_SELECTED_MISSION);
+        comboBox.setName("selectProductJComboBox");
+        comboBox.setToolTipText("Select product for search");
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                // If the item is disabled, make it gray and non-selectable
+                if (index >= 0 && disabledItems[index]) {
+                    component.setEnabled(false);
+                    component.setForeground(Color.GRAY);
+                } else {
+                    component.setEnabled(true);
+                    component.setForeground(Color.BLACK);
+                }
+                return component;
+            }
+        });
+
+        // Add an ItemListener to prevent selecting disabled items
+        comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // If the item is disabled, reset the selection to the last valid item
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    int selectedIndex = comboBox.getSelectedIndex();
+                    if (disabledItems[selectedIndex]) {
+                        JOptionPane.showMessageDialog(null, "This item is disabled.");
+                        comboBox.setSelectedIndex(0); // Change to a valid selection (here, the first item)
+                    }
+                }
+            }
+        });
+
+        JLabel productSelectionLabel = new JLabel("Products:");
+
+        productSelectionPanel.add(productSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        productSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+        return productSelectionPanel;
+    }
+
+    private JPanel getDataLevelPanel() {
+
+        JPanel dataLevelSelectionPanel = new JPanel(new GridBagLayout());
+
+        // Create an array of strings for the dropdown dataLevelOptions
+        String[] dataLevelOptions = {"Level 2", "Level 3"};
+        boolean[] disabledItems = {false, true};
+        // Create the JComboBox and populate it with dataLevelOptions
+        JComboBox<String> comboBox = new JComboBox<>(dataLevelOptions);
+        comboBox.setBounds(50, 50, 200, 10); // Set position and size
+        comboBox.setEditable(false);
+        comboBox.setSelectedItem(DEFAULT_SELECTED_MISSION);
+        comboBox.setName("selectDataLevelJComboBox");
+        comboBox.setToolTipText("Select data level for search");
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                // If the item is disabled, make it gray and non-selectable
+                if (index >= 0 && disabledItems[index]) {
+                    component.setEnabled(false);
+                    component.setForeground(Color.GRAY);
+                } else {
+                    component.setEnabled(true);
+                    component.setForeground(Color.BLACK);
+                }
+                return component;
+            }
+        });
+
+        // Add an ItemListener to prevent selecting disabled items
+        comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // If the item is disabled, reset the selection to the last valid item
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    int selectedIndex = comboBox.getSelectedIndex();
+                    if (disabledItems[selectedIndex]) {
+                        JOptionPane.showMessageDialog(null, "This item is disabled.");
+                        comboBox.setSelectedIndex(0); // Change to a valid selection (here, the first item)
+                    }
+                }
+            }
+        });
+
+        JLabel dataLevelSelectionLabel = new JLabel("Data Level:");
+
+        dataLevelSelectionPanel.add(dataLevelSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+        dataLevelSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
+
+        return dataLevelSelectionPanel;
     }
 }
