@@ -138,14 +138,20 @@ public class BathymetryOp extends Operator {
         final Band bathymetryBand = targetProduct.addBand(BATHYMETRY_BAND_NAME, ProductData.TYPE_FLOAT32);
         bathymetryBand.setNoDataValue(bathymetryReader.getMissingValue());
         bathymetryBand.setNoDataValueUsed(true);
+        bathymetryBand.setUnit("m");
+        bathymetryBand.setDescription("Bathymetry - Water Depth");
 
         final Band topographyBand = targetProduct.addBand(TOPOGRAPHY_BAND_NAME, ProductData.TYPE_FLOAT32);
         topographyBand.setNoDataValue(bathymetryReader.getMissingValue());
         topographyBand.setNoDataValueUsed(true);
+        topographyBand.setUnit("m");
+        topographyBand.setDescription("Topography - Terrain Height");
 
         final Band elevationBand = targetProduct.addBand(ELEVATION_BAND_NAME, ProductData.TYPE_FLOAT32);
         elevationBand.setNoDataValue(bathymetryReader.getMissingValue());
         elevationBand.setNoDataValueUsed(true);
+        elevationBand.setUnit("m");
+        elevationBand.setDescription("Elevation above Sea-Level");
 
         ProductUtils.copyGeoCoding(sourceProduct, targetProduct);
     }
@@ -278,23 +284,19 @@ public class BathymetryOp extends Operator {
                             int valueSurface = height - waterSurfaceHeight;
 
                             if (valueSurface > 0) {
-                                value = motherEarthBox.getValue(geoPos);
+                                value = height;
                             } else {
                                 value = bathymetryReader.getMissingValue();
                             }
                         } else if (targetBandName.equals(BATHYMETRY_BAND_NAME)) {
                           int  valueSurface = height - waterSurfaceHeight;
 
-                            if (valueSurface <= 0) {
-                                value = valueSurface;
+                            if (valueSurface <= 0 && valueSurface > -32000) {
+                                value = -valueSurface;
                             } else {
                                 value = bathymetryReader.getMissingValue();
                             }
 
-                            // convert  to positive if not NaN
-                            if (value > -32000) {
-                                value = -value;
-                            }
                         } else {
                             value = bathymetryReader.getMissingValue();
                         }

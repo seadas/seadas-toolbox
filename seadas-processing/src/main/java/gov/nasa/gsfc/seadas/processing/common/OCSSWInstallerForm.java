@@ -205,30 +205,30 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                 seadasToolboxVersion.getLatestOCSSWTagForInstalledRelease();
 
         TableLayout dirPanelTableLayout = new TableLayout(1);
-        dirPanelTableLayout.setTablePadding(0,0);
+        dirPanelTableLayout.setTablePadding(0, 0);
         dirPanelTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
         dirPanel = new JPanel();
 
         TableLayout tagPanelTableLayout = new TableLayout(2);
-        tagPanelTableLayout.setTablePadding(0,0);
+        tagPanelTableLayout.setTablePadding(0, 0);
         tagPanelTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
         tagPanel = new JPanel(tagPanelTableLayout);
 
         TableLayout configPanelTableLayout = new TableLayout(1);
-        configPanelTableLayout.setTablePadding(5,10);
+        configPanelTableLayout.setTablePadding(5, 10);
         configPanelTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
         configPanel = new JPanel(configPanelTableLayout);
         configPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
 
 
         TableLayout missionTableLayout = new TableLayout(5);
-        missionTableLayout.setTablePadding(35,10);
+        missionTableLayout.setTablePadding(35, 10);
 //        missionTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
         missionPanel = new JPanel(missionTableLayout);
         missionPanel.setBorder(BorderFactory.createTitledBorder("Missions"));
 
         TableLayout otherTableLayout = new TableLayout(5);
-        otherTableLayout.setTablePadding(35,10);
+        otherTableLayout.setTablePadding(35, 10);
 //        otherTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
         otherPanel = new JPanel(otherTableLayout);
         otherPanel.setBorder(BorderFactory.createTitledBorder("Other"));
@@ -306,35 +306,53 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                         tempPanel1 = (JPanel) c;
 
 
-                        if (SeadasToolboxVersion.isLatestSeadasToolboxVersion()) {
-                            if (latestOCSSWTagForInstalledRelease == null) {
-                                ((JLabel) tempPanel1.getComponent(0)).setText("OCSSW Tag:");
-                                ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.BLACK);
-                            } else if (latestOCSSWTagForInstalledRelease.equals(selectedOcsswTagString)) {
-                                ((JLabel) tempPanel1.getComponent(0)).setText("OCSSW Tag: (latest tag installed)");
-                                ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.BLACK);
-                            } else {
-                                ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> latest tag is " + latestOCSSWTagForInstalledRelease + "</html>");
-                                ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.RED);
-                            }
+                        if (latestOCSSWTagForInstalledRelease == null || selectedOcsswTagString == null) {
+                            ((JLabel) tempPanel1.getComponent(0)).setText("OCSSW Tag:");
+                            ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.BLACK);
                         } else {
-                            if (latestOCSSWTagForInstalledRelease == null) {
-                                ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: <br>Newer version of SeaDAS Toolbox available</html>");
-                            } else if (latestOCSSWTagForInstalledRelease.equals(selectedOcsswTagString)) {
-                                if (selectedOcsswTagString.equals(seadasToolboxVersion.getLatestOCSSWTagForLatestRelease())) {
-                                    ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag:  <br>Newer version of SeaDAS Toolbox available</html>");
-                                } else {
-                                    ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> Not the latest tag<br>Newer version of SeaDAS Toolbox available</html>");
+                            boolean newerVersionExists = false;
+                            if (selectedOcsswTagString.startsWith("V") && latestOCSSWTagForInstalledRelease.startsWith("V")) {
+                                String[] selected = selectedOcsswTagString.split("\\.");
+                                String[] latest = latestOCSSWTagForInstalledRelease.split("\\.");
+
+                                if (selected.length == 2 && latest.length == 2) {
+                                    String selectedYear = selected[0].substring(1);
+                                    String latestYear = latest[0].substring(1);
+                                    String selectedVersionOfYear = selected[1];
+                                    String latestVersionOfYear = latest[1];
+
+                                    try {
+                                        if (Integer.valueOf(latestYear) > Integer.valueOf(selectedYear)) {
+                                            newerVersionExists = true;
+                                        } else if (Integer.valueOf(latestYear) == Integer.valueOf(selectedYear)) {
+                                            if (Integer.valueOf(latestVersionOfYear) > Integer.valueOf(selectedVersionOfYear)) {
+                                                newerVersionExists = true;
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                    }
                                 }
+
+
                             } else {
-                                if (selectedOcsswTagString.equals(seadasToolboxVersion.getLatestOCSSWTagForLatestRelease())) {
-                                    ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> May not be applicable tag to installed version<br>Newer version of SeaDAS Toolbox available</html>");
-                                } else {
-                                    ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> May not be latest/applicable tag<br>Newer version of SeaDAS Toolbox available</html>");
+                                if (!latestOCSSWTagForInstalledRelease.equals(selectedOcsswTagString)) {
+                                    newerVersionExists = true;
                                 }
                             }
 
-                            ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.RED);
+                            if (newerVersionExists) {
+                                if (SeadasToolboxVersion.isLatestSeadasToolboxVersion()) {
+                                    ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> Newer tag available:  " + latestOCSSWTagForInstalledRelease + "</html>");
+                                } else {
+                                    ((JLabel) tempPanel1.getComponent(0)).setText("<html>OCSSW Tag: WARNING!! <br> Newer tag and newer SeaDAS version available<br></html>");
+                                }
+
+                                ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.RED);
+                            } else {
+                                ((JLabel) tempPanel1.getComponent(0)).setText("OCSSW Tag:");
+                                ((JLabel) tempPanel1.getComponent(0)).setForeground(Color.BLACK);
+                            }
+
                         }
 
 

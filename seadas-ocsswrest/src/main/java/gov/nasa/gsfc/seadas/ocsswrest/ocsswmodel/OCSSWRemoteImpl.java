@@ -131,7 +131,8 @@ public class OCSSWRemoteImpl {
 
     public String executeGetSystemInfoProgram() {
 
-        String[] command = {"/bin/bash", getOcsswRunnerScriptPath(), " --ocsswroot ", getOcsswRoot(), OCSSW_SEADAS_INFO_PROGRAM_NAME};
+//        String[] command = {"/bin/bash", getOcsswRunnerScriptPath(), " --ocsswroot ", getOcsswRoot(), OCSSW_SEADAS_INFO_PROGRAM_NAME};
+        String[] command = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), getOcsswRunnerScriptPath(), " --ocsswroot ", getOcsswRoot(), OCSSW_SEADAS_INFO_PROGRAM_NAME};
         String currentInfoLine = "";
         String DASHES = "-----------------------------------------------------------";
         String INDENT = "  ";

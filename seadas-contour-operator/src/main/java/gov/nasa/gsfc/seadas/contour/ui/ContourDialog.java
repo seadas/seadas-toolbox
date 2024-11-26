@@ -81,25 +81,6 @@ public class ContourDialog extends JDialog {
 
         helpButton = getHelpButton();
 
-
-        // todo This is old block of broken code which can probably be deleted once well tested
-//        ProductNode productNode = SnapApp.getDefault().getSelectedProductNode(SnapApp.SelectionSourceHint.VIEW);
-//
-//        if (productNode != null && activeBands.contains(productNode.getName())) {
-//            selectedUnfilteredBand = product.getBand(productNode.getName());
-//            //selectedBand = product.getBand(VisatApp.getApp().getSelectedProductNode().getName());
-//            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
-//            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
-//        } else {
-//            selectedUnfilteredBand = product.getBand(activeBands.get(0));
-//            //selectedBand = product.getBand(activeBands.get(0));  //todo - match this with the selected productNode
-//            selectedBand = getDefaultFilterBand(selectedUnfilteredBand);
-//            raster = product.getRasterDataNode(selectedUnfilteredBand.getName());
-//
-//        }
-
-
-
         // todo This is new block which fixes above commented out broken code 
 
         ProductSceneView productSceneView = SnapApp.getDefault().getSelectedProductSceneView();
@@ -213,26 +194,6 @@ public class ContourDialog extends JDialog {
     @Override
     public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(name, listener);
-    }
-
-
-    public SwingPropertyChangeSupport getPropertyChangeSupport() {
-        return propertyChangeSupport;
-    }
-
-    public void appendPropertyChangeSupport(SwingPropertyChangeSupport propertyChangeSupport) {
-        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-        for (int i = 0; i < pr.length; i++) {
-            this.propertyChangeSupport.addPropertyChangeListener(pr[i]);
-        }
-    }
-
-    public void clearPropertyChangeSupport() {
-        PropertyChangeListener[] pr = propertyChangeSupport.getPropertyChangeListeners();
-        for (int i = 0; i < pr.length; i++) {
-            this.propertyChangeSupport.removePropertyChangeListener(pr[i]);
-        }
-
     }
 
     protected AbstractButton getHelpButton() {

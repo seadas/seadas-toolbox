@@ -1,11 +1,11 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.action;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySearchServiceDiaglog;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 import org.openide.util.*;
@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 )
 
 @ActionReference(
-        path = "Menu/EarthData-Cloud-Toolbox/Harmony Services",
+        path = "Menu/Earthdata-Cloud/Harmony Services",
         position = 100
 )
 
@@ -62,8 +62,8 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
     @Override
     public void actionPerformed(ActionEvent event) {
         SnapApp snapApp = SnapApp.getDefault();
+        //product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
-
         SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
         LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
@@ -74,10 +74,16 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
         putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
+
+        HarmonySearchServiceDiaglog harmonySearchServiceDiaglog = new HarmonySearchServiceDiaglog();
+        harmonySearchServiceDiaglog.setVisible(true);
+        harmonySearchServiceDiaglog.dispose();
+        updateEnabledState();
+
     }
 
     protected void updateEnabledState() {
-
+        super.setEnabled(true);
     }
 
     @Override

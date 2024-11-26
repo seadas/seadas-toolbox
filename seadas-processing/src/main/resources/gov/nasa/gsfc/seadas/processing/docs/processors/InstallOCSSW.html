@@ -348,17 +348,17 @@ usage: install_ocssw [-h] [--version] [--list_tags] [--installed_tag]
                      [-i INSTALL_DIR] [-b BASE_URL] [-l LOCAL_DIR]
                      [-s SAVE_DIR] [-c] [--wget] [-a ARCH] [-v] [--bin]
                      [--opt] [--src] [--luts] [--viirs_l1_bin] [--root]
-                     [--opt_src] [--afrt] [--aquaverse] [--avhrr] [--aviris]
-                     [--common] [--czcs] [--eval] [--goci] [--hawkeye]
-                     [--hico] [--l5tm] [--l7etmp] [--meris] [--misr]
-                     [--modisa] [--modist] [--mos] [--msis2a] [--msis2b]
-                     [--oci] [--ocia] [--ocip] [--ocis] [--ocm1] [--ocm2]
-                     [--ocrvc] [--octs] [--olcis3a] [--olcis3b] [--olil8]
-                     [--olil9] [--osmi] [--prism] [--sabiamar] [--seawifs]
-                     [--sgli] [--spexone_remotap] [--viirsdem] [--viirsj1]
-                     [--viirsj2] [--viirsn] [--wv3] [--aerosol] [--cloud]
-                     [--benchmark] [--viirs_l1_benchmark] [--direct_broadcast]
-                     [--seadas] [--odps] [--viirs_l1] [--all]
+                     [--python] [--opt_src] [--afrt] [--aquaverse] [--avhrr]
+                     [--aviris] [--common] [--czcs] [--eval] [--goci]
+                     [--harp2] [--hawkeye] [--hico] [--l5tm] [--l7etmp]
+                     [--meris] [--misr] [--modisa] [--modist] [--msis2a]
+                     [--msis2b] [--oci] [--ocm1] [--ocm2] [--ocrvc] [--octs]
+                     [--olcis3a] [--olcis3b] [--olil8] [--olil9] [--prism]
+                     [--sabiamar] [--seawifs] [--sgli] [--spexone]
+                     [--viirsdem] [--viirsj1] [--viirsj2] [--viirsn] [--wv3]
+                     [--aerosol] [--cloud] [--telemetery] [--benchmark]
+                     [--viirs_l1_benchmark] [--direct_broadcast] [--seadas]
+                     [--odps] [--viirs_l1] [--all]
 
 Install OCSSW bundles
 
@@ -403,7 +403,8 @@ options:
   -c, --clean           delete extra files in the destination directory
   --wget                use wget for file download
   -a ARCH, --arch ARCH  use this architecture instead of guessing the local
-                        machine (linux_64 macosx_intel odps)
+                        machine
+                        (linux_64,linux_hpc,macosx_intel,macosx_arm64,odps)
   -v, --verbose         increase output verbosity
   --bin                 install binary executables
   --opt                 install 3rd party programs and libs
@@ -411,6 +412,7 @@ options:
   --luts                install LUT files
   --viirs_l1_bin        install VIIRS binary executables subset
   --root                install random files in the root dir files
+  --python              install OCSSW required python modules files
   --opt_src             install 3rd party library sources files
   --afrt                install Ahmad-Fraser RT data files
   --aquaverse           install Algorithm based on Mixture Density Networks
@@ -421,6 +423,7 @@ options:
   --czcs                install CZCS files
   --eval                install evaluation files
   --goci                install GOCI files
+  --harp2               install HARP 2 Polarimeter files
   --hawkeye             install Hawkeye files
   --hico                install HICO files
   --l5tm                install l5tm files
@@ -429,13 +432,9 @@ options:
   --misr                install MISR files
   --modisa              install MODIS AQUA files
   --modist              install MODIS TERRA files
-  --mos                 install MOS files
   --msis2a              install MSI Sentinel 2A files
   --msis2b              install MSI Sentinel 2B files
   --oci                 install PACE OCI files
-  --ocia                install PACE OCI AVIRIS files
-  --ocip                install PACE OCI PRISM files
-  --ocis                install PACE OCI Simulated data files
   --ocm1                install OCM1 files
   --ocm2                install OCM2 files
   --ocrvc               install OC Virtual Constellation files
@@ -444,12 +443,11 @@ options:
   --olcis3b             install OLCI Sentinel 3B files
   --olil8               install OLI Landsat 8 files
   --olil9               install OLI Landsat 9 files
-  --osmi                install OSMI files
   --prism               install PRISM files
   --sabiamar            install Sabiamar files
   --seawifs             install SeaWiFS files
   --sgli                install SGLI files
-  --spexone_remotap     install SPEX One RemoTAP files
+  --spexone             install SPEX One Polarimeter files
   --viirsdem            install VIIRS Digital Elevation files
   --viirsj1             install VIIRS JPSS1 files
   --viirsj2             install VIIRS JPSS2 files
@@ -457,6 +455,7 @@ options:
   --wv3                 install WV3 files
   --aerosol             install aerosol processing with dtdb files
   --cloud               install cloud properties processing files
+  --telemetery          install telemetry packet descriptions files
   --benchmark           install benchmark MOSIS Aqua, level0 -&gt; level3 Mapped
                         files
   --viirs_l1_benchmark  install VIIRS benchmark data files

@@ -416,66 +416,33 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
-        if (ocsswInfo.getOcsswLocation() == OCSSW_LOCATION_LOCAL) {
-            currentInfoLine = "OCSSWROOT (Java Env): " + ocsswRootEnv + "\n";
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            currentInfoLine = "OCSSWROOT (Environment Variable): " + ocsswRootEnv + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-
-            currentInfoLine = "";   // todo temporary nulling this as later lines need editing
-
-            try {
-                ProcessBuilder processBuilder = new ProcessBuilder(new String[]{"/bin/bash", "-c", "-l", "which python3"});
-                Process process = processBuilder.start();
-
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
-                String line;
-                Integer numOfLines = 0;
-                currentInfoLine = "Python3 Directory: ";
-                while ((line = reader.readLine()) != null) {
-                    currentInfoLine += line + "\n";
-                    if (line.trim().length() > 1) {
-                        numOfLines++;
-                    }
-                }
-                if (numOfLines == 0) {
-                    currentInfoLine += "\n";
-                }
-                sysInfoText += currentInfoLine;
-                appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-                if (numOfLines > 1) {
-                    currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
-                    sysInfoText += currentInfoLine;
-                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                }
-
-                reader.close();
-
-                process.destroy();
-
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
-
-                if (process.exitValue() != 0) {
-                    System.out.println("  WARNING!: Non zero exit code returned for 'which python3' ");
-                }
-
-            } catch (IOException e) {
-                String warning = "  WARNING!! Could not retrieve system parameters because 'which python3' failed";
-                currentInfoLine = warning + "\n";
-                sysInfoText += currentInfoLine;
-
-                currentInfoLine = e.toString() + "\n";
-                sysInfoText += currentInfoLine;
-
-                e.printStackTrace();
-            }
         }
+
+        String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
+
+        String[] commandArray = new String[]{bash, "-l", "-c", "python3 -VV"};
+        runCommandArray(sysInfoTextpane, "Python3 Version: " , commandArray, "Python");
+
+        commandArray = new String[]{bash, "-l", "-c", "which python3"};
+        runCommandArray(sysInfoTextpane, "Python3 Directory: " , commandArray);
+//
+//        commandArray = new String[]{bash, "-l", "-c", "type -a python3"};
+//        runCommandArray(sysInfoTextpane, "Python3 Alias Detected: " , commandArray, "alias", false);
+
+        commandArray = new String[]{bash, "-l", "-c", " python3 -m pip list"};
+        runCommandArray(sysInfoTextpane, "Python3 Requests Installed: " , commandArray, "requests ", false);
+
+
+
+        commandArray = new String[]{bash, "-l", "-c", " cat ~" + System.getProperty("file.separator") + ".netrc"};
+        runCommandArray(sysInfoTextpane, "Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
+
+
+
 
 
         currentInfoLine = "\n\n" + DASHES + "\n";
@@ -515,6 +482,13 @@ public class GetSysInfoGUI {
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
+
+
+        currentInfoLine = "OCSSW Location: " + ocsswLocation + "\n";
+        sysInfoText += currentInfoLine;
+        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+
         if (ocsswDebug) {
             final Preferences preferences = Config.instance("seadas").load().preferences();
             String ocsswRootSeadasProperties = preferences.get(SEADAS_OCSSW_ROOT_PROPERTY, null);
@@ -524,58 +498,118 @@ public class GetSysInfoGUI {
         }
 
         if ("docker".equals(ocsswLocation)) {
-            currentInfoLine = "OCSSW Docker Root Directory: " + ocsswRootDocker + "\n";
+            currentInfoLine = "[OCSSW-Docker] Root Directory: " + ocsswRootDocker + "\n";
         } else {
-            currentInfoLine = "OCSSW Root Directory: " + ocsswRootOcsswInfo + "\n";
+            currentInfoLine = "[OCSSW-Local] Root Directory: " + ocsswRootOcsswInfo + "\n";
         }
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
 
+
+
+        //need to consider "docker" condition
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+//            currentInfoLine = "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
+//            sysInfoText += currentInfoLine;
+//            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+            if ((ocsswRootOcsswInfo != null) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv) &&
+                    "local".equals(ocsswLocation)) {
+                currentInfoLine = "[OCSSW-Local] WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
+                        "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+        }
+
+
+
+
+
         if (ocsswRootOcsswInfo != null) {
-            if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
+            if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+                if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
+                    currentInfoLine = "[OCSSW-Local] WARNING!! OCSSW Root Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
+                    sysInfoText += currentInfoLine;
+                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                }
+
+            } else {
 //                if (!Files.exists(Paths.get(ocsswRootDocker))) {
 //                    currentInfoLine = "WARNING!! Directory '" + ocsswRootDocker + "' does not exist" + "\n";
 //                    sysInfoText += currentInfoLine;
 //                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
 //                }
-            } else {
-                if (!Files.exists(Paths.get(ocsswRootOcsswInfo))) {
-                    currentInfoLine = "WARNING!! Directory '" + ocsswRootOcsswInfo + "' does not exist" + "\n";
-                    sysInfoText += currentInfoLine;
-                    appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                }
             }
         }
 
-        currentInfoLine = "OCSSW Docker Log Directory: " + ocsswLogDir + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-        if ((ocsswLogDir != null) && !Files.exists(Paths.get(ocsswLogDir))) {
-            currentInfoLine = "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
-            sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+
+
+
+
+
+
+
+
+
+
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -VV"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Version: " , commandArray, "Python");
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " which python3"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Directory: " , commandArray);
+//
+//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " type -a python3"};
+//            runCommandArray(sysInfoTextpane, "OCSSW-Local: Python3 Alias Detected: " , commandArray, "alias", false);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Requests Installed: " , commandArray, "requests", false);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
         }
 
 
-        currentInfoLine = "OCSSW Location: " + ocsswLocation + "\n";
-        sysInfoText += currentInfoLine;
-        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+        //        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+//            commandArray = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), "which", "python3"};
+//            runCommandArray(sysInfoTextpane, "Python3 Directory (OCSSW - Local): " , commandArray, "python");
+//        }
 
 
-        //need to consider "docker" condition
-        if (ocsswInfo.getOcsswLocation() == OCSSW_LOCATION_LOCAL) {
-            currentInfoLine = "Environment {$OCSSWROOT} (external): " + ocsswRootEnv + "\n";
+
+        // todo add Docker messages
+//        if (OCSSW_LOCATION_DOCKER.equals(ocsswInfo.getOcsswLocation())) {
+//            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + ocsswRootDocker + " which python3"};
+//            runCommandArray(sysInfoTextpane, "Python3 Directory: (OCSSW - Local - Alt Docker)" , commandArray, "python");
+//        }
+
+
+
+        if (OCSSW_LOCATION_DOCKER.equals(ocsswInfo.getOcsswLocation())) {
+            currentInfoLine = "[OCSSW-Docker] Log Directory: " + ocsswLogDir + "\n";
             sysInfoText += currentInfoLine;
             appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
         }
 
-        if ((ocsswRootOcsswInfo != null) && ocsswRootEnv != null && !ocsswRootOcsswInfo.equals(ocsswRootEnv) &&
-                "local".equals(ocsswLocation)) {
-            currentInfoLine = "  WARNING!: An environment variable for OCSSWROOT exists which does not match the GUI configuration. " +
-                    "The GUI will use '" + ocsswRootOcsswInfo + "' as the ocssw root inside the GUI." + "\n";
+
+        if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            currentInfoLine = "[OCSSW-Local] Log Directory: " + ocsswLogDir + "\n";
             sysInfoText += currentInfoLine;
-            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+            if ((ocsswLogDir != null) && !Files.exists(Paths.get(ocsswLogDir))) {
+                currentInfoLine = "[OCSSW-Local] WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+        } else {
+            if ((ocsswLogDir != null) && !Files.exists(Paths.get(ocsswLogDir))) {
+                currentInfoLine = "WARNING!! Directory '" + ocsswLogDir + "' does not exist" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
         }
 
 
@@ -593,7 +627,18 @@ public class GetSysInfoGUI {
         ocsswRunnerScriptPath = ocsswScriptsDirPath + System.getProperty("file.separator") + OCSSW_RUNNER_SCRIPT;
         ocsswBinDirPath = ocsswRootOcsswInfo + System.getProperty("file.separator") + OCSSW_BIN_DIR_SUFFIX;
 
-        String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
+//        String[] command = {"/bin/bash", ocsswRunnerScriptPath, " --ocsswroot ", ocsswRootOcsswInfo, OCSSW_SEADAS_INFO_PROGRAM_NAME};
+        String[] command = null;
+        if (OCSSWInfo.getInstance() != null && OCSSWInfo.getInstance().getOcsswRunnerScriptPath() != null) {
+            File ocsswRunner = new File(OCSSWInfo.getInstance().getOcsswRunnerScriptPath());
+            if (ocsswRunner.exists()) {
+                String install_ocssw = OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME; //   /bin/bash
+
+                command = new String[]{OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), " --ocsswroot ", OCSSWInfo.getInstance().getOcsswRoot(), OCSSW_SEADAS_INFO_PROGRAM_NAME};
+            }
+        }
+
+
         ocsswSeadasInfoPath = ocsswBinDirPath + System.getProperty("file.separator") + OCSSW_SEADAS_INFO_PROGRAM_NAME;
 
         if (ocsswInfo.getOcsswLocation() != OCSSW_LOCATION_LOCAL) {
@@ -631,8 +676,7 @@ public class GetSysInfoGUI {
 
                     printGeneralSystemInfo(ocsswDebug);
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                }
-            else if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath)) && "local".equals(ocsswLocation)) {
+                } else if (!Files.isExecutable(Paths.get(ocsswSeadasInfoPath)) && "local".equals(ocsswLocation)) {
                     currentInfoLine = "  WARNING! Cannot find 'seadas_info' in the OCSSW bin directory" + "\n\n";
                     sysInfoText += currentInfoLine;
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
@@ -641,50 +685,51 @@ public class GetSysInfoGUI {
                     appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
                 } else {
                     currentInfoLine = "";
-                    try {
+                    if (command != null) {
+                        try {
+                            ProcessBuilder processBuilder = new ProcessBuilder(command);
+                            Process process = processBuilder.start();
 
-                        ProcessBuilder processBuilder = new ProcessBuilder(command);
-                        Process process = processBuilder.start();
+                            BufferedReader reader = new BufferedReader(
+                                    new InputStreamReader(process.getInputStream()));
+                            String line;
 
-                        BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(process.getInputStream()));
-                        String line;
-
-                        while ((line = reader.readLine()) != null) {
-                            if (!line.contains("NASA Science Processing (OCSSW)")) {
-                                if (line.contains("General System and Software")) {
-                                    currentInfoLine += "\n" + DASHES + "\n";
-                                    currentInfoLine += INDENT + "General System and Software: " + "\n";
-                                    currentInfoLine += DASHES + "\n";
-                                } else {
-                                    currentInfoLine += line + "\n";
+                            while ((line = reader.readLine()) != null) {
+                                if (!line.contains("NASA Science Processing (OCSSW)")) {
+                                    if (line.contains("General System and Software")) {
+                                        currentInfoLine += "\n" + DASHES + "\n";
+                                        currentInfoLine += INDENT + "General System and Software: " + "\n";
+                                        currentInfoLine += DASHES + "\n";
+                                    } else {
+                                        currentInfoLine += line + "\n";
+                                    }
                                 }
                             }
+
+                            sysInfoText += currentInfoLine;
+                            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+                            reader.close();
+                            process.destroy();
+
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                            }
+
+                            if (process.exitValue() != 0) {
+                                System.out.println("  WARNING!: Non zero exit code returned for \'" + command + "\' ");
+                            }
+
+                        } catch (IOException e) {
+                            String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command.toString() + "\' failed";
+                            currentInfoLine = warning + "\n";
+                            currentInfoLine += e.toString() + "\n";
+                            sysInfoText += currentInfoLine;
+                            appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+                            e.printStackTrace();
                         }
-
-                        sysInfoText += currentInfoLine;
-                        appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
-
-                        reader.close();
-                        process.destroy();
-
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        }
-
-                        if (process.exitValue() != 0) {
-                            System.out.println("  WARNING!: Non zero exit code returned for \'" + command + "\' ");
-                        }
-
-                    } catch (IOException e) {
-                        String warning = "  WARNING!! Could not retrieve system parameters because command \'" + command.toString() + "\' failed";
-                        currentInfoLine = warning + "\n";
-                        currentInfoLine += e.toString() + "\n";
-                        sysInfoText += currentInfoLine;
-                        appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
-                        e.printStackTrace();
                     }
                 }
             }
@@ -770,6 +815,93 @@ public class GetSysInfoGUI {
         return selectedFile;
     }
 
+    private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray) {
+        runCommandArray(sysInfoTextpane, label, commandArray, null,  true);
+    }
+
+    private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray, String grepString) {
+        runCommandArray(sysInfoTextpane, label, commandArray, grepString,  true);
+    }
+
+    private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray, String grepString, boolean showResults) {
+        currentInfoLine = "";   // todo temporary nulling this as later lines need editing
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+            Integer numOfLines = 0;
+            currentInfoLine = label;
+
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                if (grepString == null || (grepString != null && grepString.length() > 0 && line.contains(grepString))) {
+                    if (showResults) {
+                        currentInfoLine += line + "\n";
+                        if (line.trim().length() > 1) {
+                            numOfLines++;
+                        }
+                    } else {
+                        found = true;
+                    }
+                }
+
+            }
+
+            Color color = Color.BLACK;
+            if (!showResults) {
+                if (found) {
+                    currentInfoLine += "YES" + "\n";
+                } else {
+                    currentInfoLine += "NO" + "\n";
+                    color = Color.RED;
+                }
+                numOfLines++;
+            }
+
+
+            if (numOfLines == 0) {
+                currentInfoLine += "\n";
+            }
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, color);
+
+            if (numOfLines > 1) {
+                currentInfoLine = "NOTE: the extraneous output lines displayed were detected in your login configuration output" + "\n";
+                sysInfoText += currentInfoLine;
+                appendToPane(sysInfoTextpane, currentInfoLine, Color.RED);
+            }
+
+            reader.close();
+
+            process.destroy();
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (process.exitValue() != 0) {
+                System.out.println("  WARNING!: Non zero exit code returned for " + commandArray.toString());
+            }
+
+        } catch (IOException e) {
+            String warning = "  WARNING!! Could not retrieve system parameters because " + commandArray.toString() + " failed";
+            currentInfoLine = warning + "\n";
+            sysInfoText += currentInfoLine;
+
+            currentInfoLine = e.toString() + "\n";
+            sysInfoText += currentInfoLine;
+
+            e.printStackTrace();
+        }
+
+    }
 
     public static GridBagConstraints createConstraints() {
         GridBagConstraints gbc = new GridBagConstraints();

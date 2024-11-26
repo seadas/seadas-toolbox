@@ -238,7 +238,7 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l1bgen_generic 9.6.0-V2023.1 (Apr  4 2023 11:27:50)
+l1bgen_generic 9.8.0-V2024.8 (Nov 14 2024 12:14:31)
 Usage: l1bgen_generic argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
@@ -270,6 +270,7 @@ The list of valid keywords follows:
         hdf4:    output a HDF version 4 file
    fqfile (ifile) (default=$OCDATAROOT/common/morel_fq.nc) = f/Q correction file
    parfile (ifile) = par climatology file for NPP calculation
+   georegion_file (string) = geo region mask file with lat,lon,georegion 1=process pixel, 0=do not
    calfile (ifile) = system calibration file
    xcalfile (ifile) = cross-calibration file
    sl_pixl (int) (default=-1) = SeaWiFS only, number of LAC pixels for
@@ -282,7 +283,7 @@ The list of valid keywords follows:
    epixl (int) (default=-1) = end pixel number (-1=the last pixel)
    sline (int) (default=1) = start line number
    eline (int) (default=-1) = end line number (-1=the last line)
-l1bgen_generic 9.6.0-V2023.1 (Apr  4 2023 11:27:50)
+l1bgen_generic 9.8.0-V2024.8 (Nov 14 2024 12:14:31)
 Usage: l1bgen_generic argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
@@ -314,6 +315,7 @@ The list of valid keywords follows:
         hdf4:    output a HDF version 4 file
    fqfile (ifile) (default=$OCDATAROOT/common/morel_fq.nc) = f/Q correction file
    parfile (ifile) = par climatology file for NPP calculation
+   georegion_file (string) = geo region mask file with lat,lon,georegion 1=process pixel, 0=do not
    calfile (ifile) = system calibration file
    xcalfile (ifile) = cross-calibration file
    sl_pixl (int) (default=-1) = SeaWiFS only, number of LAC pixels for

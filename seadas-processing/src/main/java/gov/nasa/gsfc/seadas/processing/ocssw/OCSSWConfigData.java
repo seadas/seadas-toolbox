@@ -35,7 +35,7 @@ public class OCSSWConfigData {
 
     final static String SEADAS_LOG_DIR_PROPERTY = "seadas.log.dir";
     public final static String SEADAS_OCSSW_TAG_PROPERTY = "seadas.ocssw.tag";
-    final static String SEADAS_OCSSW_ROOT_PROPERTY = "seadas.ocssw.root";
+    public final static String SEADAS_OCSSW_ROOT_PROPERTY = "seadas.ocssw.root";
     final static String SEADAS_OCSSW_ROOT_ENV = "OCSSWROOT";
     final static String SEADAS_OCSSW_LOCATION_PROPERTY = "seadas.ocssw.location";
     final static String SEADAS_OCSSW_PORT_PROPERTY = "seadas.ocssw.port";

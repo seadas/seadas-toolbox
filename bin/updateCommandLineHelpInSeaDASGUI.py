@@ -13,7 +13,7 @@ if args.directory is None:
     parser.print_help()
     sys.exit(1)
 directory = args.directory
-# directory = "/Users/bingyang/snap-dev/seadas-toolbox/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/docs/processors"
+# directory = "/Users/byang8/snap-11/seadas-toolbox/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/docs/processors"
 for filename in os.listdir(directory):
     print(filename)
     if (re.search('ProcessExtractors', filename) == None):
