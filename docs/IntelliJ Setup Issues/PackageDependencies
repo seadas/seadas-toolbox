@@ -1,0 +1,6 @@
+Sometimes package dependencies are lost and existing classes are not recognized.
+
+removed snap-rcp module, then added it back in "Project Structure" ->"Modules"
+
+The maven index might be messed up. The solution is to identify the missing module, remove it from the project first,
+then re-import it.
