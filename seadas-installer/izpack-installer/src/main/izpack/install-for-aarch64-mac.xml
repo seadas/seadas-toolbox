@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<installation xmlns:izpack="http://izpack.org/schema/installation"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              version="5.0"
-              xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
-    >
+<izpack:installation version="5.0"
+                     xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.1.0</appversion>
@@ -18,6 +17,18 @@
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
+        <!--        <laf name="looks">-->
+        <!--            <os family="unix"/>-->
+        <!--            <param name="variant" value="mist-aqua"/>-->
+        <!--        </laf>-->
+        <!--        <laf name="looks">-->
+        <!--            <os family="windows"/>-->
+        <!--            <param name="variant" value="extwin"/>-->
+        <!--        </laf>-->
+        <!--        <laf name="substance">-->
+        <!--            <os family="mac" />-->
+        <!--            <param name="variant" value="mist-aqua" />-->
+        <!--        </laf>-->
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
@@ -50,8 +61,8 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
-        <res id="FinishPanel.finish" src="about/finish.html"/>
+        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
+        <res id="finish" src="about/finish.html"/>
     </resources>
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
@@ -74,7 +85,6 @@
         <variable name="installer:maxHeapSize" value="8G"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
-
         <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
         <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
@@ -105,6 +115,7 @@
         >
     </conditions>
 
+
     <panels>
 
         <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
@@ -119,7 +130,7 @@
         <!--    </panel>-->
 
 
-        <panel classname="InstallationTypePanel"/>
+        <!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
@@ -127,12 +138,12 @@
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <!--        <panel classname="ProcessPanel" id="processPaneSpec.xml" />-->
+        <panel classname="ProcessPanel" id="processPanelSpec.xml" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
     </dynamicvariables>
 
     <packs>
@@ -175,6 +186,8 @@
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <os family="mac"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="archiveDotSeaDAS.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="*.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="seadas"/>
                 <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
@@ -195,7 +208,6 @@
             <description>JDK11 JRE</description>
             <file src="packs/jre/OpenJDK11U-jre_aarch64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
-            <!--            <file src="packs/jre/OpenJDK11U-jdk_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}" unpack="true" override="true"></file>-->
             <executable type="bin" stage="never" failure="warn" keep="true">
                 <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*"/>
                 <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin">
@@ -217,4 +229,4 @@
         </native>
     </natives>
 
-</installation>
+</izpack:installation>
