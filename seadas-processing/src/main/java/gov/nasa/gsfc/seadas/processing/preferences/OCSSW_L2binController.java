@@ -80,7 +80,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_KEY = PROPERTY_L2BIN_ROOT_KEY + ".area_weighting";
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_LABEL = "area_weighting";
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_TOOLTIP = "Area Weighting";
-    public static final String PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT = "0";
+    public static final String PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse";
     public static final String PROPERTY_L2BIN_FLAGUSE_LABEL = "flaguse";

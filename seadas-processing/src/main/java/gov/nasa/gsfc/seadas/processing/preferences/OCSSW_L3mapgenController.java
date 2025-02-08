@@ -50,6 +50,23 @@ import java.awt.*;
 public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     Property restoreDefaults;
+    Property projection;
+    Property north;
+    Property south;
+    Property west;
+    Property east;
+    
+    Property fav1SetToDefault;
+    Property fav1Projection;
+    Property fav1NSWE;
+
+    Property fav2SetToDefault;
+    Property fav2Projection;
+    Property fav2NSWE;
+
+    Property fav3SetToDefault;
+    Property fav3Projection;
+    Property fav3NSWE;
 
     boolean propertyValueChangeEventsEnabled = true;
 
@@ -97,7 +114,78 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_EAST_LABEL = "east";
     public static final String PROPERTY_L3MAPGEN_EAST_TOOLTIP = "Easternmost boundary";
     public static final String PROPERTY_L3MAPGEN_EAST_DEFAULT = "";
-    
+
+    public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + "FAV.projections.section";
+    public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_LABEL = "Favorite Projections";
+    public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_TOOLTIP = "Set projection as default";
+
+    private static final String INDENTATION_SPACES = "        ";
+
+    public static final String PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV1.set.as.default";
+    public static final String PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_LABEL = "Set as Default";
+    public static final String PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_TOOLTIP = "Set projection and/or bounds as default";
+    public static final boolean PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_DEFAULT = false;
+
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV1.projection";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_LABEL = INDENTATION_SPACES + "Projection";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_TOOLTIP = "Custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DEFAULT = "+proj=laea +lon_0=152.0 +lat_0=-22.0";
+
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + "FAV1.projection.description";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_DEFAULT = "Great Barrier Reef - Southern (Lambert Equal Area)";
+
+    public static final String PROPERTY_L3MAPGEN_FAV1_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV1.nswe.bounds";
+    public static final String PROPERTY_L3MAPGEN_FAV1_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L3MAPGEN_FAV1_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L3MAPGEN_FAV1_NSWE_DEFAULT = "45,23,34,35";
+
+
+
+    public static final String PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV2.set.as.default";
+    public static final String PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_LABEL = "Set as Default";
+    public static final String PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_TOOLTIP = "Set projection and/or bounds as default";
+    public static final boolean PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_DEFAULT = false;
+
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV2.projection";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_LABEL = INDENTATION_SPACES + "Projection";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_TOOLTIP = "Custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DEFAULT = "+proj=laea +lon_0=-76.1 +lat_0=37.8";
+
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + "FAV2.projection.description";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_DEFAULT = "Chesapeake Bay (Lambert Equal Area)";
+
+    public static final String PROPERTY_L3MAPGEN_FAV2_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV2.nswe.bounds";
+    public static final String PROPERTY_L3MAPGEN_FAV2_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L3MAPGEN_FAV2_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L3MAPGEN_FAV2_NSWE_DEFAULT = "45,23,34,35";
+
+
+
+    public static final String PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV3.set.as.default";
+    public static final String PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_LABEL = "Set as Default";
+    public static final String PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_TOOLTIP = "Set projection and/or bounds as default";
+    public static final boolean PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_DEFAULT = false;
+
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV3.projection";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_LABEL = INDENTATION_SPACES + "Projection";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_TOOLTIP = "Custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DEFAULT = "";
+
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + "FAV3.projection.description";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_DEFAULT = "";
+
+    public static final String PROPERTY_L3MAPGEN_FAV3_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV3.nswe.bounds";
+    public static final String PROPERTY_L3MAPGEN_FAV3_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L3MAPGEN_FAV3_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L3MAPGEN_FAV3_NSWE_DEFAULT = "";
+
+
 
 
 
@@ -136,15 +224,33 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         //
         
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_KEY, PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_PROJECTION_KEY, PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
+        projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_PROJECTION_KEY, PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_RESOLUTION_KEY, PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_INTERP_KEY, PROPERTY_L3MAPGEN_INTERP_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_NORTH_KEY, PROPERTY_L3MAPGEN_NORTH_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_SOUTH_KEY, PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_WEST_KEY, PROPERTY_L3MAPGEN_WEST_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_EAST_KEY, PROPERTY_L3MAPGEN_EAST_DEFAULT);
+        north = initPropertyDefaults(context, PROPERTY_L3MAPGEN_NORTH_KEY, PROPERTY_L3MAPGEN_NORTH_DEFAULT);
+        south = initPropertyDefaults(context, PROPERTY_L3MAPGEN_SOUTH_KEY, PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
+        west = initPropertyDefaults(context, PROPERTY_L3MAPGEN_WEST_KEY, PROPERTY_L3MAPGEN_WEST_DEFAULT);
+        east = initPropertyDefaults(context, PROPERTY_L3MAPGEN_EAST_KEY, PROPERTY_L3MAPGEN_EAST_DEFAULT);
+
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY, true);
+
+        fav1SetToDefault = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_KEY, PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_DEFAULT);
+        fav1Projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV1_PROJECTION_KEY, PROPERTY_L3MAPGEN_FAV1_PROJECTION_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_KEY, PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_DEFAULT);
+        fav1NSWE = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV1_NSWE_KEY, PROPERTY_L3MAPGEN_FAV1_NSWE_DEFAULT);
 
 
+        fav2SetToDefault = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_KEY, PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_DEFAULT);
+        fav2Projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_PROJECTION_KEY, PROPERTY_L3MAPGEN_FAV2_PROJECTION_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_KEY, PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_DEFAULT);
+        fav2NSWE = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_NSWE_KEY, PROPERTY_L3MAPGEN_FAV2_NSWE_DEFAULT);
+
+
+        fav3SetToDefault = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_KEY, PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_DEFAULT);
+        fav3Projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_PROJECTION_KEY, PROPERTY_L3MAPGEN_FAV3_PROJECTION_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_KEY, PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_DEFAULT);
+        fav3NSWE = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_NSWE_KEY, PROPERTY_L3MAPGEN_FAV3_NSWE_DEFAULT);
+        
 
         initPropertyDefaults(context, PROPERTY_RESTORE_SECTION_KEY, true);
         restoreDefaults =  initPropertyDefaults(context, PROPERTY_RESTORE_DEFAULTS_KEY, PROPERTY_RESTORE_DEFAULTS_DEFAULT);
@@ -193,6 +299,44 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         restoreDefaults.addPropertyChangeListener(evt -> {
             handleRestoreDefaults(context);
         });
+
+        // Handle fav1 events -
+        fav1SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1Projection, fav1NSWE);
+        });
+        fav1Projection.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1Projection, fav1NSWE);
+        });
+        fav1NSWE.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1Projection, fav1NSWE);
+        });
+
+
+        // Handle fav2 events -
+        fav2SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav2SetToDefault, fav2Projection, fav2NSWE);
+        });
+        fav2Projection.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav2SetToDefault, fav2Projection, fav2NSWE);
+        });
+        fav2NSWE.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav2SetToDefault, fav2Projection, fav2NSWE);
+        });
+
+
+
+        // Handle fav3 events -
+        fav3SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav3SetToDefault, fav3Projection, fav3NSWE);
+        });
+        fav3Projection.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav3SetToDefault, fav3Projection, fav3NSWE);
+        });
+        fav3NSWE.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav3SetToDefault, fav3Projection, fav3NSWE);
+        });
+
+
 
 
         // Add listeners to all components in order to uncheck restoreDefaults checkbox accordingly
@@ -264,6 +408,69 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
             propertyValueChangeEventsEnabled = true;
 
             context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, false);
+        }
+    }
+
+
+
+    /**
+     * Handles favorite action
+     *
+     * @param context
+     * @author Daniel Knowles
+     */
+    private void handleSetFav(BindingContext context, Property favSet, Property favProjection, Property favNSWE) {
+
+        if (propertyValueChangeEventsEnabled) {
+            propertyValueChangeEventsEnabled = false;
+            try {
+                if (favSet.getValue()) {
+                    // set all favorites checkboxes to false then reset current favorite checkbox to true.
+                    fav1SetToDefault.setValue(false);
+                    fav2SetToDefault.setValue(false);
+                    fav3SetToDefault.setValue(false);
+                    favSet.setValue(true);
+
+                    projection.setValue("");
+                    if (favProjection.getValue() != null) {
+                        if (favProjection.getValue().toString() != null) {
+                            projection.setValue(favProjection.getValue().toString().trim());
+                        }
+                    }
+
+
+                    north.setValue("");
+                    south.setValue("");
+                    west.setValue("");
+                    east.setValue("");
+                    if (favNSWE.getValue() != null) {
+                        if (favNSWE.getValue().toString() != null) {
+                            String[] values = favNSWE.getValue().toString().split(",");
+
+                            if (values != null && values.length == 4) {
+                                north.setValue(values[0].trim());
+                                south.setValue(values[1].trim());
+                                west.setValue(values[2].trim());
+                                east.setValue(values[3].trim());
+                            }
+                        }
+                    }
+
+
+                } else {
+                    projection.setValue(projection.getDescriptor().getDefaultValue());
+                    north.setValue(north.getDescriptor().getDefaultValue());
+                    south.setValue(south.getDescriptor().getDefaultValue());
+                    west.setValue(west.getDescriptor().getDefaultValue());
+                    east.setValue(east.getDescriptor().getDefaultValue());
+                }
+
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
+            propertyValueChangeEventsEnabled = true;
+
+//            context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, false);
         }
     }
 
@@ -378,6 +585,81 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
+        @Preference(key = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY,
+                label = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_LABEL,
+                description = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_TOOLTIP)
+        boolean L3mapgen_FAV_PROJECTIONS_SECTION = true;
+
+        
+        @Preference(label = PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_KEY,
+                description = PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_TOOLTIP)
+        boolean L3mapgen_FAV1_PROJECTION_USE_DEFAULT = PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_DEFAULT;
+        
+        @Preference(label = PROPERTY_L3MAPGEN_FAV1_PROJECTION_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV1_PROJECTION_KEY,
+                description = PROPERTY_L3MAPGEN_FAV1_PROJECTION_TOOLTIP)
+        String L3mapgen_FAV1_PROJECTION_DEFAULT = PROPERTY_L3MAPGEN_FAV1_PROJECTION_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_KEY,
+                description = PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_TOOLTIP)
+        String L3mapgen_FAV1_PROJECTION_DESC_DEFAULT = PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV1_NSWE_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV1_NSWE_KEY,
+                description = PROPERTY_L3MAPGEN_FAV1_NSWE_TOOLTIP)
+        String L3mapgen_FAV1_NSWE_DEFAULT = PROPERTY_L3MAPGEN_FAV1_NSWE_DEFAULT;
+
+
+
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_KEY,
+                description = PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_TOOLTIP)
+        boolean L3mapgen_FAV2_PROJECTION_USE_DEFAULT = PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV2_PROJECTION_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV2_PROJECTION_KEY,
+                description = PROPERTY_L3MAPGEN_FAV2_PROJECTION_TOOLTIP)
+        String L3mapgen_FAV2_PROJECTION_DEFAULT = PROPERTY_L3MAPGEN_FAV2_PROJECTION_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_KEY,
+                description = PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_TOOLTIP)
+        String L3mapgen_FAV2_PROJECTION_DESC_DEFAULT = PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV2_NSWE_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV2_NSWE_KEY,
+                description = PROPERTY_L3MAPGEN_FAV2_NSWE_TOOLTIP)
+        String L3mapgen_FAV2_NSWE_DEFAULT = PROPERTY_L3MAPGEN_FAV2_NSWE_DEFAULT;
+
+
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_KEY,
+                description = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_TOOLTIP)
+        boolean L3mapgen_FAV3_PROJECTION_USE_DEFAULT = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV3_PROJECTION_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV3_PROJECTION_KEY,
+                description = PROPERTY_L3MAPGEN_FAV3_PROJECTION_TOOLTIP)
+        String L3mapgen_FAV3_PROJECTION_DEFAULT = PROPERTY_L3MAPGEN_FAV3_PROJECTION_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_KEY,
+                description = PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_TOOLTIP)
+        String L3mapgen_FAV3_PROJECTION_DESC_DEFAULT = PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_DEFAULT;
+
+        @Preference(label = PROPERTY_L3MAPGEN_FAV3_NSWE_LABEL,
+                key = PROPERTY_L3MAPGEN_FAV3_NSWE_KEY,
+                description = PROPERTY_L3MAPGEN_FAV3_NSWE_TOOLTIP)
+        String L3mapgen_FAV3_NSWE_DEFAULT = PROPERTY_L3MAPGEN_FAV3_NSWE_DEFAULT;
+
+
+
+
+
         // Restore Defaults Section
 
         @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
@@ -433,6 +715,45 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_DEFAULT);
     }
+
+
+
+
+    public static String getPreferenceFAV1Projection() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV1_PROJECTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV1_PROJECTION_DEFAULT);
+    }
+
+    public static String getPreferenceFAV1ProjectionDescription() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_DEFAULT);
+    }
+
+
+
+    public static String getPreferenceFAV2Projection() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV2_PROJECTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV2_PROJECTION_DEFAULT);
+    }
+
+    public static String getPreferenceFAV2ProjectionDescription() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_DEFAULT);
+    }
+
+    public static String getPreferenceFAV3Projection() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV3_PROJECTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV3_PROJECTION_DEFAULT);
+    }
+
+    public static String getPreferenceFAV3ProjectionDescription() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_DEFAULT);
+    }
+
+
+    
+
 
 
 }

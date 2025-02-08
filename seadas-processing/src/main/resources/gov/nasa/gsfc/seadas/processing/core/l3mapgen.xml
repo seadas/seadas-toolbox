@@ -73,6 +73,7 @@
             <usedAs>option</usedAs>
             <order>0</order>
         </option>
+
         <option type="ofile">
             <name>ofile</name>
             <value>color</value>
@@ -82,6 +83,7 @@
             <usedAs>option</usedAs>
             <order>1</order>
         </option>
+
         <option type="string">
             <name>product</name>
             <value></value>
@@ -89,15 +91,35 @@
             <source>default</source>
             <description>product(s) to map</description>
             <usedAs>option</usedAs>
-            <colSpan>3</colSpan>
+            <colSpan>4</colSpan>
             <order>2</order>
         </option>
+
+
+        <option type="string">
+            <name>wavelength_3d</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>Comma delimited list of 3D wavelengths</description>
+            <usedAs>option</usedAs>
+            <colSpan>4</colSpan>
+            <order>3</order>
+        </option>
+
+
+
         <option type="string">
             <name>projection</name>
             <value>platecarree</value>
-            <default>platecarree</default>
+            <default></default>
+            <description>proj.4 projection string or one of the following predefined projections:</description>
             <source>default</source>
             <validValues>
+                <validValue>
+                    <value></value>
+                    <description>proj.4 projection string or a predefined l3mapgen projection shortcut</description>
+                </validValue>
                 <validValue>
                     <value>smi</value>
                     <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lon_0=<central_meridian>"]]></description>
@@ -348,19 +370,28 @@
                         &lt;/html&gt;</description>
                 </validValue>
 
-
             </validValues>
-            <description>proj.4 projection string or one of the following predefined projections:</description>
             <usedAs>option</usedAs>
-            <colSpan>3</colSpan>
-            <order>3</order>
+            <colSpan>4</colSpan>
+            <order>4</order>
         </option>
+
+
+
+
+
         <option type="string">
             <name>resolution</name>
             <value></value>
             <default></default>
             <source>default</source>
+            <description>size of the mapped pixels in meters or SMI dimensions</description>
+
             <validValues>
+                <validValue>
+                    <value></value>
+                    <description>size of the mapped pixels in meters or SMI dimensions</description>
+                </validValue>
                 <validValue>
                     <value>90km</value>
                     <description>432 x 216 image for full globe</description>
@@ -410,16 +441,22 @@
                     <description>8640 x 4320</description>
                 </validValue>
             </validValues>
-            <description>size of the color pixel in meters or SMI dimensions</description>
             <usedAs>option</usedAs>
-            <order>4</order>
+            <order>5</order>
         </option>
+
+
         <option type="string">
             <name>interp</name>
             <value>nearest</value>
-            <default>nearest</default>
+            <default></default>
+            <description>interpolation method:</description>
             <source>default</source>
             <validValues>
+                <validValue>
+                    <value></value>
+                    <description>interpolation method</description>
+                </validValue>
                 <validValue>
                     <value>nearest</value>
                     <description>Nearest Neighbor</description>
@@ -433,10 +470,33 @@
                     <description>bin weighted by area of all the pixels that intersect the area of the color pixel</description>
                 </validValue>
             </validValues>
-            <description>interpolation method:</description>
             <usedAs>option</usedAs>
-            <order>5</order>
+            <order>6</order>
         </option>
+
+        <option type="float">
+            <name>fudge</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>fudge factor used to modify size of L3 pixels</description>
+            <usedAs>option</usedAs>
+            <order>7</order>
+        </option>
+
+
+        <option type="string">
+            <name>suite</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>suite defaults [see OCSSWROOT/common/l3mapgen_defaults.par and  OCSSWROOT/SENSOR/l3mapgen_defaults.par]</description>
+            <usedAs>option</usedAs>
+            <order>8</order>
+        </option>
+
+
+
 
         <option type="float">
             <name>north</name>
@@ -445,7 +505,7 @@
             <source>default</source>
             <description>Northernmost Latitude</description>
             <usedAs>option</usedAs>
-            <order>6</order>
+            <order>9</order>
         </option>
         <option type="float">
             <name>south</name>
@@ -454,7 +514,7 @@
             <source>default</source>
             <description>Southernmost Latitude</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>10</order>
         </option>
         <option type="float">
             <name>west</name>
@@ -463,7 +523,7 @@
             <source>default</source>
             <description>Westernmost Longitude</description>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>11</order>
         </option>
         <option type="float">
             <name>east</name>
@@ -472,25 +532,26 @@
             <source>default</source>
             <description>Easternmost Longitude</description>
             <usedAs>option</usedAs>
-            <order>9</order>
+            <order>12</order>
         </option>
         <option type="float">
             <name>central_meridian</name>
             <value></value>
-            <default>0</default>
+            <default></default>
             <source>default</source>
             <description>central meridian for projection in deg east.  Only used for predefined projection</description>
             <usedAs>option</usedAs>
-            <order>10</order>
+            <order>13</order>
         </option>
+
         <option type="float">
-            <name>fudge</name>
-            <value>1.0</value>
-            <default>1.0</default>
+            <name>threshold</name>
+            <value>0</value>
+            <default></default>
             <source>default</source>
-            <description>fudge factor used to modify size of L3 pixels</description>
+            <description>minimum percentage of filled pixels before an image is generated</description>
             <usedAs>option</usedAs>
-            <order>11</order>
+            <order>14</order>
         </option>
 
         <option type="float">
@@ -499,7 +560,7 @@
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>12</order>
+            <order>15</order>
         </option>
         <option type="float">
             <name>datamax</name>
@@ -507,7 +568,7 @@
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>13</order>
+            <order>16</order>
         </option>
 
 
@@ -515,7 +576,12 @@
             <name>scale_type</name>
             <value/>
             <source>default</source>
+            <description>data scaling type (default from product.xml)</description>
             <validValues>
+                <validValue>
+                    <value></value>
+                    <description>data scaling type (default from product.xml)</description>
+                </validValue>
                 <validValue>
                     <value>linear</value>
                     <description>linear scaling</description>
@@ -529,9 +595,8 @@
                     <description>arc tangent scaling</description>
                 </validValue>
             </validValues>
-            <description>data scaling type (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <order>14</order>
+            <order>17</order>
         </option>
         <!--<option type="boolean">-->
             <!--<name>quiet</name>-->
@@ -540,35 +605,18 @@
             <!--<source>default</source>-->
             <!--<description>stop the status printing</description>-->
         <!--</option>-->
-        <option type="boolean">
-            <name>use_quality</name>
-            <value>true</value>
-            <default>true</default>
-            <source>default</source>
-            <description>should we do quality factor processing</description>
-            <usedAs>option</usedAs>
-            <order>15</order>
-        </option>
 
 
-        <option type="float">
-            <name>threshold</name>
-            <value>0</value>
-            <default>0</default>
-            <source>default</source>
-            <description>minimum percentage of filled pixels before an image is generated</description>
-            <usedAs>option</usedAs>
-            <order>16</order>
-        </option>
+
 
         <option type="int">
             <name>deflate</name>
-            <value>4</value>
-            <default>4</default>
+            <value></value>
+            <default></default>
             <source>default</source>
             <description>deflation level</description>
             <usedAs>option</usedAs>
-            <order>17</order>
+            <order>18</order>
         </option>
         <option type="string">
             <name>pversion</name>
@@ -577,7 +625,7 @@
             <source>default</source>
             <description>processing version string</description>
             <usedAs>option</usedAs>
-            <order>18</order>
+            <order>19</order>
         </option>
 
 
@@ -588,18 +636,10 @@
             <source>default</source>
             <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
-            <order>19</order>
-        </option>
-
-        <option type="boolean">
-            <name>use_rgb</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>should we use product_rgb to make a psudo true color image</description>
-            <usedAs>option</usedAs>
             <order>20</order>
         </option>
+
+
         <option type="string">
             <name>product_rgb</name>
             <value></value>
@@ -607,18 +647,11 @@
             <source>default</source>
             <description> 3 products to use for RGB.  Default is sensor specific</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>21</order>
         </option>
 
-        <option type="boolean">
-            <name>apply_pal</name>
-            <value>true</value>
-            <default>true</default>
-            <source>default</source>
-            <description>apply color palette</description>
-            <usedAs>option</usedAs>
-            <order>22</order>
-        </option>
+
         <option type="string">
             <name>palette_dir</name>
             <value>$OCDATAROOT/common/palette</value>
@@ -627,7 +660,7 @@
             <description>directory containing the palette files</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <order>23</order>
+            <order>22</order>
         </option>
         <option type="string">
             <name>palfile</name>
@@ -636,16 +669,21 @@
             <description>palette filename.  (default = means the palette is chosen using the product.xml file</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <order>24</order>
+            <order>23</order>
         </option>
 
 
         <option type="string">
             <name>oformat</name>
             <value>netCDF4</value>
-            <default>netCDF4</default>
+            <default></default>
+            <description>output file format</description>
             <source>default</source>
             <validValues>
+                <validValue>
+                    <value></value>
+                    <description>output file format</description>
+                </validValue>
                 <validValue>
                     <value>netCDF4</value>
                     <description>netCDF file, can contain more than one product</description>
@@ -667,9 +705,39 @@
                     <description>TIFF file with georeference tags</description>
                 </validValue>
             </validValues>
-            <description>color file format</description>
+            <usedAs>option</usedAs>
+            <order>24</order>
+        </option>
+
+
+        <option type="boolean">
+            <name>use_quality</name>
+            <value>true</value>
+            <default>true</default>
+            <source>default</source>
+            <description>should we do quality factor processing</description>
             <usedAs>option</usedAs>
             <order>25</order>
+        </option>
+
+        <option type="boolean">
+            <name>use_rgb</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>should we use product_rgb to make a psudo true color image</description>
+            <usedAs>option</usedAs>
+            <order>26</order>
+        </option>
+
+        <option type="boolean">
+            <name>apply_pal</name>
+            <value>true</value>
+            <default>true</default>
+            <source>default</source>
+            <description>apply color palette</description>
+            <usedAs>option</usedAs>
+            <order>27</order>
         </option>
 
     </options>

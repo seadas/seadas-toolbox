@@ -1,14 +1,19 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
+import org.esa.snap.core.util.ResourceInstaller;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -257,6 +262,11 @@ public class ParamUtils {
 
             NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
 
+            // todo
+
+
+            final String optionName = ParamUtils.removePreceedingDashes(paramInfo.getName());
+
             if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
                 for (int j = 0; j < validValueNodelist.getLength(); j++) {
 
@@ -273,7 +283,34 @@ public class ParamUtils {
 
             }
 
-            final String optionName = ParamUtils.removePreceedingDashes(paramInfo.getName());
+            if ("l3mapgen.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case "projection":
+                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferenceFAV1Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV1ProjectionDescription(),
+                                paramInfo);
+                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferenceFAV2Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV2ProjectionDescription(),
+                                paramInfo);
+                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferenceFAV3Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV3ProjectionDescription(),
+                                paramInfo);
+                }
+            }
+
+
+
+//            Path getColorSchemesAuxDir = SystemUtils.getAuxDataPath().resolve(ColorManipulationDefaults.DIR_NAME_COLOR_SCHEMES);
+//            if (getColorSchemesAuxDir != null) {
+//                this.colorSchemesAuxDir = getColorSchemesAuxDir.toFile();
+//                if (!colorSchemesAuxDir.exists()) {
+//                    return;
+//                }
+//            } else {
+//
+//                colorSchemeLookupUserFile = new File(this.colorSchemesAuxDir, ColorManipulationDefaults.COLOR_SCHEME_LOOKUP_USER_FILENAME);
+//
+//
 
             if ("l3mapgen.xml".equals(paramXmlFileName)) {
                 switch (optionName) {
@@ -281,6 +318,27 @@ public class ParamUtils {
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProduct());
                         break;
                     case "projection":
+//                        getUserProjections();
+
+//                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1(),
+//                                OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1_NAME(),
+//                                paramInfo);
+//                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferencePROJECTION_FAV2(),
+//                                OCSSW_L3mapgenController.getPreferencePROJECTION_FAV2_NAME(),
+//                                paramInfo);
+
+
+//                        String fav1 = OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1();
+//                        if (fav1 != null && fav1.length() > 0) {
+//                            ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(fav1);
+//                            String fav1Name = OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1_NAME();
+//                            if (fav1Name != null && fav1Name.length() > 0) {
+//                                paramValidValueInfo.setDescription(fav1Name);
+//                            }
+//                        }
+//
+//                        paramInfo.addValidValueInfo(paramValidValueInfo);
+
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProjection());
                         break;
                     case "resolution":
@@ -347,6 +405,98 @@ public class ParamUtils {
 
         return paramList;
     }
+
+
+
+    private static void addFavoriteProjection(String fav, String favName, ParamInfo paramInfo) {
+        if (fav != null && fav.length() > 0) {
+            ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(fav);
+            if (favName != null && favName.length() > 0) {
+                paramValidValueInfo.setDescription(favName);
+            }
+            if (paramValidValueInfo != null) {
+                paramInfo.addValidValueInfo(paramValidValueInfo);
+            }
+        }
+    }
+
+
+    private static void getUserProjections() {
+
+        HashMap<String, String> ociWavelengths = new HashMap<String, String>();
+
+        String SENSOR_INFO = "sensor_info";
+        String AUXDATA = "auxdata";
+        String USER_PROJECTIONS_XML = "auxdata/user_projections.xml";
+
+
+            File sensorInfoAuxDir = SystemUtils.getAuxDataPath().resolve(SENSOR_INFO).toFile();
+            File user_projections_file = new File(sensorInfoAuxDir, USER_PROJECTIONS_XML);
+
+            if (user_projections_file == null ||  !user_projections_file.exists()) {
+                try {
+                    Path auxdataDir = SystemUtils.getAuxDataPath().resolve(SENSOR_INFO);
+
+                    Path sourceBasePath = ResourceInstaller.findModuleCodeBasePath(ParamUtils.class);
+                    Path sourceDirPath = sourceBasePath.resolve("auxdata");
+                    System.out.println("sourceDirPath=" + sourceDirPath);
+
+                    final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDir);
+
+                    resourceInstaller.install(".*." + USER_PROJECTIONS_XML, ProgressMonitor.NULL);
+
+                } catch (IOException e) {
+                    System.out.println("ERROR");
+
+//                    SnapApp.getDefault().handleError("Unable to install " + AUXDATA + "/" + SENSOR_INFO + "/" + USER_PROJECTIONS_XML, e);
+                }
+            }
+
+//            if (sensorInfoAuxDir != null && sensorInfoAuxDir.exists()) {
+//
+//                if (ociBandPassFile != null && ociBandPassFile.exists()) {
+//
+//                    try (BufferedReader br = new BufferedReader(new FileReader(ociBandPassFile))) {
+//                        String line;
+//                        while ((line = br.readLine()) != null) {
+//                            String[] values = line.split(",");
+//                            if (values != null && values.length > 3) {
+//                                ociWavelengths.put(values[1].trim(), values[2].trim());
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//
+//                    }
+//                }
+//            }
+
+
+//        int spectralBandIndex = 0;
+//        for (String name : product.getBandNames()) {
+//            Band band = product.getBandAt(product.getBandIndex(name));
+//            if (name.matches("\\w+_\\d{3,}")) {
+//                String[] parts = name.split("_");
+//                String wvlstr = parts[parts.length - 1].trim();
+//                //Some bands have the wvl portion in the middle...
+//                if (!wvlstr.matches("^\\d{3,}")) {
+//                    wvlstr = parts[parts.length - 2].trim();
+//                }
+//
+//                if (SeadasProductReader.Mission.OCI.toString().equals(sensor) &&
+//                        (SeadasProductReader.ProcessingLevel.L2.toString().equals(processing_level) ||
+//                                SeadasProductReader.ProcessingLevel.L3m.toString().equals(processing_level))) {
+//                    wvlstr = getPaceOCIWavelengths(wvlstr, ociWavelengths);
+//                }
+//
+//                final float wavelength = Float.parseFloat(wvlstr);
+//                band.setSpectralWavelength(wavelength);
+//                band.setSpectralBandIndex(spectralBandIndex++);
+//            }
+
+
+
+    }
+
 
 
 

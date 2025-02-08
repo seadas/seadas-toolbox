@@ -63,20 +63,153 @@
             <description>Allow more verbose screen messages [default=0]</description>
             <order>3</order>
         </option>
+
+        <option type="int">
+            <name>resolve</name>
+            <value></value>
+            <default></default>
+            <description>bin resolution</description>
+            <source>default</source>
+            <validValue>
+                <value></value>
+                <description>bin resolution</description>
+            </validValue>
+            <validValue>
+                <value>HH</value>
+                <description>50m</description>
+            </validValue>
+            <validValue>
+                <value>HQ</value>
+                <description>100m</description>
+            </validValue>
+            <validValue>
+                <value>Q</value>
+                <description>250m</description>
+            </validValue>
+            <validValue>
+                <value>H</value>
+                <description>500m</description>
+            </validValue>
+            <validValue>
+                <value>1</value>
+                <description>1.1km</description>
+            </validValue>
+            <validValue>
+                <value>2</value>
+                <description>2.3km</description>
+            </validValue>
+            <validValue>
+                <value>4</value>
+                <description>4.6km</description>
+            </validValue>
+            <validValue>
+                <value>9</value>
+                <description>9.2km</description>
+            </validValue>
+            <validValue>
+                <value>18</value>
+                <description>18.5km</description>
+            </validValue>
+            <validValue>
+                <value>36</value>
+                <description>36km</description>
+            </validValue>
+            <validValue>
+                <value>QD</value>
+                <description>0.25 degree</description>
+            </validValue>
+            <validValue>
+                <value>HD</value>
+                <description>0.5 degree</description>
+            </validValue>
+            <validValue>
+                <value>1D</value>
+                <description>1 degree</description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <order>4</order>
+        </option>
+
+
         <option type="int">
             <name>reduce_fac</name>
             <value></value>
             <default></default>
             <description>scale reduction factor (power of 2)</description>
-            <order>4</order>
+            <order>5</order>
+        </option>
+
+        <option type="float">
+            <name>latnorth</name>
+            <value></value>
+            <default></default>
+            <description>Northernmost latitude (default=+90)</description>
+            <order>6</order>
+        </option>
+        <option type="float">
+            <name>latsouth</name>
+            <value></value>
+            <default></default>
+            <description>Southernmost latitude (default=-90)</description>
+            <order>7</order>
+        </option>
+
+        <option type="float">
+            <name>lonwest</name>
+            <value></value>
+            <default></default>
+            <description>Westernmost longitude (default=-180)</description>
+            <order>8</order>
+        </option>
+        <option type="float">
+            <name>loneast</name>
+            <value></value>
+            <default></default>
+            <description>Easternmost longitude (default=+180)</description>
+            <order>9</order>
+        </option>
+
+
+        <option type="string">
+            <name>composite_scheme</name>
+            <value></value>
+            <default></default>
+            <description>composite scheme (min/max)</description>
+            <usedAs>option</usedAs>
+            <order>10</order>
+        </option>
+
+        <option type="string">
+            <name>composite_prod</name>
+            <value></value>
+            <default></default>
+            <description>composite product field name</description>
+            <usedAs>option</usedAs>
+            <order>11</order>
+        </option>
+
+
+
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default></default>
+            <description>production version [default=Unspecified]</description>
+            <order>12</order>
         </option>
 
         <option type="string">
             <name>oformat</name>
             <value>netCDF4</value>
-            <default>netCDF4</default>
+            <default></default>
+            <description>color file format; default is the same format as input file(s)</description>
+
             <source></source>
             <validValues>
+                <validValue>
+                    <value></value>
+                    <description>color file format; default is the same format as input file(s)</description>
+                </validValue>
                 <validValue>
                     <value>HDF4</value>
                     <description>HDF4</description>
@@ -90,64 +223,9 @@
                     <description>HDF5</description>
                 </validValue>
             </validValues>
-            <description>color file format; default is the same format as input file(s)</description>
-            <order>5</order>
+            <order>13</order>
         </option>
 
 
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <default></default>
-            <description>production version [default=Unspecified]</description>
-            <order>6</order>
-        </option>
-        <option type="float">
-            <name>latnorth</name>
-            <value></value>
-            <default>+90</default>
-            <description>Northernmost latitude (default=+90)</description>
-            <order>7</order>
-        </option>
-        <option type="float">
-            <name>latsouth</name>
-            <value></value>
-            <default>-90</default>
-            <description>Southernmost latitude (default=-90)</description>
-            <order>8</order>
-        </option>
-
-        <option type="float">
-            <name>lonwest</name>
-            <value></value>
-            <default>-180</default>
-            <description>Westernmost longitude (default=-180)</description>
-            <order>9</order>
-        </option>
-        <option type="float">
-            <name>loneast</name>
-            <value></value>
-            <default>+180</default>
-            <description>Easternmost longitude (default=+180)</description>
-            <order>10</order>
-        </option>
-
-        <option type="string">
-            <name>composite_scheme</name>
-            <value></value>
-            <default></default>
-            <description>composite scheme (min/max)</description>
-            <usedAs>option</usedAs>
-            <order>11</order>
-        </option>
-
-        <option type="string">
-            <name>composite_prod</name>
-            <value></value>
-            <default></default>
-            <description>composite product field name</description>
-            <usedAs>option</usedAs>
-            <order>12</order>
-        </option>
     </options>
 </paramInfo>

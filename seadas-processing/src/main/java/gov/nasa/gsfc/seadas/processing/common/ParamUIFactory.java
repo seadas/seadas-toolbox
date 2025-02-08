@@ -112,8 +112,14 @@ public class ParamUIFactory {
 
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
         if ("l3mapgen".equals(processorModel.getProgramName())) {
-            numberOfOptionsPerLine = 6;
+            numberOfOptionsPerLine = 4;
         }
+
+        if ("l2bin".equals(processorModel.getProgramName())) {
+            numberOfOptionsPerLine = 4;
+        }
+
+
 //        TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
 //        textFieldPanelLayout.setTablePadding(5,5);
 //        textFieldPanel.setLayout(textFieldPanelLayout);
@@ -121,9 +127,9 @@ public class ParamUIFactory {
         gbc.gridy=0;
         gbc.gridx=0;
         gbc.insets.top = 5;
-        gbc.insets.bottom = 5;
+        gbc.insets.bottom = 7;
         gbc.insets.left = 5;
-        gbc.insets.right = 25;
+        gbc.insets.right = 35;
         gbc.weighty = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
 
@@ -146,8 +152,8 @@ public class ParamUIFactory {
                 }
 
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
-                        textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
-                        gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                    textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
+                    gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                 } else {
                     switch (pi.getType()) {
                         case BOOLEAN:
@@ -175,12 +181,20 @@ public class ParamUIFactory {
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                             break;
                         case FLAGS:
-//                            gbc.gridwidth=5;
-                            gbc.insets.top = 4;
+                            int origInsetsTop = gbc.insets.top;
+                            int origInsetsBottom = gbc.insets.bottom;
+                            int origInsetsLeft = gbc.insets.left;
+                            gbc.insets.top = 8;
+                            gbc.insets.bottom = 6;
+                            gbc.insets.left = 0;
+
                             textFieldPanel.add(makeButtonOptionPanel(pi), gbc);
                             gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
-                            gbc.gridwidth=1;
-                            gbc.insets.top = 0;
+
+                            gbc.insets.top = origInsetsTop;
+                            gbc.insets.bottom = origInsetsBottom;
+                            gbc.insets.left = origInsetsLeft;
+
                             break;
                         case BUTTON:
                             buttonPanel.add(makeActionButtonPanel(pi));
@@ -228,11 +242,10 @@ public class ParamUIFactory {
         fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         optionPanel.setLayout(fieldLayout);
         optionPanel.setName(optionName);
-        optionPanel.add(new JLabel(optionName));
+        optionPanel.add(new JLabel(" " + optionName));
         if (pi.getDescription() != null) {
             optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
-
 
         if (pi.getValue() == null || pi.getValue().length() == 0) {
             if (pi.getDefaultValue() != null) {
@@ -242,28 +255,28 @@ public class ParamUIFactory {
 
         final PropertyContainer vc = new PropertyContainer();
 
-
-
         vc.addProperty(Property.create(optionName, pi.getValue()));
 
 
         vc.getDescriptor(optionName).setDisplayName(optionName);
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
-//        field.setColumns(optionName.length() > 12 ? 12 : 8);
 
+        int firstColWidth = 10;
+        int additionalColWidth = 14;
 
-        if (colSpan == 2) {
-            field.setColumns(20);
-        } else if (colSpan == 3) {
-            field.setColumns(32);
+        if (colSpan >= 5) {
+            field.setColumns(firstColWidth + (colSpan - 1) * additionalColWidth);
         } else if (colSpan == 4) {
-            field.setColumns(44);
-        } else if (colSpan >= 5) {
-            field.setColumns(56);
+            field.setColumns(firstColWidth + 43);
+        } else if (colSpan == 3) {
+            field.setColumns(firstColWidth + 30);
+        } else if (colSpan >= 2) {
+            field.setColumns(firstColWidth + 14);
         }else {
-            field.setColumns(8);
+            field.setColumns(firstColWidth);
         }
+
         field.setPreferredSize(field.getPreferredSize());
         field.setMaximumSize(field.getPreferredSize());
         field.setMinimumSize(field.getPreferredSize());
@@ -293,6 +306,8 @@ public class ParamUIFactory {
 
         return optionPanel;
     }
+
+
 
 
     private JPanel makeBooleanOptionField(final ParamInfo pi) {
@@ -361,7 +376,7 @@ public class ParamUIFactory {
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
 
-        final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
+        final JLabel optionNameLabel = new JLabel(" " + ParamUtils.removePreceedingDashes(pi.getName()));
 
         singlePanel.add(optionNameLabel);
         singlePanel.setName(pi.getName());
@@ -389,24 +404,31 @@ public class ParamUIFactory {
 
         Dimension preferredComboBoxSize;
 
+        int firstColWidth = 9;
+
         if (colSpan >= 5) {
-            final String[] tmpValues = {"1234567890123456789012345901234567890123456789012345678901234567890123456789"};
+            String initString = getStringOfSetLength( firstColWidth + (colSpan - 1) * 21);
+            final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else if (colSpan == 4) {
-            final String[] tmpValues = {"12345678901234567890123459012345678901234567890123456789012"};
+            String initString = getStringOfSetLength(firstColWidth + 64);
+            final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else if (colSpan == 3) {
-            final String[] tmpValues = {"123456789012345678901234590123456789012345"};
+            String initString = getStringOfSetLength(firstColWidth + 43);
+            final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else if (colSpan == 2) {
-            final String[] tmpValues = {"1234567890123456789012345"};
+            String initString = getStringOfSetLength(firstColWidth + 22);
+            final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else {
-            final String[] tmpValues = {"12345678"};
+            String initString = getStringOfSetLength(firstColWidth);
+            final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         }
@@ -464,6 +486,16 @@ public class ParamUIFactory {
         return singlePanel;
     }
 
+    private String getStringOfSetLength(int numChars) {
+        String string = "";
+
+        for (int i=0; i<numChars; i++) {
+            string = string + "0";
+        }
+
+        return string;
+    }
+
     private JPanel makeButtonOptionPanel(final ParamInfo pi) {
         final JPanel singlePanel = new JPanel();
         final JTextField field = new JTextField();
@@ -474,6 +506,8 @@ public class ParamUIFactory {
 
         final JButton optionNameButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
         optionNameButton.setName("optionButton");
+        optionNameButton.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+
         optionNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -496,7 +530,7 @@ public class ParamUIFactory {
         }
 
         field.setText(pi.getValue());
-        field.setColumns(50);
+        field.setColumns(46);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
