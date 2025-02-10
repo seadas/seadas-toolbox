@@ -69,7 +69,11 @@
             <name>flaguse</name>
             <value></value>
             <default></default>
-            <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
+            <description>flags to mask (note: actual flags in level-2 file may differ from the selector list)</description>
+            <validValue>
+                <value>SPARE</value>
+                <description>flags to mask (note: actual flags in level-2 file may differ from the selector list)</description>
+            </validValue>
             <validValue>
                 <value>ATMFAIL</value>
                 <description>ATMFAIL</description>
@@ -202,6 +206,10 @@
                 <value>NONE</value>
                 <description>Do not use any flag</description>
             </validValue>
+<!--            <validValue>-->
+<!--                <value>GEOREGION</value>-->
+<!--                <description>Note: this flag is not available in all level-2 files</description>-->
+<!--            </validValue>-->
             <usedAs>option</usedAs>
             <colSpan>4</colSpan>
             <order>4</order>

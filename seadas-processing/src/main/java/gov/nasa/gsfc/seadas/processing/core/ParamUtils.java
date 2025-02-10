@@ -224,6 +224,23 @@ public class ParamUtils {
             String order = XmlReader.getTextValue(optionElement, "order");
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
             String defaultValue = XmlReader.getTextValue(optionElement, "default");
+
+            final String optionNameTmp = ParamUtils.removePreceedingDashes(name);
+
+            if ("l2bin.xml".equals(paramXmlFileName)) {
+                switch (optionNameTmp) {
+                    case "flaguse":
+                        if (!OCSSW_L2binController.getPreferenceFlaguseSelectorEnable()) {
+                            // todo Possibly delete this whole block
+//                            type = ParamInfo.Type.STRING;
+                        }
+                }
+            }
+
+
+
+
+
             // set the value and the default to the current value from the XML file
             //ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, value) : new ParamInfo(name, value, type, value);
             ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, defaultValue) : new ParamInfo(name, value, type, defaultValue);
@@ -286,15 +303,39 @@ public class ParamUtils {
             if ("l3mapgen.xml".equals(paramXmlFileName)) {
                 switch (optionName) {
                     case "projection":
-                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferenceFAV1Projection(),
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV1Projection(),
                                 OCSSW_L3mapgenController.getPreferenceFAV1ProjectionDescription(),
                                 paramInfo);
-                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferenceFAV2Projection(),
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV2Projection(),
                                 OCSSW_L3mapgenController.getPreferenceFAV2ProjectionDescription(),
                                 paramInfo);
-                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferenceFAV3Projection(),
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV3Projection(),
                                 OCSSW_L3mapgenController.getPreferenceFAV3ProjectionDescription(),
                                 paramInfo);
+                }
+            }
+
+
+            if ("l2bin.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case "flaguse":
+                        String additionalFlags = OCSSW_L2binController.getPreferenceFlaguseAdditionalFlags();
+                        if (additionalFlags != null && additionalFlags.length() > 0) {
+                            String[] values = additionalFlags.split("[,\\s]");
+                            for(String flag : values) {
+                                addValidValueToParamInfo(flag, flag, paramInfo);
+                            }
+                        }
+//
+//                        addFavoriteProjection("~GEOREGION",
+//                                "not GEOREGION",
+//                                paramInfo);
+//                        addFavoriteProjection("~LAND",
+//                                "not LAND",
+//                                paramInfo);
+//                        addFavoriteProjection("~COASTZ",
+//                                "not COASTZ",
+//                                paramInfo);
                 }
             }
 
@@ -408,7 +449,7 @@ public class ParamUtils {
 
 
 
-    private static void addFavoriteProjection(String fav, String favName, ParamInfo paramInfo) {
+    private static void addValidValueToParamInfo(String fav, String favName, ParamInfo paramInfo) {
         if (fav != null && fav.length() > 0) {
             ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(fav);
             if (favName != null && favName.length() > 0) {

@@ -108,6 +108,15 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_LONEAST_DEFAULT = "";
 
 
+    public static final String PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse.selector.enable";
+    public static final String PROPERTY_L2BIN_FLAGUSE_SELECTOR_LABEL = "Enable flaguse Selector Checkbox GUI";
+    public static final String PROPERTY_L2BIN_FLAGUSE_SELECTOR_TOOLTIP = "Enables the checkbox GUI for flaguse (note the flags are hardcoded and this can have issues)";
+    public static final boolean PROPERTY_L2BIN_FLAGUSE_SELECTOR_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse.additional.flags";
+    public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_LABEL = "Additional flags to add to flaguse";
+    public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_TOOLTIP = "Adds additional choices of flags";
+    public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_DEFAULT = "~LAND ~COASTZ ~GEOREGION";
 
 
 
@@ -150,6 +159,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L2BIN_LATSOUTH_KEY, PROPERTY_L2BIN_LATSOUTH_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_LONWEST_KEY, PROPERTY_L2BIN_LONWEST_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY, PROPERTY_L2BIN_FLAGUSE_SELECTOR_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_KEY, PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_DEFAULT);
+
+
 
         initPropertyDefaults(context, PROPERTY_RESTORE_SECTION_KEY, true);
         restoreDefaults =  initPropertyDefaults(context, PROPERTY_RESTORE_DEFAULTS_KEY, PROPERTY_RESTORE_DEFAULTS_DEFAULT);
@@ -383,6 +396,19 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+        @Preference(key = PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY,
+                label = PROPERTY_L2BIN_FLAGUSE_SELECTOR_LABEL,
+                description = PROPERTY_L2BIN_FLAGUSE_SELECTOR_TOOLTIP)
+        boolean isPropertyL2binFlaguseSelectorDefault = true;
+
+        @Preference(key = PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_KEY,
+                label = PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_LABEL,
+                description = PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_TOOLTIP)
+        String propertyL2binFlaguseAdditionalFlagsDefault = PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_DEFAULT;
+
+
+
+
 
         // Restore Defaults Section
 
@@ -443,6 +469,20 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
     }
+
+
+    public static boolean getPreferenceFlaguseSelectorEnable() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY, PROPERTY_L2BIN_FLAGUSE_SELECTOR_DEFAULT);
+    }
+
+    public static String getPreferenceFlaguseAdditionalFlags() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_KEY, PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_DEFAULT);
+    }
+
+
+
 
 
 

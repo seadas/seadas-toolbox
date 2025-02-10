@@ -511,12 +511,58 @@ public class ParamUIFactory {
         optionNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                String flaguseTextfield = field.getText();
+
+                // determine any custum user flag in the flaguse textfield
+                String flaguseField = field.getText();
+
+                String customFlagList = "";
+                if (field != null && field.getText().length() > 0) {
+                    String[] originalFlagArray = field.getText().split("[,\\s]");
+
+
+                    for (String originalFlagName : originalFlagArray) {
+                        boolean flagIsValid = false;
+                        originalFlagName = originalFlagName.trim().toUpperCase();
+                        for (ParamValidValueInfo validValueInfo : pi.getValidValueInfos()) {
+                            String validFlagName = validValueInfo.getValue();
+                            if (validFlagName != null && validFlagName.length() > 0) {
+                                validFlagName = validFlagName.trim().toUpperCase();
+                                if (originalFlagName.equals(validFlagName)) {
+                                    flagIsValid = true;
+                                }
+                            }
+
+                        }
+
+                        if (!flagIsValid) {
+                            if (customFlagList.length() > 0) {
+                                customFlagList = customFlagList + "," + originalFlagName;
+                            } else {
+                                customFlagList = originalFlagName;
+                            }
+                        }
+                    }
+                }
+
+
                 processorModel.updateParamInfo(pi, field.getText());
-                String value = pi.getValue();
                 String selectedFlags = chooseValidValues(pi);
+
+
                 if (!"-1".equals(selectedFlags)) {
-                    processorModel.updateParamInfo(pi, selectedFlags);
+                    String newFlagList = "";
+
+                    if (customFlagList != null && customFlagList.length() > 0) {
+                        if (selectedFlags != null && selectedFlags.length() > 0) {
+                            newFlagList = selectedFlags + " " + customFlagList;
+                        } else {
+                            newFlagList = customFlagList;
+                        }
+                    } else {
+                        newFlagList = selectedFlags;
+                    }
+
+                    processorModel.updateParamInfo(pi, newFlagList);
                     String value2 = pi.getValue();
                 }
             }
@@ -601,7 +647,7 @@ public class ParamUIFactory {
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
     }
 
-    private String chooseValidValues(ParamInfo pi) {
+    private String chooseValidValues(ParamInfo pi, boolean negated) {
         JPanel validValuesPanel = new JPanel();
         validValuesPanel.setLayout(new TableLayout(3));
         String choosenValues = "";
@@ -619,8 +665,7 @@ public class ParamUIFactory {
 
                     String[] values = pi.getValue().split("[,\\s]");
                     for (String value : values) {
-//                        if (pi.getValue().contains(paramValidValueInfo.getValue().trim())) {
-                        if (value.trim().toUpperCase().equals(paramValidValueInfo.getValue().trim().toUpperCase())) {
+                        if (value.trim().equalsIgnoreCase(paramValidValueInfo.getValue().trim().toUpperCase())) {
                             paramValidValueInfo.setSelected(true);
                         }
                     }
