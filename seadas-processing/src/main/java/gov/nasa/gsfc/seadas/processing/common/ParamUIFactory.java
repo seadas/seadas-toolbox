@@ -6,8 +6,6 @@ import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
-import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
-import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
@@ -23,6 +21,8 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import static org.esa.snap.ui.GridBagUtils.createConstraints;
 
 /**
  * Created by IntelliJ IDEA.
@@ -654,7 +654,13 @@ public class ParamUIFactory {
 
     private String chooseValidValues(ParamInfo pi) {
         JPanel validValuesPanel = new JPanel();
-        validValuesPanel.setLayout(new TableLayout(3));
+        TableLayout tableLayout = new TableLayout(6);
+//        tableLayout.setTableAnchor(TableLayout.Anchor.WEST);
+        validValuesPanel.setLayout(tableLayout);
+        tableLayout.setTableFill(TableLayout.Fill.NONE);
+        validValuesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        validValuesPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
         String choosenValues = "";
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
 
@@ -679,7 +685,10 @@ public class ParamUIFactory {
                         }
                     }
                 }
-                validValuesPanel.add(makeValidValueCheckbox(paramValidValueInfo));
+                validValuesPanel.add(makeValidValueCheckboxPositive(paramValidValueInfo));
+                validValuesPanel.add(makeValidValueCheckboxNegative(paramValidValueInfo));
+
+                validValuesPanel.add(new JLabel("              "));
             }
         }
         validValuesPanel.repaint();
@@ -736,17 +745,14 @@ public class ParamUIFactory {
         final JPanel optionPanel = new JPanel();
         optionPanel.setName(optionName);
         optionPanel.setBorder(new EtchedBorder());
-        optionPanel.setPreferredSize(new Dimension(250, 40));
-        TableLayout booleanLayout = new TableLayout(4);
-        //booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+        optionPanel.setPreferredSize(new Dimension(300, 40));
+        TableLayout booleanLayout = new TableLayout(3);
+        booleanLayout.setTableFill(TableLayout.Fill.NONE);
 
         optionPanel.setLayout(booleanLayout);
         optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         optionPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-        optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace));
-//        if (paramValidValueInfo.getDescription() != null) {
-//            optionPanel.setToolTipText(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
-//        }
+//        optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace));
 
 
         final PropertySet vc = new PropertyContainer();
@@ -754,8 +760,8 @@ public class ParamUIFactory {
         vc.getDescriptor(optionName).setDisplayName(optionName);
 
         final BindingContext ctx = new BindingContext(vc);
-        final JCheckBox field = new JCheckBox("");
-        field.setHorizontalAlignment(JFormattedTextField.LEFT);
+        final JCheckBox field = new JCheckBox(optionName);
+//        field.setHorizontalAlignment(JFormattedTextField.LEFT);
         field.setName(optionName);
         field.setSelected(paramValidValueInfo.isSelected());
         if (paramValidValueInfo.getDescription() != null) {
@@ -786,7 +792,7 @@ public class ParamUIFactory {
         final String optionNameNegated = "~" + paramValidValueInfo.getValue();
         final boolean optionValueNegated = paramValidValueInfo.isSelectedNegated();
 
-        final JCheckBox fieldNegatedCheckBox = new JCheckBox("");
+        final JCheckBox fieldNegatedCheckBox = new JCheckBox(optionNameNegated);
 
         fieldNegatedCheckBox.setName(optionNameNegated);
         fieldNegatedCheckBox.setSelected(paramValidValueInfo.isSelectedNegated());
@@ -818,12 +824,12 @@ public class ParamUIFactory {
         });
 
 
-        final JLabel fieldNegatedLabel = new JLabel("      " + optionNameNegated);
+        final JLabel fieldNegatedLabel = new JLabel("      ");
         if (paramValidValueInfo.getDescription() != null) {
             fieldNegatedCheckBox.setToolTipText("NOT " +paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
         }
 
-        optionPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         optionPanel.add(fieldNegatedLabel);
         optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         optionPanel.add(fieldNegatedCheckBox);
@@ -832,6 +838,140 @@ public class ParamUIFactory {
         return optionPanel;
 
     }
+
+
+    private JPanel makeValidValueCheckboxPositive(final ParamValidValueInfo paramValidValueInfo) {
+
+        final String flagName = paramValidValueInfo.getValue();
+        final boolean flagSelected = paramValidValueInfo.isSelected();
+
+        JPanel panel = GridBagUtils.createPanel();
+
+        GridBagConstraints gbc = createConstraints();
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        panel.setName(flagName);
+        panel.setBorder(new EtchedBorder());
+        panel.setPreferredSize(new Dimension(150, 40));
+
+        final PropertySet vc = new PropertyContainer();
+        vc.addProperty(Property.create(flagName, flagSelected));
+        vc.getDescriptor(flagName).setDisplayName(flagName);
+
+        final BindingContext ctx = new BindingContext(vc);
+        final JCheckBox flagCheckBox = new JCheckBox(flagName);
+
+        flagCheckBox.setName(flagName);
+        flagCheckBox.setSelected(paramValidValueInfo.isSelected());
+        if (paramValidValueInfo.getDescription() != null) {
+            flagCheckBox.setToolTipText(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            panel.setToolTipText(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+        }
+
+        ctx.bind(flagName, flagCheckBox);
+
+        ctx.addPropertyChangeListener(flagName, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+                paramValidValueInfo.setSelected(flagCheckBox.isSelected());
+//                if (field.isSelected()) {
+//                    paramValidValueInfo.setSelectedNegated(false);
+//                }
+            }
+        });
+
+        processorModel.addPropertyChangeListener(paramValidValueInfo.getValue(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                flagCheckBox.setSelected(paramValidValueInfo.isSelected());
+//                if (paramValidValueInfo.isSelectedNegated()) {
+//                    field.setSelected(false);
+//                }
+            }
+        });
+
+
+
+        panel.add(flagCheckBox, gbc);
+
+        return panel;
+    }
+
+
+
+
+
+    private JPanel makeValidValueCheckboxNegative(final ParamValidValueInfo paramValidValueInfo) {
+
+        final String flagName = "~" + paramValidValueInfo.getValue();
+        final boolean flagSelectedNegated = paramValidValueInfo.isSelectedNegated();
+
+        JPanel panel = GridBagUtils.createPanel();
+
+        if ("NONE".equalsIgnoreCase(paramValidValueInfo.getValue())) {
+            return panel;
+        }
+
+        GridBagConstraints gbc = createConstraints();
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        panel.setName(flagName);
+        panel.setBorder(new EtchedBorder());
+        panel.setPreferredSize(new Dimension(150, 40));
+
+        final PropertySet vc = new PropertyContainer();
+        vc.addProperty(Property.create(flagName, flagSelectedNegated));
+        vc.getDescriptor(flagName).setDisplayName(flagName);
+
+        final BindingContext ctx = new BindingContext(vc);
+        final JCheckBox flagCheckBox = new JCheckBox(flagName);
+
+        flagCheckBox.setName(flagName);
+        flagCheckBox.setSelected(paramValidValueInfo.isSelectedNegated());
+        if (paramValidValueInfo.getDescription() != null) {
+            flagCheckBox.setToolTipText("NOT " + paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            panel.setToolTipText("NOT " + paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+        }
+
+        ctx.bind(flagName, flagCheckBox);
+
+        ctx.addPropertyChangeListener(flagName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+                paramValidValueInfo.setSelectedNegated(flagCheckBox.isSelected());
+//                if (field.isSelected()) {
+//                    paramValidValueInfo.setSelected(false);
+//                }
+            }
+        });
+
+        processorModel.addPropertyChangeListener(paramValidValueInfo.getValue(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                flagCheckBox.setSelected(paramValidValueInfo.isSelectedNegated());
+//                if (paramValidValueInfo.isSelected()) {
+//                    field.setSelected(false);
+//                }
+            }
+        });
+
+        panel.add(flagCheckBox, gbc);
+
+        return panel;
+    }
+
+
+
+
 
 
     private String[] updateValidValues(ParamInfo pi) {
