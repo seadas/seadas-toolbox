@@ -116,7 +116,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse.additional.flags";
     public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_LABEL = "Additional flags to add to flaguse";
     public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_TOOLTIP = "Adds additional choices of flags";
-    public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_DEFAULT = "~LAND ~COASTZ ~GEOREGION";
+    public static final String PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_DEFAULT = "GEOREGION";
 
 
 

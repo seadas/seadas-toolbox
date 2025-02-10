@@ -526,8 +526,13 @@ public class ParamUIFactory {
                         for (ParamValidValueInfo validValueInfo : pi.getValidValueInfos()) {
                             String validFlagName = validValueInfo.getValue();
                             if (validFlagName != null && validFlagName.length() > 0) {
-                                validFlagName = validFlagName.trim().toUpperCase();
-                                if (originalFlagName.equals(validFlagName)) {
+                                if (originalFlagName.equalsIgnoreCase(validFlagName.trim())) {
+                                    flagIsValid = true;
+                                }
+                            }
+                            String validFlagNameNegated = "~" + validValueInfo.getValue();
+                            if (validFlagNameNegated != null && validFlagNameNegated.length() > 0) {
+                                if (originalFlagName.equalsIgnoreCase(validFlagNameNegated.trim())) {
                                     flagIsValid = true;
                                 }
                             }
@@ -554,7 +559,7 @@ public class ParamUIFactory {
 
                     if (customFlagList != null && customFlagList.length() > 0) {
                         if (selectedFlags != null && selectedFlags.length() > 0) {
-                            newFlagList = selectedFlags + " " + customFlagList;
+                            newFlagList = selectedFlags + "," + customFlagList;
                         } else {
                             newFlagList = customFlagList;
                         }
@@ -662,11 +667,15 @@ public class ParamUIFactory {
 
                 if (pi.getValue() != null && pi.getValue().length() > 0) {
                     paramValidValueInfo.setSelected(false);
+                    paramValidValueInfo.setSelectedNegated(false);
 
                     String[] values = pi.getValue().split("[,\\s]");
                     for (String value : values) {
                         if (value.trim().equalsIgnoreCase(paramValidValueInfo.getValue().trim().toUpperCase())) {
                             paramValidValueInfo.setSelected(true);
+                        }
+                        if (value.trim().equalsIgnoreCase("~" + paramValidValueInfo.getValue().trim().toUpperCase())) {
+                            paramValidValueInfo.setSelectedNegated(true);
                         }
                     }
                 }
@@ -709,6 +718,9 @@ public class ParamUIFactory {
             if (paramValidValueInfo.isSelected()) {
                 choosenValues = choosenValues + paramValidValueInfo.getValue() + ",";
             }
+            if (paramValidValueInfo.isSelectedNegated()) {
+                choosenValues = choosenValues + "~" + paramValidValueInfo.getValue() + ",";
+            }
         }
         if (choosenValues.indexOf(",") != -1) {
             choosenValues = choosenValues.substring(0, choosenValues.lastIndexOf(","));
@@ -724,17 +736,17 @@ public class ParamUIFactory {
         final JPanel optionPanel = new JPanel();
         optionPanel.setName(optionName);
         optionPanel.setBorder(new EtchedBorder());
-        optionPanel.setPreferredSize(new Dimension(100, 40));
-        TableLayout booleanLayout = new TableLayout(1);
+        optionPanel.setPreferredSize(new Dimension(250, 40));
+        TableLayout booleanLayout = new TableLayout(4);
         //booleanLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
 
         optionPanel.setLayout(booleanLayout);
-        optionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         optionPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         optionPanel.add(new JLabel(emptySpace + ParamUtils.removePreceedingDashes(optionName) + emptySpace));
-        if (paramValidValueInfo.getDescription() != null) {
-            optionPanel.setToolTipText(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
-        }
+//        if (paramValidValueInfo.getDescription() != null) {
+//            optionPanel.setToolTipText(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+//        }
 
 
         final PropertySet vc = new PropertyContainer();
@@ -742,7 +754,7 @@ public class ParamUIFactory {
         vc.getDescriptor(optionName).setDisplayName(optionName);
 
         final BindingContext ctx = new BindingContext(vc);
-        final JCheckBox field = new JCheckBox();
+        final JCheckBox field = new JCheckBox("");
         field.setHorizontalAlignment(JFormattedTextField.LEFT);
         field.setName(optionName);
         field.setSelected(paramValidValueInfo.isSelected());
@@ -768,6 +780,54 @@ public class ParamUIFactory {
         });
 
         optionPanel.add(field);
+
+
+
+        final String optionNameNegated = "~" + paramValidValueInfo.getValue();
+        final boolean optionValueNegated = paramValidValueInfo.isSelectedNegated();
+
+        final JCheckBox fieldNegatedCheckBox = new JCheckBox("");
+
+        fieldNegatedCheckBox.setName(optionNameNegated);
+        fieldNegatedCheckBox.setSelected(paramValidValueInfo.isSelectedNegated());
+        if (paramValidValueInfo.getDescription() != null) {
+            fieldNegatedCheckBox.setToolTipText("NOT " +paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+        }
+
+
+        final PropertySet vc2 = new PropertyContainer();
+        vc2.addProperty(Property.create(optionNameNegated, optionValueNegated));
+        vc2.getDescriptor(optionNameNegated).setDisplayName(optionNameNegated);
+        final BindingContext ctx2 = new BindingContext(vc2);
+
+        ctx2.bind(optionNameNegated, fieldNegatedCheckBox);
+
+        ctx2.addPropertyChangeListener(optionNameNegated, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+                paramValidValueInfo.setSelectedNegated(fieldNegatedCheckBox.isSelected());
+            }
+        });
+
+        processorModel.addPropertyChangeListener(paramValidValueInfo.getValue(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                fieldNegatedCheckBox.setSelected(paramValidValueInfo.isSelectedNegated());
+            }
+        });
+
+
+        final JLabel fieldNegatedLabel = new JLabel("      " + optionNameNegated);
+        if (paramValidValueInfo.getDescription() != null) {
+            fieldNegatedCheckBox.setToolTipText("NOT " +paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+        }
+
+        optionPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        optionPanel.add(fieldNegatedLabel);
+        optionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        optionPanel.add(fieldNegatedCheckBox);
+
 
         return optionPanel;
 
