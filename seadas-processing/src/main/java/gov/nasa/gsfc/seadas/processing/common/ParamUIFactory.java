@@ -647,7 +647,7 @@ public class ParamUIFactory {
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
     }
 
-    private String chooseValidValues(ParamInfo pi, boolean negated) {
+    private String chooseValidValues(ParamInfo pi) {
         JPanel validValuesPanel = new JPanel();
         validValuesPanel.setLayout(new TableLayout(3));
         String choosenValues = "";
