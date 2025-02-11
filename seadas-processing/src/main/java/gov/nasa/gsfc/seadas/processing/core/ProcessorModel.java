@@ -17,6 +17,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import ucar.ma2.Array;
+import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -715,6 +717,43 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (var != null) {
                 for (Variable v : var) {
                     products.add(v.getShortName());
+
+                        if (v.getShortName().equalsIgnoreCase("l2_flags")) {
+                            Variable flagGroup = v;
+
+                            try {
+                                Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
+                                Array array = flagMeaningAttribute.getValues();
+                                String flagMeanings = array.toString();
+
+                                if (flagMeanings.length() > 0) {
+                                    ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+                                    if (flaguseParamInfo == null) {
+                                        flaguseParamInfo = new ParamInfo("flaguse");
+                                        flaguseParamInfo.setDescription("flaguse");
+                                    }
+                                    flaguseParamInfo.clearValidValueInfos();
+
+                                    String[] values1 = flagMeanings.split("[,\\s]");
+                                    Arrays.sort(values1);
+
+                                    for (String value : values1) {
+                                        ParamValidValueInfo test = new ParamValidValueInfo(value);
+                                        test.setDescription(value);
+                                        flaguseParamInfo.getValidValueInfos().add(test);
+                                    }
+
+                                    ParamValidValueInfo test = new ParamValidValueInfo("NONE");
+                                    test.setDescription("NONE");
+                                    flaguseParamInfo.getValidValueInfos().add(test);
+
+//                                    paramList.getPropertyChangeSupport().firePropertyChange("flaguse", oldValue, newValue);
+                                }
+
+                            } catch (Exception e) {
+                            }
+                        }
+
                 }
                 String[] bandNames = new String[products.size()];
                 products.toArray(bandNames);
