@@ -5,10 +5,10 @@ import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_InstallerController;
-import gov.nasa.gsfc.seadas.processing.preferences.SeadasToolboxDefaults;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
@@ -17,6 +17,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import ucar.ma2.Array;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
@@ -294,6 +296,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
         updateParamInfo(currentOption.getName(), newValue);
+        if ("l2bin".equalsIgnoreCase(programName)) {
+            if (currentOption.getName().equals("suite") || currentOption.getName().equals("ifile")) {
+                updateFlagUse(null);
+            }
+        }
         checkCompleteness();
     }
 
@@ -727,31 +734,39 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                                 String flagMeanings = array.toString();
 
                                 if (flagMeanings.length() > 0) {
-                                    ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-                                    if (flaguseParamInfo == null) {
-                                        flaguseParamInfo = new ParamInfo("flaguse");
-                                        flaguseParamInfo.setDescription("flaguse");
-                                    }
-                                    flaguseParamInfo.clearValidValueInfos();
+                                    if ("l2bin".equalsIgnoreCase(programName)) {
+                                        ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+                                        if (flaguseParamInfo == null) {
+                                            flaguseParamInfo = new ParamInfo("flaguse");
+                                            flaguseParamInfo.setDescription("flaguse");
+                                        }
+                                        flaguseParamInfo.clearValidValueInfos();
 
-                                    String[] values1 = flagMeanings.split("[,\\s]");
-                                    Arrays.sort(values1);
+                                        String[] values1 = flagMeanings.split("[,\\s]");
+                                        Arrays.sort(values1);
 
-                                    for (String value : values1) {
-                                        ParamValidValueInfo test = new ParamValidValueInfo(value);
-                                        test.setDescription(value);
+                                        for (String value : values1) {
+                                            ParamValidValueInfo test = new ParamValidValueInfo(value);
+                                            test.setDescription(value);
+                                            flaguseParamInfo.getValidValueInfos().add(test);
+                                        }
+
+                                        ParamValidValueInfo test = new ParamValidValueInfo("NONE");
+                                        test.setDescription("NONE");
                                         flaguseParamInfo.getValidValueInfos().add(test);
-                                    }
-
-                                    ParamValidValueInfo test = new ParamValidValueInfo("NONE");
-                                    test.setDescription("NONE");
-                                    flaguseParamInfo.getValidValueInfos().add(test);
 
 //                                    paramList.getPropertyChangeSupport().firePropertyChange("flaguse", oldValue, newValue);
+                                    }
                                 }
 
                             } catch (Exception e) {
                             }
+
+                            if ("l2bin".equalsIgnoreCase(programName)) {
+                                updateFlagUse(null);
+                            }
+
+
                         }
 
                 }
@@ -769,7 +784,32 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                     ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
                     String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
+//                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
                     paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+
+                    if ("l2bin".equalsIgnoreCase(programName)) {
+                        updateParamInfo("l3bprod", newValue);
+                        fireEvent("l3bprod", "-1", newValue);
+
+                    }
+
+                    if ("l2bin".equalsIgnoreCase(programName)) {
+                        ParamInfo compositeProdParamInfo = getParamInfo("composite_prod");
+                        String oldValueCompositeProd = compositeProdParamInfo.getValue();
+                        ParamValidValueInfo compositeProdParamValidValueInfo;
+                        for (String bandName : bandNames) {
+                            compositeProdParamValidValueInfo = new ParamValidValueInfo(bandName);
+                            compositeProdParamValidValueInfo.setDescription(bandName);
+                            compositeProdParamInfo.addValidValueInfo(compositeProdParamValidValueInfo);
+                        }
+                        ArrayList<ParamValidValueInfo> newCompositeProdValidValues = compositeProdParamInfo.getValidValueInfos();
+                        String newCompositeProdValue = compositeProdParamInfo.getValue() != null ? compositeProdParamInfo.getValue() : newCompositeProdValidValues.get(0).getValue();
+
+                        updateParamInfo("composite_prod", newCompositeProdValue);
+                        fireEvent("composite_prod", "-1", newCompositeProdValue);
+                        paramList.getPropertyChangeSupport().firePropertyChange("composite_prod", oldValueCompositeProd, newCompositeProdValue);
+                    }
+
                 }
             }
         }
@@ -1006,6 +1046,191 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
+
+
+    private void updateFlagUse(String parFileName) {
+
+        if (!"l2bin".equalsIgnoreCase(programName)) {
+            return;
+        }
+
+        ParamInfo ifileParamInfo = paramList.getInfo("ifile");
+        if (ifileParamInfo != null) {
+            File ifile = new File(ifileParamInfo.getValue());
+
+            if (ifile != null && ifile.exists()) {
+                String suite = null;
+                ParamInfo suiteParamInfo = paramList.getInfo("suite");
+                if (suiteParamInfo != null) {
+                    suite = suiteParamInfo.getValue();
+                }
+
+                final String L2BIN_PROGRAM_NAME = "l2bin";
+                File dataDir = SystemUtils.getApplicationDataDir();
+                File l2binAuxDir = new File(dataDir, L2BIN_PROGRAM_NAME);
+                l2binAuxDir.mkdirs();
+
+                File auxParFile = new File(l2binAuxDir, L2BIN_PROGRAM_NAME + "_params.par");
+                try {
+                   createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, auxParFile);
+                    if (auxParFile.exists()) {
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath());
+                    }
+                } catch (IOException e) {
+                    SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
+                    dialog.setVisible(true);
+                    dialog.setEnabled(true);
+                }
+
+
+// todo the xml file for l2bin is badly fomatted for V2025.0, if they fix this then consider using xml file in command block below to potentially fill more parameters
+
+//                    File xmlFile = new File(l2binAuxDir, "l2bin" + "_params.xml");
+//
+//                    try {
+////                        InputStream paramInfoStream = new FileInputStream(xmlFile);
+//                        InputStream paramInfoStream = getParamInfoInputStream("l2bin", ifile, suite, xmlFile);
+//                        if (auxParFile.exists()) {
+//                            updateParamInfosWithXml(paramInfoStream);
+//                        }
+//                    } catch (IOException e) {
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage("l2bin - Warning", "Failed to initialize default params from file: " + xmlFile.getAbsolutePath());
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
+//                    }
+            }
+        }
+
+
+
+        // OLD CODE
+//            String currentFlagUse = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, parFileName), "flaguse");
+//            if (currentFlagUse == null) {
+//                currentFlagUse = DEFAULT_FLAGUSE;
+//            }
+//            if (currentFlagUse != null) {
+//                ArrayList<ParamValidValueInfo> validValues = getParamInfo("flaguse").getValidValueInfos();
+//                for (ParamValidValueInfo paramValidValueInfo : validValues) {
+//                    if (currentFlagUse.contains(paramValidValueInfo.getValue().trim())) {
+//                        paramValidValueInfo.setSelected(true);
+//                    } else {
+//                        paramValidValueInfo.setSelected(false);
+//                    }
+//                }
+//                super.updateParamInfo("flaguse", currentFlagUse);
+//                fireEvent("flaguse", null, currentFlagUse);
+//            }
+    }
+
+
+
+
+
+
+    private void createL2binAuxParFile(String thisProgramName, File ifile, String suite, File parfile) throws IOException {
+
+        if (parfile.exists()) {
+            parfile.delete();
+        }
+
+        String executable = thisProgramName;
+        if (thisProgramName.equalsIgnoreCase(programName)) {
+            System.out.println("I am " + thisProgramName);
+        }
+        System.out.println("programName=" + programName);
+
+        ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
+
+        processorModel.setAcceptsParFile(true);
+
+        processorModel.setAcceptsParFile(true);
+        processorModel.addParamInfo("ifile", ifile.getAbsolutePath(), ParamInfo.Type.IFILE);
+
+        if (suite != null) {
+            processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
+        }
+
+
+        processorModel.addParamInfo("-dump_options_paramfile", parfile.getAbsolutePath(), ParamInfo.Type.OFILE);
+
+        try {
+            Process p = ocssw.executeSimple(processorModel);
+            ocssw.waitForProcess();
+            if (ocssw instanceof OCSSWLocal) {
+                File tmpParFileToDel = new File(ParFileManager.tmpParFileToDelString);
+                tmpParFileToDel.delete();
+            }
+
+            if (ocssw.getProcessExitValue() != 0) {
+                throw new IOException(thisProgramName + " failed to run");
+            }
+
+            ocssw.getIntermediateOutputFiles(processorModel);
+
+            if (!parfile.exists()) {
+                //SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+                Dialogs.showError("SEVERE: " + parfile.getAbsolutePath() + " not found!");
+
+                throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
+            } else {
+//                    return new FileInputStream(parfile);
+            }
+
+        } catch (IOException e) {
+            throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
+        }
+    }
+
+
+
+
+
+
+    public void updateParamInfosFromL2binAuxParFile(String parfile) throws IOException  {
+
+        BufferedReader br = new BufferedReader(new FileReader(parfile));
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+                System.out.println(line);
+
+                if (line != null) {
+                    String[] values = line.split("=");
+                    if (values != null && values.length == 2) {
+                        String name = values[0].trim();
+                        String value = values[1].trim();
+                        System.out.println("name=" + name + "  value=" + value);
+
+                        if ("flaguse".equals(name)) {
+                            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+                            String originalFlaguse = flaguseParamInfo.getValue();
+//                                flaguseParamInfo.setValue(value);
+                            updateParamInfo("flaguse", value);
+                            fireEvent("flaguse", originalFlaguse, value);
+                        }
+                    }
+                }
+
+            }
+//                String everything = sb.toString();
+        } finally {
+            br.close();
+
+        }
+
+    }
+
+
+
+
+
+
+
     private static class L2Bin_Processor extends ProcessorModel {
 
         private static final String DEFAULT_PAR_FILE_NAME = "l2bin_defaults.par";
@@ -1053,9 +1278,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                 }
                 DEFAULT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
-                updateSuite();
+//                updateSuite();
                 super.updateParamValues(new File(sampleFileName));
             }
+//todo here now
+//            updateFlagUse(null);
+
         }
 
         private void updateSuite() {
@@ -1096,36 +1324,293 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) getParamInfo("suite").getValidValueInfos().clone();
             getParamInfo("suite").setValidValueInfos(suiteValidValues);
             fireEvent("suite", oldValidValues, suiteValidValues);
-            updateFlagUse(DEFAULT_PAR_FILE_NAME);
+            // todo commenting out this to test
+//            updateFlagUse(DEFAULT_PAR_FILE_NAME);
         }
 
-        @Override
-        public void updateParamInfo(ParamInfo currentOption, String newValue) {
+//        @Override
+//        public void updateParamInfo(ParamInfo currentOption, String newValue) {
+//
+////            if (currentOption.getName().equals("suite")) {
+////                updateFlagUse(PAR_FILE_PREFIX + newValue + ".par");
+////            }
+//            super.updateParamInfo(currentOption, newValue);
+//            if (currentOption.getName().equals("suite")  || currentOption.getName().equals("ifile")) {
+//                updateFlagUse(PAR_FILE_PREFIX + newValue + ".par");
+//            }
+//        }
 
-            if (currentOption.getName().equals("suite")) {
-                updateFlagUse(PAR_FILE_PREFIX + newValue + ".par");
+//        private void updateFlagUse(String parFileName) {
+//
+//            ParamInfo ifileParamInfo = paramList.getInfo("ifile");
+//            if (ifileParamInfo != null) {
+//                File ifile = new File(ifileParamInfo.getValue());
+//
+//                if (ifile != null && ifile.exists()) {
+//                    String suite = null;
+//                    ParamInfo suiteParamInfo = paramList.getInfo("suite");
+//                    if (suiteParamInfo != null) {
+//                        suite = suiteParamInfo.getValue();
+//                    }
+//
+//                    final String L2BIN_PROGRAM_NAME = "l2bin";
+//                    File dataDir = SystemUtils.getApplicationDataDir();
+//                    File l2binAuxDir = new File(dataDir, L2BIN_PROGRAM_NAME);
+//                    l2binAuxDir.mkdirs();
+//
+//                    File auxParFile = new File(l2binAuxDir, L2BIN_PROGRAM_NAME + "_params.par");
+//                    try {
+//                        createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, auxParFile);
+//                        if (auxParFile.exists()) {
+//                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath());
+//                        }
+//                    } catch (IOException e) {
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
+//                    }
+//
+//
+//// todo the xml file for l2bin is badly fomatted for V2025.0, if they fix this then consider using xml file in command block below to potentially fill more parameters
+//
+////                    File xmlFile = new File(l2binAuxDir, "l2bin" + "_params.xml");
+////
+////                    try {
+//////                        InputStream paramInfoStream = new FileInputStream(xmlFile);
+////                        InputStream paramInfoStream = getParamInfoInputStream("l2bin", ifile, suite, xmlFile);
+////                        if (auxParFile.exists()) {
+////                            updateParamInfosWithXml(paramInfoStream);
+////                        }
+////                    } catch (IOException e) {
+////                        SimpleDialogMessage dialog = new SimpleDialogMessage("l2bin - Warning", "Failed to initialize default params from file: " + xmlFile.getAbsolutePath());
+////                        dialog.setVisible(true);
+////                        dialog.setEnabled(true);
+////                    }
+//                }
+//            }
+//
+//
+//
+//            // OLD CODE
+////            String currentFlagUse = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, parFileName), "flaguse");
+////            if (currentFlagUse == null) {
+////                currentFlagUse = DEFAULT_FLAGUSE;
+////            }
+////            if (currentFlagUse != null) {
+////                ArrayList<ParamValidValueInfo> validValues = getParamInfo("flaguse").getValidValueInfos();
+////                for (ParamValidValueInfo paramValidValueInfo : validValues) {
+////                    if (currentFlagUse.contains(paramValidValueInfo.getValue().trim())) {
+////                        paramValidValueInfo.setSelected(true);
+////                    } else {
+////                        paramValidValueInfo.setSelected(false);
+////                    }
+////                }
+////                super.updateParamInfo("flaguse", currentFlagUse);
+////                fireEvent("flaguse", null, currentFlagUse);
+////            }
+//        }
+//
+//
+//
+//
+//
+//
+//        private void createL2binAuxParFile(String thisProgramName, File ifile, String suite, File parfile) throws IOException {
+//
+//            if (parfile.exists()) {
+//                parfile.delete();
+//            }
+//
+//            String executable = thisProgramName;
+//            if (thisProgramName.equalsIgnoreCase(programName)) {
+//                System.out.println("I am " + thisProgramName);
+//            }
+//            System.out.println("programName=" + programName);
+//
+//            ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
+//
+//            processorModel.setAcceptsParFile(true);
+//
+//            processorModel.setAcceptsParFile(true);
+//            processorModel.addParamInfo("ifile", ifile.getAbsolutePath(), ParamInfo.Type.IFILE);
+//
+//            if (suite != null) {
+//                processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
+//            }
+//
+//
+//            processorModel.addParamInfo("-dump_options_paramfile", parfile.getAbsolutePath(), ParamInfo.Type.OFILE);
+//
+//            try {
+//                Process p = ocssw.executeSimple(processorModel);
+//                ocssw.waitForProcess();
+//                if (ocssw instanceof OCSSWLocal) {
+//                    File tmpParFileToDel = new File(ParFileManager.tmpParFileToDelString);
+//                    tmpParFileToDel.delete();
+//                }
+//
+//                if (ocssw.getProcessExitValue() != 0) {
+//                    throw new IOException(thisProgramName + " failed to run");
+//                }
+//
+//                ocssw.getIntermediateOutputFiles(processorModel);
+//
+//                if (!parfile.exists()) {
+//                    //SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+//                    Dialogs.showError("SEVERE: " + parfile.getAbsolutePath() + " not found!");
+//
+//                    throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
+//                } else {
+////                    return new FileInputStream(parfile);
+//                }
+//
+//            } catch (IOException e) {
+//                throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
+//            }
+//        }
+//
+//
+//
+//
+//        public void updateParamInfosFromL2binAuxParFile(String parfile) throws IOException  {
+//
+//            BufferedReader br = new BufferedReader(new FileReader(parfile));
+//            try {
+//                StringBuilder sb = new StringBuilder();
+//                String line = br.readLine();
+//
+//                while (line != null) {
+//                    sb.append(line);
+//                    sb.append(System.lineSeparator());
+//                    line = br.readLine();
+//                    System.out.println(line);
+//
+//                    if (line != null) {
+//                        String[] values = line.split("=");
+//                        if (values != null && values.length == 2) {
+//                            String name = values[0].trim();
+//                            String value = values[1].trim();
+//                            System.out.println("name=" + name + "  value=" + value);
+//
+//                            if ("flaguse".equals(name)) {
+//                                ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+//                                String originalFlaguse = flaguseParamInfo.getValue();
+////                                flaguseParamInfo.setValue(value);
+//                                super.updateParamInfo("flaguse", value);
+//                                fireEvent("flaguse", originalFlaguse, value);
+//                            }
+//                        }
+//                    }
+//
+//                }
+////                String everything = sb.toString();
+//            } finally {
+//                br.close();
+//
+//            }
+//
+//        }
+
+
+
+
+
+
+        private InputStream getParamInfoInputStream(String thisProgramName, File ifile, String suite, File xmlFile) throws IOException {
+
+            if (xmlFile.exists()) {
+                xmlFile.delete();
             }
-            super.updateParamInfo(currentOption, newValue);
+
+            String executable = thisProgramName;
+            if (thisProgramName.equalsIgnoreCase(programName)) {
+                System.out.println("I am " + thisProgramName);
+            }
+            System.out.println("programName=" + programName);
+
+            ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
+
+            processorModel.setAcceptsParFile(true);
+
+            processorModel.setAcceptsParFile(true);
+            processorModel.addParamInfo("ifile", ifile.getAbsolutePath(), ParamInfo.Type.IFILE);
+
+            if (suite != null) {
+                processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
+            }
+
+
+            processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+
+            try {
+                Process p = ocssw.executeSimple(processorModel);
+                ocssw.waitForProcess();
+                if (ocssw instanceof OCSSWLocal) {
+                    File tmpParFileToDel = new File(ParFileManager.tmpParFileToDelString);
+                    tmpParFileToDel.delete();
+                }
+
+                if (ocssw.getProcessExitValue() != 0) {
+                    throw new IOException(thisProgramName + " failed to run");
+                }
+
+                ocssw.getIntermediateOutputFiles(processorModel);
+
+                if (!xmlFile.exists()) {
+                    //SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+                    Dialogs.showError("SEVERE: " + xmlFile.getAbsolutePath() + " not found!");
+
+                    return null;
+                } else {
+                    return new FileInputStream(xmlFile);
+                }
+
+            } catch (IOException e) {
+                throw new IOException("problem creating Parameter XML file: " + e.getMessage());
+            }
         }
 
-        private void updateFlagUse(String parFileName) {
-            String currentFlagUse = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, parFileName), "flaguse");
-            if (currentFlagUse == null) {
-                currentFlagUse = DEFAULT_FLAGUSE;
-            }
-            if (currentFlagUse != null) {
-                ArrayList<ParamValidValueInfo> validValues = getParamInfo("flaguse").getValidValueInfos();
-                for (ParamValidValueInfo paramValidValueInfo : validValues) {
-                    if (currentFlagUse.contains(paramValidValueInfo.getValue().trim())) {
-                        paramValidValueInfo.setSelected(true);
-                    } else {
-                        paramValidValueInfo.setSelected(false);
+
+
+        public void updateParamInfosWithXml(InputStream stream) throws IOException  {
+            XmlReader reader = new XmlReader();
+            if (reader != null) {
+                Element rootElement = reader.parseAndGetRootElement(stream);
+
+                if (rootElement == null) {
+                    throw new IOException();
+                }
+
+                NodeList optionNodelist = rootElement.getElementsByTagName("option");
+
+                if (optionNodelist != null && optionNodelist.getLength() > 0) {
+                    for (int i = 0; i < optionNodelist.getLength(); i++) {
+
+                        Element optionElement = (Element) optionNodelist.item(i);
+
+                        String name = XmlReader.getTextValue(optionElement, "name");
+
+                        if (name != null) {
+                            name = name.toLowerCase();
+                            String value = XmlReader.getTextValue(optionElement, "value");
+
+                            if (value == null || value.length() == 0) {
+                                value = XmlReader.getTextValue(optionElement, "default");
+                            }
+
+                            if ("flaguse".equals(name)) {
+
+                                ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+                                flaguseParamInfo.setValue(value);
+                            }
+                        }
                     }
                 }
-                super.updateParamInfo("flaguse", currentFlagUse);
-                fireEvent("flaguse", null, currentFlagUse);
             }
         }
+
+
+
     }
 
     private static class L2BinAquarius_Processor extends ProcessorModel {

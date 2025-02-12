@@ -47,6 +47,9 @@ public class XmlReader {
 
     public Element parseAndGetRootElement(InputStream inputStream) {
         parseXmlFile(inputStream);
+        if (dom == null) {
+            return null;
+        }
         return dom.getDocumentElement();
     }
 
