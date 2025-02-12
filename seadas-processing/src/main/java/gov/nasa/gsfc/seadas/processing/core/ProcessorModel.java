@@ -681,9 +681,15 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public void updateParamValues(File selectedFile) {
 
-        if (selectedFile == null || (programName != null && !l2prodProcessors.contains(programName))) {
+        if (selectedFile != null && programName != null && (l2prodProcessors.contains(programName) || "l3mapgen".equalsIgnoreCase(programName)) ) {
+            //   stay
+        } else {
             return;
         }
+
+//        if (selectedFile == null || (programName != null && (!l2prodProcessors.contains(programName)) || "l3mapgen".equalsIgnoreCase(programName))) {
+//            return;
+//        }
 
         if (selectedFile.getName().endsWith(".txt")) {
             try {
@@ -711,9 +717,49 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         ArrayList<String> products = new ArrayList<String>();
         if (ncFile != null) {
+            if ("l3mapgen".equalsIgnoreCase(programName)) {
+                ParamInfo pi = getParamInfo("product");
+                pi.clearValidValueInfos();
+                String oldValue = pi.getValue();
+                ParamValidValueInfo paramValidValueInfo;
+
+                try {
+                    Attribute unitsAttribute =  ncFile.findGlobalAttribute("units");
+                    Array array = unitsAttribute.getValues();
+                    String units = array.toString();
+                    int i= 0;
+                    String[] values = units.split("[,\\s]");
+                    for (String value : values) {
+                        String[] values2 = value.split(":");
+                        if (values2.length == 2) {
+                            String bandName = values2[0];
+                            System.out.println(bandName);
+                            paramValidValueInfo = new ParamValidValueInfo(bandName);
+                            paramValidValueInfo.setDescription(bandName);
+                            pi.addValidValueInfo(paramValidValueInfo);
+                        }
+                    }
+
+                    ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
+                    String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
+//                        paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+                    paramList.getPropertyChangeSupport().firePropertyChange("product", oldValue, newValue);
+
+                    updateParamInfo("product", newValue);
+                    fireEvent("product", "-1", newValue);
+
+                } catch (Exception e) {
+                }
+
+                return;
+            }
+
             java.util.List<Variable> var = null;
 
             List<ucar.nc2.Group> groups = ncFile.getRootGroup().getGroups();
+
+
+
             for (ucar.nc2.Group g : groups) {
                 //retrieve geophysical data to fill in "product" value ranges
                 if (g.getShortName().equalsIgnoreCase("Geophysical_Data")) {
@@ -774,24 +820,28 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 products.toArray(bandNames);
 
                 ParamInfo pi = getParamInfo(getProdParamName());
+                pi.clearValidValueInfos();
                 if (bandNames != null && pi != null) {
-                    String oldValue = pi.getValue();
-                    ParamValidValueInfo paramValidValueInfo;
-                    for (String bandName : bandNames) {
-                        paramValidValueInfo = new ParamValidValueInfo(bandName);
-                        paramValidValueInfo.setDescription(bandName);
-                        pi.addValidValueInfo(paramValidValueInfo);
-                    }
-                    ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-                    String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
-//                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
-                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+
 
                     if ("l2bin".equalsIgnoreCase(programName)) {
+                        String oldValue = pi.getValue();
+                        ParamValidValueInfo paramValidValueInfo;
+                        for (String bandName : bandNames) {
+                            paramValidValueInfo = new ParamValidValueInfo(bandName);
+                            paramValidValueInfo.setDescription(bandName);
+                            pi.addValidValueInfo(paramValidValueInfo);
+                        }
+                        ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
+                        String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
+//                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
+                        paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+
                         updateParamInfo("l3bprod", newValue);
                         fireEvent("l3bprod", "-1", newValue);
-
                     }
+
+
 
                     if ("l2bin".equalsIgnoreCase(programName)) {
                         ParamInfo compositeProdParamInfo = getParamInfo("composite_prod");
