@@ -751,6 +751,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 } catch (Exception e) {
                 }
 
+                updateSuite(selectedFile);
+
                 return;
             }
 
@@ -797,9 +799,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                                             flaguseParamInfo.getValidValueInfos().add(test);
                                         }
 
-                                        ParamValidValueInfo test = new ParamValidValueInfo("NONE");
-                                        test.setDescription("NONE");
-                                        flaguseParamInfo.getValidValueInfos().add(test);
+//                                        ParamValidValueInfo test = new ParamValidValueInfo("NONE");
+//                                        test.setDescription("NONE");
+//                                        flaguseParamInfo.getValidValueInfos().add(test);
 
 //                                    paramList.getPropertyChangeSupport().firePropertyChange("flaguse", oldValue, newValue);
                                     }
@@ -864,7 +866,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         }
 
-        if ("l2bin".equalsIgnoreCase(programName) || "l3mapgen".equalsIgnoreCase(programName)) {
+        if ("l2bin".equalsIgnoreCase(programName)) {
             updateSuite(selectedFile);
         }
     }
@@ -1260,6 +1262,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         String name = values[0].trim();
                         String value = values[1].trim();
                         System.out.println("name=" + name + "  value=" + value);
+
+                        if ("suite".equals(name)) {
+                            ParamInfo paramInfo = paramList.getInfo("suite");
+                            String originalParamInfo = paramInfo.getValue();
+//                                flaguseParamInfo.setValue(value);
+                            updateParamInfo("suite", value);
+                            fireEvent("suite", originalParamInfo, value);
+                        }
 
                         if ("flaguse".equals(name)) {
                             ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");

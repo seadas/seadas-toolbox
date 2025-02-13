@@ -657,19 +657,53 @@ public class ParamUIFactory {
     }
 
     private String chooseValidValues(ParamInfo pi) {
-        JPanel validValuesPanel = new JPanel();
-        TableLayout tableLayout = new TableLayout(6);
-//        tableLayout.setTableAnchor(TableLayout.Anchor.WEST);
-        validValuesPanel.setLayout(tableLayout);
-        tableLayout.setTableFill(TableLayout.Fill.NONE);
-        validValuesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        validValuesPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        JPanel panel = GridBagUtils.createPanel();
+
+        GridBagConstraints gbc = createConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+
+        JPanel leftPanel = GridBagUtils.createPanel();
+        GridBagConstraints gbcLeft = createConstraints();
+        gbcLeft.fill = GridBagConstraints.BOTH;
+        gbcLeft.weighty = 1;
+        gbcLeft.weightx = 1;
+        gbcLeft.anchor = GridBagConstraints.NORTHWEST;
+
+        JPanel rightPanel = GridBagUtils.createPanel();
+        GridBagConstraints gbcRight = createConstraints();
+        gbcRight.fill = GridBagConstraints.BOTH;
+        gbcRight.weighty = 1;
+        gbcRight.weightx = 1;
+        gbcRight.anchor = GridBagConstraints.NORTHWEST;
+
+
+
 
         String choosenValues = "";
         final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
 
-        Iterator<ParamValidValueInfo> itr = validValues.iterator();
         ParamValidValueInfo paramValidValueInfo;
+        Iterator<ParamValidValueInfo> itr = validValues.iterator();
+        int rowCount = 0;
+        while (itr.hasNext()) {
+            paramValidValueInfo = itr.next();
+            if (!paramValidValueInfo.getValue().trim().equals("SPARE")) {
+                rowCount++;
+            }
+        }
+        int totalRows = rowCount;
+
+
+        int halfNumTotalRows = (int) Math.floor(totalRows/2.0);
+        rowCount = 0;
+        int colCount = 0;
+
+        itr = validValues.iterator();
         while (itr.hasNext()) {
             paramValidValueInfo = itr.next();
             if (!paramValidValueInfo.getValue().trim().equals("SPARE")) {
@@ -689,17 +723,49 @@ public class ParamUIFactory {
                         }
                     }
                 }
-                validValuesPanel.add(makeValidValueCheckboxPositive(paramValidValueInfo));
-                validValuesPanel.add(makeValidValueCheckboxNegative(paramValidValueInfo));
 
-                validValuesPanel.add(new JLabel("              "));
+                if (colCount == 0) {
+                    gbcLeft.gridx=0;
+                    leftPanel.add(makeValidValueCheckboxPositive(paramValidValueInfo), gbcLeft);
+                    gbcLeft.gridx=1;
+                    leftPanel.add(makeValidValueCheckboxNegative(paramValidValueInfo), gbcLeft);
+                    gbcLeft.gridy++;
+                } else {
+                    gbcRight.gridx=0;
+                    rightPanel.add(makeValidValueCheckboxPositive(paramValidValueInfo), gbcRight);
+                    gbcRight.gridx=1;
+                    rightPanel.add(makeValidValueCheckboxNegative(paramValidValueInfo), gbcRight);
+                    gbcRight.gridy++;
+                }
+
+                rowCount++;
+                if (rowCount > halfNumTotalRows) {
+                    colCount = 1;
+                    rowCount = 0;
+                }
             }
         }
-        validValuesPanel.repaint();
-        validValuesPanel.validate();
+
+//        leftColumnPanel.repaint();
+//        leftColumnPanel.validate();
+//        rightColumnPanel.repaint();
+//        rightColumnPanel.validate();
+
+
+        gbc.gridx = 0;
+        panel.add(leftPanel, gbc);
+        gbc.gridx = 1;
+        panel.add(new JLabel("              "), gbc);
+        gbc.gridx = 2;
+        panel.add(rightPanel, gbc);
+//
+//        panel.repaint();
+//        panel.validate();
+
+
 
         final Window parent = SnapApp.getDefault().getMainFrame();
-        String dialogTitle = null;
+        String dialogTitle = "Option Selector: " + processorModel.getProgramName() + " - " + pi.getName();
 
 
 
@@ -718,7 +784,7 @@ public class ParamUIFactory {
 
 
 
-        final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, validValuesPanel, ModalDialog.ID_OK, "test");
+        final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, panel, ModalDialog.ID_OK, pi.getName());
         final int dialogResult = modalDialog.show();
         if (dialogResult != ModalDialog.ID_OK) {
 
@@ -740,6 +806,8 @@ public class ParamUIFactory {
         }
         return choosenValues;
     }
+
+
 
     private JPanel makeValidValueCheckbox(final ParamValidValueInfo paramValidValueInfo) {
 

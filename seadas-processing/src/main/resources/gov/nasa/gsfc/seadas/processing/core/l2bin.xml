@@ -202,10 +202,10 @@
                 <value>SPARE</value>
                 <description>SPARE</description>
             </validValue>
-            <validValue>
-                <value>NONE</value>
-                <description>Do not use any flag</description>
-            </validValue>
+<!--            <validValue>-->
+<!--                <value>NONE</value>-->
+<!--                <description>Do not use any flag</description>-->
+<!--            </validValue>-->
 <!--            <validValue>-->
 <!--                <value>GEOREGION</value>-->
 <!--                <description>Note: this flag is not available in all level-2 files</description>-->
