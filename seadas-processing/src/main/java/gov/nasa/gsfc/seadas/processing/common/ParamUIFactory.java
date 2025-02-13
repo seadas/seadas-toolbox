@@ -247,9 +247,7 @@ public class ParamUIFactory {
             optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
 
-        if ("suite".equalsIgnoreCase(pi.getName())) {
-            int i= 0; //DEBUG
-        }
+        
         if (pi.getValue() == null || pi.getValue().trim().length() == 0) {
             if (pi.getDefaultValue() != null && pi.getDefaultValue().trim().length() != 0) {
                 processorModel.updateParamInfo(pi, pi.getDefaultValue());

@@ -863,7 +863,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
         }
+
+        if ("l2bin".equalsIgnoreCase(programName) || "l3mapgen".equalsIgnoreCase(programName)) {
+            updateSuite(selectedFile);
+        }
     }
+
 
     @Override
     public String getImplicitInputFileExtensions() {
@@ -1277,6 +1282,66 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
+    private void updateSuite(File selectedFile) {
+
+        FileInfo ifileInfo = new FileInfo(selectedFile, ocssw);
+
+       File missionDir = ifileInfo.getMissionDirectory();
+        if (missionDir == null) {
+            try {
+                LineNumberReader reader = new LineNumberReader(new FileReader(selectedFile));
+                String sampleFileName = reader.readLine();
+                missionDir = new FileInfo(sampleFileName).getMissionDirectory();
+            } catch (FileNotFoundException fnfe) {
+
+            } catch (IOException ioe) {
+
+            }
+
+        }
+
+
+        String[] suites;
+        HashMap<String, Boolean> missionSuites;
+        if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
+            suites = missionDir.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File file, String s) {
+                    return s.contains("l2bin_defaults_");
+                }
+            });
+        } else {
+            OCSSWClient ocsswClient = new OCSSWClient();
+            WebTarget target = ocsswClient.getOcsswWebTarget();
+            missionSuites = target.path("ocssw").path("l2bin_suites").path(ifileInfo.getMissionName()).request(MediaType.APPLICATION_JSON)
+                    .get(new GenericType<HashMap<String, Boolean>>() {
+                    });
+            int i = 0;
+            suites = new String[missionSuites.size()];
+            for (Map.Entry<String, Boolean> entry : missionSuites.entrySet()) {
+                String missionName = entry.getKey();
+                Boolean missionStatus = entry.getValue();
+
+                if (missionStatus) {
+                    suites[i++] = missionName;
+                }
+
+            }
+        }
+        String suiteName;
+        ArrayList<ParamValidValueInfo> suiteValidValues = new ArrayList<ParamValidValueInfo>();
+        for (String fileName : suites) {
+            suiteName = fileName.substring(fileName.indexOf("_", fileName.indexOf("_") + 1) + 1, fileName.indexOf("."));
+            suiteValidValues.add(new ParamValidValueInfo(suiteName));
+        }
+        ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) getParamInfo("suite").getValidValueInfos().clone();
+        getParamInfo("suite").setValidValueInfos(suiteValidValues);
+        fireEvent("suite", oldValidValues, suiteValidValues);
+        // todo commenting out this to test
+//            updateFlagUse(DEFAULT_PAR_FILE_NAME);
+    }
+
+
 
 
 
@@ -1328,7 +1393,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                 }
                 DEFAULT_FLAGUSE = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, DEFAULT_PAR_FILE_NAME), "flaguse");
-//                updateSuite();
+                updateSuite();
                 super.updateParamValues(new File(sampleFileName));
             }
 //todo here now
