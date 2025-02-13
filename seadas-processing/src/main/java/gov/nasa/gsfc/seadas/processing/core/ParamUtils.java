@@ -433,6 +433,21 @@ public class ParamUtils {
                     case "loneast":
                         paramInfo.setValue(OCSSW_L2binController.getPreferenceLoneast());
                         break;
+                    case "output_wavelengths":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceOutputWavelengths());
+                        break;
+                    case "suite":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceSuite());
+                        break;
+                    case "composite_prod":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeProd());
+                        break;
+                    case "composite_scheme":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeScheme());
+                        break;
+                    case "row_group":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceRowGroup());
+                        break;
                 }
             }
 

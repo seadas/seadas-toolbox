@@ -67,6 +67,31 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_L3BPROD_TOOLTIP = "Product (or product list)";
     public static final String PROPERTY_L2BIN_L3BPROD_DEFAULT = "";
 
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".output_wavelengths";
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL = "output_wavelengths";
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_TOOLTIP = "Comma delimited list of 3D wavelengths";
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_SUITE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".suite";
+    public static final String PROPERTY_L2BIN_SUITE_LABEL = "suite";
+    public static final String PROPERTY_L2BIN_SUITE_TOOLTIP = "Product Suite";
+    public static final String PROPERTY_L2BIN_SUITE_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_KEY = PROPERTY_L2BIN_ROOT_KEY + ".composite_prod";
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_LABEL = "composite_prod";
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP = "Product to use as the basis for the composite scheme";
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY = PROPERTY_L2BIN_ROOT_KEY + ".composite_scheme";
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL = "composite_scheme";
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP = "Composite Scheme (uses composite_prod)";
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_ROW_GROUP_KEY = PROPERTY_L2BIN_ROOT_KEY + ".rowgroup";
+    public static final String PROPERTY_L2BIN_ROW_GROUP_LABEL = "rowgroup";
+    public static final String PROPERTY_L2BIN_ROW_GROUP_TOOLTIP = "Number of bin rows to process at once";
+    public static final String PROPERTY_L2BIN_ROW_GROUP_DEFAULT = "";
+
     public static final String PROPERTY_L2BIN_PRODTYPE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".prodtype";
     public static final String PROPERTY_L2BIN_PRODTYPE_LABEL = "prodtype";
     public static final String PROPERTY_L2BIN_PRODTYPE_TOOLTIP = "Product type";
@@ -161,6 +186,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY, PROPERTY_L2BIN_FLAGUSE_SELECTOR_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_KEY, PROPERTY_L2BIN_FLAGUSE_ADDITIONAL_FLAGS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_SUITE_KEY, PROPERTY_L2BIN_SUITE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_COMPOSITE_PROD_KEY, PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY, PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_ROW_GROUP_KEY, PROPERTY_L2BIN_ROW_GROUP_DEFAULT);
+
+
 
 
 
@@ -396,6 +428,38 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+
+        @Preference(key = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY,
+                label = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL,
+                description = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_TOOLTIP)
+        String l2binOutputWavelengthsDefault = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_SUITE_KEY,
+                label = PROPERTY_L2BIN_SUITE_LABEL,
+                description = PROPERTY_L2BIN_SUITE_TOOLTIP)
+        String l2binSuiteDefault = PROPERTY_L2BIN_SUITE_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_PROD_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_PROD_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP)
+        String l2binCompositeProdDefault = PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP)
+        String l2binCompositeSchemeDefault = PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_ROW_GROUP_KEY,
+                label = PROPERTY_L2BIN_ROW_GROUP_LABEL,
+                description = PROPERTY_L2BIN_ROW_GROUP_TOOLTIP)
+        String l2binRowGroupDefault = PROPERTY_L2BIN_ROW_GROUP_DEFAULT;
+
+
+
+
+
+
         @Preference(key = PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY,
                 label = PROPERTY_L2BIN_FLAGUSE_SELECTOR_LABEL,
                 description = PROPERTY_L2BIN_FLAGUSE_SELECTOR_TOOLTIP)
@@ -469,6 +533,34 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
     }
+
+
+
+
+    public static String getPreferenceOutputWavelengths() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT);
+    }
+    public static String getPreferenceSuite() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_SUITE_KEY, PROPERTY_L2BIN_SUITE_DEFAULT);
+    }
+    public static String getPreferenceCompositeProd() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_COMPOSITE_PROD_KEY, PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT);
+    }
+    public static String getPreferenceCompositeScheme() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY, PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT);
+    }
+    public static String getPreferenceRowGroup() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_ROW_GROUP_KEY, PROPERTY_L2BIN_ROW_GROUP_DEFAULT);
+    }
+
+
+
+
 
 
     public static boolean getPreferenceFlaguseSelectorEnable() {
