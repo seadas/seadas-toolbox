@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_InstallerController;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.VersionChecker;
@@ -1245,10 +1246,21 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public void updateParamInfosFromL2binAuxParFile(String parfile) throws IOException  {
 
+        String flagUsePref = OCSSW_L2binController.getPreferenceFlaguse();
+        if (flagUsePref != null && flagUsePref.trim().length() > 0) {
+            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+            String originalFlaguse = flaguseParamInfo.getValue();
+            updateParamInfo("flaguse", flagUsePref);
+            fireEvent("flaguse", originalFlaguse, flagUsePref);
+            return;
+        }
+
+
         BufferedReader br = new BufferedReader(new FileReader(parfile));
         try {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
+
 
             while (line != null) {
                 sb.append(line);
@@ -1271,6 +1283,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                             fireEvent("suite", originalParamInfo, value);
                         }
 
+                        // todo
+                        OCSSW_L2binController.getPreferenceFlaguse();
+
                         if ("flaguse".equals(name)) {
                             ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
                             String originalFlaguse = flaguseParamInfo.getValue();
@@ -1285,9 +1300,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                String everything = sb.toString();
         } finally {
             br.close();
-
         }
-
     }
 
 
