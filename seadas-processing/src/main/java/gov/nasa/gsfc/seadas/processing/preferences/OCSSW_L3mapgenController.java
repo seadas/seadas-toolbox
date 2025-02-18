@@ -71,6 +71,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     boolean propertyValueChangeEventsEnabled = true;
 
 
+    // todo add more parameters:   wavelength_3d, suite, fudge, product_rgb, num_cache
+    // todo add some more favorite projections
+    // todo compare param tooltips here and with .xml file and with ocssw help
+    // todo update help page
+
+
+
     // Preferences property prefix
     private static final String PROPERTY_L3MAPGEN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l3mapgen";
 
@@ -89,6 +96,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_LABEL = "resolution";
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP = "Resolution";
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT = "";
+
 
     public static final String PROPERTY_L3MAPGEN_INTERP_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".interp";
     public static final String PROPERTY_L3MAPGEN_INTERP_LABEL = "interp";

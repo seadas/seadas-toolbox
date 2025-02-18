@@ -58,6 +58,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     boolean propertyValueChangeEventsEnabled = true;
 
+    // todo compare param tooltips here and with .xml file and with ocssw help
+    // todo update help page
 
     // Preferences property prefix
     private static final String PROPERTY_L2BIN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l2bin";
