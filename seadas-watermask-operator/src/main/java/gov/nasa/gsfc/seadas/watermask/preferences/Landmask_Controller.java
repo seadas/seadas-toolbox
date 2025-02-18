@@ -47,8 +47,8 @@ import java.awt.*;
         keywordsCategory = "General Tools",
         id = "LandCoastMask")
 @org.openide.util.NbBundle.Messages({
-        "Options_DisplayName_LandCoastMask=Land Coast Mask",
-        "Options_Keywords_LandCoastMask=seadas, Land Coast Mask"
+        "Options_DisplayName_LandCoastMask=Land, Water & Coast Mask",
+        "Options_Keywords_LandCoastMask=seadas, Land Water Coast Mask"
 })
 public final class Landmask_Controller extends DefaultConfigController {
 

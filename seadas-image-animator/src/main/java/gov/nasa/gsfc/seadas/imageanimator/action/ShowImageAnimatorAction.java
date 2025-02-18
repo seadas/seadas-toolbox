@@ -24,9 +24,9 @@ import java.util.ArrayList;
 @ActionID(category = "View", id = "ImageAnimatorAction")
 @ActionRegistration(displayName = "#CTL_ImageAnimatorActionName")
 @ActionReferences({
-        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 100),
+        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 30),
         @ActionReference(path = "Menu/View", position = 600),
-        @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 100)
+        @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 40)
 })
 @NbBundle.Messages({
         "CTL_ImageAnimatorActionName=Image Animator",

@@ -38,9 +38,9 @@ import java.util.Map;
 @ActionRegistration(displayName = "#CTL_BathymetryAction_Text", lazy = false)
 //        iconBase = "gov/nasa/gsfc/seadas/bathymetry/ui/icons/bathymetry.png")
 @ActionReferences({
-        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 300),
+        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 10),
         @ActionReference(path = "Menu/Raster/Masks"),
-        @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 20)
+        @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 10)
 })
 @NbBundle.Messages({
         "CTL_BathymetryAction_Text=Bathymetry",

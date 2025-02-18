@@ -49,18 +49,18 @@ import java.util.Map;
 @ActionID(category = "Processing", id = "gov.nasa.gsfc.seadas.watermask.ui.WaterMaskAction" )
 @ActionRegistration(displayName = "#CTL_WaterMaskAction_Text", lazy = false)
 @ActionReferences({
-        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 300),
+        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 40),
         @ActionReference(path = "Menu/Raster/Masks"),
         @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 20)
 })
 @NbBundle.Messages({
-        "CTL_WaterMaskAction_Text=CoastlineLandWaterMasks",
+        "CTL_WaterMaskAction_Text=Land, Water, Coast Masks",
         "CTL_WaterMaskAction_Description=Add coastline, land and water masks."
 })
 
 public final class WaterMaskAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar {
 
-    public static final String COMMAND_ID = "Coastline, Land & Water";
+    public static final String COMMAND_ID = "Land, Water, Coast Masks";
     public static final String TOOL_TIP = "Add coastline, land and water masks";
     //    public static final String ICON = "/org/esa/beam/watermask/ui/icons/coastline_24.png";
     //  public static final String ICON = "icons/Coastline24.png";
