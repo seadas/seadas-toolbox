@@ -269,12 +269,12 @@ public class ParamUIFactory {
         if (colSpan >= 5) {
             field.setColumns(firstColWidth + (colSpan - 1) * additionalColWidth);
         } else if (colSpan == 4) {
-            field.setColumns(firstColWidth + 43);
+            field.setColumns(firstColWidth + 44);
         } else if (colSpan == 3) {
             field.setColumns(firstColWidth + 30);
-        } else if (colSpan >= 2) {
-            field.setColumns(firstColWidth + 14);
-        }else {
+        } else if (colSpan == 2) {
+            field.setColumns(firstColWidth + 15);
+        } else {
             field.setColumns(firstColWidth);
         }
 
@@ -416,7 +416,7 @@ public class ParamUIFactory {
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else if (colSpan == 4) {
-            String initString = getStringOfSetLength(firstColWidth + 64);
+            String initString = getStringOfSetLength(firstColWidth + 66);
             final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
@@ -585,7 +585,7 @@ public class ParamUIFactory {
         }
 
         field.setText(pi.getValue());
-        field.setColumns(46);
+        field.setColumns(47);
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }

@@ -230,7 +230,7 @@ public class ParamUtils {
             if ("l2bin.xml".equals(paramXmlFileName)) {
                 switch (optionNameTmp) {
                     case "flaguse":
-                        if (!OCSSW_L2binController.getPreferenceFlaguseSelectorEnable()) {
+                        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
                             // todo Possibly delete this whole block
 //                            type = ParamInfo.Type.STRING;
                         }
@@ -316,28 +316,7 @@ public class ParamUtils {
             }
 
 
-            if ("l2bin.xml".equals(paramXmlFileName)) {
-                switch (optionName) {
-                    case "flaguse":
-                        String additionalFlags = OCSSW_L2binController.getPreferenceFlaguseAdditionalFlags();
-                        if (additionalFlags != null && additionalFlags.length() > 0) {
-                            String[] values = additionalFlags.split("[,\\s]");
-                            for(String flag : values) {
-                                addValidValueToParamInfo(flag, flag, paramInfo);
-                            }
-                        }
-//
-//                        addFavoriteProjection("~GEOREGION",
-//                                "not GEOREGION",
-//                                paramInfo);
-//                        addFavoriteProjection("~LAND",
-//                                "not LAND",
-//                                paramInfo);
-//                        addFavoriteProjection("~COASTZ",
-//                                "not COASTZ",
-//                                paramInfo);
-                }
-            }
+
 
 
 

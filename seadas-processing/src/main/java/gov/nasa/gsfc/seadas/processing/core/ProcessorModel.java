@@ -741,13 +741,22 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         }
                     }
 
-                    ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-                    String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
-//                        paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
-                    paramList.getPropertyChangeSupport().firePropertyChange("product", oldValue, newValue);
+                    String newValue = pi.getValue() != null ? pi.getValue() : "";
 
+//                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
+                    paramList.getPropertyChangeSupport().firePropertyChange("product", "-1", newValue);
                     updateParamInfo("product", newValue);
                     fireEvent("product", "-1", newValue);
+
+
+//
+//                    ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
+//                    String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
+////                        paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+//                    paramList.getPropertyChangeSupport().firePropertyChange("product", oldValue, newValue);
+//
+//                    updateParamInfo("product", newValue);
+//                    fireEvent("product", "-1", newValue);
 
                 } catch (Exception e) {
                 }
@@ -822,46 +831,51 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String[] bandNames = new String[products.size()];
                 products.toArray(bandNames);
 
-                ParamInfo pi = getParamInfo(getProdParamName());
-                pi.clearValidValueInfos();
-                if (bandNames != null && pi != null) {
 
+                if (bandNames != null) {
 
                     if ("l2bin".equalsIgnoreCase(programName)) {
-                        String oldValue = pi.getValue();
-                        ParamValidValueInfo paramValidValueInfo;
-                        for (String bandName : bandNames) {
-                            paramValidValueInfo = new ParamValidValueInfo(bandName);
-                            paramValidValueInfo.setDescription(bandName);
-                            pi.addValidValueInfo(paramValidValueInfo);
-                        }
-                        ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-                        String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
-//                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
-                        paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
+                        ParamInfo pi = getParamInfo("l3bprod");
+                        if (pi != null) {
+                            pi.clearValidValueInfos();
 
-                        updateParamInfo("l3bprod", newValue);
-                        fireEvent("l3bprod", "-1", newValue);
+                            ParamValidValueInfo paramValidValueInfo;
+                            for (String bandName : bandNames) {
+                                paramValidValueInfo = new ParamValidValueInfo(bandName);
+                                paramValidValueInfo.setDescription(bandName);
+                                pi.addValidValueInfo(paramValidValueInfo);
+                            }
+
+                            String newValue = pi.getValue() != null ? pi.getValue() : "";
+
+                            paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
+                            updateParamInfo("l3bprod", newValue);
+                            fireEvent("l3bprod", "-1", newValue);
+                        }
                     }
 
 
-
                     if ("l2bin".equalsIgnoreCase(programName)) {
-                        ParamInfo compositeProdParamInfo = getParamInfo("composite_prod");
-                        String oldValueCompositeProd = compositeProdParamInfo.getValue();
-                        ParamValidValueInfo compositeProdParamValidValueInfo;
-                        for (String bandName : bandNames) {
-                            compositeProdParamValidValueInfo = new ParamValidValueInfo(bandName);
-                            compositeProdParamValidValueInfo.setDescription(bandName);
-                            compositeProdParamInfo.addValidValueInfo(compositeProdParamValidValueInfo);
-                        }
-                        ArrayList<ParamValidValueInfo> newCompositeProdValidValues = compositeProdParamInfo.getValidValueInfos();
-                        String newCompositeProdValue = compositeProdParamInfo.getValue() != null ? compositeProdParamInfo.getValue() : newCompositeProdValidValues.get(0).getValue();
+                        ParamInfo pi = getParamInfo("composite_prod");
+                        if (pi != null) {
+                            pi.clearValidValueInfos();
 
-                        updateParamInfo("composite_prod", newCompositeProdValue);
-                        fireEvent("composite_prod", "-1", newCompositeProdValue);
-                        paramList.getPropertyChangeSupport().firePropertyChange("composite_prod", oldValueCompositeProd, newCompositeProdValue);
+                            ParamValidValueInfo paramValidValueInfo;
+                            for (String bandName : bandNames) {
+                                paramValidValueInfo = new ParamValidValueInfo(bandName);
+                                paramValidValueInfo.setDescription(bandName);
+                                pi.addValidValueInfo(paramValidValueInfo);
+                            }
+
+                            String newValue = pi.getValue() != null ? pi.getValue() : "";
+
+                            paramList.getPropertyChangeSupport().firePropertyChange("composite_prod", "-1", newValue);
+                            updateParamInfo("composite_prod", newValue);
+                            fireEvent("composite_prod", "-1", newValue);
+                        }
                     }
+
+
 
                 }
             }
@@ -1255,6 +1269,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return;
         }
 
+        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+            return;
+        }
+
 
         BufferedReader br = new BufferedReader(new FileReader(parfile));
         try {
@@ -1282,9 +1300,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                             updateParamInfo("suite", value);
                             fireEvent("suite", originalParamInfo, value);
                         }
-
-                        // todo
-                        OCSSW_L2binController.getPreferenceFlaguse();
 
                         if ("flaguse".equals(name)) {
                             ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
