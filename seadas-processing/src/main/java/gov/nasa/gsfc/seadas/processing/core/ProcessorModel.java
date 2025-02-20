@@ -357,16 +357,35 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
 
         if (programName != null && verifyIFilePath(ifileName)) {
-            //ocssw.setIfileName(ifileName);
-            String ofileName = getOcssw().getOfileName(ifileName, programName);
-            //SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
-            if (ofileName != null) {
-                isIfileValid = true;
-                updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                updateGeoFileInfo(ifileName, inputFileInfo);
-                updateOFileInfo(getOFileFullPath(ofileName));
-                updateParamValues(new File(ifileName));
+
+            if ("l3mapgen".equalsIgnoreCase(programName)) {
+                String resolution = getParamValue("resolution");
+                String oformat = getParamValue("oformat");
+                String product = getParamValue("product");
+                String projection = getParamValue("projection");
+                String ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+
+                if (ofileName != null) {
+                    isIfileValid = true;
+                    updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+                    updateGeoFileInfo(ifileName, inputFileInfo);
+                    updateOFileInfo(ofileName);
+
+                    updateParamValues(new File(ifileName));
+                }
+            } else {
+                //ocssw.setIfileName(ifileName);
+                String ofileName = getOcssw().getOfileName(ifileName, programName);
+                //SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
+                if (ofileName != null) {
+                    isIfileValid = true;
+                    updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+                    updateGeoFileInfo(ifileName, inputFileInfo);
+                    updateOFileInfo(getOFileFullPath(ofileName));
+                    updateParamValues(new File(ifileName));
+                }
             }
+
         } else {
             isIfileValid = false;
             updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
@@ -734,7 +753,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         String[] values2 = value.split(":");
                         if (values2.length == 2) {
                             String bandName = values2[0];
-                            System.out.println(bandName);
+//                            System.out.println(bandName);
                             paramValidValueInfo = new ParamValidValueInfo(bandName);
                             paramValidValueInfo.setDescription(bandName);
                             pi.addValidValueInfo(paramValidValueInfo);
@@ -1207,9 +1226,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         String executable = thisProgramName;
         if (thisProgramName.equalsIgnoreCase(programName)) {
-            System.out.println("I am " + thisProgramName);
+//            System.out.println("I am " + thisProgramName);
         }
-        System.out.println("programName=" + programName);
+//        System.out.println("programName=" + programName);
 
         ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
 
@@ -1284,14 +1303,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 sb.append(line);
                 sb.append(System.lineSeparator());
                 line = br.readLine();
-                System.out.println(line);
+//                System.out.println(line);
 
                 if (line != null) {
                     String[] values = line.split("=");
                     if (values != null && values.length == 2) {
                         String name = values[0].trim();
                         String value = values[1].trim();
-                        System.out.println("name=" + name + "  value=" + value);
+//                        System.out.println("name=" + name + "  value=" + value);
 
                         if ("suite".equals(name)) {
                             ParamInfo paramInfo = paramList.getInfo("suite");
@@ -1677,9 +1696,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             String executable = thisProgramName;
             if (thisProgramName.equalsIgnoreCase(programName)) {
-                System.out.println("I am " + thisProgramName);
+//                System.out.println("I am " + thisProgramName);
             }
-            System.out.println("programName=" + programName);
+//            System.out.println("programName=" + programName);
 
             ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
 
@@ -1866,60 +1885,224 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     }
 
+
+    private static String getOfileForL3MapGen(String ifilename, String resolution, String oformat, String product, String projection) {
+
+
+        String ifileBasename = ifilename;
+
+        if (ifilename.endsWith(".nc")) {
+            ifileBasename = ifilename.substring(0,ifilename.length() - 3);
+        }
+
+        String ofileName = ifileBasename.replace(".L3b.", ".L3m.");
+
+
+        if (product != null && product.trim().length() > 0) {
+            String[] productsArray = product.split("[,\\s]");
+            for (String currProduct : productsArray) {
+                currProduct = currProduct.trim();
+                ofileName += "." + currProduct;
+            }
+        }
+
+
+        if (resolution != null && resolution.trim().length() > 0) {
+            ofileName += "." + resolution;
+        }
+
+
+        if (projection != null && projection.trim().length() > 0) {
+            String[] projectionArray = projection.split("[\\s]");
+
+            if (projectionArray.length > 1) {
+                String[] projectionArray2 = projectionArray[0].split("=");
+                if (projectionArray2.length > 1) {
+                    ofileName += "." + projectionArray2[1];
+                } else {
+                    ofileName += "." + projectionArray[0];
+                }
+            } else {
+                ofileName += "." + projection;
+            }
+
+     //       +proj=eqdc +lon_0=0.0 +lat_1=0.0 +lat_2=0.0
+        }
+
+
+        if (ofileName.equalsIgnoreCase(ifileBasename)) {
+            ofileName = ifileBasename + "_out";
+        }
+
+
+        if (oformat == null || oformat.trim().length() == 0) {
+            oformat = "NETCDF4";
+        }
+        oformat = oformat.toUpperCase();
+
+        switch (oformat) {
+            case "NETCDF4":
+                ofileName += ".nc";
+                break;
+            case "HDF4":
+                ofileName += ".hdf";
+                break;
+            case "PNG":
+                ofileName += ".png";
+                break;
+            case "PPM":
+                ofileName += ".ppm";
+                break;
+            case "TIFF":
+                ofileName += ".tiff";
+                break;
+            default:
+                ofileName += ".nc";
+                break;
+
+        }
+
+
+        return  ofileName;
+    }
+
+
     private static class L3MAPGEN_Processor extends ProcessorModel {
 
         L3MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setOpenInSeadas(true);
 
-            addPropertyChangeListener("product", new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    if (ifileName != null) {
-                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                        String newProdValue = (String) propertyChangeEvent.getNewValue();
-                        String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution"), "--oformat=" + getParamValue("oformat")};
-                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
-                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-                        updateOFileInfo(ofileName);
-                    }
-                }
-            });
-
             addPropertyChangeListener("resolution", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
                     String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
-                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-                    String suite = getParamValue("product");
-                    if (suite == null || suite.trim().length() == 0) {
-                        suite = "all";
-                    }
-                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
-                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                    String resolution = (String) propertyChangeEvent.getNewValue();
+                    String oformat = getParamValue("oformat");
+                    String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+
+                    String ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+
                     updateOFileInfo(ofileName);
                 }
             });
+
+
+
 
             addPropertyChangeListener("oformat", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String oldFormatValue = (String) propertyChangeEvent.getOldValue();
-                    String newFormatValue = (String) propertyChangeEvent.getNewValue();
-                    String suite = getParamValue("product");
-                    if (suite == null || suite.trim().length() == 0) {
-                        suite = "all";
-                    }
-                    String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + newFormatValue};
-                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = (String) propertyChangeEvent.getNewValue();
+                    String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+
+                    String ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+
                     updateOFileInfo(ofileName);
                 }
             });
+
+
+            addPropertyChangeListener("product", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = getParamValue("oformat");
+                    String product = (String) propertyChangeEvent.getNewValue();
+                    String projection = getParamValue("projection");
+
+                    String ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            addPropertyChangeListener("projection", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
+                    String projection = (String) propertyChangeEvent.getNewValue();
+
+                    if (projection != null && projection.trim().startsWith("#")) {
+                        paramList.getPropertyChangeSupport().firePropertyChange("projection", "-1", "");
+                        updateParamInfo("projection", "");
+                        fireEvent("projection", "-1", "");
+                        return;
+                    }
+
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = getParamValue("oformat");
+                    String product = getParamValue("product");
+
+                    String ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            // todo bypassing all this additional ofile renaming at least for now as it does not always return the best name
+            if (1 == 2) {
+                addPropertyChangeListener("product", new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                        String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                        if (ifileName != null) {
+                            String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                            String newProdValue = (String) propertyChangeEvent.getNewValue();
+                            String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution"), "--oformat=" + getParamValue("oformat")};
+                            String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                            //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                            updateOFileInfo(ofileName);
+                        }
+                    }
+                });
+
+                addPropertyChangeListener("resolution", new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                        String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                        String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+                        String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+                        String suite = getParamValue("product");
+                        if (suite == null || suite.trim().length() == 0) {
+                            suite = "all";
+                        }
+                        String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite, "--oformat=" + getParamValue("oformat")};
+                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                        updateOFileInfo(ofileName);
+                    }
+                });
+
+                addPropertyChangeListener("oformat", new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                        String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                        String oldFormatValue = (String) propertyChangeEvent.getOldValue();
+                        String newFormatValue = (String) propertyChangeEvent.getNewValue();
+                        String suite = getParamValue("product");
+                        if (suite == null || suite.trim().length() == 0) {
+                            suite = "all";
+                        }
+                        String[] additionalOptions = {"--resolution=" + getParamValue("resolution"), "--suite=" + suite, "--oformat=" + newFormatValue};
+                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                        updateOFileInfo(ofileName);
+                    }
+                });
+            }
 
         }
 
