@@ -57,7 +57,10 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     Property south;
     Property west;
     Property east;
-    
+
+    Property namingScheme;
+
+
     Property fav1SetToDefault;
     Property fav1Projection;
     Property fav1NSWE;
@@ -73,11 +76,16 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     boolean propertyValueChangeEventsEnabled = true;
 
 
+
     // todo add more parameters:   wavelength_3d, suite, fudge, product_rgb, num_cache
     // todo add some more favorite projections
     // todo compare param tooltips here and with .xml file and with ocssw help
     // todo update help page
 
+    public static final String  OFILE_NAMING_SCHEME_OCSSW = "OCSSW Default";
+    public static final String  OFILE_NAMING_SCHEME_CUSTOM = "Custom";
+    public static final String  OFILE_NAMING_SCHEME_CUSTOM2 = "Custom 2";
+    public static final String  OFILE_NAMING_SCHEME_NONE = "None";
 
 
     // Preferences property prefix
@@ -124,6 +132,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_EAST_LABEL = "east";
     public static final String PROPERTY_L3MAPGEN_EAST_TOOLTIP = "Easternmost boundary";
     public static final String PROPERTY_L3MAPGEN_EAST_DEFAULT = "";
+
+
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_LABEL = "ofile Naming Scheme";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_TOOLTIP = "Naming scheme to use for autofilling ofile name";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_CUSTOM;
+
 
     public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV.projections.section";
     public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_LABEL = "Favorite Projections";
@@ -241,6 +256,14 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         south = initPropertyDefaults(context, PROPERTY_L3MAPGEN_SOUTH_KEY, PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
         west = initPropertyDefaults(context, PROPERTY_L3MAPGEN_WEST_KEY, PROPERTY_L3MAPGEN_WEST_DEFAULT);
         east = initPropertyDefaults(context, PROPERTY_L3MAPGEN_EAST_KEY, PROPERTY_L3MAPGEN_EAST_DEFAULT);
+
+
+        namingScheme = initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT);
+
+
+
+
+
 
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY, true);
 
@@ -601,6 +624,18 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
+        @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY,
+                label = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_LABEL,
+                valueSet = {OFILE_NAMING_SCHEME_NONE,OFILE_NAMING_SCHEME_OCSSW,OFILE_NAMING_SCHEME_CUSTOM,OFILE_NAMING_SCHEME_CUSTOM2},
+                description = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_TOOLTIP)
+        String l3mapgenOfileNamingSchemeDefault = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT;
+
+
+        public static final String  OFILE_NAMING_SCHEME_OCSSW = "OCSSW Default";
+        public static final String  OFILE_NAMING_SCHEME_CUSTOM = "Custom";
+        public static final String  OFILE_NAMING_SCHEME_CUSTOM2 = "Custom 2";
+        public static final String  OFILE_NAMING_SCHEME_NONE = "None";
+
         @Preference(key = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY,
                 label = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_LABEL,
                 description = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_TOOLTIP)
@@ -732,6 +767,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_DEFAULT);
     }
 
+
+    public static String getPreferenceOfileNamingScheme() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT);
+    }
 
 
 
