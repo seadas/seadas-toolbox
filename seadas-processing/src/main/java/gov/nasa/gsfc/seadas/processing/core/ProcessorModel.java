@@ -368,9 +368,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String ofileName;
                 if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
                     ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+                } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+                    ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
                 } else {
                     String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                    ofileName = getOfileForL3MapGenOcssw(ofileNameDefault, resolution, oformat, product, projection);
+                    ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
                 }
 
 
@@ -1902,13 +1904,26 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-    private static String getOfileForL3MapGenOcssw(String ofilenameDefault, String resolution, String oformat, String product, String projection) {
+    private static String getOfileForL3MapGenOcssw(String ifileOriginal, String ofilenameDefault, String resolution, String oformat, String product, String projection) {
 
-        String ofilename = ofilenameDefault;
-
-        if (ofilenameDefault.endsWith(".nc")) {
-            ofilename = ofilenameDefault.substring(0,ofilenameDefault.length() - 3);
+        // add the path
+        File file = new File(ifileOriginal);
+        if (file != null) {
+            String parentPath = file.getParentFile().getAbsolutePath();
+            File file2 = new File(parentPath, ofilenameDefault);
+            if (file2 != null) {
+                ofilenameDefault = file2.getAbsolutePath();
+            }
         }
+//
+
+        String ofilename = stripFilenameExtension(ofilenameDefault);
+
+//        String ofilename = ofilenameDefault;
+//
+//        if (ofilenameDefault.endsWith(".nc")) {
+//            ofilename = ofilenameDefault.substring(0,ofilenameDefault.length() - 3);
+//        }
 
         ofilename = getOfileForL3MapGenAddOns(ofilename, resolution, product, projection);
 
@@ -1991,6 +2006,73 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
+    private static String stripFilenameExtension(String filename) {
+        String fileBasename = filename;
+
+        if (filename.endsWith(".nc")) {
+            fileBasename = filename.substring(0,filename.length() - 3);
+        }
+
+        return fileBasename;
+    }
+
+
+
+    private static String getOfileForL3MapGenSimple(String ifilename, String oformat) {
+
+        String ifileBasename = stripFilenameExtension(ifilename);
+
+       String simpleFormat = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSimpleFormat();
+
+      //   simpleFormat = "[IFILE]_mapped";
+        String DEFAULT_SUFFIX = "mapped";
+
+        boolean filenameReplaced = false;
+        String ofileBasename = simpleFormat;
+        if (ofileBasename != null) {
+            ofileBasename = ofileBasename.trim();
+            if (ofileBasename.length() > 0) {
+                String  ofileBasename2 = ofileBasename.replace("[IFILE]",ifileBasename);
+                ofileBasename2 = ofileBasename2.replace("[ifile]",ofileBasename2);
+                if (!ofileBasename.equals(ofileBasename2)) {
+                    filenameReplaced = true;
+                    ofileBasename = ofileBasename2;
+                }
+            }
+        }
+
+        if (ofileBasename == null || ofileBasename.trim().length() == 0) {
+//            ofileBasename = ifileBasename + "." + DEFAULT_SUFFIX;
+//            filenameReplaced = true;
+
+            return "";
+        }
+
+
+        if (ofileBasename.equalsIgnoreCase(ifileBasename)) {
+            ofileBasename = ofileBasename + "." + DEFAULT_SUFFIX;
+        }
+
+
+        String ofilename = getOfileForL3MapGenAddExtension(ofileBasename, oformat);
+
+        // add the path
+        if (!filenameReplaced) {
+            File file = new File(ifilename);
+            if (file != null) {
+                String parentPath = file.getParentFile().getAbsolutePath();
+                File file2 = new File(parentPath, ofilename);
+                if (file2 != null) {
+                    ofilename = file2.getAbsolutePath();
+                }
+            }
+        }
+
+        return  ofilename;
+    }
+
+
+
 
     private static String getOfileForL3MapGen(String ifilename, String resolution, String oformat, String product, String projection) {
 
@@ -2036,9 +2118,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String ofileName;
                     if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
                         ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
                     } else {
                         String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ofileNameDefault, resolution, oformat, product, projection);
+                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
                     }
 
                     updateOFileInfo(ofileName);
@@ -2061,9 +2145,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String ofileName;
                     if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
                         ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
                     } else {
                         String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ofileNameDefault, resolution, oformat, product, projection);
+                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
                     }
 
                     updateOFileInfo(ofileName);
@@ -2084,10 +2170,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String ofileName;
                     if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
                         ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
-
+                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
                     } else {
                         String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ofileNameDefault, resolution, oformat, product, projection);
+                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
                     }
 
                     updateOFileInfo(ofileName);
@@ -2117,9 +2204,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String ofileName;
                     if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
                         ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
                     } else {
                         String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ofileNameDefault, resolution, oformat, product, projection);
+                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
                     }
 
                     updateOFileInfo(ofileName);
