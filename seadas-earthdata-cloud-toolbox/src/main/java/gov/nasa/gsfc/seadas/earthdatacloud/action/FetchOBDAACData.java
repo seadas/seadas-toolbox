@@ -11,29 +11,39 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 public class FetchOBDAACData extends JFrame {
 
     private static final String CMR_COLLECTION_URL = "https://cmr.earthdata.nasa.gov/search/collections.json?short_name=";
     private static final String CMR_GRANULE_URL = "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=";
 
-    private JTextField shortNameField;
     private JTextArea outputArea;
-    private JButton searchButton, downloadButton;
+    private JButton searchButton, downloadButton, nextButton, prevButton;
+    private JComboBox<Integer> pageSizeSelector;
+    private JComboBox<String> satelliteSelector, levelSelector, productSelector;
     private List<String> downloadUrls;
+    private int currentPage = 0;
+    private int pageSize = 20;
 
     public FetchOBDAACData() {
         setTitle("NASA OB-DAAC Data Downloader");
-        setSize(600, 400);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout());
 
-        inputPanel.add(new JLabel("Enter Short Name:"));
-        shortNameField = new JTextField(20);
-        inputPanel.add(shortNameField);
+        inputPanel.add(new JLabel("Satellite & Instrument:"));
+        satelliteSelector = new JComboBox<>(new String[]{"PACE_OCI", "MODIS_AQUA", "MODIS_TERRA"});
+        inputPanel.add(satelliteSelector);
+
+        inputPanel.add(new JLabel("Data Level:"));
+        levelSelector = new JComboBox<>(new String[]{"L1", "L2", "L3M"});
+        inputPanel.add(levelSelector);
+
+        inputPanel.add(new JLabel("Product Name:"));
+        productSelector = new JComboBox<>(new String[]{"SFREFL_NRT", "CHL", "SST"});
+        inputPanel.add(productSelector);
 
         searchButton = new JButton("Search");
         inputPanel.add(searchButton);
@@ -48,46 +58,89 @@ public class FetchOBDAACData extends JFrame {
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea), BorderLayout.CENTER);
 
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String shortName = shortNameField.getText().trim();
-                if (!shortName.isEmpty()) {
-                    searchForData(shortName);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please enter a short name.");
-                }
+        JPanel controlPanel = new JPanel();
+        controlPanel.setLayout(new FlowLayout());
+
+        controlPanel.add(new JLabel("Items per page:"));
+        pageSizeSelector = new JComboBox<>(new Integer[]{5, 10, 20, 50, 100});
+        pageSizeSelector.setSelectedItem(20);
+        controlPanel.add(pageSizeSelector);
+
+        prevButton = new JButton("Previous");
+        prevButton.setEnabled(false);
+        controlPanel.add(prevButton);
+
+        nextButton = new JButton("Next");
+        nextButton.setEnabled(false);
+        controlPanel.add(nextButton);
+
+        add(controlPanel, BorderLayout.SOUTH);
+
+        searchButton.addActionListener(e -> {
+            String shortName = generateShortName();
+            pageSize = (Integer) pageSizeSelector.getSelectedItem();
+            searchForData(shortName);
+        });
+
+        pageSizeSelector.addActionListener(e -> {
+            pageSize = (Integer) pageSizeSelector.getSelectedItem();
+            currentPage = 0;
+            displayPage();
+        });
+
+        nextButton.addActionListener(e -> {
+            if ((currentPage + 1) * pageSize < downloadUrls.size()) {
+                currentPage++;
+                displayPage();
             }
         });
 
-        downloadButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                downloadAllFiles();
+        prevButton.addActionListener(e -> {
+            if (currentPage > 0) {
+                currentPage--;
+                displayPage();
             }
         });
+
+        downloadButton.addActionListener(e -> downloadAllFiles());
+    }
+
+    private String generateShortName() {
+        return satelliteSelector.getSelectedItem() + "_" + levelSelector.getSelectedItem() + "_" + productSelector.getSelectedItem();
     }
 
     private void searchForData(String shortName) {
-        outputArea.setText("Searching for data...");
+        outputArea.setText("Searching for data for: " + shortName + "...\n");
         new Thread(() -> {
             try {
                 String conceptId = getConceptId(shortName);
                 if (conceptId != null) {
                     downloadUrls = getGranuleUrls(conceptId);
                     SwingUtilities.invokeLater(() -> {
-                        outputArea.setText("Found " + downloadUrls.size() + " files:\n");
-                        for (String url : downloadUrls) {
-                            outputArea.append(url + "\n");
-                        }
+                        currentPage = 0;
+                        displayPage();
                         downloadButton.setEnabled(true);
+                        nextButton.setEnabled(downloadUrls.size() > pageSize);
                     });
                 } else {
-                    SwingUtilities.invokeLater(() -> outputArea.setText("Concept ID not found for the provided short name."));
+                    SwingUtilities.invokeLater(() -> outputArea.setText("Concept ID not found for " + shortName));
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
                 SwingUtilities.invokeLater(() -> outputArea.setText("Error occurred: " + ex.getMessage()));
             }
         }).start();
+    }
+
+    private void displayPage() {
+        outputArea.setText("Showing results " + (currentPage * pageSize + 1) + " to " + Math.min((currentPage + 1) * pageSize, downloadUrls.size()) + " of " + downloadUrls.size() + "\n\n");
+
+        for (int i = currentPage * pageSize; i < Math.min((currentPage + 1) * pageSize, downloadUrls.size()); i++) {
+            outputArea.append(downloadUrls.get(i) + "\n");
+        }
+
+        prevButton.setEnabled(currentPage > 0);
+        nextButton.setEnabled((currentPage + 1) * pageSize < downloadUrls.size());
     }
 
     private void downloadAllFiles() {
@@ -146,33 +199,48 @@ public class FetchOBDAACData extends JFrame {
 
     private static List<String> getGranuleUrls(String conceptId) throws IOException {
         List<String> urls = new ArrayList<>();
-        String urlString = CMR_GRANULE_URL + conceptId;
-        URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+        int pageSize = 100;  // Request up to 100 results per page
+        int pageNum = 1;  // Start from page 1
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
+        while (true) {
+            String urlString = String.format(
+                    "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=%s&page_size=%d&page_num=%d",
+                    conceptId, pageSize, pageNum
+            );
 
-        JSONObject jsonResponse = new JSONObject(response.toString());
-        JSONArray items = jsonResponse.getJSONArray("items");
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-        for (int i = 0; i < items.length(); i++) {
-            JSONObject umm = items.getJSONObject(i).getJSONObject("umm");
-            JSONArray relatedUrls = umm.getJSONArray("RelatedUrls");
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
 
-            for (int j = 0; j < relatedUrls.length(); j++) {
-                JSONObject relatedUrl = relatedUrls.getJSONObject(j);
-                String urlType = relatedUrl.optString("Type");
-                if ("GET DATA".equalsIgnoreCase(urlType)) {
-                    urls.add(relatedUrl.getString("URL"));
+            JSONObject jsonResponse = new JSONObject(response.toString());
+            JSONArray items = jsonResponse.getJSONArray("items");
+
+            if (items.length() == 0) {
+                break; // No more results, exit the loop
+            }
+
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject umm = items.getJSONObject(i).getJSONObject("umm");
+                JSONArray relatedUrls = umm.getJSONArray("RelatedUrls");
+
+                for (int j = 0; j < relatedUrls.length(); j++) {
+                    JSONObject relatedUrl = relatedUrls.getJSONObject(j);
+                    String urlType = relatedUrl.optString("Type");
+                    if ("GET DATA".equalsIgnoreCase(urlType)) {
+                        urls.add(relatedUrl.getString("URL"));
+                    }
                 }
             }
+
+            pageNum++; // Move to the next page
         }
 
         return urls;
