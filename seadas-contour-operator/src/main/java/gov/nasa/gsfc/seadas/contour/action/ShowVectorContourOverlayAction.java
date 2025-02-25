@@ -52,9 +52,9 @@ import java.util.Collection;
 @ActionID(category = "View", id = "OverlayContourLayerAction")
 @ActionRegistration(displayName = "#CTL_OverlayContourLayerActionName")
 @ActionReferences({
-        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 100),
+        @ActionReference(path = "Menu/SeaDAS-Toolbox/General Tools", position = 20),
         @ActionReference(path = "Menu/Layer"),
-        @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 100)
+        @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 30)
 })
 @NbBundle.Messages({
         "CTL_OverlayContourLayerActionName=Contour Overlay",

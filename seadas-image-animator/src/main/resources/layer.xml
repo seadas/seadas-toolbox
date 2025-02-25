@@ -2,7 +2,7 @@
     <folder name="Services">
         <folder name="javahelp">
             <file name="gov-nasa-gsfc-seadas-imageanimator-helpset.xml" url="helpset.xml">
-                <attr name="position" intvalue="4910"/>
+                <attr name="position" intvalue="4920"/>
             </file>
         </folder>
     </folder>
