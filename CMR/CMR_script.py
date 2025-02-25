@@ -4,6 +4,7 @@ import re
 import os
 import sys
 from pathlib import Path
+from datetime import datetime
 
 def get_user_home():
     """Retrieve the correct home directory across different OS environments."""
@@ -19,8 +20,16 @@ def get_user_home():
     else:  # macOS/Linux
         return str(Path.home() / "Documents")
 
-def fetch_ob_cloud_collections():
-    url = "https://cmr.earthdata.nasa.gov/search/collections.json?provider=OB_CLOUD&page_size=2000"
+def fetch_ob_cloud_collections(start_date=None, end_date=None):
+    base_url = "https://cmr.earthdata.nasa.gov/search/collections.json?provider=OB_CLOUD&page_size=2000"
+
+    # Add temporal constraints if provided
+    if start_date and end_date:
+        temporal_filter = f"&temporal={start_date},{end_date}"
+        url = base_url + temporal_filter
+    else:
+        url = base_url
+
     response = requests.get(url)
     if response.status_code != 200:
         print("Failed to retrieve data.")
@@ -84,8 +93,21 @@ def save_to_json(categorized_data):
         print(f"Saved {filename}")
 
 def main():
+    start_date = input("Enter start date (YYYY-MM-DD) or leave blank: ")
+    end_date = input("Enter end date (YYYY-MM-DD) or leave blank: ")
+
+    if start_date and end_date:
+        try:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").strftime("%Y-%m-%dT00:00:00Z")
+            end_date = datetime.strptime(end_date, "%Y-%m-%d").strftime("%Y-%m-%dT23:59:59Z")
+        except ValueError:
+            print("Invalid date format. Please use YYYY-MM-DD.")
+            return
+    else:
+        start_date = end_date = None
+
     print("Fetching OB_CLOUD collections...")
-    collections = fetch_ob_cloud_collections()
+    collections = fetch_ob_cloud_collections(start_date, end_date)
     if not collections:
         print("No collections found.")
         return
