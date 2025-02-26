@@ -56,7 +56,7 @@
         <seadas-bathymetry-operator.version>9.1.0</seadas-bathymetry-operator.version>  <!-- <seadas-bathymetry-operator.version>9.1.0-SNAPSHOT</seadas-bathymetry-operator.version>-->
         <seadas-image-animator.version>2.1.0</seadas-image-animator.version>   <!-- <seadas-image-animator.version>2.1.0-SNAPSHOT</seadas-image-animator.version>-->
         <seadas-earthdata-cloud-toolbox.version>1.0.0</seadas-earthdata-cloud-toolbox.version>
-        <netbeans.version>RELEASE113</netbeans.version>
+        <netbeans.version>RELEASE250</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>
         <jersey.version>2.27</jersey.version>
@@ -83,6 +83,15 @@
             <name>NASA SeaDAS repository</name>
             <url>https://seadas.gsfc.nasa.gov/mvn-seadas</url>
         </repository>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -98,6 +107,18 @@
                 <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
 
@@ -316,6 +337,21 @@
                     <excludes>
                         <exclude>.gitignore</exclude>
                     </excludes>
+                    <release>11</release>
+<!--               Some NetBeans modules use reflection, which Java blocks by default.-->
+<!--                add-opens allows NetBeans to access internal Java APIs.-->
+                    <compilerArgs>
+                        <arg>--add-exports</arg>
+                        <arg>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>javafx.base/com.sun.javafx.runtime=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED</arg>
+                        <arg>--add-opens</arg>
+                        <arg>java.base/java.lang=ALL-UNNAMED</arg>
+                        <arg>--add-opens</arg>
+                        <arg>java.base/java.util=ALL-UNNAMED</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
