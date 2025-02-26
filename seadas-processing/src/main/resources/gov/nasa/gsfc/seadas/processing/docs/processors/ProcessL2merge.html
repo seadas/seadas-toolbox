@@ -1,0 +1,181 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - l2merge</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            l2merge
+        </td>
+        <td class="header" align="right"><a href="../general/SeaDASOverview.html"><img src="../images/SeaDASHeader.png"
+                                                                                       border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>l2merge</h3>
+
+<p>
+    Merge Level 2 file.
+</p>
+
+<p>
+    <a href="#location">Location</a> <br/>
+    <a href="#details">Details</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+<a name="location"><h4>Location</h4></a>
+
+<p>SeaDAS-Toolobox -> SeaDAS Processors -> l2merge</p>
+
+<a name="details"><h4>Details</h4></a>
+
+<p>
+    <b>l2merge</b> is used to merge L2 files
+    The output files are NetCDF4 files and have the same format as the original L2 files.
+</p>
+
+<p></p>
+<hr>
+<center>
+    <table class="image">
+        <caption align="top"><b>l2merge GUI</b></caption>
+        <tr>
+            <td><img src="../images/l2merge.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td>Text Field</td>
+        <td>Input text file specifying L2 files to be merged
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>ofile</b></td>
+        <td> Text Field</td>
+        <td>Output netcdf file which will contain merged L2 file data
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>product</b></td>
+        <td> Text Field</td>
+        <td>product(s) to map; comma separated</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l2merge command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td> Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+<!--AUTOMATED CODE HELP START-->
+<pre>
+l2merge 1.0
+usage: l2merge [-h] [--version] [-v] [--product PRODUCT] ifile ofile
+
+Merge Level 2 files
+
+positional arguments:
+  ifile              Input text file specifying L2 files to be merged
+  ofile              Output netcdf file which will contain merged L2 file data
+
+options:
+  -h, --help         show this help message and exit
+  --version          print program version
+  -v, --verbose      print status messages
+  --product PRODUCT  product(s) to map; comma separated
+
+</pre>
+<!--AUTOMATED CODE HELP END-->
+<hr>
+</body>
+</html>
