@@ -365,15 +365,17 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String product = getParamValue("product");
                 String projection = getParamValue("projection");
 
-                String ofileName;
-                if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                    ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
-                } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                    ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
-                } else {
-                    String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                    ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
-                }
+//                String ofileName;
+//                if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+//                    ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
+//                } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+//                    ofileName = getOfileForL3MapGenSimple(ifileName, resolution, oformat, product, projection);
+//                } else {
+//                    String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
+//                    ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
+//                }
+                String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection);
+
 
 
                 if (ofileName != null) {
@@ -1925,11 +1927,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //            ofilename = ofilenameDefault.substring(0,ofilenameDefault.length() - 3);
 //        }
 
-        ofilename = getOfileForL3MapGenAddOns(ofilename, resolution, product, projection);
-
-        // todo maybe check ofile against ifile
-
-        ofilename = getOfileForL3MapGenAddExtension(ofilename, oformat);
+//        ofilename += getOfileForL3MapGenAddOns(resolution, product, projection);
+//
+//        // todo maybe check ofile against ifile
+//
+//        ofilename = getOfileForL3MapGenAddExtension(ofilename, oformat);
 
         return  ofilename;
     }
@@ -1970,41 +1972,166 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-    private static String getOfileForL3MapGenAddOns(String ofilename, String resolution, String product, String projection) {
+    private static String getOfileForL3MapGenAddOns(String resolution, String product, String projection) {
 
-        if (product != null && product.trim().length() > 0) {
-            String[] productsArray = product.split("[,\\s]");
-            for (String currProduct : productsArray) {
-                currProduct = currProduct.trim();
-                ofilename += "." + currProduct;
-            }
+
+        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_FIELDS_ADD_NONE.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsAdd())) {
+            return "";
+        }
+
+        String simpleFormat;
+        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsAdd())) {
+            simpleFormat = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsKeyString1();
+        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING2.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsAdd())) {
+            simpleFormat = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsKeyString2();
+        } else {
+            simpleFormat = OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT;
         }
 
 
-        if (resolution != null && resolution.trim().length() > 0) {
-            ofilename += "." + resolution;
+        if (simpleFormat == null || simpleFormat.trim().length() == 0) {
+            return "";
         }
 
+        // make sure key is uppercase
+        simpleFormat =  convertAnyUpperCaseKeyToLowerCase(simpleFormat, "resolution");
+        simpleFormat =  convertAnyUpperCaseKeyToLowerCase(simpleFormat, "product");
+        simpleFormat =  convertAnyUpperCaseKeyToLowerCase(simpleFormat, "product_first");
+        simpleFormat =  convertAnyUpperCaseKeyToLowerCase(simpleFormat, "projection");
 
-        if (projection != null && projection.trim().length() > 0) {
-            String[] projectionArray = projection.split("[\\s]");
 
-            if (projectionArray.length > 1) {
-                String[] projectionArray2 = projectionArray[0].split("=");
-                if (projectionArray2.length > 1) {
-                    ofilename += "." + projectionArray2[1];
-                } else {
-                    ofilename += "." + projectionArray[0];
+        if (checkForVariantMatch(simpleFormat,  "product")  || checkForVariantMatch(simpleFormat,  "product_first")) {
+            String productList = "";
+            if (product != null && product.trim().length() > 0) {
+                String[] productsArray = product.split("[,\\s]");
+                for (String currProduct : productsArray) {
+                    if (productList.length() == 0) {
+                        productList = currProduct.trim();
+                        if (checkForVariantMatch(simpleFormat,  "product_first")) {
+                            break;
+                        }
+                    } else {
+                        if (simpleFormat.contains("[_product]")) {
+                            productList += "_" + currProduct;
+                        } else if (simpleFormat.contains("[-product]")) {
+                            productList += "-" + currProduct;
+                        } else {
+                            productList += "." + currProduct;
+                        }
+                    }
                 }
-            } else {
-                ofilename += "." + projection;
             }
+
+            simpleFormat = replaceAnyKeyStringVariant(simpleFormat,  "product",  productList);
+            simpleFormat = replaceAnyKeyStringVariant(simpleFormat,  "product_first",  productList);
         }
 
-        return  ofilename;
+
+        if (checkForVariantMatch(simpleFormat,  "resolution")) {
+            if (resolution == null) {
+                resolution = "";
+            }
+            simpleFormat = replaceAnyKeyStringVariant(simpleFormat,  "resolution",  resolution);
+        }
+
+
+        if (checkForVariantMatch(simpleFormat,  "projection")) {
+            String projectionName = "";
+            if (projection != null && projection.trim().length() > 0) {
+                String[] projectionArray = projection.split("[\\s]");
+
+                if (projectionArray.length > 1) {
+                    String[] projectionArray2 = projectionArray[0].split("=");
+                    if (projectionArray2.length > 1) {
+                        projectionName = projectionArray2[1];
+                    } else {
+                        projectionName = projectionArray[0];
+                    }
+                } else {
+                    projectionName = projection;
+                }
+            }
+
+            simpleFormat = replaceAnyKeyStringVariant(simpleFormat,  "projection",  projectionName);
+        }
+
+        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
+        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
+        simpleFormat = trimStringChars(simpleFormat, "-", false, true, true);
+
+        return simpleFormat;
+    }
+
+    private static String convertAnyUpperCaseKeyToLowerCase(String keyString, String key) {
+
+        String keyUpperCase = key.toUpperCase();
+        keyString = keyString.replace("[" + keyUpperCase + "]","[" + key + "]");
+        keyString = keyString.replace("[." + keyUpperCase + "]","[." + key + "]");
+        keyString = keyString.replace("[_" + keyUpperCase + "]","[_" + key + "]");
+        keyString = keyString.replace("[-" + keyUpperCase + "]","[-" + key + "]");
+        keyString = keyString.replace("[keyUpperCase]","[key]");
+
+        return keyString;
+    }
+
+    private static String replaceAnyKeyStringVariant(String keyString, String key, String value) {
+
+        if (value == null) {
+            value = "";
+        }
+        value = value.trim();
+
+        keyString = keyString.replace("[" + key + "]", "." + value);
+        keyString = keyString.replace("[." + key + "]", "." + value);
+        keyString = keyString.replace("[_" + key + "]", "_" + value);
+        keyString = keyString.replace("[-" + key + "]", "-" + value);
+
+        return keyString;
+    }
+
+    private static boolean checkForVariantMatch(String keyString, String key) {
+
+        if (keyString.contains("[" + key + "]") || keyString.contains("[." + key + "]") || keyString.contains("[_" + key + "]") || keyString.contains("[-" + key + "]") ) {
+            return true;
+        }
+
+        return false;
     }
 
 
+    private static String trimStringChars(String string, String key, boolean trimStart, boolean trimEnd, boolean trimDuplicates) {
+
+        String stringOriginal = string;
+
+        if (string == null || key == null) {
+            return stringOriginal;
+        }
+
+        string = string.trim();
+        key = key.trim();
+
+        if (string.length() == 0 || key.length() == 0) {
+            return stringOriginal;
+        }
+
+
+        while (trimDuplicates && string.contains(key + key )) {
+            string = string.replace((key + key), key);
+        }
+
+
+        if (trimStart && string.startsWith(".")) {
+            string = string.substring(1, string.length());
+        }
+
+        if (trimEnd && string.endsWith(".")) {
+            string = string.substring(0,string.length()-1);
+        }
+
+
+        return string;
+
+    }
 
     private static String stripFilenameExtension(String filename) {
         String fileBasename = filename;
@@ -2018,47 +2145,69 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-    private static String getOfileForL3MapGenSimple(String ifilename, String oformat) {
+    public static String getOfileForL3MapGenWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String oformat, String product, String projection) {
+        String ifileBaseName = stripFilenameExtension(ifileName);
+
+        String ofileName;
+        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+            ofileName = getOfileForL3MapGen(ifileName);
+        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+            ofileName = stripFilenameExtension(ifileName);
+            String suffix = ".suffix";
+            if (suffix != null) {
+                ofileName += suffix;
+            }
+        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+            ofileName = getOfileForL3MapGenSimple(ifileName);
+        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+//            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
+            String ofileNameDefault =  ocssw.getOfileName(ifileName, programName);
+            ofileNameDefault = ofileNameDefault.replace(".DAY.", "");
+            ofileNameDefault = ofileNameDefault.replace(".8D.", "");
+            ofileNameDefault = ofileNameDefault.replace(".MO.", "");
+            ofileNameDefault = ofileNameDefault.replace(".YR.", "");
+            ofileNameDefault = ofileNameDefault.replace(".CU.", "");
+            ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
+        } else {
+//            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
+            String ofileNameDefault =  ocssw.getOfileName(ifileName, programName);
+            ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
+        }
+
+
+        ofileName += getOfileForL3MapGenAddOns(resolution, product, projection);
+
+
+        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
+            String suffix = "_suffix";
+            ofileName += suffix;
+        }
+
+        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
+            ofileName = ofileName + "_out";
+        }
+
+
+
+        if (ofileName.contains(" ")) {
+            ofileName = ofileName.replace(" ","");
+        }
+
+        ofileName = getOfileForL3MapGenAddExtension(ofileName, oformat);
+
+        return ofileName;
+    }
+
+
+
+
+    private static String getOfileForL3MapGenSimple(String ifilename) {
 
         String ifileBasename = stripFilenameExtension(ifilename);
 
-       String simpleFormat = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSimpleFormat();
+        String ofilename = "output";
 
-      //   simpleFormat = "[IFILE]_mapped";
-        String DEFAULT_SUFFIX = "mapped";
-
-        boolean filenameReplaced = false;
-        String ofileBasename = simpleFormat;
-        if (ofileBasename != null) {
-            ofileBasename = ofileBasename.trim();
-            if (ofileBasename.length() > 0) {
-                String  ofileBasename2 = ofileBasename.replace("[IFILE]",ifileBasename);
-                ofileBasename2 = ofileBasename2.replace("[ifile]",ofileBasename2);
-                if (!ofileBasename.equals(ofileBasename2)) {
-                    filenameReplaced = true;
-                    ofileBasename = ofileBasename2;
-                }
-            }
-        }
-
-        if (ofileBasename == null || ofileBasename.trim().length() == 0) {
-//            ofileBasename = ifileBasename + "." + DEFAULT_SUFFIX;
-//            filenameReplaced = true;
-
-            return "";
-        }
-
-
-        if (ofileBasename.equalsIgnoreCase(ifileBasename)) {
-            ofileBasename = ofileBasename + "." + DEFAULT_SUFFIX;
-        }
-
-
-        String ofilename = getOfileForL3MapGenAddExtension(ofileBasename, oformat);
-
-        // add the path
-        if (!filenameReplaced) {
-            File file = new File(ifilename);
+        File file = new File(ifilename);
             if (file != null) {
                 String parentPath = file.getParentFile().getAbsolutePath();
                 File file2 = new File(parentPath, ofilename);
@@ -2066,7 +2215,58 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     ofilename = file2.getAbsolutePath();
                 }
             }
-        }
+
+
+//       String simpleFormat = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSimpleFormat();
+
+      //   simpleFormat = "[IFILE]_mapped";
+        String DEFAULT_SUFFIX = "mapped";
+
+//        boolean filenameReplaced = false;
+//        String ofileBasename = simpleFormat;
+//        if (ofileBasename != null) {
+//            ofileBasename = ofileBasename.trim();
+//            if (ofileBasename.length() > 0) {
+//                String  ofileBasename2 = ofileBasename.replace("[IFILE]",ifileBasename);
+//                ofileBasename2 = ofileBasename2.replace("[ifile]",ofileBasename2);
+//                if (!ofileBasename.equals(ofileBasename2)) {
+//                    filenameReplaced = true;
+//                    ofileBasename = ofileBasename2;
+//                }
+//            }
+//        }
+//
+//        if (ofileBasename == null || ofileBasename.trim().length() == 0) {
+////            ofileBasename = ifileBasename + "." + DEFAULT_SUFFIX;
+////            filenameReplaced = true;
+//
+//            return "";
+//        }
+
+
+
+
+//        ofilename += getOfileForL3MapGenAddOns(resolution, product, projection);
+//
+//
+//        if (ofilename.equalsIgnoreCase(ifileBasename)) {
+//            ofilename = ofilename + "." + DEFAULT_SUFFIX;
+//        }
+//
+//
+//        ofilename += getOfileForL3MapGenAddExtension(ofilename, oformat);
+
+        // add the path
+//        if (!filenameReplaced) {
+//            File file = new File(ifilename);
+//            if (file != null) {
+//                String parentPath = file.getParentFile().getAbsolutePath();
+//                File file2 = new File(parentPath, ofilename);
+//                if (file2 != null) {
+//                    ofilename = file2.getAbsolutePath();
+//                }
+//            }
+//        }
 
         return  ofilename;
     }
@@ -2074,25 +2274,24 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-    private static String getOfileForL3MapGen(String ifilename, String resolution, String oformat, String product, String projection) {
+    private static String getOfileForL3MapGen(String ifilename) {
 
-        String ifileBasename = ifilename;
+        String ifileBasename = stripFilenameExtension(ifilename);
 
-        if (ifilename.endsWith(".nc")) {
-            ifileBasename = ifilename.substring(0,ifilename.length() - 3);
+        String orginalKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileOriginal();
+        String replacementKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileReplace();
+        if (replacementKeyString == null) {
+            replacementKeyString = "";
         }
 
-        String ofilename = ifileBasename.replace(".L3b.", ".L3m.");
-
-        ofilename = getOfileForL3MapGenAddOns(ofilename, resolution, product, projection);
-
-        if (ofilename.equalsIgnoreCase(ifileBasename)) {
-            ofilename = ofilename + "_out";
+        if (orginalKeyString != null && orginalKeyString.length() > 0) {
+            String ofilename = ifileBasename.replace(orginalKeyString, replacementKeyString);
+            if (ofilename != null && ofilename.length() > 0) {
+                return ofilename;
+            }
         }
 
-        ofilename = getOfileForL3MapGenAddExtension(ofilename, oformat);
-
-        return  ofilename;
+        return  ifileBasename;
     }
 
 
@@ -2115,15 +2314,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String product = getParamValue("product");
                     String projection = getParamValue("projection");
 
-                    String ofileName;
-                    if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
-                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
-                    } else {
-                        String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
-                    }
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName,  getOcssw(), programName, resolution, oformat, product, projection);
 
                     updateOFileInfo(ofileName);
                 }
@@ -2142,19 +2333,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String product = getParamValue("product");
                     String projection = getParamValue("projection");
 
-                    String ofileName;
-                    if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
-                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
-                    } else {
-                        String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
-                    }
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName,  getOcssw(), programName, resolution, oformat, product, projection);
+
 
                     updateOFileInfo(ofileName);
                 }
             });
+
+
 
 
             addPropertyChangeListener("product", new PropertyChangeListener() {
@@ -2167,15 +2353,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String product = (String) propertyChangeEvent.getNewValue();
                     String projection = getParamValue("projection");
 
-                    String ofileName;
-                    if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
-                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
-                    } else {
-                        String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
-                    }
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName,  getOcssw(), programName, resolution, oformat, product, projection);
+
 
                     updateOFileInfo(ofileName);
                 }
@@ -2201,15 +2380,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String oformat = getParamValue("oformat");
                     String product = getParamValue("product");
 
-                    String ofileName;
-                    if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGen(ifileName, resolution, oformat, product, projection);
-                    } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-                        ofileName = getOfileForL3MapGenSimple(ifileName, oformat);
-                    } else {
-                        String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-                        ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
-                    }
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName,  getOcssw(), programName, resolution, oformat, product, projection);
 
                     updateOFileInfo(ofileName);
                 }
@@ -2267,6 +2438,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 });
             }
+
 
         }
 
