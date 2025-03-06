@@ -1982,8 +1982,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         String simpleFormat;
         if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsAdd())) {
             simpleFormat = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsKeyString1();
-        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING2.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsAdd())) {
-            simpleFormat = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsKeyString2();
         } else {
             simpleFormat = OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT;
         }
@@ -2162,12 +2160,19 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
 //            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
             String ofileNameDefault =  ocssw.getOfileName(ifileName, programName);
-            ofileNameDefault = ofileNameDefault.replace(".DAY.", "");
-            ofileNameDefault = ofileNameDefault.replace(".8D.", "");
-            ofileNameDefault = ofileNameDefault.replace(".MO.", "");
-            ofileNameDefault = ofileNameDefault.replace(".YR.", "");
-            ofileNameDefault = ofileNameDefault.replace(".CU.", "");
+
             ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
+            ofileName = ofileName.replace(".DAY.", ".");
+            ofileName = ofileName.replace(".DAY", "");
+            ofileName = ofileName.replace(".8D.", ".");
+            ofileName = ofileName.replace(".8D", "");
+            ofileName = ofileName.replace(".MO.", ".");
+            ofileName = ofileName.replace(".MO", "");
+            ofileName = ofileName.replace(".YR.", ".");
+            ofileName = ofileName.replace(".YR", "");
+            ofileName = ofileName.replace(".CU.", ".");
+            ofileName = ofileName.replace(".CU", "");
+
         } else {
 //            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
             String ofileNameDefault =  ocssw.getOfileName(ifileName, programName);
