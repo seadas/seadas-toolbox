@@ -150,30 +150,30 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_LABEL = "ofile Base Name";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_LABEL = "Basename";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_TOOLTIP = "Naming scheme to use for autofilling ofile name";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_CUSTOM;
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.fields.add";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_LABEL = "ofile Fields";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_LABEL = "Suffix Fields";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_TOOLTIP = "ofile Add Suffix Scheme";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT = OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1;
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.fields.keystring";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_LABEL = "ofile Fields KeyString";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_LABEL = "Suffix Fields: KeyString";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_TOOLTIP = "ofile Naming scheme keyed add-ons as suffix of ofile name";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT = "[.product][.resolution][.projection]";
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.ifile.original";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_LABEL = "ifile Original String";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_LABEL = "Basename " + OFILE_NAMING_SCHEME_CUSTOM +  ": Original";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_TOOLTIP = "ofile Ifile Original";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_DEFAULT = ".L3b.";
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.ifile.replace";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_REPLACE_LABEL = "ofile Replacement String";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_REPLACE_LABEL =  "Basename " + OFILE_NAMING_SCHEME_CUSTOM + ": Replacement";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_REPLACE_TOOLTIP = "ofile Ifile Replace";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_REPLACE_DEFAULT = ".L3m.";
 
