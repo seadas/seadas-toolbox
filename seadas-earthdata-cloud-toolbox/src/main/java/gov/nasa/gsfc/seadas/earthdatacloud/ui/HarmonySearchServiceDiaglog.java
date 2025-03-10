@@ -209,7 +209,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
 
         JLabel missionSelectionLabel = new JLabel("Missions:");
-        missionSelectionLabel.setToolTipText("Select mission for search");
 
         missionSelectionPanel.add(missionSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         missionSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
@@ -263,7 +262,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         });
 
         JLabel productSelectionLabel = new JLabel("Products:");
-        productSelectionLabel.setToolTipText("Select product for search");
 
         productSelectionPanel.add(productSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         productSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
@@ -318,7 +316,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         });
 
         JLabel dataLevelSelectionLabel = new JLabel("Data Level:");
-        dataLevelSelectionLabel.setToolTipText("Select data level for search");
 
         dataLevelSelectionPanel.add(dataLevelSelectionLabel, new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));
         dataLevelSelectionPanel.add(comboBox, new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5));

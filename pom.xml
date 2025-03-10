@@ -35,7 +35,7 @@
         <module>seadas-contour-operator</module>
         <module>seadas-image-animator</module>
         <module>seadas-bathymetry-operator</module>
-        <module>seadas-earthdata-cloud-toolbox</module>
+<!--        <module>seadas-earthdata-cloud-toolbox</module>-->
         <module>seadas-kit</module>
     </modules>
 
