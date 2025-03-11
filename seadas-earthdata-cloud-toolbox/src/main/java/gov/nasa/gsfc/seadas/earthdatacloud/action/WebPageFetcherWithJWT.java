@@ -5,9 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
+import java.net.*;
 
 import java.util.Base64;
 
@@ -93,9 +91,19 @@ public class WebPageFetcherWithJWT {
         }
     }
 
-    public static String getAccessToken(String endpoint) throws Exception {
-        URL url = new URL("https://" + endpoint + "/api/users/tokens");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    public static String getAccessToken(String endpoint)  {
+        URL url = null;
+        try {
+            url = new URL("https://" + endpoint + "/api/users/tokens");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         StringBuilder content = new StringBuilder();
 
         String[] credentials = getCredentials(endpoint);
@@ -104,7 +112,11 @@ public class WebPageFetcherWithJWT {
 
         // Output the credentials (username and password)
         if (credentials == null) {
-            throw new Exception("Failed to retrieve user credentials for endpoint: " + endpoint);
+            try {
+                throw new Exception("Failed to retrieve user credentials for endpoint: " + endpoint);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         username = credentials[0];
@@ -117,22 +129,42 @@ public class WebPageFetcherWithJWT {
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
 
         // Set request method to GET and add Bearer token to the Authorization header
-        connection.setRequestMethod("GET");
+        try {
+            connection.setRequestMethod("GET");
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
         // Set the Authorization header with Basic authentication
         connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
 
-        int status = connection.getResponseCode();
+        int status = 0;
+        try {
+            status = connection.getResponseCode();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // Check if the response is OK (200)
         if (status == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String inputLine;
-                while ((inputLine = in.readLine()) != null) {
+                while (true) {
+                    try {
+                        if (!((inputLine = in.readLine()) != null)) break;
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     content.append(inputLine).append("\n");
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         } else {
-            throw new Exception("Failed to fetch content. HTTP status code: " + status);
+            try {
+                throw new Exception("Failed to fetch content. HTTP status code: " + status);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         String access_token = "empty";
@@ -157,7 +189,11 @@ public class WebPageFetcherWithJWT {
         System.out.print("access_token: " + access_token + "  !!! end of access token!");
 
         if (access_token.contains("empty")) {
-            access_token = generateAccessToken(endpoint);
+            try {
+                access_token = generateAccessToken(endpoint);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         return access_token;
     }

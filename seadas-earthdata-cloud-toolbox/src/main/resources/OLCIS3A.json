@@ -1,0 +1,116 @@
+{
+    "L2": [
+        {
+            "product_name": "EFR_IOP_NRT",
+            "short_name": "OLCIS3A_L2_EFR_IOP_NRT"
+        },
+        {
+            "product_name": "EFR_IOP",
+            "short_name": "OLCIS3A_L2_EFR_IOP"
+        },
+        {
+            "product_name": "EFR_OC_NRT",
+            "short_name": "OLCIS3A_L2_EFR_OC_NRT"
+        },
+        {
+            "product_name": "EFR_OC",
+            "short_name": "OLCIS3A_L2_EFR_OC"
+        },
+        {
+            "product_name": "ERR_OC_NRT",
+            "short_name": "OLCIS3A_L2_ERR_OC_NRT"
+        },
+        {
+            "product_name": "ERR_OC",
+            "short_name": "OLCIS3A_L2_ERR_OC"
+        },
+        {
+            "product_name": "ERR_IOP",
+            "short_name": "OLCIS3A_L2_ERR_IOP"
+        },
+        {
+            "product_name": "ERR_IOP_NRT",
+            "short_name": "OLCIS3A_L2_ERR_IOP_NRT"
+        },
+        {
+            "product_name": "ILW",
+            "short_name": "OLCIS3A_L2_ILW"
+        }
+    ],
+    "L3b": [
+        {
+            "product_name": "ERR_CHL_NRT",
+            "short_name": "OLCIS3A_L3b_ERR_CHL_NRT"
+        },
+        {
+            "product_name": "ERR_CHL",
+            "short_name": "OLCIS3A_L3b_ERR_CHL"
+        },
+        {
+            "product_name": "ERR_KD_NRT",
+            "short_name": "OLCIS3A_L3b_ERR_KD_NRT"
+        },
+        {
+            "product_name": "ERR_KD",
+            "short_name": "OLCIS3A_L3b_ERR_KD"
+        },
+        {
+            "product_name": "ERR_RRS_NRT",
+            "short_name": "OLCIS3A_L3b_ERR_RRS_NRT"
+        },
+        {
+            "product_name": "ERR_RRS",
+            "short_name": "OLCIS3A_L3b_ERR_RRS"
+        },
+        {
+            "product_name": "ERR_IOP",
+            "short_name": "OLCIS3A_L3b_ERR_IOP"
+        },
+        {
+            "product_name": "ERR_IOP_NRT",
+            "short_name": "OLCIS3A_L3b_ERR_IOP_NRT"
+        },
+        {
+            "product_name": "ILW",
+            "short_name": "OLCIS3A_L3b_ILW"
+        }
+    ],
+    "L3m": [
+        {
+            "product_name": "ERR_CHL_NRT",
+            "short_name": "OLCIS3A_L3m_ERR_CHL_NRT"
+        },
+        {
+            "product_name": "ERR_CHL",
+            "short_name": "OLCIS3A_L3m_ERR_CHL"
+        },
+        {
+            "product_name": "ERR_KD_NRT",
+            "short_name": "OLCIS3A_L3m_ERR_KD_NRT"
+        },
+        {
+            "product_name": "ERR_KD",
+            "short_name": "OLCIS3A_L3m_ERR_KD"
+        },
+        {
+            "product_name": "ERR_RRS_NRT",
+            "short_name": "OLCIS3A_L3m_ERR_RRS_NRT"
+        },
+        {
+            "product_name": "ERR_RRS",
+            "short_name": "OLCIS3A_L3m_ERR_RRS"
+        },
+        {
+            "product_name": "ERR_IOP",
+            "short_name": "OLCIS3A_L3m_ERR_IOP"
+        },
+        {
+            "product_name": "ERR_IOP_NRT",
+            "short_name": "OLCIS3A_L3m_ERR_IOP_NRT"
+        },
+        {
+            "product_name": "ILW",
+            "short_name": "OLCIS3A_L3m_ILW"
+        }
+    ]
+}

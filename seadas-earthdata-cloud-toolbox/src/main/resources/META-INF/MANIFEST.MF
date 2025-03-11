@@ -1,0 +1,2 @@
+OpenIDE-Module: gov.nasa.gsfc.seadas.earthdata.cloud.toolbox
+OpenIDE-Module-Friends: org.netbeans.bootstrap

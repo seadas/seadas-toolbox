@@ -1,0 +1,74 @@
+{
+    "L0": [
+        {
+            "product_name": "D1",
+            "short_name": "PACE_HARP2_L0_D1"
+        },
+        {
+            "product_name": "D2",
+            "short_name": "PACE_HARP2_L0_D2"
+        },
+        {
+            "product_name": "D3",
+            "short_name": "PACE_HARP2_L0_D3"
+        },
+        {
+            "product_name": "General",
+            "short_name": "PACE_HARP2_L0"
+        },
+        {
+            "product_name": "REAL",
+            "short_name": "PACE_HARP2_L0_REAL"
+        },
+        {
+            "product_name": "SCI",
+            "short_name": "PACE_HARP2_L0_SCI"
+        }
+    ],
+    "L1A": [
+        {
+            "product_name": "AST0",
+            "short_name": "PACE_HARP2_L1A_AST0"
+        },
+        {
+            "product_name": "AST1",
+            "short_name": "PACE_HARP2_L1A_AST1"
+        },
+        {
+            "product_name": "AST2",
+            "short_name": "PACE_HARP2_L1A_AST2"
+        },
+        {
+            "product_name": "AST3",
+            "short_name": "PACE_HARP2_L1A_AST3"
+        },
+        {
+            "product_name": "AST4",
+            "short_name": "PACE_HARP2_L1A_AST4"
+        },
+        {
+            "product_name": "SCI",
+            "short_name": "PACE_HARP2_L1A_SCI"
+        }
+    ],
+    "L1B": [
+        {
+            "product_name": "AST4",
+            "short_name": "PACE_HARP2_L1B_AST4"
+        },
+        {
+            "product_name": "SCI",
+            "short_name": "PACE_HARP2_L1B_SCI"
+        }
+    ],
+    "L1C": [
+        {
+            "product_name": "AST4",
+            "short_name": "PACE_HARP2_L1C_AST4"
+        },
+        {
+            "product_name": "SCI",
+            "short_name": "PACE_HARP2_L1C_SCI"
+        }
+    ]
+}
