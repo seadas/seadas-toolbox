@@ -29,6 +29,7 @@
     <mapID target="l1aextract_modis" url="processors/ProcessExtractors.html"/>
     <mapID target="l1aextract_seawifs" url="processors/ProcessExtractors.html"/>
     <mapID target="l1aextract_viirs" url="processors/ProcessExtractors.html"/>
+    <mapID target="l2merge" url="processors/ProcessL2merge.html"/>
     <mapID target="modis_GEO" url="processors/ProcessModis_GEO.html"/>
     <mapID target="l1bgen_generic" url="processors/ProcessL1bgen_generic.html"/>
     <mapID target="modis_L1B" url="processors/ProcessModis_L1B.html"/>

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<installation xmlns:izpack="http://izpack.org/schema/installation"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              version="5.0"
-              xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
-    >
+<izpack:installation version="5.0"
+                     xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.1.0</appversion>
@@ -18,10 +17,18 @@
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
-        <laf name="looks">
-            <os family="windows"/>
-            <param name="variant" value="extwin"/>
-        </laf>
+        <!--        <laf name="looks">-->
+        <!--            <os family="unix"/>-->
+        <!--            <param name="variant" value="mist-aqua"/>-->
+        <!--        </laf>-->
+        <!--        <laf name="looks">-->
+        <!--            <os family="windows"/>-->
+        <!--            <param name="variant" value="extwin"/>-->
+        <!--        </laf>-->
+        <!--        <laf name="substance">-->
+        <!--            <os family="mac" />-->
+        <!--            <param name="variant" value="mist-aqua" />-->
+        <!--        </laf>-->
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
@@ -55,10 +62,10 @@
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
-        <res id="FinishPanel.finish" src="about/finish.html"/>
+        <res id="finish" src="about/finish.html"/>
     </resources>
     <variables>
-        <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
+        <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
         <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
@@ -74,11 +81,10 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>
-        <variable name="maxHeapSize" value="4096M"/>
-        <variable name="installer:maxHeapSize" value="4096M"/>
+        <variable name="maxHeapSize" value="8G"/>
+        <variable name="installer:maxHeapSize" value="8G"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
-
         <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
         <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
@@ -124,7 +130,7 @@
         <!--    </panel>-->
 
 
-        <panel classname="InstallationTypePanel"/>
+<!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
@@ -132,12 +138,12 @@
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <panel classname="ProcessPanel" id="processPanelSpec.xml" />-->
+        <panel classname="ProcessPanel" id="processPanelSpec.xml" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH\jdk-11.0.19+7-jre"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
     </dynamicvariables>
 
     <packs>
@@ -152,52 +158,65 @@
                 Graph Processing Framework.
             </description>
             <fileset dir="packs/snap" unpack="true"
-                     override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
+                     override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
+                <os family="mac"/>
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows"
-                     condition="izpack.windowsinstall"/>
+            <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac"
+                     condition="izpack.macinstall"/>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
+                    <include name="*.sh"/>
                     <include name="seadas.clusters"/>
                     <include name="seadas.conf"/>
-                    <include name="seadas.properties"/>
+                    <include name="seadas"/>
                     <include name="snap.clusters"/>
                     <include name="snap.conf"/>
                     <include name="snap.properties"/>
                 </fileset>
+                <!--                <os family="unix"/>-->
             </parsable>
-            <parsable type="shell">
+            <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/bin">
-                    <include name="gpt.bat"/>
-                    <include name="pconvert.bat"/>
+                    <include name="seadas"/>
+                    <include name="*.sh"/>
                 </fileset>
+                <os family="mac"/>
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <os family="windows"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert"/>
+                <os family="mac"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="archiveDotSeaDAS.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="*.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas"/>
+                <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>
             </executable>
         </pack>
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
             <description>Optical Toolbox</description>
-            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH\optical-toolbox">
+            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH/optical-toolbox">
             </fileset>
         </pack>
         <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
             <description>NASA SeaDAS Toolbox</description>
-            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH\seadas-toolbox">
+            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
         <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
             <description>JDK11 JRE</description>
-            <file src="packs/jre/OpenJDK11U-jre_x64_windows_hotspot_11.0.19_7.zip" targetdir="${INSTALL_PATH}"
+            <file src="packs/jre/OpenJDK11U-jre_aarch64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\bin" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH\jdk-11.0.19+7-jre\lib" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin">
+                    <include name="java"/>
+                </fileset>
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib">
+                    <include name="jspawnhelper"/>
+                </fileset>
             </executable>
         </pack>
     </packs>
@@ -205,9 +224,9 @@
     <natives>
         <native type="izpack" name="ShellLink.dll"/>
         <native type="izpack" name="ShellLink_x64.dll"/>
-        <native type="3rdparty" name="COIOSHelper.dll">
+        <native type="3rdparty" name="COIOSHelper.dll" stage="both">
             <os family="windows"/>
         </native>
     </natives>
 
-</installation>
+</izpack:installation>
