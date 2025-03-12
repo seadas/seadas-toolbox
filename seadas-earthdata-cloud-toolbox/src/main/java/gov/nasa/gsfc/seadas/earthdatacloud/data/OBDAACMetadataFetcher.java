@@ -6,8 +6,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class OBDAACMetadataFetcher {
     private static final String CMR_COLLECTIONS_URL = "https://cmr.earthdata.nasa.gov/search/collections.json?provider=OB_CLOUD&page_size=2000";
@@ -50,8 +54,8 @@ public class OBDAACMetadataFetcher {
         for (Object obj : collections) {
             JSONObject collection = (JSONObject) obj;
             String shortName = (String) collection.get("short_name");
-            System.out.println(shortName);
             if (hasGranules(shortName)) {
+                System.out.println(shortName);
                 validCollections.add(collection);
             }
         }
@@ -59,16 +63,14 @@ public class OBDAACMetadataFetcher {
     }
 
     private static boolean hasGranules(String shortName) throws Exception {
-        String granulesPageUrl = "https://mmt.earthdata.nasa.gov/collections?keyword=" + shortName + "&provider=OB_CLOUD";
+        String granulesPageUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?provider=OB_CLOUD&short_name=" + shortName;
         HttpURLConnection conn = createConnection(granulesPageUrl);
         String response = readResponse(conn);
 
-        // Debug: Print response to see what we are getting
-        System.out.println("Granules check for: " + shortName);
-        System.out.println(response);
-
-        // Check if the page contains a granule count greater than 0
-        return response.contains(">0<");  // If >0< is found, granules exist
+        JSONObject jsonResponse = (JSONObject) new JSONParser().parse(response);
+        JSONObject feed = (JSONObject) jsonResponse.get("feed"); // Extract feed object
+        JSONArray granules = (JSONArray) feed.get("entry"); // Extract granules array
+        return granules != null && !granules.isEmpty();
     }
 
 
@@ -96,21 +98,29 @@ public class OBDAACMetadataFetcher {
     }
 
     private static void saveMetadataToFile(JSONArray metadata) {
-        File file = new File(METADATA_FILE);
-        File parentDir = file.getParentFile();
-
         try {
-            // Ensure the parent directory exists
-            if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs();
-            }
+            // Get the module's root directory dynamically
+            //System.getProperty("user.dir"):This will print the absolute path of the current directory from where your application was initialized.
+            //seadas-toolbox\seadas-earthdata-cloud-toolbox\src\main\resources
+            String moduleDir = System.getProperty("user.dir") + File.separator + "seadas-toolbox" + File.separator + "seadas-earthdata-cloud-toolbox";
 
-            // Write the metadata to file
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write(metadata.toJSONString());
-                System.out.println("Metadata successfully saved in " + METADATA_FILE);
+            // Define target path inside the package's resources
+            Path targetPath = Paths.get(moduleDir, "src", "main", "resources", "obdaac_metadata.json");
+
+            // Ensure directory exists
+            Files.createDirectories(targetPath.getParent());
+
+            // Write JSON to file
+            try (FileWriter fileWriter = new FileWriter(targetPath.toFile())) {
+                fileWriter.write(metadata.toJSONString());
+                fileWriter.flush();
+                System.out.println("✅ Metadata successfully saved in: " + targetPath.toAbsolutePath());
             }
         } catch (IOException e) {
+            System.err.println("❌ Error saving metadata file: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("❌ Unexpected error: " + e.getMessage());
             e.printStackTrace();
         }
     }
