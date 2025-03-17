@@ -749,171 +749,191 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         ArrayList<String> products = new ArrayList<String>();
         if (ncFile != null) {
-            if ("l3mapgen".equalsIgnoreCase(programName)) {
-                ParamInfo pi = getParamInfo("product");
-                pi.clearValidValueInfos();
-                String oldValue = pi.getValue();
-                ParamValidValueInfo paramValidValueInfo;
+            String testThisToSeeIfProduct = getProdParamName();
+
+            if ("l3mapgen".equalsIgnoreCase(programName) || "l3bin".equalsIgnoreCase(programName)) {
 
                 try {
                     Attribute unitsAttribute = ncFile.findGlobalAttribute("units");
                     Array array = unitsAttribute.getValues();
                     String units = array.toString();
-                    int i = 0;
                     String[] values = units.split("[,\\s]");
                     for (String value : values) {
                         String[] values2 = value.split(":");
                         if (values2.length == 2) {
                             String bandName = values2[0];
-//                            System.out.println(bandName);
-                            paramValidValueInfo = new ParamValidValueInfo(bandName);
-                            paramValidValueInfo.setDescription(bandName);
-                            pi.addValidValueInfo(paramValidValueInfo);
+                            products.add(bandName);
                         }
                     }
-
-                    String newValue = pi.getValue() != null ? pi.getValue() : "";
-
-//                    paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
-                    paramList.getPropertyChangeSupport().firePropertyChange("product", "-1", newValue);
-                    updateParamInfo("product", newValue);
-                    fireEvent("product", "-1", newValue);
-
-
-//
-//                    ArrayList<ParamValidValueInfo> newValidValues = pi.getValidValueInfos();
-//                    String newValue = pi.getValue() != null ? pi.getValue() : newValidValues.get(0).getValue();
-////                        paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), oldValue, newValue);
-//                    paramList.getPropertyChangeSupport().firePropertyChange("product", oldValue, newValue);
-//
-//                    updateParamInfo("product", newValue);
-//                    fireEvent("product", "-1", newValue);
 
                 } catch (Exception e) {
                 }
 
-                updateSuite(selectedFile);
+            } else {
 
-                return;
-            }
+                java.util.List<Variable> var = null;
 
-            java.util.List<Variable> var = null;
-
-            List<ucar.nc2.Group> groups = ncFile.getRootGroup().getGroups();
+                List<ucar.nc2.Group> groups = ncFile.getRootGroup().getGroups();
 
 
-            for (ucar.nc2.Group g : groups) {
-                //retrieve geophysical data to fill in "product" value ranges
-                if (g.getShortName().equalsIgnoreCase("Geophysical_Data")) {
-                    var = g.getVariables();
-                    break;
+                for (ucar.nc2.Group g : groups) {
+                    //retrieve geophysical data to fill in "product" value ranges
+                    if (g.getShortName().equalsIgnoreCase("Geophysical_Data")) {
+                        var = g.getVariables();
+                        break;
+                    }
+                }
+                if (var != null) {
+                    for (Variable v : var) {
+                        products.add(v.getShortName());
+
+                        if ("l2bin".equalsIgnoreCase(programName)) {
+                            if (v != null && v.getShortName().equalsIgnoreCase("l2_flags")) {
+                                updateFlagUseWrapper(v);
+                            }
+                        }
+
+//
+//                        if (v.getShortName().equalsIgnoreCase("l2_flags")) {
+//                            Variable flagGroup = v;
+//
+//                            try {
+//                                Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
+//                                Array array = flagMeaningAttribute.getValues();
+//                                String flagMeanings = array.toString();
+//
+//                                if (flagMeanings.length() > 0) {
+//                                    if ("l2bin".equalsIgnoreCase(programName)) {
+//                                        ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+//                                        if (flaguseParamInfo == null) {
+//                                            flaguseParamInfo = new ParamInfo("flaguse");
+//                                            flaguseParamInfo.setDescription("flaguse");
+//                                        }
+//                                        flaguseParamInfo.clearValidValueInfos();
+//
+//                                        String[] values1 = flagMeanings.split("[,\\s]");
+//                                        Arrays.sort(values1);
+//
+//                                        for (String value : values1) {
+//                                            ParamValidValueInfo test = new ParamValidValueInfo(value);
+//                                            test.setDescription(value);
+//                                            flaguseParamInfo.getValidValueInfos().add(test);
+//                                        }
+//
+////                                        ParamValidValueInfo test = new ParamValidValueInfo("NONE");
+////                                        test.setDescription("NONE");
+////                                        flaguseParamInfo.getValidValueInfos().add(test);
+//
+////                                    paramList.getPropertyChangeSupport().firePropertyChange("flaguse", oldValue, newValue);
+//                                    }
+//                                }
+//
+//                            } catch (Exception e) {
+//                            }
+//
+//                            if ("l2bin".equalsIgnoreCase(programName)) {
+//                                updateFlagUse(null);
+//                            }
+//
+//
+//                        }
+
+                    }
+
                 }
             }
-            if (var != null) {
-                for (Variable v : var) {
-                    products.add(v.getShortName());
+        }
 
-                    if (v.getShortName().equalsIgnoreCase("l2_flags")) {
-                        Variable flagGroup = v;
 
-                        try {
-                            Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
-                            Array array = flagMeaningAttribute.getValues();
-                            String flagMeanings = array.toString();
+        String[] bandNames = new String[products.size()];
+        products.toArray(bandNames);
 
-                            if (flagMeanings.length() > 0) {
-                                if ("l2bin".equalsIgnoreCase(programName)) {
-                                    ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-                                    if (flaguseParamInfo == null) {
-                                        flaguseParamInfo = new ParamInfo("flaguse");
-                                        flaguseParamInfo.setDescription("flaguse");
-                                    }
-                                    flaguseParamInfo.clearValidValueInfos();
+        if (bandNames != null) {
+            if ("l2bin".equalsIgnoreCase(programName)) {
+                updateProductFieldWithBandNames("l3bprod", bandNames);
+                updateProductFieldWithBandNames("composite_prod", bandNames);
+            }
 
-                                    String[] values1 = flagMeanings.split("[,\\s]");
-                                    Arrays.sort(values1);
+            if ("l3mapgen".equalsIgnoreCase(programName)) {
+                updateProductFieldWithBandNames("product", bandNames);
+            }
 
-                                    for (String value : values1) {
-                                        ParamValidValueInfo test = new ParamValidValueInfo(value);
-                                        test.setDescription(value);
-                                        flaguseParamInfo.getValidValueInfos().add(test);
-                                    }
+            if ("l3bin".equalsIgnoreCase(programName)) {
+                updateProductFieldWithBandNames("prod", bandNames);
+                updateProductFieldWithBandNames("composite_prod", bandNames);
+            }
+        }
+
+        if ("l2bin".equalsIgnoreCase(programName) || "l3mapgen".equalsIgnoreCase(programName)) {
+            updateSuite(selectedFile);
+        }
+    }
+
+
+    private void updateFlagUseWrapper(Variable flagGroup) {
+
+            try {
+                Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
+                Array array = flagMeaningAttribute.getValues();
+                String flagMeanings = array.toString();
+
+                if (flagMeanings.length() > 0) {
+                    if ("l2bin".equalsIgnoreCase(programName)) {
+                        ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+                        if (flaguseParamInfo == null) {
+                            flaguseParamInfo = new ParamInfo("flaguse");
+                            flaguseParamInfo.setDescription("flaguse");
+                        }
+                        flaguseParamInfo.clearValidValueInfos();
+
+                        String[] values1 = flagMeanings.split("[,\\s]");
+                        Arrays.sort(values1);
+
+                        for (String value : values1) {
+                            ParamValidValueInfo test = new ParamValidValueInfo(value);
+                            test.setDescription(value);
+                            flaguseParamInfo.getValidValueInfos().add(test);
+                        }
 
 //                                        ParamValidValueInfo test = new ParamValidValueInfo("NONE");
 //                                        test.setDescription("NONE");
 //                                        flaguseParamInfo.getValidValueInfos().add(test);
 
 //                                    paramList.getPropertyChangeSupport().firePropertyChange("flaguse", oldValue, newValue);
-                                }
-                            }
-
-                        } catch (Exception e) {
-                        }
-
-                        if ("l2bin".equalsIgnoreCase(programName)) {
-                            updateFlagUse(null);
-                        }
-
-
                     }
-
                 }
-                String[] bandNames = new String[products.size()];
-                products.toArray(bandNames);
 
-
-                if (bandNames != null) {
-
-                    if ("l2bin".equalsIgnoreCase(programName)) {
-                        ParamInfo pi = getParamInfo("l3bprod");
-                        if (pi != null) {
-                            pi.clearValidValueInfos();
-
-                            ParamValidValueInfo paramValidValueInfo;
-                            for (String bandName : bandNames) {
-                                paramValidValueInfo = new ParamValidValueInfo(bandName);
-                                paramValidValueInfo.setDescription(bandName);
-                                pi.addValidValueInfo(paramValidValueInfo);
-                            }
-
-                            String newValue = pi.getValue() != null ? pi.getValue() : "";
-
-                            paramList.getPropertyChangeSupport().firePropertyChange(getProdParamName(), "-1", newValue);
-                            updateParamInfo("l3bprod", newValue);
-                            fireEvent("l3bprod", "-1", newValue);
-                        }
-                    }
-
-
-                    if ("l2bin".equalsIgnoreCase(programName)) {
-                        ParamInfo pi = getParamInfo("composite_prod");
-                        if (pi != null) {
-                            pi.clearValidValueInfos();
-
-                            ParamValidValueInfo paramValidValueInfo;
-                            for (String bandName : bandNames) {
-                                paramValidValueInfo = new ParamValidValueInfo(bandName);
-                                paramValidValueInfo.setDescription(bandName);
-                                pi.addValidValueInfo(paramValidValueInfo);
-                            }
-
-                            String newValue = pi.getValue() != null ? pi.getValue() : "";
-
-                            paramList.getPropertyChangeSupport().firePropertyChange("composite_prod", "-1", newValue);
-                            updateParamInfo("composite_prod", newValue);
-                            fireEvent("composite_prod", "-1", newValue);
-                        }
-                    }
-
-
-                }
+            } catch (Exception e) {
             }
-        }
 
-        if ("l2bin".equalsIgnoreCase(programName)) {
-            updateSuite(selectedFile);
+            if ("l2bin".equalsIgnoreCase(programName)) {
+                updateFlagUse(null);
+            }
+
+
+    }
+
+
+    private void updateProductFieldWithBandNames(String field, String[] bandNames) {
+        ParamInfo pi = getParamInfo(field);
+        if (pi != null) {
+            pi.clearValidValueInfos();
+
+            ParamValidValueInfo paramValidValueInfo;
+            for (String bandName : bandNames) {
+                paramValidValueInfo = new ParamValidValueInfo(bandName);
+                paramValidValueInfo.setDescription(bandName);
+                pi.addValidValueInfo(paramValidValueInfo);
+            }
+
+            String newValue = pi.getValue() != null ? pi.getValue() : "";
+
+            paramList.getPropertyChangeSupport().firePropertyChange(field, "-1", newValue);
+            updateParamInfo(field, newValue);
+            fireEvent(field, "-1", newValue);
         }
     }
+
 
 
     @Override
