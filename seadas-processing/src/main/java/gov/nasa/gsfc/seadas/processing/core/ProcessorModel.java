@@ -1942,15 +1942,17 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private static String getOfileForL3MapGenAddOns(String resolution, String product, String projection) {
 
 
-        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_FIELDS_ADD_NONE.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsAdd())) {
+        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
             return "";
         }
 
         String keyString;
-        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsAdd())) {
-            keyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeFieldsKeyString1();
+        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX1.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffix1();
+        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX2.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffix2();
         } else {
-            keyString = OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT;
+            keyString = OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT;
         }
 
 

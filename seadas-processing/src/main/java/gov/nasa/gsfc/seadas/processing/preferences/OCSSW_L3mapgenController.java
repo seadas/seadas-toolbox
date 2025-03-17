@@ -45,7 +45,7 @@ import java.awt.*;
         id = "L3mapgen")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L3mapgen=L3mapgen",
-        "Options_Keywords_OCSSW_L3mapgen=seadas, ocssw, l3mapgen"
+        "Options_Keywords_OCSSW_L3mapgen=seadas, ocssw, l3mapgen. mapping, mapped, l3m"
 })
 public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
@@ -60,10 +60,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     Property namingScheme;
     Property fieldsAdd;
-    Property keystring1;
-    Property keystring2;
-    Property ifileOriginalKey;
-    Property ifileReplacementKey;
+
 
 
     Property fav1SetToDefault;
@@ -93,10 +90,10 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String  OFILE_NAMING_SCHEME_OCSSW = "OCSSW";
     public static final String  OFILE_NAMING_SCHEME_CUSTOM = "IFILE (String-Replace)";
 
-    public static final String OFILE_NAMING_SCHEME_FIELDS_ADD_NONE = "NONE";
-    public static final String OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1 = "Use KeyString";
-    public static final String OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING2 = "Fields KeyString 2";
-    public static final String OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT = "Fields KeyString DEFAULT";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix 1";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix 2";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "Default Suffix (All)";
 
 
     // Preferences property prefix
@@ -150,21 +147,34 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_LABEL = "Basename";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_LABEL = "Basename Options";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_TOOLTIP = "Naming scheme to use for autofilling ofile name";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_CUSTOM;
 
 
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.fields.add";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_LABEL = "Suffix Fields";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_TOOLTIP = "ofile Add Suffix Scheme";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT = OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1;
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix.options";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL = "Suffix Options";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP = "ofile Add Suffix Scheme";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX1;
 
 
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.fields.keystring";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_LABEL = "Suffix Fields: KeyString";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_TOOLTIP = "ofile Naming scheme keyed add-ons as suffix of ofile name";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT = "[.product][.resolution][.projection]";
+    public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
+            "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
+            "[.product] : adds 'product' field with '.' as delimiter<br>" +
+            "[.resolution] : adds 'resolution' field with '.' as delimiter<br>" +
+            "[.projection] : adds 'projection' field with '.' as delimiter<br>" +
+            "</html>";
+
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL = "Suffix 1";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = "[.product][.resolution][.projection]";
+
+
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix2";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL = "Suffix 2";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = "[_product][_resolution][_projection]";
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.ifile.original";
@@ -302,10 +312,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY, true);
         namingScheme = initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT);
-        fieldsAdd = initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT);
+        fieldsAdd = initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_REPLACE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_DEFAULT);
-        keystring1 = initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT);
 
 
 
@@ -457,16 +468,19 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
             context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY, false);
         }
 
-        if (OFILE_NAMING_SCHEME_FIELDS_ADD_NONE.equals(fieldsAdd.getValue()) || OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT.equals(fieldsAdd.getValue())) {
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY, false);
+        if (OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(fieldsAdd.getValue()) || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(fieldsAdd.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, false);
         }
 
-        if (OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1.equals(fieldsAdd.getValue())) {
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY, true);
+        if (OFILE_NAMING_SCHEME_SUFFIX1.equals(fieldsAdd.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, true);
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, false);
         }
 
-        if (OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING2.equals(fieldsAdd.getValue())) {
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY, false);
+        if (OFILE_NAMING_SCHEME_SUFFIX2.equals(fieldsAdd.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, true);
         }
 
     }
@@ -730,20 +744,25 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-        @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_KEY,
-                label = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_LABEL,
-                valueSet = {OFILE_NAMING_SCHEME_FIELDS_ADD_NONE, OFILE_NAMING_SCHEME_FIELDS_ADD_KEYSTRING1, OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT},
-                description = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_TOOLTIP)
-        String l3mapgenOfileNamingSchemeFieldsAddDefault = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT;
+        @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY,
+                label = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL,
+                valueSet = {OFILE_NAMING_SCHEME_SUFFIX_NONE, OFILE_NAMING_SCHEME_SUFFIX1, OFILE_NAMING_SCHEME_SUFFIX2, OFILE_NAMING_SCHEME_SUFFIX_DEFAULT},
+                description = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP)
+        String l3mapgenOfileNamingSchemeFieldsAddDefault = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT;
 
 
 
 
 
-        @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY,
-                label = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_LABEL,
-                description = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_TOOLTIP)
-        String l3mapgenOfileNamingSchemeFieldsKeystring1Default = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT;
+        @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY,
+                label = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL,
+                description = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP)
+        String l3mapgenOfileNamingSchemeSuffix1Default = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY,
+                label = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL,
+                description = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP)
+        String l3mapgenOfileNamingSchemeSuffix2Default = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT;
 
 
 
@@ -885,9 +904,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     }
 
 
-    public static String getPreferenceOfileNamingSchemeFieldsAdd() {
+    public static String getPreferenceOfileNamingSchemeSuffixOptions() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_ADD_DEFAULT);
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
     }
 
 
@@ -903,11 +922,15 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-    public static String getPreferenceOfileNamingSchemeFieldsKeyString1() {
+    public static String getPreferenceOfileNamingSchemeSuffix1() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_FIELDS_KEYSTRING1_DEFAULT);
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT);
     }
 
+    public static String getPreferenceOfileNamingSchemeSuffix2() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT);
+    }
 
 
 
