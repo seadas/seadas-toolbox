@@ -749,10 +749,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         ArrayList<String> products = new ArrayList<String>();
         if (ncFile != null) {
-            String testThisToSeeIfProduct = getProdParamName();
 
             if ("l3mapgen".equalsIgnoreCase(programName) || "l3bin".equalsIgnoreCase(programName)) {
-
                 try {
                     Attribute unitsAttribute = ncFile.findGlobalAttribute("units");
                     Array array = unitsAttribute.getValues();
@@ -792,54 +790,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                                 updateFlagUseWrapper(v);
                             }
                         }
-
-//
-//                        if (v.getShortName().equalsIgnoreCase("l2_flags")) {
-//                            Variable flagGroup = v;
-//
-//                            try {
-//                                Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
-//                                Array array = flagMeaningAttribute.getValues();
-//                                String flagMeanings = array.toString();
-//
-//                                if (flagMeanings.length() > 0) {
-//                                    if ("l2bin".equalsIgnoreCase(programName)) {
-//                                        ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-//                                        if (flaguseParamInfo == null) {
-//                                            flaguseParamInfo = new ParamInfo("flaguse");
-//                                            flaguseParamInfo.setDescription("flaguse");
-//                                        }
-//                                        flaguseParamInfo.clearValidValueInfos();
-//
-//                                        String[] values1 = flagMeanings.split("[,\\s]");
-//                                        Arrays.sort(values1);
-//
-//                                        for (String value : values1) {
-//                                            ParamValidValueInfo test = new ParamValidValueInfo(value);
-//                                            test.setDescription(value);
-//                                            flaguseParamInfo.getValidValueInfos().add(test);
-//                                        }
-//
-////                                        ParamValidValueInfo test = new ParamValidValueInfo("NONE");
-////                                        test.setDescription("NONE");
-////                                        flaguseParamInfo.getValidValueInfos().add(test);
-//
-////                                    paramList.getPropertyChangeSupport().firePropertyChange("flaguse", oldValue, newValue);
-//                                    }
-//                                }
-//
-//                            } catch (Exception e) {
-//                            }
-//
-//                            if ("l2bin".equalsIgnoreCase(programName)) {
-//                                updateFlagUse(null);
-//                            }
-//
-//
-//                        }
-
                     }
-
                 }
             }
         }
@@ -847,6 +798,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         String[] bandNames = new String[products.size()];
         products.toArray(bandNames);
+        String testThisToSeeIfProduct = getProdParamName();
 
         if (bandNames != null) {
             if ("l2bin".equalsIgnoreCase(programName)) {
