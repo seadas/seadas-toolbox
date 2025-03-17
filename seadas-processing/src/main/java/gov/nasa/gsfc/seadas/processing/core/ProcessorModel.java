@@ -364,6 +364,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String oformat = getParamValue("oformat");
                 String product = getParamValue("product");
                 String projection = getParamValue("projection");
+                String interp = getParamValue("interp");
+                String north = getParamValue("north");
+                String south = getParamValue("south");
+                String west = getParamValue("west");
+                String east = getParamValue("east");
 
 //                String ofileName;
 //                if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_CUSTOM.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
@@ -374,7 +379,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                    String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
 //                    ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
 //                }
-                String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection);
+                String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
 
 
                 if (ofileName != null) {
@@ -1911,7 +1916,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    private static String getOfileForL3MapGenAddOns(String resolution, String product, String projection) {
+    private static String getOfileForL3MapGenAddOns(String resolution, String product, String projection, String interp, String north, String south, String west, String east) {
 
 
         if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
@@ -1937,6 +1942,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product_single");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "projection");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "interp");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe");
 
 
         if (checkForVariantMatch(keyString, "product_single")) {
@@ -2004,6 +2015,70 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             keyString = replaceAnyKeyStringVariant(keyString, "projection", projectionName);
         }
+
+
+        if (checkForVariantMatch(keyString, "interp")) {
+            if (interp == null) {
+                interp = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "interp", interp);
+        }
+
+
+        if (checkForVariantMatch(keyString, "north")) {
+            if (north == null) {
+                north = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "north", north, "N", null);
+        }
+
+        if (checkForVariantMatch(keyString, "south")) {
+            if (south == null) {
+                south = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "south", south, "S", null);
+        }
+
+        if (checkForVariantMatch(keyString, "west")) {
+            if (west == null) {
+                west = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "west", west, "W", null);
+        }
+
+        if (checkForVariantMatch(keyString, "east")) {
+            if (east == null) {
+                east = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "east", east, "E", null);
+        }
+
+        if (checkForVariantMatch(keyString, "nswe") || checkForVariantMatch(keyString, "northsouthwesteast")) {
+            if (north == null) {
+                north = "";
+            }
+            if (south == null) {
+                south = "";
+            }
+            if (west == null) {
+                west = "";
+            }
+            if (east == null) {
+                east = "";
+            }
+
+            String nswe = "";
+            String northSouthWestEast = "";
+            if (north.length() > 0 && south.length() > 0 && west.length() > 0 && east.length() > 0) {
+                nswe = north + "N_" + south + "S_" + west + "W_" + east + "E";
+                northSouthWestEast = north + "North_" + south + "South_" + west + "West_" + east + "East";
+            }
+
+            keyString = replaceAnyKeyStringVariant(keyString, "nswe", nswe);
+            keyString = replaceAnyKeyStringVariant(keyString, "northsouthwesteast", northSouthWestEast);
+        }
+
+
 //
 //        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
 //        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
@@ -2024,10 +2099,24 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return keyString;
     }
 
+
     private static String replaceAnyKeyStringVariant(String keyString, String key, String value) {
+        return replaceAnyKeyStringVariant( keyString,  key, value, null, null);
+    }
+
+    private static String replaceAnyKeyStringVariant(String keyString, String key, String value, String prefix, String suffix) {
 
         if (value == null) {
             value = "";
+        }
+
+        if (value.length() > 0) {
+            if (prefix != null) {
+                value = prefix + value;
+            }
+            if (suffix != null) {
+                value = value + suffix;
+            }
         }
         value = value.trim();
 
@@ -2094,7 +2183,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    public static String getOfileForL3MapGenWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String oformat, String product, String projection) {
+
+    public static String getOfileForL3MapGenWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String oformat, String product, String projection, String interp, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
         String ofileName;
@@ -2131,7 +2221,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        ofileName += getOfileForL3MapGenAddOns(resolution, product, projection);
+        ofileName += getOfileForL3MapGenAddOns(resolution, product, projection, interp,  north, south, west, east);
 
 
         if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
@@ -2284,12 +2374,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
 
                     String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = (String) propertyChangeEvent.getNewValue();
+//                    String resolution = (String) propertyChangeEvent.getNewValue();
+                    String resolution = getParamValue("resolution");
                     String oformat = getParamValue("oformat");
                     String product = getParamValue("product");
                     String projection = getParamValue("projection");
+                    String interp = getParamValue("interp");
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
 
-                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection);
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
@@ -2301,13 +2397,23 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String ifileName = getParamValue(getPrimaryInputFileOptionName());
 
+//                    String resolution = getParamValue("resolution");
+//                    String oformat = (String) propertyChangeEvent.getNewValue();
+//                    String product = getParamValue("product");
+//                    String projection = getParamValue("projection");
+//                    String interp = getParamValue("interp");
+
                     String resolution = getParamValue("resolution");
-                    String oformat = (String) propertyChangeEvent.getNewValue();
+                    String oformat = getParamValue("oformat");
                     String product = getParamValue("product");
                     String projection = getParamValue("projection");
+                    String interp = getParamValue("interp");
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
 
-                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection);
-
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
@@ -2319,12 +2425,23 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String ifileName = getParamValue(getPrimaryInputFileOptionName());
 
+//                    String resolution = getParamValue("resolution");
+//                    String oformat = getParamValue("oformat");
+//                    String product = (String) propertyChangeEvent.getNewValue();
+//                    String projection = getParamValue("projection");
+//                    String interp = getParamValue("interp");
+
                     String resolution = getParamValue("resolution");
                     String oformat = getParamValue("oformat");
-                    String product = (String) propertyChangeEvent.getNewValue();
+                    String product = getParamValue("product");
                     String projection = getParamValue("projection");
+                    String interp = getParamValue("interp");
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
 
-                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection);
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
 
 
                     updateOFileInfo(ofileName);
@@ -2336,7 +2453,28 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
 
-                    String projection = (String) propertyChangeEvent.getNewValue();
+//                    String projection = (String) propertyChangeEvent.getNewValue();
+//
+//
+//                    if (projection != null && projection.trim().startsWith("#")) {
+//                        paramList.getPropertyChangeSupport().firePropertyChange("projection", "-1", "");
+//                        updateParamInfo("projection", "");
+//                        fireEvent("projection", "-1", "");
+//                        return;
+//                    }
+
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+
+//                    String resolution = getParamValue("resolution");
+//                    String oformat = getParamValue("oformat");
+//                    String product = getParamValue("product");
+//                    String interp = getParamValue("interp");
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = getParamValue("oformat");
+                    String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+                    String interp = getParamValue("interp");
 
                     if (projection != null && projection.trim().startsWith("#")) {
                         paramList.getPropertyChangeSupport().firePropertyChange("projection", "-1", "");
@@ -2345,17 +2483,125 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         return;
                     }
 
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
+
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
+
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            addPropertyChangeListener("interp", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String ifileName = getParamValue(getPrimaryInputFileOptionName());
 
                     String resolution = getParamValue("resolution");
                     String oformat = getParamValue("oformat");
                     String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+                    String interp = (String) propertyChangeEvent.getNewValue();
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
 
-                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection);
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
             });
+
+
+            addPropertyChangeListener("north", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = getParamValue("oformat");
+                    String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+                    String interp = (String) propertyChangeEvent.getNewValue();
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
+
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+            addPropertyChangeListener("south", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = getParamValue("oformat");
+                    String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+                    String interp = (String) propertyChangeEvent.getNewValue();
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
+
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+            addPropertyChangeListener("west", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = getParamValue("oformat");
+                    String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+                    String interp = (String) propertyChangeEvent.getNewValue();
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
+
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+            addPropertyChangeListener("east", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+
+                    String resolution = getParamValue("resolution");
+                    String oformat = getParamValue("oformat");
+                    String product = getParamValue("product");
+                    String projection = getParamValue("projection");
+                    String interp = (String) propertyChangeEvent.getNewValue();
+                    String north = getParamValue("north");
+                    String south = getParamValue("south");
+                    String west = getParamValue("west");
+                    String east = getParamValue("east");
+
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
 
 
             // todo bypassing all this additional ofile renaming at least for now as it does not always return the best name
@@ -2543,6 +2789,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             paramList.getInfo(VALID_TAGS_OPTION_NAME).setValidValueInfos(tagValidValues);
             //System.out.println(paramList.getInfo(TAG_OPTION_NAME).getName());
         }
+
+
 
 
         private boolean includeOfficialReleaseTagsOnly() {
