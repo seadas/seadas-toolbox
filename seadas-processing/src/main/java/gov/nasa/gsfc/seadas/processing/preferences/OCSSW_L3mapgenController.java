@@ -79,7 +79,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-    // todo add more parameters:   wavelength_3d, suite, fudge, product_rgb, num_cache
+    // todo add more parameters:    suite, fudge, num_cache, oformat, use_rgb, mask_land, rgb_land
     // todo add some more favorite projections
     // todo compare param tooltips here and with .xml file and with ocssw help
     // todo update help page
@@ -96,7 +96,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[.product][.resolution]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[_product][_resolution]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.product][.resolution][.projection]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[.product][.resolution][.projection][.north_south_west_east]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_product][_resolution][_projection]";
 
 
     // Preferences property prefix
@@ -112,6 +112,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_PRODUCT_LABEL = "product";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP = "Product(s)";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_DEFAULT = "";
+
+    public static final String PROPERTY_L3MAPGEN_WAVELENGTH_3D_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".wavelength_3d";
+    public static final String PROPERTY_L3MAPGEN_WAVELENGTH_3D_LABEL = "wavelength_3d";
+    public static final String PROPERTY_L3MAPGEN_WAVELENGTH_3D_TOOLTIP = "Field 'wavelength_3d'";
+    public static final String PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".projection";
     public static final String PROPERTY_L3MAPGEN_PROJECTION_LABEL = "projection";
@@ -148,6 +153,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_EAST_LABEL = "east";
     public static final String PROPERTY_L3MAPGEN_EAST_TOOLTIP = "Easternmost boundary";
     public static final String PROPERTY_L3MAPGEN_EAST_DEFAULT = "";
+
+    public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".product.3d";
+    public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL = "product_rgb";
+    public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_TOOLTIP = "RGB Products (comma delimited)";
+    public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT = "rhos_645,rhos_555,rhos_465";
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.section";
@@ -310,6 +320,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_KEY, PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_WAVELENGTH_3D_KEY, PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT);
         projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_PROJECTION_KEY, PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_RESOLUTION_KEY, PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_INTERP_KEY, PROPERTY_L3MAPGEN_INTERP_DEFAULT);
@@ -317,6 +328,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         south = initPropertyDefaults(context, PROPERTY_L3MAPGEN_SOUTH_KEY, PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
         west = initPropertyDefaults(context, PROPERTY_L3MAPGEN_WEST_KEY, PROPERTY_L3MAPGEN_WEST_DEFAULT);
         east = initPropertyDefaults(context, PROPERTY_L3MAPGEN_EAST_KEY, PROPERTY_L3MAPGEN_EAST_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY, PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT);
 
 
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY, true);
@@ -739,50 +751,61 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_PARAMETERS_SECTION_TOOLTIP)
         boolean l3mapgen_PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY = true;
 
-        @Preference(label = PROPERTY_L3MAPGEN_PRODUCT_LABEL,
-                key = PROPERTY_L3MAPGEN_PRODUCT_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_PRODUCT_KEY,
+                label = PROPERTY_L3MAPGEN_PRODUCT_LABEL,
                 description = PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP)
         String l3mapgenProductDefault = PROPERTY_L3MAPGEN_PRODUCT_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_PROJECTION_LABEL,
-                key = PROPERTY_L3MAPGEN_PROJECTION_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_WAVELENGTH_3D_KEY,
+                label = PROPERTY_L3MAPGEN_WAVELENGTH_3D_LABEL,
+                description = PROPERTY_L3MAPGEN_WAVELENGTH_3D_TOOLTIP)
+        String l3mapgenWavelength3dDefault = PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_PROJECTION_KEY,
+                label = PROPERTY_L3MAPGEN_PROJECTION_LABEL,
                 description = PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP)
         String l3mapgenProjectionDefault = PROPERTY_L3MAPGEN_PROJECTION_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_RESOLUTION_LABEL,
-                key = PROPERTY_L3MAPGEN_RESOLUTION_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_RESOLUTION_KEY,
+                label = PROPERTY_L3MAPGEN_RESOLUTION_LABEL,
                 description = PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP)
         String l3mapgenResolutionDefault = PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_INTERP_LABEL,
-                key = PROPERTY_L3MAPGEN_INTERP_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_INTERP_KEY,
+                label = PROPERTY_L3MAPGEN_INTERP_LABEL,
                 valueSet = {" ", "nearest", "bin", "area"},
                 description = PROPERTY_L3MAPGEN_INTERP_TOOLTIP)
         String l3mapgenInterpDefault = PROPERTY_L3MAPGEN_INTERP_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_NORTH_LABEL,
-                key = PROPERTY_L3MAPGEN_NORTH_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_NORTH_KEY,
+                label = PROPERTY_L3MAPGEN_NORTH_LABEL,
                 description = PROPERTY_L3MAPGEN_NORTH_TOOLTIP)
         String l3mapgenNorthDefault = PROPERTY_L3MAPGEN_NORTH_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_SOUTH_LABEL,
-                key = PROPERTY_L3MAPGEN_SOUTH_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_SOUTH_KEY,
+                label = PROPERTY_L3MAPGEN_SOUTH_LABEL,
                 description = PROPERTY_L3MAPGEN_SOUTH_TOOLTIP)
         String l3mapgenSouthDefault = PROPERTY_L3MAPGEN_SOUTH_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_WEST_LABEL,
-                key = PROPERTY_L3MAPGEN_WEST_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_WEST_KEY,
+                label = PROPERTY_L3MAPGEN_WEST_LABEL,
                 description = PROPERTY_L3MAPGEN_WEST_TOOLTIP)
         String l3mapgenWestDefault = PROPERTY_L3MAPGEN_WEST_DEFAULT;
 
-        @Preference(label = PROPERTY_L3MAPGEN_EAST_LABEL,
-                key = PROPERTY_L3MAPGEN_EAST_KEY,
+        @Preference(key = PROPERTY_L3MAPGEN_EAST_KEY,
+                label = PROPERTY_L3MAPGEN_EAST_LABEL,
                 description = PROPERTY_L3MAPGEN_EAST_TOOLTIP)
         String l3mapgenEastDefault = PROPERTY_L3MAPGEN_EAST_DEFAULT;
 
+        @Preference(key = PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY,
+                label = PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL,
+                description = PROPERTY_L3MAPGEN_PRODUCT_RGB_TOOLTIP)
+        String l3mapgenProductRgbDefault = PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT;
 
 
-        
+
+
+
         @Preference(key = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY,
                 label = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_LABEL,
                 description = PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_TOOLTIP)
@@ -877,6 +900,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
     }
 
+    public static String getPreferenceWavelength3D() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT);
+    }
+
+
+
 
     public static String getPreferenceProjection() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
@@ -912,6 +942,14 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_DEFAULT);
     }
+
+    public static String getPreferenceProductRGB() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT);
+    }
+
+
+
 
 
     public static String getPreferenceOfileNamingScheme() {

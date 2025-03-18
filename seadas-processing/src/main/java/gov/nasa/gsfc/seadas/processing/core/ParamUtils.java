@@ -334,10 +334,13 @@ public class ParamUtils {
 
             if ("l3mapgen.xml".equals(paramXmlFileName)) {
                 switch (optionName) {
-                    case "product":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProduct());
                         break;
-                    case "projection":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWavelength3D());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_LABEL:
 //                        getUserProjections();
 
 //                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1(),
@@ -361,23 +364,26 @@ public class ParamUtils {
 
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProjection());
                         break;
-                    case "resolution":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RESOLUTION_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceResolution());
                         break;
-                    case "interp":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceInterp());
                         break;
-                    case "north":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceNorth());
                         break;
-                    case "south":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SOUTH_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceSouth());
                         break;
-                    case "west":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WEST_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWest());
                         break;
-                    case "east":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceEast());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProductRGB());
                         break;
                 }
             }

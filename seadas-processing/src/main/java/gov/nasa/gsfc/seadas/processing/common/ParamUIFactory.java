@@ -112,11 +112,13 @@ public class ParamUIFactory {
 
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
         if ("l3mapgen".equals(processorModel.getProgramName())) {
+            booleanParamPanel.setLayout(new TableLayout(5));
             numberOfOptionsPerLine = 4;
         }
 
         if ("l2bin".equals(processorModel.getProgramName())) {
             numberOfOptionsPerLine = 4;
+            booleanParamPanel.setLayout(new TableLayout(5));
         }
 
 

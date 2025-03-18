@@ -629,15 +629,18 @@
 
 
 
-        <option type="int">
-            <name>deflate</name>
+
+
+        <option type="string">
+            <name>pversion</name>
             <value></value>
-            <default></default>
+            <default>Unspecified</default>
             <source>default</source>
-            <description>deflation level</description>
+            <description>processing version string</description>
             <usedAs>option</usedAs>
             <order>19</order>
         </option>
+
 
 
         <option type="string">
@@ -652,36 +655,125 @@
         </option>
 
 
-        <option type="string">
-            <name>palette_dir</name>
-            <value>$OCDATAROOT/common/palette</value>
-            <default>$OCDATAROOT/common/palette</default>
-            <source>default</source>
-            <description>directory containing the palette files</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <order>21</order>
-        </option>
+<!--        <option type="string">-->
+<!--            <name>palette_dir</name>-->
+<!--            <value>$OCDATAROOT/common/palette</value>-->
+<!--            <default>$OCDATAROOT/common/palette</default>-->
+<!--            <source>default</source>-->
+<!--            <description>directory containing the palette files</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <colSpan>2</colSpan>-->
+<!--            <order>21</order>-->
+<!--        </option>-->
+
         <option type="string">
             <name>palfile</name>
             <value/>
             <source>default</source>
-            <description>palette filename.  (default = means the palette is chosen using the product.xml file</description>
+            <description>palette filename in $OCDATAROOT/common/palette.  (default = means the palette is chosen using the product.xml file</description>
+            <validValues>
+                <validValue>
+                    <value>anomalies1_universal</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>anomalies2_universal</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>bios</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>brs_chl</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>brs_sst</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>calcite</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>cyan</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>default-black0</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>default</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>density</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>gray-black0</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>gray</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>ndvi</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>sm</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>sss</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>sst-black0</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>sst-gibs</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>sst</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>universal_bluered-black0</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>universal_bluered</value>
+                    <description></description>
+                </validValue>
+                <validValue>
+                    <value>zphotic</value>
+                    <description></description>
+                </validValue>
+            </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <order>22</order>
+            <order>21</order>
         </option>
+
 
 
         <option type="string">
-            <name>pversion</name>
+            <name>rgb_land</name>
             <value></value>
-            <default>Unspecified</default>
+            <default></default>
             <source>default</source>
-            <description>processing version string</description>
+            <description>land colors (default=160,82,45)</description>
             <usedAs>option</usedAs>
-            <order>23</order>
+            <order>22</order>
         </option>
+
 
 
 
@@ -718,8 +810,21 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
+            <order>23</order>
+        </option>
+
+
+        <option type="int">
+            <name>deflate</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>deflation level</description>
+            <usedAs>option</usedAs>
             <order>24</order>
         </option>
+
+
 
 
         <option type="boolean">
@@ -729,7 +834,7 @@
             <source>default</source>
             <description>should we do quality factor processing</description>
             <usedAs>option</usedAs>
-            <order>25</order>
+            <order>26</order>
         </option>
 
         <option type="boolean">
@@ -739,7 +844,7 @@
             <source>default</source>
             <description>should we use product_rgb to make a psudo true color image</description>
             <usedAs>option</usedAs>
-            <order>26</order>
+            <order>27</order>
         </option>
 
         <option type="boolean">
@@ -749,7 +854,27 @@
             <source>default</source>
             <description>apply color palette</description>
             <usedAs>option</usedAs>
-            <order>27</order>
+            <order>28</order>
+        </option>
+
+        <option type="boolean">
+            <name>mask_land</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>mask land</description>
+            <usedAs>option</usedAs>
+            <order>29</order>
+        </option>
+
+        <option type="boolean">
+            <name>use_transparency</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
+            <usedAs>option</usedAs>
+            <order>30</order>
         </option>
 
     </options>
