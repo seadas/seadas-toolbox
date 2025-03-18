@@ -6,14 +6,25 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class OBDAACDataBrowser extends JFrame {
     private JComboBox<String> satelliteDropdown;
@@ -30,152 +41,237 @@ public class OBDAACDataBrowser extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(7, 2));
 
-        loadMetadata();
+        loadMetadata();  // Make sure this runs BEFORE initComponents()
+
+        if (processedMetadata.isEmpty()) {
+            System.err.println("❌ Error: Processed metadata is empty! GUI will not work.");
+            return;
+        }
+
         initComponents();
     }
 
-    private JSONArray loadMetadata() {
+    private java.util.Map<String, java.util.Map<String, java.util.List<String>>> processedMetadata = new java.util.HashMap<>();
+
+    private void loadMetadata() {
         try {
-            // Define the correct module directory path dynamically
-            String moduleDir = System.getProperty("user.dir") + File.separator + "seadas-toolbox" + File.separator + "seadas-earthdata-cloud-toolbox";
-            String filePath = Paths.get(moduleDir, "src", "main", "resources", "obdaac_metadata.json").toString();
+            // Load JSON file
+            Path metadataPath = Paths.get(System.getProperty("user.dir"), "seadas-toolbox",
+                    "seadas-earthdata-cloud-toolbox", "src", "main",
+                    "resources", "obdaac_metadata.json");
 
-            System.out.println("📄 Loading metadata from: " + filePath);
+            System.out.println("📄 Loading metadata from: " + metadataPath.toAbsolutePath());
 
-            // Read JSON file
-            JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(filePath));
-
-            // Ensure it is a JSON array
-            if (obj instanceof JSONArray) {
-                System.out.println("✅ Metadata successfully loaded.");
-                return (JSONArray) obj;
-            } else {
-                System.err.println("❌ Unexpected JSON format: Expected JSONArray but got " + obj.getClass().getSimpleName());
-                return new JSONArray(); // Return an empty array instead of null
+            if (!Files.exists(metadataPath) || Files.size(metadataPath) == 0) {
+                System.err.println("❌ Error: Metadata file does not exist or is empty.");
+                return;
             }
-        } catch (IOException | org.json.simple.parser.ParseException e) {
+
+            // Read and parse JSON
+            String content = new String(Files.readAllBytes(metadataPath), StandardCharsets.UTF_8);
+            JSONParser parser = new JSONParser();
+            JSONArray jsonArray = (JSONArray) parser.parse(content);
+
+            // Process into a structured format
+            processedMetadata.clear();
+
+            for (Object obj : jsonArray) {
+                JSONObject entry = (JSONObject) obj;
+
+                // 🔍 Extract Satellite & Instrument
+                String satellite = ((JSONArray) entry.get("platforms")).get(0).toString();
+                String instrument = extractInstrument(entry); // ✅ Now correctly detects instrument
+                String satelliteInstrumentKey = satellite + "/" + instrument;
+
+                // 🔍 Extract Level & Product
+                String level = entry.get("processing_level_id").toString();
+                String productName = extractProductName(entry);
+
+                // 🔄 Organize Metadata
+                processedMetadata.putIfAbsent(satelliteInstrumentKey, new HashMap<>());
+                processedMetadata.get(satelliteInstrumentKey).putIfAbsent(level, new ArrayList<>());
+                processedMetadata.get(satelliteInstrumentKey).get(level).add(productName);
+
+                System.out.println("✅ Stored: " + satelliteInstrumentKey + " | Level: " + level + " | Product: " + productName);
+            }
+
+            System.out.println("✅ Final Processed Metadata Structure:");
+            System.out.println(processedMetadata);
+
+        } catch (Exception e) {
             System.err.println("❌ Error loading metadata: " + e.getMessage());
             e.printStackTrace();
-            return new JSONArray(); // Return an empty array on failure
         }
     }
 
-    private void initComponents() {
-        // Dropdowns
-        satelliteDropdown = new JComboBox<>(new DefaultComboBoxModel<>(
-                getSatelliteNames().toArray(new String[0])
-        ));
+    private String extractInstrument(JSONObject entry) {
+        // ✅ 1️⃣ Check "sensors" field first
+        if (entry.containsKey("sensors")) {
+            JSONArray sensors = (JSONArray) entry.get("sensors");
+            if (!sensors.isEmpty()) {
+                return sensors.get(0).toString();  // ✅ First sensor is the instrument
+            }
+        }
 
-        satelliteDropdown = new JComboBox<>(new DefaultComboBoxModel<>(getSatelliteNames().toArray(new String[0])));
+        // ✅ 2️⃣ Extract from "short_name" and ensure it's not just "L1", "L2"
+        if (entry.containsKey("short_name")) {
+            String shortName = entry.get("short_name").toString();
+            String[] parts = shortName.split("_");
+            if (parts.length > 1 && !parts[1].matches("L[0-9]+")) {  // Avoid L1, L2
+                return parts[1];  // ✅ Second part is usually the instrument
+            }
+        }
+
+        // ✅ 3️⃣ Check "dataset_id" for fallback
+        if (entry.containsKey("dataset_id")) {
+            String datasetId = entry.get("dataset_id").toString();
+            String[] datasetParts = datasetId.split("\\s+");
+            if (datasetParts.length > 1 && !datasetParts[0].matches("L[0-9]+")) {
+                return datasetParts[0];  // ✅ First part of dataset_id
+            }
+        }
+
+        // ✅ 4️⃣ Special Cases: Fix Naming for PACE, SeaHawk, etc.
+        String satellite = ((JSONArray) entry.get("platforms")).get(0).toString();
+        if (satellite.equalsIgnoreCase("SeaHawk-1")) return "HawkEye";
+        if (satellite.equalsIgnoreCase("ADEOS-I")) return "OCTS";
+        if (satellite.equalsIgnoreCase("Nimbus-7")) return "CZCS";
+        if (satellite.equalsIgnoreCase("OrbView-2")) return "SeaWiFS";
+        if (satellite.equalsIgnoreCase("ENVISAT")) return "MERIS";
+
+        if (satellite.equalsIgnoreCase("PACE")) {
+            if (entry.get("short_name").toString().contains("OCI")) return "OCI";
+            if (entry.get("short_name").toString().contains("HARP2")) return "HARP2";
+            if (entry.get("short_name").toString().contains("SPEXONE")) return "SPEXONE";
+            if (entry.get("short_name").toString().contains("EPH")) return "EPH";
+            if (entry.get("short_name").toString().contains("HSK")) return "HSK";
+            if (entry.get("short_name").toString().contains("HKT")) return "HKT";
+        }
+
+        return "Unknown Instrument";  // ❌ Final fallback
+    }
+
+
+
+
+    private String extractProductName(JSONObject entry) {
+        String title = entry.get("title").toString();
+
+        // ✅ 1️⃣ Check for Acronyms in Parentheses
+        if (title.matches(".*\\(([^)]+)\\).*")) {
+            return title.replaceAll(".*\\(([^)]+)\\).*", "$1");  // Extracts the acronym
+        }
+
+        // ✅ 2️⃣ If No Acronym, Try Extracting Last Meaningful Word
+        String[] words = title.split(" ");
+        if (words.length > 1) {
+            String lastWord = words[words.length - 1];  // Last word in title
+            if (lastWord.length() <= 4) {  // Ensure it's a short and meaningful identifier
+                return lastWord;
+            }
+        }
+
+        // ❌ 3️⃣ Fallback: Return Full Name (If No Better Option)
+        return title;
+    }
+
+
+    private void initComponents() {
+        if (processedMetadata == null || processedMetadata.isEmpty()) {
+            System.err.println("⚠ Warning: Processed metadata is empty, skipping UI updates.");
+            return;
+        }
+
+        // Dropdowns
+        satelliteDropdown = new JComboBox<>();
         levelDropdown = new JComboBox<>();
         productDropdown = new JComboBox<>();
-        searchField = new JTextField();
 
-        // Date Pickers
-        startDatePicker = createDatePicker();
-        endDatePicker = createDatePicker();
+        // Populate satellites
+        for (String satellite : processedMetadata.keySet()) {
+            satelliteDropdown.addItem(satellite);
+        }
 
-        // Spatial Constraints
-        enableSpatialFiltering = new JCheckBox("Enable Spatial Filtering");
-        minLatField = new JTextField();
-        maxLatField = new JTextField();
-        minLonField = new JTextField();
-        maxLonField = new JTextField();
+        // Trigger first update if possible
+        if (satelliteDropdown.getItemCount() > 0) {
+            satelliteDropdown.setSelectedIndex(0);
+            updateLevels();  // 🔄 Ensure levels populate
+        }
 
-        enableSpatialFiltering.addActionListener(e -> toggleSpatialFields(enableSpatialFiltering.isSelected()));
+        // Add listeners
+        satelliteDropdown.addActionListener(e -> updateLevels());
+        levelDropdown.addActionListener(e -> updateProducts());
 
-        // Add Components to Frame
+        // Add components to frame
         add(new JLabel("Satellite/Instrument:")); add(satelliteDropdown);
         add(new JLabel("Data Level:")); add(levelDropdown);
         add(new JLabel("Product Name:")); add(productDropdown);
-        add(new JLabel("Search String:")); add(searchField);
-        add(new JLabel("Start Date:")); add(startDatePicker);
-        add(new JLabel("End Date:")); add(endDatePicker);
-        add(enableSpatialFiltering); add(new JPanel());
-        add(new JLabel("Min Lat:")); add(minLatField);
-        add(new JLabel("Max Lat:")); add(maxLatField);
-        add(new JLabel("Min Lon:")); add(minLonField);
-        add(new JLabel("Max Lon:")); add(maxLonField);
-
-        satelliteDropdown.addActionListener(e -> updateLevels());
-        levelDropdown.addActionListener(e -> updateProducts());
     }
+
     private java.util.List<String> getSatelliteNames() {
-        java.util.List<String> satelliteNames = new java.util.ArrayList<>();
-
-        if (metadata == null || metadata.isEmpty()) {
-            System.err.println("⚠ Warning: Metadata is empty or null.");
-            return satelliteNames;
-        }
-
-        for (Object obj : metadata) {
-            if (obj instanceof JSONObject) {
-                JSONObject entry = (JSONObject) obj;
-                String satellite = (String) entry.get("satellite");
-                if (satellite != null && !satelliteNames.contains(satellite)) {
-                    satelliteNames.add(satellite);
-                }
-            }
-        }
-
-        return satelliteNames;
+        return new ArrayList<>(processedMetadata.keySet());
     }
 
     private void updateLevels() {
         String selectedSatellite = (String) satelliteDropdown.getSelectedItem();
         levelDropdown.removeAllItems();
 
-        for (Object obj : metadata) {
-            if (obj instanceof JSONObject) {
-                JSONObject entry = (JSONObject) obj;
-                String satellite = (String) entry.get("satellite");
+        if (selectedSatellite == null || !processedMetadata.containsKey(selectedSatellite)) {
+            System.err.println("⚠ No metadata for selected satellite: " + selectedSatellite);
+            return;
+        }
 
-                if (selectedSatellite.equals(satellite)) {
-                    JSONArray levels = (JSONArray) entry.get("levels"); // Assuming "levels" key exists
-                    if (levels != null) {
-                        for (Object level : levels) {
-                            levelDropdown.addItem((String) level);
-                        }
-                    }
-                    break; // Stop searching after finding the matching satellite
-                }
-            }
+        Map<String, List<String>> levels = processedMetadata.get(selectedSatellite);
+
+        if (levels == null || levels.isEmpty()) {
+            System.err.println("⚠ No levels found for satellite: " + selectedSatellite);
+            return;
+        }
+
+        for (String level : levels.keySet()) {
+            levelDropdown.addItem(level);
+        }
+
+        // Ensure the first available level is selected
+        if (levelDropdown.getItemCount() > 0) {
+            levelDropdown.setSelectedIndex(0);
+            updateProducts(); // 🔄 Ensure products are updated
         }
     }
 
+
+
     private void updateProducts() {
-        String selectedSatellite = (String) satelliteDropdown.getSelectedItem();
+        String selectedSatelliteInstrument = (String) satelliteDropdown.getSelectedItem();
         String selectedLevel = (String) levelDropdown.getSelectedItem();
         productDropdown.removeAllItems();
 
-        for (Object obj : metadata) {
-            if (obj instanceof JSONObject) {
-                JSONObject entry = (JSONObject) obj;
-                String satellite = (String) entry.get("satellite");
+        if (selectedSatelliteInstrument == null || selectedLevel == null) {
+            System.err.println("⚠ No satellite/instrument or level selected.");
+            return;
+        }
 
-                if (selectedSatellite.equals(satellite)) {
-                    JSONArray levels = (JSONArray) entry.get("levels"); // Assuming "levels" key exists
-                    if (levels != null) {
-                        for (Object levelObj : levels) {
-                            JSONObject levelEntry = (JSONObject) levelObj;
-                            String level = (String) levelEntry.get("level");
+        if (!processedMetadata.containsKey(selectedSatelliteInstrument)) {
+            System.err.println("❌ Error: Satellite/Instrument not found: " + selectedSatelliteInstrument);
+            return;
+        }
 
-                            if (selectedLevel.equals(level)) {
-                                JSONArray products = (JSONArray) levelEntry.get("products"); // Assuming "products" key exists
-                                if (products != null) {
-                                    for (Object productObj : products) {
-                                        JSONObject product = (JSONObject) productObj;
-                                        productDropdown.addItem((String) product.get("short_name"));
-                                    }
-                                }
-                                break; // Stop searching after finding the correct level
-                            }
-                        }
-                    }
-                    break; // Stop searching after finding the matching satellite
-                }
-            }
+        Map<String, List<String>> levels = processedMetadata.get(selectedSatelliteInstrument);
+        if (!levels.containsKey(selectedLevel)) {
+            System.err.println("❌ Error: No products found for level: " + selectedLevel);
+            return;
+        }
+
+        List<String> products = levels.get(selectedLevel);
+        if (products == null || products.isEmpty()) {
+            System.err.println("⚠ No products available for level: " + selectedLevel);
+            return;
+        }
+
+        System.out.println("📄 Products for " + selectedLevel + ": " + products);
+
+        for (String product : products) {
+            productDropdown.addItem(product);
         }
     }
 
