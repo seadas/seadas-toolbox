@@ -86,6 +86,7 @@ public class ParamUIFactory {
         paramPanel.setName("param panel");
 //        JPanel textFieldPanel = new JPanel();
         final JPanel textFieldPanel = GridBagUtils.createPanel();
+        textFieldPanel.setName("text field panel");
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -95,7 +96,7 @@ public class ParamUIFactory {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
-        textFieldPanel.setName("text field panel");
+
         JPanel booleanParamPanel = new JPanel();
         booleanParamPanel.setName("boolean field panel");
         JPanel fileParamPanel = new JPanel();
@@ -110,15 +111,74 @@ public class ParamUIFactory {
         fileParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         fileParamPanel.setLayout(fileParamLayout);
 
+
+
+
+        // Secondary Panel - START
+
+        GridBagConstraints gbcSecondary = new GridBagConstraints();
+        gbcSecondary.gridx = 0;
+        gbcSecondary.gridy = 0;
+        gbcSecondary.fill = GridBagConstraints.NONE;
+        gbcSecondary.weightx = 1;
+        
+        gbcSecondary.insets.top = 5;
+        gbcSecondary.insets.bottom = 7;
+        gbcSecondary.insets.left = 5;
+        gbcSecondary.insets.right = 35;
+        gbcSecondary.weighty = 0;
+        gbcSecondary.anchor = GridBagConstraints.NORTHWEST;
+        
+        final JPanel textFieldSecondaryPanel = GridBagUtils.createPanel();
+        textFieldSecondaryPanel.setName("text field panel 2");
+
+        JPanel booleanSecondaryParamPanel = new JPanel();
+        booleanSecondaryParamPanel.setName("boolean field panel 2");
+        TableLayout booleanSecondaryParamLayout = new TableLayout(5);
+        booleanSecondaryParamPanel.setLayout(booleanSecondaryParamLayout);
+
+        // Secondary Panel - END
+
+        // Tertiary Panel - START
+
+        GridBagConstraints gbcTertiary = new GridBagConstraints();
+        gbcTertiary.gridx = 0;
+        gbcTertiary.gridy = 0;
+        gbcTertiary.fill = GridBagConstraints.NONE;
+        gbcTertiary.weightx = 1;
+
+        gbcTertiary.insets.top = 5;
+        gbcTertiary.insets.bottom = 7;
+        gbcTertiary.insets.left = 5;
+        gbcTertiary.insets.right = 35;
+        gbcTertiary.weighty = 0;
+        gbcTertiary.anchor = GridBagConstraints.NORTHWEST;
+
+        final JPanel textFieldTertiaryPanel = GridBagUtils.createPanel();
+        textFieldTertiaryPanel.setName("text field panel 2");
+
+        JPanel booleanTertiaryParamPanel = new JPanel();
+        booleanTertiaryParamPanel.setName("boolean field panel 2");
+        TableLayout booleanTertiaryParamLayout = new TableLayout(5);
+        booleanTertiaryParamPanel.setLayout(booleanTertiaryParamLayout);
+
+        // Tertiary Panel - END
+
+
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
+
         if ("l3mapgen".equals(processorModel.getProgramName())) {
-            booleanParamPanel.setLayout(new TableLayout(5));
-            numberOfOptionsPerLine = 4;
+            booleanParamPanel.setLayout(new TableLayout(6));
+            booleanSecondaryParamPanel.setLayout(new TableLayout(6));
+            booleanTertiaryParamPanel.setLayout(new TableLayout(6));
+            numberOfOptionsPerLine = 6;
         }
 
         if ("l2bin".equals(processorModel.getProgramName())) {
             numberOfOptionsPerLine = 4;
             booleanParamPanel.setLayout(new TableLayout(5));
+            booleanSecondaryParamPanel.setLayout(new TableLayout(5));
+            booleanTertiaryParamPanel.setLayout(new TableLayout(5));
         }
 
 
@@ -138,9 +198,49 @@ public class ParamUIFactory {
 
 
 
+        boolean secondaryPanelCreated = false;
+        boolean tertiaryPanelCreated = false;
+
+
+
         Iterator<ParamInfo> itr = paramList.iterator();
         while (itr.hasNext()) {
             final ParamInfo pi = itr.next();
+
+            boolean secondaryParam = false;
+            boolean tertiaryParam = false;
+
+            if ("palfile".equals(pi.getName())
+                    || "use_rgb".equals(pi.getName())
+                    || "datamin".equals(pi.getName())
+                    || "datamax".equals(pi.getName())
+                    || "apply_pal".equals(pi.getName())
+                    || "mask_land".equals(pi.getName())
+                    || "use_transparency".equals(pi.getName())
+                    || "scale_type".equals(pi.getName())
+                    || "product_rgb".equals(pi.getName())
+                    || "rgb_land".equals(pi.getName())
+                    || "ofile2".equals(pi.getName())
+                    || "oformat2".equals(pi.getName())
+            ) {
+                tertiaryParam = true;
+                tertiaryPanelCreated = true;
+            }
+
+            if ("azimuth".equals(pi.getName())
+                    || "central_meridian".equals(pi.getName())
+                    || "lat_ts".equals(pi.getName())
+                    || "lat_0".equals(pi.getName())
+                    || "lat_1".equals(pi.getName())
+                    || "lat_2".equals(pi.getName())
+            ) {
+                secondaryParam = true;
+                secondaryPanelCreated = true;
+            }
+            
+
+
+
             if (!(pi.getName().equals(processorModel.getPrimaryInputFileOptionName()) ||
                     pi.getName().equals(processorModel.getPrimaryOutputFileOptionName()) ||
                     pi.getName().equals(L2genData.GEOFILE) ||
@@ -149,38 +249,89 @@ public class ParamUIFactory {
 
                 if (pi.getColSpan() > numberOfOptionsPerLine) {
                     gbc.gridwidth = numberOfOptionsPerLine;
+                    gbcSecondary.gridwidth = numberOfOptionsPerLine;
+                    gbcTertiary.gridwidth = numberOfOptionsPerLine;
                 } else {
                     gbc.gridwidth = pi.getColSpan();
+                    gbcSecondary.gridwidth = pi.getColSpan();
+                    gbcTertiary.gridwidth = pi.getColSpan();
                 }
 
+
+                
+
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
-                    textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
-                    gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                    if (secondaryParam) {
+                        textFieldSecondaryPanel.add(makeComboBoxOptionPanel(pi, gbcSecondary.gridwidth), gbcSecondary);
+                        gbcSecondary = incrementGridxGridy(gbcSecondary, numberOfOptionsPerLine);
+                    } else if (tertiaryParam) {
+                        textFieldTertiaryPanel.add(makeComboBoxOptionPanel(pi, gbcTertiary.gridwidth), gbcTertiary);
+                        gbcTertiary = incrementGridxGridy(gbcTertiary, numberOfOptionsPerLine);
+                    } else {
+                        textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
+                        gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                    }
                 } else {
                     switch (pi.getType()) {
                         case BOOLEAN:
-                            booleanParamPanel.add(makeBooleanOptionField(pi));
+                            if (secondaryParam) {
+                                booleanSecondaryParamPanel.add(makeBooleanOptionField(pi));
+                            } else if (tertiaryParam) {
+                                booleanTertiaryParamPanel.add(makeBooleanOptionField(pi));
+                            } else {
+                                booleanParamPanel.add(makeBooleanOptionField(pi));
+                            }
                             break;
                         case IFILE:
                             fileParamPanel.add(createIOFileOptionField(pi));
                             break;
                         case OFILE:
-                            fileParamPanel.add(createIOFileOptionField(pi));
+                            if (secondaryParam) {
+                                textFieldSecondaryPanel.add(createIOFileOptionField(pi));
+                            } else if (tertiaryParam) {
+                                textFieldTertiaryPanel.add(createIOFileOptionField(pi));
+                            } else {
+                                fileParamPanel.add(createIOFileOptionField(pi));
+                            }
                             break;
                         case DIR:
                             fileParamPanel.add(createIOFileOptionField(pi));
                             break;
                         case STRING:
-                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
-                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            if (secondaryParam) {
+                                textFieldSecondaryPanel.add(makeOptionField(pi, gbcSecondary.gridwidth), gbcSecondary);
+                                gbcSecondary = incrementGridxGridy(gbcSecondary, numberOfOptionsPerLine);
+                            } else if (tertiaryParam) {
+                                textFieldTertiaryPanel.add(makeOptionField(pi, gbcTertiary.gridwidth), gbcTertiary);
+                                gbcTertiary = incrementGridxGridy(gbcTertiary, numberOfOptionsPerLine);
+                            } else {
+                                textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                                gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            }
                             break;
                         case INT:
-                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
-                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            if (secondaryParam) {
+                                textFieldSecondaryPanel.add(makeOptionField(pi, gbcSecondary.gridwidth), gbcSecondary);
+                                gbcSecondary = incrementGridxGridy(gbcSecondary, numberOfOptionsPerLine);
+                            } else if (tertiaryParam) {
+                                textFieldTertiaryPanel.add(makeOptionField(pi, gbcTertiary.gridwidth), gbcTertiary);
+                                gbcTertiary = incrementGridxGridy(gbcTertiary, numberOfOptionsPerLine);
+                            } else {
+                                textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                                gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            }
                             break;
                         case FLOAT:
-                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
-                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            if (secondaryParam) {
+                                textFieldSecondaryPanel.add(makeOptionField(pi, gbcSecondary.gridwidth), gbcSecondary);
+                                gbcSecondary = incrementGridxGridy(gbcSecondary, numberOfOptionsPerLine);
+                            } else if (tertiaryParam) {
+                                textFieldTertiaryPanel.add(makeOptionField(pi, gbcTertiary.gridwidth), gbcTertiary);
+                                gbcTertiary = incrementGridxGridy(gbcTertiary, numberOfOptionsPerLine);
+                            } else {
+                                textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                                gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            }
                             break;
                         case FLAGS:
                             int origInsetsTop = gbc.insets.top;
@@ -208,9 +359,37 @@ public class ParamUIFactory {
                 }
 
                 gbc.gridwidth = 1;
+                gbcSecondary.gridwidth = 1;
+                gbcTertiary.gridwidth = 1;
 
             }
         }
+
+
+        JPanel paramSecondaryPanel = null;
+        if (secondaryPanelCreated) {
+            paramSecondaryPanel = new JPanel();
+            paramSecondaryPanel.setName("param panel");
+            TableLayout paramSecondaryLayout = new TableLayout(1);
+            paramSecondaryPanel.setLayout(paramSecondaryLayout);
+            paramSecondaryPanel.setBorder(BorderFactory.createTitledBorder("Pre-Defined Projection Attributes"));
+
+            paramSecondaryPanel.add(textFieldSecondaryPanel);
+            paramSecondaryPanel.add(booleanSecondaryParamPanel);
+        }
+
+        JPanel paramTertiaryPanel = null;
+        if (tertiaryPanelCreated) {
+            paramTertiaryPanel = new JPanel();
+            paramTertiaryPanel.setName("param panel");
+            TableLayout paramTertiaryLayout = new TableLayout(1);
+            paramTertiaryPanel.setLayout(paramTertiaryLayout);
+            paramTertiaryPanel.setBorder(BorderFactory.createTitledBorder("Image File Attributes"));
+
+            paramTertiaryPanel.add(textFieldTertiaryPanel);
+            paramTertiaryPanel.add(booleanTertiaryParamPanel);
+        }
+
 
         TableLayout paramLayout = new TableLayout(1);
 
@@ -218,9 +397,71 @@ public class ParamUIFactory {
         paramPanel.add(fileParamPanel);
         paramPanel.add(textFieldPanel);
         paramPanel.add(booleanParamPanel);
+        
+        if (secondaryPanelCreated) {
+            paramPanel.add(paramSecondaryPanel);
+        }
+
+        if (tertiaryPanelCreated) {
+            paramPanel.add(paramTertiaryPanel);
+        }
+
+
         paramPanel.add(buttonPanel);
 
-        return paramPanel;
+
+
+
+        GridBagConstraints gbcMain = new GridBagConstraints();
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 0;
+        gbcMain.weightx = 1;
+        gbcMain.weighty = 0;
+        gbcMain.anchor = GridBagConstraints.NORTHWEST;
+        gbcMain.fill = GridBagConstraints.HORIZONTAL;
+        gbcMain.insets.top = 0;
+        gbcMain.insets.bottom = 0;
+        gbcMain.insets.left = 0;
+        gbcMain.insets.right = 0;
+
+        final JPanel mainPanel = GridBagUtils.createPanel();
+        mainPanel.add(fileParamPanel, gbcMain);
+        gbcMain.gridy++;
+        mainPanel.add(textFieldPanel, gbcMain);
+        gbcMain.gridy++;
+        mainPanel.add(booleanParamPanel, gbcMain);
+        gbcMain.gridy++;
+
+        if (secondaryPanelCreated) {
+            gbcMain.insets.top = 10;
+            gbcMain.insets.bottom = 10;
+            gbcMain.insets.left = 8;
+            gbcMain.insets.right = 8;
+            mainPanel.add(paramSecondaryPanel, gbcMain);
+            gbcMain.gridy++;
+            gbcMain.insets.top = 0;
+            gbcMain.insets.bottom = 0;
+            gbcMain.insets.left = 0;
+            gbcMain.insets.right = 0;
+        }
+
+        if (tertiaryPanelCreated) {
+            gbcMain.insets.top = 10;
+            gbcMain.insets.bottom = 10;
+            gbcMain.insets.left = 8;
+            gbcMain.insets.right = 8;
+            mainPanel.add(paramTertiaryPanel, gbcMain);
+            gbcMain.gridy++;
+            gbcMain.insets.top = 0;
+            gbcMain.insets.bottom = 0;
+            gbcMain.insets.left = 0;
+            gbcMain.insets.right = 0;
+        }
+
+        mainPanel.add(buttonPanel, gbcMain);
+
+
+        return mainPanel;
     }
 
 

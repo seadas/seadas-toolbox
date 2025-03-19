@@ -99,31 +99,8 @@
             <order>2</order>
         </option>
 
-        <option type="string">
-            <name>suite</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>suite defaults [see OCSSWROOT/common/l3mapgen_defaults.par and  OCSSWROOT/SENSOR/l3mapgen_defaults.par]</description>
-            <validValue>
-                <value></value>
-                <description>suite defaults [see OCSSWROOT/common/l3mapgen_defaults.par and  OCSSWROOT/SENSOR/l3mapgen_defaults.par]</description>
-            </validValue>
-            <usedAs>option</usedAs>
-            <order>3</order>
-        </option>
 
 
-        <option type="string">
-            <name>wavelength_3d</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>Comma delimited list of 3D wavelengths</description>
-            <usedAs>option</usedAs>
-            <colSpan>4</colSpan>
-            <order>4</order>
-        </option>
 
 
 
@@ -390,10 +367,21 @@
 
             </validValues>
             <usedAs>option</usedAs>
-            <colSpan>4</colSpan>
-            <order>5</order>
+            <colSpan>3</colSpan>
+            <order>3</order>
         </option>
 
+
+        <option type="string">
+            <name>wavelength_3d</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>Comma delimited list of 3D wavelengths</description>
+            <usedAs>option</usedAs>
+            <colSpan>3</colSpan>
+            <order>4</order>
+        </option>
 
 
 
@@ -460,7 +448,37 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
+            <order>5</order>
+        </option>
+
+
+        <option type="int">
+            <name>width</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>width of output image in pixels; supercedes resolution parameter</description>
+            <usedAs>option</usedAs>
             <order>6</order>
+        </option>
+
+
+        <option type="string">
+            <name>suite</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>suite defaults [see OCSSWROOT/common/l3mapgen_defaults.par and
+                OCSSWROOT/SENSOR/l3mapgen_defaults.par]
+            </description>
+            <validValue>
+                <value></value>
+                <description>suite defaults [see OCSSWROOT/common/l3mapgen_defaults.par and
+                    OCSSWROOT/SENSOR/l3mapgen_defaults.par]
+                </description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <order>7</order>
         </option>
 
 
@@ -489,7 +507,7 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>8</order>
         </option>
 
         <option type="float">
@@ -498,18 +516,6 @@
             <default></default>
             <source>default</source>
             <description>fudge factor used to modify size of L3 pixels</description>
-            <usedAs>option</usedAs>
-            <order>8</order>
-        </option>
-
-
-
-        <option type="int">
-            <name>num_cache</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
             <order>9</order>
         </option>
@@ -554,15 +560,7 @@
             <usedAs>option</usedAs>
             <order>13</order>
         </option>
-        <option type="float">
-            <name>central_meridian</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>central meridian for projection in deg east.  Only used for predefined projection</description>
-            <usedAs>option</usedAs>
-            <order>14</order>
-        </option>
+
 
         <option type="float">
             <name>threshold</name>
@@ -574,50 +572,7 @@
             <order>15</order>
         </option>
 
-        <option type="float">
-            <name>datamin</name>
-            <value/>
-            <source>default</source>
-            <description>minimum value for scaling (default from product.xml)</description>
-            <usedAs>option</usedAs>
-            <order>16</order>
-        </option>
-        <option type="float">
-            <name>datamax</name>
-            <value/>
-            <source>default</source>
-            <description>maximum value for scaling (default from product.xml)</description>
-            <usedAs>option</usedAs>
-            <order>17</order>
-        </option>
 
-
-        <option type="string">
-            <name>scale_type</name>
-            <value/>
-            <source>default</source>
-            <description>data scaling type (default from product.xml)</description>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>data scaling type (default from product.xml)</description>
-                </validValue>
-                <validValue>
-                    <value>linear</value>
-                    <description>linear scaling</description>
-                </validValue>
-                <validValue>
-                    <value>log</value>
-                    <description>logarithmic scaling</description>
-                </validValue>
-                <validValue>
-                    <value>arctan</value>
-                    <description>arc tangent scaling</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <order>18</order>
-        </option>
         <!--<option type="boolean">-->
             <!--<name>quiet</name>-->
             <!--<value>false</value>-->
@@ -643,19 +598,73 @@
 
 
 
-        <option type="string">
-            <name>product_rgb</name>
+
+
+        <option type="int">
+            <name>num_cache</name>
             <value></value>
             <default></default>
             <source>default</source>
-            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
             <order>20</order>
         </option>
 
 
-<!--        <option type="string">-->
+        <option type="string">
+            <name>oformat</name>
+            <value>netCDF4</value>
+            <default></default>
+            <description>output file format</description>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value></value>
+                    <description>output file format</description>
+                </validValue>
+                <validValue>
+                    <value>netCDF4</value>
+                    <description>netCDF file, can contain more than one product</description>
+                </validValue>
+                <validValue>
+                    <value>HDF4</value>
+                    <description>HDF4 file (old SMI format)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>TIFF</value>
+                    <description>TIFF file with georeference tags</description>
+                </validValue>
+            </validValues>
+            <usedAs>option</usedAs>
+            <order>21</order>
+        </option>
+
+
+        <option type="int">
+            <name>deflate</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>deflation level</description>
+            <usedAs>option</usedAs>
+            <order>22</order>
+        </option>
+
+
+
+
+
+
+
+        <!--        <option type="string">-->
 <!--            <name>palette_dir</name>-->
 <!--            <value>$OCDATAROOT/common/palette</value>-->
 <!--            <default>$OCDATAROOT/common/palette</default>-->
@@ -665,6 +674,73 @@
 <!--            <colSpan>2</colSpan>-->
 <!--            <order>21</order>-->
 <!--        </option>-->
+
+
+
+        <option type="float">
+            <name>central_meridian</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>central meridian for projection in deg east.  Only used for predefined projection</description>
+            <usedAs>option</usedAs>
+            <order>41</order>
+        </option>
+
+        <option type="float">
+            <name>lat_0</name>
+            <value/>
+            <source>default</source>
+            <description>latitude of origin for projection in deg north. Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <order>42</order>
+        </option>
+
+        <option type="float">
+            <name>lat_1</name>
+            <value/>
+            <source>default</source>
+            <description>latitude of first standard parallel (south). Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <order>43</order>
+        </option>
+
+        <option type="float">
+            <name>lat_2</name>
+            <value/>
+            <source>default</source>
+            <description>latitude of second standard parallel (north). Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <order>44</order>
+        </option>
+
+
+        <option type="float">
+            <name>lat_ts</name>
+            <value/>
+            <source>default</source>
+            <description>latitude of true scale for projection in deg north. Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <order>45</order>
+        </option>
+
+
+        <option type="float">
+            <name>azimuth</name>
+            <value/>
+            <source>default</source>
+            <description>projection rotation angle in deg north. Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <order>46</order>
+        </option>
+
+
+
+
+
+
+
+
 
         <option type="string">
             <name>palfile</name>
@@ -759,9 +835,55 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <order>21</order>
+            <order>51</order>
         </option>
 
+
+
+        <option type="float">
+            <name>datamin</name>
+            <value/>
+            <source>default</source>
+            <description>minimum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <order>52</order>
+        </option>
+        <option type="float">
+            <name>datamax</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <order>53</order>
+        </option>
+
+
+        <option type="string">
+            <name>scale_type</name>
+            <value/>
+            <source>default</source>
+            <description>data scaling type (default from product.xml)</description>
+            <validValues>
+                <validValue>
+                    <value></value>
+                    <description>data scaling type (default from product.xml)</description>
+                </validValue>
+                <validValue>
+                    <value>linear</value>
+                    <description>linear scaling</description>
+                </validValue>
+                <validValue>
+                    <value>log</value>
+                    <description>logarithmic scaling</description>
+                </validValue>
+                <validValue>
+                    <value>arctan</value>
+                    <description>arc tangent scaling</description>
+                </validValue>
+            </validValues>
+            <usedAs>option</usedAs>
+            <order>54</order>
+        </option>
 
 
         <option type="string">
@@ -771,17 +893,30 @@
             <source>default</source>
             <description>land colors (default=160,82,45)</description>
             <usedAs>option</usedAs>
-            <order>22</order>
+            <order>55</order>
+        </option>
+
+
+        <option type="string">
+            <name>product_rgb</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <order>56</order>
         </option>
 
 
 
 
+
         <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
+            <name>oformat2</name>
+            <value>png</value>
             <default></default>
-            <description>output file format</description>
+            <description>output file format for ofile2</description>
             <source>default</source>
             <validValues>
                 <validValue>
@@ -810,42 +945,37 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
-            <order>23</order>
+            <order>57</order>
         </option>
 
-
-        <option type="int">
-            <name>deflate</name>
+        <option type="ofile">
+            <name>ofile2</name>
             <value></value>
             <default></default>
             <source>default</source>
-            <description>deflation level</description>
+            <description>second output filename</description>
             <usedAs>option</usedAs>
-            <order>24</order>
+            <order>58</order>
         </option>
 
 
 
 
-        <option type="boolean">
-            <name>use_quality</name>
-            <value>true</value>
-            <default>true</default>
-            <source>default</source>
-            <description>should we do quality factor processing</description>
-            <usedAs>option</usedAs>
-            <order>26</order>
-        </option>
 
-        <option type="boolean">
-            <name>use_rgb</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>should we use product_rgb to make a psudo true color image</description>
-            <usedAs>option</usedAs>
-            <order>27</order>
-        </option>
+
+
+
+        <!--        <option type="boolean">-->
+<!--            <name>use_quality</name>-->
+<!--            <value>true</value>-->
+<!--            <default>true</default>-->
+<!--            <source>default</source>-->
+<!--            <description>should we do quality factor processing</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>31</order>-->
+<!--        </option>-->
+
+
 
         <option type="boolean">
             <name>apply_pal</name>
@@ -854,7 +984,7 @@
             <source>default</source>
             <description>apply color palette</description>
             <usedAs>option</usedAs>
-            <order>28</order>
+            <order>61</order>
         </option>
 
         <option type="boolean">
@@ -864,7 +994,7 @@
             <source>default</source>
             <description>mask land</description>
             <usedAs>option</usedAs>
-            <order>29</order>
+            <order>62</order>
         </option>
 
         <option type="boolean">
@@ -874,7 +1004,17 @@
             <source>default</source>
             <description>make missing data transparent (only valid for color PNG and TIFF)</description>
             <usedAs>option</usedAs>
-            <order>30</order>
+            <order>63</order>
+        </option>
+
+        <option type="boolean">
+            <name>use_rgb</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>should we use product_rgb to make a psudo true color image</description>
+            <usedAs>option</usedAs>
+            <order>64</order>
         </option>
 
     </options>
