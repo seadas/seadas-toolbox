@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <numberOfOptionsPerLine>4</numberOfOptionsPerLine>
+        <numColumns>4</numColumns>
 
         <!--krow:   810 out of   2160  (-22.50 to   0.00) Tue Jun 26 16:14:55 2012-->
         <progressRegex>krow: +(\d+) out of +(\d+)</progressRegex>

@@ -4,9 +4,10 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <subPanel0Title></subPanel0Title>
         <subPanel1Title>Pre-Defined Projection Attributes</subPanel1Title>
         <subPanel2Title>Image File Attributes</subPanel2Title>
-        <numberOfOptionsPerLine>6</numberOfOptionsPerLine>
+        <numColumns>6</numColumns>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>

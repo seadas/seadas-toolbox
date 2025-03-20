@@ -108,11 +108,12 @@ public class ParamUtils {
         InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         NodeList optionNodelist = rootElement.getElementsByTagName(elementName);
-        if (optionNodelist == null || optionNodelist.getLength() == 0) {
-            //SeadasLogger.getLogger().warning("par file option name is not specified in the xml file. 'par' is used as a default name.");
-            return null;
+
+        if (optionNodelist != null && optionNodelist.item(0) != null && optionNodelist.item(0).getFirstChild() != null) {
+            return optionNodelist.item(0).getFirstChild().getNodeValue();
         }
-        return optionNodelist.item(0).getFirstChild().getNodeValue();
+
+        return null;
     }
 
 
@@ -285,8 +286,11 @@ public class ParamUtils {
                     int colSpanInt = Integer.parseInt(colSpan);
                     if (colSpanInt > 0) {
                         paramInfo.setColSpan(colSpanInt);
+                    } else {
+                        paramInfo.setColSpan(1);
                     }
                 } catch (Exception e) {
+                    paramInfo.setColSpan(1);
                     System.out.println("ERROR: colSpan not an integer for param: " + name + "in xml file: " + paramXmlFileName);
                 }
             } else {
@@ -299,8 +303,11 @@ public class ParamUtils {
                     int subPanelIndexInt = Integer.parseInt(subPanelIndex);
                     if (subPanelIndexInt > 0) {
                         paramInfo.setSubPanelIndex(subPanelIndexInt);
+                    } else {
+                        paramInfo.setSubPanelIndex(0);
                     }
                 } catch (Exception e) {
+                    paramInfo.setSubPanelIndex(0);
                     System.out.println("ERROR: subPanelInt not an integer for param: " + name + "in xml file: " + paramXmlFileName);
                 }
             } else {

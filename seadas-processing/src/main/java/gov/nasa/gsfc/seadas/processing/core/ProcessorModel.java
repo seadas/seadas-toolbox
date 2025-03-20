@@ -58,9 +58,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private Set<String> primaryOptions;
     private String parFileOptionName;
+    private String subPanel0Title;
     private String subPanel1Title;
     private String subPanel2Title;
-    private int numberOfOptionsPerLine;
+    private int numColumns;
 
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
@@ -108,9 +109,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         multipleInputFiles = false;
         paramList = new ParamList();
         setParFileOptionName(ParamUtils.DEFAULT_PAR_FILE_NAME);
+        setSubPanel0Title("");
         setSubPanel1Title("");
         setSubPanel2Title("");
-        setNumberOfOptionsPerLine(0);
+        setNumColumns(0);
         processorID = ProcessorTypeInfo.getProcessorID(programName);
         primaryOptions = new HashSet<String>();
         primaryOptions.add("ifile");
@@ -127,9 +129,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             setParamList((ArrayList<ParamInfo>) ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
             setParFileOptionName(ParamUtils.getParFileOptionName(parXMLFileName));
+            setSubPanel0Title(ParamUtils.getElementString(parXMLFileName, "subPanel0Title"));
             setSubPanel1Title(ParamUtils.getElementString(parXMLFileName, "subPanel1Title"));
             setSubPanel2Title(ParamUtils.getElementString(parXMLFileName, "subPanel2Title"));
-            setNumberOfOptionsPerLine(ParamUtils.getElementInt(parXMLFileName, "numberOfOptionsPerLine"));
+            setNumColumns(ParamUtils.getElementInt(parXMLFileName, "numColumns"));
             progressPattern = Pattern.compile(ParamUtils.getProgressRegex(parXMLFileName));
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
@@ -917,6 +920,16 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         this.parFileOptionName = parFileOptionName;
     }
 
+
+    public String getSubPanel0Title() {
+        return subPanel0Title;
+    }
+
+    public void setSubPanel0Title(String subPanel0Title) {
+        this.subPanel0Title = subPanel0Title;
+    }
+
+    
     public String getSubPanel1Title() {
         return subPanel1Title;
     }
@@ -933,12 +946,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         this.subPanel2Title = subPanel2Title;
     }
 
-    public int getNumberOfOptionsPerLine() {
-        return numberOfOptionsPerLine;
+    public int getNumColumns() {
+        return numColumns;
     }
 
-    public void setNumberOfOptionsPerLine(int numberOfOptionsPerLine) {
-        this.numberOfOptionsPerLine = numberOfOptionsPerLine;
+    public void setNumColumns(int numColumns) {
+        this.numColumns = numColumns;
     }
 
 
