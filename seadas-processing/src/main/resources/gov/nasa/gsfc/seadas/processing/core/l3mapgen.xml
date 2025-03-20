@@ -1004,6 +1004,7 @@
             <source>default</source>
             <description>apply color palette</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>61</order>
         </option>
 
@@ -1014,6 +1015,7 @@
             <source>default</source>
             <description>mask land</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>62</order>
         </option>
 
@@ -1024,6 +1026,7 @@
             <source>default</source>
             <description>make missing data transparent (only valid for color PNG and TIFF)</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>63</order>
         </option>
 
@@ -1034,6 +1037,7 @@
             <source>default</source>
             <description>should we use product_rgb to make a psudo true color image</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>64</order>
         </option>
 

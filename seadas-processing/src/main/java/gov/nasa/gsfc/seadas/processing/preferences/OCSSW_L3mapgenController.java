@@ -157,7 +157,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".product.3d";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL = "product_rgb";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_TOOLTIP = "RGB Products (comma delimited)";
-    public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT = "rhos_645,rhos_555,rhos_465";
+    public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT = "";
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.section";
