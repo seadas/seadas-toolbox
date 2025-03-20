@@ -4,6 +4,9 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
+        <subPanel1Title>Pre-Defined Projection Attributes</subPanel1Title>
+        <subPanel2Title>Image File Attributes</subPanel2Title>
+        <numberOfOptionsPerLine>6</numberOfOptionsPerLine>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
@@ -677,6 +680,8 @@
 
 
 
+        // subPanel 1
+
         <option type="float">
             <name>central_meridian</name>
             <value></value>
@@ -684,6 +689,7 @@
             <source>default</source>
             <description>central meridian for projection in deg east.  Only used for predefined projection</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
             <order>41</order>
         </option>
 
@@ -693,6 +699,7 @@
             <source>default</source>
             <description>latitude of origin for projection in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
             <order>42</order>
         </option>
 
@@ -702,6 +709,7 @@
             <source>default</source>
             <description>latitude of first standard parallel (south). Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
             <order>43</order>
         </option>
 
@@ -711,6 +719,7 @@
             <source>default</source>
             <description>latitude of second standard parallel (north). Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
             <order>44</order>
         </option>
 
@@ -721,6 +730,7 @@
             <source>default</source>
             <description>latitude of true scale for projection in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
             <order>45</order>
         </option>
 
@@ -731,6 +741,7 @@
             <source>default</source>
             <description>projection rotation angle in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
             <order>46</order>
         </option>
 
@@ -738,6 +749,7 @@
 
 
 
+        // subPanel 2
 
 
 
@@ -835,6 +847,7 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
+            <subPanelIndex>2</subPanelIndex>
             <order>51</order>
         </option>
 
@@ -846,6 +859,7 @@
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>52</order>
         </option>
         <option type="float">
@@ -854,6 +868,7 @@
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>53</order>
         </option>
 
@@ -882,6 +897,7 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>54</order>
         </option>
 
@@ -893,6 +909,7 @@
             <source>default</source>
             <description>land colors (default=160,82,45)</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>2</subPanelIndex>
             <order>55</order>
         </option>
 
@@ -905,6 +922,7 @@
             <description> 3 products to use for RGB.  Default is sensor specific</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
+            <subPanelIndex>2</subPanelIndex>
             <order>56</order>
         </option>
 
@@ -912,51 +930,52 @@
 
 
 
-        <option type="string">
-            <name>oformat2</name>
-            <value>png</value>
-            <default></default>
-            <description>output file format for ofile2</description>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>output file format</description>
-                </validValue>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF file, can contain more than one product</description>
-                </validValue>
-                <validValue>
-                    <value>HDF4</value>
-                    <description>HDF4 file (old SMI format)</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>TIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <order>57</order>
-        </option>
+<!--        <option type="string">-->
+<!--            <name>oformat2</name>-->
+<!--            <value>png</value>-->
+<!--            <default></default>-->
+<!--            <description>output file format for ofile2</description>-->
+<!--            <source>default</source>-->
+<!--            <validValues>-->
+<!--                <validValue>-->
+<!--                    <value></value>-->
+<!--                    <description>output file format</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>netCDF4</value>-->
+<!--                    <description>netCDF file, can contain more than one product</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>HDF4</value>-->
+<!--                    <description>HDF4 file (old SMI format)</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>png</value>-->
+<!--                    <description>PNG image file</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>ppm</value>-->
+<!--                    <description>PPM image file</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>TIFF</value>-->
+<!--                    <description>TIFF file with georeference tags</description>-->
+<!--                </validValue>-->
+<!--            </validValues>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>57</order>-->
+<!--        </option>-->
 
-        <option type="ofile">
-            <name>ofile2</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>second output filename</description>
-            <usedAs>option</usedAs>
-            <order>58</order>
-        </option>
+<!--        <option type="ofile">-->
+<!--            <name>ofile2</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <source>default</source>-->
+<!--            <description>second output filename</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <colSpan>3</colSpan>-->
+<!--            <order>58</order>-->
+<!--        </option>-->
 
 
 

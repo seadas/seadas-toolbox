@@ -101,6 +101,39 @@ public class ParamUtils {
         return optionNodelist.item(0).getFirstChild().getNodeValue();
     }
 
+
+    public static String getElementString(String parXMLFileName, String elementName) {
+
+        XmlReader xmlReader = new XmlReader();
+        InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        NodeList optionNodelist = rootElement.getElementsByTagName(elementName);
+        if (optionNodelist == null || optionNodelist.getLength() == 0) {
+            //SeadasLogger.getLogger().warning("par file option name is not specified in the xml file. 'par' is used as a default name.");
+            return null;
+        }
+        return optionNodelist.item(0).getFirstChild().getNodeValue();
+    }
+
+
+    public static int getElementInt(String parXMLFileName, String elementName) {
+
+        String valueString = ParamUtils.getElementString(parXMLFileName, elementName);
+
+        int valueInt = 0;
+
+        try {
+          valueInt = Integer.valueOf(valueString);
+        } catch (Exception e) {
+
+        }
+
+        return valueInt;
+    }
+
+
+
+
     public static String getProgressRegex(String parXMLFileName) {
 
         XmlReader xmlReader = new XmlReader();
@@ -220,6 +253,7 @@ public class ParamUtils {
 
             String description = XmlReader.getTextValue(optionElement, "description");
             String colSpan = XmlReader.getTextValue(optionElement, "colSpan");
+            String subPanelIndex = XmlReader.getTextValue(optionElement, "subPanelIndex");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
@@ -257,6 +291,20 @@ public class ParamUtils {
                 }
             } else {
                 paramInfo.setColSpan(1);
+            }
+
+
+            if (subPanelIndex != null) {
+                try {
+                    int subPanelIndexInt = Integer.parseInt(subPanelIndex);
+                    if (subPanelIndexInt > 0) {
+                        paramInfo.setSubPanelIndex(subPanelIndexInt);
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR: subPanelInt not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+                }
+            } else {
+                paramInfo.setSubPanelIndex(0);
             }
 
 

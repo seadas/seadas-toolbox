@@ -56,6 +56,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     private boolean isBit = false;
     private int order = 0;
     private int colSpan = 1;
+    private int subPanelIndex = 1;
     private String validationComment = null;
     private String usedAs = USED_IN_COMMAND_AS_OPTION;
 
@@ -374,6 +375,14 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
 
     public int getColSpan() {
          return colSpan;
+    }
+
+    public void setSubPanelIndex(int subPanelIndex) {
+        this.subPanelIndex = subPanelIndex;
+    }
+
+    public int getSubPanelIndex() {
+        return subPanelIndex;
     }
 
     public int getOrder() {

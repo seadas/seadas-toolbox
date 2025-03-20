@@ -58,6 +58,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private Set<String> primaryOptions;
     private String parFileOptionName;
+    private String subPanel1Title;
+    private String subPanel2Title;
+    private int numberOfOptionsPerLine;
 
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
@@ -105,6 +108,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         multipleInputFiles = false;
         paramList = new ParamList();
         setParFileOptionName(ParamUtils.DEFAULT_PAR_FILE_NAME);
+        setSubPanel1Title("");
+        setSubPanel2Title("");
+        setNumberOfOptionsPerLine(0);
         processorID = ProcessorTypeInfo.getProcessorID(programName);
         primaryOptions = new HashSet<String>();
         primaryOptions.add("ifile");
@@ -121,6 +127,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             setParamList((ArrayList<ParamInfo>) ParamUtils.computeParamList(parXMLFileName));
             acceptsParFile = ParamUtils.getOptionStatus(parXMLFileName, "hasParFile");
             setParFileOptionName(ParamUtils.getParFileOptionName(parXMLFileName));
+            setSubPanel1Title(ParamUtils.getElementString(parXMLFileName, "subPanel1Title"));
+            setSubPanel2Title(ParamUtils.getElementString(parXMLFileName, "subPanel2Title"));
+            setNumberOfOptionsPerLine(ParamUtils.getElementInt(parXMLFileName, "numberOfOptionsPerLine"));
             progressPattern = Pattern.compile(ParamUtils.getProgressRegex(parXMLFileName));
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
@@ -907,6 +916,34 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public void setParFileOptionName(String parFileOptionName) {
         this.parFileOptionName = parFileOptionName;
     }
+
+    public String getSubPanel1Title() {
+        return subPanel1Title;
+    }
+
+    public void setSubPanel1Title(String subPanel1Title) {
+        this.subPanel1Title = subPanel1Title;
+    }
+
+    public String getSubPanel2Title() {
+        return subPanel2Title;
+    }
+
+    public void setSubPanel2Title(String subPanel2Title) {
+        this.subPanel2Title = subPanel2Title;
+    }
+
+    public int getNumberOfOptionsPerLine() {
+        return numberOfOptionsPerLine;
+    }
+
+    public void setNumberOfOptionsPerLine(int numberOfOptionsPerLine) {
+        this.numberOfOptionsPerLine = numberOfOptionsPerLine;
+    }
+
+
+
+
 
     public OCSSW getOcssw() {
         return ocssw;

@@ -7,6 +7,9 @@
                         <xs:all>
                             <xs:element name="hasParFile" type="xs:boolean"/>
                             <xs:element name="parFileOptionName" type="xs:string" default="par" minOccurs="0"/>
+                            <xs:element name="subPanel1Title" type="xs:string" default="" minOccurs="0"/>
+                            <xs:element name="subPanel2Title" type="xs:string" default="" minOccurs="0"/>
+                            <xs:element name="numberOfOptionsPerLine" type="xs:string" default="" minOccurs="0"/>
                             <xs:element name="progressRegex" type="xs:string" minOccurs="0"/>
                             <xs:element name="hasProgramDependency" minOccurs="0">
                                 <xs:complexType>
