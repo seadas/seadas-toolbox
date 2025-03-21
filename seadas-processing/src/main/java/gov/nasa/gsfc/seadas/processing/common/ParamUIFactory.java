@@ -11,7 +11,9 @@ import org.esa.snap.ui.GridBagUtils;
 import org.esa.snap.ui.ModalDialog;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -506,7 +508,14 @@ public class ParamUIFactory {
 
             if (subPanelTitle != null && subPanelTitle.length() > 0) {
                 if (subPanelTitle.trim().length() > 0) {
-                    subPanel.setBorder(BorderFactory.createTitledBorder(subPanelTitle.trim()));
+                    Font baseFont = subPanel.getFont();
+                    Font newFont = new Font(baseFont.getName(), Font.ITALIC, baseFont.getSize());
+                    Color titleColor = new Color(0,50,50);
+                    Border etchedBorder = BorderFactory.createEtchedBorder();
+                    Border titleBorder = BorderFactory.createTitledBorder(etchedBorder, subPanelTitle,TitledBorder.LEFT, TitledBorder.ABOVE_TOP, newFont, titleColor);
+                    subPanel.setBorder(titleBorder);
+
+//                    subPanel.setBorder(BorderFactory.createTitledBorder(subPanelTitle));
                 } else if (subPanelTitle.length() > 0) {
                     subPanel.setBorder(BorderFactory.createEtchedBorder());
                 } else {
