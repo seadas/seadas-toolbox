@@ -16,7 +16,7 @@
 
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.multilevel.MultiLevelImage;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;

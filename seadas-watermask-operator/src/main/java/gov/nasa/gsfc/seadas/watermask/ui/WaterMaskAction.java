@@ -2,7 +2,7 @@ package gov.nasa.gsfc.seadas.watermask.ui;
 
 import com.bc.ceres.swing.figure.Interactor;
 import org.esa.snap.core.gpf.ui.DefaultSingleTargetProductDialog;
-import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.multilevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.GPF;

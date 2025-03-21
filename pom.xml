@@ -29,11 +29,10 @@
     <url>https://seadas.gsfc.nasa.gov</url>
 
     <modules>
-
         <module>seadas-watermask-operator</module>
         <module>seadas-processing</module>
         <module>seadas-contour-operator</module>
-        <module>seadas-image-animator</module>
+<!--        <module>seadas-image-animator</module>-->
         <module>seadas-bathymetry-operator</module>
 <!--        <module>seadas-earthdata-cloud-toolbox</module>-->
         <module>seadas-kit</module>
@@ -42,7 +41,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>11.0.0-SNAPSHOT</snap.version>
+        <snap.version>12.0.0-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
@@ -56,7 +55,7 @@
         <seadas-bathymetry-operator.version>9.1.0</seadas-bathymetry-operator.version>  <!-- <seadas-bathymetry-operator.version>9.1.0-SNAPSHOT</seadas-bathymetry-operator.version>-->
         <seadas-image-animator.version>2.1.0</seadas-image-animator.version>   <!-- <seadas-image-animator.version>2.1.0-SNAPSHOT</seadas-image-animator.version>-->
         <seadas-earthdata-cloud-toolbox.version>1.0.0</seadas-earthdata-cloud-toolbox.version>
-        <netbeans.version>RELEASE113</netbeans.version>
+        <netbeans.version>RELEASE210</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>
         <jersey.version>2.27</jersey.version>
@@ -266,9 +265,8 @@
                 <version>${netbeans.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.netbeans.api</groupId>
-                <artifactId>org-netbeans-modules-javahelp</artifactId>
-                <version>${netbeans.version}</version>
+                <groupId>eu.esa.snap.netbeans</groupId>
+                <artifactId>snap-help-system</artifactId>
             </dependency>
             <dependency>
                 <groupId>org.netbeans.api</groupId>

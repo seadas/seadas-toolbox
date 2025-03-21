@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.multilevel.MultiLevelImage;
 import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.GeoPos;
