@@ -95,12 +95,20 @@ public class ParamUIFactory {
         fileParamPanel.setLayout(fileParamLayout);
 
 
+        int numColumns = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
+        if (processorModel.getNumColumns() > 0) {
+            numColumns = processorModel.getNumColumns();
+        }
+        
         // MainPanel
 
         final JPanel paramPanel = new JPanel();
         GridBagConstraints gbcMainPanel = createSubPanelGridBagConstraints();
         final JPanel textFieldMainPanel = GridBagUtils.createPanel();
         final JPanel booleanParamMainPanel = new JPanel();
+        booleanParamMainPanel.setLayout(new TableLayout(numColumns));
+        boolean subPanel0Found = false;
+
 
 
         // SubPanel1
@@ -108,28 +116,38 @@ public class ParamUIFactory {
         GridBagConstraints gbcSubPanel1 = createSubPanelGridBagConstraints();
         final JPanel textFieldSubPanel1 = GridBagUtils.createPanel();
         final JPanel booleanParamSubPanel1 = new JPanel();
+        booleanParamSubPanel1.setLayout(new TableLayout(numColumns));
+        boolean subPanel1Found = false;
 
         // SubPanel2
 
         GridBagConstraints gbcSubPanel2 = createSubPanelGridBagConstraints();
         final JPanel textFieldSubPanel2 = GridBagUtils.createPanel();
         final JPanel booleanParamSubPanel2 = new JPanel();
-
-
-        int numColumns = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
-        if (processorModel.getNumColumns() > 0) {
-            numColumns = processorModel.getNumColumns();
-        }
-
-        booleanParamMainPanel.setLayout(new TableLayout(numColumns));
-        booleanParamSubPanel1.setLayout(new TableLayout(numColumns));
         booleanParamSubPanel2.setLayout(new TableLayout(numColumns));
+        boolean subPanel2Found = false;
+
+
+        // SubPanel3
+
+        GridBagConstraints gbcSubPanel3 = createSubPanelGridBagConstraints();
+        final JPanel textFieldSubPanel3 = GridBagUtils.createPanel();
+        final JPanel booleanParamSubPanel3 = new JPanel();
+        booleanParamSubPanel3.setLayout(new TableLayout(numColumns));
+        boolean subPanel3Found = false;
+
+
+        // SubPanel4
+
+        GridBagConstraints gbcSubPanel4 = createSubPanelGridBagConstraints();
+        final JPanel textFieldSubPanel4 = GridBagUtils.createPanel();
+        final JPanel booleanParamSubPanel4 = new JPanel();
+        booleanParamSubPanel4.setLayout(new TableLayout(numColumns));
+        boolean subPanel4Found = false;
 
 
         
-        boolean subPanel0Found = false;
-        boolean subPanel1Found = false;
-        boolean subPanel2Found = false;
+
 
         
         Iterator<ParamInfo> itr = paramList.iterator();
@@ -140,6 +158,10 @@ public class ParamUIFactory {
                 subPanel1Found = true;
             } else if (pi.getSubPanelIndex() == 2) {
                 subPanel2Found = true;
+            } else if (pi.getSubPanelIndex() == 3) {
+                subPanel3Found = true;
+            } else if (pi.getSubPanelIndex() == 4) {
+                subPanel4Found = true;
             }  else {
                 subPanel0Found = true;
             }
@@ -155,10 +177,14 @@ public class ParamUIFactory {
                     gbcMainPanel.gridwidth = numColumns;
                     gbcSubPanel1.gridwidth = numColumns;
                     gbcSubPanel2.gridwidth = numColumns;
+                    gbcSubPanel3.gridwidth = numColumns;
+                    gbcSubPanel4.gridwidth = numColumns;
                 } else {
                     gbcMainPanel.gridwidth = pi.getColSpan();
                     gbcSubPanel1.gridwidth = pi.getColSpan();
                     gbcSubPanel2.gridwidth = pi.getColSpan();
+                    gbcSubPanel3.gridwidth = pi.getColSpan();
+                    gbcSubPanel4.gridwidth = pi.getColSpan();
                 }
 
 
@@ -166,12 +192,23 @@ public class ParamUIFactory {
 
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
                     if (pi.getSubPanelIndex() == 1) {
+                        gbcSubPanel1 = preIncrementGridy(gbcSubPanel1, numColumns);
                         textFieldSubPanel1.add(makeComboBoxOptionPanel(pi, gbcSubPanel1.gridwidth), gbcSubPanel1);
                         gbcSubPanel1 = incrementGridxGridy(gbcSubPanel1, numColumns);
                     } else if (pi.getSubPanelIndex() == 2) {
+                        gbcSubPanel2 = preIncrementGridy(gbcSubPanel2, numColumns);
                         textFieldSubPanel2.add(makeComboBoxOptionPanel(pi, gbcSubPanel2.gridwidth), gbcSubPanel2);
                         gbcSubPanel2 = incrementGridxGridy(gbcSubPanel2, numColumns);
+                    } else if (pi.getSubPanelIndex() == 3) {
+                        gbcSubPanel3 = preIncrementGridy(gbcSubPanel3, numColumns);
+                        textFieldSubPanel3.add(makeComboBoxOptionPanel(pi, gbcSubPanel3.gridwidth), gbcSubPanel3);
+                        gbcSubPanel3 = incrementGridxGridy(gbcSubPanel3, numColumns);
+                    } else if (pi.getSubPanelIndex() == 4) {
+                        gbcSubPanel4 = preIncrementGridy(gbcSubPanel4, numColumns);
+                        textFieldSubPanel4.add(makeComboBoxOptionPanel(pi, gbcSubPanel4.gridwidth), gbcSubPanel4);
+                        gbcSubPanel4 = incrementGridxGridy(gbcSubPanel4, numColumns);
                     } else {
+                        gbcMainPanel = preIncrementGridy(gbcMainPanel, numColumns);
                         textFieldMainPanel.add(makeComboBoxOptionPanel(pi, gbcMainPanel.gridwidth), gbcMainPanel);
                         gbcMainPanel = incrementGridxGridy(gbcMainPanel, numColumns);
                     }
@@ -182,6 +219,10 @@ public class ParamUIFactory {
                                 booleanParamSubPanel1.add(makeBooleanOptionField(pi));
                             } else if (pi.getSubPanelIndex() == 2) {
                                 booleanParamSubPanel2.add(makeBooleanOptionField(pi));
+                            } else if (pi.getSubPanelIndex() == 3) {
+                                booleanParamSubPanel3.add(makeBooleanOptionField(pi));
+                            } else if (pi.getSubPanelIndex() == 4) {
+                                booleanParamSubPanel4.add(makeBooleanOptionField(pi));
                             } else {
                                 booleanParamMainPanel.add(makeBooleanOptionField(pi));
                             }
@@ -191,12 +232,23 @@ public class ParamUIFactory {
                             break;
                         case OFILE:
                             if (pi.getSubPanelIndex() == 1) {
+                                gbcSubPanel1 = preIncrementGridy(gbcSubPanel1, numColumns);
                                 textFieldSubPanel1.add(createIOFileOptionField(pi), gbcSubPanel1);
                                 gbcSubPanel1 = incrementGridxGridy(gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
+                                gbcSubPanel2 = preIncrementGridy(gbcSubPanel2, numColumns);
                                 textFieldSubPanel2.add(createIOFileOptionField(pi), gbcSubPanel2);
                                 gbcSubPanel2 = incrementGridxGridy(gbcSubPanel2, numColumns);
+                            } else if (pi.getSubPanelIndex() == 3) {
+                                gbcSubPanel3 = preIncrementGridy(gbcSubPanel3, numColumns);
+                                textFieldSubPanel3.add(createIOFileOptionField(pi), gbcSubPanel3);
+                                gbcSubPanel3 = incrementGridxGridy(gbcSubPanel3, numColumns);
+                            } else if (pi.getSubPanelIndex() == 4) {
+                                gbcSubPanel4 = preIncrementGridy(gbcSubPanel4, numColumns);
+                                textFieldSubPanel4.add(createIOFileOptionField(pi), gbcSubPanel4);
+                                gbcSubPanel4 = incrementGridxGridy(gbcSubPanel4, numColumns);
                             } else {
+                                gbcMainPanel = preIncrementGridy(gbcMainPanel, numColumns);
                                 textFieldMainPanel.add(createIOFileOptionField(pi), gbcMainPanel);
                                 gbcMainPanel = incrementGridxGridy(gbcMainPanel, numColumns);
                             }
@@ -206,36 +258,69 @@ public class ParamUIFactory {
                             break;
                         case STRING:
                             if (pi.getSubPanelIndex() == 1) {
+                                gbcSubPanel1 = preIncrementGridy(gbcSubPanel1, numColumns);
                                 textFieldSubPanel1.add(makeOptionField(pi, gbcSubPanel1.gridwidth), gbcSubPanel1);
                                 gbcSubPanel1 = incrementGridxGridy(gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
+                                gbcSubPanel2 = preIncrementGridy(gbcSubPanel2, numColumns);
                                 textFieldSubPanel2.add(makeOptionField(pi, gbcSubPanel2.gridwidth), gbcSubPanel2);
                                 gbcSubPanel2 = incrementGridxGridy(gbcSubPanel2, numColumns);
+                            } else if (pi.getSubPanelIndex() == 3) {
+                                gbcSubPanel3 = preIncrementGridy(gbcSubPanel3, numColumns);
+                                textFieldSubPanel3.add(makeOptionField(pi, gbcSubPanel3.gridwidth), gbcSubPanel3);
+                                gbcSubPanel3 = incrementGridxGridy(gbcSubPanel3, numColumns);
+                            } else if (pi.getSubPanelIndex() == 4) {
+                                gbcSubPanel4 = preIncrementGridy(gbcSubPanel4, numColumns);
+                                textFieldSubPanel4.add(makeOptionField(pi, gbcSubPanel4.gridwidth), gbcSubPanel4);
+                                gbcSubPanel4 = incrementGridxGridy(gbcSubPanel4, numColumns);
                             } else {
+                                gbcMainPanel = preIncrementGridy(gbcMainPanel, numColumns);
                                 textFieldMainPanel.add(makeOptionField(pi, gbcMainPanel.gridwidth), gbcMainPanel);
                                 gbcMainPanel = incrementGridxGridy(gbcMainPanel, numColumns);
                             }
                             break;
                         case INT:
                             if (pi.getSubPanelIndex() == 1) {
+                                gbcSubPanel1 = preIncrementGridy(gbcSubPanel1, numColumns);
                                 textFieldSubPanel1.add(makeOptionField(pi, gbcSubPanel1.gridwidth), gbcSubPanel1);
                                 gbcSubPanel1 = incrementGridxGridy(gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
+                                gbcSubPanel2 = preIncrementGridy(gbcSubPanel2, numColumns);
                                 textFieldSubPanel2.add(makeOptionField(pi, gbcSubPanel2.gridwidth), gbcSubPanel2);
                                 gbcSubPanel2 = incrementGridxGridy(gbcSubPanel2, numColumns);
+                            } else if (pi.getSubPanelIndex() == 3) {
+                                gbcSubPanel3 = preIncrementGridy(gbcSubPanel3, numColumns);
+                                textFieldSubPanel3.add(makeOptionField(pi, gbcSubPanel3.gridwidth), gbcSubPanel3);
+                                gbcSubPanel3 = incrementGridxGridy(gbcSubPanel3, numColumns);
+                            } else if (pi.getSubPanelIndex() == 4) {
+                                gbcSubPanel4 = preIncrementGridy(gbcSubPanel4, numColumns);
+                                textFieldSubPanel4.add(makeOptionField(pi, gbcSubPanel4.gridwidth), gbcSubPanel4);
+                                gbcSubPanel4 = incrementGridxGridy(gbcSubPanel4, numColumns);
                             } else {
+                                gbcMainPanel = preIncrementGridy(gbcMainPanel, numColumns);
                                 textFieldMainPanel.add(makeOptionField(pi, gbcMainPanel.gridwidth), gbcMainPanel);
                                 gbcMainPanel = incrementGridxGridy(gbcMainPanel, numColumns);
                             }
                             break;
                         case FLOAT:
                             if (pi.getSubPanelIndex() == 1) {
+                                gbcSubPanel1 = preIncrementGridy(gbcSubPanel1, numColumns);
                                 textFieldSubPanel1.add(makeOptionField(pi, gbcSubPanel1.gridwidth), gbcSubPanel1);
                                 gbcSubPanel1 = incrementGridxGridy(gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
+                                gbcSubPanel2 = preIncrementGridy(gbcSubPanel2, numColumns);
                                 textFieldSubPanel2.add(makeOptionField(pi, gbcSubPanel2.gridwidth), gbcSubPanel2);
                                 gbcSubPanel2 = incrementGridxGridy(gbcSubPanel2, numColumns);
+                            } else if (pi.getSubPanelIndex() == 3) {
+                                gbcSubPanel3 = preIncrementGridy(gbcSubPanel3, numColumns);
+                                textFieldSubPanel3.add(makeOptionField(pi, gbcSubPanel3.gridwidth), gbcSubPanel3);
+                                gbcSubPanel3 = incrementGridxGridy(gbcSubPanel3, numColumns);
+                            } else if (pi.getSubPanelIndex() == 4) {
+                                gbcSubPanel4 = preIncrementGridy(gbcSubPanel4, numColumns);
+                                textFieldSubPanel4.add(makeOptionField(pi, gbcSubPanel4.gridwidth), gbcSubPanel4);
+                                gbcSubPanel4 = incrementGridxGridy(gbcSubPanel4, numColumns);
                             } else {
+                                gbcMainPanel = preIncrementGridy(gbcMainPanel, numColumns);
                                 textFieldMainPanel.add(makeOptionField(pi, gbcMainPanel.gridwidth), gbcMainPanel);
                                 gbcMainPanel = incrementGridxGridy(gbcMainPanel, numColumns);
                             }
@@ -268,6 +353,8 @@ public class ParamUIFactory {
                 gbcMainPanel.gridwidth = 1;
                 gbcSubPanel1.gridwidth = 1;
                 gbcSubPanel2.gridwidth = 1;
+                gbcSubPanel3.gridwidth = 1;
+                gbcSubPanel4.gridwidth = 1;
 
             }
         }
@@ -277,6 +364,8 @@ public class ParamUIFactory {
         JPanel subPanel0 = createSubPanel(textFieldMainPanel, booleanParamMainPanel, subPanel0Found, 0);
         JPanel subPanel1 = createSubPanel(textFieldSubPanel1, booleanParamSubPanel1, subPanel1Found, 1);
         JPanel subPanel2 = createSubPanel(textFieldSubPanel2, booleanParamSubPanel2, subPanel2Found, 2);
+        JPanel subPanel3 = createSubPanel(textFieldSubPanel3, booleanParamSubPanel3, subPanel3Found, 3);
+        JPanel subPanel4 = createSubPanel(textFieldSubPanel4, booleanParamSubPanel4, subPanel4Found, 4);
 
 
 
@@ -286,7 +375,7 @@ public class ParamUIFactory {
         gbcMain.weightx = 1;
         gbcMain.weighty = 0;
         gbcMain.anchor = GridBagConstraints.NORTHWEST;
-        gbcMain.fill = GridBagConstraints.HORIZONTAL;
+        gbcMain.fill = GridBagConstraints.NONE;
         gbcMain = setSubPanelGbcInsetsToDefault(gbcMain);
 
 
@@ -309,6 +398,20 @@ public class ParamUIFactory {
         if (subPanel2Found) {
             setSubPanelGbcInsets(gbcMain,  2);
             mainPanel.add(subPanel2, gbcMain);
+            gbcMain.gridy++;
+            gbcMain = setSubPanelGbcInsetsToDefault(gbcMain);
+        }
+
+        if (subPanel3Found) {
+            setSubPanelGbcInsets(gbcMain,  3);
+            mainPanel.add(subPanel3, gbcMain);
+            gbcMain.gridy++;
+            gbcMain = setSubPanelGbcInsetsToDefault(gbcMain);
+        }
+
+        if (subPanel4Found) {
+            setSubPanelGbcInsets(gbcMain,  4);
+            mainPanel.add(subPanel4, gbcMain);
             gbcMain.gridy++;
             gbcMain = setSubPanelGbcInsetsToDefault(gbcMain);
         }
@@ -379,6 +482,10 @@ public class ParamUIFactory {
             subPanelTitle = processorModel.getSubPanel1Title();
         } else if (panelIndex == 2) {
             subPanelTitle = processorModel.getSubPanel2Title();
+        } else if (panelIndex == 3) {
+            subPanelTitle = processorModel.getSubPanel3Title();
+        } else if (panelIndex == 4) {
+            subPanelTitle = processorModel.getSubPanel4Title();
         } else {
             subPanelTitle = processorModel.getSubPanel0Title();
         }
@@ -414,6 +521,18 @@ public class ParamUIFactory {
         return subPanel;
     }
 
+
+    GridBagConstraints preIncrementGridy(GridBagConstraints gbc, int numColumns) {
+
+        int gridX = gbc.gridx + gbc.gridwidth;
+        if (gridX > (numColumns)) {
+            gbc.gridy += 1;
+            gbc.gridx = 0;
+            gbc.insets.top = 0;
+        }
+
+        return gbc;
+    }
 
     GridBagConstraints incrementGridxGridy(GridBagConstraints gbc, int numColumns) {
         gbc.gridx += gbc.gridwidth;

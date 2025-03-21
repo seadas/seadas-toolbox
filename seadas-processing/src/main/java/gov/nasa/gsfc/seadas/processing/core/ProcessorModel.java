@@ -61,6 +61,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private String subPanel0Title;
     private String subPanel1Title;
     private String subPanel2Title;
+    private String subPanel3Title;
+    private String subPanel4Title;
     private int numColumns;
 
     private boolean readyToRun;
@@ -112,6 +114,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         setSubPanel0Title("");
         setSubPanel1Title("");
         setSubPanel2Title("");
+        setSubPanel3Title("");
+        setSubPanel4Title("");
         setNumColumns(0);
         processorID = ProcessorTypeInfo.getProcessorID(programName);
         primaryOptions = new HashSet<String>();
@@ -132,6 +136,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             setSubPanel0Title(ParamUtils.getElementString(parXMLFileName, "subPanel0Title"));
             setSubPanel1Title(ParamUtils.getElementString(parXMLFileName, "subPanel1Title"));
             setSubPanel2Title(ParamUtils.getElementString(parXMLFileName, "subPanel2Title"));
+            setSubPanel3Title(ParamUtils.getElementString(parXMLFileName, "subPanel3Title"));
+            setSubPanel4Title(ParamUtils.getElementString(parXMLFileName, "subPanel4Title"));
             setNumColumns(ParamUtils.getElementInt(parXMLFileName, "numColumns"));
             progressPattern = Pattern.compile(ParamUtils.getProgressRegex(parXMLFileName));
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
@@ -941,9 +947,22 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public String getSubPanel2Title() {
         return subPanel2Title;
     }
-
     public void setSubPanel2Title(String subPanel2Title) {
         this.subPanel2Title = subPanel2Title;
+    }
+
+    public String getSubPanel3Title() {
+        return subPanel3Title;
+    }
+    public void setSubPanel3Title(String subPanel3Title) {
+        this.subPanel3Title = subPanel3Title;
+    }
+
+    public String getSubPanel4Title() {
+        return subPanel4Title;
+    }
+    public void setSubPanel4Title(String subPanel4Title) {
+        this.subPanel4Title = subPanel4Title;
     }
 
     public int getNumColumns() {
