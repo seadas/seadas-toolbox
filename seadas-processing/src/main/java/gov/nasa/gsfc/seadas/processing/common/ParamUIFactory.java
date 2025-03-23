@@ -471,8 +471,8 @@ public class ParamUIFactory {
 
             gbcMainPanel.gridx = 0;
             gbcMainPanel.gridy = 0;
-            gbcMainPanel.weightx = 0;
-            gbcMainPanel.weighty = 0;
+            gbcMainPanel.weightx = 1;
+            gbcMainPanel.weighty = 1;
             gbcMainPanel.fill = GridBagConstraints.NONE;
             gbcMainPanel.anchor = GridBagConstraints.NORTHWEST;
             gbcMainPanel.insets.top = 5;
@@ -629,17 +629,17 @@ public class ParamUIFactory {
         final BindingContext ctx = new BindingContext(vc);
         final JTextField field = new JTextField();
 
-        int firstColWidth = 10;
-        int additionalColWidth = 14;
+        int firstColWidth = 12;
+        int additionalColWidth = 13;
 
         if (colSpan >= 5) {
             field.setColumns(firstColWidth + (colSpan - 1) * additionalColWidth);
         } else if (colSpan == 4) {
-            field.setColumns(firstColWidth + 44);
+            field.setColumns(firstColWidth + 41);
         } else if (colSpan == 3) {
-            field.setColumns(firstColWidth + 30);
+            field.setColumns(firstColWidth + 27);
         } else if (colSpan == 2) {
-            field.setColumns(firstColWidth + 15);
+            field.setColumns(firstColWidth + 14);
         } else {
             field.setColumns(firstColWidth);
         }
@@ -774,25 +774,25 @@ public class ParamUIFactory {
 
         Dimension preferredComboBoxSize;
 
-        int firstColWidth = 9;
+        int firstColWidth = 13;
 
         if (colSpan >= 5) {
-            String initString = getStringOfSetLength( firstColWidth + (colSpan - 1) * 21);
+            String initString = getStringOfSetLength( firstColWidth + (colSpan - 1) * 20);
             final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else if (colSpan == 4) {
-            String initString = getStringOfSetLength(firstColWidth + 66);
+            String initString = getStringOfSetLength(firstColWidth + 62);
             final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else if (colSpan == 3) {
-            String initString = getStringOfSetLength(firstColWidth + 43);
+            String initString = getStringOfSetLength(firstColWidth + 41);
             final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();
         } else if (colSpan == 2) {
-            String initString = getStringOfSetLength(firstColWidth + 22);
+            String initString = getStringOfSetLength(firstColWidth + 20);
             final String[] tmpValues = {initString};
             JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
             preferredComboBoxSize = tmpComboBox.getPreferredSize();

@@ -10,8 +10,8 @@
 <!--        <subPanel1Title>Pre-Defined Projection Attributes</subPanel1Title>-->
 <!--        <subPanel2Title> </subPanel2Title>-->
         <subPanel2Title> Resolution/Interpolation Parameters </subPanel2Title>
-        <subPanel3Title> Image File Attributes </subPanel3Title>
-        <subPanel4Title>  </subPanel4Title>
+        <subPanel4Title> Image File Attributes </subPanel4Title>
+        <subPanel3Title>  </subPanel3Title>
         <numColumns>7</numColumns>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
@@ -654,322 +654,13 @@
 
 
 
-        // Image File SubPanel
-
-
-        <!--        <option type="string">-->
-<!--            <name>palette_dir</name>-->
-<!--            <value>$OCDATAROOT/common/palette</value>-->
-<!--            <default>$OCDATAROOT/common/palette</default>-->
-<!--            <source>default</source>-->
-<!--            <description>directory containing the palette files</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <colSpan>2</colSpan>-->
-<!--            <order>21</order>-->
-<!--        </option>-->
-
-
-
-
-
-        <option type="string">
-            <name>palfile</name>
-            <value/>
-            <source>default</source>
-            <description>palette filename in $OCDATAROOT/common/palette.  (default = means the palette is chosen using the product.xml file</description>
-            <validValues>
-                <validValue>
-                    <value>anomalies1_universal</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>anomalies2_universal</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>bios</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>brs_chl</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>brs_sst</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>calcite</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>cyan</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>default-black0</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>default</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>density</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>gray-black0</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>gray</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>ndvi</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>sm</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>sss</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>sst-black0</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>sst-gibs</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>sst</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>universal_bluered-black0</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>universal_bluered</value>
-                    <description></description>
-                </validValue>
-                <validValue>
-                    <value>zphotic</value>
-                    <description></description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>3</subPanelIndex>
-            <order>300</order>
-        </option>
-
-
-
-        <option type="float">
-            <name>datamin</name>
-            <value/>
-            <source>default</source>
-            <description>minimum value for scaling (default from product.xml)</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>301</order>
-        </option>
-
-        <option type="float">
-            <name>datamax</name>
-            <value/>
-            <source>default</source>
-            <description>maximum value for scaling (default from product.xml)</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>302</order>
-        </option>
-
-
-        <option type="string">
-            <name>scale_type</name>
-            <value/>
-            <source>default</source>
-            <description>data scaling type (default from product.xml)</description>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>data scaling type (default from product.xml)</description>
-                </validValue>
-                <validValue>
-                    <value>linear</value>
-                    <description>linear scaling</description>
-                </validValue>
-                <validValue>
-                    <value>log</value>
-                    <description>logarithmic scaling</description>
-                </validValue>
-                <validValue>
-                    <value>arctan</value>
-                    <description>arc tangent scaling</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>303</order>
-        </option>
-
-
-        <option type="string">
-            <name>rgb_land</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>land colors (default=160,82,45)</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>304</order>
-        </option>
-
-
-        <option type="string">
-            <name>product_rgb</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description> 3 products to use for RGB.  Default is sensor specific</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>3</subPanelIndex>
-            <order>305</order>
-        </option>
-
-
-
-
-
-<!--        <option type="string">-->
-<!--            <name>oformat2</name>-->
-<!--            <value>png</value>-->
-<!--            <default></default>-->
-<!--            <description>output file format for ofile2</description>-->
-<!--            <source>default</source>-->
-<!--            <validValues>-->
-<!--                <validValue>-->
-<!--                    <value></value>-->
-<!--                    <description>output file format</description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>netCDF4</value>-->
-<!--                    <description>netCDF file, can contain more than one product</description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>HDF4</value>-->
-<!--                    <description>HDF4 file (old SMI format)</description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>png</value>-->
-<!--                    <description>PNG image file</description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>ppm</value>-->
-<!--                    <description>PPM image file</description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>TIFF</value>-->
-<!--                    <description>TIFF file with georeference tags</description>-->
-<!--                </validValue>-->
-<!--            </validValues>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>57</order>-->
-<!--        </option>-->
-
-<!--        <option type="ofile">-->
-<!--            <name>ofile2</name>-->
-<!--            <value></value>-->
-<!--            <default></default>-->
-<!--            <source>default</source>-->
-<!--            <description>second output filename</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <colSpan>3</colSpan>-->
-<!--            <order>58</order>-->
-<!--        </option>-->
-
-
-
-
-
-
-
-
-        <!--        <option type="boolean">-->
-<!--            <name>use_quality</name>-->
-<!--            <value>true</value>-->
-<!--            <default>true</default>-->
-<!--            <source>default</source>-->
-<!--            <description>should we do quality factor processing</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>31</order>-->
-<!--        </option>-->
-
-
-
-        <option type="boolean">
-            <name>apply_pal</name>
-            <value>true</value>
-            <default>true</default>
-            <source>default</source>
-            <description>apply color palette</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>350</order>
-        </option>
-
-        <option type="boolean">
-            <name>mask_land</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>mask land</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>351</order>
-        </option>
-
-        <option type="boolean">
-            <name>use_transparency</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>352</order>
-        </option>
-
-        <option type="boolean">
-            <name>use_rgb</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>should we use product_rgb to make a psudo true color image</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>353</order>
-        </option>
-
-
-
-
-
 
         // Misc SubPanel
 
         <option type="float">
             <name>threshold</name>
             <value>0</value>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <default></default>
             <source>default</source>
             <description>minimum percentage of filled pixels before an image is generated</description>
@@ -990,7 +681,7 @@
         <option type="string">
             <name>pversion</name>
             <value></value>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <default></default>
             <source>default</source>
             <description>processing version string</description>
@@ -1006,7 +697,7 @@
             <name>num_cache</name>
             <value></value>
             <default></default>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <source>default</source>
             <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
@@ -1018,7 +709,7 @@
             <name>oformat</name>
             <value>netCDF4</value>
             <default></default>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <description>output file format</description>
             <source>default</source>
             <validValues>
@@ -1056,12 +747,320 @@
             <name>deflate</name>
             <value></value>
             <default></default>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <source>default</source>
             <description>deflation level</description>
             <usedAs>option</usedAs>
             <order>404</order>
         </option>
+
+
+        
+        
+
+        // Image File SubPanel
+
+
+        <!--        <option type="string">-->
+<!--            <name>palette_dir</name>-->
+<!--            <value>$OCDATAROOT/common/palette</value>-->
+<!--            <default>$OCDATAROOT/common/palette</default>-->
+<!--            <source>default</source>-->
+<!--            <description>directory containing the palette files</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <colSpan>2</colSpan>-->
+<!--            <order>21</order>-->
+<!--        </option>-->
+
+
+
+
+
+        <option type="string">
+            <name>palfile</name>
+            <value/>
+            <source>default</source>
+            <description>palette filename in $OCDATAROOT/common/palette.  (default = means the palette is chosen using the product.xml file</description>
+            <validValues>
+<!--                <validValue>-->
+<!--                    <value>anomalies1_universal</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>anomalies2_universal</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>bios</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>brs_chl</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>brs_sst</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>calcite</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>cyan</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>default-black0</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>default</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>density</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>gray-black0</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>gray</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>ndvi</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>sm</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>sss</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>sst-black0</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>sst-gibs</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>sst</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>universal_bluered-black0</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>universal_bluered</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>zphotic</value>-->
+<!--                    <description></description>-->
+<!--                </validValue>-->
+            </validValues>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
+            <order>300</order>
+        </option>
+
+
+
+        <option type="float">
+            <name>datamin</name>
+            <value/>
+            <source>default</source>
+            <description>minimum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>301</order>
+        </option>
+
+        <option type="float">
+            <name>datamax</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>302</order>
+        </option>
+
+
+        <option type="string">
+            <name>scale_type</name>
+            <value/>
+            <source>default</source>
+            <description>data scaling type (default from product.xml)</description>
+            <validValues>
+                <validValue>
+                    <value></value>
+                    <description>data scaling type (default from product.xml)</description>
+                </validValue>
+                <validValue>
+                    <value>linear</value>
+                    <description>linear scaling</description>
+                </validValue>
+                <validValue>
+                    <value>log</value>
+                    <description>logarithmic scaling</description>
+                </validValue>
+                <validValue>
+                    <value>arctan</value>
+                    <description>arc tangent scaling</description>
+                </validValue>
+            </validValues>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>303</order>
+        </option>
+
+
+        <option type="string">
+            <name>rgb_land</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>land colors (default=160,82,45)</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
+            <order>304</order>
+        </option>
+
+
+        <option type="string">
+            <name>product_rgb</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
+            <order>305</order>
+        </option>
+
+
+
+
+
+        <option type="string">
+            <name>oformat2</name>
+            <value></value>
+            <default></default>
+            <description>output file format for ofile2</description>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value></value>
+                    <description>output file format</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>TIFF</value>
+                    <description>TIFF file with georeference tags</description>
+                </validValue>
+            </validValues>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>306</order>
+        </option>
+
+        <option type="ofile">
+            <name>ofile2</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>second output filename</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <colSpan>4</colSpan>
+            <order>307</order>
+        </option>
+
+
+
+
+
+
+
+
+        <!--        <option type="boolean">-->
+<!--            <name>use_quality</name>-->
+<!--            <value>true</value>-->
+<!--            <default>true</default>-->
+<!--            <source>default</source>-->
+<!--            <description>should we do quality factor processing</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>31</order>-->
+<!--        </option>-->
+
+
+
+        <option type="boolean">
+            <name>apply_pal</name>
+            <value>true</value>
+            <default>true</default>
+            <source>default</source>
+            <description>apply color palette</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>350</order>
+        </option>
+
+        <option type="boolean">
+            <name>mask_land</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>mask land</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>351</order>
+        </option>
+
+        <option type="boolean">
+            <name>use_transparency</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>352</order>
+        </option>
+
+        <option type="boolean">
+            <name>use_rgb</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>should we use product_rgb to make a psudo true color image</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>353</order>
+        </option>
+
+
+
+
 
 
 

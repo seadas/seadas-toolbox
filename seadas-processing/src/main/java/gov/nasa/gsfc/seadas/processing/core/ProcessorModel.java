@@ -2261,6 +2261,16 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return fileBasename;
     }
 
+    private static String stripPalFilenameExtension(String filename) {
+        String fileBasename = filename;
+
+        if (filename.endsWith(".pal")) {
+            fileBasename = filename.substring(0, filename.length() - 4);
+        }
+
+        return fileBasename;
+    }
+
 
 
     public static String getOfileForL3MapGenWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String oformat, String product, String projection, String interp, String north, String south, String west, String east) {
@@ -2442,11 +2452,39 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
+
     private static class L3MAPGEN_Processor extends ProcessorModel {
 
         L3MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setOpenInSeadas(true);
+
+            OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
+            String ocsswDataDirPath = ocsswInfo.getOcsswDataDirPath();
+            if (ocsswDataDirPath != null) {
+                ParamInfo palfileParamInfo = getParamInfo("palfile");
+
+                String palfileDirName = ocsswDataDirPath + System.getProperty("file.separator") + "common" + System.getProperty("file.separator") + "palette";
+                File palfileFile = new File(palfileDirName);
+                File[] palfileFiles = palfileFile.listFiles();
+                palfileParamInfo.clearValidValueInfos();
+
+                String basenames[] = new String[palfileFiles.length];
+                int data[] = new int[10];
+                for (int i = 0; i < palfileFiles.length; i++) {
+                    basenames[i] = palfileFiles[i].getName();
+                }
+
+                Arrays.sort(basenames);
+
+                for (String basename : basenames) {
+                    basename = stripPalFilenameExtension(basename);
+                    ParamValidValueInfo validValueInfo = new ParamValidValueInfo(basename);
+                    validValueInfo.setDescription(basename);
+                    palfileParamInfo.getValidValueInfos().add(validValueInfo);
+                }
+            }
+
 
             addPropertyChangeListener("resolution", new PropertyChangeListener() {
                 @Override
