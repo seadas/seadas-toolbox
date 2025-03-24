@@ -458,7 +458,7 @@ public class ParamUIFactory {
     private GridBagConstraints setSubPanelGbcInsets(GridBagConstraints gbc, int panelIndex) {
         if (subPanelHasBorder(panelIndex)) {
             gbc.insets.top = 10;
-            gbc.insets.bottom = 10;
+            gbc.insets.bottom = 3;
             gbc.insets.left = 8;
             gbc.insets.right = 8;
         } else {

@@ -5,12 +5,12 @@
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
         <subPanel0Title>  </subPanel0Title>
-        <subPanel0Title> Product/Performance Parameters</subPanel0Title>
+<!--        <subPanel0Title> Product / Output / Performance Parameters</subPanel0Title>-->
 <!--        <subPanel1Title> </subPanel1Title>-->
-        <subPanel1Title> Projection/Resolution Parameters </subPanel1Title>
+        <subPanel1Title> Projection / Resolution Parameters </subPanel1Title>
 <!--        <subPanel1Title>Pre-Defined Projection Attributes</subPanel1Title>-->
 <!--        <subPanel2Title> </subPanel2Title>-->
-        <subPanel2Title> Resolution/Interpolation Parameters </subPanel2Title>
+<!--        <subPanel2Title> Resolution/ Interpolation Parameters </subPanel2Title>-->
         <subPanel4Title> Image Mode Parameters </subPanel4Title>
         <subPanel3Title>  </subPanel3Title>
         <numColumns>6</numColumns>
@@ -144,6 +144,60 @@
             <usedAs>option</usedAs>
             <order>4</order>
         </option>
+
+
+
+
+
+        <option type="string">
+            <name>oformat</name>
+            <value>netCDF4</value>
+            <default></default>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <description>output file format</description>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value></value>
+                    <description>output file format</description>
+                </validValue>
+                <validValue>
+                    <value>netCDF4</value>
+                    <description>netCDF file, can contain more than one product</description>
+                </validValue>
+                <validValue>
+                    <value>HDF4</value>
+                    <description>HDF4 file (old SMI format)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>TIFF</value>
+                    <description>TIFF file with georeference tags</description>
+                </validValue>
+            </validValues>
+            <usedAs>option</usedAs>
+
+            <order>5</order>
+        </option>
+
+
+                <option type="int">
+                    <name>deflate</name>
+                    <value></value>
+                    <default></default>
+                    <source>default</source>
+                    <description>deflation level</description>
+                    <usedAs>option</usedAs>
+
+                    <order>6</order>
+                </option>
 
 
 
@@ -740,25 +794,17 @@
 
 
 
+
         <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
+            <name>oformat2</name>
+            <value></value>
             <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <description>output file format</description>
+            <description>output file format for ofile2</description>
             <source>default</source>
             <validValues>
                 <validValue>
                     <value></value>
                     <description>output file format</description>
-                </validValue>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF file, can contain more than one product</description>
-                </validValue>
-                <validValue>
-                    <value>HDF4</value>
-                    <description>HDF4 file (old SMI format)</description>
                 </validValue>
                 <validValue>
                     <value>png</value>
@@ -775,23 +821,21 @@
             </validValues>
             <usedAs>option</usedAs>
             <subPanelIndex>4</subPanelIndex>
-
-            <order>290</order>
+            <order>292</order>
         </option>
 
-
-        <option type="int">
-            <name>deflate</name>
+        <option type="ofile">
+            <name>ofile2</name>
             <value></value>
             <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
             <source>default</source>
-            <description>deflation level</description>
+            <description>second output filename</description>
             <usedAs>option</usedAs>
             <subPanelIndex>4</subPanelIndex>
-
-            <order>291</order>
+            <colSpan>5</colSpan>
+            <order>293</order>
         </option>
+
 
 
 
@@ -966,55 +1010,12 @@
             <source>default</source>
             <description> 3 products to use for RGB.  Default is sensor specific</description>
             <usedAs>option</usedAs>
-            <colSpan>3</colSpan>
+            <colSpan>2</colSpan>
             <subPanelIndex>4</subPanelIndex>
             <order>306</order>
         </option>
 
 
-
-
-
-        <option type="string">
-            <name>oformat2</name>
-            <value></value>
-            <default></default>
-            <description>output file format for ofile2</description>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>output file format</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>TIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <order>310</order>
-        </option>
-
-        <option type="ofile">
-            <name>ofile2</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>second output filename</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <colSpan>5</colSpan>
-            <order>320</order>
-        </option>
 
 
 
