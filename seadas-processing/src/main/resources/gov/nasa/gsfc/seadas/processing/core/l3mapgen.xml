@@ -167,56 +167,6 @@
 
 
         <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
-            <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <description>output file format</description>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>output file format</description>
-                </validValue>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF file, can contain more than one product</description>
-                </validValue>
-                <validValue>
-                    <value>HDF4</value>
-                    <description>HDF4 file (old SMI format)</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>TIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <order>10</order>
-        </option>
-
-
-        <option type="int">
-            <name>deflate</name>
-            <value></value>
-            <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <source>default</source>
-            <description>deflation level</description>
-            <usedAs>option</usedAs>
-            <order>11</order>
-        </option>
-
-
-        <option type="string">
             <name>pversion</name>
             <value></value>
             <!--            <subPanelIndex>3</subPanelIndex>-->
@@ -791,6 +741,62 @@
 
 
         <option type="string">
+            <name>oformat</name>
+            <value>netCDF4</value>
+            <default></default>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <description>output file format</description>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value></value>
+                    <description>output file format</description>
+                </validValue>
+                <validValue>
+                    <value>netCDF4</value>
+                    <description>netCDF file, can contain more than one product</description>
+                </validValue>
+                <validValue>
+                    <value>HDF4</value>
+                    <description>HDF4 file (old SMI format)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>TIFF</value>
+                    <description>TIFF file with georeference tags</description>
+                </validValue>
+            </validValues>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+
+            <order>290</order>
+        </option>
+
+
+        <option type="int">
+            <name>deflate</name>
+            <value></value>
+            <default></default>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <source>default</source>
+            <description>deflation level</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+
+            <order>291</order>
+        </option>
+
+
+
+
+        <option type="string">
             <name>palfile</name>
             <value/>
             <source>default</source>
@@ -953,6 +959,19 @@
 
 
 
+        <option type="string">
+            <name>product_rgb</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <usedAs>option</usedAs>
+            <colSpan>3</colSpan>
+            <subPanelIndex>4</subPanelIndex>
+            <order>306</order>
+        </option>
+
+
 
 
 
@@ -982,7 +1001,7 @@
             </validValues>
             <usedAs>option</usedAs>
             <subPanelIndex>4</subPanelIndex>
-            <order>306</order>
+            <order>310</order>
         </option>
 
         <option type="ofile">
@@ -994,22 +1013,9 @@
             <usedAs>option</usedAs>
             <subPanelIndex>4</subPanelIndex>
             <colSpan>5</colSpan>
-            <order>307</order>
+            <order>320</order>
         </option>
 
-
-
-        <option type="string">
-            <name>product_rgb</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description> 3 products to use for RGB.  Default is sensor specific</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>4</subPanelIndex>
-            <order>308</order>
-        </option>
 
 
 
