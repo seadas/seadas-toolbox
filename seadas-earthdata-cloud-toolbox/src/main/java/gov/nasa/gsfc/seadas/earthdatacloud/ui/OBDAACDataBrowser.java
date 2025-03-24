@@ -48,7 +48,7 @@ public class OBDAACDataBrowser extends JFrame {
 
     /**
      * 🔹 Run Python script to extract metadata.
-     * ProcessBuilder pb = new ProcessBuilder("python", "seadas-toolbox/seadas-earthdata-cloud-toolbox/CMR_script.py");
+     * ProcessBuilder pb = new ProcessBuilder("python", "seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/CMR_script.py");
      */
     private void loadMetadata() {
         try {
@@ -59,7 +59,8 @@ public class OBDAACDataBrowser extends JFrame {
 
             if (!Files.exists(jsonDir) || !Files.isDirectory(jsonDir)) {
                 System.err.println("Directory does not exist: " + jsonDir);
-                return;
+                runPythonScriptForCMRMetada();
+                //return;
             }
 
             processedMetadata.clear();
@@ -98,6 +99,32 @@ public class OBDAACDataBrowser extends JFrame {
         }
     }
 
+    private void runPythonScriptForCMRMetada(){
+        System.out.println("Running Python script for metadata extraction...");
+        try {
+            ProcessBuilder pb = new ProcessBuilder("python", "seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/CMR_script.py");
+            pb.directory(new File(System.getProperty("user.dir"))); // Ensure correct directory
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+            StringBuilder jsonOutput = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonOutput.append(line);
+            }
+
+            process.waitFor();
+
+            if (jsonOutput.length() == 0) {
+                System.err.println("❌ Error: Python script returned no metadata.");
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+    }
     /**
      * 🔹 Initializes UI Components
      */
