@@ -4,15 +4,16 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <subPanel0Title> </subPanel0Title>
+        <subPanel0Title>  </subPanel0Title>
+        <subPanel0Title> Product/Performance Parameters</subPanel0Title>
 <!--        <subPanel1Title> </subPanel1Title>-->
-        <subPanel1Title> Projection Attributes </subPanel1Title>
+        <subPanel1Title> Projection/Resolution Parameters </subPanel1Title>
 <!--        <subPanel1Title>Pre-Defined Projection Attributes</subPanel1Title>-->
 <!--        <subPanel2Title> </subPanel2Title>-->
         <subPanel2Title> Resolution/Interpolation Parameters </subPanel2Title>
-        <subPanel4Title> Image File Attributes </subPanel4Title>
+        <subPanel4Title> Image Mode Parameters </subPanel4Title>
         <subPanel3Title>  </subPanel3Title>
-        <numColumns>7</numColumns>
+        <numColumns>6</numColumns>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
@@ -143,6 +144,106 @@
             <usedAs>option</usedAs>
             <order>4</order>
         </option>
+
+
+
+
+
+        // Misc SubPanel
+
+
+
+
+        <!--<option type="boolean">-->
+        <!--<name>quiet</name>-->
+        <!--<value>false</value>-->
+        <!--<default>false</default>-->
+        <!--<source>default</source>-->
+        <!--<description>stop the status printing</description>-->
+        <!--</option>-->
+
+
+
+
+
+        <option type="string">
+            <name>oformat</name>
+            <value>netCDF4</value>
+            <default></default>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <description>output file format</description>
+            <source>default</source>
+            <validValues>
+                <validValue>
+                    <value></value>
+                    <description>output file format</description>
+                </validValue>
+                <validValue>
+                    <value>netCDF4</value>
+                    <description>netCDF file, can contain more than one product</description>
+                </validValue>
+                <validValue>
+                    <value>HDF4</value>
+                    <description>HDF4 file (old SMI format)</description>
+                </validValue>
+                <validValue>
+                    <value>png</value>
+                    <description>PNG image file</description>
+                </validValue>
+                <validValue>
+                    <value>ppm</value>
+                    <description>PPM image file</description>
+                </validValue>
+                <validValue>
+                    <value>TIFF</value>
+                    <description>TIFF file with georeference tags</description>
+                </validValue>
+            </validValues>
+            <usedAs>option</usedAs>
+            <order>10</order>
+        </option>
+
+
+        <option type="int">
+            <name>deflate</name>
+            <value></value>
+            <default></default>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <source>default</source>
+            <description>deflation level</description>
+            <usedAs>option</usedAs>
+            <order>11</order>
+        </option>
+
+
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <default></default>
+            <source>default</source>
+            <description>processing version string</description>
+            <usedAs>option</usedAs>
+            <order>12</order>
+        </option>
+
+
+
+
+
+        <option type="int">
+            <name>num_cache</name>
+            <value></value>
+            <default></default>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <source>default</source>
+            <description>number of rows to cache in memory</description>
+            <usedAs>option</usedAs>
+            <order>13</order>
+        </option>
+
+
+
 
 
 
@@ -416,117 +517,6 @@
         </option>
 
 
-        <option type="float">
-            <name>north</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Northernmost Latitude</description>
-            <usedAs>option</usedAs>
-            <order>101</order>
-        </option>
-        <option type="float">
-            <name>south</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Southernmost Latitude</description>
-            <usedAs>option</usedAs>
-            <order>102</order>
-        </option>
-        <option type="float">
-            <name>west</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Westernmost Longitude</description>
-            <usedAs>option</usedAs>
-            <order>103</order>
-        </option>
-        <option type="float">
-            <name>east</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Easternmost Longitude</description>
-            <usedAs>option</usedAs>
-            <order>104</order>
-        </option>
-
-        <option type="float">
-            <name>central_meridian</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>central meridian for projection in deg east.  Only used for predefined projection</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>105</order>
-        </option>
-
-        <option type="float">
-            <name>lat_0</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of origin for projection in deg north. Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>106</order>
-        </option>
-
-        <option type="float">
-            <name>lat_1</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of first standard parallel (south). Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>107</order>
-        </option>
-
-        <option type="float">
-            <name>lat_2</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of second standard parallel (north). Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>108</order>
-        </option>
-
-
-        <option type="float">
-            <name>lat_ts</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of true scale for projection in deg north. Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>109</order>
-        </option>
-
-
-        <option type="float">
-            <name>azimuth</name>
-            <value/>
-            <source>default</source>
-            <description>projection rotation angle in deg north. Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>110</order>
-        </option>
-
-
-
-
-
-
-
-
 
 
 
@@ -535,7 +525,7 @@
             <name>resolution</name>
             <value></value>
             <default></default>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>1</subPanelIndex>
             <source>default</source>
             <description>size of the mapped pixels in meters or SMI dimensions</description>
 
@@ -594,20 +584,9 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
-            <order>200</order>
+            <order>105</order>
         </option>
 
-
-        <option type="int">
-            <name>width</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>2</subPanelIndex>
-            <source>default</source>
-            <description>width of output image in pixels; supercedes resolution parameter</description>
-            <usedAs>option</usedAs>
-            <order>201</order>
-        </option>
 
 
 
@@ -615,7 +594,7 @@
             <name>interp</name>
             <value>nearest</value>
             <default></default>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>1</subPanelIndex>
             <description>interpolation method:</description>
             <source>default</source>
             <validValues>
@@ -637,126 +616,161 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
-            <order>202</order>
+            <order>106</order>
         </option>
 
         <option type="float">
             <name>fudge</name>
             <value></value>
             <default></default>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>1</subPanelIndex>
             <source>default</source>
             <description>fudge factor used to modify size of L3 pixels</description>
             <usedAs>option</usedAs>
-            <order>203</order>
+            <order>106</order>
         </option>
 
 
 
 
 
-        // Misc SubPanel
+
+        <option type="float">
+            <name>north</name>
+            <value></value>
+            <default></default>
+            <subPanelIndex>1</subPanelIndex>
+            <source>default</source>
+            <description>Northernmost Latitude</description>
+            <usedAs>option</usedAs>
+            <order>110</order>
+        </option>
+        <option type="float">
+            <name>south</name>
+            <value></value>
+            <default></default>
+            <subPanelIndex>1</subPanelIndex>
+            <source>default</source>
+            <description>Southernmost Latitude</description>
+            <usedAs>option</usedAs>
+            <order>111</order>
+        </option>
+        <option type="float">
+            <name>west</name>
+            <value></value>
+            <default></default>
+            <subPanelIndex>1</subPanelIndex>
+            <source>default</source>
+            <description>Westernmost Longitude</description>
+            <usedAs>option</usedAs>
+            <order>112</order>
+        </option>
+        <option type="float">
+            <name>east</name>
+            <value></value>
+            <default></default>
+            <subPanelIndex>1</subPanelIndex>
+            <source>default</source>
+            <description>Easternmost Longitude</description>
+            <usedAs>option</usedAs>
+            <order>113</order>
+        </option>
+
+
+        <option type="int">
+            <name>width</name>
+            <value></value>
+            <default></default>
+            <subPanelIndex>1</subPanelIndex>
+            <source>default</source>
+            <description>width of output image in pixels; supercedes resolution parameter</description>
+            <usedAs>option</usedAs>
+            <order>114</order>
+        </option>
+
+
 
         <option type="float">
             <name>threshold</name>
             <value>0</value>
-<!--            <subPanelIndex>3</subPanelIndex>-->
+            <subPanelIndex>1</subPanelIndex>
             <default></default>
             <source>default</source>
             <description>minimum percentage of filled pixels before an image is generated</description>
             <usedAs>option</usedAs>
-            <order>400</order>
+            <order>115</order>
         </option>
 
 
-        <!--<option type="boolean">-->
-        <!--<name>quiet</name>-->
-        <!--<value>false</value>-->
-        <!--<default>false</default>-->
-        <!--<source>default</source>-->
-        <!--<description>stop the status printing</description>-->
-        <!--</option>-->
-
-
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-<!--            <subPanelIndex>3</subPanelIndex>-->
-            <default></default>
-            <source>default</source>
-            <description>processing version string</description>
-            <usedAs>option</usedAs>
-            <order>401</order>
-        </option>
-
-
-
-
-
-        <option type="int">
-            <name>num_cache</name>
+        <option type="float">
+            <name>central_meridian</name>
             <value></value>
             <default></default>
-<!--            <subPanelIndex>3</subPanelIndex>-->
             <source>default</source>
-            <description>number of rows to cache in memory</description>
+            <description>central meridian for projection in deg east.  Only used for predefined projection</description>
             <usedAs>option</usedAs>
-            <order>402</order>
+            <subPanelIndex>1</subPanelIndex>
+            <order>121</order>
+        </option>
+
+        <option type="float">
+            <name>lat_0</name>
+            <value/>
+            <source>default</source>
+            <description>latitude of origin for projection in deg north. Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
+            <order>122</order>
+        </option>
+
+        <option type="float">
+            <name>lat_1</name>
+            <value/>
+            <source>default</source>
+            <description>latitude of first standard parallel (south). Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
+            <order>123</order>
+        </option>
+
+        <option type="float">
+            <name>lat_2</name>
+            <value/>
+            <source>default</source>
+            <description>latitude of second standard parallel (north). Used only for predefined projections above as required.</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>1</subPanelIndex>
+            <order>124</order>
         </option>
 
 
-        <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
-            <default></default>
-<!--            <subPanelIndex>3</subPanelIndex>-->
-            <description>output file format</description>
+        <option type="float">
+            <name>lat_ts</name>
+            <value/>
             <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>output file format</description>
-                </validValue>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF file, can contain more than one product</description>
-                </validValue>
-                <validValue>
-                    <value>HDF4</value>
-                    <description>HDF4 file (old SMI format)</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>TIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
+            <description>latitude of true scale for projection in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
-            <order>403</order>
+            <subPanelIndex>1</subPanelIndex>
+            <order>125</order>
         </option>
 
 
-        <option type="int">
-            <name>deflate</name>
-            <value></value>
-            <default></default>
-<!--            <subPanelIndex>3</subPanelIndex>-->
+        <option type="float">
+            <name>azimuth</name>
+            <value/>
             <source>default</source>
-            <description>deflation level</description>
+            <description>projection rotation angle in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
-            <order>404</order>
+            <subPanelIndex>1</subPanelIndex>
+            <order>126</order>
         </option>
 
 
-        
-        
+
+
+
+
+
 
         // Image File SubPanel
 
@@ -938,18 +952,6 @@
         </option>
 
 
-        <option type="string">
-            <name>product_rgb</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description> 3 products to use for RGB.  Default is sensor specific</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>4</subPanelIndex>
-            <order>305</order>
-        </option>
-
 
 
 
@@ -991,11 +993,23 @@
             <description>second output filename</description>
             <usedAs>option</usedAs>
             <subPanelIndex>4</subPanelIndex>
-            <colSpan>4</colSpan>
+            <colSpan>5</colSpan>
             <order>307</order>
         </option>
 
 
+
+        <option type="string">
+            <name>product_rgb</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
+            <order>308</order>
+        </option>
 
 
 

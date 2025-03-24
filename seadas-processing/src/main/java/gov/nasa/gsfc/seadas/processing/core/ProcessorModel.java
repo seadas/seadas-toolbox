@@ -2416,7 +2416,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         File ifileFile = new File(ifilename);
 
         if (ifileFile != null) {
-            parentPath = ifileFile.getParentFile().getAbsolutePath();
+            if (ifileFile.getParentFile() != null) {
+                parentPath = ifileFile.getParentFile().getAbsolutePath();
+            }
             ifileBasename = ifileFile.getName();
             pathRemoved = true;
         }
@@ -2437,7 +2439,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         String ofilename = null;
 
-        if (pathRemoved) {
+        if (pathRemoved && parentPath != null) {
             File oFile = new File(parentPath, ofileBaseName);
             if (oFile != null) {
                 ofilename = oFile.getAbsolutePath();
