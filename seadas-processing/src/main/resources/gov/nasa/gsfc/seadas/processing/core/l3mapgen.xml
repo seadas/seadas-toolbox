@@ -660,7 +660,7 @@
         <option type="float">
             <name>threshold</name>
             <value>0</value>
-            <subPanelIndex>3</subPanelIndex>
+<!--            <subPanelIndex>3</subPanelIndex>-->
             <default></default>
             <source>default</source>
             <description>minimum percentage of filled pixels before an image is generated</description>
@@ -681,7 +681,7 @@
         <option type="string">
             <name>pversion</name>
             <value></value>
-            <subPanelIndex>3</subPanelIndex>
+<!--            <subPanelIndex>3</subPanelIndex>-->
             <default></default>
             <source>default</source>
             <description>processing version string</description>
@@ -697,7 +697,7 @@
             <name>num_cache</name>
             <value></value>
             <default></default>
-            <subPanelIndex>3</subPanelIndex>
+<!--            <subPanelIndex>3</subPanelIndex>-->
             <source>default</source>
             <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
@@ -709,7 +709,7 @@
             <name>oformat</name>
             <value>netCDF4</value>
             <default></default>
-            <subPanelIndex>3</subPanelIndex>
+<!--            <subPanelIndex>3</subPanelIndex>-->
             <description>output file format</description>
             <source>default</source>
             <validValues>
@@ -747,7 +747,7 @@
             <name>deflate</name>
             <value></value>
             <default></default>
-            <subPanelIndex>3</subPanelIndex>
+<!--            <subPanelIndex>3</subPanelIndex>-->
             <source>default</source>
             <description>deflation level</description>
             <usedAs>option</usedAs>
@@ -932,7 +932,7 @@
             <source>default</source>
             <description>land colors (default=160,82,45)</description>
             <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
+<!--            <colSpan>2</colSpan>-->
             <subPanelIndex>4</subPanelIndex>
             <order>304</order>
         </option>
