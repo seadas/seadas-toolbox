@@ -11,8 +11,8 @@
 <!--        <subPanel1Title>Pre-Defined Projection Attributes</subPanel1Title>-->
 <!--        <subPanel2Title> </subPanel2Title>-->
 <!--        <subPanel2Title> Resolution/ Interpolation Parameters </subPanel2Title>-->
-        <subPanel4Title> Image Mode Parameters </subPanel4Title>
-        <subPanel3Title>  </subPanel3Title>
+        <subPanel3Title> Image Mode Parameters </subPanel3Title>
+        <subPanel4Title>  Pseudo True Color (RGB) Parameters </subPanel4Title>
         <numColumns>6</numColumns>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
@@ -820,7 +820,7 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <order>292</order>
         </option>
 
@@ -831,13 +831,23 @@
             <source>default</source>
             <description>second output filename</description>
             <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <colSpan>5</colSpan>
             <order>293</order>
         </option>
 
 
 
+        <option type="boolean">
+            <name>apply_pal</name>
+            <value>true</value>
+            <default>true</default>
+            <source>default</source>
+            <description>apply color palette</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <order>299</order>
+        </option>
 
 
         <option type="string">
@@ -933,7 +943,7 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <order>300</order>
         </option>
 
@@ -945,7 +955,7 @@
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <order>301</order>
         </option>
 
@@ -955,7 +965,7 @@
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <order>302</order>
         </option>
 
@@ -984,10 +994,22 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <order>303</order>
         </option>
 
+
+
+        <option type="boolean">
+            <name>mask_land</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>mask land</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <order>304</order>
+        </option>
 
         <option type="string">
             <name>rgb_land</name>
@@ -997,11 +1019,35 @@
             <description>land colors (default=160,82,45)</description>
             <usedAs>option</usedAs>
 <!--            <colSpan>2</colSpan>-->
-            <subPanelIndex>4</subPanelIndex>
-            <order>304</order>
+            <subPanelIndex>3</subPanelIndex>
+            <order>305</order>
         </option>
 
 
+
+        <option type="boolean">
+            <name>use_transparency</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <order>352</order>
+        </option>
+
+
+
+        <option type="boolean">
+            <name>use_rgb</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>should we use product_rgb to make a psudo true color image</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>353</order>
+        </option>
 
         <option type="string">
             <name>product_rgb</name>
@@ -1012,7 +1058,7 @@
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
             <subPanelIndex>4</subPanelIndex>
-            <order>306</order>
+            <order>355</order>
         </option>
 
 
@@ -1035,49 +1081,10 @@
 
 
 
-        <option type="boolean">
-            <name>apply_pal</name>
-            <value>true</value>
-            <default>true</default>
-            <source>default</source>
-            <description>apply color palette</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <order>350</order>
-        </option>
 
-        <option type="boolean">
-            <name>mask_land</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>mask land</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <order>351</order>
-        </option>
 
-        <option type="boolean">
-            <name>use_transparency</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <order>352</order>
-        </option>
 
-        <option type="boolean">
-            <name>use_rgb</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>should we use product_rgb to make a psudo true color image</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <order>353</order>
-        </option>
+
 
 
 

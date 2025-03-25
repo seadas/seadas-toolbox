@@ -81,8 +81,142 @@ public class ParamUIFactory {
     }
 
 
-    protected JPanel createParamPanel(ProcessorModel processorModel) {
+    protected JPanel createParamPanelOriginal(ProcessorModel processorModel) {
         ArrayList<ParamInfo> paramList = processorModel.getProgramParamList();
+        JPanel paramPanel = new JPanel();
+        paramPanel.setName("param panel");
+//        JPanel textFieldPanel = new JPanel();
+        final JPanel textFieldPanel = GridBagUtils.createPanel();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+
+        textFieldPanel.setName("text field panel");
+        JPanel booleanParamPanel = new JPanel();
+        booleanParamPanel.setName("boolean field panel");
+        JPanel fileParamPanel = new JPanel();
+        fileParamPanel.setName("file parameter panel");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setName("button panel");
+
+        TableLayout booleanParamLayout = new TableLayout(3);
+        booleanParamPanel.setLayout(booleanParamLayout);
+
+        TableLayout fileParamLayout = new TableLayout(1);
+        fileParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+        fileParamPanel.setLayout(fileParamLayout);
+
+        int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
+        if ("l3mapgen".equals(processorModel.getProgramName())) {
+            numberOfOptionsPerLine = 6;
+        }
+//        TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
+//        textFieldPanelLayout.setTablePadding(5,5);
+//        textFieldPanel.setLayout(textFieldPanelLayout);
+
+        gbc.gridy=0;
+        gbc.gridx=0;
+        gbc.insets.top = 5;
+        gbc.insets.bottom = 5;
+        gbc.insets.left = 5;
+        gbc.insets.right = 25;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+
+
+
+        Iterator<ParamInfo> itr = paramList.iterator();
+        while (itr.hasNext()) {
+            final ParamInfo pi = itr.next();
+            if (!(pi.getName().equals(processorModel.getPrimaryInputFileOptionName()) ||
+                    pi.getName().equals(processorModel.getPrimaryOutputFileOptionName()) ||
+                    pi.getName().equals(L2genData.GEOFILE) ||
+                    pi.getName().equals("verbose") ||
+                    pi.getName().equals("--verbose"))) {
+
+                if (pi.getColSpan() > numberOfOptionsPerLine) {
+                    gbc.gridwidth = numberOfOptionsPerLine;
+                } else {
+                    gbc.gridwidth = pi.getColSpan();
+                }
+
+                if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
+                    textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
+                    gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                } else {
+                    switch (pi.getType()) {
+                        case BOOLEAN:
+                            booleanParamPanel.add(makeBooleanOptionField(pi));
+                            break;
+                        case IFILE:
+                            fileParamPanel.add(createIOFileOptionField(pi));
+                            break;
+                        case OFILE:
+                            fileParamPanel.add(createIOFileOptionField(pi));
+                            break;
+                        case DIR:
+                            fileParamPanel.add(createIOFileOptionField(pi));
+                            break;
+                        case STRING:
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            break;
+                        case INT:
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            break;
+                        case FLOAT:
+                            textFieldPanel.add(makeOptionField(pi, gbc.gridwidth), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            break;
+                        case FLAGS:
+//                            gbc.gridwidth=5;
+                            gbc.insets.top = 4;
+                            textFieldPanel.add(makeButtonOptionPanel(pi,numberOfOptionsPerLine), gbc);
+                            gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
+                            gbc.gridwidth=1;
+                            gbc.insets.top = 0;
+                            break;
+                        case BUTTON:
+                            buttonPanel.add(makeActionButtonPanel(pi));
+                            break;
+                    }
+
+
+                    //paramPanel.add(makeOptionField(pi));
+                }
+
+                gbc.gridwidth = 1;
+
+            }
+        }
+
+        TableLayout paramLayout = new TableLayout(1);
+
+        paramPanel.setLayout(paramLayout);
+        paramPanel.add(fileParamPanel);
+        paramPanel.add(textFieldPanel);
+        paramPanel.add(booleanParamPanel);
+        paramPanel.add(buttonPanel);
+
+        return paramPanel;
+    }
+
+
+    protected JPanel createParamPanel(ProcessorModel processorModel) {
+
+        if (processorModel.getProgramName().equals("install_ocssw")) {
+            return createParamPanelOriginal(processorModel);
+        }
+
+        ArrayList<ParamInfo> paramList = processorModel.getProgramParamList();
+
 
 
         JPanel fileParamPanel = new JPanel();
@@ -108,7 +242,8 @@ public class ParamUIFactory {
         final JPanel booleanParamSubPanel0 = new JPanel();
         booleanParamSubPanel0.setLayout(new TableLayout(numColumns));
         boolean subPanel0Found = false;
-
+        textFieldSubPanel0.setName("text field panel");
+        booleanParamSubPanel0.setName("boolean field panel");
 
         // SubPanel1
 
@@ -117,6 +252,8 @@ public class ParamUIFactory {
         final JPanel booleanParamSubPanel1 = new JPanel();
         booleanParamSubPanel1.setLayout(new TableLayout(numColumns));
         boolean subPanel1Found = false;
+        textFieldSubPanel1.setName("text field panel");
+        booleanParamSubPanel1.setName("boolean field panel");
 
         // SubPanel2
 
@@ -125,6 +262,8 @@ public class ParamUIFactory {
         final JPanel booleanParamSubPanel2 = new JPanel();
         booleanParamSubPanel2.setLayout(new TableLayout(numColumns));
         boolean subPanel2Found = false;
+        textFieldSubPanel2.setName("text field panel");
+        booleanParamSubPanel2.setName("boolean field panel");
 
 
         // SubPanel3
@@ -134,6 +273,8 @@ public class ParamUIFactory {
         final JPanel booleanParamSubPanel3 = new JPanel();
         booleanParamSubPanel3.setLayout(new TableLayout(numColumns));
         boolean subPanel3Found = false;
+        textFieldSubPanel3.setName("text field panel");
+        booleanParamSubPanel3.setName("boolean field panel");
 
 
         // SubPanel4
@@ -143,6 +284,8 @@ public class ParamUIFactory {
         final JPanel booleanParamSubPanel4 = new JPanel();
         booleanParamSubPanel4.setLayout(new TableLayout(numColumns));
         boolean subPanel4Found = false;
+        textFieldSubPanel4.setName("text field panel");
+        booleanParamSubPanel4.setName("boolean field panel");
 
 
         Iterator<ParamInfo> itr = paramList.iterator();
@@ -199,15 +342,20 @@ public class ParamUIFactory {
                     switch (pi.getType()) {
                         case BOOLEAN:
                             if (pi.getSubPanelIndex() == 1) {
-                                booleanParamSubPanel1.add(makeBooleanOptionField(pi));
+//                                booleanParamSubPanel1.add(makeBooleanOptionField(pi));
+                                addOptionBoolean(pi, textFieldSubPanel1, gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
-                                booleanParamSubPanel2.add(makeBooleanOptionField(pi));
+//                                booleanParamSubPanel2.add(makeBooleanOptionField(pi));
+                                addOptionBoolean(pi, textFieldSubPanel2, gbcSubPanel2, numColumns);
                             } else if (pi.getSubPanelIndex() == 3) {
-                                booleanParamSubPanel3.add(makeBooleanOptionField(pi));
+//                                booleanParamSubPanel3.add(makeBooleanOptionField(pi));
+                                addOptionBoolean(pi, textFieldSubPanel3, gbcSubPanel3, numColumns);
                             } else if (pi.getSubPanelIndex() == 4) {
-                                booleanParamSubPanel4.add(makeBooleanOptionField(pi));
+//                                booleanParamSubPanel4.add(makeBooleanOptionField(pi));
+                                addOptionBoolean(pi, textFieldSubPanel4, gbcSubPanel4, numColumns);
                             } else {
-                                booleanParamSubPanel0.add(makeBooleanOptionField(pi));
+//                                booleanParamSubPanel0.add(makeBooleanOptionField(pi));
+                                addOptionBoolean(pi, textFieldSubPanel0, gbcSubPanel0, numColumns);
                             }
                             break;
                         case IFILE:
@@ -354,6 +502,8 @@ public class ParamUIFactory {
 
 
         final JPanel mainPanel = GridBagUtils.createPanel();
+        mainPanel.setName("param panel");
+
 
         if (subPanel0Found) {
             setSubPanelGbcInsets(gbcMain, 0);
@@ -401,6 +551,20 @@ public class ParamUIFactory {
         panel.add(makeOptionField(pi, gbc.gridwidth), gbc);
         incrementGridxGridy(gbc, numColumns);
     }
+
+
+    private void addOptionBoolean(ParamInfo pi, JPanel panel, GridBagConstraints gbc, int numColumns) {
+        preIncrementGridy(gbc, numColumns);
+        int anchorOrig = gbc.anchor;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(makeBooleanOptionField(pi), gbc);
+        gbc.anchor = anchorOrig;
+        incrementGridxGridy(gbc, numColumns);
+    }
+
+
+
+
 
     private void addOptionIOfile(ParamInfo pi, JPanel panel, GridBagConstraints gbc, int numColumns) {
         if (gbc.gridwidth < 4) {
