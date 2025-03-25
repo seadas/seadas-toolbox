@@ -78,6 +78,9 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     Property fav1_suite;
     Property fav1_resolution;
 
+    Property namingScheme;
+    Property fieldsAdd;
+    
     Property restoreDefaults;
 
     boolean propertyValueChangeEventsEnabled = true;
@@ -85,9 +88,66 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     // todo compare param tooltips here and with .xml file and with ocssw help
     // todo update help page
 
+
+    public static final String  OFILE_NAMING_SCHEME_SIMPLE = "output";
+    public static final String OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX = "IFILE + SUFFIX";
+    public static final String  OFILE_NAMING_SCHEME_OCSSW_SHORT = "OCSSW (do not derive time field)";
+    public static final String  OFILE_NAMING_SCHEME_OCSSW = "OCSSW";
+    public static final String OFILE_NAMING_SCHEME_IFILE_REPLACE = "IFILE (String-Replace)";
+
+
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[.l3bprod][.resolution]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[_l3bprod][_resolution]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.l3bprod][.resolution][.prodtype][.suite]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_l3bprod][_resolution][_prodtype][_suite]";
+    
+    
     // Preferences property prefix
     private static final String PROPERTY_L2BIN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l2bin";
 
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.section";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Ofile Naming Scheme";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_LABEL = "Basename Options";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_TOOLTIP = "Naming scheme to use for autofilling ofile name";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_OCSSW;
+
+
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix.options";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL = "Suffix Options";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP = "ofile Add Suffix Scheme";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX1;
+
+
+    public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
+            "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
+            "[.l3bprod] : adds 'l3bprod' field with '.' as delimiter<br>" +
+            "[.resolution] : adds 'resolution' field with '.' as delimiter<br>" +
+            "[.prodtype] : adds 'prodtype' field with '.' as delimiter<br>" +
+            "[.suite] : adds 'suite' field with '.' as delimiter<br>" +
+            "</html>";
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL = OFILE_NAMING_SCHEME_SUFFIX1;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = "[.l3bprod][.resolution]";
+
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix2";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL = OFILE_NAMING_SCHEME_SUFFIX2;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = "[.l3bprod][.resolution][.prodtype][.suite]";
+    
+    
+    
+    
     public static final String PROPERTY_L2BIN_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_KEY + ".l3bprod";
     public static final String PROPERTY_L2BIN_L3BPROD_LABEL = "l3bprod";
     public static final String PROPERTY_L2BIN_L3BPROD_TOOLTIP = "Product (or product list)";
@@ -241,6 +301,14 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     @Override
     protected JPanel createPanel(BindingContext context) {
 
+
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY, true);
+        namingScheme = initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT);
+        fieldsAdd = initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT);
+        
+        
         //
         // Initialize the default value contained within each property descriptor
         // This is done so subsequently the restoreDefaults actions can be performed
@@ -356,6 +424,15 @@ public final class OCSSW_L2binController extends DefaultConfigController {
             handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
         });
 
+
+        fieldsAdd.addPropertyChangeListener(evt -> {
+            enablement(context);
+        });
+
+        namingScheme.addPropertyChangeListener(evt -> {
+            enablement(context);
+        });
+        
         // Add listeners to all components in order to uncheck restoreDefaults checkbox accordingly
 
         PropertySet propertyContainer = context.getPropertySet();
@@ -369,11 +446,40 @@ public final class OCSSW_L2binController extends DefaultConfigController {
             }
         }
 
+        enablement(context);
+
+
         // This call is an initialization call which set restoreDefault initial value
         handlePreferencesPropertyValueChange(context);
     }
 
 
+
+    private void enablement(BindingContext context) {
+        
+
+        if (OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(fieldsAdd.getValue())
+        ) {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, false);
+        }
+
+        if (OFILE_NAMING_SCHEME_SUFFIX1.equals(fieldsAdd.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, true);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, false);
+        }
+
+        if (OFILE_NAMING_SCHEME_SUFFIX2.equals(fieldsAdd.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, true);
+        }
+
+    }
+    
 
 
     /**
@@ -589,6 +695,43 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
 
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP)
+        boolean l2bin_OFILE_NAMING_SCHEME_SECTION = true;
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_LABEL,
+                valueSet = {OFILE_NAMING_SCHEME_SIMPLE,OFILE_NAMING_SCHEME_OCSSW, OFILE_NAMING_SCHEME_OCSSW_SHORT},
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_TOOLTIP)
+        String l2binOfileNamingSchemeDefault = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL,
+                valueSet = {OFILE_NAMING_SCHEME_SUFFIX_NONE,
+                        OFILE_NAMING_SCHEME_SUFFIX1,
+                        OFILE_NAMING_SCHEME_SUFFIX2,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4},
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP)
+        String l2binOfileNamingSchemeFieldsAddDefault = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP)
+        String l2binOfileNamingSchemeSuffix1Default = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP)
+        String l2binOfileNamingSchemeSuffix2Default = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT;
+        
+        
+        
+
         @Preference(key = PROPERTY_L2BIN_SUITE_KEY,
                 label = PROPERTY_L2BIN_SUITE_LABEL,
                 description = PROPERTY_L2BIN_SUITE_TOOLTIP)
@@ -755,6 +898,32 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     }
 
 
+
+    public static String getPreferenceOfileNamingScheme() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT);
+    }
+
+
+    public static String getPreferenceOfileNamingSchemeSuffixOptions() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
+    }
+    
+
+
+    public static String getPreferenceOfileNamingSchemeSuffix1() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT);
+    }
+
+    public static String getPreferenceOfileNamingSchemeSuffix2() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT);
+    }
+
+    
+    
     public static String getPreferenceL3bprod() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_L2BIN_L3BPROD_KEY, PROPERTY_L2BIN_L3BPROD_DEFAULT);

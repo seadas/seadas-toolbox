@@ -2082,30 +2082,30 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private static String getOfileForL2BinAddOns(String resolution, String l3bprod, String suite, String prodtype) {
 
-        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+        if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
             return "";
         }
 
         String keyString;
-        if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX1.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffix1();
-        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX2.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffix2();
-        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
-        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2;
-        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
-        } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4;
+        if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX1.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffix1();
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX2.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffix2();
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2;
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4;
         } else {
-            keyString = OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+            keyString = OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
         }
 
-
         // todo Danny
-        keyString = "[.l3bprod][.resolution][.prodtype][.suite]";
+//        keyString = "[.l3bprod][.resolution][.prodtype][.suite]";
+//
 
         if (keyString == null || keyString.trim().length() == 0) {
             return "";
@@ -2513,11 +2513,34 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public static String getOfileForL2BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String l3bprod, String suite, String prodtype) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
+        
         String ofileName;
 
-        String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
-        ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
+        if (OCSSW_L2binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
+            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
+//            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
+            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
 
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
+            ofileName = ofileName.replace(".DAY.", ".");
+            ofileName = ofileName.replace(".DAY", "");
+            ofileName = ofileName.replace(".8D.", ".");
+            ofileName = ofileName.replace(".8D", "");
+            ofileName = ofileName.replace(".MO.", ".");
+            ofileName = ofileName.replace(".MO", "");
+            ofileName = ofileName.replace(".YR.", ".");
+            ofileName = ofileName.replace(".YR", "");
+            ofileName = ofileName.replace(".CU.", ".");
+            ofileName = ofileName.replace(".CU", "");
+
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
+            ofileName = getOfileForL2BinSimple(ifileName);
+        } else {
+            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);        }
+        
 
 
         // if it fails gives it a simple name (for example 'output')
@@ -2631,6 +2654,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
+
+
+
+    
 
 
     private static String getOfileForL3MapGenSimple(String ifilename) {
