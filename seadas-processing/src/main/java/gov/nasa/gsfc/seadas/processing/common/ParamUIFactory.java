@@ -442,7 +442,7 @@ public class ParamUIFactory {
         gbc.insets.left = 0;
 
         preIncrementGridy(gbc, numColumns);
-        panel.add(makeButtonOptionPanel(pi), gbc);
+        panel.add(makeButtonOptionPanel(pi, numColumns), gbc);
         incrementGridxGridy(gbc, numColumns);
 
         gbc.insets.top = origInsetsTop;
@@ -962,7 +962,7 @@ public class ParamUIFactory {
         return string;
     }
 
-    private JPanel makeButtonOptionPanel(final ParamInfo pi) {
+    private JPanel makeButtonOptionPanel(final ParamInfo pi, int numColumns) {
         final JPanel singlePanel = new JPanel();
         final JTextField field = new JTextField();
 
@@ -1047,7 +1047,13 @@ public class ParamUIFactory {
         }
 
         field.setText(pi.getValue());
-        field.setColumns(47);
+        if (numColumns == 6) {
+            field.setColumns(74);
+        } else if (numColumns == 5) {
+            field.setColumns(60);
+        } else {
+            field.setColumns(47);
+        }
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }

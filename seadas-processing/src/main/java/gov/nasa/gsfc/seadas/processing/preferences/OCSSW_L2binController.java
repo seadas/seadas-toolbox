@@ -99,8 +99,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[.l3bprod][.resolution]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[_l3bprod][_resolution]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[.l3bprod][.resolution][.suite]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[_l3bprod][_resolution][_suite]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.l3bprod][.resolution][.prodtype][.suite]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_l3bprod][_resolution][_prodtype][_suite]";
     
@@ -137,13 +137,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL = OFILE_NAMING_SCHEME_SUFFIX1;
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
-    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = "[.l3bprod][.resolution]";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
 
 
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix2";
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL = OFILE_NAMING_SCHEME_SUFFIX2;
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
-    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = "[.l3bprod][.resolution][.prodtype][.suite]";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
 
 
 

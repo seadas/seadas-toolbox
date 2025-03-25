@@ -4,7 +4,12 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <numColumns>4</numColumns>
+        <numColumns>6</numColumns>
+        <subPanel0Title>  </subPanel0Title>
+        <subPanel1Title> Quality Parameters </subPanel1Title>
+        <subPanel2Title> Spatial Parameters </subPanel2Title>
+        <subPanel3Title> Temporal Parameters </subPanel3Title>
+
 
         <!--krow:   810 out of   2160  (-22.50 to   0.00) Tue Jun 26 16:14:55 2012-->
         <progressRegex>krow: +(\d+) out of +(\d+)</progressRegex>
@@ -60,6 +65,21 @@
 
 
 
+
+
+        <option type="string">
+            <name>output_wavelengths</name>
+            <value></value>
+            <default></default>
+            <description>Comma delimited list of 3D wavelengths
+            </description>
+            <usedAs>option</usedAs>
+            <colSpan>3</colSpan>
+            <order>4</order>
+        </option>
+
+
+
         <option type="string">
             <name>suite</name>
             <value></value>
@@ -70,27 +90,15 @@
                 <description>suite defaults [see OCSSWROOT/common/l2bin_defaults.par and  OCSSWROOT/SENSOR/l2bin_defaults.par]</description>
             </validValue>
             <usedAs>option</usedAs>
-            <order>3</order>
+            <order>6</order>
         </option>
-
-
-        <option type="string">
-            <name>output_wavelengths</name>
-            <value></value>
-            <default></default>
-            <description>Comma delimited list of 3D wavelengths
-            </description>
-            <usedAs>option</usedAs>
-            <colSpan>4</colSpan>
-            <order>4</order>
-        </option>
-
 
 
 
 
         <option type="flags">
             <name>flaguse</name>
+            <subPanelIndex>1</subPanelIndex>
             <value></value>
             <default></default>
             <description>flags to mask (note: actual flags in level-2 file may differ from the selector list)</description>
@@ -235,7 +243,7 @@
 <!--&lt;!&ndash;                <description>Note: this flag is not available in all level-2 files</description>&ndash;&gt;-->
 <!--&lt;!&ndash;            </validValue>&ndash;&gt;-->
             <usedAs>option</usedAs>
-            <colSpan>4</colSpan>
+            <colSpan>6</colSpan>
             <order>5</order>
         </option>
 
@@ -290,6 +298,7 @@
 
         <option type="int">
             <name>resolution</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>bin resolution</description>
@@ -368,6 +377,7 @@
 
         <option type="int">
             <name>area_weighting</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Enable area weighting</description>
@@ -422,6 +432,7 @@
 
         <option type="float">
             <name>latnorth</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Northernmost latitude</description>
@@ -432,6 +443,7 @@
 
         <option type="float">
             <name>latsouth</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Southernmost latitude</description>
@@ -442,6 +454,7 @@
 
         <option type="float">
             <name>lonwest</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Westernmost longitude</description>
@@ -452,6 +465,7 @@
 
         <option type="float">
             <name>loneast</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Easternmost longitude</description>
@@ -463,42 +477,19 @@
 
 
 
-        <option type="string">
-            <name>sday</name>
-            <value></value>
-            <default></default>
-            <description>start datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
-            <usedAs>option</usedAs>
-            <order>14</order>
-        </option>
-        <option type="string">
-            <name>eday</name>
-            <value></value>
-            <default></default>
-            <description>end datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
-            <usedAs>option</usedAs>
-            <order>15</order>
-        </option>
-
 
 
         <option type="string">
-            <name>qual_prod</name>
+            <name>minobs</name>
+            <subPanelIndex>1</subPanelIndex>
             <value></value>
             <default></default>
-            <description>quality product field name</description>
+            <description>minimum observations</description>
             <usedAs>option</usedAs>
             <order>16</order>
         </option>
 
-        <option type="int">
-            <name>qual_max</name>
-            <value></value>
-            <default></default>
-            <description>maximum acceptable quality [default=2]</description>
-            <usedAs>option</usedAs>
-            <order>17</order>
-        </option>
+
 
 
         <!--<option type="boolean">-->
@@ -517,6 +508,7 @@
 
         <option type="string">
             <name>composite_prod</name>
+            <subPanelIndex>1</subPanelIndex>
             <value></value>
             <default></default>
             <description>composite product field name</description>
@@ -525,12 +517,13 @@
                 <description>composite product field name</description>
             </validValue>
             <usedAs>option</usedAs>
-            <order>18</order>
+            <order>20</order>
         </option>
 
 
         <option type="string">
             <name>composite_scheme</name>
+            <subPanelIndex>1</subPanelIndex>
             <value></value>
             <default></default>
             <description>composite scheme for bin value using product in 'composite_prod'</description>
@@ -543,10 +536,31 @@
                 <description>Composite with maximum bin value using product in 'composite_prod'</description>
             </validValue>
             <usedAs>option</usedAs>
-            <order>19</order>
+            <order>21</order>
         </option>
 
 
+
+
+        <option type="string">
+            <name>qual_prod</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>quality product field name</description>
+            <usedAs>option</usedAs>
+            <order>22</order>
+        </option>
+
+        <option type="int">
+            <name>qual_max</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>maximum acceptable quality [default=2]</description>
+            <usedAs>option</usedAs>
+            <order>23</order>
+        </option>
 
 
 
@@ -556,7 +570,7 @@
             <default></default>
             <description>production version [default=Unspecified]</description>
             <usedAs>option</usedAs>
-            <order>20</order>
+            <order>30</order>
         </option>
 
 
@@ -566,7 +580,7 @@
             <default>false</default>
             <description>Allow more verbose screen messages [default should be true for GUI]</description>
             <usedAs>option</usedAs>
-            <order>21</order>
+            <order>31</order>
         </option>
 
 
@@ -594,14 +608,97 @@
 
 
 
+<!--        <option type="string">-->
+<!--            <name>night</name>-->
+<!--            <subPanelIndex>3</subPanelIndex>-->
+<!--            <value> </value>-->
+<!--            <default> </default>-->
+<!--            <description>set to 'on' for SST night processing [default='off']</description>-->
+<!--            <validValue>-->
+<!--                <value> </value>-->
+<!--                <description>set to 'on' for SST night processing [default='off']</description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>ON</value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>OFF</value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>22</order>-->
+<!--        </option>-->
 
-        <option type="boolean">
-            <name>night</name>
-            <value>false</value>
-            <default>false</default>
-            <description>set to 1 for SST night processing [default=0]</description>
+
+
+        <option type="string">
+            <name>sday</name>
+            <subPanelIndex>3</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>start datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
             <usedAs>option</usedAs>
-            <order>22</order>
+            <order>40</order>
         </option>
+        <option type="string">
+            <name>eday</name>
+            <subPanelIndex>3</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>end datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
+            <usedAs>option</usedAs>
+            <order>41</order>
+        </option>
+
+
+
+        <option type="float">
+            <name>delta_crossing_time</name>
+            <subPanelIndex>3</subPanelIndex>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description></description>
+            <usedAs>option</usedAs>
+            <order>42</order>
+        </option>
+
+
+
+
+        <option type="string">
+            <name>night</name>
+            <subPanelIndex>3</subPanelIndex>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>set to 'on' for SST night processing [default='off']</description>
+            <validValue>
+                <value> </value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>ON</value>
+                <description></description>
+            </validValue>
+            <validValue>
+                <value>OFF</value>
+                <description></description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <order>43</order>
+        </option>
+
+
+<!--        <option type="boolean">-->
+<!--            <name>night</name>-->
+<!--            <subPanelIndex>3</subPanelIndex>-->
+<!--            <value>false</value>-->
+<!--            <default>false</default>-->
+<!--            <description>set to 1 for SST night processing [default=0]</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>43</order>-->
+<!--        </option>-->
     </options>
 </paramInfo>

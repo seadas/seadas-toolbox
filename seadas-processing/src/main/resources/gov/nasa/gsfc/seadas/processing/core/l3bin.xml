@@ -4,6 +4,11 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>parfile</parFileOptionName>
+        <subPanel0Title> </subPanel0Title>
+        <subPanel2Title> Quality Parameters </subPanel2Title>
+        <subPanel1Title> Spatial Parameters </subPanel1Title>
+        <subPanel3Title> Temporal Parameters </subPanel3Title>
+
         <!--irow:   500 of     4320 Tue Jun 26 15:35:10 2012-->
         <progressRegex>irow: +(\d+) of +(\d+)</progressRegex>
         <primaryOptions>
@@ -36,7 +41,7 @@
             <value></value>
             <default></default>
             <description>data products list</description>
-            <colSpan>2</colSpan>
+            <colSpan>4</colSpan>
             <order>2</order>
         </option>
         <!--<option type="string">-->
@@ -64,8 +69,47 @@
             <order>3</order>
         </option>
 
+
+
+        <option type="float">
+            <name>latnorth</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Northernmost latitude (default=+90)</description>
+            <order>10</order>
+        </option>
+        <option type="float">
+            <name>latsouth</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Southernmost latitude (default=-90)</description>
+            <order>11</order>
+        </option>
+
+        <option type="float">
+            <name>lonwest</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Westernmost longitude (default=-180)</description>
+            <order>12</order>
+        </option>
+        <option type="float">
+            <name>loneast</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Easternmost longitude (default=+180)</description>
+            <order>13</order>
+        </option>
+
+
+
         <option type="int">
             <name>resolve</name>
+            <subPanelIndex>1</subPanelIndex>
             <value></value>
             <default></default>
             <description>bin resolution</description>
@@ -127,76 +171,115 @@
                 <description>1 degree</description>
             </validValue>
             <usedAs>option</usedAs>
-            <order>4</order>
+            <order>14</order>
         </option>
 
 
         <option type="int">
             <name>reduce_fac</name>
+            <subPanelIndex>1</subPanelIndex>
             <value></value>
             <default></default>
             <description>scale reduction factor (power of 2)</description>
-            <order>5</order>
+            <order>15</order>
         </option>
-
-        <option type="float">
-            <name>latnorth</name>
-            <value></value>
-            <default></default>
-            <description>Northernmost latitude (default=+90)</description>
-            <order>6</order>
-        </option>
-        <option type="float">
-            <name>latsouth</name>
-            <value></value>
-            <default></default>
-            <description>Southernmost latitude (default=-90)</description>
-            <order>7</order>
-        </option>
-
-        <option type="float">
-            <name>lonwest</name>
-            <value></value>
-            <default></default>
-            <description>Westernmost longitude (default=-180)</description>
-            <order>8</order>
-        </option>
-        <option type="float">
-            <name>loneast</name>
-            <value></value>
-            <default></default>
-            <description>Easternmost longitude (default=+180)</description>
-            <order>9</order>
-        </option>
-
 
         <option type="string">
             <name>composite_scheme</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>composite scheme (min/max)</description>
             <usedAs>option</usedAs>
-            <order>10</order>
+            <order>30</order>
         </option>
 
         <option type="string">
             <name>composite_prod</name>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>composite product field name</description>
             <usedAs>option</usedAs>
-            <order>11</order>
+            <order>31</order>
+        </option>
+
+
+<!--        <option type="int">-->
+<!--            <name>median</name>-->
+<!--            <subPanelIndex>2</subPanelIndex>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <source>default</source>-->
+<!--            <description>use median '1' otherwise use mean [default='0']</description>-->
+<!--            <validValue>-->
+<!--                <value> </value>-->
+<!--                <description>use median '1' otherwise use mean [default='0']</description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>0</value>-->
+<!--                <description>use mean</description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>1</value>-->
+<!--                <description>use median</description>-->
+<!--            </validValue>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>32</order>-->
+<!--        </option>-->
+
+
+<!--        <option type="int">-->
+<!--            <name>unit_wgt</name>-->
+<!--            <subPanelIndex>2</subPanelIndex>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <source>default</source>-->
+<!--            <description>'0' use default weighting of the input bin files; '1' use equal weighting across all input bin files</description>-->
+<!--            <validValue>-->
+<!--                <value> </value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>0</value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>1</value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>33</order>-->
+<!--        </option>-->
+
+
+
+
+        <option type="boolean">
+            <name>median</name>
+            <subPanelIndex>2</subPanelIndex>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>use median '1' otherwise use mean [default='0']</description>
+            <usedAs>option</usedAs>
+            <order>32</order>
+        </option>
+
+
+        <option type="boolean">
+            <name>unit_wgt</name>
+            <subPanelIndex>2</subPanelIndex>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>use equal weighting across all input bin files</description>
+            <usedAs>option</usedAs>
+            <order>33</order>
         </option>
 
 
 
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <default></default>
-            <description>production version [default=Unspecified]</description>
-            <order>12</order>
-        </option>
 
         <option type="string">
             <name>oformat</name>
@@ -223,9 +306,18 @@
                     <description>HDF5</description>
                 </validValue>
             </validValues>
-            <order>13</order>
+            <order>12</order>
         </option>
 
+
+
+        <option type="string">
+            <name>pversion</name>
+            <value></value>
+            <default></default>
+            <description>production version [default=Unspecified]</description>
+            <order>13</order>
+        </option>
 
     </options>
 </paramInfo>
