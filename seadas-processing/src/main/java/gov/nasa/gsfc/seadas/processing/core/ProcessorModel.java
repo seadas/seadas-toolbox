@@ -754,29 +754,43 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //            return;
 //        }
 
+
+        NetcdfFile ncFile = null;
+        File fileTmp = null;
+
         if (selectedFile.getName().endsWith(".txt")) {
-            try {
-                LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(selectedFile));
-                String sampleFileName = lineNumberReader.readLine();
-                if (new File(sampleFileName).exists()) {
-                    selectedFile = new File(sampleFileName);
-                    //System.out.println("sample file name: " + sampleFileName + System.currentTimeMillis());
-                } else {
-                    return;
+
+            try (BufferedReader br = new BufferedReader(new FileReader(selectedFile))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line != null && line.trim().length() > 0 && !line.trim().startsWith("#") && !line.trim().startsWith("//")) {
+                        fileTmp = new File(line.trim());
+                        if (fileTmp != null) {
+                            try {
+                                ncFile = NetcdfFile.open(fileTmp.getAbsolutePath());
+                            } catch (IOException ioe) {
+                                ncFile = null;
+                            }
+                        }
+
+                        if (ncFile != null) {
+                            break;
+                        }
+                    }
+
                 }
-            } catch (FileNotFoundException fnfe) {
-
+            } catch (Exception e) {
+                ncFile = null;
+            }
+        } else {
+            try {
+                ncFile = NetcdfFile.open(selectedFile.getAbsolutePath());
             } catch (IOException ioe) {
-
+                ncFile = null;
             }
         }
 
-        NetcdfFile ncFile = null;
-        try {
-            ncFile = NetcdfFile.open(selectedFile.getAbsolutePath());
-        } catch (IOException ioe) {
 
-        }
 
         ArrayList<String> products = new ArrayList<String>();
         if (ncFile != null) {
@@ -1211,6 +1225,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         ParamInfo ifileParamInfo = paramList.getInfo("ifile");
         if (ifileParamInfo != null) {
             File ifile = new File(ifileParamInfo.getValue());
+            File textFile = null;
+
 
             if (ifile != null && ifile.exists()) {
                 String suite = null;
@@ -1219,6 +1235,24 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     suite = suiteParamInfo.getValue();
                 }
 
+
+
+                if (ifile != null && ifile.exists() && ifile.getName().endsWith(".txt")) {
+
+                    try (BufferedReader br = new BufferedReader(new FileReader(ifile))) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            if (line != null && line.trim().length() > 0) {
+                                textFile = new File(line.trim());
+                            }
+
+                        }
+                    } catch (Exception e) {
+
+                    }
+                }
+
+
                 final String L2BIN_PROGRAM_NAME = "l2bin";
                 File dataDir = SystemUtils.getApplicationDataDir();
                 File l2binAuxDir = new File(dataDir, L2BIN_PROGRAM_NAME);
@@ -1226,7 +1260,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                 File auxParFile = new File(l2binAuxDir, L2BIN_PROGRAM_NAME + "_params.par");
                 try {
-                    createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, auxParFile);
+                    if (textFile != null) {
+                        createL2binAuxParFile(L2BIN_PROGRAM_NAME, textFile, suite, auxParFile);
+                    } else {
+                        createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, auxParFile);
+                    }
                     if (auxParFile.exists()) {
                         updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath());
                     }
@@ -1394,7 +1432,31 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private void updateSuite(File selectedFile) {
 
+        File fileTmp = null;
+
+        if (selectedFile.getName().endsWith(".txt")) {
+            try (BufferedReader br = new BufferedReader(new FileReader(selectedFile))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line != null && line.trim().length() > 0 && !line.trim().startsWith("#") && !line.trim().startsWith("//")) {
+                        fileTmp = new File(line.trim());
+                        if (fileTmp != null) {
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+            }
+        } else {
+        }
+
+        if (fileTmp != null) {
+            selectedFile = fileTmp;
+        }
+
+
         FileInfo ifileInfo = new FileInfo(selectedFile, ocssw);
+
 
         File missionDir = ifileInfo.getMissionDirectory();
         if (missionDir == null) {

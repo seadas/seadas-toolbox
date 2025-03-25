@@ -144,14 +144,19 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL = OFILE_NAMING_SCHEME_SUFFIX2;
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = "[.l3bprod][.resolution][.prodtype][.suite]";
-    
-    
+
+
+
+
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.section";
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL = "Parameters (Fields)";
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_TOOLTIP = "L2bin parameters";
     
     
     public static final String PROPERTY_L2BIN_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_KEY + ".l3bprod";
     public static final String PROPERTY_L2BIN_L3BPROD_LABEL = "l3bprod";
     public static final String PROPERTY_L2BIN_L3BPROD_TOOLTIP = "Product (or product list)";
-    public static final String PROPERTY_L2BIN_L3BPROD_DEFAULT = "Rrs";
+    public static final String PROPERTY_L2BIN_L3BPROD_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".output_wavelengths";
     public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL = "output_wavelengths";
@@ -161,7 +166,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_SUITE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".suite";
     public static final String PROPERTY_L2BIN_SUITE_LABEL = "suite";
     public static final String PROPERTY_L2BIN_SUITE_TOOLTIP = "Product Suite";
-    public static final String PROPERTY_L2BIN_SUITE_DEFAULT = "DTOCEAN";
+    public static final String PROPERTY_L2BIN_SUITE_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_COMPOSITE_PROD_KEY = PROPERTY_L2BIN_ROOT_KEY + ".composite_prod";
     public static final String PROPERTY_L2BIN_COMPOSITE_PROD_LABEL = "composite_prod";
@@ -186,7 +191,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".resolution";
     public static final String PROPERTY_L2BIN_RESOLUTION_LABEL = "resolution";
     public static final String PROPERTY_L2BIN_RESOLUTION_TOOLTIP = "Bin resolution";
-    public static final String PROPERTY_L2BIN_RESOLUTION_DEFAULT = "18";
+    public static final String PROPERTY_L2BIN_RESOLUTION_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_KEY = PROPERTY_L2BIN_ROOT_KEY + ".area_weighting";
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_LABEL = "area_weighting";
@@ -314,6 +319,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
+        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_SECTION_KEY, true);
         l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_KEY, PROPERTY_L2BIN_L3BPROD_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_PRODTYPE_KEY, PROPERTY_L2BIN_PRODTYPE_DEFAULT);
         resolution = initPropertyDefaults(context, PROPERTY_L2BIN_RESOLUTION_KEY, PROPERTY_L2BIN_RESOLUTION_DEFAULT);
@@ -728,9 +734,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL,
                 description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP)
         String l2binOfileNamingSchemeSuffix2Default = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT;
-        
-        
-        
+
+
+
+        @Preference(key = PROPERTY_L2BIN_PARAMETERS_SECTION_KEY,
+                label = PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL,
+                description = PROPERTY_L2BIN_PARAMETERS_SECTION_TOOLTIP)
+        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = true;
 
         @Preference(key = PROPERTY_L2BIN_SUITE_KEY,
                 label = PROPERTY_L2BIN_SUITE_LABEL,
