@@ -13,7 +13,7 @@
 <!--        <subPanel2Title> Resolution/ Interpolation Parameters </subPanel2Title>-->
         <subPanel3Title> Image Mode Parameters </subPanel3Title>
         <subPanel4Title>  Pseudo True Color (RGB) Parameters </subPanel4Title>
-        <numColumns>6</numColumns>
+        <numColumns>12</numColumns>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
@@ -97,542 +97,6 @@
 
         // Product/Suite SubPanel
 
-        <option type="string">
-            <name>product</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>product(s) to map</description>
-            <validValue>
-                <value></value>
-                <description>product(s) to map</description>
-            </validValue>
-            <usedAs>option</usedAs>
-            <colSpan>3</colSpan>
-            <order>2</order>
-        </option>
-
-
-
-        <option type="string">
-            <name>wavelength_3d</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>Comma delimited list of 3D wavelengths</description>
-            <usedAs>option</usedAs>
-            <colSpan>3</colSpan>
-            <order>3</order>
-        </option>
-
-
-
-        <option type="string">
-            <name>suite</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>suite defaults [see OCSSWROOT/common/l3mapgen_defaults.par and
-                OCSSWROOT/SENSOR/l3mapgen_defaults.par]
-            </description>
-            <validValue>
-                <value></value>
-                <description>suite defaults [see OCSSWROOT/common/l3mapgen_defaults.par and
-                    OCSSWROOT/SENSOR/l3mapgen_defaults.par]
-                </description>
-            </validValue>
-            <usedAs>option</usedAs>
-            <order>4</order>
-        </option>
-
-
-
-
-
-        <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
-            <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <description>output file format</description>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>output file format</description>
-                </validValue>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF file, can contain more than one product</description>
-                </validValue>
-                <validValue>
-                    <value>HDF4</value>
-                    <description>HDF4 file (old SMI format)</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>TIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-
-            <order>5</order>
-        </option>
-
-
-                <option type="int">
-                    <name>deflate</name>
-                    <value></value>
-                    <default></default>
-                    <source>default</source>
-                    <description>deflation level</description>
-                    <usedAs>option</usedAs>
-
-                    <order>6</order>
-                </option>
-
-
-
-
-
-        // Misc SubPanel
-
-
-
-
-        <!--<option type="boolean">-->
-        <!--<name>quiet</name>-->
-        <!--<value>false</value>-->
-        <!--<default>false</default>-->
-        <!--<source>default</source>-->
-        <!--<description>stop the status printing</description>-->
-        <!--</option>-->
-
-
-
-
-
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <default></default>
-            <source>default</source>
-            <description>processing version string</description>
-            <usedAs>option</usedAs>
-            <order>12</order>
-        </option>
-
-
-
-
-
-        <option type="int">
-            <name>num_cache</name>
-            <value></value>
-            <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <source>default</source>
-            <description>number of rows to cache in memory</description>
-            <usedAs>option</usedAs>
-            <order>13</order>
-        </option>
-
-
-
-
-
-
-
-        // Projection SubPanel
-
-
-        <option type="string">
-            <name>projection</name>
-            <value>platecarree</value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <description>proj.4 projection string or one of the following predefined projections:</description>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>proj.4 projection string or a predefined l3mapgen projection shortcut</description>
-                </validValue>
-                <validValue>
-                    <value>smi</value>
-                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>platecarree</value>
-                    <description><![CDATA[ Plate Carree image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>mollweide</value>
-                    <description><![CDATA[Mollweide projection projection="+proj=moll +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>lambert</value>
-                    <description><![CDATA[Lambert conformal conic projection, uses central_meridian, projection="+proj=lcc +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>albersconic</value>
-                    <description><![CDATA[Albers equal-area conic projection, uses central_meridian projection="+proj=aea +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>mercator</value>
-                    <description><![CDATA[ Mercator cylindrical map projection, uses central_meridian projection="+proj=merc +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>ease2</value>
-                    <description><![CDATA[Ease Grid 2 projection, uses central_meridian,  projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84 +datum=WGS84 +units=m +lat_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>conus</value>
-                    <description>USA Contiguous Albers Equal Area Conic USGS version</description>
-                </validValue>
-                <validValue>
-                    <value>raw</value>
-                    <description>raw dump of the bin file</description>
-                </validValue>
-
-                <validValue>
-                    <value>#### Proj4 Projection Expressions ####</value>
-                    <description>Albers Equal Area</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=aea +lon_0=0.0 +lat_1=0.0 +lat_2=0.0</value>
-                    <description>Albers Equal Area</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=aeqd +lon_0=0.0 +lat=0.0</value>
-                    <description>Azimuthal Equidistant</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=aitoff +lon_0=0.0</value>
-                    <description>Aitoff</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=cea +lon_0=0.0 +lat_ts=30.0</value>
-                    <description>Equal Area Cylindrical (Behrmann at 30 degrees)</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=cea +lon_0=0.0</value>
-                    <description>Lambert Cylindrical Equal Area</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=crast +lon_0=0.0</value>
-                    <description>Craster Parabolic (Putnins P4)</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=eck4 +lon_0=0.0</value>
-                    <description>Eckert IV Projection</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=eqc +lon_0=0.0</value>
-                    <description>Equidistant Cylindrical (Plate Carrée)</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=eqdc +lon_0=0.0 +lat_1=0.0 +lat_2=0.0</value>
-                    <description>&lt;html&gt;
-                        Equidistant Conic &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=eqearth +lon_0=0.0</value>
-                    <description>Equal Earth Projection</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=geos +lon_0=0.0 +h=705000.0</value>
-                    <description>&lt;html&gt;
-                        Geostationary Satellite View &lt;br&gt;
-                        Example shown at orbit altitude of 705km
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=hammer +lon_0=0.0</value>
-                    <description>Hammer &amp; Eckert-Greifendorff</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=igh +lon_0=0.0</value>
-                    <description>Interrupted Goode Homolosine</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=igh_o +lon_0=0.0</value>
-                    <description>Interrupted Goode Homolosine (Oceanic View)</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=laea +lon_0=0.0 +lat_0=0.0</value>
-                    <description>Lambert Azimuthal Equal Area</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=lcc +lon_0=0.0 +lat_0=0.0 +lat_1=0.0 +lat_2=0.0</value>
-                    <description>&lt;html&gt;
-                        Lambert Conformal Conic &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=leac +lon_0=0.0 +lat_1=0.0</value>
-                    <description>&lt;html&gt;
-                        Lambert Equal Area Conic &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=leac +lon_0=0.0 +lat_1=0.0 +south</value>
-                    <description>&lt;html&gt;
-                        Lambert Equal Area Conic (South) &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=merc +lon_0=0.0 +lat_ts=0.0</value>
-                    <description>&lt;html&gt;
-                        Mercator &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=moll +lon_0=0.0</value>
-                    <description>Mollweide</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=natearth +lon_0=0.0</value>
-                    <description>Natural Earth</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=natearth2 +lon_0=0.0</value>
-                    <description>Natural Earth II</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=nsper +lon_0=0.0 +lat_0=0.0</value>
-                    <description>Near-sided perspective</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=ortho +lon_0=0.0 +lat_0=0.0</value>
-                    <description>Orthographic</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=patterson +lon_0=0.0</value>
-                    <description>Patterson</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=putp2 +lon_0=0.0</value>
-                    <description>Putnins P2</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=qua_aut +lon_0=0.0</value>
-                    <description>Quartic Authalic</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=robin +lon_0=0.0</value>
-                    <description>Robinson Projection</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=sinu +lon_0=0.0</value>
-                    <description>Sinusoidal</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=stere +lon_0=0.0 +lat_0=0.0</value>
-                    <description>&lt;html&gt;
-                        Stereographic  &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=sterea +lon_0=0.0 +lat_0=0.0</value>
-                    <description>&lt;html&gt;
-                        Oblique Stereographic Alternative &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=tcea +lon_0=0.0</value>
-                    <description>&lt;html&gt;
-                        Transverse Cylindrical Equal Area &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=tmerc +lon_0=0.0 +lat_0=0.0</value>
-                    <description>&lt;html&gt;
-                        Transverse Mercator &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=ups +lon_0=0.0</value>
-                    <description>&lt;html&gt;
-                        Universal Polar Stereographic &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=wag4 +lon_0=0.0</value>
-                    <description>Wagner IV</description>
-                </validValue>
-
-                <validValue>
-                    <value>+proj=wintri +lon_0=0.0</value>
-                    <description>&lt;html&gt;
-                        Winkel Tripel &lt;br&gt;
-                        &lt;/html&gt;</description>
-                </validValue>
-
-            </validValues>
-            <usedAs>option</usedAs>
-            <colSpan>3</colSpan>
-            <order>100</order>
-        </option>
-
-
-
-
-
-
-        <option type="string">
-            <name>resolution</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>size of the mapped pixels in meters or SMI dimensions</description>
-
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>size of the mapped pixels in meters or SMI dimensions</description>
-                </validValue>
-                <validValue>
-                    <value>90km</value>
-                    <description>432 x 216 image for full globe</description>
-                </validValue>
-                <validValue>
-                    <value>36km</value>
-                    <description>1080 x 540</description>
-                </validValue>
-                <validValue>
-                    <value>18km</value>
-                    <description>2160 x 1080</description>
-                </validValue>
-                <validValue>
-                    <value>9km</value>
-                    <description>4320 x 2160</description>
-                </validValue>
-                <validValue>
-                    <value>4km</value>
-                    <description>8640 x 4320</description>
-                </validValue>
-                <validValue>
-                    <value>2km</value>
-                    <description>17280 x 8640</description>
-                </validValue>
-                <validValue>
-                    <value>1km</value>
-                    <description>34560 x 17280</description>
-                </validValue>
-                <validValue>
-                    <value>hkm</value>
-                    <description>69120 x 34560</description>
-                </validValue>
-                <validValue>
-                    <value>qkm</value>
-                    <description>138240 x 69120</description>
-                </validValue>
-                <validValue>
-                    <value>smi</value>
-                    <description>4096 x 2048</description>
-                </validValue>
-                <validValue>
-                    <value>smi4</value>
-                    <description>8192 x 4096</description>
-                </validValue>
-                <validValue>
-                    <value>land</value>
-                    <description>8640 x 4320</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <order>105</order>
-        </option>
-
-
-
-
-        <option type="string">
-            <name>interp</name>
-            <value>nearest</value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <description>interpolation method:</description>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>interpolation method</description>
-                </validValue>
-                <validValue>
-                    <value>nearest</value>
-                    <description>Nearest Neighbor</description>
-                </validValue>
-                <validValue>
-                    <value>bin</value>
-                    <description>bin all of the pixels that intersect the area of the color pixel</description>
-                </validValue>
-                <validValue>
-                    <value>area</value>
-                    <description>bin weighted by area of all the pixels that intersect the area of the color pixel</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <order>106</order>
-        </option>
-
-        <option type="float">
-            <name>fudge</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>fudge factor used to modify size of L3 pixels</description>
-            <usedAs>option</usedAs>
-            <order>106</order>
-        </option>
 
 
 
@@ -640,362 +104,69 @@
 
 
         <option type="float">
-            <name>north</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Northernmost Latitude</description>
-            <usedAs>option</usedAs>
-            <order>110</order>
-        </option>
-        <option type="float">
-            <name>south</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Southernmost Latitude</description>
-            <usedAs>option</usedAs>
-            <order>111</order>
-        </option>
-        <option type="float">
-            <name>west</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Westernmost Longitude</description>
-            <usedAs>option</usedAs>
-            <order>112</order>
-        </option>
-        <option type="float">
-            <name>east</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>Easternmost Longitude</description>
-            <usedAs>option</usedAs>
-            <order>113</order>
-        </option>
-
-
-        <option type="int">
-            <name>width</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>width of output image in pixels; supercedes resolution parameter</description>
-            <usedAs>option</usedAs>
-            <order>114</order>
-        </option>
-
-
-
-        <option type="float">
-            <name>threshold</name>
-            <value>0</value>
-            <subPanelIndex>1</subPanelIndex>
-            <default></default>
-            <source>default</source>
-            <description>minimum percentage of filled pixels before an image is generated</description>
-            <usedAs>option</usedAs>
-            <order>115</order>
-        </option>
-
-
-        <option type="float">
-            <name>central_meridian</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>central meridian for projection in deg east.  Only used for predefined projection</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>121</order>
-        </option>
-
-        <option type="float">
-            <name>lat_0</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of origin for projection in deg north. Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>122</order>
-        </option>
-
-        <option type="float">
-            <name>lat_1</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of first standard parallel (south). Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>123</order>
-        </option>
-
-        <option type="float">
-            <name>lat_2</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of second standard parallel (north). Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>124</order>
-        </option>
-
-
-        <option type="float">
-            <name>lat_ts</name>
-            <value/>
-            <source>default</source>
-            <description>latitude of true scale for projection in deg north. Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>125</order>
-        </option>
-
-
-        <option type="float">
-            <name>azimuth</name>
-            <value/>
-            <source>default</source>
-            <description>projection rotation angle in deg north. Used only for predefined projections above as required.</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>1</subPanelIndex>
-            <order>126</order>
-        </option>
-
-
-
-
-
-
-
-
-        // Image File SubPanel
-
-
-        <!--        <option type="string">-->
-<!--            <name>palette_dir</name>-->
-<!--            <value>$OCDATAROOT/common/palette</value>-->
-<!--            <default>$OCDATAROOT/common/palette</default>-->
-<!--            <source>default</source>-->
-<!--            <description>directory containing the palette files</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <colSpan>2</colSpan>-->
-<!--            <order>21</order>-->
-<!--        </option>-->
-
-
-
-
-
-
-        <option type="string">
-            <name>oformat2</name>
-            <value></value>
-            <default></default>
-            <description>output file format for ofile2</description>
-            <source>default</source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>output file format</description>
-                </validValue>
-                <validValue>
-                    <value>png</value>
-                    <description>PNG image file</description>
-                </validValue>
-                <validValue>
-                    <value>ppm</value>
-                    <description>PPM image file</description>
-                </validValue>
-                <validValue>
-                    <value>TIFF</value>
-                    <description>TIFF file with georeference tags</description>
-                </validValue>
-            </validValues>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>292</order>
-        </option>
-
-        <option type="ofile">
-            <name>ofile2</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>second output filename</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <colSpan>5</colSpan>
-            <order>293</order>
-        </option>
-
-
-
-        <option type="boolean">
-            <name>apply_pal</name>
-            <value>true</value>
-            <default>true</default>
-            <source>default</source>
-            <description>apply color palette</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <order>299</order>
-        </option>
-
-
-        <option type="string">
-            <name>palfile</name>
-            <value/>
-            <source>default</source>
-            <description>palette filename in $OCDATAROOT/common/palette.  (default = means the palette is chosen using the product.xml file</description>
-            <validValues>
-<!--                <validValue>-->
-<!--                    <value>anomalies1_universal</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>anomalies2_universal</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>bios</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>brs_chl</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>brs_sst</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>calcite</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>cyan</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>default-black0</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>default</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>density</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>gray-black0</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>gray</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>ndvi</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>sm</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>sss</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>sst-black0</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>sst-gibs</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>sst</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>universal_bluered-black0</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>universal_bluered</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-<!--                <validValue>-->
-<!--                    <value>zphotic</value>-->
-<!--                    <description></description>-->
-<!--                </validValue>-->
-            </validValues>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>3</subPanelIndex>
-            <order>300</order>
-        </option>
-
-
-
-        <option type="float">
-            <name>datamin</name>
+            <name>one</name>
             <value/>
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
             <subPanelIndex>3</subPanelIndex>
+            <colSpan>2</colSpan>
             <order>301</order>
         </option>
 
         <option type="float">
-            <name>datamax</name>
+            <name>two</name>
             <value/>
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
             <subPanelIndex>3</subPanelIndex>
+            <colSpan>2</colSpan>
             <order>302</order>
         </option>
 
-
-        <option type="string">
-            <name>scale_type</name>
+        <option type="float">
+            <name>three</name>
             <value/>
             <source>default</source>
-            <description>data scaling type (default from product.xml)</description>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>data scaling type (default from product.xml)</description>
-                </validValue>
-                <validValue>
-                    <value>linear</value>
-                    <description>linear scaling</description>
-                </validValue>
-                <validValue>
-                    <value>log</value>
-                    <description>logarithmic scaling</description>
-                </validValue>
-                <validValue>
-                    <value>arctan</value>
-                    <description>arc tangent scaling</description>
-                </validValue>
-            </validValues>
+            <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
             <subPanelIndex>3</subPanelIndex>
+            <colSpan>2</colSpan>
             <order>303</order>
+        </option>
+
+        <option type="float">
+            <name>four</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>2</colSpan>
+            <order>304</order>
+        </option>
+
+        <option type="float">
+            <name>five</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>2</colSpan>
+            <order>305</order>
+        </option>
+
+        <option type="float">
+            <name>six</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>2</colSpan>
+            <order>306</order>
         </option>
 
 
@@ -1008,33 +179,128 @@
             <description>mask land</description>
             <usedAs>option</usedAs>
             <subPanelIndex>3</subPanelIndex>
-            <order>304</order>
+            <order>200</order>
         </option>
 
-        <option type="string">
-            <name>rgb_land</name>
-            <value></value>
-            <default></default>
+<!--        <option type="float">-->
+<!--            <name>seven</name>-->
+<!--            <value/>-->
+<!--            <source>default</source>-->
+<!--            <description>maximum value for scaling (default from product.xml)</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <subPanelIndex>3</subPanelIndex>-->
+<!--            <colSpan>1</colSpan>-->
+<!--            <order>307</order>-->
+<!--        </option>-->
+
+        <option type="float">
+            <name>eight</name>
+            <value/>
             <source>default</source>
-            <description>land colors (default=160,82,45)</description>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <validValue>
+                <value>18</value>
+                <description>18.5km</description>
+            </validValue>
+            <validValue>
+                <value>36</value>
+                <description>36km</description>
+            </validValue>
             <usedAs>option</usedAs>
-<!--            <colSpan>2</colSpan>-->
             <subPanelIndex>3</subPanelIndex>
-            <order>305</order>
+            <colSpan>3</colSpan>
+            <order>308</order>
         </option>
 
+
+        <option type="float">
+            <name>nine</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <validValue>
+                <value>18</value>
+                <description>18.5km</description>
+            </validValue>
+            <validValue>
+                <value>36</value>
+                <description>36km</description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+<!--            <colSpan>6</colSpan>-->
+            <order>309</order>
+        </option>
+
+        <option type="float">
+            <name>ten</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <!--            <colSpan>6</colSpan>-->
+            <order>309</order>
+        </option>
+
+
+        <option type="float">
+            <name>eleven</name>
+            <value/>
+            <source>default</source>
+            <description>maximum value for scaling (default from product.xml)</description>
+            <validValue>
+                <value>18</value>
+                <description>18.5km</description>
+            </validValue>
+            <validValue>
+                <value>36</value>
+                <description>36km</description>
+            </validValue>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>1</colSpan>
+            <order>310</order>
+        </option>
+
+        <option type="float">
+            <name>twelve</name>
+            <value/>
+            <source>default</source>
+            <description></description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>1</colSpan>
+            <order>311</order>
+        </option>
 
 
         <option type="boolean">
-            <name>use_transparency</name>
+            <name>thirteen</name>
             <value>false</value>
             <default>false</default>
             <source>default</source>
-            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
+            <description></description>
             <usedAs>option</usedAs>
             <subPanelIndex>3</subPanelIndex>
-            <order>352</order>
+            <colSpan>2</colSpan>
+            <order>312</order>
         </option>
+
+        <option type="ofile">
+            <name>ofile2</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>second output filename</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>10</colSpan>
+            <order>293</order>
+        </option>
+
+
+
 
 
 
@@ -1061,23 +327,6 @@
             <order>355</order>
         </option>
 
-
-
-
-
-
-
-
-
-        <!--        <option type="boolean">-->
-<!--            <name>use_quality</name>-->
-<!--            <value>true</value>-->
-<!--            <default>true</default>-->
-<!--            <source>default</source>-->
-<!--            <description>should we do quality factor processing</description>-->
-<!--            <usedAs>option</usedAs>-->
-<!--            <order>31</order>-->
-<!--        </option>-->
 
 
 

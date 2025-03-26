@@ -281,37 +281,43 @@ public class ParamUtils {
             ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, defaultValue) : new ParamInfo(name, value, type, defaultValue);
             paramInfo.setDescription(description);
 
+            int defaultColSpan = 2;
+            if (tmpType.toLowerCase().equals("boolean")) {
+                defaultColSpan = 1;
+            }
+
             if (colSpan != null) {
                 try {
                     int colSpanInt = Integer.parseInt(colSpan);
                     if (colSpanInt > 0) {
                         paramInfo.setColSpan(colSpanInt);
                     } else {
-                        paramInfo.setColSpan(1);
+                        paramInfo.setColSpan(defaultColSpan);
                     }
                 } catch (Exception e) {
-                    paramInfo.setColSpan(1);
+                    paramInfo.setColSpan(defaultColSpan);
                     System.out.println("ERROR: colSpan not an integer for param: " + name + "in xml file: " + paramXmlFileName);
                 }
             } else {
-                paramInfo.setColSpan(1);
+                paramInfo.setColSpan(defaultColSpan);
             }
 
 
+            int defaultSubPanelIndex = 0;
             if (subPanelIndex != null) {
                 try {
                     int subPanelIndexInt = Integer.parseInt(subPanelIndex);
                     if (subPanelIndexInt > 0) {
                         paramInfo.setSubPanelIndex(subPanelIndexInt);
                     } else {
-                        paramInfo.setSubPanelIndex(0);
+                        paramInfo.setSubPanelIndex(defaultSubPanelIndex);
                     }
                 } catch (Exception e) {
-                    paramInfo.setSubPanelIndex(0);
+                    paramInfo.setSubPanelIndex(defaultSubPanelIndex);
                     System.out.println("ERROR: subPanelInt not an integer for param: " + name + "in xml file: " + paramXmlFileName);
                 }
             } else {
-                paramInfo.setSubPanelIndex(0);
+                paramInfo.setSubPanelIndex(defaultSubPanelIndex);
             }
 
 

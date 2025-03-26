@@ -230,7 +230,7 @@ public class ParamUIFactory {
         fileParamPanel.setLayout(fileParamLayout);
 
 
-        int numColumns = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
+        int numColumns = paramList.size() % 4 < paramList.size() % 5 ? 8 : 10;
         if (processorModel.getNumColumns() > 0) {
             numColumns = processorModel.getNumColumns();
         }
@@ -667,7 +667,7 @@ public class ParamUIFactory {
         gbcMainPanel.gridy = 0;
         gbcMainPanel.weightx = 1;
         gbcMainPanel.weighty = 1;
-        gbcMainPanel.fill = GridBagConstraints.NONE;
+        gbcMainPanel.fill = GridBagConstraints.HORIZONTAL;
         gbcMainPanel.anchor = GridBagConstraints.NORTHWEST;
         gbcMainPanel.insets.top = 4;
         gbcMainPanel.insets.bottom = 5;
@@ -792,17 +792,22 @@ public class ParamUIFactory {
 
     protected JPanel makeOptionField(final ParamInfo pi, int colSpan) {
 
+        final JPanel optionPanel = new JPanel(new GridBagLayout());
+
         final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
-        final JPanel optionPanel = new JPanel();
         optionPanel.setName(optionName);
-        TableLayout fieldLayout = new TableLayout(1);
-        fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
-        optionPanel.setLayout(fieldLayout);
-        optionPanel.setName(optionName);
-        optionPanel.add(new JLabel(" " + optionName));
-        if (pi.getDescription() != null) {
-            optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
-        }
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets.top = 0;
+        gbc.insets.bottom = 0;
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
 
 
         if (pi.getValue() == null || pi.getValue().trim().length() == 0) {
@@ -812,41 +817,22 @@ public class ParamUIFactory {
         }
 
         final PropertyContainer vc = new PropertyContainer();
-
         vc.addProperty(Property.create(optionName, pi.getValue()));
-
-
         vc.getDescriptor(optionName).setDisplayName(optionName);
         final BindingContext ctx = new BindingContext(vc);
-        final JTextField field = new JTextField();
 
-        int firstColWidth = 12;
-        int additionalColWidth = 13;
-
-        if (colSpan >= 5) {
-            field.setColumns(firstColWidth + (colSpan - 1) * additionalColWidth);
-        } else if (colSpan == 4) {
-            field.setColumns(firstColWidth + 41);
-        } else if (colSpan == 3) {
-            field.setColumns(firstColWidth + 27);
-        } else if (colSpan == 2) {
-            field.setColumns(firstColWidth + 14);
-        } else {
-            field.setColumns(firstColWidth);
-        }
-
-        field.setPreferredSize(field.getPreferredSize());
-        field.setMaximumSize(field.getPreferredSize());
+        final JTextField field = new JTextField(4);
         field.setMinimumSize(field.getPreferredSize());
         field.setName(pi.getName());
 
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+            optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
+
         ctx.bind(optionName, field);
 
         ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
-
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
                 if (!field.getText().trim().equals(pi.getValue().trim()))
@@ -856,6 +842,7 @@ public class ParamUIFactory {
                 processorModel.updateParamInfo(pi, field.getText());
             }
         });
+
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -863,10 +850,119 @@ public class ParamUIFactory {
                     field.setText(pi.getValue());
             }
         });
-        optionPanel.add(field);
+
+        optionPanel.add(new JLabel(" " + optionName), gbc);
+        gbc.gridy++;
+        optionPanel.add(field, gbc);
 
         return optionPanel;
     }
+
+
+
+
+    private JPanel makeComboBoxOptionPanel(final ParamInfo pi, int colSpan) {
+
+        final JPanel optionPanel = new JPanel(new GridBagLayout());
+
+        final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
+        optionPanel.setName(optionName);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets.top = 0;
+        gbc.insets.bottom = 0;
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+
+        String optionDefaultValue = pi.getValue();
+
+        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
+        final String[] values = new String[validValues.size()];
+        ArrayList<String> toolTips = new ArrayList<String>();
+
+        Iterator<ParamValidValueInfo> itr = validValues.iterator();
+        int i = 0;
+        ParamValidValueInfo paramValidValueInfo;
+        while (itr.hasNext()) {
+            paramValidValueInfo = itr.next();
+            values[i] = paramValidValueInfo.getValue();
+            if (paramValidValueInfo.getDescription() != null) {
+                toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            }
+            i++;
+        }
+
+
+        final JComboBox<String> inputList = new JComboBox<String>(values);
+        ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
+        inputList.setRenderer(renderer);
+        renderer.setTooltips(toolTips);
+        inputList.setEditable(true);
+        inputList.setName(pi.getName());
+
+        String initString = getStringOfSetLength(4);
+        final String[] tmpValues = {initString};
+        JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+        Dimension preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        inputList.setMinimumSize(preferredComboBoxSize);
+
+        if (pi.getDescription() != null) {
+            inputList.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
+        int defaultValuePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(optionDefaultValue);
+
+        if (defaultValuePosition != -1) {
+            inputList.setSelectedIndex(defaultValuePosition);
+        }
+
+
+        if (pi.getDescription() != null) {
+            optionPanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(optionName, optionDefaultValue));
+        vc.getDescriptor(optionName).setDisplayName(optionName);
+
+        final BindingContext ctx = new BindingContext(vc);
+
+        ctx.bind(optionName, inputList);
+
+        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+                String newValue = (String) inputList.getSelectedItem();
+                processorModel.updateParamInfo(pi, newValue);
+            }
+        });
+
+        processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //values = updateValidValues(pi);
+                int currentChoicePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(pi.getValue());
+                if (currentChoicePosition != -1) {
+                    inputList.setSelectedIndex(currentChoicePosition);
+                }
+            }
+        });
+
+        optionPanel.add(new JLabel(" " + optionName), gbc);
+        gbc.gridy++;
+        optionPanel.add(inputList, gbc);
+
+        return optionPanel;
+    }
+
+
+
 
 
     protected JPanel makeEmptyRow(JPanel panel, GridBagConstraints gbc, int numColumns) {
@@ -912,16 +1008,16 @@ public class ParamUIFactory {
 
         final JTextField field = new JTextField();
 
-        int firstColWidth = 12;
-        int additionalColWidth = 13;
+        int firstColWidth = 6;
+        int additionalColWidth = 6;
 
-        if (colSpan >= 5) {
+        if (colSpan >= 10) {
             field.setColumns(firstColWidth + (colSpan - 1) * additionalColWidth);
-        } else if (colSpan == 4) {
+        } else if (colSpan == 8) {
             field.setColumns(firstColWidth + 41);
-        } else if (colSpan == 3) {
+        } else if (colSpan == 6) {
             field.setColumns(firstColWidth + 27);
-        } else if (colSpan == 2) {
+        } else if (colSpan == 4) {
             field.setColumns(firstColWidth + 14);
         } else {
             field.setColumns(firstColWidth);
@@ -998,123 +1094,7 @@ public class ParamUIFactory {
 
     }
 
-    private JPanel makeComboBoxOptionPanel(final ParamInfo pi, int colSpan) {
-        final JPanel singlePanel = new JPanel();
 
-        String optionName = ParamUtils.removePreceedingDashes(pi.getName());
-
-        TableLayout comboParamLayout = new TableLayout(1);
-        comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
-        singlePanel.setLayout(comboParamLayout);
-
-        final JLabel optionNameLabel = new JLabel(" " + ParamUtils.removePreceedingDashes(pi.getName()));
-
-        singlePanel.add(optionNameLabel);
-        singlePanel.setName(pi.getName());
-        if (pi.getDescription() != null) {
-            singlePanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
-        }
-
-        String optionDefaultValue = pi.getValue();
-
-        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
-        final String[] values = new String[validValues.size()];
-        ArrayList<String> toolTips = new ArrayList<String>();
-
-        Iterator<ParamValidValueInfo> itr = validValues.iterator();
-        int i = 0;
-        ParamValidValueInfo paramValidValueInfo;
-        while (itr.hasNext()) {
-            paramValidValueInfo = itr.next();
-            values[i] = paramValidValueInfo.getValue();
-            if (paramValidValueInfo.getDescription() != null) {
-                toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
-            }
-            i++;
-        }
-
-        Dimension preferredComboBoxSize;
-
-        int firstColWidth = 13;
-
-        if (colSpan >= 5) {
-            String initString = getStringOfSetLength(firstColWidth + (colSpan - 1) * 20);
-            final String[] tmpValues = {initString};
-            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
-            preferredComboBoxSize = tmpComboBox.getPreferredSize();
-        } else if (colSpan == 4) {
-            String initString = getStringOfSetLength(firstColWidth + 62);
-            final String[] tmpValues = {initString};
-            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
-            preferredComboBoxSize = tmpComboBox.getPreferredSize();
-        } else if (colSpan == 3) {
-            String initString = getStringOfSetLength(firstColWidth + 41);
-            final String[] tmpValues = {initString};
-            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
-            preferredComboBoxSize = tmpComboBox.getPreferredSize();
-        } else if (colSpan == 2) {
-            String initString = getStringOfSetLength(firstColWidth + 20);
-            final String[] tmpValues = {initString};
-            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
-            preferredComboBoxSize = tmpComboBox.getPreferredSize();
-        } else {
-            String initString = getStringOfSetLength(firstColWidth);
-            final String[] tmpValues = {initString};
-            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
-            preferredComboBoxSize = tmpComboBox.getPreferredSize();
-        }
-
-        final JComboBox<String> inputList = new JComboBox<String>(values);
-        ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
-        inputList.setRenderer(renderer);
-        renderer.setTooltips(toolTips);
-        inputList.setEditable(true);
-        inputList.setName(pi.getName());
-//        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
-//                inputList.getPreferredSize().height));
-        inputList.setPreferredSize(preferredComboBoxSize);
-
-        if (pi.getDescription() != null) {
-            inputList.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
-        }
-        int defaultValuePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(optionDefaultValue);
-
-        if (defaultValuePosition != -1) {
-            inputList.setSelectedIndex(defaultValuePosition);
-        }
-
-
-        final PropertyContainer vc = new PropertyContainer();
-        vc.addProperty(Property.create(optionName, optionDefaultValue));
-        vc.getDescriptor(optionName).setDisplayName(optionName);
-
-        final BindingContext ctx = new BindingContext(vc);
-
-        ctx.bind(optionName, inputList);
-
-        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent pce) {
-
-                String newValue = (String) inputList.getSelectedItem();
-                processorModel.updateParamInfo(pi, newValue);
-            }
-        });
-
-        processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                //values = updateValidValues(pi);
-                int currentChoicePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(pi.getValue());
-                if (currentChoicePosition != -1) {
-                    inputList.setSelectedIndex(currentChoicePosition);
-                }
-            }
-        });
-        singlePanel.add(inputList);
-        return singlePanel;
-    }
 
     private String getStringOfSetLength(int numChars) {
         String string = "";
@@ -1719,9 +1699,13 @@ public class ParamUIFactory {
 
     private JPanel createIOFileOptionField(final ParamInfo pi) {
 
-
         final FileSelector ioFileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
-        ioFileSelector.getFileTextField().setColumns(40);
+//        ioFileSelector.getFileTextField().setColumns(40);
+
+        String initString = getStringOfSetLength(40);
+        JTextField tmpJTextField = new JTextField(initString);
+        ioFileSelector.getFileTextField().setMinimumSize(tmpJTextField.getPreferredSize());
+
         ioFileSelector.setFilename(pi.getValue());
         if (pi.getDescription() != null) {
             ioFileSelector.getNameLabel().setToolTipText(pi.getDescription().replaceAll("\\s+", " "));

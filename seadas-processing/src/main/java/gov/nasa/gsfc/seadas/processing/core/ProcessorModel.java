@@ -116,7 +116,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         setSubPanel2Title("");
         setSubPanel3Title("");
         setSubPanel4Title("");
-        setNumColumns(0);
+        setNumColumns(8);
         processorID = ProcessorTypeInfo.getProcessorID(programName);
         primaryOptions = new HashSet<String>();
         primaryOptions.add("ifile");
@@ -1003,7 +1003,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     public void setNumColumns(int numColumns) {
-        this.numColumns = numColumns;
+        if (numColumns > 0) {
+            this.numColumns = numColumns;
+        }
     }
 
 
@@ -2785,24 +2787,26 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (ocsswDataDirPath != null) {
                 ParamInfo palfileParamInfo = getParamInfo("palfile");
 
-                String palfileDirName = ocsswDataDirPath + System.getProperty("file.separator") + "common" + System.getProperty("file.separator") + "palette";
-                File palfileFile = new File(palfileDirName);
-                File[] palfileFiles = palfileFile.listFiles();
-                palfileParamInfo.clearValidValueInfos();
+                if (palfileParamInfo != null) {
+                    String palfileDirName = ocsswDataDirPath + System.getProperty("file.separator") + "common" + System.getProperty("file.separator") + "palette";
+                    File palfileFile = new File(palfileDirName);
+                    File[] palfileFiles = palfileFile.listFiles();
+                    palfileParamInfo.clearValidValueInfos();
 
-                String basenames[] = new String[palfileFiles.length];
-                int data[] = new int[10];
-                for (int i = 0; i < palfileFiles.length; i++) {
-                    basenames[i] = palfileFiles[i].getName();
-                }
+                    String basenames[] = new String[palfileFiles.length];
+                    int data[] = new int[10];
+                    for (int i = 0; i < palfileFiles.length; i++) {
+                        basenames[i] = palfileFiles[i].getName();
+                    }
 
-                Arrays.sort(basenames);
+                    Arrays.sort(basenames);
 
-                for (String basename : basenames) {
-                    basename = stripPalFilenameExtension(basename);
-                    ParamValidValueInfo validValueInfo = new ParamValidValueInfo(basename);
-                    validValueInfo.setDescription(basename);
-                    palfileParamInfo.getValidValueInfos().add(validValueInfo);
+                    for (String basename : basenames) {
+                        basename = stripPalFilenameExtension(basename);
+                        ParamValidValueInfo validValueInfo = new ParamValidValueInfo(basename);
+                        validValueInfo.setDescription(basename);
+                        palfileParamInfo.getValidValueInfos().add(validValueInfo);
+                    }
                 }
             }
 
