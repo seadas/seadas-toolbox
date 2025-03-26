@@ -243,7 +243,7 @@
 <!--&lt;!&ndash;                <description>Note: this flag is not available in all level-2 files</description>&ndash;&gt;-->
 <!--&lt;!&ndash;            </validValue>&ndash;&gt;-->
             <usedAs>option</usedAs>
-            <colSpan>6</colSpan>
+            <colSpan>12</colSpan>
             <order>5</order>
         </option>
 

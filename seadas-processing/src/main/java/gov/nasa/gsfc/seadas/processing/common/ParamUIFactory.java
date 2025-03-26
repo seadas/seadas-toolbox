@@ -601,9 +601,9 @@ public class ParamUIFactory {
         int origInsetsTop = gbc.insets.top;
         int origInsetsBottom = gbc.insets.bottom;
         int origInsetsLeft = gbc.insets.left;
-        gbc.insets.top = 8;
-        gbc.insets.bottom = 6;
-        gbc.insets.left = 0;
+//        gbc.insets.top = 8;
+//        gbc.insets.bottom = 6;
+//        gbc.insets.left = 0;
 
         preIncrementGridy(gbc, numColumns);
         panel.add(makeButtonOptionPanel(pi, numColumns), gbc);
@@ -851,7 +851,7 @@ public class ParamUIFactory {
             }
         });
 
-        optionPanel.add(new JLabel(" " + optionName), gbc);
+        optionPanel.add(new JLabel("  " + optionName), gbc);
         gbc.gridy++;
         optionPanel.add(field, gbc);
 
@@ -1107,14 +1107,31 @@ public class ParamUIFactory {
     }
 
     private JPanel makeButtonOptionPanel(final ParamInfo pi, int numColumns) {
-        final JPanel singlePanel = new JPanel();
+
+        final JPanel singlePanel = new JPanel(new GridBagLayout());
+
+        final String optionName = ParamUtils.removePreceedingDashes(pi.getName());
+        singlePanel.setName(optionName);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets.top = 0;
+        gbc.insets.bottom = 0;
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+
         final JTextField field = new JTextField();
 
-        TableLayout comboParamLayout = new TableLayout(8);
-        comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
-        singlePanel.setLayout(comboParamLayout);
 
-        final JButton optionNameButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()));
+
+//        final JButton optionNameButton = new JButton(ParamUtils.removePreceedingDashes(pi.getName()) + "-editor");
+        final JButton optionNameButton = new JButton(" ... ");
         optionNameButton.setName("optionButton");
         optionNameButton.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
 
@@ -1184,20 +1201,13 @@ public class ParamUIFactory {
         });
 
 
-        singlePanel.add(optionNameButton);
         singlePanel.setName(pi.getName());
         if (pi.getDescription() != null) {
             singlePanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
 
         field.setText(pi.getValue());
-        if (numColumns == 6) {
-            field.setColumns(74);
-        } else if (numColumns == 5) {
-            field.setColumns(60);
-        } else {
-            field.setColumns(47);
-        }
+
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
@@ -1223,7 +1233,20 @@ public class ParamUIFactory {
                 }
             }
         });
-        singlePanel.add(field);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        singlePanel.add(optionNameButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        singlePanel.add(new JLabel("  " + pi.getName()), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        singlePanel.add(field, gbc);
 
         return singlePanel;
     }
@@ -1699,7 +1722,7 @@ public class ParamUIFactory {
 
     private JPanel createIOFileOptionField(final ParamInfo pi) {
 
-        final FileSelector ioFileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
+        final FileSelector ioFileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()), true);
 //        ioFileSelector.getFileTextField().setColumns(40);
 
         String initString = getStringOfSetLength(40);

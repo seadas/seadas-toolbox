@@ -296,40 +296,52 @@
             <usedAs>option</usedAs>
             <subPanelIndex>3</subPanelIndex>
             <colSpan>10</colSpan>
-            <order>293</order>
+            <order>314</order>
         </option>
 
 
-
-
-
-
-        <option type="boolean">
-            <name>use_rgb</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>should we use product_rgb to make a psudo true color image</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <order>353</order>
-        </option>
-
-        <option type="string">
-            <name>product_rgb</name>
+        <option type="flags">
+            <name>flaguse</name>
             <value></value>
             <default></default>
-            <source>default</source>
-            <description> 3 products to use for RGB.  Default is sensor specific</description>
+            <description></description>
+            <validValue>
+                <value>ATMFAIL</value>
+                <description>ATMFAIL</description>
+            </validValue>
+            <validValue>
+                <value>LAND</value>
+                <description>LAND</description>
+            </validValue>
+            <subPanelIndex>3</subPanelIndex>
             <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>4</subPanelIndex>
-            <order>355</order>
+            <colSpan>10</colSpan>
+            <order>315</order>
         </option>
 
 
+        <option type="float">
+            <name>twelve</name>
+            <value/>
+            <source>default</source>
+            <description></description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>1</colSpan>
+            <order>316</order>
+        </option>
 
 
+        <option type="float">
+            <name>twelve</name>
+            <value/>
+            <source>default</source>
+            <description></description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <colSpan>10</colSpan>
+            <order>317</order>
+        </option>
 
 
 

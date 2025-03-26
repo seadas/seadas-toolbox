@@ -55,6 +55,8 @@ public class FileSelector {
     private JTextField filterRegexField;
     private JLabel filterRegexLabel;
 
+    boolean putLabelAtTop = false;
+
     private String currentFilename = null;
 
     boolean fireTextFieldEnabled = true;
@@ -64,19 +66,29 @@ public class FileSelector {
     private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     public FileSelector(AppContext appContext) {
-        this(appContext, null);
+        this(appContext, null, false);
     }
 
-    public FileSelector(AppContext appContext, ParamInfo.Type type) {
+    public FileSelector(AppContext appContext, ParamInfo.Type type, boolean putLabelAtTop) {
         this.appContext = appContext;
+        this.putLabelAtTop = putLabelAtTop;
         setType(type);
 
         initComponents();
         addComponents();
     }
 
+    public FileSelector(AppContext appContext, ParamInfo.Type type) {
+        this(appContext, type, false);
+    }
+
     public FileSelector(AppContext appContext, ParamInfo.Type type, String name) {
-        this(appContext, type);
+        this(appContext, type, false);
+        setName(name);
+    }
+
+    public FileSelector(AppContext appContext, ParamInfo.Type type, String name, boolean putLabelAtTop) {
+        this(appContext, type, putLabelAtTop);
         setName(name);
     }
 
@@ -84,28 +96,45 @@ public class FileSelector {
 
         fileTextfield = createFileTextfield();
 
-        nameLabel = new JLabel(name);
+        if (putLabelAtTop) {
+            nameLabel = new JLabel("  " + name);
+        } else {
+            nameLabel = new JLabel(name);
+        }
 
         fileChooserButton = new JButton(new FileChooserAction());
 
     }
 
     private void addComponents() {
-
-        jPanel.add(nameLabel,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-
         if (name == null) {
             nameLabel.setVisible(false);
         }
 
-        jPanel.add(fileTextfield,
-                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
-        jPanel.add(fileChooserButton,
-                new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        if (putLabelAtTop) {
+            jPanel.add(nameLabel,
+                    new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 0));
 
-        jPanel.add(filterPane,
-                new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+            jPanel.add(fileTextfield,
+                    new GridBagConstraintsCustom(0, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 0));
+            jPanel.add(fileChooserButton,
+                    new GridBagConstraintsCustom(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 0));
+
+            jPanel.add(filterPane,
+                    new GridBagConstraintsCustom(2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 0));
+        } else {
+            jPanel.add(nameLabel,
+                    new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+            jPanel.add(fileTextfield,
+                    new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 2));
+            jPanel.add(fileChooserButton,
+                    new GridBagConstraintsCustom(2, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+            jPanel.add(filterPane,
+                    new GridBagConstraintsCustom(3, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+        }
 
         if (type != ParamInfo.Type.IFILE) {
             filterPane.setVisible(false);
@@ -137,7 +166,11 @@ public class FileSelector {
 
     public void setName(String name) {
         this.name = name;
-        nameLabel.setText(name);
+        if (putLabelAtTop) {
+            nameLabel.setText("  " + name);
+        } else {
+            nameLabel.setText(name);
+        }
         if (name != null && name.length() > 0) {
             nameLabel.setVisible(true);
         }
