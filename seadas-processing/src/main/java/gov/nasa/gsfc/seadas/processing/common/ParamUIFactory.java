@@ -557,8 +557,12 @@ public class ParamUIFactory {
         preIncrementGridy(gbc, numColumns);
         int anchorOrig = gbc.anchor;
         gbc.anchor = GridBagConstraints.EAST;
+        Insets insetsOrig = gbc.insets;
+        gbc.insets.left = 1;
+        gbc.insets.right = 1;
         panel.add(makeBooleanOptionField(pi), gbc);
         gbc.anchor = anchorOrig;
+        gbc.insets = insetsOrig;
         incrementGridxGridy(gbc, numColumns);
     }
 
@@ -969,18 +973,17 @@ public class ParamUIFactory {
         gbc.insets.top = 0;
         gbc.insets.bottom = 0;
 
-        final JPanel sampleSingleField = makeEmptyOptionField(1);
-        int width = sampleSingleField.getPreferredSize().width;
-
-        gbc.gridy++;
         gbc.gridx = 0;
+        gbc.gridy++;
 
         while (gbc.gridx < numColumns) {
-            JLabel label = new JLabel(" ");
-            label.setMinimumSize(new Dimension(width,1));
-            label.setMaximumSize(new Dimension(width,1));
-            label.setPreferredSize(new Dimension(width,1));
-            panel.add(label, gbc);
+            //todo
+            JLabel label = new JLabel(getStringOfSetLength(12));
+            JLabel label2 = new JLabel(" ");
+            label2.setMaximumSize(new Dimension(label.getPreferredSize().width,1));
+            label2.setMinimumSize(new Dimension(label.getPreferredSize().width,1));
+            label2.setPreferredSize(new Dimension(label.getPreferredSize().width,1));
+            panel.add(label2, gbc);
             gbc.gridx++;
         }
 
@@ -992,49 +995,6 @@ public class ParamUIFactory {
 
 
 
-
-
-    protected JPanel makeEmptyOptionField(int colSpan) {
-
-        final String optionName = " ";
-        final JPanel optionPanel = new JPanel();
-        optionPanel.setName(optionName);
-        TableLayout fieldLayout = new TableLayout(1);
-        fieldLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
-        optionPanel.setLayout(fieldLayout);
-        optionPanel.setName(optionName);
-        JLabel label = new JLabel(" " + optionName);
-        optionPanel.add(label);
-
-        final JTextField field = new JTextField();
-
-        int firstColWidth = 6;
-        int additionalColWidth = 6;
-
-        if (colSpan >= 10) {
-            field.setColumns(firstColWidth + (colSpan - 1) * additionalColWidth);
-        } else if (colSpan == 8) {
-            field.setColumns(firstColWidth + 41);
-        } else if (colSpan == 6) {
-            field.setColumns(firstColWidth + 27);
-        } else if (colSpan == 4) {
-            field.setColumns(firstColWidth + 14);
-        } else {
-            field.setColumns(firstColWidth);
-        }
-
-        field.setPreferredSize(field.getPreferredSize());
-        field.setMaximumSize(field.getPreferredSize());
-        field.setMinimumSize(field.getPreferredSize());
-
-
-        optionPanel.add(field);
-//        optionPanel.setVisible(false);
-//        field.setVisible(false);
-//        label.setVisible(false);
-
-        return optionPanel;
-    }
 
 
     private JPanel makeBooleanOptionField(final ParamInfo pi) {
@@ -1099,8 +1059,13 @@ public class ParamUIFactory {
     private String getStringOfSetLength(int numChars) {
         String string = "";
 
+        int k = 0;
         for (int i = 0; i < numChars; i++) {
-            string = string + "0";
+            string = string + k;
+            k++;
+            if (k > 9) {
+                k = 0;
+            }
         }
 
         return string;
