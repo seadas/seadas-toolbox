@@ -342,20 +342,14 @@ public class ParamUIFactory {
                     switch (pi.getType()) {
                         case BOOLEAN:
                             if (pi.getSubPanelIndex() == 1) {
-
-//                                booleanParamSubPanel1.add(makeBooleanOptionField(pi));
                                 addOptionBoolean(pi, booleanParamSubPanel1, textFieldSubPanel1, gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
-//                                booleanParamSubPanel2.add(makeBooleanOptionField(pi));
                                 addOptionBoolean(pi, booleanParamSubPanel2, textFieldSubPanel2, gbcSubPanel2, numColumns);
                             } else if (pi.getSubPanelIndex() == 3) {
-//                                booleanParamSubPanel3.add(makeBooleanOptionField(pi));
                                 addOptionBoolean(pi, booleanParamSubPanel3, textFieldSubPanel3, gbcSubPanel3, numColumns);
                             } else if (pi.getSubPanelIndex() == 4) {
-//                                booleanParamSubPanel4.add(makeBooleanOptionField(pi));
                                 addOptionBoolean(pi, booleanParamSubPanel4, textFieldSubPanel4, gbcSubPanel4, numColumns);
                             } else {
-//                                booleanParamSubPanel0.add(makeBooleanOptionField(pi));
                                 addOptionBoolean(pi, booleanParamSubPanel0, textFieldSubPanel0, gbcSubPanel0, numColumns);
                             }
                             break;
@@ -984,7 +978,6 @@ public class ParamUIFactory {
         gbc.gridy++;
 
         while (gbc.gridx < numColumns) {
-            //todo  set width
             JLabel label = new JLabel(getStringOfSetLength(processorModel.getColumnWidth()));
             JLabel label2 = new JLabel(" ");
             label2.setMaximumSize(new Dimension(label.getPreferredSize().width,1));

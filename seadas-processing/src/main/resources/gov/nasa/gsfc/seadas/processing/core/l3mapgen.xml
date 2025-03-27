@@ -5,12 +5,7 @@
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
         <subPanel0Title>  </subPanel0Title>
-        <!--        <subPanel0Title> Product / Output / Performance Parameters</subPanel0Title>-->
-        <!--        <subPanel1Title> </subPanel1Title>-->
-        <subPanel1Title> Projection / Resolution Parameters </subPanel1Title>
-        <!--        <subPanel1Title>Pre-Defined Projection Attributes</subPanel1Title>-->
-        <!--        <subPanel2Title> </subPanel2Title>-->
-        <!--        <subPanel2Title> Resolution/ Interpolation Parameters </subPanel2Title>-->
+        <subPanel1Title> Spatial Parameters </subPanel1Title>
         <subPanel3Title> Image Mode Parameters </subPanel3Title>
         <subPanel4Title>  Pseudo True Color (RGB) Parameters </subPanel4Title>
         <numColumns>12</numColumns>
