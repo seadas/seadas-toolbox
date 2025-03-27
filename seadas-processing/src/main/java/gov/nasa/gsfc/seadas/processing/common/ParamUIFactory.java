@@ -92,7 +92,7 @@ public class ParamUIFactory {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
         gbc.weighty = 1;
 
@@ -147,7 +147,7 @@ public class ParamUIFactory {
                 }
 
                 if (pi.hasValidValueInfos() && pi.getType() != ParamInfo.Type.FLAGS) {
-                    textFieldPanel.add(makeComboBoxOptionPanel(pi, gbc.gridwidth), gbc);
+                    textFieldPanel.add(makeComboBoxOptionPanelOriginal(pi, gbc.gridwidth), gbc);
                     gbc = incrementGridxGridy(gbc, numberOfOptionsPerLine);
                 } else {
                     switch (pi.getType()) {
@@ -863,6 +863,119 @@ public class ParamUIFactory {
         return optionPanel;
     }
 
+
+
+    private JPanel makeComboBoxOptionPanelOriginal(final ParamInfo pi, int colSpan) {
+        final JPanel singlePanel = new JPanel();
+
+        String optionName = ParamUtils.removePreceedingDashes(pi.getName());
+
+        TableLayout comboParamLayout = new TableLayout(1);
+        comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
+        singlePanel.setLayout(comboParamLayout);
+
+        final JLabel optionNameLabel = new JLabel(ParamUtils.removePreceedingDashes(pi.getName()));
+
+        singlePanel.add(optionNameLabel);
+        singlePanel.setName(pi.getName());
+        if (pi.getDescription() != null) {
+            singlePanel.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
+
+        String optionDefaultValue = pi.getValue();
+
+        final ArrayList<ParamValidValueInfo> validValues = pi.getValidValueInfos();
+        final String[] values = new String[validValues.size()];
+        ArrayList<String> toolTips = new ArrayList<String>();
+
+        Iterator<ParamValidValueInfo> itr = validValues.iterator();
+        int i = 0;
+        ParamValidValueInfo paramValidValueInfo;
+        while (itr.hasNext()) {
+            paramValidValueInfo = itr.next();
+            values[i] = paramValidValueInfo.getValue();
+            if (paramValidValueInfo.getDescription() != null) {
+                toolTips.add(paramValidValueInfo.getDescription().replaceAll("\\s+", " "));
+            }
+            i++;
+        }
+
+        Dimension preferredComboBoxSize;
+
+        if (colSpan >= 5) {
+            final String[] tmpValues = {"1234567890123456789012345901234567890123456789012345678901234567890123456789"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else if (colSpan == 4) {
+            final String[] tmpValues = {"12345678901234567890123459012345678901234567890123456789012"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else if (colSpan == 3) {
+            final String[] tmpValues = {"123456789012345678901234590123456789012345"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else if (colSpan == 2) {
+            final String[] tmpValues = {"1234567890123456789012345"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        } else {
+            final String[] tmpValues = {"12345678"};
+            JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
+            preferredComboBoxSize = tmpComboBox.getPreferredSize();
+        }
+
+        final JComboBox<String> inputList = new JComboBox<String>(values);
+        ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
+        inputList.setRenderer(renderer);
+        renderer.setTooltips(toolTips);
+        inputList.setEditable(true);
+        inputList.setName(pi.getName());
+//        inputList.setPreferredSize(new Dimension(inputList.getPreferredSize().width,
+//                inputList.getPreferredSize().height));
+        inputList.setPreferredSize(preferredComboBoxSize);
+
+        if (pi.getDescription() != null) {
+            inputList.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
+        }
+        int defaultValuePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(optionDefaultValue);
+
+        if (defaultValuePosition != -1) {
+            inputList.setSelectedIndex(defaultValuePosition);
+        }
+
+
+
+        final PropertyContainer vc = new PropertyContainer();
+        vc.addProperty(Property.create(optionName, optionDefaultValue));
+        vc.getDescriptor(optionName).setDisplayName(optionName);
+
+        final BindingContext ctx = new BindingContext(vc);
+
+        ctx.bind(optionName, inputList);
+
+        ctx.addPropertyChangeListener(optionName, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+
+                String newValue = (String) inputList.getSelectedItem();
+                processorModel.updateParamInfo(pi, newValue);
+            }
+        });
+
+        processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                //values = updateValidValues(pi);
+                int currentChoicePosition = new ArrayList<String>(Arrays.asList(values)).indexOf(pi.getValue());
+                if (currentChoicePosition != -1) {
+                    inputList.setSelectedIndex(currentChoicePosition);
+                }
+            }
+        });
+        singlePanel.add(inputList);
+        return singlePanel;
+    }
 
 
 
