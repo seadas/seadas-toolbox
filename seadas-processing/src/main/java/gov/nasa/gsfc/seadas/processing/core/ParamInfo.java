@@ -55,10 +55,11 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     private String source = NULL_STRING;
     private boolean isBit = false;
     private int order = 0;
-    private int colSpan = 2;  // default is set at 2 in order to accommodate smaller columns of the boolean
+    private int colSpan = 1;
     private int subPanelIndex = 0;
     private String validationComment = null;
     private String usedAs = USED_IN_COMMAND_AS_OPTION;
+    private boolean putInBooleanPanel = true;
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
@@ -108,6 +109,20 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     public void setUsedAs(String usedAs) {
         this.usedAs = usedAs;
     }
+
+    public boolean getPutInBooleanPanel() {
+        return putInBooleanPanel;
+    }
+
+    public void setPutInBooleanPanel(String putInBooleanPanel) {
+        if (putInBooleanPanel != null && "false".equalsIgnoreCase(putInBooleanPanel)) {
+            this.putInBooleanPanel = false;
+        } else {
+            this.putInBooleanPanel = true;
+        }
+
+    }
+
 
     public File getFile(File rootDir) {
         if (type == Type.IFILE) {

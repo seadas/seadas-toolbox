@@ -64,6 +64,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private String subPanel3Title;
     private String subPanel4Title;
     private int numColumns;
+    private int columnWidth;
 
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
@@ -116,7 +117,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         setSubPanel2Title("");
         setSubPanel3Title("");
         setSubPanel4Title("");
-        setNumColumns(8);
+        setNumColumns(4);
+        setColumnWidth(20);
         processorID = ProcessorTypeInfo.getProcessorID(programName);
         primaryOptions = new HashSet<String>();
         primaryOptions.add("ifile");
@@ -139,6 +141,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             setSubPanel3Title(ParamUtils.getElementString(parXMLFileName, "subPanel3Title"));
             setSubPanel4Title(ParamUtils.getElementString(parXMLFileName, "subPanel4Title"));
             setNumColumns(ParamUtils.getElementInt(parXMLFileName, "numColumns"));
+            setColumnWidth(ParamUtils.getElementInt(parXMLFileName, "columnWidth"));
             progressPattern = Pattern.compile(ParamUtils.getProgressRegex(parXMLFileName));
             hasGeoFile = ParamUtils.getOptionStatus(parXMLFileName, "hasGeoFile");
             setPrimaryOptions(ParamUtils.getPrimaryOptions(parXMLFileName));
@@ -1009,6 +1012,15 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
+    public int getColumnWidth() {
+        return columnWidth;
+    }
+
+    public void setColumnWidth(int columnWidth) {
+        if (columnWidth > 0) {
+            this.columnWidth = columnWidth;
+        }
+    }
 
 
 

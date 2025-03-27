@@ -230,7 +230,7 @@ public class ParamUIFactory {
         fileParamPanel.setLayout(fileParamLayout);
 
 
-        int numColumns = paramList.size() % 4 < paramList.size() % 5 ? 8 : 10;
+        int numColumns = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
         if (processorModel.getNumColumns() > 0) {
             numColumns = processorModel.getNumColumns();
         }
@@ -342,20 +342,21 @@ public class ParamUIFactory {
                     switch (pi.getType()) {
                         case BOOLEAN:
                             if (pi.getSubPanelIndex() == 1) {
+
 //                                booleanParamSubPanel1.add(makeBooleanOptionField(pi));
-                                addOptionBoolean(pi, textFieldSubPanel1, gbcSubPanel1, numColumns);
+                                addOptionBoolean(pi, booleanParamSubPanel1, textFieldSubPanel1, gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
 //                                booleanParamSubPanel2.add(makeBooleanOptionField(pi));
-                                addOptionBoolean(pi, textFieldSubPanel2, gbcSubPanel2, numColumns);
+                                addOptionBoolean(pi, booleanParamSubPanel2, textFieldSubPanel2, gbcSubPanel2, numColumns);
                             } else if (pi.getSubPanelIndex() == 3) {
 //                                booleanParamSubPanel3.add(makeBooleanOptionField(pi));
-                                addOptionBoolean(pi, textFieldSubPanel3, gbcSubPanel3, numColumns);
+                                addOptionBoolean(pi, booleanParamSubPanel3, textFieldSubPanel3, gbcSubPanel3, numColumns);
                             } else if (pi.getSubPanelIndex() == 4) {
 //                                booleanParamSubPanel4.add(makeBooleanOptionField(pi));
-                                addOptionBoolean(pi, textFieldSubPanel4, gbcSubPanel4, numColumns);
+                                addOptionBoolean(pi, booleanParamSubPanel4, textFieldSubPanel4, gbcSubPanel4, numColumns);
                             } else {
 //                                booleanParamSubPanel0.add(makeBooleanOptionField(pi));
-                                addOptionBoolean(pi, textFieldSubPanel0, gbcSubPanel0, numColumns);
+                                addOptionBoolean(pi, booleanParamSubPanel0, textFieldSubPanel0, gbcSubPanel0, numColumns);
                             }
                             break;
                         case IFILE:
@@ -477,11 +478,11 @@ public class ParamUIFactory {
 
 
         // Add empty row of small height to ensure all columns are defined in order for gbc.gridwidth to line-up correctly
-        makeEmptyRow(textFieldSubPanel0, gbcSubPanel0, numColumns);
-        makeEmptyRow(textFieldSubPanel1, gbcSubPanel1, numColumns);
-        makeEmptyRow(textFieldSubPanel2, gbcSubPanel2, numColumns);
-        makeEmptyRow(textFieldSubPanel3, gbcSubPanel3, numColumns);
-        makeEmptyRow(textFieldSubPanel4, gbcSubPanel4, numColumns);
+        makeEmptyRow(processorModel, textFieldSubPanel0, gbcSubPanel0, numColumns);
+        makeEmptyRow(processorModel, textFieldSubPanel1, gbcSubPanel1, numColumns);
+        makeEmptyRow(processorModel, textFieldSubPanel2, gbcSubPanel2, numColumns);
+        makeEmptyRow(processorModel, textFieldSubPanel3, gbcSubPanel3, numColumns);
+        makeEmptyRow(processorModel, textFieldSubPanel4, gbcSubPanel4, numColumns);
 
 
         JPanel subPanel0 = createSubPanel(textFieldSubPanel0, booleanParamSubPanel0, subPanel0Found, 0);
@@ -553,17 +554,23 @@ public class ParamUIFactory {
     }
 
 
-    private void addOptionBoolean(ParamInfo pi, JPanel panel, GridBagConstraints gbc, int numColumns) {
-        preIncrementGridy(gbc, numColumns);
-        int anchorOrig = gbc.anchor;
-        gbc.anchor = GridBagConstraints.EAST;
-        Insets insetsOrig = gbc.insets;
-        gbc.insets.left = 1;
-        gbc.insets.right = 1;
-        panel.add(makeBooleanOptionField(pi), gbc);
-        gbc.anchor = anchorOrig;
-        gbc.insets = insetsOrig;
-        incrementGridxGridy(gbc, numColumns);
+    private void addOptionBoolean(ParamInfo pi, JPanel booleanParamSubPanel, JPanel textfieldPanel, GridBagConstraints gbc, int numColumns) {
+
+        if (pi.getPutInBooleanPanel()) {
+            booleanParamSubPanel.add(makeBooleanOptionField(pi));
+        } else {
+            preIncrementGridy(gbc, numColumns);
+            int anchorOrig = gbc.anchor;
+            gbc.anchor = GridBagConstraints.CENTER;
+            Insets insetsOrig = gbc.insets;
+            gbc.insets.left = 1;
+            gbc.insets.right = 1;
+            textfieldPanel.add(makeBooleanOptionField(pi), gbc);
+            gbc.anchor = anchorOrig;
+            gbc.insets = insetsOrig;
+            incrementGridxGridy(gbc, numColumns);
+        }
+
     }
 
 
@@ -969,7 +976,7 @@ public class ParamUIFactory {
 
 
 
-    protected JPanel makeEmptyRow(JPanel panel, GridBagConstraints gbc, int numColumns) {
+    protected JPanel makeEmptyRow(ProcessorModel processorModel, JPanel panel, GridBagConstraints gbc, int numColumns) {
         gbc.insets.top = 0;
         gbc.insets.bottom = 0;
 
@@ -977,8 +984,8 @@ public class ParamUIFactory {
         gbc.gridy++;
 
         while (gbc.gridx < numColumns) {
-            //todo
-            JLabel label = new JLabel(getStringOfSetLength(12));
+            //todo  set width
+            JLabel label = new JLabel(getStringOfSetLength(processorModel.getColumnWidth()));
             JLabel label2 = new JLabel(" ");
             label2.setMaximumSize(new Dimension(label.getPreferredSize().width,1));
             label2.setMinimumSize(new Dimension(label.getPreferredSize().width,1));

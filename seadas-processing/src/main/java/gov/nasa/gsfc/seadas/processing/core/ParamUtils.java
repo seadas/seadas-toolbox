@@ -254,6 +254,7 @@ public class ParamUtils {
 
             String description = XmlReader.getTextValue(optionElement, "description");
             String colSpan = XmlReader.getTextValue(optionElement, "colSpan");
+            String putInBooleanPanel = XmlReader.getTextValue(optionElement, "putInBooleanPanel");
             String subPanelIndex = XmlReader.getTextValue(optionElement, "subPanelIndex");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
@@ -281,11 +282,7 @@ public class ParamUtils {
             ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, defaultValue) : new ParamInfo(name, value, type, defaultValue);
             paramInfo.setDescription(description);
 
-            int defaultColSpan = 2;
-            if (tmpType.toLowerCase().equals("boolean")) {
-                defaultColSpan = 1;
-            }
-
+            int defaultColSpan = 1;
             if (colSpan != null) {
                 try {
                     int colSpanInt = Integer.parseInt(colSpan);
@@ -336,6 +333,10 @@ public class ParamUtils {
 
             if (usedAs != null) {
                 paramInfo.setUsedAs(usedAs);
+            }
+
+            if (putInBooleanPanel != null) {
+                paramInfo.setPutInBooleanPanel(putInBooleanPanel);
             }
 
             NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");

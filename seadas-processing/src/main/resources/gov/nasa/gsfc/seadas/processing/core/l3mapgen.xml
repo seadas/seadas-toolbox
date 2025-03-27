@@ -14,6 +14,7 @@
         <subPanel3Title> Image Mode Parameters </subPanel3Title>
         <subPanel4Title>  Pseudo True Color (RGB) Parameters </subPanel4Title>
         <numColumns>12</numColumns>
+        <columnWidth>10</columnWidth>
         <primaryOptions>
             <primaryOption>ifile</primaryOption>
             <primaryOption>ofile</primaryOption>
@@ -142,6 +143,7 @@
                 </description>
             </validValue>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>4</order>
         </option>
 
@@ -183,7 +185,7 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
-
+            <colSpan>2</colSpan>
             <order>5</order>
         </option>
 
@@ -195,7 +197,7 @@
             <source>default</source>
             <description>deflation level</description>
             <usedAs>option</usedAs>
-
+            <colSpan>2</colSpan>
             <order>6</order>
         </option>
 
@@ -228,6 +230,7 @@
             <source>default</source>
             <description>processing version string</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>12</order>
         </option>
 
@@ -243,6 +246,7 @@
             <source>default</source>
             <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>13</order>
         </option>
 
@@ -588,6 +592,7 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>105</order>
         </option>
 
@@ -620,6 +625,7 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>106</order>
         </option>
 
@@ -631,6 +637,7 @@
             <source>default</source>
             <description>fudge factor used to modify size of L3 pixels</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>106</order>
         </option>
 
@@ -647,6 +654,7 @@
             <source>default</source>
             <description>Northernmost Latitude</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>110</order>
         </option>
         <option type="float">
@@ -657,6 +665,7 @@
             <source>default</source>
             <description>Southernmost Latitude</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>111</order>
         </option>
         <option type="float">
@@ -667,6 +676,7 @@
             <source>default</source>
             <description>Westernmost Longitude</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>112</order>
         </option>
         <option type="float">
@@ -677,6 +687,7 @@
             <source>default</source>
             <description>Easternmost Longitude</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>113</order>
         </option>
 
@@ -689,6 +700,7 @@
             <source>default</source>
             <description>width of output image in pixels; supercedes resolution parameter</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>114</order>
         </option>
 
@@ -702,6 +714,7 @@
             <source>default</source>
             <description>minimum percentage of filled pixels before an image is generated</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>115</order>
         </option>
 
@@ -713,8 +726,10 @@
             <source>default</source>
             <description>central meridian for projection in deg east.  Only used for predefined projection</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>1</subPanelIndex>
             <order>121</order>
+
         </option>
 
         <option type="float">
@@ -723,6 +738,7 @@
             <source>default</source>
             <description>latitude of origin for projection in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>1</subPanelIndex>
             <order>122</order>
         </option>
@@ -733,6 +749,7 @@
             <source>default</source>
             <description>latitude of first standard parallel (south). Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>1</subPanelIndex>
             <order>123</order>
         </option>
@@ -743,6 +760,7 @@
             <source>default</source>
             <description>latitude of second standard parallel (north). Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>1</subPanelIndex>
             <order>124</order>
         </option>
@@ -754,6 +772,7 @@
             <source>default</source>
             <description>latitude of true scale for projection in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>1</subPanelIndex>
             <order>125</order>
         </option>
@@ -765,6 +784,7 @@
             <source>default</source>
             <description>projection rotation angle in deg north. Used only for predefined projections above as required.</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>1</subPanelIndex>
             <order>126</order>
         </option>
@@ -846,6 +866,7 @@
             <description>apply color palette</description>
             <usedAs>option</usedAs>
             <subPanelIndex>3</subPanelIndex>
+            <putInBooleanPanel>false</putInBooleanPanel>
             <order>299</order>
         </option>
 
@@ -955,6 +976,7 @@
             <source>default</source>
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>3</subPanelIndex>
             <order>301</order>
         </option>
@@ -965,6 +987,7 @@
             <source>default</source>
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>3</subPanelIndex>
             <order>302</order>
         </option>
@@ -994,11 +1017,24 @@
                 </validValue>
             </validValues>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <subPanelIndex>3</subPanelIndex>
             <order>303</order>
         </option>
 
 
+        <option type="boolean">
+            <name>use_transparency</name>
+            <value>false</value>
+            <default>false</default>
+            <source>default</source>
+            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>3</subPanelIndex>
+            <putInBooleanPanel>false</putInBooleanPanel>
+            <colSpan>2</colSpan>
+            <order>304</order>
+        </option>
 
         <option type="boolean">
             <name>mask_land</name>
@@ -1007,8 +1043,9 @@
             <source>default</source>
             <description>mask land</description>
             <usedAs>option</usedAs>
+            <putInBooleanPanel>false</putInBooleanPanel>
             <subPanelIndex>3</subPanelIndex>
-            <order>304</order>
+            <order>305</order>
         </option>
 
         <option type="string">
@@ -1020,23 +1057,12 @@
             <usedAs>option</usedAs>
             <colSpan>3</colSpan>
             <subPanelIndex>3</subPanelIndex>
-            <order>305</order>
+            <order>306</order>
         </option>
 
 
 
-        <option type="boolean">
-            <name>use_transparency</name>
-            <value>false</value>
-            <default>false</default>
-            <source>default</source>
-            <description>make missing data transparent (only valid for color PNG and TIFF)</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
-            <colSpan>2</colSpan>
 
-            <order>352</order>
-        </option>
 
 
 
@@ -1048,6 +1074,7 @@
             <description>should we use product_rgb to make a psudo true color image</description>
             <usedAs>option</usedAs>
             <subPanelIndex>4</subPanelIndex>
+            <putInBooleanPanel>false</putInBooleanPanel>
             <order>353</order>
         </option>
 

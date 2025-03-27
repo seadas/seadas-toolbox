@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <numColumns>12</numColumns>
+        <numColumns>6</numColumns>
         <subPanel0Title>  </subPanel0Title>
         <subPanel1Title> Quality Parameters </subPanel1Title>
         <subPanel2Title> Spatial Parameters </subPanel2Title>

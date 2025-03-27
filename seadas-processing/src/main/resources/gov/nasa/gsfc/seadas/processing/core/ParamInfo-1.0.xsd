@@ -13,6 +13,7 @@
                             <xs:element name="subPanel3Title" type="xs:string" default="" minOccurs="0"/>
                             <xs:element name="subPanel4Title" type="xs:string" default="" minOccurs="0"/>
                             <xs:element name="numColumns" type="xs:string" default="" minOccurs="0"/>
+                            <xs:element name="columnWidth" type="xs:string" default="" minOccurs="0"/>
                             <xs:element name="progressRegex" type="xs:string" minOccurs="0"/>
                             <xs:element name="hasProgramDependency" minOccurs="0">
                                 <xs:complexType>
