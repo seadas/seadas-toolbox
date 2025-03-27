@@ -5,7 +5,7 @@
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
         <numColumns>6</numColumns>
-        <columnWidth>20</columnWidth>
+        <columnWidth>18</columnWidth>
         <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
         <subPanel1Title> Flag &amp; Bin Scheme Parameters </subPanel1Title>
         <subPanel2Title> Spatial Parameters </subPanel2Title>
@@ -244,7 +244,7 @@
 <!--&lt;!&ndash;                <description>Note: this flag is not available in all level-2 files</description>&ndash;&gt;-->
 <!--&lt;!&ndash;            </validValue>&ndash;&gt;-->
             <usedAs>option</usedAs>
-            <colSpan>5</colSpan>
+            <colSpan>6</colSpan>
             <order>5</order>
         </option>
 
@@ -668,38 +668,40 @@
 
 
 
-        <option type="string">
-            <name>night</name>
-            <subPanelIndex>3</subPanelIndex>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>set to 'on' for SST night processing [default='off']</description>
-            <validValue>
-                <value> </value>
-                <description></description>
-            </validValue>
-            <validValue>
-                <value>ON</value>
-                <description></description>
-            </validValue>
-            <validValue>
-                <value>OFF</value>
-                <description></description>
-            </validValue>
-            <usedAs>option</usedAs>
-            <order>43</order>
-        </option>
-
-
-<!--        <option type="boolean">-->
+<!--        <option type="string">-->
 <!--            <name>night</name>-->
 <!--            <subPanelIndex>3</subPanelIndex>-->
-<!--            <value>false</value>-->
-<!--            <default>false</default>-->
-<!--            <description>set to 1 for SST night processing [default=0]</description>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <source>default</source>-->
+<!--            <description>set to 'on' for SST night processing [default='off']</description>-->
+<!--            <validValue>-->
+<!--                <value> </value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>ON</value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
+<!--            <validValue>-->
+<!--                <value>OFF</value>-->
+<!--                <description></description>-->
+<!--            </validValue>-->
 <!--            <usedAs>option</usedAs>-->
 <!--            <order>43</order>-->
 <!--        </option>-->
+
+
+        <option type="boolean">
+            <name>night</name>
+            <subPanelIndex>3</subPanelIndex>
+            <value>false</value>
+            <default>false</default>
+            <description>set to 1 for SST night processing [default=0]</description>
+            <usedAs>option</usedAs>
+            <putInBooleanPanel>false</putInBooleanPanel>
+            <subPanelIndex>3</subPanelIndex>
+            <order>43</order>
+        </option>
     </options>
 </paramInfo>

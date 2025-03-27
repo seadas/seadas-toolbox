@@ -917,6 +917,7 @@ public class ParamUIFactory {
         JComboBox<String> tmpComboBox = new JComboBox<String>(tmpValues);
         Dimension preferredComboBoxSize = tmpComboBox.getPreferredSize();
         inputList.setMinimumSize(preferredComboBoxSize);
+        inputList.setPreferredSize(preferredComboBoxSize);
 
         if (pi.getDescription() != null) {
             inputList.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
@@ -1172,6 +1173,8 @@ public class ParamUIFactory {
         }
 
         field.setText(pi.getValue());
+        JTextField testfieldTmp = new JTextField(getStringOfSetLength(processorModel.getColumnWidth()));
+        field.setPreferredSize(testfieldTmp.getPreferredSize());
 
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
