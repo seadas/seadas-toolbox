@@ -4,8 +4,8 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>parfile</parFileOptionName>
-        <subPanel0Title> </subPanel0Title>
-        <subPanel2Title> Quality Parameters </subPanel2Title>
+        <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
+        <subPanel2Title> Bin Scheme Parameters </subPanel2Title>
         <subPanel1Title> Spatial Parameters </subPanel1Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
 
@@ -263,6 +263,7 @@
             <source>default</source>
             <description>use median '1' otherwise use mean [default='0']</description>
             <usedAs>option</usedAs>
+            <putInBooleanPanel>false</putInBooleanPanel>
             <order>32</order>
         </option>
 
@@ -275,6 +276,7 @@
             <source>default</source>
             <description>use equal weighting across all input bin files</description>
             <usedAs>option</usedAs>
+            <putInBooleanPanel>false</putInBooleanPanel>
             <order>33</order>
         </option>
 
