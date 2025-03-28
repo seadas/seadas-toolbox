@@ -65,10 +65,6 @@
             "short_name": "MERIS_L3b_CYANTC"
         },
         {
-            "product_name": "CYAN",
-            "short_name": "MERIS_L3b_CYAN"
-        },
-        {
             "product_name": "ILW",
             "short_name": "MERIS_L3b_ILW"
         }

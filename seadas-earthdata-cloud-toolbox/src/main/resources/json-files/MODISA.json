@@ -155,11 +155,27 @@
     ],
     "L4b": [
         {
+            "product_name": "AVW",
+            "short_name": "MODISA_L4b_AVW"
+        },
+        {
+            "product_name": "CARBON",
+            "short_name": "MODISA_L4b_CARBON"
+        },
+        {
             "product_name": "GSM",
             "short_name": "MODISA_L4b_GSM"
         }
     ],
     "L4m": [
+        {
+            "product_name": "AVW",
+            "short_name": "MODISA_L4m_AVW"
+        },
+        {
+            "product_name": "CARBON",
+            "short_name": "MODISA_L4m_CARBON"
+        },
         {
             "product_name": "GSM",
             "short_name": "MODISA_L4m_GSM"

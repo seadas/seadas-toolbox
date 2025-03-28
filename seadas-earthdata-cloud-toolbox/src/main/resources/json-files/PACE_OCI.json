@@ -37,14 +37,6 @@
             "short_name": "PACE_OCI_L2_AOP"
         },
         {
-            "product_name": "BGC",
-            "short_name": "PACE_OCI_L2_BGC"
-        },
-        {
-            "product_name": "BGC_NRT",
-            "short_name": "PACE_OCI_L2_BGC_NRT"
-        },
-        {
             "product_name": "CLOUD_MASK_NRT",
             "short_name": "PACE_OCI_L2_CLOUD_MASK_NRT"
         },
@@ -75,6 +67,14 @@
         {
             "product_name": "LANDVI",
             "short_name": "PACE_OCI_L2_LANDVI"
+        },
+        {
+            "product_name": "BGC",
+            "short_name": "PACE_OCI_L2_BGC"
+        },
+        {
+            "product_name": "BGC_NRT",
+            "short_name": "PACE_OCI_L2_BGC_NRT"
         },
         {
             "product_name": "PAR",

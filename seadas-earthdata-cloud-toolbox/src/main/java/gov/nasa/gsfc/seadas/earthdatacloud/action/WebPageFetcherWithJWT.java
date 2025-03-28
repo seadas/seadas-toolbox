@@ -48,8 +48,7 @@ public class WebPageFetcherWithJWT {
         }
     }
 
-    public static String[]
-    getCredentials(String machineName) {
+    public static String[] getCredentials(String machineName) {
         File netrcFile = new File(System.getProperty("user.home"), ".netrc");
         String[] credentials = new String[2];  // [0]: username, [1]: password
         boolean machineFound = false;
@@ -322,17 +321,3 @@ public class WebPageFetcherWithJWT {
     }
 }
 
-// Custom TableCellRenderer to display clickable links in the table
-class LinkCellRenderer extends DefaultTableCellRenderer {
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if (value != null) {  // Check if value is not null
-            String link = value.toString();
-            label.setText("<html><a href=''>" + link + "</a></html>");
-        } else {
-            label.setText("No link"); // Handle null values
-        }
-        return label;
-    }
-}

@@ -132,5 +132,25 @@
             "product_name": "RRS",
             "short_name": "VIIRSJ2_L3m_RRS"
         }
+    ],
+    "L4b": [
+        {
+            "product_name": "AVW",
+            "short_name": "VIIRSJ2_L4b_AVW"
+        },
+        {
+            "product_name": "CARBON",
+            "short_name": "VIIRSJ2_L4b_CARBON"
+        }
+    ],
+    "L4m": [
+        {
+            "product_name": "AVW",
+            "short_name": "VIIRSJ2_L4m_AVW"
+        },
+        {
+            "product_name": "CARBON",
+            "short_name": "VIIRSJ2_L4m_CARBON"
+        }
     ]
 }
