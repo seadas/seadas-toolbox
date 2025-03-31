@@ -2300,15 +2300,19 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         // make sure key is uppercase
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod_list");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "prodtype");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "suite");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod_list");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "prodtype");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "suite");
 
 
 
-        if (checkForVariantMatch(keyString, "l3bprod")) {
+
+
+
+
+        if (checkForVariantMatch(keyString, "l3bprod") || checkForVariantMatch(keyString, "L3BPROD")) {
             String productSingle = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
                 String[] productsArray = l3bprod.split("[,\\s]");
@@ -2322,58 +2326,60 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
             keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productSingle);
+            keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD", productSingle.toUpperCase());
         }
 
 
 
-//        System.out.println("keystring=" + keyString);
-//        System.out.println("l3bprod=" + l3bprod);
-        if (checkForVariantMatch(keyString, "l3bprod_list")) {
+
+        if (checkForVariantMatch(keyString, "l3bprod_list") || checkForVariantMatch(keyString, "L3BPROD_LIST")) {
             String productList = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
                 String[] productsArray = l3bprod.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.contains("[_l3bprod_list]")) {
+                    if (keyString.toLowerCase().contains("[_l3bprod_list]")) {
                         productList += "_" + currProduct;
-                    } else if (keyString.contains("[-l3bprod_list]")) {
+                    } else if (keyString.toLowerCase().contains("[-l3bprod_list]")) {
                         productList += "-" + currProduct;
                     } else {
                         productList += "." + currProduct;
                     }
                 }
             }
-
             keyString = replaceAnyKeyStringVariant(keyString, "l3bprod_list", productList);
+            keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD_LIST", productList.toUpperCase());
         }
-//        System.out.println("keystring=" + keyString);
 
 
 
-        if (checkForVariantMatch(keyString, "resolution")) {
+        if (checkForVariantMatch(keyString, "resolution") || checkForVariantMatch(keyString, "RESOLUTION")) {
             if (resolution == null) {
                 resolution = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase());
         }
 
 
 
 
-        if (checkForVariantMatch(keyString, "prodtype")) {
+        if (checkForVariantMatch(keyString, "prodtype") || checkForVariantMatch(keyString, "PRODTYPE") ) {
             if (prodtype == null) {
                 prodtype = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "prodtype", prodtype);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODTYPE", prodtype.toUpperCase());
         }
 
 
 
-        if (checkForVariantMatch(keyString, "suite")) {
+        if (checkForVariantMatch(keyString, "suite") || checkForVariantMatch(keyString, "SUITE")) {
             if (suite == null) {
                 suite = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "suite", suite);
+            keyString = replaceAnyKeyStringVariant(keyString, "SUITE", suite.toUpperCase());
         }
 
 //
@@ -2416,11 +2422,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         // make sure key is uppercase
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product_list");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "projection");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "interp");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product_list");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "projection");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "interp");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west");
@@ -2434,7 +2440,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-        if (checkForVariantMatch(keyString, "product")) {
+        if (checkForVariantMatch(keyString, "product") || checkForVariantMatch(keyString, "PRODUCT")) {
             String productSingle = "";
             if (product != null && product.trim().length() > 0) {
                 String[] productsArray = product.split("[,\\s]");
@@ -2448,19 +2454,20 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
             keyString = replaceAnyKeyStringVariant(keyString, "product", productSingle);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT", productSingle.toUpperCase());
         }
 
 
 
-        if (checkForVariantMatch(keyString, "product_list")) {
+        if (checkForVariantMatch(keyString, "product_list") || checkForVariantMatch(keyString, "PRODUCT_LIST")) {
             String productList = "";
             if (product != null && product.trim().length() > 0) {
                 String[] productsArray = product.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.contains("[_product_list]")) {
+                    if (keyString.toLowerCase().contains("[_product_list]")) {
                         productList += "_" + currProduct;
-                    } else if (keyString.contains("[-product_list]")) {
+                    } else if (keyString.toLowerCase().contains("[-product_list]")) {
                         productList += "-" + currProduct;
                     } else {
                         productList += "." + currProduct;
@@ -2469,18 +2476,21 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
 
             keyString = replaceAnyKeyStringVariant(keyString, "product_list", productList);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT_LIST", productList.toUpperCase());
         }
 
 
-        if (checkForVariantMatch(keyString, "resolution")) {
+        if (checkForVariantMatch(keyString, "resolution") || checkForVariantMatch(keyString, "RESOLUTION")) {
             if (resolution == null) {
                 resolution = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase());
         }
 
 
-        if (checkForVariantMatch(keyString, "projection")) {
+
+        if (checkForVariantMatch(keyString, "projection") || checkForVariantMatch(keyString, "PROJECTION")) {
             String projectionName = "";
             if (projection != null && projection.trim().length() > 0) {
                 String[] projectionArray = projection.split("[\\s]");
@@ -2498,14 +2508,16 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
 
             keyString = replaceAnyKeyStringVariant(keyString, "projection", projectionName);
+            keyString = replaceAnyKeyStringVariant(keyString, "PROJECTION", projectionName.toUpperCase());
         }
 
 
-        if (checkForVariantMatch(keyString, "interp")) {
+        if (checkForVariantMatch(keyString, "interp") || checkForVariantMatch(keyString, "INTERP")) {
             if (interp == null) {
                 interp = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "interp", interp);
+            keyString = replaceAnyKeyStringVariant(keyString, "INTERP", interp.toUpperCase());
         }
 
 
@@ -2539,6 +2551,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         if (checkForVariantMatch(keyString, "nswe")
                 || checkForVariantMatch(keyString, "n.s.w.e")
+                || checkForVariantMatch(keyString, "°n.°s.°w.°e")
+                || checkForVariantMatch(keyString, "n°.s°.w°.e°")
                 || checkForVariantMatch(keyString, "n_s_w_e")
                 || checkForVariantMatch(keyString, "northsouthwesteast")
                 || checkForVariantMatch(keyString, "north.south.west.east")
@@ -2560,7 +2574,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String nswe = "";
             String northSouthWestEast = "";
             if (north.length() > 0 && south.length() > 0 && west.length() > 0 && east.length() > 0) {
-                nswe = north + "N_" + south + "S_" + west + "W_" + east + "E";
+                nswe = north + "°N_" + south + "°S_" + west + "°W_" + east + "°E";
                 northSouthWestEast = north + "North_" + south + "South_" + west + "West_" + east + "East";
             }
 
@@ -2632,27 +2646,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return false;
     }
 
-    private static String checkForVariantMatchByCase(String keyString, String key) {
-        if (key == null || keyString == null) {
-            return "0";
-        }
-        
-        String keyUpper = key.toUpperCase();
-        if (keyString.contains("[" + keyUpper + "]") || keyString.contains("[." + keyUpper + "]") || keyString.contains("[_" + keyUpper + "]") || keyString.contains("[-" + keyUpper + "]")) {
-            return "UPPER";
-        }
 
-        String keyLower = key.toLowerCase();
-        if (keyString.contains("[" + keyLower + "]") || keyString.contains("[." + keyLower + "]") || keyString.contains("[_" + keyLower + "]") || keyString.contains("[-" + keyLower + "]")) {
-            return "LOWER";
-        }
-        
-        if (keyString.contains("[" + key + "]") || keyString.contains("[." + key + "]") || keyString.contains("[_" + key + "]") || keyString.contains("[-" + key + "]")) {
-            return "AS_IS";
-        }
 
-        return "0";
-    }
+
 
 
     private static String trimStringChars(String string, String key, boolean trimStart, boolean trimEnd, boolean trimDuplicates) {
