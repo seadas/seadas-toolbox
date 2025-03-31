@@ -28,7 +28,6 @@ import org.esa.snap.core.util.PropertyMap;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.preferences.DefaultConfigController;
 import org.esa.snap.rcp.preferences.Preference;
-import org.esa.snap.ui.GridBagUtils;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 
@@ -60,13 +59,14 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     Property flaguse;
     Property l3bprod;
     Property output_wavelengths;
-    Property selector;
     Property suite;
     Property resolution;
     Property north;
     Property south;
     Property west;
     Property east;
+    Property l3bprodAutofill;
+    Property flaguseAutofill;
 
     Property favoriteSettingsSection;
 
@@ -224,10 +224,15 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_LONEAST_DEFAULT = "";
 
 
-    public static final String PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse.selector.disable";
-    public static final String PROPERTY_L2BIN_FLAGUSE_SELECTOR_LABEL = "Autofill 'flaguse' with suite defaults";
-    public static final String PROPERTY_L2BIN_FLAGUSE_SELECTOR_TOOLTIP = "<html>Autofills flaguse with the suite defaults. <br> Note: if flaguse is empty then suite defaults are used.</html>";
-    public static final boolean PROPERTY_L2BIN_FLAGUSE_SELECTOR_DEFAULT = true;
+    public static final String PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse.autofill";
+    public static final String PROPERTY_L2BIN_FLAGUSE_AUTOFILL_LABEL = "Autofill 'flaguse' with suite defaults";
+    public static final String PROPERTY_L2BIN_FLAGUSE_AUTOFILL_TOOLTIP = "<html>Autofills flaguse with the suite defaults. <br> Note: if flaguse is empty then suite defaults are used.</html>";
+    public static final boolean PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT = true;
+
+    public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".l3bprod.autofill";
+    public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL = "Autofill 'l3bprod' with suite defaults";
+    public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_TOOLTIP = "<html>Autofills l3bprod with the suite defaults. <br> Note: if l3bprod is empty then suite defaults are used.</html>";
+    public static final boolean PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT = true;
 
 
 
@@ -243,6 +248,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_FAV1_LOAD_LABEL = "1. Set as Default";
     public static final String PROPERTY_L2BIN_FAV1_LOAD_TOOLTIP = "Loads settings into the preferences";
     public static final boolean PROPERTY_L2BIN_FAV1_LOAD_DEFAULT = false;
+
 
     public static final String PROPERTY_L2BIN_FAV1_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.description";
     public static final String PROPERTY_L2BIN_FAV1_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
@@ -329,7 +335,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         south = initPropertyDefaults(context, PROPERTY_L2BIN_LATSOUTH_KEY, PROPERTY_L2BIN_LATSOUTH_DEFAULT);
         west = initPropertyDefaults(context, PROPERTY_L2BIN_LONWEST_KEY, PROPERTY_L2BIN_LONWEST_DEFAULT);
         east = initPropertyDefaults(context, PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
-        selector = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY, PROPERTY_L2BIN_FLAGUSE_SELECTOR_DEFAULT);
+        flaguseAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
+        l3bprodAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
         output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT);
         suite = initPropertyDefaults(context, PROPERTY_L2BIN_SUITE_KEY, PROPERTY_L2BIN_SUITE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_COMPOSITE_PROD_KEY, PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT);
@@ -400,10 +407,44 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         });
 
         flaguse.addPropertyChangeListener(evt -> {
+            final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
             if (flaguse.getValue() != null && flaguse.getValue().toString().trim().length() > 0) {
-                context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY, false);
+                try {
+                    boolean boolFalse = false;
+                    flaguseAutofill.setValue(boolFalse);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, false);
             } else {
-                context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY, true);
+                try {
+                    boolean boolTrue = true;
+                    flaguseAutofill.setValue(boolTrue);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, true);
+            }
+        });
+
+        l3bprod.addPropertyChangeListener(evt -> {
+            final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+            if (l3bprod.getValue() != null && l3bprod.getValue().toString().trim().length() > 0) {
+                try {
+                    boolean boolFalse = false;
+                    l3bprodAutofill.setValue(boolFalse);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, false);
+            } else {
+                try {
+                    boolean boolTrue = true;
+                    l3bprodAutofill.setValue(boolTrue);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, true);
             }
         });
 
@@ -752,6 +793,11 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 description = PROPERTY_L2BIN_L3BPROD_TOOLTIP)
         String l2binL3bprodDefault = PROPERTY_L2BIN_L3BPROD_DEFAULT;
 
+        @Preference(key = PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY,
+                label = PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL,
+                description = PROPERTY_L2BIN_L3BPROD_AUTOFILL_TOOLTIP)
+        boolean isPropertyL2binL3bprodAutofill = true;
+
 
         @Preference(key = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY,
                 label = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL,
@@ -765,10 +811,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         String l2binFlaguseDefault = PROPERTY_L2BIN_FLAGUSE_DEFAULT;
 
 
-        @Preference(key = PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY,
-                label = PROPERTY_L2BIN_FLAGUSE_SELECTOR_LABEL,
-                description = PROPERTY_L2BIN_FLAGUSE_SELECTOR_TOOLTIP)
-        boolean isPropertyL2binFlaguseSelectorDefault = true;
+        @Preference(key = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY,
+                label = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_LABEL,
+                description = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_TOOLTIP)
+        boolean isPropertyL2binFlaguseAutofill = true;
 
         @Preference(key = PROPERTY_L2BIN_PRODTYPE_KEY,
                 label = PROPERTY_L2BIN_PRODTYPE_LABEL,
@@ -1006,9 +1052,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     public static boolean getPreferenceFlaguseAutoFillEnable() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(PROPERTY_L2BIN_FLAGUSE_SELECTOR_KEY, PROPERTY_L2BIN_FLAGUSE_SELECTOR_DEFAULT);
+        return preferences.getPropertyBool(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
     }
 
+    public static boolean getPreferenceL3bprodAutoFillEnable() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
+    }
 
 
 }

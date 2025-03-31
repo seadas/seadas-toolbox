@@ -1456,21 +1456,41 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public void updateParamInfosFromL2binAuxParFile(String parfile) throws IOException {
 
-        boolean l3prodSet = false;
+        boolean l3bprodSet = false;
         boolean flaguseSet = false;
 
         System.out.println("updateParamInfosFromL2binAuxParFile");
 
-        String flagUsePref = OCSSW_L2binController.getPreferenceFlaguse();
-        if (flagUsePref != null && flagUsePref.trim().length() > 0) {
+        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+            String flagUsePref = OCSSW_L2binController.getPreferenceFlaguse();
+            if (flagUsePref == null) {
+                flagUsePref = "";
+            }
             ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-            String originalFlaguse = flaguseParamInfo.getValue();
-            updateParamInfo("flaguse", flagUsePref);
-            fireEvent("flaguse", originalFlaguse, flagUsePref);
-            flaguseSet = true;
+            if (flaguseParamInfo != null) {
+                String originalFlaguse = flaguseParamInfo.getValue();
+                updateParamInfo("flaguse", flagUsePref);
+                fireEvent("flaguse", originalFlaguse, flagUsePref);
+                flaguseSet = true;
+            }
         }
 
-        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+        if (!OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
+            String l3bprodPref = OCSSW_L2binController.getPreferenceL3bprod();
+            if (l3bprodPref == null) {
+                l3bprodPref = "";
+            }
+            ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
+            if (l3bprodParamInfo != null) {
+                String l3bprodValueOriginal = l3bprodParamInfo.getValue();
+                updateParamInfo("l3bprod", l3bprodPref);
+                fireEvent("l3bprod", l3bprodValueOriginal, l3bprodPref);
+                l3bprodSet = true;
+            }
+        }
+
+
+        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable() && !OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
             return;
         }
 
@@ -1487,12 +1507,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 line = br.readLine();
 
                 if (line != null) {
-                    String[] values = line.split("=");
+                    String[] values = line.split("=", 2);
                     if (values != null && values.length == 2) {
                         String name = values[0].trim();
                         String value = values[1].trim();
 
-                        if ("flaguse".equals(name) && !flaguseSet) {
+                        if ("flaguse".equals(name) && !flaguseSet && OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
                             ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
                             String flaguseValueOriginal = flaguseParamInfo.getValue();
                             updateParamInfo("flaguse", value);
@@ -1500,12 +1520,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                             flaguseSet = true;
                         }
 
-                        if ("l3bprod".equals(name) && !l3prodSet) {
+                        if ("l3bprod".equals(name) && !l3bprodSet && OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
                             ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
                             String l3bprodOriginalValue = l3bprodParamInfo.getValue();
                             updateParamInfo("l3bprod", value);
                             fireEvent("l3bprod", l3bprodOriginalValue, value);
-                            l3prodSet = true;
+                            l3bprodSet = true;
                         }
                     }
                 }
@@ -1524,7 +1544,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             fireEvent("flaguse", flaguseValueOriginal, flaguseParamInfo.getDefaultValue());
         }
 
-        if (!l3prodSet) {
+        if (!l3bprodSet) {
             ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
             String l3bprodValueOriginal = l3bprodParamInfo.getValue();
             updateParamInfo("l3bprod", l3bprodParamInfo.getDefaultValue());
@@ -1603,6 +1623,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             }
         }
+
+        Arrays.sort(suites);
+
         String suiteName;
         ArrayList<ParamValidValueInfo> suiteValidValues = new ArrayList<ParamValidValueInfo>();
         for (String fileName : suites) {
@@ -2279,13 +2302,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         // make sure key is uppercase
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod_single");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod_list");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "prodtype");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "suite");
 
 
 
-        if (checkForVariantMatch(keyString, "l3bprod_single")) {
+        if (checkForVariantMatch(keyString, "l3bprod")) {
             String productSingle = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
                 String[] productsArray = l3bprod.split("[,\\s]");
@@ -2298,22 +2321,22 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 }
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod_single", productSingle);
+            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productSingle);
         }
 
 
 
 //        System.out.println("keystring=" + keyString);
 //        System.out.println("l3bprod=" + l3bprod);
-        if (checkForVariantMatch(keyString, "l3bprod")) {
+        if (checkForVariantMatch(keyString, "l3bprod_list")) {
             String productList = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
                 String[] productsArray = l3bprod.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.contains("[_l3bprod]")) {
+                    if (keyString.contains("[_l3bprod_list]")) {
                         productList += "_" + currProduct;
-                    } else if (keyString.contains("[-l3bprod]")) {
+                    } else if (keyString.contains("[-l3bprod_list]")) {
                         productList += "-" + currProduct;
                     } else {
                         productList += "." + currProduct;
@@ -2321,7 +2344,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
 
-            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productList);
+            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod_list", productList);
         }
 //        System.out.println("keystring=" + keyString);
 
@@ -2395,7 +2418,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         // make sure key is uppercase
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product_single");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product_list");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "projection");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "interp");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north");
@@ -2411,7 +2434,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-        if (checkForVariantMatch(keyString, "product_single")) {
+        if (checkForVariantMatch(keyString, "product")) {
             String productSingle = "";
             if (product != null && product.trim().length() > 0) {
                 String[] productsArray = product.split("[,\\s]");
@@ -2424,20 +2447,20 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 }
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "product_single", productSingle);
+            keyString = replaceAnyKeyStringVariant(keyString, "product", productSingle);
         }
 
 
 
-        if (checkForVariantMatch(keyString, "product")) {
+        if (checkForVariantMatch(keyString, "product_list")) {
             String productList = "";
             if (product != null && product.trim().length() > 0) {
                 String[] productsArray = product.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.contains("[_product]")) {
+                    if (keyString.contains("[_product_list]")) {
                         productList += "_" + currProduct;
-                    } else if (keyString.contains("[-product]")) {
+                    } else if (keyString.contains("[-product_list]")) {
                         productList += "-" + currProduct;
                     } else {
                         productList += "." + currProduct;
@@ -2445,7 +2468,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
 
-            keyString = replaceAnyKeyStringVariant(keyString, "product", productList);
+            keyString = replaceAnyKeyStringVariant(keyString, "product_list", productList);
         }
 
 
@@ -2607,6 +2630,28 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         return false;
+    }
+
+    private static String checkForVariantMatchByCase(String keyString, String key) {
+        if (key == null || keyString == null) {
+            return "0";
+        }
+        
+        String keyUpper = key.toUpperCase();
+        if (keyString.contains("[" + keyUpper + "]") || keyString.contains("[." + keyUpper + "]") || keyString.contains("[_" + keyUpper + "]") || keyString.contains("[-" + keyUpper + "]")) {
+            return "UPPER";
+        }
+
+        String keyLower = key.toLowerCase();
+        if (keyString.contains("[" + keyLower + "]") || keyString.contains("[." + keyLower + "]") || keyString.contains("[_" + keyLower + "]") || keyString.contains("[-" + keyLower + "]")) {
+            return "LOWER";
+        }
+        
+        if (keyString.contains("[" + key + "]") || keyString.contains("[." + key + "]") || keyString.contains("[_" + key + "]") || keyString.contains("[-" + key + "]")) {
+            return "AS_IS";
+        }
+
+        return "0";
     }
 
 
