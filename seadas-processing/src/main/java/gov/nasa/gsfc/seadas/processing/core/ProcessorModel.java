@@ -317,14 +317,85 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return acceptsParFile;
     }
 
+    public boolean doTheyEqualAfterTrimming(String string1, String string2) {
+        if (string1 == null) {
+            string1 = "";
+        }
+        if (string2 == null) {
+            string2 = "";
+        }
+
+        string1 = string1.trim();
+        string2 = string2.trim();
+
+        if (string1.equals(string2)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean doTheyEqual(String string1, String string2) {
+        if (string1 == null && string2 == null ) {
+            return true;
+        }
+
+        if (string1 == null && string2 != null) {
+            return false;
+        }
+
+        if (string1 != null && string2 == null) {
+            return false;
+        }
+
+        if (string1.equals(string2)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
-        updateParamInfo(currentOption.getName(), newValue);
-        if ("l2bin".equalsIgnoreCase(programName)) {
-            if (currentOption.getName().equals("suite") || currentOption.getName().equals("ifile")) {
-                updateFlagUse(null);
+        if (currentOption == null || currentOption.getName() == null) {
+            return;
+        }
+
+        if (doTheyEqual(currentOption.getValue(), newValue)) {
+            return;
+        }
+
+
+        boolean suiteChanged = false;
+        boolean ifileChanged = false;
+        boolean ignore = false;  // ignore is suite or ifile and it is not changed
+
+        if (currentOption.getName().equals("suite")) {
+            suiteChanged = !doTheyEqualAfterTrimming(currentOption.getValue(), newValue);
+            System.out.println("suite"+ "|" + currentOption.getValue() + "|" + newValue + "|" +suiteChanged);
+            if (!suiteChanged) {
+                ignore = true;
             }
         }
-        checkCompleteness();
+        if (currentOption.getName().equals("ifile")) {
+            ifileChanged = !doTheyEqualAfterTrimming(currentOption.getValue(), newValue);
+            System.out.println("ifile"+ "|" + currentOption.getValue() + "|" + newValue + "|" + ifileChanged);
+            if (!ifileChanged) {
+                ignore = true;
+            }
+        }
+
+        if (!ignore) {
+            updateParamInfo(currentOption.getName(), newValue);
+            if ("l2bin".equalsIgnoreCase(programName)) {
+                if (suiteChanged || ifileChanged) {
+                    updateFlagUse(null);
+                }
+            }
+
+            checkCompleteness();
+        }
     }
 
     protected void checkCompleteness() {
@@ -1385,13 +1456,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public void updateParamInfosFromL2binAuxParFile(String parfile) throws IOException {
 
+        boolean l3prodSet = false;
+        boolean flaguseSet = false;
+
+        System.out.println("updateParamInfosFromL2binAuxParFile");
+
         String flagUsePref = OCSSW_L2binController.getPreferenceFlaguse();
         if (flagUsePref != null && flagUsePref.trim().length() > 0) {
             ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
             String originalFlaguse = flaguseParamInfo.getValue();
             updateParamInfo("flaguse", flagUsePref);
             fireEvent("flaguse", originalFlaguse, flagUsePref);
-            return;
+            flaguseSet = true;
         }
 
         if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
@@ -1409,29 +1485,27 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 sb.append(line);
                 sb.append(System.lineSeparator());
                 line = br.readLine();
-//                System.out.println(line);
 
                 if (line != null) {
                     String[] values = line.split("=");
                     if (values != null && values.length == 2) {
                         String name = values[0].trim();
                         String value = values[1].trim();
-//                        System.out.println("name=" + name + "  value=" + value);
 
-                        if ("suite".equals(name)) {
-                            ParamInfo paramInfo = paramList.getInfo("suite");
-                            String originalParamInfo = paramInfo.getValue();
-//                                flaguseParamInfo.setValue(value);
-                            updateParamInfo("suite", value);
-                            fireEvent("suite", originalParamInfo, value);
+                        if ("flaguse".equals(name) && !flaguseSet) {
+                            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+                            String flaguseValueOriginal = flaguseParamInfo.getValue();
+                            updateParamInfo("flaguse", value);
+                            fireEvent("flaguse", flaguseValueOriginal, value);
+                            flaguseSet = true;
                         }
 
-                        if ("flaguse".equals(name)) {
-                            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-                            String originalFlaguse = flaguseParamInfo.getValue();
-//                                flaguseParamInfo.setValue(value);
-                            updateParamInfo("flaguse", value);
-                            fireEvent("flaguse", originalFlaguse, value);
+                        if ("l3bprod".equals(name) && !l3prodSet) {
+                            ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
+                            String l3bprodOriginalValue = l3bprodParamInfo.getValue();
+                            updateParamInfo("l3bprod", value);
+                            fireEvent("l3bprod", l3bprodOriginalValue, value);
+                            l3prodSet = true;
                         }
                     }
                 }
@@ -1440,6 +1514,21 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                String everything = sb.toString();
         } finally {
             br.close();
+        }
+
+
+        if (!flaguseSet) {
+            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+            String flaguseValueOriginal = flaguseParamInfo.getValue();
+            updateParamInfo("flaguse", flaguseParamInfo.getDefaultValue());
+            fireEvent("flaguse", flaguseValueOriginal, flaguseParamInfo.getDefaultValue());
+        }
+
+        if (!l3prodSet) {
+            ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
+            String l3bprodValueOriginal = l3bprodParamInfo.getValue();
+            updateParamInfo("l3bprod", l3bprodParamInfo.getDefaultValue());
+            fireEvent("l3bprod", l3bprodValueOriginal, l3bprodParamInfo.getDefaultValue());
         }
     }
 
@@ -2214,8 +2303,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-        System.out.println("keystring=" + keyString);
-        System.out.println("l3bprod=" + l3bprod);
+//        System.out.println("keystring=" + keyString);
+//        System.out.println("l3bprod=" + l3bprod);
         if (checkForVariantMatch(keyString, "l3bprod")) {
             String productList = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
@@ -2234,7 +2323,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productList);
         }
-        System.out.println("keystring=" + keyString);
+//        System.out.println("keystring=" + keyString);
 
 
 
