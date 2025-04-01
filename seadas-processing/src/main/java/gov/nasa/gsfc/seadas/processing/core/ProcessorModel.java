@@ -2199,14 +2199,30 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             addPropertyChangeListener("prod", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
+//                    if (oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
+//                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
+//                    } else {
+//                        ofileName = ofileName + "_" + newProdValue;
+//                    }
+//                    updateOFileInfo(ofileName);
+//
+
+
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String prod = getParamValue("prod");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+
                     String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-                    if (oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
-                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
-                    } else {
-                        ofileName = ofileName + "_" + newProdValue;
-                    }
+
+//                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
                     updateOFileInfo(ofileName);
                 }
             });
@@ -2613,7 +2629,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-        
+
         keyString = keystringReplaceNSWE(keyString, north, south, west, east);
 
 //

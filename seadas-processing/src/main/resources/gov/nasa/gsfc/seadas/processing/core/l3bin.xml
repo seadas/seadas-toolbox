@@ -8,6 +8,8 @@
         <subPanel2Title> Bin Scheme Parameters </subPanel2Title>
         <subPanel1Title> Spatial Parameters </subPanel1Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
+        <numColumns>12</numColumns>
+        <columnWidth>10</columnWidth>
 
         <!--irow:   500 of     4320 Tue Jun 26 15:35:10 2012-->
         <progressRegex>irow: +(\d+) of +(\d+)</progressRegex>
@@ -41,7 +43,7 @@
             <value></value>
             <default></default>
             <description>data products list</description>
-            <colSpan>4</colSpan>
+            <colSpan>6</colSpan>
             <order>2</order>
         </option>
         <!--<option type="string">-->
@@ -67,42 +69,6 @@
             <default>false</default>
             <description>Allow more verbose screen messages [default=0]</description>
             <order>3</order>
-        </option>
-
-
-
-        <option type="float">
-            <name>latnorth</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Northernmost latitude (default=+90)</description>
-            <order>10</order>
-        </option>
-        <option type="float">
-            <name>latsouth</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Southernmost latitude (default=-90)</description>
-            <order>11</order>
-        </option>
-
-        <option type="float">
-            <name>lonwest</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Westernmost longitude (default=-180)</description>
-            <order>12</order>
-        </option>
-        <option type="float">
-            <name>loneast</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Easternmost longitude (default=+180)</description>
-            <order>13</order>
         </option>
 
 
@@ -171,6 +137,7 @@
                 <description>1 degree</description>
             </validValue>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>14</order>
         </option>
 
@@ -181,16 +148,70 @@
             <value></value>
             <default></default>
             <description>scale reduction factor (power of 2)</description>
+            <colSpan>2</colSpan>
             <order>15</order>
         </option>
+
+
+
+
+        <option type="float">
+            <name>latnorth</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Northernmost latitude (default=+90)</description>
+            <colSpan>2</colSpan>
+            <order>16</order>
+        </option>
+        <option type="float">
+            <name>latsouth</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Southernmost latitude (default=-90)</description>
+            <colSpan>2</colSpan>
+            <order>17</order>
+        </option>
+
+        <option type="float">
+            <name>lonwest</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Westernmost longitude (default=-180)</description>
+            <colSpan>2</colSpan>
+            <order>18</order>
+        </option>
+        <option type="float">
+            <name>loneast</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Easternmost longitude (default=+180)</description>
+            <colSpan>2</colSpan>
+            <order>19</order>
+        </option>
+
+
+
 
         <option type="string">
             <name>composite_scheme</name>
             <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
-            <description>composite scheme (min/max)</description>
+            <description>composite scheme for bin value using product in 'composite_prod'</description>
+            <validValue>
+                <value>min</value>
+                <description>Composite with minimum bin value using product in 'composite_prod'</description>
+            </validValue>
+            <validValue>
+                <value>max</value>
+                <description>Composite with maximum bin value using product in 'composite_prod'</description>
+            </validValue>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>30</order>
         </option>
 
@@ -201,6 +222,7 @@
             <default></default>
             <description>composite product field name</description>
             <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
             <order>31</order>
         </option>
 
@@ -264,6 +286,7 @@
             <description>use median '1' otherwise use mean [default='0']</description>
             <usedAs>option</usedAs>
             <putInBooleanPanel>false</putInBooleanPanel>
+            <colSpan>1</colSpan>
             <order>32</order>
         </option>
 
@@ -277,6 +300,7 @@
             <description>use equal weighting across all input bin files</description>
             <usedAs>option</usedAs>
             <putInBooleanPanel>false</putInBooleanPanel>
+            <colSpan>1</colSpan>
             <order>33</order>
         </option>
 
@@ -308,6 +332,7 @@
                     <description>HDF5</description>
                 </validValue>
             </validValues>
+            <colSpan>2</colSpan>
             <order>12</order>
         </option>
 
@@ -318,6 +343,7 @@
             <value></value>
             <default></default>
             <description>production version [default=Unspecified]</description>
+            <colSpan>2</colSpan>
             <order>13</order>
         </option>
 
