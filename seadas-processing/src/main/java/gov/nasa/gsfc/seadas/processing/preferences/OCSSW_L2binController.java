@@ -99,9 +99,9 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[.l3bprod][.resolution][.suite]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[_l3bprod][_resolution][_suite]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.l3bprod][.resolution][.prodtype][.suite]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[l3bprod][resolution][suite]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[l3bprod][resolution][suite][nswe°]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.l3bprod][.resolution][.prodtype][.suite][nswe]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_l3bprod][_resolution][_prodtype][_suite]";
     
     
@@ -128,10 +128,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
             "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
-            "[.l3bprod] : adds 'l3bprod' field with '.' as delimiter<br>" +
-            "[.resolution] : adds 'resolution' field with '.' as delimiter<br>" +
-            "[.prodtype] : adds 'prodtype' field with '.' as delimiter<br>" +
-            "[.suite] : adds 'suite' field with '.' as delimiter<br>" +
+            "[_l3bprod] : adds 'l3bprod' field with '_' as delimiter<br>" +
+            "[_resolution] : adds 'resolution' field with '_' as delimiter<br>" +
+            "[_prodtype] : adds 'prodtype' field with '_' as delimiter<br>" +
+            "[_suite] : adds 'suite' field with '_' as delimiter<br>" +
             "</html>";
 
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix1";

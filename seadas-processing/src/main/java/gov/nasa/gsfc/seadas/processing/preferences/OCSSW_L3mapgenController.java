@@ -93,8 +93,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[.product][.resolution]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[_product][_resolution]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[product][resolution]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[product][resolution][projection][nswe°]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.product][.resolution][.projection]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_product][_resolution][_projection]";
 
@@ -178,21 +178,21 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
             "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
-            "[.product] : adds 'product' field with '.' as delimiter<br>" +
-            "[.resolution] : adds 'resolution' field with '.' as delimiter<br>" +
-            "[.projection] : adds 'projection' field with '.' as delimiter<br>" +
+            "[_product] : adds 'product' field with '_' as delimiter<br>" +
+            "[_resolution] : adds 'resolution' field with '_' as delimiter<br>" +
+            "[_projection] : adds 'projection' field with '_' as delimiter<br>" +
             "</html>";
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL = OFILE_NAMING_SCHEME_SUFFIX1;
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = "[.product][.resolution]";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix2";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL = OFILE_NAMING_SCHEME_SUFFIX2;
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = "[.product][.resolution][.projection][.north_south_west_east]";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2;
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.ifile.original";

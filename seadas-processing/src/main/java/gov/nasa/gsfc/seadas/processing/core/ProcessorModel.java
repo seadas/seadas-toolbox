@@ -477,9 +477,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String suite = getParamValue("suite");
                 String l3bprod = getParamValue("l3bprod");
                 String prodtype = getParamValue("prodtype");
+                String north = getParamValue("latnorth");
+                String south = getParamValue("latsouth");
+                String west = getParamValue("lonwest");
+                String east = getParamValue("loneast");
 
 
-                String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype);
+                String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
 
                 if (ofileName != null) {
                     isIfileValid = true;
@@ -1665,8 +1669,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String l3bprod = getParamValue("l3bprod");
                     String suite = getParamValue("suite");
                     String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
 
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype);
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
@@ -1681,8 +1689,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String l3bprod = getParamValue("l3bprod");
                     String suite = getParamValue("suite");
                     String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
 
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype);
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
@@ -1697,8 +1709,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String l3bprod = getParamValue("l3bprod");
                     String suite = getParamValue("suite");
                     String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
 
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype);
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
@@ -1713,8 +1729,95 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String l3bprod = getParamValue("l3bprod");
                     String suite = getParamValue("suite");
                     String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
 
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype);
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+            addPropertyChangeListener("latnorth", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolution = getParamValue("resolution");
+                    String l3bprod = getParamValue("l3bprod");
+                    String suite = getParamValue("suite");
+                    String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            addPropertyChangeListener("latsouth", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolution = getParamValue("resolution");
+                    String l3bprod = getParamValue("l3bprod");
+                    String suite = getParamValue("suite");
+                    String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            addPropertyChangeListener("lonwest", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolution = getParamValue("resolution");
+                    String l3bprod = getParamValue("l3bprod");
+                    String suite = getParamValue("suite");
+                    String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            addPropertyChangeListener("loneast", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolution = getParamValue("resolution");
+                    String l3bprod = getParamValue("l3bprod");
+                    String suite = getParamValue("suite");
+                    String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
@@ -2268,7 +2371,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    private static String getOfileForL2BinAddOns(String resolution, String l3bprod, String suite, String prodtype) {
+    private static String getOfileForL2BinAddOns(String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
 
         if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L2binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
             return "";
@@ -2382,6 +2485,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "SUITE", suite.toUpperCase());
         }
 
+        keyString = keystringReplaceNSWE(keyString, north, south, west, east);
+
 //
 //        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
 //        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
@@ -2421,22 +2526,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return "";
         }
 
-        // make sure key is uppercase
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "product_list");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "projection");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "interp");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "n.s.w.e");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "n_s_w_e");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "northsouthwesteast");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north.south.west.east");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north_south_west_east");
+
+;
 
 
 
@@ -2521,42 +2612,105 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        if (checkForVariantMatch(keyString, "north")) {
+
+        
+        keyString = keystringReplaceNSWE(keyString, north, south, west, east);
+
+//
+//        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
+//        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
+//        simpleFormat = trimStringChars(simpleFormat, "-", false, true, true);
+
+        return keyString;
+    }
+
+    
+    
+    
+    private static String keystringReplaceNSWE(String keyString, String north, String south, String west, String east) {
+
+        //    [_nswe]  [_nswe°] [_NSWE°] [_nswedegrees]
+
+        // make sure key is uppercase
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north°");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "northdegrees");
+
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south°");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "southdegrees");
+
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west°");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "westdegrees");
+
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east°");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "eastdegrees");
+        
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe°");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswedegrees");
+        
+        
+        if (checkForVariantMatch(keyString, "north")
+                || checkForVariantMatch(keyString, "north°")
+                || checkForVariantMatch(keyString, "northdegrees")
+        ) {
             if (north == null) {
                 north = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "north", north, "N", null);
+            keyString = replaceAnyKeyStringVariant(keyString, "north", north, null, "N");
+            keyString = replaceAnyKeyStringVariant(keyString, "north°", north, null, "°N");
+            keyString = replaceAnyKeyStringVariant(keyString, "northdegrees", north, null, "°N");
         }
 
-        if (checkForVariantMatch(keyString, "south")) {
+
+        if (checkForVariantMatch(keyString, "south")
+                || checkForVariantMatch(keyString, "south°")
+                || checkForVariantMatch(keyString, "southdegrees")
+        ) {
             if (south == null) {
                 south = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "south", south, "S", null);
+            keyString = replaceAnyKeyStringVariant(keyString, "south", south, null, "S");
+            keyString = replaceAnyKeyStringVariant(keyString, "south°", south, null, "°S");
+            keyString = replaceAnyKeyStringVariant(keyString, "southdegrees", south, null, "°S");
         }
 
-        if (checkForVariantMatch(keyString, "west")) {
+
+        if (checkForVariantMatch(keyString, "west")
+                || checkForVariantMatch(keyString, "west°")
+                || checkForVariantMatch(keyString, "westdegrees")
+        ) {
             if (west == null) {
                 west = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "west", west, "W", null);
+            keyString = replaceAnyKeyStringVariant(keyString, "west", west, null, "W");
+            keyString = replaceAnyKeyStringVariant(keyString, "west°", west, null, "°W");
+            keyString = replaceAnyKeyStringVariant(keyString, "westdegrees", west, null, "°W");
         }
 
-        if (checkForVariantMatch(keyString, "east")) {
+
+        if (checkForVariantMatch(keyString, "east")
+                || checkForVariantMatch(keyString, "east°")
+                || checkForVariantMatch(keyString, "eastdegrees")
+        ) {
             if (east == null) {
                 east = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "east", east, "E", null);
+            keyString = replaceAnyKeyStringVariant(keyString, "east", east, null, "E");
+            keyString = replaceAnyKeyStringVariant(keyString, "east°", east, null, "°E");
+            keyString = replaceAnyKeyStringVariant(keyString, "eastdegrees", east, null, "°E");
         }
+        
+        
+
+
 
         if (checkForVariantMatch(keyString, "nswe")
-                || checkForVariantMatch(keyString, "n.s.w.e")
-                || checkForVariantMatch(keyString, "°n.°s.°w.°e")
-                || checkForVariantMatch(keyString, "n°.s°.w°.e°")
-                || checkForVariantMatch(keyString, "n_s_w_e")
-                || checkForVariantMatch(keyString, "northsouthwesteast")
-                || checkForVariantMatch(keyString, "north.south.west.east")
-                || checkForVariantMatch(keyString, "north_south_west_east")
+                || checkForVariantMatch(keyString, "nswe°")
+                || checkForVariantMatch(keyString, "nswedegrees")
         ) {
             if (north == null) {
                 north = "";
@@ -2572,30 +2726,41 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
 
             String nswe = "";
-            String northSouthWestEast = "";
-            if (north.length() > 0 && south.length() > 0 && west.length() > 0 && east.length() > 0) {
-                nswe = north + "°N_" + south + "°S_" + west + "°W_" + east + "°E";
-                northSouthWestEast = north + "North_" + south + "South_" + west + "West_" + east + "East";
+            String nsweDeg = "";
+            if (north.length() > 0) {
+                nswe = nswe + "_" + north + "N";
+                nsweDeg = nsweDeg + "_" + north + "°N";
+            }
+            if (south.length() > 0) {
+                nswe = nswe + "_" + south + "S";
+                nsweDeg = nsweDeg + "_" + south + "°S";
+            }
+            if (west.length() > 0) {
+                nswe = nswe + "_" + east + "E";
+                nsweDeg = nsweDeg + "_" + east + "°W";
+            }
+            if (east.length() > 0) {
+                nswe = nswe + "_" + west + "E";
+                nsweDeg = nsweDeg + "_" + west + "°E";
+            }
+
+            if (nswe.length() > 0) {
+                nswe = nswe.substring(1);
+            }
+            if (nsweDeg.length() > 0) {
+                nsweDeg = nsweDeg.substring(1);
             }
 
             keyString = replaceAnyKeyStringVariant(keyString, "nswe", nswe);
-            keyString = replaceAnyKeyStringVariant(keyString, "n.s.w.e", nswe);
-            keyString = replaceAnyKeyStringVariant(keyString, "n_s_w_e", nswe);
-            keyString = replaceAnyKeyStringVariant(keyString, "northsouthwesteast", northSouthWestEast);
-            keyString = replaceAnyKeyStringVariant(keyString, "north.south.west.east", northSouthWestEast);
-            keyString = replaceAnyKeyStringVariant(keyString, "north_south_west_east", northSouthWestEast);
+            keyString = replaceAnyKeyStringVariant(keyString, "nswe°", nsweDeg);
+            keyString = replaceAnyKeyStringVariant(keyString, "nswedegrees", nsweDeg);
         }
-
-
-//
-//        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "-", false, true, true);
 
         return keyString;
     }
 
-
+    
+    
     private static String convertAnyUpperCaseKeyToLowerCase(String keyString, String key) {
 
         String keyUpperCase = key.toUpperCase();
@@ -2629,9 +2794,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
         value = value.trim();
 
-        keyString = keyString.replace("[" + key + "]", "." + value);
-        keyString = keyString.replace("[." + key + "]", "." + value);
-        keyString = keyString.replace("[_" + key + "]", "_" + value);
+        if (value.length() > 0) {
+            keyString = keyString.replace("[" + key + "]", "_" + value);  // default
+            keyString = keyString.replace("[." + key + "]", "." + value);
+            keyString = keyString.replace("[_" + key + "]", "_" + value);
+            keyString = keyString.replace("[-" + key + "]", "-" + value);
+        } else {
+            keyString = keyString.replace("[" + key + "]", "");
+            keyString = keyString.replace("[." + key + "]", "");
+            keyString = keyString.replace("[_" + key + "]", "");
+            keyString = keyString.replace("[-" + key + "]", "");
+        }
+
         keyString = keyString.replace("[-" + key + "]", "-" + value);
 
         return keyString;
@@ -2716,7 +2890,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-    public static String getOfileForL2BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String l3bprod, String suite, String prodtype) {
+    public static String getOfileForL2BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
         
@@ -2755,7 +2929,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        ofileName += getOfileForL2BinAddOns(resolution, l3bprod, suite, prodtype);
+        ofileName += getOfileForL2BinAddOns(resolution, l3bprod, suite, prodtype, north, south, west, east);
 
 
         if (ofileName.equalsIgnoreCase(ifileBaseName)) {
