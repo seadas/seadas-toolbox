@@ -235,7 +235,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.section";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Ofile Naming Scheme";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Field 'ofile' Naming Scheme";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme";
@@ -285,7 +285,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".FAV.projections.section";
-    public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_LABEL = "Favorite Projections";
+    public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_LABEL = "[ Stored Favorite Projections ]";
     public static final String PROPERTY_L3MAPGEN_FAV_PROJECTIONS_SECTION_TOOLTIP = "Set projection as default";
 
     private static final String INDENTATION_SPACES = "           ";

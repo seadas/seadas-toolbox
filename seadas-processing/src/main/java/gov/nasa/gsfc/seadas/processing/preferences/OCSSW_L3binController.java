@@ -80,8 +80,8 @@ public final class OCSSW_L3binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[prod][resolve]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[prod][resolve][nswe°]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.product][.resolution][.projection]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_product][_resolution][_projection]";
+//    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.product][.resolution][.projection]";
+//    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_product][_resolution][_projection]";
 
 
     // Preferences property prefix
@@ -333,8 +333,6 @@ public final class OCSSW_L3binController extends DefaultConfigController {
         if (OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(fieldsAdd.getValue())
                 || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(fieldsAdd.getValue())
                 || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(fieldsAdd.getValue())
-                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(fieldsAdd.getValue())
-                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(fieldsAdd.getValue())
         ) {
             context.setComponentsEnabled(PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, false);
             context.setComponentsEnabled(PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, false);
@@ -504,9 +502,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
                         OFILE_NAMING_SCHEME_SUFFIX1,
                         OFILE_NAMING_SCHEME_SUFFIX2,
                         OFILE_NAMING_SCHEME_SUFFIX_DEFAULT,
-                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2,
-                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3,
-                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4},
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2},
                 description = PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP)
         String l3binOfileNamingSchemeFieldsAddDefault = PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT;
 

@@ -2499,32 +2499,19 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
         } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
             keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2;
-        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
-        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
-            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4;
+//        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+//            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
+//        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+//            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4;
         } else {
             keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
         }
 
-        // todo Danny
-//        keyString = "[.l3bprod][.resolution][.prodtype][.suite]";
-//
+
 
         if (keyString == null || keyString.trim().length() == 0) {
             return "";
         }
-
-        // make sure key is uppercase
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod_list");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "prodtype");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "suite");
-
-
-
-
 
 
 
@@ -2578,16 +2565,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
-
-
-
         keyString = keystringReplaceNSWE(keyString, north, south, west, east);
-
-//
-//        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "-", false, true, true);
 
         return keyString;
     }
@@ -2620,24 +2598,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = OCSSW_L2binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
         }
 
-        // todo Danny
-//        keyString = "[.l3bprod][.resolution][.prodtype][.suite]";
-//
 
         if (keyString == null || keyString.trim().length() == 0) {
             return "";
         }
-
-        // make sure key is uppercase
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod_list");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "prodtype");
-//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "suite");
-
-
-
-
 
 
 
@@ -2667,12 +2631,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String[] productsArray = l3bprod.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.toLowerCase().contains("[_l3bprod_list]")) {
-                        productList += "_" + currProduct;
+                    if (keyString.toLowerCase().contains("[.l3bprod_list]")) {
+                        productList += "." + currProduct;
                     } else if (keyString.toLowerCase().contains("[-l3bprod_list]")) {
                         productList += "-" + currProduct;
                     } else {
-                        productList += "." + currProduct;
+                        productList += "_" + currProduct;
                     }
                 }
             }
@@ -2713,10 +2677,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         keyString = keystringReplaceNSWE(keyString, north, south, west, east);
 
-//
-//        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "-", false, true, true);
 
         return keyString;
     }
@@ -2782,12 +2742,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String[] productsArray = product.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.toLowerCase().contains("[_product_list]")) {
-                        productList += "_" + currProduct;
+                    if (keyString.toLowerCase().contains("[.product_list]")) {
+                        productList += "." + currProduct;
                     } else if (keyString.toLowerCase().contains("[-product_list]")) {
                         productList += "-" + currProduct;
                     } else {
-                        productList += "." + currProduct;
+                        productList += "_" + currProduct;
                     }
                 }
             }
@@ -2841,11 +2801,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
         keyString = keystringReplaceNSWE(keyString, north, south, west, east);
-
-//
-//        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
-//        simpleFormat = trimStringChars(simpleFormat, "-", false, true, true);
 
         return keyString;
     }
@@ -2962,12 +2917,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 nsweDeg = nsweDeg + "_" + south + "°S";
             }
             if (west.length() > 0) {
-                nswe = nswe + "_" + east + "E";
-                nsweDeg = nsweDeg + "_" + east + "°W";
+                nswe = nswe + "_" + west + "W";
+                nsweDeg = nsweDeg + "_" + west + "°W";
             }
             if (east.length() > 0) {
-                nswe = nswe + "_" + west + "E";
-                nsweDeg = nsweDeg + "_" + west + "°E";
+                nswe = nswe + "_" + east + "E";
+                nsweDeg = nsweDeg + "_" + east + "°E";
             }
 
             if (nswe.length() > 0) {
@@ -3122,7 +3077,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         String ofileName;
 
-        if (OCSSW_L3binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
+        if (OCSSW_L3binController.OFILE_NAMING_SCHEME_IFILE_REPLACE.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
+            String orginalKeyString = OCSSW_L3binController.getPreferenceOfileNamingSchemeIfileOriginal();
+            String replacementKeyString = OCSSW_L3binController.getPreferenceOfileNamingSchemeIfileReplace();
+            ofileName = getOfileWithReplaceForL3MapGen(ifileName, orginalKeyString, replacementKeyString);
+        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
             String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
         } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
@@ -3249,7 +3208,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         String ofileName;
         if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_IFILE_REPLACE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-            ofileName = getOfileWithReplaceForL3MapGen(ifileName);
+            String orginalKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileOriginal();
+            String replacementKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileReplace();
+            ofileName = getOfileWithReplaceForL3MapGen(ifileName, orginalKeyString, replacementKeyString);
         } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
             String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
@@ -3272,7 +3233,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
             ofileName = getOfileSimple(ifileName);
         } else {
-            ofileName = getOfileWithReplaceForL3MapGen(ifileName);
+            String orginalKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileOriginal();
+            String replacementKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileReplace();
+            ofileName = getOfileWithReplaceForL3MapGen(ifileName, orginalKeyString, replacementKeyString);
         }
 
         // if it fails gives it a simple name (for example 'output')
@@ -3334,7 +3297,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-    private static String getOfileWithReplaceForL3MapGen(String ifilename) {
+    private static String getOfileWithReplaceForL3MapGen(String ifilename, String orginalKeyString, String replacementKeyString) {
 
         String parentPath = null;
         String ifileBasename = ifilename;
@@ -3352,9 +3315,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         ifileBasename = stripFilenameExtension(ifileBasename);
-
-        String orginalKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileOriginal();
-        String replacementKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileReplace();
+//
+//        String orginalKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileOriginal();
+//        String replacementKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileReplace();
         if (replacementKeyString == null) {
             replacementKeyString = "";
         }

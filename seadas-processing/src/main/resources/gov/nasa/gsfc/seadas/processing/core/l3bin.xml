@@ -4,9 +4,9 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>parfile</parFileOptionName>
-        <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
-        <subPanel2Title> Bin Scheme Parameters </subPanel2Title>
-        <subPanel1Title> Spatial Parameters </subPanel1Title>
+        <subPanel0Title> Product Parameter </subPanel0Title>
+        <subPanel2Title> Bin Method Parameters </subPanel2Title>
+        <subPanel1Title> Geospatial Parameters </subPanel1Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
         <numColumns>8</numColumns>
         <columnWidth>10</columnWidth>
@@ -43,7 +43,7 @@
             <value></value>
             <default></default>
             <description>data products list</description>
-            <colSpan>6</colSpan>
+            <colSpan>8</colSpan>
             <order>2</order>
         </option>
         <!--<option type="string">-->
@@ -309,34 +309,34 @@
 
 
 
-        <option type="string">
-            <name>oformat</name>
-            <value>netCDF4</value>
-            <default></default>
-            <description>color file format; default is the same format as input file(s)</description>
+<!--        <option type="string">-->
+<!--            <name>oformat</name>-->
+<!--            <value>netCDF4</value>-->
+<!--            <default></default>-->
+<!--            <description>color file format; default is the same format as input file(s)</description>-->
 
-            <source></source>
-            <validValues>
-                <validValue>
-                    <value></value>
-                    <description>color file format; default is the same format as input file(s)</description>
-                </validValue>
-                <validValue>
-                    <value>HDF4</value>
-                    <description>HDF4</description>
-                </validValue>
-                <validValue>
-                    <value>netCDF4</value>
-                    <description>netCDF4</description>
-                </validValue>
-                <validValue>
-                    <value>HDF5</value>
-                    <description>HDF5</description>
-                </validValue>
-            </validValues>
-            <colSpan>2</colSpan>
-            <order>12</order>
-        </option>
+<!--            <source></source>-->
+<!--            <validValues>-->
+<!--                <validValue>-->
+<!--                    <value></value>-->
+<!--                    <description>color file format; default is the same format as input file(s)</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>HDF4</value>-->
+<!--                    <description>HDF4</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>netCDF4</value>-->
+<!--                    <description>netCDF4</description>-->
+<!--                </validValue>-->
+<!--                <validValue>-->
+<!--                    <value>HDF5</value>-->
+<!--                    <description>HDF5</description>-->
+<!--                </validValue>-->
+<!--            </validValues>-->
+<!--            <colSpan>2</colSpan>-->
+<!--            <order>12</order>-->
+<!--        </option>-->
 
 
 
