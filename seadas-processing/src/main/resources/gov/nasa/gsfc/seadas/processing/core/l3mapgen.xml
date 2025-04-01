@@ -144,6 +144,28 @@
 
 
 
+        <option type="int">
+            <name>num_cache</name>
+            <value></value>
+            <default></default>
+            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <source>default</source>
+            <description>number of rows to cache in memory</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <order>5</order>
+        </option>
+
+        <option type="int">
+            <name>deflate</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>deflation level</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <order>6</order>
+        </option>
 
 
         <option type="string">
@@ -181,20 +203,11 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <order>5</order>
+            <order>7</order>
         </option>
 
 
-        <option type="int">
-            <name>deflate</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>deflation level</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <order>6</order>
-        </option>
+
 
 
 
@@ -217,33 +230,22 @@
 
 
 
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <default></default>
-            <source>default</source>
-            <description>processing version string</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <order>12</order>
-        </option>
+<!--        <option type="string">-->
+<!--            <name>pversion</name>-->
+<!--            <value></value>-->
+<!--            &lt;!&ndash;            <subPanelIndex>3</subPanelIndex>&ndash;&gt;-->
+<!--            <default></default>-->
+<!--            <source>default</source>-->
+<!--            <description>processing version string</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <colSpan>2</colSpan>-->
+<!--            <order>12</order>-->
+<!--        </option>-->
 
 
 
 
 
-        <option type="int">
-            <name>num_cache</name>
-            <value></value>
-            <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
-            <source>default</source>
-            <description>number of rows to cache in memory</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <order>13</order>
-        </option>
 
 
 

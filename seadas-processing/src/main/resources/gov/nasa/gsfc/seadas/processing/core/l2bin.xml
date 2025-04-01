@@ -565,14 +565,14 @@
 
 
 
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <default></default>
-            <description>production version [default=Unspecified]</description>
-            <usedAs>option</usedAs>
-            <order>30</order>
-        </option>
+<!--        <option type="string">-->
+<!--            <name>pversion</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>production version [default=Unspecified]</description>-->
+<!--            <usedAs>option</usedAs>-->
+<!--            <order>30</order>-->
+<!--        </option>-->
 
 
         <option type="boolean">

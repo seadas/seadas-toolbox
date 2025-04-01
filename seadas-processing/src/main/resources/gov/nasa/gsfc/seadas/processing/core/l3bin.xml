@@ -8,7 +8,7 @@
         <subPanel2Title> Bin Scheme Parameters </subPanel2Title>
         <subPanel1Title> Spatial Parameters </subPanel1Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
-        <numColumns>12</numColumns>
+        <numColumns>8</numColumns>
         <columnWidth>10</columnWidth>
 
         <!--irow:   500 of     4320 Tue Jun 26 15:35:10 2012-->
@@ -70,6 +70,50 @@
             <description>Allow more verbose screen messages [default=0]</description>
             <order>3</order>
         </option>
+
+
+
+
+
+
+        <option type="float">
+            <name>latnorth</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Northernmost latitude (default=+90)</description>
+            <colSpan>2</colSpan>
+            <order>16</order>
+        </option>
+        <option type="float">
+            <name>latsouth</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Southernmost latitude (default=-90)</description>
+            <colSpan>2</colSpan>
+            <order>17</order>
+        </option>
+
+        <option type="float">
+            <name>lonwest</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Westernmost longitude (default=-180)</description>
+            <colSpan>2</colSpan>
+            <order>18</order>
+        </option>
+        <option type="float">
+            <name>loneast</name>
+            <subPanelIndex>1</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>Easternmost longitude (default=+180)</description>
+            <colSpan>2</colSpan>
+            <order>19</order>
+        </option>
+
 
 
 
@@ -138,7 +182,7 @@
             </validValue>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <order>14</order>
+            <order>20</order>
         </option>
 
 
@@ -149,50 +193,8 @@
             <default></default>
             <description>scale reduction factor (power of 2)</description>
             <colSpan>2</colSpan>
-            <order>15</order>
+            <order>21</order>
         </option>
-
-
-
-
-        <option type="float">
-            <name>latnorth</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Northernmost latitude (default=+90)</description>
-            <colSpan>2</colSpan>
-            <order>16</order>
-        </option>
-        <option type="float">
-            <name>latsouth</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Southernmost latitude (default=-90)</description>
-            <colSpan>2</colSpan>
-            <order>17</order>
-        </option>
-
-        <option type="float">
-            <name>lonwest</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Westernmost longitude (default=-180)</description>
-            <colSpan>2</colSpan>
-            <order>18</order>
-        </option>
-        <option type="float">
-            <name>loneast</name>
-            <subPanelIndex>1</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>Easternmost longitude (default=+180)</description>
-            <colSpan>2</colSpan>
-            <order>19</order>
-        </option>
-
 
 
 
@@ -338,14 +340,14 @@
 
 
 
-        <option type="string">
-            <name>pversion</name>
-            <value></value>
-            <default></default>
-            <description>production version [default=Unspecified]</description>
-            <colSpan>2</colSpan>
-            <order>13</order>
-        </option>
+<!--        <option type="string">-->
+<!--            <name>pversion</name>-->
+<!--            <value></value>-->
+<!--            <default></default>-->
+<!--            <description>production version [default=Unspecified]</description>-->
+<!--            <colSpan>2</colSpan>-->
+<!--            <order>13</order>-->
+<!--        </option>-->
 
     </options>
 </paramInfo>
