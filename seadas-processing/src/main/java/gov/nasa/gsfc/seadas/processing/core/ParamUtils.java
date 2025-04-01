@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
@@ -549,6 +550,39 @@ public class ParamUtils {
                     case "row_group":
                         paramInfo.setValue(OCSSW_L2binController.getPreferenceRowGroup());
                         break;
+                }
+            }
+
+
+
+
+            if ("l3bin.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case OCSSW_L3binController.PROPERTY_L3BIN_PRODUCT_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceProd());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_RESOLUTION_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceResolve());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_NORTH_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceNorth());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_SOUTH_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceSouth());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_WEST_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceWest());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_EAST_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceEast());
+                        break;
+//                    case "composite_prod":
+//                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeProd());
+//                        break;
+//                    case "composite_scheme":
+//                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeScheme());
+//                        break;
+
                 }
             }
 

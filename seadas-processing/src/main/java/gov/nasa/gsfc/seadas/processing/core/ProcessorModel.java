@@ -8,6 +8,7 @@ import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_InstallerController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.SystemUtils;
@@ -484,6 +485,25 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
                 String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
+                if (ofileName != null) {
+                    isIfileValid = true;
+                    updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
+                    updateGeoFileInfo(ifileName, inputFileInfo);
+                    updateOFileInfo(ofileName);
+
+                    updateParamValues(new File(ifileName));
+                }
+
+            } else if ("l3bin".equalsIgnoreCase(programName)) {
+                String resolve = getParamValue("resolve");
+                String prod = getParamValue("prod");
+                String north = getParamValue("latnorth");
+                String south = getParamValue("latsouth");
+                String west = getParamValue("lonwest");
+                String east = getParamValue("loneast");
+                
+                String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
 
                 if (ofileName != null) {
                     isIfileValid = true;
@@ -2199,35 +2219,111 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             addPropertyChangeListener("prod", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String oldProdValue = (String) propertyChangeEvent.getOldValue();
-//                    String newProdValue = (String) propertyChangeEvent.getNewValue();
-//                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-//                    if (oldProdValue.trim().length() > 0 && ofileName.indexOf(oldProdValue) != -1) {
-//                        ofileName = ofileName.replaceAll(oldProdValue, newProdValue);
-//                    } else {
-//                        ofileName = ofileName + "_" + newProdValue;
-//                    }
-//                    updateOFileInfo(ofileName);
-//
-
-
                     String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolve = getParamValue("resolve");
                     String prod = getParamValue("prod");
                     String north = getParamValue("latnorth");
                     String south = getParamValue("latsouth");
                     String west = getParamValue("lonwest");
                     String east = getParamValue("loneast");
 
-
-                    String ofileName = getParamValue(getPrimaryOutputFileOptionName());
-
-//                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+                    String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
 
                     updateOFileInfo(ofileName);
                 }
             });
+
+            addPropertyChangeListener("resolve", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolve = getParamValue("resolve");
+                    String prod = getParamValue("prod");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+            addPropertyChangeListener("latnorth", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolve = getParamValue("resolve");
+                    String prod = getParamValue("prod");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            addPropertyChangeListener("latsouth", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolve = getParamValue("resolve");
+                    String prod = getParamValue("prod");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+
+            addPropertyChangeListener("lonwest", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolve = getParamValue("resolve");
+                    String prod = getParamValue("prod");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
+            addPropertyChangeListener("loneast", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String resolve = getParamValue("resolve");
+                    String prod = getParamValue("prod");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+
+                    String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+                }
+            });
+
         }
     }
+
+
 
     private static class L3BinDump_Processor extends ProcessorModel {
 
@@ -2386,6 +2482,120 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return ofilename;
     }
 
+
+
+    private static String getOfileForL3BinAddOns(String resolution, String l3bprod, String north, String south, String west, String east) {
+
+        if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            return "";
+        }
+
+        String keyString;
+        if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX1.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffix1();
+        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX2.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffix2();
+        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2;
+        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
+        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
+            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4;
+        } else {
+            keyString = OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+        }
+
+        // todo Danny
+//        keyString = "[.l3bprod][.resolution][.prodtype][.suite]";
+//
+
+        if (keyString == null || keyString.trim().length() == 0) {
+            return "";
+        }
+
+        // make sure key is uppercase
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "resolution");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "l3bprod_list");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "prodtype");
+//        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "suite");
+
+
+
+
+
+
+
+        if (checkForVariantMatch(keyString, "prod") || checkForVariantMatch(keyString, "PROD")) {
+            String productSingle = "";
+            if (l3bprod != null && l3bprod.trim().length() > 0) {
+                String[] productsArray = l3bprod.split("[,\\s]");
+                if (productsArray != null && productsArray.length == 1) {
+                    if (productsArray[0] != null) {
+                        productSingle = productsArray[0].trim();
+                        if (productSingle.length() > 0) {
+                            productSingle = productsArray[0];
+                        }
+                    }
+                }
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "prod", productSingle);
+            keyString = replaceAnyKeyStringVariant(keyString, "PROD", productSingle.toUpperCase());
+        }
+
+
+
+
+        if (checkForVariantMatch(keyString, "prod_list") || checkForVariantMatch(keyString, "PROD_LIST")) {
+            String productList = "";
+            if (l3bprod != null && l3bprod.trim().length() > 0) {
+                String[] productsArray = l3bprod.split("[,\\s]");
+
+                for (String currProduct : productsArray) {
+                    if (keyString.toLowerCase().contains("[.prod_list]")) {
+                        productList += "." + currProduct;
+                    } else if (keyString.toLowerCase().contains("[-prod_list]")) {
+                        productList += "-" + currProduct;
+                    } else {
+                        productList += "_" + currProduct;
+                    }
+                }
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "prod_list", productList);
+            keyString = replaceAnyKeyStringVariant(keyString, "PROD_LIST", productList.toUpperCase());
+        }
+
+
+
+        if (checkForVariantMatch(keyString, "resolve") || checkForVariantMatch(keyString, "RESOLVE")) {
+            if (resolution == null) {
+                resolution = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "resolve", resolution);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE", resolution.toUpperCase());
+        }
+
+
+
+
+
+
+        keyString = keystringReplaceNSWE(keyString, north, south, west, east);
+
+//
+//        simpleFormat = trimStringChars(simpleFormat, ".", false, true, true);
+//        simpleFormat = trimStringChars(simpleFormat, "_", false, true, true);
+//        simpleFormat = trimStringChars(simpleFormat, "-", false, true, true);
+
+        return keyString;
+    }
+
+
+
+    
+    
 
     private static String getOfileForL2BinAddOns(String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
 
@@ -2904,6 +3114,71 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
+
+
+    public static String getOfileForL3BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolve, String prod, String north, String south, String west, String east) {
+        String ifileBaseName = stripFilenameExtension(ifileName);
+
+
+        String ofileName;
+
+        if (OCSSW_L3binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
+            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
+        } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
+//            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
+            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
+            ofileName = ofileName.replace(".DAY.", ".");
+            ofileName = ofileName.replace(".DAY", "");
+            ofileName = ofileName.replace(".8D.", ".");
+            ofileName = ofileName.replace(".8D", "");
+            ofileName = ofileName.replace(".MO.", ".");
+            ofileName = ofileName.replace(".MO", "");
+            ofileName = ofileName.replace(".YR.", ".");
+            ofileName = ofileName.replace(".YR", "");
+            ofileName = ofileName.replace(".CU.", ".");
+            ofileName = ofileName.replace(".CU", "");
+
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
+            ofileName = getOfileSimple(ifileName);
+        } else {
+            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);        }
+
+
+
+        // if it fails gives it a simple name (for example 'output')
+        if (ofileName == null || ofileName.length() == 0) {
+            ofileName = getOfileSimple(ifileName);
+        }
+
+
+        ofileName += getOfileForL3BinAddOns(resolve, prod, north, south, west, east);
+
+
+        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
+            ofileName = ofileName + "_out";
+        }
+
+
+        if (ofileName.contains(" ")) {
+            ofileName = ofileName.replace(" ", "");
+        }
+        ofileName = trimStringChars(ofileName, ".", false, true, true);
+        ofileName = trimStringChars(ofileName, "_", false, true, true);
+        ofileName = trimStringChars(ofileName, "-", false, true, true);
+
+
+        ofileName += ".nc";
+
+        return ofileName;
+    }
+
+    
+    
+    
 
 
     public static String getOfileForL2BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
