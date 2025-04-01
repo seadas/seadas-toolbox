@@ -402,6 +402,12 @@ public class ParamUtils {
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWavelength3D());
                         break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NUM_CACHE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceNumCache());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFORMAT_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceOformat());
+                        break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_LABEL:
 //                        getUserProjections();
 
@@ -444,6 +450,54 @@ public class ParamUtils {
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceEast());
                         break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PALFILE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferencePalfile());
+                        break;
+
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMIN_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceDataMin());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMAX_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceDataMax());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SCALE_TYPE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceScaleType());
+                        break;
+
+
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RGB_LAND_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceRGBLand());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceMaskLand()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceApplyPal()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceUseTransparency()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceUseRGB()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+
+
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProductRGB());
                         break;
