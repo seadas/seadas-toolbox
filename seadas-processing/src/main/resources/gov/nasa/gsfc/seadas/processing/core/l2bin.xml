@@ -8,7 +8,7 @@
         <columnWidth>18</columnWidth>
         <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
         <subPanel1Title> Geospatial Parameters </subPanel1Title>
-        <subPanel2Title> Bin Scheme &amp; Flag Masking Parameters </subPanel2Title>
+        <subPanel2Title> Binning Method &amp; Flag Masking Parameters </subPanel2Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
 
 

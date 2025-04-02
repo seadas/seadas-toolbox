@@ -5,7 +5,7 @@
         <hasParFile>true</hasParFile>
         <parFileOptionName>parfile</parFileOptionName>
         <subPanel0Title> Product Parameter </subPanel0Title>
-        <subPanel2Title> Bin Method Parameters </subPanel2Title>
+        <subPanel2Title> Binning Method Parameters </subPanel2Title>
         <subPanel1Title> Geospatial Parameters </subPanel1Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
         <numColumns>8</numColumns>

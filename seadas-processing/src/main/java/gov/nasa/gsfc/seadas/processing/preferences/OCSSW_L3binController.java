@@ -133,7 +133,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme.section";
-    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Ofile Naming Scheme";
+    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Fields: (Naming Scheme for 'ofile')";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme";

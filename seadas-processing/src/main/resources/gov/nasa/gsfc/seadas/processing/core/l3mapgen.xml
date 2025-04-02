@@ -7,7 +7,7 @@
         <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
         <subPanel1Title> Geospatial Parameters </subPanel1Title>
         <subPanel3Title> Image Mode Parameters </subPanel3Title>
-        <subPanel4Title>  Pseudo True Color (RGB) Parameters </subPanel4Title>
+        <subPanel4Title>  Pseudo True Color (RGB) Image Parameters </subPanel4Title>
         <numColumns>12</numColumns>
         <columnWidth>10</columnWidth>
         <primaryOptions>
