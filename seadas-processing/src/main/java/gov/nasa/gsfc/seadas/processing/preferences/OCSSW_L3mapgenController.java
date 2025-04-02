@@ -102,9 +102,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[product][resolution]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[product][resolution][projection][nswe°]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.product][.resolution][.projection]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_product][_resolution][_projection]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[product][resolution][projection]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[product][resolution][projection][nswe°]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[product][resolution][nswe°]";
 
 
     // Preferences property prefix
@@ -267,13 +267,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_LABEL = "Basename Options";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_TOOLTIP = "Naming scheme to use for autofilling ofile name";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_IFILE_REPLACE;
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_OCSSW;
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix.options";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL = "Suffix Options";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP = "ofile Add Suffix Scheme";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX1;
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
 
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
@@ -864,7 +864,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
      */
     private Property initPropertyDefaults(BindingContext context, String propertyName, Object propertyDefault) {
 
-        System.out.println("propertyName=" + propertyName);
+//        System.out.println("propertyName=" + propertyName);
 
         if (context == null) {
             System.out.println("WARNING: context is null");

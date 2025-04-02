@@ -139,13 +139,13 @@ public final class OCSSW_L3binController extends DefaultConfigController {
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_LABEL = "Basename Options";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_TOOLTIP = "Naming scheme to use for autofilling ofile name";
-    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_IFILE_REPLACE;
+    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_OCSSW;
 
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme.suffix.options";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL = "Suffix Options";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP = "ofile Add Suffix Scheme";
-    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX1;
+    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
 
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
@@ -449,7 +449,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
      */
     private Property initPropertyDefaults(BindingContext context, String propertyName, Object propertyDefault) {
 
-        System.out.println("propertyName=" + propertyName);
+//        System.out.println("propertyName=" + propertyName);
 
         if (context == null) {
             System.out.println("WARNING: context is null");
