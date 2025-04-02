@@ -439,6 +439,9 @@ public class ParamUtils {
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceInterp());
                         break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FUDGE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceFudge());
+                        break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceNorth());
                         break;
@@ -451,6 +454,10 @@ public class ParamUtils {
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceEast());
                         break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWidth());
+                        break;
+
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PALFILE_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferencePalfile());
                         break;

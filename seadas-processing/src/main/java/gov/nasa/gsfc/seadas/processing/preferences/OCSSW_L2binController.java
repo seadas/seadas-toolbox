@@ -47,7 +47,7 @@ import static com.bc.ceres.swing.TableLayout.cell;
         displayName = "#Options_DisplayName_OCSSW_L2bin",
         keywords = "#Options_Keywords_OCSSW_L2bin",
         keywordsCategory = "OCSSW",
-        id = "L2bin")
+        id = "L2bin_preferences")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L2bin=L2bin",
         "Options_Keywords_OCSSW_L2bin=seadas, ocssw, l2bin"
@@ -736,8 +736,11 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("OCSSW_L2binPreferences");
+        return new HelpCtx("l2bin");
     }
+//    public HelpCtx getHelpCtx() {
+//        return new HelpCtx("OCSSW_L2binPreferences");
+//    }
 
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {

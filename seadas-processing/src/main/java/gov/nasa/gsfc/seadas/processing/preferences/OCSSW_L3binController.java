@@ -45,7 +45,7 @@ import java.awt.*;
         displayName = "#Options_DisplayName_OCSSW_L3bin",
         keywords = "#Options_Keywords_OCSSW_L3bin",
         keywordsCategory = "Processors",
-        id = "L3bin")
+        id = "L3bin_preferences")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L3bin=L3bin",
         "Options_Keywords_OCSSW_L3bin=seadas, ocssw, l3bin. binning, l3b"
@@ -468,7 +468,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("OCSSW_L3binPreferences");
+        return new HelpCtx("l3bin");
     }
 
     @SuppressWarnings("UnusedDeclaration")

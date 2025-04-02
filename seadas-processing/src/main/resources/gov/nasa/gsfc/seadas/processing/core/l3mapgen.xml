@@ -5,7 +5,7 @@
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
         <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
-        <subPanel1Title> Spatial Parameters </subPanel1Title>
+        <subPanel1Title> Geospatial Parameters </subPanel1Title>
         <subPanel3Title> Image Mode Parameters </subPanel3Title>
         <subPanel4Title>  Pseudo True Color (RGB) Parameters </subPanel4Title>
         <numColumns>12</numColumns>
@@ -596,6 +596,21 @@
 
 
 
+        <option type="int">
+            <name>width</name>
+            <value></value>
+            <default></default>
+            <subPanelIndex>1</subPanelIndex>
+            <source>default</source>
+            <description>width of output image in pixels; supercedes resolution parameter</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <order>106</order>
+        </option>
+
+
+
+
         <option type="string">
             <name>interp</name>
             <value>nearest</value>
@@ -623,22 +638,8 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <order>106</order>
+            <order>107</order>
         </option>
-
-        <option type="float">
-            <name>fudge</name>
-            <value></value>
-            <default></default>
-            <subPanelIndex>1</subPanelIndex>
-            <source>default</source>
-            <description>fudge factor used to modify size of L3 pixels</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <order>106</order>
-        </option>
-
-
 
 
 
@@ -689,17 +690,20 @@
         </option>
 
 
-        <option type="int">
-            <name>width</name>
+        <option type="float">
+            <name>fudge</name>
             <value></value>
             <default></default>
             <subPanelIndex>1</subPanelIndex>
             <source>default</source>
-            <description>width of output image in pixels; supercedes resolution parameter</description>
+            <description>fudge factor used to modify size of L3 pixels</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
             <order>114</order>
         </option>
+
+
+
 
 
 

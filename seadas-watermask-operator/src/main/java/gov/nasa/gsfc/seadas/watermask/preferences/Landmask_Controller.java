@@ -45,7 +45,7 @@ import java.awt.*;
         displayName = "#Options_DisplayName_LandCoastMask",
         keywords = "#Options_Keywords_LandCoastMask",
         keywordsCategory = "General Tools",
-        id = "LandCoastMask")
+        id = "LandCoastMask_preferences")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_LandCoastMask=Land Coast Mask",
         "Options_Keywords_LandCoastMask=seadas, Land Coast Mask"
@@ -317,7 +317,7 @@ public final class Landmask_Controller extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("LandCoast");
+        return new HelpCtx("coastlineLandMasks");
     }
 
     @SuppressWarnings("UnusedDeclaration")

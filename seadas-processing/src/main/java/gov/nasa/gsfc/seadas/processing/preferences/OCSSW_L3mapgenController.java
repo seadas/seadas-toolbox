@@ -42,7 +42,7 @@ import java.awt.*;
         displayName = "#Options_DisplayName_OCSSW_L3mapgen",
         keywords = "#Options_Keywords_OCSSW_L3mapgen",
         keywordsCategory = "Processors",
-        id = "L3mapgen")
+        id = "L3mapgen_preferences")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L3mapgen=L3mapgen",
         "Options_Keywords_OCSSW_L3mapgen=seadas, ocssw, l3mapgen. mapping, mapped, l3m"
@@ -149,6 +149,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_INTERP_TOOLTIP = "Interpolation type";
     public static final String PROPERTY_L3MAPGEN_INTERP_DEFAULT = "nearest";
 
+    public static final String PROPERTY_L3MAPGEN_FUDGE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".fudge";
+    public static final String PROPERTY_L3MAPGEN_FUDGE_LABEL = "fudge";
+    public static final String PROPERTY_L3MAPGEN_FUDGE_TOOLTIP = "Fudge factor";
+    public static final String PROPERTY_L3MAPGEN_FUDGE_DEFAULT = "";
+
+    public static final String PROPERTY_L3MAPGEN_WIDTH_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".width";
+    public static final String PROPERTY_L3MAPGEN_WIDTH_LABEL = "width";
+    public static final String PROPERTY_L3MAPGEN_WIDTH_TOOLTIP = "Width of output image (overrides field 'resolution')";
+    public static final String PROPERTY_L3MAPGEN_WIDTH_DEFAULT = "";
+    
+    
     public static final String PROPERTY_L3MAPGEN_NORTH_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".north";
     public static final String PROPERTY_L3MAPGEN_NORTH_LABEL = "north";
     public static final String PROPERTY_L3MAPGEN_NORTH_TOOLTIP = "Northernmost boundary";
@@ -222,6 +233,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_TOOLTIP = "Field 'rgb_land'";
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT = "";
 
+
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".parameters_pseudo_rgb.section";
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_LABEL = "Fields: (Pseudo True/False Color RGB Parameters)";
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_TOOLTIP = "L3mapgen parameters forPseudo True/False Color RGB ";
+
+
+    
     public static final String PROPERTY_L3MAPGEN_USE_RGB_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".use_rgb";
     public static final String PROPERTY_L3MAPGEN_USE_RGB_LABEL = "use_rgb";
     public static final String PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP = "Make Pseudo True Color RGB Image (product_rgb)";
@@ -235,7 +253,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.section";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Field 'ofile' Naming Scheme";
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Fields: (Naming Scheme for 'ofile')";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme";
@@ -402,6 +420,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_PROJECTION_KEY, PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_RESOLUTION_KEY, PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_INTERP_KEY, PROPERTY_L3MAPGEN_INTERP_DEFAULT);
+        north = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FUDGE_KEY, PROPERTY_L3MAPGEN_FUDGE_DEFAULT);
+        north = initPropertyDefaults(context, PROPERTY_L3MAPGEN_WIDTH_KEY, PROPERTY_L3MAPGEN_WIDTH_DEFAULT);
         north = initPropertyDefaults(context, PROPERTY_L3MAPGEN_NORTH_KEY, PROPERTY_L3MAPGEN_NORTH_DEFAULT);
         south = initPropertyDefaults(context, PROPERTY_L3MAPGEN_SOUTH_KEY, PROPERTY_L3MAPGEN_SOUTH_DEFAULT);
         west = initPropertyDefaults(context, PROPERTY_L3MAPGEN_WEST_KEY, PROPERTY_L3MAPGEN_WEST_DEFAULT);
@@ -417,6 +437,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_RGB_LAND_KEY, PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY, PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT);
 
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_USE_RGB_KEY, PROPERTY_L3MAPGEN_USE_RGB_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY, PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT);
 
@@ -780,7 +801,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("OCSSW_L3mapgenPreferences");
+        return new HelpCtx("l3mapgen");
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -878,11 +899,20 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP)
         String l3mapgenResolutionDefault = PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT;
 
+        @Preference(key = PROPERTY_L3MAPGEN_WIDTH_KEY,
+                label = PROPERTY_L3MAPGEN_WIDTH_LABEL,
+                description = PROPERTY_L3MAPGEN_WIDTH_TOOLTIP)
+        String l3mapgenWidthDefault = PROPERTY_L3MAPGEN_WIDTH_DEFAULT;
+
+
+
         @Preference(key = PROPERTY_L3MAPGEN_INTERP_KEY,
                 label = PROPERTY_L3MAPGEN_INTERP_LABEL,
                 valueSet = {" ", "nearest", "bin", "area"},
                 description = PROPERTY_L3MAPGEN_INTERP_TOOLTIP)
         String l3mapgenInterpDefault = PROPERTY_L3MAPGEN_INTERP_DEFAULT;
+
+
 
         @Preference(key = PROPERTY_L3MAPGEN_NORTH_KEY,
                 label = PROPERTY_L3MAPGEN_NORTH_LABEL,
@@ -904,6 +934,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_EAST_TOOLTIP)
         String l3mapgenEastDefault = PROPERTY_L3MAPGEN_EAST_DEFAULT;
 
+
+        @Preference(key = PROPERTY_L3MAPGEN_FUDGE_KEY,
+                label = PROPERTY_L3MAPGEN_FUDGE_LABEL,
+                description = PROPERTY_L3MAPGEN_FUDGE_TOOLTIP)
+        String l3mapgenFudgeDefault = PROPERTY_L3MAPGEN_FUDGE_DEFAULT;
 
 
 
@@ -1038,10 +1073,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         String l3mapgenRgbLandDefault = PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT;
 
 
+        @Preference(key = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY,
+                label = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_LABEL,
+                description = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_TOOLTIP)
+        boolean l3mapgenParametersPseudoRgbSection = true;
+
+
         @Preference(key = PROPERTY_L3MAPGEN_USE_RGB_KEY,
                 label = PROPERTY_L3MAPGEN_USE_RGB_LABEL,
                 description = PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP)
         boolean l3mapgenUseRgbDefault = PROPERTY_L3MAPGEN_USE_RGB_DEFAULT;
+
 
 
         @Preference(key = PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY,
@@ -1107,6 +1149,18 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_DEFAULT);
     }
 
+
+    public static String getPreferenceFudge() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FUDGE_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FUDGE_DEFAULT);
+    }
+
+    public static String getPreferenceWidth() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_DEFAULT);
+    }
+    
+    
     public static String getPreferenceNorth() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_DEFAULT);

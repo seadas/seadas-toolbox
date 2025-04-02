@@ -45,7 +45,7 @@ import java.awt.*;
         displayName = "#Options_DisplayName_OCSSW_L2gen",
         keywords = "#Options_Keywords_OCSSW_L2gen",
         keywordsCategory = "Processors",
-        id = "L2gen")
+        id = "L2gen_preferences")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L2gen=L2gen",
         "Options_Keywords_OCSSW_L2gen=seadas, ocssw, l2gen"
@@ -275,7 +275,7 @@ public final class OCSSW_L2genController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("OCSSW_L2gen_preferences");
+        return new HelpCtx("l2gen");
     }
 
     @SuppressWarnings("UnusedDeclaration")
