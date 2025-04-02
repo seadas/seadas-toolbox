@@ -93,7 +93,6 @@
             <default></default>
             <description>product list (optional)</description>
             <usedAs>option</usedAs>
-            <colSpan>5</colSpan>
             <order>7</order>
         </option>
         <option type="string">

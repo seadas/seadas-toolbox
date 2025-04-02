@@ -47,25 +47,141 @@ import static com.bc.ceres.swing.TableLayout.cell;
         displayName = "#Options_DisplayName_OCSSW_L2bin",
         keywords = "#Options_Keywords_OCSSW_L2bin",
         keywordsCategory = "OCSSW",
-        id = "L2bin")
+        id = "L2bin_preferences")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L2bin=L2bin",
         "Options_Keywords_OCSSW_L2bin=seadas, ocssw, l2bin"
 })
 public final class OCSSW_L2binController extends DefaultConfigController {
 
+    private static final String FAV = ".favorites";
+
+    Property flaguse;
+    Property l3bprod;
+    Property output_wavelengths;
+    Property suite;
+    Property resolution;
+    Property north;
+    Property south;
+    Property west;
+    Property east;
+    Property l3bprodAutofill;
+    Property flaguseAutofill;
+
+    Property favoriteSettingsSection;
+
+    Property fav1SetToDefault;
+    Property fav1FlagUse;
+    Property fav1_l3bprod;
+    Property fav1_output_wavelengths;
+    Property fav1NSWE;
+    Property fav1_suite;
+    Property fav1_resolution;
+
+    Property namingScheme;
+    Property fieldsAdd;
+    
     Property restoreDefaults;
 
     boolean propertyValueChangeEventsEnabled = true;
 
+    // todo compare param tooltips here and with .xml file and with ocssw help
+    // todo update help page
 
+
+    public static final String  OFILE_NAMING_SCHEME_SIMPLE = "output";
+    public static final String OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX = "IFILE + SUFFIX";
+    public static final String  OFILE_NAMING_SCHEME_OCSSW_SHORT = "OCSSW (do not derive time field)";
+    public static final String  OFILE_NAMING_SCHEME_OCSSW = "OCSSW";
+    public static final String OFILE_NAMING_SCHEME_IFILE_REPLACE = "IFILE (String-Replace)";
+
+
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[l3bprod][resolution]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[l3bprod][resolution][suite]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[l3bprod][resolution][suite][nswe°]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[l3bprod][resolution][nswe°]";
+    
+    
     // Preferences property prefix
     private static final String PROPERTY_L2BIN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l2bin";
 
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.section";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Fields: (Naming Scheme for 'ofile')";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_LABEL = "Basename Options";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_TOOLTIP = "Naming scheme to use for autofilling ofile name";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT = OFILE_NAMING_SCHEME_OCSSW;
+
+
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix.options";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL = "Suffix Options";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP = "ofile Add Suffix Scheme";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+
+
+    public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
+            "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
+            "[_l3bprod] : adds 'l3bprod' field with '_' as delimiter<br>" +
+            "[_resolution] : adds 'resolution' field with '_' as delimiter<br>" +
+            "[_prodtype] : adds 'prodtype' field with '_' as delimiter<br>" +
+            "[_suite] : adds 'suite' field with '_' as delimiter<br>" +
+            "</html>";
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL = OFILE_NAMING_SCHEME_SUFFIX1;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix2";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL = OFILE_NAMING_SCHEME_SUFFIX2;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
+
+
+
+
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.section";
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL = "Parameters (Fields)";
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_TOOLTIP = "L2bin parameters";
+    
+    
     public static final String PROPERTY_L2BIN_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_KEY + ".l3bprod";
     public static final String PROPERTY_L2BIN_L3BPROD_LABEL = "l3bprod";
     public static final String PROPERTY_L2BIN_L3BPROD_TOOLTIP = "Product (or product list)";
     public static final String PROPERTY_L2BIN_L3BPROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".output_wavelengths";
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL = "output_wavelengths";
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_TOOLTIP = "Comma delimited list of 3D wavelengths";
+    public static final String PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_SUITE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".suite";
+    public static final String PROPERTY_L2BIN_SUITE_LABEL = "suite";
+    public static final String PROPERTY_L2BIN_SUITE_TOOLTIP = "Product Suite";
+    public static final String PROPERTY_L2BIN_SUITE_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_KEY = PROPERTY_L2BIN_ROOT_KEY + ".composite_prod";
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_LABEL = "composite_prod";
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP = "Product to use as the basis for the composite scheme";
+    public static final String PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY = PROPERTY_L2BIN_ROOT_KEY + ".composite_scheme";
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL = "composite_scheme";
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP = "Composite Scheme (uses composite_prod)";
+    public static final String PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_ROW_GROUP_KEY = PROPERTY_L2BIN_ROOT_KEY + ".rowgroup";
+    public static final String PROPERTY_L2BIN_ROW_GROUP_LABEL = "rowgroup";
+    public static final String PROPERTY_L2BIN_ROW_GROUP_TOOLTIP = "Number of bin rows to process at once";
+    public static final String PROPERTY_L2BIN_ROW_GROUP_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_PRODTYPE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".prodtype";
     public static final String PROPERTY_L2BIN_PRODTYPE_LABEL = "prodtype";
@@ -80,7 +196,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_KEY = PROPERTY_L2BIN_ROOT_KEY + ".area_weighting";
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_LABEL = "area_weighting";
     public static final String PROPERTY_L2BIN_AREA_WEIGHTING_TOOLTIP = "Area Weighting";
-    public static final String PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT = "0";
+    public static final String PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse";
     public static final String PROPERTY_L2BIN_FLAGUSE_LABEL = "flaguse";
@@ -108,6 +224,66 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_LONEAST_DEFAULT = "";
 
 
+    public static final String PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".flaguse.autofill";
+    public static final String PROPERTY_L2BIN_FLAGUSE_AUTOFILL_LABEL = "Autofill 'flaguse' with suite defaults";
+    public static final String PROPERTY_L2BIN_FLAGUSE_AUTOFILL_TOOLTIP = "<html>Autofills flaguse with the suite defaults. <br> Note: if flaguse is empty then suite defaults are used.</html>";
+    public static final boolean PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT = true;
+
+    public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".l3bprod.autofill";
+    public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL = "Autofill 'l3bprod' with suite defaults";
+    public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_TOOLTIP = "<html>Autofills l3bprod with the suite defaults. <br> Note: if l3bprod is empty then suite defaults are used.</html>";
+    public static final boolean PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT = true;
+
+
+
+    // Favorites/Stored Custom Settings
+
+    public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + "favorite.settings.section";
+    public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_LABEL = "Favorite Settings";
+    public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_TOOLTIP = "Store and Load favorite settings";
+
+    private static final String INDENTATION_SPACES = "           ";
+
+    public static final String PROPERTY_L2BIN_FAV1_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.load";
+    public static final String PROPERTY_L2BIN_FAV1_LOAD_LABEL = "1. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV1_LOAD_TOOLTIP = "Loads settings into the preferences";
+    public static final boolean PROPERTY_L2BIN_FAV1_LOAD_DEFAULT = false;
+
+
+    public static final String PROPERTY_L2BIN_FAV1_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.description";
+    public static final String PROPERTY_L2BIN_FAV1_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV1_DESCRIPTION_TOOLTIP = "Description/notes for stored setting";
+    public static final String PROPERTY_L2BIN_FAV1_DESCRIPTION_DEFAULT = "My sample of custom flags";
+
+    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.flaguse";
+    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LABEL = INDENTATION_SPACES + "flaguse";
+    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_TOOLTIP = "Favorites 1: flaguse";
+    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_DEFAULT = "NAVFAIL CLDICE STRAYLIGHT";
+
+    public static final String PROPERTY_L2BIN_FAV1_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.l3bprod";
+    public static final String PROPERTY_L2BIN_FAV1_L3BPROD_LABEL = INDENTATION_SPACES + "l3bprod";
+    public static final String PROPERTY_L2BIN_FAV1_L3BPROD_TOOLTIP = "Favorites 1: l3bprod";
+    public static final String PROPERTY_L2BIN_FAV1_L3BPROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_LABEL = INDENTATION_SPACES + "output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_TOOLTIP = "Favorites 1: output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV1_SUITE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.suite";
+    public static final String PROPERTY_L2BIN_FAV1_SUITE_LABEL = INDENTATION_SPACES + "suite";
+    public static final String PROPERTY_L2BIN_FAV1_SUITE_TOOLTIP = "Favorites 1: suite";
+    public static final String PROPERTY_L2BIN_FAV1_SUITE_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV1_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.resolution";
+    public static final String PROPERTY_L2BIN_FAV1_RESOLUTION_LABEL = INDENTATION_SPACES + "resolution";
+    public static final String PROPERTY_L2BIN_FAV1_RESOLUTION_TOOLTIP = "Favorites 1: resolution";
+    public static final String PROPERTY_L2BIN_FAV1_RESOLUTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV1_NSWE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.nswe.bounds";
+    public static final String PROPERTY_L2BIN_FAV1_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L2BIN_FAV1_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L2BIN_FAV1_NSWE_DEFAULT = "45,23,34,35";
 
 
 
@@ -136,20 +312,53 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     @Override
     protected JPanel createPanel(BindingContext context) {
 
+
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY, true);
+        namingScheme = initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT);
+        fieldsAdd = initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT);
+        
+        
         //
         // Initialize the default value contained within each property descriptor
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
-        initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_KEY, PROPERTY_L2BIN_L3BPROD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_SECTION_KEY, true);
+        l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_KEY, PROPERTY_L2BIN_L3BPROD_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_PRODTYPE_KEY, PROPERTY_L2BIN_PRODTYPE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_RESOLUTION_KEY, PROPERTY_L2BIN_RESOLUTION_DEFAULT);
+        resolution = initPropertyDefaults(context, PROPERTY_L2BIN_RESOLUTION_KEY, PROPERTY_L2BIN_RESOLUTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_AREA_WEIGHTING_KEY, PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_KEY, PROPERTY_L2BIN_FLAGUSE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_LATNORTH_KEY, PROPERTY_L2BIN_LATNORTH_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_LATSOUTH_KEY, PROPERTY_L2BIN_LATSOUTH_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_LONWEST_KEY, PROPERTY_L2BIN_LONWEST_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
+        flaguse = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_KEY, PROPERTY_L2BIN_FLAGUSE_DEFAULT);
+        north = initPropertyDefaults(context, PROPERTY_L2BIN_LATNORTH_KEY, PROPERTY_L2BIN_LATNORTH_DEFAULT);
+        south = initPropertyDefaults(context, PROPERTY_L2BIN_LATSOUTH_KEY, PROPERTY_L2BIN_LATSOUTH_DEFAULT);
+        west = initPropertyDefaults(context, PROPERTY_L2BIN_LONWEST_KEY, PROPERTY_L2BIN_LONWEST_DEFAULT);
+        east = initPropertyDefaults(context, PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
+        flaguseAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
+        l3bprodAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
+        output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT);
+        suite = initPropertyDefaults(context, PROPERTY_L2BIN_SUITE_KEY, PROPERTY_L2BIN_SUITE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_COMPOSITE_PROD_KEY, PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY, PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_ROW_GROUP_KEY, PROPERTY_L2BIN_ROW_GROUP_DEFAULT);
+
+
+
+        favoriteSettingsSection = initPropertyDefaults(context, PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY, true);
+
+        fav1SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_LOAD_KEY, PROPERTY_L2BIN_FAV1_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV1_DESCRIPTION_DEFAULT);
+        fav1FlagUse = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_FLAGUSE_KEY, PROPERTY_L2BIN_FAV1_FLAGUSE_DEFAULT);
+        fav1_l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_L3BPROD_KEY, PROPERTY_L2BIN_FAV1_L3BPROD_DEFAULT);
+        fav1_output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_DEFAULT);
+        fav1NSWE = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_NSWE_KEY, PROPERTY_L2BIN_FAV1_NSWE_DEFAULT);
+        fav1_suite = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_SUITE_KEY, PROPERTY_L2BIN_FAV1_SUITE_DEFAULT);
+        fav1_resolution = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_RESOLUTION_KEY, PROPERTY_L2BIN_FAV1_RESOLUTION_DEFAULT);
+
+
+
+
 
         initPropertyDefaults(context, PROPERTY_RESTORE_SECTION_KEY, true);
         restoreDefaults =  initPropertyDefaults(context, PROPERTY_RESTORE_DEFAULTS_KEY, PROPERTY_RESTORE_DEFAULTS_DEFAULT);
@@ -192,13 +401,85 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     @Override
     protected void configure(BindingContext context) {
 
-
         // Handle resetDefaults events - set all other components to defaults
         restoreDefaults.addPropertyChangeListener(evt -> {
             handleRestoreDefaults(context);
         });
 
+        flaguse.addPropertyChangeListener(evt -> {
+            final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+            if (flaguse.getValue() != null && flaguse.getValue().toString().trim().length() > 0) {
+                try {
+                    boolean boolFalse = false;
+                    flaguseAutofill.setValue(boolFalse);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, false);
+            } else {
+                try {
+                    boolean boolTrue = true;
+                    flaguseAutofill.setValue(boolTrue);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, true);
+            }
+        });
 
+        l3bprod.addPropertyChangeListener(evt -> {
+            final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+            if (l3bprod.getValue() != null && l3bprod.getValue().toString().trim().length() > 0) {
+                try {
+                    boolean boolFalse = false;
+                    l3bprodAutofill.setValue(boolFalse);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, false);
+            } else {
+                try {
+                    boolean boolTrue = true;
+                    l3bprodAutofill.setValue(boolTrue);
+                } catch (ValidationException e) {
+                    e.printStackTrace();
+                }
+                context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, true);
+            }
+        });
+
+        // Handle fav1 events -
+        fav1SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
+        });
+        fav1FlagUse.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
+        });
+        fav1_l3bprod.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
+        });
+        fav1_output_wavelengths.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
+        });
+        fav1NSWE.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
+        });
+        fav1_suite.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
+        });
+        fav1_resolution.addPropertyChangeListener(evt -> {
+            handleSetFav(context, fav1SetToDefault, fav1FlagUse, fav1_l3bprod, fav1_output_wavelengths, fav1NSWE, fav1_suite, fav1_resolution);
+        });
+
+
+        fieldsAdd.addPropertyChangeListener(evt -> {
+            enablement(context);
+        });
+
+        namingScheme.addPropertyChangeListener(evt -> {
+            enablement(context);
+        });
+        
         // Add listeners to all components in order to uncheck restoreDefaults checkbox accordingly
 
         PropertySet propertyContainer = context.getPropertySet();
@@ -212,11 +493,40 @@ public final class OCSSW_L2binController extends DefaultConfigController {
             }
         }
 
+        enablement(context);
+
+
         // This call is an initialization call which set restoreDefault initial value
         handlePreferencesPropertyValueChange(context);
     }
 
 
+
+    private void enablement(BindingContext context) {
+        
+
+        if (OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3.equals(fieldsAdd.getValue())
+                || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4.equals(fieldsAdd.getValue())
+        ) {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, false);
+        }
+
+        if (OFILE_NAMING_SCHEME_SUFFIX1.equals(fieldsAdd.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, true);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, false);
+        }
+
+        if (OFILE_NAMING_SCHEME_SUFFIX2.equals(fieldsAdd.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, true);
+        }
+
+    }
+    
 
 
     /**
@@ -232,10 +542,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         Property[] properties = propertyContainer.getProperties();
 
         for (Property property : properties) {
-            if (property != restoreDefaults && property.getDescriptor().getDefaultValue() != null)
-                if (!property.getValue().equals(property.getDescriptor().getDefaultValue())) {
-                    return false;
+            if (!property.getName().toUpperCase().contains(FAV)) {
+                if (property != restoreDefaults && property.getDescriptor().getDefaultValue() != null) {
+                    if (!property.getValue().equals(property.getDescriptor().getDefaultValue())) {
+                        return false;
+                    }
                 }
+            }
         }
 
         return true;
@@ -258,8 +571,11 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                     Property[] properties = propertyContainer.getProperties();
 
                     for (Property property : properties) {
-                        if (property != restoreDefaults && property.getDescriptor().getDefaultValue() != null)
-                            property.setValue(property.getDescriptor().getDefaultValue());
+                        if (property != restoreDefaults && property.getDescriptor().getDefaultValue() != null) {
+                            if (!property.getName().toUpperCase().contains(FAV)) {
+                                property.setValue(property.getDescriptor().getDefaultValue());
+                            }
+                        }
                     }
                 }
             } catch (ValidationException e) {
@@ -274,6 +590,96 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+
+    /**
+     * Handles favorite action
+     *
+     * @param context
+     * @author Daniel Knowles
+     */
+    private void handleSetFav(BindingContext context, Property favSet, Property favFlagUse, Property fav_l3bprod, Property fav_output_wavelengths, Property favNSWE, Property fav_suite, Property fav_resolution) {
+
+
+        if (propertyValueChangeEventsEnabled) {
+            propertyValueChangeEventsEnabled = false;
+            try {
+                if (favSet.getValue()) {
+                    // set all favorites checkboxes to false then reset current favorite checkbox to true.
+                    fav1SetToDefault.setValue(false);
+                    favSet.setValue(true);
+
+                    flaguse.setValue("");
+                    if (favFlagUse.getValue() != null) {
+                        if (favFlagUse.getValue().toString() != null) {
+                            flaguse.setValue(favFlagUse.getValue().toString().trim());
+                        }
+                    }
+
+                    l3bprod.setValue("");
+                    if (fav_l3bprod.getValue() != null) {
+                        if (fav_l3bprod.getValue().toString() != null) {
+                            l3bprod.setValue(fav_l3bprod.getValue().toString().trim());
+                        }
+                    }
+
+                    suite.setValue("");
+                    if (fav_suite.getValue() != null) {
+                        if (fav_suite.getValue().toString() != null) {
+                            suite.setValue(fav_suite.getValue().toString().trim());
+                        }
+                    }
+
+                    resolution.setValue("");
+                    if (fav_resolution.getValue() != null) {
+                        if (fav_resolution.getValue().toString() != null) {
+                            resolution.setValue(fav_resolution.getValue().toString().trim());
+                        }
+                    }
+
+                    output_wavelengths.setValue("");
+                    if (fav_output_wavelengths.getValue() != null) {
+                        if (fav_output_wavelengths.getValue().toString() != null) {
+                            output_wavelengths.setValue(fav_output_wavelengths.getValue().toString().trim());
+                        }
+                    }
+
+                    north.setValue("");
+                    south.setValue("");
+                    west.setValue("");
+                    east.setValue("");
+                    if (favNSWE.getValue() != null) {
+                        if (favNSWE.getValue().toString() != null) {
+                            String[] values = favNSWE.getValue().toString().split(",");
+
+                            if (values != null && values.length == 4) {
+                                north.setValue(values[0].trim());
+                                south.setValue(values[1].trim());
+                                west.setValue(values[2].trim());
+                                east.setValue(values[3].trim());
+                            }
+                        }
+                    }
+
+                } else {
+                    flaguse.setValue(flaguse.getDescriptor().getDefaultValue());
+                    l3bprod.setValue(l3bprod.getDescriptor().getDefaultValue());
+                    suite.setValue(suite.getDescriptor().getDefaultValue());
+                    resolution.setValue(resolution.getDescriptor().getDefaultValue());
+                    output_wavelengths.setValue(output_wavelengths.getDescriptor().getDefaultValue());
+                    north.setValue(north.getDescriptor().getDefaultValue());
+                    south.setValue(south.getDescriptor().getDefaultValue());
+                    west.setValue(west.getDescriptor().getDefaultValue());
+                    east.setValue(east.getDescriptor().getDefaultValue());
+                }
+
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
+            propertyValueChangeEventsEnabled = true;
+
+//            context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, false);
+        }
+    }
 
 
 
@@ -310,7 +716,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
      */
     private Property initPropertyDefaults(BindingContext context, String propertyName, Object propertyDefault) {
 
-        System.out.println("propertyName=" + propertyName);
+//        System.out.println("propertyName=" + propertyName);
 
         if (context == null) {
             System.out.println("WARNING: context is null");
@@ -330,16 +736,88 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("OCSSW_L2binPreferences");
+        return new HelpCtx("l2bin");
     }
+//    public HelpCtx getHelpCtx() {
+//        return new HelpCtx("OCSSW_L2binPreferences");
+//    }
 
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP)
+        boolean l2bin_OFILE_NAMING_SCHEME_SECTION = true;
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_LABEL,
+                valueSet = {OFILE_NAMING_SCHEME_SIMPLE,OFILE_NAMING_SCHEME_OCSSW, OFILE_NAMING_SCHEME_OCSSW_SHORT},
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_TOOLTIP)
+        String l2binOfileNamingSchemeDefault = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL,
+                valueSet = {OFILE_NAMING_SCHEME_SUFFIX_NONE,
+                        OFILE_NAMING_SCHEME_SUFFIX1,
+                        OFILE_NAMING_SCHEME_SUFFIX2,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3,
+                        OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4},
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP)
+        String l2binOfileNamingSchemeFieldsAddDefault = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP)
+        String l2binOfileNamingSchemeSuffix1Default = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP)
+        String l2binOfileNamingSchemeSuffix2Default = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT;
+
+
+
+        @Preference(key = PROPERTY_L2BIN_PARAMETERS_SECTION_KEY,
+                label = PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL,
+                description = PROPERTY_L2BIN_PARAMETERS_SECTION_TOOLTIP)
+        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = true;
+
+        @Preference(key = PROPERTY_L2BIN_SUITE_KEY,
+                label = PROPERTY_L2BIN_SUITE_LABEL,
+                description = PROPERTY_L2BIN_SUITE_TOOLTIP)
+        String l2binSuiteDefault = PROPERTY_L2BIN_SUITE_DEFAULT;
 
         @Preference(key = PROPERTY_L2BIN_L3BPROD_KEY,
                 label = PROPERTY_L2BIN_L3BPROD_LABEL,
                 description = PROPERTY_L2BIN_L3BPROD_TOOLTIP)
         String l2binL3bprodDefault = PROPERTY_L2BIN_L3BPROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY,
+                label = PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL,
+                description = PROPERTY_L2BIN_L3BPROD_AUTOFILL_TOOLTIP)
+        boolean isPropertyL2binL3bprodAutofill = true;
+
+
+        @Preference(key = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY,
+                label = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL,
+                description = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_TOOLTIP)
+        String l2binOutputWavelengthsDefault = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_FLAGUSE_KEY,
+                label = PROPERTY_L2BIN_FLAGUSE_LABEL,
+                description = PROPERTY_L2BIN_FLAGUSE_TOOLTIP)
+        String l2binFlaguseDefault = PROPERTY_L2BIN_FLAGUSE_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY,
+                label = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_LABEL,
+                description = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_TOOLTIP)
+        boolean isPropertyL2binFlaguseAutofill = true;
 
         @Preference(key = PROPERTY_L2BIN_PRODTYPE_KEY,
                 label = PROPERTY_L2BIN_PRODTYPE_LABEL,
@@ -356,10 +834,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 description = PROPERTY_L2BIN_AREA_WEIGHTING_TOOLTIP)
         String l2binAreaWeightingDefault = PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT;
 
-        @Preference(key = PROPERTY_L2BIN_FLAGUSE_KEY,
-                label = PROPERTY_L2BIN_FLAGUSE_LABEL,
-                description = PROPERTY_L2BIN_FLAGUSE_TOOLTIP)
-        String l2binFlaguseDefault = PROPERTY_L2BIN_FLAGUSE_DEFAULT;
+
+
 
         @Preference(key = PROPERTY_L2BIN_LATNORTH_KEY,
                 label = PROPERTY_L2BIN_LATNORTH_LABEL,
@@ -384,6 +860,88 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_PROD_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_PROD_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP)
+        String l2binCompositeProdDefault = PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP)
+        String l2binCompositeSchemeDefault = PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_ROW_GROUP_KEY,
+                label = PROPERTY_L2BIN_ROW_GROUP_LABEL,
+                description = PROPERTY_L2BIN_ROW_GROUP_TOOLTIP)
+        String l2binRowGroupDefault = PROPERTY_L2BIN_ROW_GROUP_DEFAULT;
+
+
+
+
+        // Favorites
+
+        @Preference(key = PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY,
+                label = PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_LABEL,
+                description = PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_TOOLTIP)
+        boolean L2bin_FAVORITE_PROJECTIONS_SECTION = true;
+
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV1_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV1_LOAD_TOOLTIP)
+        boolean L2bin_FAV1_LOAD_KEY = PROPERTY_L2BIN_FAV1_LOAD_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV1_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV1_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV1_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV1_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_SUITE_KEY,
+                label = PROPERTY_L2BIN_FAV1_SUITE_LABEL,
+                description = PROPERTY_L2BIN_FAV1_SUITE_TOOLTIP)
+        String l2binFav1SuiteDefault = PROPERTY_L2BIN_FAV1_SUITE_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_L3BPROD_KEY,
+                label = PROPERTY_L2BIN_FAV1_L3BPROD_LABEL,
+                description = PROPERTY_L2BIN_FAV1_L3BPROD_TOOLTIP)
+        String l2binFav1L3bprodDefault = PROPERTY_L2BIN_FAV1_L3BPROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_KEY,
+                label = PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_LABEL,
+                description = PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_TOOLTIP)
+        String l2binFav1OutputWavelengthsDefault= PROPERTY_L2BIN_FAV1_OUTPUT_WAVELENGTHS_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_FLAGUSE_KEY,
+                label = PROPERTY_L2BIN_FAV1_FLAGUSE_LABEL,
+                description = PROPERTY_L2BIN_FAV1_FLAGUSE_TOOLTIP)
+        String L2bin_FAV1_FLAGUSE_KEY = PROPERTY_L2BIN_FAV1_FLAGUSE_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_RESOLUTION_KEY,
+                label = PROPERTY_L2BIN_FAV1_RESOLUTION_LABEL,
+                description = PROPERTY_L2BIN_FAV1_RESOLUTION_TOOLTIP)
+        String l2binFav1ResolutionDefault = PROPERTY_L2BIN_FAV1_RESOLUTION_DEFAULT;
+
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV1_NSWE_KEY,
+                label = PROPERTY_L2BIN_FAV1_NSWE_LABEL,
+                description = PROPERTY_L2BIN_FAV1_NSWE_TOOLTIP)
+        String l2binFav1NsweDefault= PROPERTY_L2BIN_FAV1_NSWE_DEFAULT;
+
+
+
+
+
+
+
+
+
+
         // Restore Defaults Section
 
         @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
@@ -399,6 +957,32 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     }
 
 
+
+    public static String getPreferenceOfileNamingScheme() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT);
+    }
+
+
+    public static String getPreferenceOfileNamingSchemeSuffixOptions() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
+    }
+    
+
+
+    public static String getPreferenceOfileNamingSchemeSuffix1() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT);
+    }
+
+    public static String getPreferenceOfileNamingSchemeSuffix2() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT);
+    }
+
+    
+    
     public static String getPreferenceL3bprod() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_L2BIN_L3BPROD_KEY, PROPERTY_L2BIN_L3BPROD_DEFAULT);
@@ -445,6 +1029,39 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     }
 
 
+
+
+    public static String getPreferenceOutputWavelengths() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT);
+    }
+    public static String getPreferenceSuite() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_SUITE_KEY, PROPERTY_L2BIN_SUITE_DEFAULT);
+    }
+    public static String getPreferenceCompositeProd() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_COMPOSITE_PROD_KEY, PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT);
+    }
+    public static String getPreferenceCompositeScheme() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY, PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT);
+    }
+    public static String getPreferenceRowGroup() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_ROW_GROUP_KEY, PROPERTY_L2BIN_ROW_GROUP_DEFAULT);
+    }
+
+
+    public static boolean getPreferenceFlaguseAutoFillEnable() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
+    }
+
+    public static boolean getPreferenceL3bprodAutoFillEnable() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
+    }
 
 
 }

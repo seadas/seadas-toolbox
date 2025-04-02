@@ -11,6 +11,7 @@ public class ParamValidValueInfo implements Comparable<ParamValidValueInfo>, Clo
     private String value = null;
     private String description = null;
     private boolean selected;
+    private boolean selectedNegated = false;
 
 
     public ParamValidValueInfo(String value) {
@@ -74,9 +75,18 @@ public class ParamValidValueInfo implements Comparable<ParamValidValueInfo>, Clo
         return selected;
     }
 
+    public boolean isSelectedNegated() {
+        return selectedNegated;
+    }
+
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
+    public void setSelectedNegated(boolean selectedNegated) {
+        this.selectedNegated = selectedNegated;
+    }
+
 
     @Override
     public int compareTo(ParamValidValueInfo o) {

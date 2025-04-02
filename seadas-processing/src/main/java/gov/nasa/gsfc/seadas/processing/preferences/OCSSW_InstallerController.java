@@ -47,7 +47,7 @@ import static com.bc.ceres.swing.TableLayout.cell;
         displayName = "#Options_DisplayName_OCSSW_Installer",
         keywords = "#Options_Keywords_OCSSW_Installer",
         keywordsCategory = "Installer",
-        id = "OCSSW-Installer")
+        id = "OCSSW_Installer_preferences")
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_Installer=OCSSW-Installer",
         "Options_Keywords_OCSSW_Installer=seadas, ocssw, installer"
@@ -262,7 +262,7 @@ public final class OCSSW_InstallerController extends DefaultConfigController {
      */
     private Property initPropertyDefaults(BindingContext context, String propertyName, Object propertyDefault) {
 
-        System.out.println("propertyName=" + propertyName);
+//        System.out.println("propertyName=" + propertyName);
 
         if (context == null) {
             System.out.println("WARNING: context is null");
@@ -282,7 +282,7 @@ public final class OCSSW_InstallerController extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("OCSSW_InstallerPreferences");
+        return new HelpCtx("install_ocssw");
     }
 
     @SuppressWarnings("UnusedDeclaration")
