@@ -1346,7 +1346,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
 
         private void addBandToSpectra(Band band) {
             DisplayableSpectrum[] allSpectra = rasterToSpectraMap.get(currentView.getRaster());
-            Product.AutoGrouping autoGrouping = currentProduct.getAutoGrouping();
+            BandGroup autoGrouping = currentProduct.getAutoGrouping();
             if (autoGrouping != null) {
                 final int bandIndex = autoGrouping.indexOf(band.getName());
                 final DisplayableSpectrum spectrum;

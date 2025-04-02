@@ -1511,7 +1511,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
 
         private void addBandToAngularViews(Band band) {
             DisplayableAngularview[] allAngularViews = rasterToAngularMap.get(currentView.getRaster());
-            Product.AutoGrouping autoGrouping = currentProduct.getAutoGrouping();
+            BandGroup autoGrouping = currentProduct.getAutoGrouping();
             if (autoGrouping != null) {
                 final int bandIndex = autoGrouping.indexOf(band.getName());
                 final DisplayableAngularview angularView;
