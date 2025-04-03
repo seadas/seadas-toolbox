@@ -375,6 +375,12 @@ public class ParamUtils {
                         addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV3Projection(),
                                 OCSSW_L3mapgenController.getPreferenceFAV3ProjectionDescription(),
                                 paramInfo);
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV4Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV4ProjectionDescription(),
+                                paramInfo);
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV5Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV5ProjectionDescription(),
+                                paramInfo);
                 }
             }
 

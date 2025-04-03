@@ -327,8 +327,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DEFAULT = "+proj=laea +lon_0=152.0 +lat_0=-22.0";
 
     public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".1.projection.description";
-    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
-    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Notes/Description";
+    public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_TOOLTIP = "Notes/Description of custom projection";
     public static final String PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_DEFAULT = "Great Barrier Reef - Southern (Lambert Equal Area)";
 
     public static final String PROPERTY_L3MAPGEN_FAV1_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".1.nswe.bounds";
@@ -349,8 +349,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DEFAULT = "+proj=laea +lon_0=-76.1 +lat_0=37.8";
 
     public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".2.projection.description";
-    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
-    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Notes/Description";
+    public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_TOOLTIP = "Notes/Description of custom projection";
     public static final String PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_DEFAULT = "Chesapeake Bay (Lambert Equal Area)";
 
     public static final String PROPERTY_L3MAPGEN_FAV2_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".2.nswe.bounds";
@@ -371,8 +371,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".3.description";
-    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
-    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Notes/Description";
+    public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_TOOLTIP = "Notes/Description of custom projection";
     public static final String PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FAV3_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".3.nswe.bounds";
@@ -392,8 +392,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_FAV4_PROJECTION_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".4.description";
-    public static final String PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
-    public static final String PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Notes/Description";
+    public static final String PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_TOOLTIP = "Notes/Description of custom projection";
     public static final String PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FAV4_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".4.nswe.bounds";
@@ -413,8 +413,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_FAV5_PROJECTION_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".5.description";
-    public static final String PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Description";
-    public static final String PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_TOOLTIP = "Description of custom projection";
+    public static final String PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_LABEL = INDENTATION_SPACES + "Notes/Description";
+    public static final String PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_TOOLTIP = "Notes/Description of custom projection";
     public static final String PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FAV5_NSWE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".5.nswe.bounds";
@@ -434,7 +434,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_RESTORE_DEFAULTS_LABEL = "Default (L3mapgen Preferences)";
     public static final String PROPERTY_RESTORE_DEFAULTS_TOOLTIP = "Restore all L3mapgen preferences to the original default";
     public static final boolean PROPERTY_RESTORE_DEFAULTS_DEFAULT = false;
-    
+
 
     protected PropertySet createPropertySet() {
         return createPropertySet(new SeadasToolboxBean());
@@ -506,17 +506,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         fav1Projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV1_PROJECTION_KEY, PROPERTY_L3MAPGEN_FAV1_PROJECTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_KEY, PROPERTY_L3MAPGEN_FAV1_PROJECTION_DESC_DEFAULT);
         fav1NSWE = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV1_NSWE_KEY, PROPERTY_L3MAPGEN_FAV1_NSWE_DEFAULT);
-        
+
         fav2SetToDefault = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_KEY, PROPERTY_L3MAPGEN_FAV2_SET_AS_DEFAULT_DEFAULT);
         fav2Projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_PROJECTION_KEY, PROPERTY_L3MAPGEN_FAV2_PROJECTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_KEY, PROPERTY_L3MAPGEN_FAV2_PROJECTION_DESC_DEFAULT);
         fav2NSWE = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV2_NSWE_KEY, PROPERTY_L3MAPGEN_FAV2_NSWE_DEFAULT);
-        
+
         fav3SetToDefault = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_KEY, PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_DEFAULT);
         fav3Projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_PROJECTION_KEY, PROPERTY_L3MAPGEN_FAV3_PROJECTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_KEY, PROPERTY_L3MAPGEN_FAV3_PROJECTION_DESC_DEFAULT);
         fav3NSWE = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV3_NSWE_KEY, PROPERTY_L3MAPGEN_FAV3_NSWE_DEFAULT);
-        
+
         fav4SetToDefault = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV4_SET_AS_DEFAULT_KEY, PROPERTY_L3MAPGEN_FAV4_SET_AS_DEFAULT_DEFAULT);
         fav4Projection = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV4_PROJECTION_KEY, PROPERTY_L3MAPGEN_FAV4_PROJECTION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_KEY, PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_DEFAULT);
@@ -528,7 +528,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         fav5NSWE = initPropertyDefaults(context, PROPERTY_L3MAPGEN_FAV5_NSWE_KEY, PROPERTY_L3MAPGEN_FAV5_NSWE_DEFAULT);
 
 
-        
+
         initPropertyDefaults(context, PROPERTY_RESTORE_SECTION_KEY, true);
         restoreDefaults =  initPropertyDefaults(context, PROPERTY_RESTORE_DEFAULTS_KEY, PROPERTY_RESTORE_DEFAULTS_DEFAULT);
 
@@ -636,9 +636,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         fav5NSWE.addPropertyChangeListener(evt -> {
             handleSetFav(context, fav5SetToDefault, fav5Projection, fav5NSWE);
         });
-        
-        
-        
+
+
+
         fieldsAdd.addPropertyChangeListener(evt -> {
             enablement(context);
         });
@@ -1037,7 +1037,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 key = PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_KEY,
                 description = PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_TOOLTIP)
         boolean L3mapgen_FAV1_PROJECTION_USE_DEFAULT = PROPERTY_L3MAPGEN_FAV1_SET_AS_DEFAULT_DEFAULT;
-        
+
         @Preference(label = PROPERTY_L3MAPGEN_FAV1_PROJECTION_LABEL,
                 key = PROPERTY_L3MAPGEN_FAV1_PROJECTION_KEY,
                 description = PROPERTY_L3MAPGEN_FAV1_PROJECTION_TOOLTIP)
@@ -1074,12 +1074,12 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 key = PROPERTY_L3MAPGEN_FAV2_NSWE_KEY,
                 description = PROPERTY_L3MAPGEN_FAV2_NSWE_TOOLTIP)
         String L3mapgen_FAV2_NSWE_DEFAULT = PROPERTY_L3MAPGEN_FAV2_NSWE_DEFAULT;
-        
+
         @Preference(label = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_LABEL,
                 key = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_KEY,
                 description = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_TOOLTIP)
         boolean L3mapgen_FAV3_PROJECTION_USE_DEFAULT = PROPERTY_L3MAPGEN_FAV3_SET_AS_DEFAULT_DEFAULT;
-        
+
         @Preference(label = PROPERTY_L3MAPGEN_FAV3_PROJECTION_LABEL,
                 key = PROPERTY_L3MAPGEN_FAV3_PROJECTION_KEY,
                 description = PROPERTY_L3MAPGEN_FAV3_PROJECTION_TOOLTIP)
@@ -1287,8 +1287,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_DEFAULT);
     }
-    
-    
+
+
     public static String getPreferenceNorth() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_DEFAULT);
@@ -1351,8 +1351,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT);
     }
 
-    
-    
+
+
     public static boolean getPreferenceMaskLand() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT);
@@ -1447,7 +1447,29 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     }
 
 
-    
+    public static String getPreferenceFAV4Projection() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV4_PROJECTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV4_PROJECTION_DEFAULT);
+    }
+
+    public static String getPreferenceFAV4ProjectionDescription() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV4_PROJECTION_DESC_DEFAULT);
+    }
+
+
+    public static String getPreferenceFAV5Projection() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV5_PROJECTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV5_PROJECTION_DEFAULT);
+    }
+
+    public static String getPreferenceFAV5ProjectionDescription() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FAV5_PROJECTION_DESC_DEFAULT);
+    }
+
+
+
 
 
 
