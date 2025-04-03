@@ -557,6 +557,22 @@ public class ParamUtils {
                     case "row_group":
                         paramInfo.setValue(OCSSW_L2binController.getPreferenceRowGroup());
                         break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_SDAY_LABEL:
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceSday());
+                        break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_EDAY_LABEL:
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceEday());
+                        break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_DELTA_CROSS_LABEL:
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceDeltaCross());
+                        break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_NIGHT_LABEL:
+                        if (OCSSW_L2binController.getPreferenceNight()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
                 }
             }
 

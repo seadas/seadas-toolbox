@@ -54,7 +54,10 @@ import static com.bc.ceres.swing.TableLayout.cell;
 })
 public final class OCSSW_L2binController extends DefaultConfigController {
 
-    private static final String FAV = ".favorites";
+    // Preferences property prefix
+    private static final String PROPERTY_L2BIN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l2bin";
+    
+    public static final String PROPERTY_L2BIN_ROOT_FAV_KEY = PROPERTY_L2BIN_ROOT_KEY + ".favorites";
 
     Property flaguse;
     Property l3bprod;
@@ -119,12 +122,11 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[l3bprod][resolution][nswe°]";
     
     
-    // Preferences property prefix
-    private static final String PROPERTY_L2BIN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l2bin";
+
 
 
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.section";
-    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Fields: (Naming Scheme for 'ofile')";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Naming Scheme for 'ofile'";
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
 
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme";
@@ -163,7 +165,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.section";
-    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL = "Fields: (Product & General Parameters)";
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL = "Product & General Parameters";
     public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_TOOLTIP = "L2bin parameters";
     
     
@@ -204,19 +206,19 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.geospatial.section";
-    public static final String PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_LABEL = "Fields: (Geospatial Parameters)";
+    public static final String PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_LABEL = "Geospatial Parameters";
     public static final String PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_TOOLTIP = "L2bin geospatial parameters";
 
     public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.bin_method.section";
-    public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL = "Fields: (Bin Method Parameters)";
+    public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL = "Bin Method Parameters";
     public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_TOOLTIP = "L2bin bin method parameters";
 
     public static final String PROPERTY_L2BIN_PARAMETERS_FLAGUSE_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.flag_masking.section";
-    public static final String PROPERTY_L2BIN_PARAMETERS_FLAGUSE_SECTION_LABEL = "Fields: (Flag Masking Parameters)";
+    public static final String PROPERTY_L2BIN_PARAMETERS_FLAGUSE_SECTION_LABEL = "Flag Masking Parameters";
     public static final String PROPERTY_L2BIN_PARAMETERS_FLAGUSE_SECTION_TOOLTIP = "L2bin flag masking parameters";
 
     public static final String PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.temporal.section";
-    public static final String PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_LABEL = "Fields: (Temporal Parameters)";
+    public static final String PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_LABEL = "Temporal Parameters";
     public static final String PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_TOOLTIP = "L2bin temporal parameters";
     
     
@@ -267,90 +269,109 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final boolean PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT = true;
 
 
+    public static final String PROPERTY_L2BIN_SDAY_KEY = PROPERTY_L2BIN_ROOT_KEY + ".sday";
+    public static final String PROPERTY_L2BIN_SDAY_LABEL = "sday";
+    public static final String PROPERTY_L2BIN_SDAY_TOOLTIP = "Start day";
+    public static final String PROPERTY_L2BIN_SDAY_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_EDAY_KEY = PROPERTY_L2BIN_ROOT_KEY + ".eday";
+    public static final String PROPERTY_L2BIN_EDAY_LABEL = "eday";
+    public static final String PROPERTY_L2BIN_EDAY_TOOLTIP = "End day";
+    public static final String PROPERTY_L2BIN_EDAY_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_DELTA_CROSS_KEY = PROPERTY_L2BIN_ROOT_KEY + ".delta_crossing_time";
+    public static final String PROPERTY_L2BIN_DELTA_CROSS_LABEL = "delta_crossing_time";
+    public static final String PROPERTY_L2BIN_DELTA_CROSS_TOOLTIP = "delta_crossing_time";
+    public static final String PROPERTY_L2BIN_DELTA_CROSS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_NIGHT_KEY = PROPERTY_L2BIN_ROOT_KEY + ".night";
+    public static final String PROPERTY_L2BIN_NIGHT_LABEL = "night";
+    public static final String PROPERTY_L2BIN_NIGHT_TOOLTIP = "Night";
+    public static final boolean PROPERTY_L2BIN_NIGHT_DEFAULT = false;
 
     // Stored Favorite Settings: flaguse
-
-    public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + "favorite.flaguse.section";
+    
+    public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".flaguse.section";
     public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_LABEL = "[ Stored Favorite Flag Masking ]";
     public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_TOOLTIP = "Favorites for 'flaguse'";
 
     private static final String INDENTATION_SPACES = "           ";
 
-    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.flaguse.load";
+    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.flaguse.load";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_LABEL = "1. Set as Default";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_TOOLTIP = "Loads settings into the 'flaguse' preference";
     public static final boolean PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_DEFAULT = false;
     
-    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.flaguse.description";
+    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.flaguse.description";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of 'flaguse'";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_DEFAULT = "Sample of custom flags";
 
-    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.flaguse";
+    public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.flaguse";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LABEL = INDENTATION_SPACES + "flaguse";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_TOOLTIP = "Favorites 1: flaguse";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_DEFAULT = "NAVFAIL CLDICE STRAYLIGHT";
 
 
-    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".2.flaguse.load";
+    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.flaguse.load";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_LABEL = "2. Set as Default";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_TOOLTIP = "Loads settings into the 'flaguse' preference";
     public static final boolean PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_DEFAULT = false;
 
-    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".2.flaguse.description";
+    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.flaguse.description";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of 'flaguse'";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_DEFAULT = "Just land pixels";
 
-    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".2.flaguse";
+    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.flaguse";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_LABEL = INDENTATION_SPACES + "flaguse";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_TOOLTIP = "Favorites 2: flaguse";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DEFAULT = "NAVFAIL ~LAND";
 
 
-    public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".3.flaguse.load";
+    public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.flaguse.load";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_LOAD_LABEL = "3. Set as Default";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_LOAD_TOOLTIP = "Loads settings into the 'flaguse' preference";
     public static final boolean PROPERTY_L2BIN_FAV3_FLAGUSE_LOAD_DEFAULT = false;
 
-    public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".3.flaguse.description";
+    public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.flaguse.description";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of 'flaguse'";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_DESCRIPTION_DEFAULT = "";
 
-    public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".3.flaguse";
+    public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.flaguse";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_LABEL = INDENTATION_SPACES + "flaguse";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_TOOLTIP = "Favorites 3: flaguse";
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_DEFAULT = "";
 
 
-    public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".4.flaguse.load";
+    public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.flaguse.load";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_LOAD_LABEL = "4. Set as Default";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_LOAD_TOOLTIP = "Loads settings into the 'flaguse' preference";
     public static final boolean PROPERTY_L2BIN_FAV4_FLAGUSE_LOAD_DEFAULT = false;
 
-    public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".4.flaguse.description";
+    public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.flaguse.description";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of 'flaguse'";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_DESCRIPTION_DEFAULT = "";
 
-    public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".4.flaguse";
+    public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.flaguse";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_LABEL = INDENTATION_SPACES + "flaguse";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_TOOLTIP = "Favorites 4: flaguse";
     public static final String PROPERTY_L2BIN_FAV4_FLAGUSE_DEFAULT = "";
 
 
-    public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".5.flaguse.load";
+    public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.flaguse.load";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_LOAD_LABEL = "5. Set as Default";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_LOAD_TOOLTIP = "Loads settings into the 'flaguse' preference";
     public static final boolean PROPERTY_L2BIN_FAV5_FLAGUSE_LOAD_DEFAULT = false;
 
-    public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".5.flaguse.description";
+    public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.flaguse.description";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of 'flaguse'";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_DESCRIPTION_DEFAULT = "";
 
-    public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".5.flaguse";
+    public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.flaguse";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_LABEL = INDENTATION_SPACES + "flaguse";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_TOOLTIP = "Favorites 5: flaguse";
     public static final String PROPERTY_L2BIN_FAV5_FLAGUSE_DEFAULT = "";
@@ -360,31 +381,31 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     // Stored Favorite Settings: products
 
-    public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + "favorite.products.section";
+    public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".products.section";
     public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_LABEL = "[ Stored Favorite Products ]";
     public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_TOOLTIP = "Favorites for products and suite";
 
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.products.load";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.load";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_LOAD_LABEL = "1. Set as Default";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_LOAD_TOOLTIP = "Loads settings into the products preferences";
     public static final boolean PROPERTY_L2BIN_FAV1_PRODUCTS_LOAD_DEFAULT = false;
     
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.products.description";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.description";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of products";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_DEFAULT = "Sample of custom products";
     
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.products.l3bprod";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.l3bprod";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_LABEL = INDENTATION_SPACES + "l3bprod";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_TOOLTIP = "Favorites 1: l3bprod";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_DEFAULT = "testProd";
 
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.products.output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.output_wavelengths";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL = INDENTATION_SPACES + "output_wavelengths";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP = "Favorites 1: output_wavelengths";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT = "testWave";
     
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.products.suite";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.suite";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_LABEL = INDENTATION_SPACES + "suite";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_TOOLTIP = "Favorites 1: suite";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_DEFAULT = "testSuite";
@@ -395,26 +416,26 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     // Stored Favorite Settings: geospatial
 
-    public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + "favorite.geospatial.section";
+    public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".geospatial.section";
     public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_LABEL = "[ Stored Favorite Geospatial ]";
     public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_TOOLTIP = "Favorites for spatial parameters";
 
-    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.geospatial.load";
+    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.load";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_LABEL = "1. Set as Default";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_TOOLTIP = "Loads settings into the geospatial preferences";
     public static final boolean PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_DEFAULT = false;
 
-    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.geospatial.description";
+    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.description";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of geospatial";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_DEFAULT = "Sample of custom products";
 
-    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.geospatial.resolution";
+    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.resolution";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_LABEL = INDENTATION_SPACES + "resolution";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_TOOLTIP = "Favorites 1: resolution";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_DEFAULT = "testRes";
 
-    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_KEY = PROPERTY_L2BIN_ROOT_KEY + FAV + ".1.geospatial.nswe";
+    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.nswe";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_DEFAULT = "45,23,34,35";
@@ -482,6 +503,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L2BIN_ROW_GROUP_KEY, PROPERTY_L2BIN_ROW_GROUP_DEFAULT);
 
 
+        initPropertyDefaults(context, PROPERTY_L2BIN_SDAY_KEY, PROPERTY_L2BIN_SDAY_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_EDAY_KEY, PROPERTY_L2BIN_EDAY_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_DELTA_CROSS_KEY, PROPERTY_L2BIN_DELTA_CROSS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_NIGHT_KEY, PROPERTY_L2BIN_NIGHT_DEFAULT);
+
+        
+
 
         favoriteFlaguseSection = initPropertyDefaults(context, PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY, true);
 
@@ -542,6 +570,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         tableLayout.setColumnWeightX(1, 1.0);
 
         JPanel pageUI = new JPanel(tableLayout);
+        JPanel pageUIFav = new JPanel(tableLayout);
+
 
         PropertyEditorRegistry registry = PropertyEditorRegistry.getInstance();
 
@@ -549,17 +579,33 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         Property[] properties = propertyContainer.getProperties();
 
         int currRow = 0;
+        int currRowFav = 0;
         for (Property property : properties) {
             PropertyDescriptor descriptor = property.getDescriptor();
-            PropertyPane.addComponent(currRow, tableLayout, pageUI, context, registry, descriptor);
-            currRow++;
+            if (property.getName().contains(PROPERTY_L2BIN_ROOT_FAV_KEY)) {
+                PropertyPane.addComponent(currRowFav, tableLayout, pageUIFav, context, registry, descriptor);
+                currRowFav++;
+            } else {
+                PropertyPane.addComponent(currRow, tableLayout, pageUI, context, registry, descriptor);
+                currRow++;
+            }
         }
 
         pageUI.add(tableLayout.createVerticalSpacer());
+        pageUIFav.add(tableLayout.createVerticalSpacer());
+
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("L2Bin Preferences", null, pageUI,
+                "Primary fields");
+
+        tabbedPane.addTab("Stored Favorites", null, pageUIFav,
+                "Stored favorites");
+
 
         JPanel parent = new JPanel(new BorderLayout());
-        parent.add(pageUI, BorderLayout.CENTER);
-        parent.add(Box.createHorizontalStrut(50), BorderLayout.EAST);
+        parent.add(tabbedPane, BorderLayout.CENTER);
+//        parent.add(Box.createHorizontalStrut(50), BorderLayout.EAST);
         return parent;
     }
 
@@ -758,7 +804,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         Property[] properties = propertyContainer.getProperties();
 
         for (Property property : properties) {
-            if (!property.getName().toUpperCase().contains(FAV)) {
+            if (!property.getName().contains(PROPERTY_L2BIN_ROOT_FAV_KEY)) {
                 if (property != restoreDefaults && property.getDescriptor().getDefaultValue() != null) {
                     if (!property.getValue().equals(property.getDescriptor().getDefaultValue())) {
                         return false;
@@ -788,7 +834,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
                     for (Property property : properties) {
                         if (property != restoreDefaults && property.getDescriptor().getDefaultValue() != null) {
-                            if (!property.getName().toUpperCase().contains(FAV)) {
+                            if (!property.getName().contains(PROPERTY_L2BIN_ROOT_FAV_KEY)) {
                                 property.setValue(property.getDescriptor().getDefaultValue());
                             }
                         }
@@ -1365,7 +1411,32 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 description = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_TOOLTIP)
         boolean l2bin_PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY = true;
 
+        @Preference(key = PROPERTY_L2BIN_SDAY_KEY,
+                label = PROPERTY_L2BIN_SDAY_LABEL,
+                description = PROPERTY_L2BIN_SDAY_TOOLTIP)
+        String l2binSdayDefault= PROPERTY_L2BIN_SDAY_DEFAULT;
 
+        @Preference(key = PROPERTY_L2BIN_EDAY_KEY,
+                label = PROPERTY_L2BIN_EDAY_LABEL,
+                description = PROPERTY_L2BIN_EDAY_TOOLTIP)
+        String l2binEdayDefault= PROPERTY_L2BIN_EDAY_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_DELTA_CROSS_KEY,
+                label = PROPERTY_L2BIN_DELTA_CROSS_LABEL,
+                description = PROPERTY_L2BIN_DELTA_CROSS_TOOLTIP)
+        String l2binDeltaCrossDefault= PROPERTY_L2BIN_DELTA_CROSS_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_NIGHT_KEY,
+                label = PROPERTY_L2BIN_NIGHT_LABEL,
+                description = PROPERTY_L2BIN_NIGHT_TOOLTIP)
+        boolean l2binNightDefault= PROPERTY_L2BIN_NIGHT_DEFAULT;
+
+
+
+
+        
+        
 
 
 
@@ -1482,6 +1553,27 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     }
 
 
+
+    public static String getPreferenceSday() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_SDAY_KEY, PROPERTY_L2BIN_SDAY_DEFAULT);
+    }
+    public static String getPreferenceEday() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_EDAY_KEY, PROPERTY_L2BIN_EDAY_DEFAULT);
+    }    
+    public static String getPreferenceDeltaCross() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_L2BIN_DELTA_CROSS_KEY, PROPERTY_L2BIN_DELTA_CROSS_DEFAULT);
+    }
+    public static boolean getPreferenceNight() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2BIN_NIGHT_KEY, PROPERTY_L2BIN_NIGHT_DEFAULT);
+    }
+
+
+    
+    
     public static boolean getPreferenceFlaguseAutoFillEnable() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyBool(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
