@@ -3146,7 +3146,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         
         String ofileName;
 
-        if (OCSSW_L2binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
+        if (OCSSW_L2binController.OFILE_NAMING_SCHEME_IFILE_REPLACE.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
+            String orginalKeyString = OCSSW_L2binController.getPreferenceOfileNamingSchemeIfileOriginal();
+            String replacementKeyString = OCSSW_L2binController.getPreferenceOfileNamingSchemeIfileReplace();
+            ofileName = getOfileWithReplaceForL3MapGen(ifileName, orginalKeyString, replacementKeyString);
+        } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
             String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
         } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {

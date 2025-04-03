@@ -201,6 +201,17 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = "";
 
 
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.ifile.original";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_LABEL = "Basename " + OFILE_NAMING_SCHEME_IFILE_REPLACE +  ": Original";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_TOOLTIP = "ofile Ifile Original";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_DEFAULT = ".L2.";
+
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.ifile.replace";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_LABEL =  "Basename " + OFILE_NAMING_SCHEME_IFILE_REPLACE + ": Replacement";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_TOOLTIP = "ofile Ifile Replace";
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_DEFAULT = ".L3b.";
+    
+
 
 
     public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.section";
@@ -717,7 +728,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         fieldsAdd = initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT);
-        
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY, PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY);
         
         //
         // Initialize the default value contained within each property descriptor
@@ -1186,8 +1198,16 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
     private void enablement(BindingContext context) {
-        
 
+
+        if (OFILE_NAMING_SCHEME_IFILE_REPLACE.equals(namingScheme.getValue())) {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY, true);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY, true);
+        } else {
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY, false);
+        }
+        
         if (OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(fieldsAdd.getValue())
                 || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT.equals(fieldsAdd.getValue())
                 || OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2.equals(fieldsAdd.getValue())
@@ -1514,11 +1534,22 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
         @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_KEY,
                 label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_LABEL,
-                valueSet = {OFILE_NAMING_SCHEME_SIMPLE,OFILE_NAMING_SCHEME_OCSSW, OFILE_NAMING_SCHEME_OCSSW_SHORT},
+                valueSet = {OFILE_NAMING_SCHEME_SIMPLE,OFILE_NAMING_SCHEME_OCSSW, OFILE_NAMING_SCHEME_OCSSW_SHORT, OFILE_NAMING_SCHEME_IFILE_REPLACE},
                 description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_TOOLTIP)
         String l2binOfileNamingSchemeDefault = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_DEFAULT;
 
 
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_TOOLTIP)
+        String l2binOfileNamingSchemeIfileOriginalDefault = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY,
+                label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_LABEL,
+                description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_TOOLTIP)
+        String l2binOfileNamingSchemeIfileReplaceDefault = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_DEFAULT;
+        
+        
         @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY,
                 label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL,
                 valueSet = {OFILE_NAMING_SCHEME_SUFFIX_NONE,
@@ -2108,8 +2139,21 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT);
     }
-    
 
+
+    public static String getPreferenceOfileNamingSchemeIfileReplace() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_DEFAULT);
+    }
+
+    public static String getPreferenceOfileNamingSchemeIfileOriginal() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY, OCSSW_L2binController.PROPERTY_L2BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_DEFAULT);
+    }
+
+
+
+    
 
     public static String getPreferenceOfileNamingSchemeSuffix1() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
