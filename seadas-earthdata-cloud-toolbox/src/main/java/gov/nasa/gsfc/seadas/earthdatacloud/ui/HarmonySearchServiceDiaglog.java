@@ -33,7 +33,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         setLayout(new BorderLayout());
         setSize(2000, 1000);
-        //setPreferredSize(new Dimension(1000, 1000));
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
