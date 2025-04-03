@@ -73,7 +73,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
     public static final String  OFILE_NAMING_SCHEME_SIMPLE = "output";
     public static final String  OFILE_NAMING_SCHEME_OCSSW_SHORT = "OCSSW (do not derive time field)";
     public static final String  OFILE_NAMING_SCHEME_OCSSW = "OCSSW";
-    public static final String OFILE_NAMING_SCHEME_IFILE_REPLACE = "IFILE (String-Replace)";
+    public static final String OFILE_NAMING_SCHEME_IFILE_REPLACE = "IFILE";
 
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
@@ -89,7 +89,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.parameters.section";
-    public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_LABEL = "Fields: (Product & General Parameters)";
+    public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_LABEL = "Product & General Parameters";
     public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_TOOLTIP = "L3bin parameters";
 
 
@@ -133,7 +133,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme.section";
-    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Fields: (Naming Scheme for 'ofile')";
+    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_LABEL = "Naming Scheme for 'ofile'";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP = "Naming scheme to use for autofilling ofile name";
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme";
@@ -168,12 +168,12 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme.ifile.original";
-    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_LABEL = "Basename " + OFILE_NAMING_SCHEME_IFILE_REPLACE +  ": Original";
+    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_LABEL = "Basename " + OFILE_NAMING_SCHEME_IFILE_REPLACE +  " (Original Text)";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_TOOLTIP = "ofile Ifile Original";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_ORIGINAL_DEFAULT = "";
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme.ifile.replace";
-    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_LABEL =  "Basename " + OFILE_NAMING_SCHEME_IFILE_REPLACE + ": Replacement";
+    public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_LABEL =  "Basename " + OFILE_NAMING_SCHEME_IFILE_REPLACE + " (Replacement Text)";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_TOOLTIP = "ofile Ifile Replace";
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_IFILE_REPLACE_DEFAULT = "";
 
