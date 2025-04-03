@@ -7,9 +7,10 @@
         <numColumns>6</numColumns>
         <columnWidth>18</columnWidth>
         <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
-        <subPanel1Title> Geospatial Parameters </subPanel1Title>
-        <subPanel2Title> Binning Method &amp; Flag Masking Parameters </subPanel2Title>
+        <subPanel2Title> Geospatial Parameters </subPanel2Title>
+        <subPanel1Title> Flag Masking Parameters </subPanel1Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
+        <subPanel4Title> Bin Method Parameters </subPanel4Title>
 
 
         <!--krow:   810 out of   2160  (-22.50 to   0.00) Tue Jun 26 16:14:55 2012-->
@@ -99,7 +100,7 @@
 
         <option type="flags">
             <name>flaguse</name>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>1</subPanelIndex>
             <value></value>
             <default></default>
             <description>flags to mask (note: actual flags in level-2 file may differ from the selector list)</description>
@@ -299,7 +300,7 @@
 
         <option type="int">
             <name>resolution</name>
-            <subPanelIndex>1</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>bin resolution</description>
@@ -378,7 +379,7 @@
 
         <option type="int">
             <name>area_weighting</name>
-            <subPanelIndex>1</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Enable area weighting</description>
@@ -433,7 +434,7 @@
 
         <option type="float">
             <name>latnorth</name>
-            <subPanelIndex>1</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Northernmost latitude</description>
@@ -444,7 +445,7 @@
 
         <option type="float">
             <name>latsouth</name>
-            <subPanelIndex>1</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Southernmost latitude</description>
@@ -455,7 +456,7 @@
 
         <option type="float">
             <name>lonwest</name>
-            <subPanelIndex>1</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Westernmost longitude</description>
@@ -466,7 +467,7 @@
 
         <option type="float">
             <name>loneast</name>
-            <subPanelIndex>1</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <value></value>
             <default></default>
             <description>Easternmost longitude</description>
@@ -482,7 +483,7 @@
 
         <option type="string">
             <name>minobs</name>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>4</subPanelIndex>
             <value></value>
             <default></default>
             <description>minimum observations</description>
@@ -509,7 +510,7 @@
 
         <option type="string">
             <name>composite_prod</name>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>4</subPanelIndex>
             <value></value>
             <default></default>
             <description>composite product field name</description>
@@ -524,7 +525,7 @@
 
         <option type="string">
             <name>composite_scheme</name>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>4</subPanelIndex>
             <value></value>
             <default></default>
             <description>composite scheme for bin value using product in 'composite_prod'</description>
@@ -545,7 +546,7 @@
 
         <option type="string">
             <name>qual_prod</name>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>4</subPanelIndex>
             <value></value>
             <default></default>
             <description>quality product field name</description>
@@ -555,7 +556,7 @@
 
         <option type="int">
             <name>qual_max</name>
-            <subPanelIndex>2</subPanelIndex>
+            <subPanelIndex>4</subPanelIndex>
             <value></value>
             <default></default>
             <description>maximum acceptable quality [default=2]</description>
