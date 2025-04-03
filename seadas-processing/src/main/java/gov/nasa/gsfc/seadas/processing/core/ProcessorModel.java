@@ -67,6 +67,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private int numColumns;
     private int columnWidth;
 
+    private static final String DELIMITOR_NUMBER = "_";
+    private static final  String DELIMITOR_STRING = ".";
+
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
@@ -2528,8 +2531,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 }
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "prod", productSingle);
-            keyString = replaceAnyKeyStringVariant(keyString, "PROD", productSingle.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "prod", productSingle, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PROD", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2550,8 +2553,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 }
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "prod_list", productList);
-            keyString = replaceAnyKeyStringVariant(keyString, "PROD_LIST", productList.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "prod_list", productList, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PROD_LIST", productList.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2560,8 +2563,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (resolution == null) {
                 resolution = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "resolve", resolution);
-            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE", resolution.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "resolve", resolution, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE", resolution.toUpperCase(), DELIMITOR_NUMBER);
         }
 
 
@@ -2618,8 +2621,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 }
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productSingle);
-            keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD", productSingle.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productSingle, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2640,8 +2643,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 }
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod_list", productList);
-            keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD_LIST", productList.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "l3bprod_list", productList, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD_LIST", productList.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2650,8 +2653,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (resolution == null) {
                 resolution = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution);
-            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase(), DELIMITOR_NUMBER);
         }
 
 
@@ -2661,8 +2664,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (prodtype == null) {
                 prodtype = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "prodtype", prodtype);
-            keyString = replaceAnyKeyStringVariant(keyString, "PRODTYPE", prodtype.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "prodtype", prodtype, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODTYPE", prodtype.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2671,8 +2674,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (suite == null) {
                 suite = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "suite", suite);
-            keyString = replaceAnyKeyStringVariant(keyString, "SUITE", suite.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "suite", suite, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "SUITE", suite.toUpperCase(), DELIMITOR_STRING);
         }
 
         keyString = keystringReplaceNSWE(keyString, north, south, west, east);
@@ -2730,8 +2733,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                 }
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "product", productSingle);
-            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT", productSingle.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "product", productSingle, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2752,8 +2755,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
 
-            keyString = replaceAnyKeyStringVariant(keyString, "product_list", productList);
-            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT_LIST", productList.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "product_list", productList, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT_LIST", productList.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2761,8 +2764,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (resolution == null) {
                 resolution = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution);
-            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase(), DELIMITOR_NUMBER);
         }
 
 
@@ -2784,8 +2787,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
 
-            keyString = replaceAnyKeyStringVariant(keyString, "projection", projectionName);
-            keyString = replaceAnyKeyStringVariant(keyString, "PROJECTION", projectionName.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "projection", projectionName, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PROJECTION", projectionName.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2793,8 +2796,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (interp == null) {
                 interp = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "interp", interp);
-            keyString = replaceAnyKeyStringVariant(keyString, "INTERP", interp.toUpperCase());
+            keyString = replaceAnyKeyStringVariant(keyString, "interp", interp, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "INTERP", interp.toUpperCase(), DELIMITOR_STRING);
         }
 
 
@@ -2811,6 +2814,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private static String keystringReplaceNSWE(String keyString, String north, String south, String west, String east) {
 
         //    [_nswe]  [_nswe°] [_NSWE°] [_nswedegrees]
+
 
         // make sure key is uppercase
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north");
@@ -2841,9 +2845,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (north == null) {
                 north = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "north", north, null, "N");
-            keyString = replaceAnyKeyStringVariant(keyString, "north°", north, null, "°N");
-            keyString = replaceAnyKeyStringVariant(keyString, "northdegrees", north, null, "°N");
+            keyString = replaceAnyKeyStringVariant(keyString, "north", north, null, "N", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "north°", north, null, "°N", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "northdegrees", north, null, "°N", DELIMITOR_NUMBER);
         }
 
 
@@ -2854,9 +2858,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (south == null) {
                 south = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "south", south, null, "S");
-            keyString = replaceAnyKeyStringVariant(keyString, "south°", south, null, "°S");
-            keyString = replaceAnyKeyStringVariant(keyString, "southdegrees", south, null, "°S");
+            keyString = replaceAnyKeyStringVariant(keyString, "south", south, null, "S", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "south°", south, null, "°S", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "southdegrees", south, null, "°S", DELIMITOR_NUMBER);
         }
 
 
@@ -2867,9 +2871,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (west == null) {
                 west = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "west", west, null, "W");
-            keyString = replaceAnyKeyStringVariant(keyString, "west°", west, null, "°W");
-            keyString = replaceAnyKeyStringVariant(keyString, "westdegrees", west, null, "°W");
+            keyString = replaceAnyKeyStringVariant(keyString, "west", west, null, "W", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "west°", west, null, "°W", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "westdegrees", west, null, "°W", DELIMITOR_NUMBER);
         }
 
 
@@ -2880,9 +2884,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (east == null) {
                 east = "";
             }
-            keyString = replaceAnyKeyStringVariant(keyString, "east", east, null, "E");
-            keyString = replaceAnyKeyStringVariant(keyString, "east°", east, null, "°E");
-            keyString = replaceAnyKeyStringVariant(keyString, "eastdegrees", east, null, "°E");
+            keyString = replaceAnyKeyStringVariant(keyString, "east", east, null, "E", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "east°", east, null, "°E", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "eastdegrees", east, null, "°E", DELIMITOR_NUMBER);
         }
         
         
@@ -2932,9 +2936,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 nsweDeg = nsweDeg.substring(1);
             }
 
-            keyString = replaceAnyKeyStringVariant(keyString, "nswe", nswe);
-            keyString = replaceAnyKeyStringVariant(keyString, "nswe°", nsweDeg);
-            keyString = replaceAnyKeyStringVariant(keyString, "nswedegrees", nsweDeg);
+            keyString = replaceAnyKeyStringVariant(keyString, "nswe", nswe, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "nswe°", nsweDeg, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "nswedegrees", nsweDeg, DELIMITOR_NUMBER);
         }
 
         return keyString;
@@ -2955,11 +2959,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    private static String replaceAnyKeyStringVariant(String keyString, String key, String value) {
-        return replaceAnyKeyStringVariant( keyString,  key, value, null, null);
+    private static String replaceAnyKeyStringVariant(String keyString, String key, String value, String delimitorDefault) {
+        return replaceAnyKeyStringVariant( keyString,  key, value, null, null, delimitorDefault);
     }
 
-    private static String replaceAnyKeyStringVariant(String keyString, String key, String value, String prefix, String suffix) {
+    private static String replaceAnyKeyStringVariant(String keyString, String key, String value, String prefix, String suffix, String delimitorDefault) {
 
         if (value == null) {
             value = "";
@@ -2976,7 +2980,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         value = value.trim();
 
         if (value.length() > 0) {
-            keyString = keyString.replace("[" + key + "]", "_" + value);  // default
+            keyString = keyString.replace("[" + key + "]", delimitorDefault + value);  // default
             keyString = keyString.replace("[." + key + "]", "." + value);
             keyString = keyString.replace("[_" + key + "]", "_" + value);
             keyString = keyString.replace("[-" + key + "]", "-" + value);
@@ -3054,6 +3058,21 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return fileBasename;
     }
 
+    private static String stripFilenameExtractExtension(String filename, String extension) {
+        if (filename == null || filename.trim().length() == 0 || extension == null || extension.trim().length() == 0) {
+            return filename;
+        }
+
+        String fileBasename = filename;
+
+        if (filename.endsWith(extension)) {
+            fileBasename = filename.substring(0, filename.length() - extension.length());
+        }
+
+        return fileBasename;
+    }
+
+
     private static String stripPalFilenameExtension(String filename) {
         if (filename == null || filename.trim().length() == 0) {
             return filename;
@@ -3114,13 +3133,25 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        ofileName += getOfileForL3BinAddOns(resolve, prod, north, south, west, east);
 
-
-        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
-            ofileName = ofileName + "_out";
+        String foundExtension = "";
+        if (ofileName.endsWith(".sub")) {
+            foundExtension = ".sub";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+        if (ofileName.endsWith(".extract")) {
+            foundExtension = ".extract";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+        if (ofileName.endsWith(".subset")) {
+            foundExtension = ".subset";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
         }
 
+
+
+        ofileName += getOfileForL3BinAddOns(resolve, prod, north, south, west, east);
+        
 
         if (ofileName.contains(" ")) {
             ofileName = ofileName.replace(" ", "");
@@ -3129,6 +3160,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         ofileName = trimStringChars(ofileName, "_", false, true, true);
         ofileName = trimStringChars(ofileName, "-", false, true, true);
 
+        ofileName += foundExtension;
+
+
+        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
+            ofileName = ofileName + "_out";
+        }
 
         ofileName += ".nc";
 
@@ -3183,12 +3220,28 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
+
+        String foundExtension = "";
+        if (ofileName.endsWith(".sub")) {
+            foundExtension = ".sub";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+        if (ofileName.endsWith(".extract")) {
+            foundExtension = ".extract";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+        if (ofileName.endsWith(".subset")) {
+            foundExtension = ".subset";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+
+
         ofileName += getOfileForL2BinAddOns(resolution, l3bprod, suite, prodtype, north, south, west, east);
 
 
-        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
-            ofileName = ofileName + "_out";
-        }
+
+
+
 
 
         if (ofileName.contains(" ")) {
@@ -3197,6 +3250,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         ofileName = trimStringChars(ofileName, ".", false, true, true);
         ofileName = trimStringChars(ofileName, "_", false, true, true);
         ofileName = trimStringChars(ofileName, "-", false, true, true);
+
+
+        ofileName += foundExtension;
+
+
+        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
+            ofileName = ofileName + "_out";
+        }
 
 
         ofileName += ".nc";
@@ -3209,6 +3270,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public static String getOfileForL3MapGenWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String oformat, String product, String projection, String interp, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
+
 
         String ofileName;
         if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_IFILE_REPLACE.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
@@ -3248,6 +3310,22 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
+
+        String foundExtension = "";
+        if (ofileName.endsWith(".sub")) {
+            foundExtension = ".sub";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+        if (ofileName.endsWith(".extract")) {
+            foundExtension = ".extract";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+        if (ofileName.endsWith(".subset")) {
+            foundExtension = ".subset";
+            ofileName = stripFilenameExtractExtension(ofileName, foundExtension);
+        }
+
+
         ofileName += getOfileForL3MapGenAddOns(resolution, product, projection, interp,  north, south, west, east);
 
 
@@ -3256,9 +3334,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             ofileName += suffix;
         }
 
-        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
-            ofileName = ofileName + "_out";
-        }
 
 
         if (ofileName.contains(" ")) {
@@ -3268,6 +3343,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         ofileName = trimStringChars(ofileName, "_", false, true, true);
         ofileName = trimStringChars(ofileName, "-", false, true, true);
 
+
+        ofileName += foundExtension;
+
+
+        if (ofileName.equalsIgnoreCase(ifileBaseName)) {
+            ofileName = ofileName + "_out";
+        }
 
         ofileName = getOfileForL3MapGenAddExtension(ofileName, oformat);
 
