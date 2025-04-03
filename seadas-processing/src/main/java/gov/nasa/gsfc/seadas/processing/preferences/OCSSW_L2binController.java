@@ -89,11 +89,50 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     Property fav1Products_output_wavelengths;
     Property fav1Products_suite;
 
+    Property fav2Products_SetToDefault;
+    Property fav2Products_l3bprod;
+    Property fav2Products_output_wavelengths;
+    Property fav2Products_suite;
+
+
+    Property fav3Products_SetToDefault;
+    Property fav3Products_l3bprod;
+    Property fav3Products_output_wavelengths;
+    Property fav3Products_suite;
+
+
+    Property fav4Products_SetToDefault;
+    Property fav4Products_l3bprod;
+    Property fav4Products_output_wavelengths;
+    Property fav4Products_suite;
+
+
+    Property fav5Products_SetToDefault;
+    Property fav5Products_l3bprod;
+    Property fav5Products_output_wavelengths;
+    Property fav5Products_suite;
+
 
     Property favoriteGeospatial_Section;
     Property fav1Geospatial_SetToDefault;
     Property fav1Geospatial_NSWE;
     Property fav1Geospatial_resolution;
+
+    Property fav2Geospatial_SetToDefault;
+    Property fav2Geospatial_NSWE;
+    Property fav2Geospatial_resolution;
+
+    Property fav3Geospatial_SetToDefault;
+    Property fav3Geospatial_NSWE;
+    Property fav3Geospatial_resolution;
+
+    Property fav4Geospatial_SetToDefault;
+    Property fav4Geospatial_NSWE;
+    Property fav4Geospatial_resolution;
+
+    Property fav5Geospatial_SetToDefault;
+    Property fav5Geospatial_NSWE;
+    Property fav5Geospatial_resolution;
 
     Property namingScheme;
     Property fieldsAdd;
@@ -153,13 +192,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL = OFILE_NAMING_SCHEME_SUFFIX1;
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
-    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = "";
 
 
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix2";
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_LABEL = OFILE_NAMING_SCHEME_SUFFIX2;
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
-    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3;
+    public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX2_DEFAULT = "";
 
 
 
@@ -289,13 +328,16 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_NIGHT_TOOLTIP = "Night";
     public static final boolean PROPERTY_L2BIN_NIGHT_DEFAULT = false;
 
+
+
+    private static final String INDENTATION_SPACES = "           ";
+
     // Stored Favorite Settings: flaguse
     
     public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".flaguse.section";
-    public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_LABEL = "[ Stored Favorite Flag Masking ]";
+    public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_LABEL = "[ Stored Favorites: Flag Masking Parameters ]";
     public static final String PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_TOOLTIP = "Favorites for 'flaguse'";
 
-    private static final String INDENTATION_SPACES = "           ";
 
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.flaguse.load";
     public static final String PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_LABEL = "1. Set as Default";
@@ -321,12 +363,12 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.flaguse.description";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of 'flaguse'";
-    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_DEFAULT = "Just land pixels";
+    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DESCRIPTION_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.flaguse";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_LABEL = INDENTATION_SPACES + "flaguse";
     public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_TOOLTIP = "Favorites 2: flaguse";
-    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DEFAULT = "NAVFAIL ~LAND";
+    public static final String PROPERTY_L2BIN_FAV2_FLAGUSE_DEFAULT = "";
 
 
     public static final String PROPERTY_L2BIN_FAV3_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.flaguse.load";
@@ -382,7 +424,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     // Stored Favorite Settings: products
 
     public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".products.section";
-    public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_LABEL = "[ Stored Favorite Products ]";
+    public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_LABEL = "[ Stored Favorites: Product Parameters ]";
     public static final String PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_TOOLTIP = "Favorites for products and suite";
 
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.load";
@@ -393,31 +435,140 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.description";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of products";
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_DEFAULT = "Sample of custom products";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_DESCRIPTION_DEFAULT = "";
     
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.l3bprod";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_LABEL = INDENTATION_SPACES + "l3bprod";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_TOOLTIP = "Favorites 1: l3bprod";
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_DEFAULT = "testProd";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_L3BPROD_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.output_wavelengths";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL = INDENTATION_SPACES + "output_wavelengths";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP = "Favorites 1: output_wavelengths";
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT = "testWave";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT = "";
     
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.products.suite";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_LABEL = INDENTATION_SPACES + "suite";
     public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_TOOLTIP = "Favorites 1: suite";
-    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_DEFAULT = "testSuite";
+    public static final String PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_DEFAULT = "";
 
 
+
+
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.products.load";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_LABEL = "2. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_TOOLTIP = "Loads settings into the products preferences";
+    public static final boolean PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.products.description";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of products";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.products.l3bprod";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_LABEL = INDENTATION_SPACES + "l3bprod";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_TOOLTIP = "Favorites 2: l3bprod";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.products.output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL = INDENTATION_SPACES + "output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP = "Favorites 2: output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.products.suite";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_LABEL = INDENTATION_SPACES + "suite";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_TOOLTIP = "Favorites 2: suite";
+    public static final String PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_DEFAULT = "";
+
+
+
+
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.products.load";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_LABEL = "3. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_TOOLTIP = "Loads settings into the products preferences";
+    public static final boolean PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.products.description";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of products";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.products.l3bprod";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_LABEL = INDENTATION_SPACES + "l3bprod";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_TOOLTIP = "Favorites 3: l3bprod";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.products.output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL = INDENTATION_SPACES + "output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP = "Favorites 3: output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.products.suite";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_LABEL = INDENTATION_SPACES + "suite";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_TOOLTIP = "Favorites 3: suite";
+    public static final String PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_DEFAULT = "";
+
+
+
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.products.load";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_LABEL = "4. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_TOOLTIP = "Loads settings into the products preferences";
+    public static final boolean PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.products.description";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of products";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.products.l3bprod";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_LABEL = INDENTATION_SPACES + "l3bprod";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_TOOLTIP = "Favorites 4: l3bprod";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.products.output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL = INDENTATION_SPACES + "output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP = "Favorites 4: output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.products.suite";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_LABEL = INDENTATION_SPACES + "suite";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_TOOLTIP = "Favorites 4: suite";
+    public static final String PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_DEFAULT = "";
+
+
+
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.products.load";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_LABEL = "5. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_TOOLTIP = "Loads settings into the products preferences";
+    public static final boolean PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.products.description";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of products";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.products.l3bprod";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_LABEL = INDENTATION_SPACES + "l3bprod";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_TOOLTIP = "Favorites 5: l3bprod";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.products.output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL = INDENTATION_SPACES + "output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP = "Favorites 5: output_wavelengths";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.products.suite";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_LABEL = INDENTATION_SPACES + "suite";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_TOOLTIP = "Favorites 5: suite";
+    public static final String PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_DEFAULT = "";
+    
 
 
 
     // Stored Favorite Settings: geospatial
 
     public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".geospatial.section";
-    public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_LABEL = "[ Stored Favorite Geospatial ]";
+    public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_LABEL = "[ Stored Favorites: Geospatial Parameters ]";
     public static final String PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_TOOLTIP = "Favorites for spatial parameters";
 
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.load";
@@ -428,17 +579,110 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.description";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of geospatial";
-    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_DEFAULT = "Sample of custom products";
+    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.resolution";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_LABEL = INDENTATION_SPACES + "resolution";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_TOOLTIP = "Favorites 1: resolution";
-    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_DEFAULT = "testRes";
+    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_DEFAULT = "";
 
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".1.geospatial.nswe";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
     public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
-    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_DEFAULT = "45,23,34,35";
+    public static final String PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_DEFAULT = "";
+
+
+
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.geospatial.load";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_LABEL = "2. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_TOOLTIP = "Loads settings into the geospatial preferences";
+    public static final boolean PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.geospatial.description";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of geospatial";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.geospatial.resolution";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_LABEL = INDENTATION_SPACES + "resolution";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_TOOLTIP = "Favorites 2: resolution";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".2.geospatial.nswe";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_DEFAULT = "";
+
+
+
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.geospatial.load";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_LABEL = "3. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_TOOLTIP = "Loads settings into the geospatial preferences";
+    public static final boolean PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.geospatial.description";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of geospatial";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.geospatial.resolution";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_LABEL = INDENTATION_SPACES + "resolution";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_TOOLTIP = "Favorites 3: resolution";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".3.geospatial.nswe";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_DEFAULT = "";
+
+
+
+
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.geospatial.load";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_LABEL = "4. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_TOOLTIP = "Loads settings into the geospatial preferences";
+    public static final boolean PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.geospatial.description";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of geospatial";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.geospatial.resolution";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_LABEL = INDENTATION_SPACES + "resolution";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_TOOLTIP = "Favorites 4: resolution";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".4.geospatial.nswe";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_DEFAULT = "";
+
+
+
+
+
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.geospatial.load";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_LABEL = "5. Set as Default";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_TOOLTIP = "Loads settings into the geospatial preferences";
+    public static final boolean PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_DEFAULT = false;
+
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.geospatial.description";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_LABEL = INDENTATION_SPACES + "Description/Notes";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_TOOLTIP = "Description/notes for stored setting of geospatial";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.geospatial.resolution";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_LABEL = INDENTATION_SPACES + "resolution";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_TOOLTIP = "Favorites 5: resolution";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_DEFAULT = "";
+
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_KEY = PROPERTY_L2BIN_ROOT_FAV_KEY + ".5.geospatial.nswe";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_LABEL = INDENTATION_SPACES + "N,S,W,E Bounds";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_TOOLTIP = "Geographic boundaries.  Comma delimited. Format N,S,W,E. ";
+    public static final String PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_DEFAULT = "";
+
+
 
 
 
@@ -481,28 +725,33 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         //
 
         initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_SECTION_KEY, true);
-        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY, true);
-        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY, true);
-        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY, true);
-        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_FLAGUSE_SECTION_KEY, true);
         l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_KEY, PROPERTY_L2BIN_L3BPROD_DEFAULT);
+        l3bprodAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
+        output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT);
+        suite = initPropertyDefaults(context, PROPERTY_L2BIN_SUITE_KEY, PROPERTY_L2BIN_SUITE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_PRODTYPE_KEY, PROPERTY_L2BIN_PRODTYPE_DEFAULT);
-        resolution = initPropertyDefaults(context, PROPERTY_L2BIN_RESOLUTION_KEY, PROPERTY_L2BIN_RESOLUTION_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_AREA_WEIGHTING_KEY, PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_ROW_GROUP_KEY, PROPERTY_L2BIN_ROW_GROUP_DEFAULT);
+
+        
+        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_FLAGUSE_SECTION_KEY, true);
         flaguse = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_KEY, PROPERTY_L2BIN_FLAGUSE_DEFAULT);
+        flaguseAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
+        
+        
+        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY, true);
         north = initPropertyDefaults(context, PROPERTY_L2BIN_LATNORTH_KEY, PROPERTY_L2BIN_LATNORTH_DEFAULT);
         south = initPropertyDefaults(context, PROPERTY_L2BIN_LATSOUTH_KEY, PROPERTY_L2BIN_LATSOUTH_DEFAULT);
         west = initPropertyDefaults(context, PROPERTY_L2BIN_LONWEST_KEY, PROPERTY_L2BIN_LONWEST_DEFAULT);
         east = initPropertyDefaults(context, PROPERTY_L2BIN_LONEAST_KEY, PROPERTY_L2BIN_LONEAST_DEFAULT);
-        flaguseAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
-        l3bprodAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
-        output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_DEFAULT);
-        suite = initPropertyDefaults(context, PROPERTY_L2BIN_SUITE_KEY, PROPERTY_L2BIN_SUITE_DEFAULT);
+        resolution = initPropertyDefaults(context, PROPERTY_L2BIN_RESOLUTION_KEY, PROPERTY_L2BIN_RESOLUTION_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_AREA_WEIGHTING_KEY, PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT);
+
+        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L2BIN_COMPOSITE_PROD_KEY, PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY, PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L2BIN_ROW_GROUP_KEY, PROPERTY_L2BIN_ROW_GROUP_DEFAULT);
 
 
+        initPropertyDefaults(context, PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L2BIN_SDAY_KEY, PROPERTY_L2BIN_SDAY_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_EDAY_KEY, PROPERTY_L2BIN_EDAY_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_DELTA_CROSS_KEY, PROPERTY_L2BIN_DELTA_CROSS_DEFAULT);
@@ -543,12 +792,67 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         fav1Products_suite = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_KEY, PROPERTY_L2BIN_FAV1_PRODUCTS_SUITE_DEFAULT);
 
 
+        fav2Products_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_KEY, PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_DEFAULT);
+        fav2Products_l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_KEY, PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_DEFAULT);
+        fav2Products_output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT);
+        fav2Products_suite = initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_KEY, PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_DEFAULT);
+
+
+
+        fav3Products_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_KEY, PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_DEFAULT);
+        fav3Products_l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_KEY, PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_DEFAULT);
+        fav3Products_output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT);
+        fav3Products_suite = initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_KEY, PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_DEFAULT);
+
+
+
+        fav4Products_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_KEY, PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_DEFAULT);
+        fav4Products_l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_KEY, PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_DEFAULT);
+        fav4Products_output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT);
+        fav4Products_suite = initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_KEY, PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_DEFAULT);
+
+
+
+        fav5Products_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_KEY, PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_DEFAULT);
+        fav5Products_l3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_KEY, PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_DEFAULT);
+        fav5Products_output_wavelengths = initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_KEY, PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT);
+        fav5Products_suite = initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_KEY, PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_DEFAULT);
+
+
+
 
         favoriteGeospatial_Section = initPropertyDefaults(context, PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_KEY, true);
         fav1Geospatial_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_KEY, PROPERTY_L2BIN_FAV1_GEOSPATIAL_LOAD_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV1_GEOSPATIAL_DESCRIPTION_DEFAULT);
         fav1Geospatial_NSWE = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_KEY, PROPERTY_L2BIN_FAV1_GEOSPATIAL_NSWE_DEFAULT);
         fav1Geospatial_resolution = initPropertyDefaults(context, PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_KEY, PROPERTY_L2BIN_FAV1_GEOSPATIAL_RESOLUTION_DEFAULT);
+
+        fav2Geospatial_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_KEY, PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_DEFAULT);
+        fav2Geospatial_NSWE = initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_KEY, PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_DEFAULT);
+        fav2Geospatial_resolution = initPropertyDefaults(context, PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_KEY, PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_DEFAULT);
+
+
+        fav3Geospatial_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_KEY, PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_DEFAULT);
+        fav3Geospatial_NSWE = initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_KEY, PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_DEFAULT);
+        fav3Geospatial_resolution = initPropertyDefaults(context, PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_KEY, PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_DEFAULT);
+
+
+        fav4Geospatial_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_KEY, PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_DEFAULT);
+        fav4Geospatial_NSWE = initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_KEY, PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_DEFAULT);
+        fav4Geospatial_resolution = initPropertyDefaults(context, PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_KEY, PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_DEFAULT);
+
+
+        fav5Geospatial_SetToDefault = initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_KEY, PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_KEY, PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_DEFAULT);
+        fav5Geospatial_NSWE = initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_KEY, PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_DEFAULT);
+        fav5Geospatial_resolution = initPropertyDefaults(context, PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_KEY, PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_DEFAULT);
 
 
 
@@ -563,49 +867,65 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         // Create UI
         //
 
+        PropertyEditorRegistry registry = PropertyEditorRegistry.getInstance();
+
+        PropertySet propertyContainer = context.getPropertySet();
+        Property[] properties = propertyContainer.getProperties();
+
         TableLayout tableLayout = new TableLayout(2);
         tableLayout.setTableAnchor(TableLayout.Anchor.NORTHWEST);
         tableLayout.setTablePadding(new Insets(4, 10, 0, 0));
         tableLayout.setTableFill(TableLayout.Fill.BOTH);
         tableLayout.setColumnWeightX(1, 1.0);
 
+
         JPanel pageUI = new JPanel(tableLayout);
-        JPanel pageUIFav = new JPanel(tableLayout);
-
-
-        PropertyEditorRegistry registry = PropertyEditorRegistry.getInstance();
-
-        PropertySet propertyContainer = context.getPropertySet();
-        Property[] properties = propertyContainer.getProperties();
 
         int currRow = 0;
-        int currRowFav = 0;
         for (Property property : properties) {
             PropertyDescriptor descriptor = property.getDescriptor();
-            if (property.getName().contains(PROPERTY_L2BIN_ROOT_FAV_KEY)) {
-                PropertyPane.addComponent(currRowFav, tableLayout, pageUIFav, context, registry, descriptor);
-                currRowFav++;
-            } else {
                 PropertyPane.addComponent(currRow, tableLayout, pageUI, context, registry, descriptor);
                 currRow++;
-            }
         }
 
         pageUI.add(tableLayout.createVerticalSpacer());
-        pageUIFav.add(tableLayout.createVerticalSpacer());
-
-
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("L2Bin Preferences", null, pageUI,
-                "Primary fields");
-
-        tabbedPane.addTab("Stored Favorites", null, pageUIFav,
-                "Stored favorites");
-
 
         JPanel parent = new JPanel(new BorderLayout());
-        parent.add(tabbedPane, BorderLayout.CENTER);
-//        parent.add(Box.createHorizontalStrut(50), BorderLayout.EAST);
+        parent.add(pageUI, BorderLayout.CENTER);
+        parent.add(Box.createHorizontalStrut(50), BorderLayout.EAST);
+
+
+        // todo tried tabs but performance very slow
+
+//        JPanel pageUI = new JPanel(tableLayout);
+//        JPanel pageUIFav = new JPanel(tableLayout);
+//
+//        int currRow = 0;
+//        int currRowFav = 0;
+//        for (Property property : properties) {
+//            PropertyDescriptor descriptor = property.getDescriptor();
+//            if (property.getName().contains(PROPERTY_L2BIN_ROOT_FAV_KEY)) {
+//                PropertyPane.addComponent(currRowFav, tableLayout, pageUIFav, context, registry, descriptor);
+//                currRowFav++;
+//            } else {
+//                PropertyPane.addComponent(currRow, tableLayout, pageUI, context, registry, descriptor);
+//                currRow++;
+//            }
+//        }
+//
+//        pageUI.add(tableLayout.createVerticalSpacer());
+//        pageUIFav.add(tableLayout.createVerticalSpacer());
+//
+//        JTabbedPane tabbedPane = new JTabbedPane();
+//        tabbedPane.addTab("L2Bin Preferences", null, pageUI,
+//                "Primary fields");
+//
+//        tabbedPane.addTab("Stored Favorites", null, pageUIFav,
+//                "Stored favorites");
+//        JPanel parent = new JPanel(new BorderLayout());
+//        parent.add(tabbedPane, BorderLayout.CENTER);
+
+
         return parent;
     }
 
@@ -719,6 +1039,63 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         });
 
 
+        fav2Products_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav2Products_SetToDefault, fav2Products_l3bprod, fav2Products_output_wavelengths, fav2Products_suite);
+        });
+        fav2Products_l3bprod.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav2Products_SetToDefault, fav2Products_l3bprod, fav2Products_output_wavelengths, fav2Products_suite);
+        });
+        fav2Products_output_wavelengths.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav2Products_SetToDefault, fav2Products_l3bprod, fav2Products_output_wavelengths, fav2Products_suite);
+        });
+        fav2Products_suite.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav2Products_SetToDefault, fav2Products_l3bprod, fav2Products_output_wavelengths, fav2Products_suite);
+        });
+
+
+        fav3Products_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav3Products_SetToDefault, fav3Products_l3bprod, fav3Products_output_wavelengths, fav3Products_suite);
+        });
+        fav3Products_l3bprod.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav3Products_SetToDefault, fav3Products_l3bprod, fav3Products_output_wavelengths, fav3Products_suite);
+        });
+        fav3Products_output_wavelengths.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav3Products_SetToDefault, fav3Products_l3bprod, fav3Products_output_wavelengths, fav3Products_suite);
+        });
+        fav3Products_suite.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav3Products_SetToDefault, fav3Products_l3bprod, fav3Products_output_wavelengths, fav3Products_suite);
+        });
+
+
+        fav4Products_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav4Products_SetToDefault, fav4Products_l3bprod, fav4Products_output_wavelengths, fav4Products_suite);
+        });
+        fav4Products_l3bprod.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav4Products_SetToDefault, fav4Products_l3bprod, fav4Products_output_wavelengths, fav4Products_suite);
+        });
+        fav4Products_output_wavelengths.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav4Products_SetToDefault, fav4Products_l3bprod, fav4Products_output_wavelengths, fav4Products_suite);
+        });
+        fav4Products_suite.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav4Products_SetToDefault, fav4Products_l3bprod, fav4Products_output_wavelengths, fav4Products_suite);
+        });
+
+
+        fav5Products_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav5Products_SetToDefault, fav5Products_l3bprod, fav5Products_output_wavelengths, fav5Products_suite);
+        });
+        fav5Products_l3bprod.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav5Products_SetToDefault, fav5Products_l3bprod, fav5Products_output_wavelengths, fav5Products_suite);
+        });
+        fav5Products_output_wavelengths.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav5Products_SetToDefault, fav5Products_l3bprod, fav5Products_output_wavelengths, fav5Products_suite);
+        });
+        fav5Products_suite.addPropertyChangeListener(evt -> {
+            handleSetFavProducts(context, fav5Products_SetToDefault, fav5Products_l3bprod, fav5Products_output_wavelengths, fav5Products_suite);
+        });
+        
+        
+
 
 
         fav1Geospatial_SetToDefault.addPropertyChangeListener(evt -> {
@@ -732,8 +1109,52 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         });
 
 
+        fav2Geospatial_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav2Geospatial_SetToDefault, fav2Geospatial_resolution, fav2Geospatial_NSWE);
+        });
+        fav2Geospatial_NSWE.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav2Geospatial_SetToDefault, fav2Geospatial_resolution, fav2Geospatial_NSWE);
+        });
+        fav2Geospatial_resolution.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav2Geospatial_SetToDefault, fav2Geospatial_resolution, fav2Geospatial_NSWE);
+        });
 
-        
+
+        fav3Geospatial_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav3Geospatial_SetToDefault, fav3Geospatial_resolution, fav3Geospatial_NSWE);
+        });
+        fav3Geospatial_NSWE.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav3Geospatial_SetToDefault, fav3Geospatial_resolution, fav3Geospatial_NSWE);
+        });
+        fav3Geospatial_resolution.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav3Geospatial_SetToDefault, fav3Geospatial_resolution, fav3Geospatial_NSWE);
+        });
+
+
+        fav4Geospatial_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav4Geospatial_SetToDefault, fav4Geospatial_resolution, fav4Geospatial_NSWE);
+        });
+        fav4Geospatial_NSWE.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav4Geospatial_SetToDefault, fav4Geospatial_resolution, fav4Geospatial_NSWE);
+        });
+        fav4Geospatial_resolution.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav4Geospatial_SetToDefault, fav4Geospatial_resolution, fav4Geospatial_NSWE);
+        });
+
+
+        fav5Geospatial_SetToDefault.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav5Geospatial_SetToDefault, fav5Geospatial_resolution, fav5Geospatial_NSWE);
+        });
+        fav5Geospatial_NSWE.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav5Geospatial_SetToDefault, fav5Geospatial_resolution, fav5Geospatial_NSWE);
+        });
+        fav5Geospatial_resolution.addPropertyChangeListener(evt -> {
+            handleSetFavGeospatial(context, fav5Geospatial_SetToDefault, fav5Geospatial_resolution, fav5Geospatial_NSWE);
+        });
+
+
+
+
         fieldsAdd.addPropertyChangeListener(evt -> {
             enablement(context);
         });
@@ -912,6 +1333,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 if (favSet.getValue()) {
                     // set all favorites checkboxes to false then reset current favorite checkbox to true.
                     fav1Products_SetToDefault.setValue(false);
+                    fav2Products_SetToDefault.setValue(false);
+                    fav3Products_SetToDefault.setValue(false);
+                    fav4Products_SetToDefault.setValue(false);
+                    fav5Products_SetToDefault.setValue(false);
                     favSet.setValue(true);
                     
                     l3bprod.setValue("");
@@ -969,6 +1394,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 if (favSet.getValue()) {
                     // set all favorites checkboxes to false then reset current favorite checkbox to true.
                     fav1Geospatial_SetToDefault.setValue(false);
+                    fav2Geospatial_SetToDefault.setValue(false);
+                    fav3Geospatial_SetToDefault.setValue(false);
+                    fav4Geospatial_SetToDefault.setValue(false);
+                    fav5Geospatial_SetToDefault.setValue(false);
                     favSet.setValue(true);
                     
                     
@@ -1185,6 +1614,100 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+
+        @Preference(key = PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY,
+                label = PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_LABEL,
+                description = PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_TOOLTIP)
+        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY = true;
+
+        @Preference(key = PROPERTY_L2BIN_RESOLUTION_KEY,
+                label = PROPERTY_L2BIN_RESOLUTION_LABEL,
+                description = PROPERTY_L2BIN_RESOLUTION_TOOLTIP)
+        String l2binResolutionDefault = PROPERTY_L2BIN_RESOLUTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_AREA_WEIGHTING_KEY,
+                label = PROPERTY_L2BIN_AREA_WEIGHTING_LABEL,
+                description = PROPERTY_L2BIN_AREA_WEIGHTING_TOOLTIP)
+        String l2binAreaWeightingDefault = PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_LATNORTH_KEY,
+                label = PROPERTY_L2BIN_LATNORTH_LABEL,
+                description = PROPERTY_L2BIN_LATNORTH_TOOLTIP)
+        String l2binLatnorthDefault = PROPERTY_L2BIN_LATNORTH_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_LATSOUTH_KEY,
+                label = PROPERTY_L2BIN_LATSOUTH_LABEL,
+                description = PROPERTY_L2BIN_LATSOUTH_TOOLTIP)
+        String l2binLatsouthDefault = PROPERTY_L2BIN_LATSOUTH_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_LONWEST_KEY,
+                label = PROPERTY_L2BIN_LONWEST_LABEL,
+                description = PROPERTY_L2BIN_LONWEST_TOOLTIP)
+        String l2binLonwestDefault = PROPERTY_L2BIN_LONWEST_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_LONEAST_KEY,
+                label = PROPERTY_L2BIN_LONEAST_LABEL,
+                description = PROPERTY_L2BIN_LONEAST_TOOLTIP)
+        String l2binLoneastDefault = PROPERTY_L2BIN_LONEAST_DEFAULT;
+
+
+
+
+
+
+        @Preference(key = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY,
+                label = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL,
+                description = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_TOOLTIP)
+        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY = true;
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_PROD_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_PROD_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP)
+        String l2binCompositeProdDefault = PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP)
+        String l2binCompositeSchemeDefault = PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT;
+
+
+
+
+        @Preference(key = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY,
+                label = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_LABEL,
+                description = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_TOOLTIP)
+        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY = true;
+
+        @Preference(key = PROPERTY_L2BIN_SDAY_KEY,
+                label = PROPERTY_L2BIN_SDAY_LABEL,
+                description = PROPERTY_L2BIN_SDAY_TOOLTIP)
+        String l2binSdayDefault= PROPERTY_L2BIN_SDAY_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_EDAY_KEY,
+                label = PROPERTY_L2BIN_EDAY_LABEL,
+                description = PROPERTY_L2BIN_EDAY_TOOLTIP)
+        String l2binEdayDefault= PROPERTY_L2BIN_EDAY_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_DELTA_CROSS_KEY,
+                label = PROPERTY_L2BIN_DELTA_CROSS_LABEL,
+                description = PROPERTY_L2BIN_DELTA_CROSS_TOOLTIP)
+        String l2binDeltaCrossDefault= PROPERTY_L2BIN_DELTA_CROSS_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_NIGHT_KEY,
+                label = PROPERTY_L2BIN_NIGHT_LABEL,
+                description = PROPERTY_L2BIN_NIGHT_TOOLTIP)
+        boolean l2binNightDefault= PROPERTY_L2BIN_NIGHT_DEFAULT;
+
+
+
+
+
+
+
+
+
         // Favorites 'flaguse'
 
         @Preference(key = PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_KEY,
@@ -1192,13 +1715,13 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 description = PROPERTY_L2BIN_FAVORITE_SETTINGS_SECTION_TOOLTIP)
         boolean L2bin_FAVORITE_PROJECTIONS_SECTION = true;
 
-        
-        
+
+
         @Preference(key = PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_KEY,
                 label = PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_LABEL,
                 description = PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_TOOLTIP)
         boolean L2bin_FAV1_FLAGUSE_LOAD_KEY = PROPERTY_L2BIN_FAV1_FLAGUSE_LOAD_DEFAULT;
-        
+
         @Preference(key = PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_KEY,
                 label = PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_LABEL,
                 description = PROPERTY_L2BIN_FAV1_FLAGUSE_DESCRIPTION_TOOLTIP)
@@ -1211,7 +1734,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
-        
+
         @Preference(key = PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_KEY,
                 label = PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_LABEL,
                 description = PROPERTY_L2BIN_FAV2_FLAGUSE_LOAD_TOOLTIP)
@@ -1279,66 +1802,6 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
-        @Preference(key = PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY,
-                label = PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_LABEL,
-                description = PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_TOOLTIP)
-        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY = true;
-
-        @Preference(key = PROPERTY_L2BIN_RESOLUTION_KEY,
-                label = PROPERTY_L2BIN_RESOLUTION_LABEL,
-                description = PROPERTY_L2BIN_RESOLUTION_TOOLTIP)
-        String l2binResolutionDefault = PROPERTY_L2BIN_RESOLUTION_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_AREA_WEIGHTING_KEY,
-                label = PROPERTY_L2BIN_AREA_WEIGHTING_LABEL,
-                description = PROPERTY_L2BIN_AREA_WEIGHTING_TOOLTIP)
-        String l2binAreaWeightingDefault = PROPERTY_L2BIN_AREA_WEIGHTING_DEFAULT;
-
-
-        @Preference(key = PROPERTY_L2BIN_LATNORTH_KEY,
-                label = PROPERTY_L2BIN_LATNORTH_LABEL,
-                description = PROPERTY_L2BIN_LATNORTH_TOOLTIP)
-        String l2binLatnorthDefault = PROPERTY_L2BIN_LATNORTH_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_LATSOUTH_KEY,
-                label = PROPERTY_L2BIN_LATSOUTH_LABEL,
-                description = PROPERTY_L2BIN_LATSOUTH_TOOLTIP)
-        String l2binLatsouthDefault = PROPERTY_L2BIN_LATSOUTH_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_LONWEST_KEY,
-                label = PROPERTY_L2BIN_LONWEST_LABEL,
-                description = PROPERTY_L2BIN_LONWEST_TOOLTIP)
-        String l2binLonwestDefault = PROPERTY_L2BIN_LONWEST_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_LONEAST_KEY,
-                label = PROPERTY_L2BIN_LONEAST_LABEL,
-                description = PROPERTY_L2BIN_LONEAST_TOOLTIP)
-        String l2binLoneastDefault = PROPERTY_L2BIN_LONEAST_DEFAULT;
-
-
-
-
-
-
-        @Preference(key = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY,
-                label = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL,
-                description = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_TOOLTIP)
-        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY = true;
-
-        @Preference(key = PROPERTY_L2BIN_COMPOSITE_PROD_KEY,
-                label = PROPERTY_L2BIN_COMPOSITE_PROD_LABEL,
-                description = PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP)
-        String l2binCompositeProdDefault = PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY,
-                label = PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL,
-                description = PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP)
-        String l2binCompositeSchemeDefault = PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT;
-
-
-
-
-
         // Favorites products
 
         @Preference(key = PROPERTY_L2BIN_FAVORITE_PRODUCTS_SECTION_KEY,
@@ -1374,6 +1837,123 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_TOOLTIP)
+        boolean L2bin_FAV2_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_FAV2_PRODUCTS_LOAD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV2_PRODUCTS_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV2_PRODUCTS_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_KEY,
+                label = PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_LABEL,
+                description = PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_TOOLTIP)
+        String l2binFav2SuiteDefault = PROPERTY_L2BIN_FAV2_PRODUCTS_SUITE_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_KEY,
+                label = PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_LABEL,
+                description = PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_TOOLTIP)
+        String l2binFav2L3bprodDefault = PROPERTY_L2BIN_FAV2_PRODUCTS_L3BPROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_KEY,
+                label = PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL,
+                description = PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP)
+        String l2binFav2OutputWavelengthsDefault= PROPERTY_L2BIN_FAV2_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT;
+
+
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_TOOLTIP)
+        boolean L2bin_FAV3_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_FAV3_PRODUCTS_LOAD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV3_PRODUCTS_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV3_PRODUCTS_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_KEY,
+                label = PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_LABEL,
+                description = PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_TOOLTIP)
+        String l2binFav3SuiteDefault = PROPERTY_L2BIN_FAV3_PRODUCTS_SUITE_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_KEY,
+                label = PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_LABEL,
+                description = PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_TOOLTIP)
+        String l2binFav3L3bprodDefault = PROPERTY_L2BIN_FAV3_PRODUCTS_L3BPROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_KEY,
+                label = PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL,
+                description = PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP)
+        String l2binFav3OutputWavelengthsDefault= PROPERTY_L2BIN_FAV3_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT;
+
+
+
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_TOOLTIP)
+        boolean L2bin_FAV4_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_FAV4_PRODUCTS_LOAD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV4_PRODUCTS_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV4_PRODUCTS_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_KEY,
+                label = PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_LABEL,
+                description = PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_TOOLTIP)
+        String l2binFav4SuiteDefault = PROPERTY_L2BIN_FAV4_PRODUCTS_SUITE_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_KEY,
+                label = PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_LABEL,
+                description = PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_TOOLTIP)
+        String l2binFav4L3bprodDefault = PROPERTY_L2BIN_FAV4_PRODUCTS_L3BPROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_KEY,
+                label = PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL,
+                description = PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP)
+        String l2binFav4OutputWavelengthsDefault= PROPERTY_L2BIN_FAV4_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT;
+
+
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_TOOLTIP)
+        boolean L2bin_FAV5_PRODUCTS_LOAD_KEY = PROPERTY_L2BIN_FAV5_PRODUCTS_LOAD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV5_PRODUCTS_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV5_PRODUCTS_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_KEY,
+                label = PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_LABEL,
+                description = PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_TOOLTIP)
+        String l2binFav5SuiteDefault = PROPERTY_L2BIN_FAV5_PRODUCTS_SUITE_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_KEY,
+                label = PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_LABEL,
+                description = PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_TOOLTIP)
+        String l2binFav5L3bprodDefault = PROPERTY_L2BIN_FAV5_PRODUCTS_L3BPROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_KEY,
+                label = PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_LABEL,
+                description = PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_TOOLTIP)
+        String l2binFav5OutputWavelengthsDefault= PROPERTY_L2BIN_FAV5_PRODUCTS_OUTPUT_WAVELENGTHS_DEFAULT;
+
+
+
+
+
+
+
         // Favorites geospatial
 
         @Preference(key = PROPERTY_L2BIN_FAVORITE_GEOSPATIAL_SECTION_KEY,
@@ -1404,33 +1984,93 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+        @Preference(key = PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_TOOLTIP)
+        boolean L2bin_FAV2_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_FAV2_GEOSPATIAL_LOAD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV2_GEOSPATIAL_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV2_GEOSPATIAL_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_KEY,
+                label = PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_LABEL,
+                description = PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_TOOLTIP)
+        String l2binFav2ResolutionDefault = PROPERTY_L2BIN_FAV2_GEOSPATIAL_RESOLUTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_KEY,
+                label = PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_LABEL,
+                description = PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_TOOLTIP)
+        String l2binFav2NsweDefault= PROPERTY_L2BIN_FAV2_GEOSPATIAL_NSWE_DEFAULT;
 
 
-        @Preference(key = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY,
-                label = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_LABEL,
-                description = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_TOOLTIP)
-        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY = true;
 
-        @Preference(key = PROPERTY_L2BIN_SDAY_KEY,
-                label = PROPERTY_L2BIN_SDAY_LABEL,
-                description = PROPERTY_L2BIN_SDAY_TOOLTIP)
-        String l2binSdayDefault= PROPERTY_L2BIN_SDAY_DEFAULT;
+        @Preference(key = PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_TOOLTIP)
+        boolean L2bin_FAV3_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_FAV3_GEOSPATIAL_LOAD_DEFAULT;
 
-        @Preference(key = PROPERTY_L2BIN_EDAY_KEY,
-                label = PROPERTY_L2BIN_EDAY_LABEL,
-                description = PROPERTY_L2BIN_EDAY_TOOLTIP)
-        String l2binEdayDefault= PROPERTY_L2BIN_EDAY_DEFAULT;
+        @Preference(key = PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV3_GEOSPATIAL_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV3_GEOSPATIAL_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_KEY,
+                label = PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_LABEL,
+                description = PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_TOOLTIP)
+        String l2binFav3ResolutionDefault = PROPERTY_L2BIN_FAV3_GEOSPATIAL_RESOLUTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_KEY,
+                label = PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_LABEL,
+                description = PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_TOOLTIP)
+        String l2binFav3NsweDefault= PROPERTY_L2BIN_FAV3_GEOSPATIAL_NSWE_DEFAULT;
 
 
-        @Preference(key = PROPERTY_L2BIN_DELTA_CROSS_KEY,
-                label = PROPERTY_L2BIN_DELTA_CROSS_LABEL,
-                description = PROPERTY_L2BIN_DELTA_CROSS_TOOLTIP)
-        String l2binDeltaCrossDefault= PROPERTY_L2BIN_DELTA_CROSS_DEFAULT;
 
-        @Preference(key = PROPERTY_L2BIN_NIGHT_KEY,
-                label = PROPERTY_L2BIN_NIGHT_LABEL,
-                description = PROPERTY_L2BIN_NIGHT_TOOLTIP)
-        boolean l2binNightDefault= PROPERTY_L2BIN_NIGHT_DEFAULT;
+        @Preference(key = PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_TOOLTIP)
+        boolean L2bin_FAV4_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_FAV4_GEOSPATIAL_LOAD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV4_GEOSPATIAL_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV4_GEOSPATIAL_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_KEY,
+                label = PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_LABEL,
+                description = PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_TOOLTIP)
+        String l2binFav4ResolutionDefault = PROPERTY_L2BIN_FAV4_GEOSPATIAL_RESOLUTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_KEY,
+                label = PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_LABEL,
+                description = PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_TOOLTIP)
+        String l2binFav4NsweDefault= PROPERTY_L2BIN_FAV4_GEOSPATIAL_NSWE_DEFAULT;
+
+
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_KEY,
+                label = PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_LABEL,
+                description = PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_TOOLTIP)
+        boolean L2bin_FAV5_GEOSPATIAL_LOAD_KEY = PROPERTY_L2BIN_FAV5_GEOSPATIAL_LOAD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_KEY,
+                label = PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_LABEL,
+                description = PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_TOOLTIP)
+        String L2bin_FAV5_GEOSPATIAL_DESCRIPTION_KEY= PROPERTY_L2BIN_FAV5_GEOSPATIAL_DESCRIPTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_KEY,
+                label = PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_LABEL,
+                description = PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_TOOLTIP)
+        String l2binFav5ResolutionDefault = PROPERTY_L2BIN_FAV5_GEOSPATIAL_RESOLUTION_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_KEY,
+                label = PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_LABEL,
+                description = PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_TOOLTIP)
+        String l2binFav5NsweDefault= PROPERTY_L2BIN_FAV5_GEOSPATIAL_NSWE_DEFAULT;
+
+        
 
 
 
