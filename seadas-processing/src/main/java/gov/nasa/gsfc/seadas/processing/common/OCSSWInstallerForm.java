@@ -177,7 +177,7 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
 //                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         add(configPanel,
-                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, 3));
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         add(missionPanel,
                 new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
@@ -217,8 +217,10 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
         TableLayout configPanelTableLayout = new TableLayout(1);
         configPanelTableLayout.setTablePadding(5, 10);
         configPanelTableLayout.setTableAnchor(TableLayout.Anchor.WEST);
+        configPanelTableLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         configPanel = new JPanel(configPanelTableLayout);
         configPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
+
 
 
         TableLayout missionTableLayout = new TableLayout(5);

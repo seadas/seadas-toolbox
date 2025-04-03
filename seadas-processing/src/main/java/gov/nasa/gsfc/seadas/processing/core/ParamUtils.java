@@ -1,14 +1,20 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
+import org.esa.snap.core.util.ResourceInstaller;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.util.Dialogs;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -95,6 +101,40 @@ public class ParamUtils {
         }
         return optionNodelist.item(0).getFirstChild().getNodeValue();
     }
+
+
+    public static String getElementString(String parXMLFileName, String elementName) {
+
+        XmlReader xmlReader = new XmlReader();
+        InputStream paramStream = ParamUtils.class.getResourceAsStream(parXMLFileName);
+        Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
+        NodeList optionNodelist = rootElement.getElementsByTagName(elementName);
+
+        if (optionNodelist != null && optionNodelist.item(0) != null && optionNodelist.item(0).getFirstChild() != null) {
+            return optionNodelist.item(0).getFirstChild().getNodeValue();
+        }
+
+        return null;
+    }
+
+
+    public static int getElementInt(String parXMLFileName, String elementName) {
+
+        String valueString = ParamUtils.getElementString(parXMLFileName, elementName);
+
+        int valueInt = 0;
+
+        try {
+          valueInt = Integer.valueOf(valueString);
+        } catch (Exception e) {
+
+        }
+
+        return valueInt;
+    }
+
+
+
 
     public static String getProgressRegex(String parXMLFileName) {
 
@@ -215,26 +255,67 @@ public class ParamUtils {
 
             String description = XmlReader.getTextValue(optionElement, "description");
             String colSpan = XmlReader.getTextValue(optionElement, "colSpan");
+            String putInBooleanPanel = XmlReader.getTextValue(optionElement, "putInBooleanPanel");
+            String subPanelIndex = XmlReader.getTextValue(optionElement, "subPanelIndex");
             String source = XmlReader.getTextValue(optionElement, "source");
             String order = XmlReader.getTextValue(optionElement, "order");
             String usedAs = XmlReader.getTextValue(optionElement, "usedAs");
             String defaultValue = XmlReader.getTextValue(optionElement, "default");
+
+            final String optionNameTmp = ParamUtils.removePreceedingDashes(name);
+
+            if ("l2bin.xml".equals(paramXmlFileName)) {
+                switch (optionNameTmp) {
+                    case "flaguse":
+                        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+                            // todo Possibly delete this whole block
+//                            type = ParamInfo.Type.STRING;
+                        }
+                }
+            }
+
+
+
+
+
             // set the value and the default to the current value from the XML file
             //ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, value) : new ParamInfo(name, value, type, value);
             ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, defaultValue) : new ParamInfo(name, value, type, defaultValue);
             paramInfo.setDescription(description);
 
+            int defaultColSpan = 1;
             if (colSpan != null) {
                 try {
                     int colSpanInt = Integer.parseInt(colSpan);
                     if (colSpanInt > 0) {
                         paramInfo.setColSpan(colSpanInt);
+                    } else {
+                        paramInfo.setColSpan(defaultColSpan);
                     }
                 } catch (Exception e) {
+                    paramInfo.setColSpan(defaultColSpan);
                     System.out.println("ERROR: colSpan not an integer for param: " + name + "in xml file: " + paramXmlFileName);
                 }
             } else {
-                paramInfo.setColSpan(1);
+                paramInfo.setColSpan(defaultColSpan);
+            }
+
+
+            int defaultSubPanelIndex = 0;
+            if (subPanelIndex != null) {
+                try {
+                    int subPanelIndexInt = Integer.parseInt(subPanelIndex);
+                    if (subPanelIndexInt > 0) {
+                        paramInfo.setSubPanelIndex(subPanelIndexInt);
+                    } else {
+                        paramInfo.setSubPanelIndex(defaultSubPanelIndex);
+                    }
+                } catch (Exception e) {
+                    paramInfo.setSubPanelIndex(defaultSubPanelIndex);
+                    System.out.println("ERROR: subPanelInt not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+                }
+            } else {
+                paramInfo.setSubPanelIndex(defaultSubPanelIndex);
             }
 
 
@@ -255,7 +336,16 @@ public class ParamUtils {
                 paramInfo.setUsedAs(usedAs);
             }
 
+            if (putInBooleanPanel != null) {
+                paramInfo.setPutInBooleanPanel(putInBooleanPanel);
+            }
+
             NodeList validValueNodelist = optionElement.getElementsByTagName("validValue");
+
+            // todo
+
+
+            final String optionName = ParamUtils.removePreceedingDashes(paramInfo.getName());
 
             if (validValueNodelist != null && validValueNodelist.getLength() > 0) {
                 for (int j = 0; j < validValueNodelist.getLength(); j++) {
@@ -273,33 +363,157 @@ public class ParamUtils {
 
             }
 
-            final String optionName = ParamUtils.removePreceedingDashes(paramInfo.getName());
+            if ("l3mapgen.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case "projection":
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV1Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV1ProjectionDescription(),
+                                paramInfo);
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV2Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV2ProjectionDescription(),
+                                paramInfo);
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV3Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV3ProjectionDescription(),
+                                paramInfo);
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV4Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV4ProjectionDescription(),
+                                paramInfo);
+                        addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV5Projection(),
+                                OCSSW_L3mapgenController.getPreferenceFAV5ProjectionDescription(),
+                                paramInfo);
+                }
+            }
+
+
+
+
+
+
+//            Path getColorSchemesAuxDir = SystemUtils.getAuxDataPath().resolve(ColorManipulationDefaults.DIR_NAME_COLOR_SCHEMES);
+//            if (getColorSchemesAuxDir != null) {
+//                this.colorSchemesAuxDir = getColorSchemesAuxDir.toFile();
+//                if (!colorSchemesAuxDir.exists()) {
+//                    return;
+//                }
+//            } else {
+//
+//                colorSchemeLookupUserFile = new File(this.colorSchemesAuxDir, ColorManipulationDefaults.COLOR_SCHEME_LOOKUP_USER_FILENAME);
+//
+//
 
             if ("l3mapgen.xml".equals(paramXmlFileName)) {
                 switch (optionName) {
-                    case "product":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProduct());
                         break;
-                    case "projection":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWavelength3D());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NUM_CACHE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceNumCache());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFORMAT_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceOformat());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_LABEL:
+//                        getUserProjections();
+
+//                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1(),
+//                                OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1_NAME(),
+//                                paramInfo);
+//                        addFavoriteProjection(OCSSW_L3mapgenController.getPreferencePROJECTION_FAV2(),
+//                                OCSSW_L3mapgenController.getPreferencePROJECTION_FAV2_NAME(),
+//                                paramInfo);
+
+
+//                        String fav1 = OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1();
+//                        if (fav1 != null && fav1.length() > 0) {
+//                            ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(fav1);
+//                            String fav1Name = OCSSW_L3mapgenController.getPreferencePROJECTION_FAV1_NAME();
+//                            if (fav1Name != null && fav1Name.length() > 0) {
+//                                paramValidValueInfo.setDescription(fav1Name);
+//                            }
+//                        }
+//
+//                        paramInfo.addValidValueInfo(paramValidValueInfo);
+
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProjection());
                         break;
-                    case "resolution":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RESOLUTION_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceResolution());
                         break;
-                    case "interp":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceInterp());
                         break;
-                    case "north":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FUDGE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceFudge());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceNorth());
                         break;
-                    case "south":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SOUTH_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceSouth());
                         break;
-                    case "west":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WEST_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWest());
                         break;
-                    case "east":
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_LABEL:
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceEast());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceWidth());
+                        break;
+
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PALFILE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferencePalfile());
+                        break;
+
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMIN_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceDataMin());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMAX_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceDataMax());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SCALE_TYPE_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceScaleType());
+                        break;
+
+
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RGB_LAND_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceRGBLand());
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceMaskLand()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceApplyPal()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceUseTransparency()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_LABEL:
+                        if (OCSSW_L3mapgenController.getPreferenceUseRGB()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+
+
+                    case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL:
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceProductRGB());
                         break;
                 }
             }
@@ -334,6 +548,70 @@ public class ParamUtils {
                     case "loneast":
                         paramInfo.setValue(OCSSW_L2binController.getPreferenceLoneast());
                         break;
+                    case "output_wavelengths":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceOutputWavelengths());
+                        break;
+                    case "suite":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceSuite());
+                        break;
+                    case "composite_prod":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeProd());
+                        break;
+                    case "composite_scheme":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeScheme());
+                        break;
+                    case "row_group":
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceRowGroup());
+                        break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_SDAY_LABEL:
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceSday());
+                        break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_EDAY_LABEL:
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceEday());
+                        break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_DELTA_CROSS_LABEL:
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceDeltaCross());
+                        break;
+                    case OCSSW_L2binController.PROPERTY_L2BIN_NIGHT_LABEL:
+                        if (OCSSW_L2binController.getPreferenceNight()) {
+                            paramInfo.setValue("true");
+                        } else {
+                            paramInfo.setValue("false");
+                        }
+                        break;
+                }
+            }
+
+
+
+
+            if ("l3bin.xml".equals(paramXmlFileName)) {
+                switch (optionName) {
+                    case OCSSW_L3binController.PROPERTY_L3BIN_PRODUCT_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceProd());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_RESOLUTION_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceResolve());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_NORTH_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceNorth());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_SOUTH_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceSouth());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_WEST_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceWest());
+                        break;
+                    case OCSSW_L3binController.PROPERTY_L3BIN_EAST_LABEL:
+                        paramInfo.setValue(OCSSW_L3binController.getPreferenceEast());
+                        break;
+//                    case "composite_prod":
+//                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeProd());
+//                        break;
+//                    case "composite_scheme":
+//                        paramInfo.setValue(OCSSW_L2binController.getPreferenceCompositeScheme());
+//                        break;
+
                 }
             }
 
@@ -347,6 +625,98 @@ public class ParamUtils {
 
         return paramList;
     }
+
+
+
+    private static void addValidValueToParamInfo(String fav, String favName, ParamInfo paramInfo) {
+        if (fav != null && fav.length() > 0) {
+            ParamValidValueInfo paramValidValueInfo = new ParamValidValueInfo(fav);
+            if (favName != null && favName.length() > 0) {
+                paramValidValueInfo.setDescription(favName);
+            }
+            if (paramValidValueInfo != null) {
+                paramInfo.addValidValueInfo(paramValidValueInfo);
+            }
+        }
+    }
+
+
+    private static void getUserProjections() {
+
+        HashMap<String, String> ociWavelengths = new HashMap<String, String>();
+
+        String SENSOR_INFO = "sensor_info";
+        String AUXDATA = "auxdata";
+        String USER_PROJECTIONS_XML = "auxdata/user_projections.xml";
+
+
+            File sensorInfoAuxDir = SystemUtils.getAuxDataPath().resolve(SENSOR_INFO).toFile();
+            File user_projections_file = new File(sensorInfoAuxDir, USER_PROJECTIONS_XML);
+
+            if (user_projections_file == null ||  !user_projections_file.exists()) {
+                try {
+                    Path auxdataDir = SystemUtils.getAuxDataPath().resolve(SENSOR_INFO);
+
+                    Path sourceBasePath = ResourceInstaller.findModuleCodeBasePath(ParamUtils.class);
+                    Path sourceDirPath = sourceBasePath.resolve("auxdata");
+                    System.out.println("sourceDirPath=" + sourceDirPath);
+
+                    final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDir);
+
+                    resourceInstaller.install(".*." + USER_PROJECTIONS_XML, ProgressMonitor.NULL);
+
+                } catch (IOException e) {
+                    System.out.println("ERROR");
+
+//                    SnapApp.getDefault().handleError("Unable to install " + AUXDATA + "/" + SENSOR_INFO + "/" + USER_PROJECTIONS_XML, e);
+                }
+            }
+
+//            if (sensorInfoAuxDir != null && sensorInfoAuxDir.exists()) {
+//
+//                if (ociBandPassFile != null && ociBandPassFile.exists()) {
+//
+//                    try (BufferedReader br = new BufferedReader(new FileReader(ociBandPassFile))) {
+//                        String line;
+//                        while ((line = br.readLine()) != null) {
+//                            String[] values = line.split(",");
+//                            if (values != null && values.length > 3) {
+//                                ociWavelengths.put(values[1].trim(), values[2].trim());
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//
+//                    }
+//                }
+//            }
+
+
+//        int spectralBandIndex = 0;
+//        for (String name : product.getBandNames()) {
+//            Band band = product.getBandAt(product.getBandIndex(name));
+//            if (name.matches("\\w+_\\d{3,}")) {
+//                String[] parts = name.split("_");
+//                String wvlstr = parts[parts.length - 1].trim();
+//                //Some bands have the wvl portion in the middle...
+//                if (!wvlstr.matches("^\\d{3,}")) {
+//                    wvlstr = parts[parts.length - 2].trim();
+//                }
+//
+//                if (SeadasProductReader.Mission.OCI.toString().equals(sensor) &&
+//                        (SeadasProductReader.ProcessingLevel.L2.toString().equals(processing_level) ||
+//                                SeadasProductReader.ProcessingLevel.L3m.toString().equals(processing_level))) {
+//                    wvlstr = getPaceOCIWavelengths(wvlstr, ociWavelengths);
+//                }
+//
+//                final float wavelength = Float.parseFloat(wvlstr);
+//                band.setSpectralWavelength(wavelength);
+//                band.setSpectralBandIndex(spectralBandIndex++);
+//            }
+
+
+
+    }
+
 
 
 

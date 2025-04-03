@@ -56,8 +56,10 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     private boolean isBit = false;
     private int order = 0;
     private int colSpan = 1;
+    private int subPanelIndex = 0;
     private String validationComment = null;
     private String usedAs = USED_IN_COMMAND_AS_OPTION;
+    private boolean putInBooleanPanel = true;
 
     private ArrayList<ParamValidValueInfo> validValueInfos = new ArrayList<ParamValidValueInfo>();
 
@@ -107,6 +109,20 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     public void setUsedAs(String usedAs) {
         this.usedAs = usedAs;
     }
+
+    public boolean getPutInBooleanPanel() {
+        return putInBooleanPanel;
+    }
+
+    public void setPutInBooleanPanel(String putInBooleanPanel) {
+        if (putInBooleanPanel != null && "false".equalsIgnoreCase(putInBooleanPanel)) {
+            this.putInBooleanPanel = false;
+        } else {
+            this.putInBooleanPanel = true;
+        }
+
+    }
+
 
     public File getFile(File rootDir) {
         if (type == Type.IFILE) {
@@ -263,6 +279,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
         return validValueInfos;
     }
 
+
     protected void setValidValueInfos(ArrayList<ParamValidValueInfo> validValueInfos) {
         this.validValueInfos = validValueInfos;
     }
@@ -271,7 +288,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
         this.validValueInfos.add(paramValidValueInfo);
     }
 
-    protected void clearValidValueInfos() {
+    public void clearValidValueInfos() {
         this.validValueInfos.clear();
     }
 
@@ -373,6 +390,14 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
 
     public int getColSpan() {
          return colSpan;
+    }
+
+    public void setSubPanelIndex(int subPanelIndex) {
+        this.subPanelIndex = subPanelIndex;
+    }
+
+    public int getSubPanelIndex() {
+        return subPanelIndex;
     }
 
     public int getOrder() {

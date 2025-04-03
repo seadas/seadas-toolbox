@@ -46,6 +46,16 @@ public class FileInfo {
         }
     }
 
+    public FileInfo(File file, OCSSW ocssw) {
+        if (file != null && ocssw != null) {
+            if (file.exists()) {
+                this.file = file;
+                this.ocssw = ocssw;
+                initMissionAndFileTypeInfos();
+            }
+        }
+    }
+
     public void clear() {
         file = null;
         missionInfo.clear();
