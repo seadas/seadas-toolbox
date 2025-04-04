@@ -2559,13 +2559,16 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-        if (checkForVariantMatch(keyString, "resolve") || checkForVariantMatch(keyString, "RESOLVE")) {
-            if (resolution == null) {
-                resolution = "";
-            }
-            keyString = replaceAnyKeyStringVariant(keyString, "resolve", resolution, DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE", resolution.toUpperCase(), DELIMITOR_NUMBER);
-        }
+
+//        if (checkForVariantMatch(keyString, "resolve") || checkForVariantMatch(keyString, "RESOLVE")) {
+//            if (resolution == null) {
+//                resolution = "";
+//            }
+//            keyString = replaceAnyKeyStringVariant(keyString, "resolve", resolution, DELIMITOR_NUMBER);
+//            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE", resolution.toUpperCase(), DELIMITOR_NUMBER);
+//        }
+
+        keyString = getOfileAddOnResolutionL2BinL3Bin(resolution, keyString);
 
 
         keyString = keystringReplaceNSWE(keyString, north, south, west, east);
@@ -2649,6 +2652,101 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
+//        if (checkForVariantMatch(keyString, "resolution") || checkForVariantMatch(keyString, "RESOLUTION")) {
+//            if (resolution == null) {
+//                resolution = "";
+//            }
+//            keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution, DELIMITOR_NUMBER);
+//            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase(), DELIMITOR_NUMBER);
+//        }
+//
+
+
+//
+//        if (checkForVariantMatch(keyString, "resolution-units") || checkForVariantMatch(keyString, "RESOLUTION-UNITS")) {
+//            if (resolution == null) {
+//                resolution = "";
+//            }
+//
+//            String resolution_units = resolution;
+//            switch (resolution) {
+//                case "HH":
+//                    resolution_units = "50m";
+//                    break;
+//                case "HQ":
+//                    resolution_units = "100m";
+//                    break;
+//                case "Q":
+//                    resolution_units = "250m";
+//                    break;
+//                case "H":
+//                    resolution_units = "500m";
+//                    break;
+//                case "1":
+//                    resolution_units = "1.1km";
+//                    break;
+//                case "2":
+//                    resolution_units = "2.3km";
+//                    break;
+//                case "4":
+//                    resolution_units = "4.6km";
+//                    break;
+//                case "9":
+//                    resolution_units = "9.2km";
+//                    break;
+//                case "18":
+//                    resolution_units = "18.5km";
+//                    break;
+//                case "36":
+//                    resolution_units = "36km";
+//                    break;
+//                case "QD":
+//                    resolution_units = "0.25degree";
+//                    break;
+//                case "HD":
+//                    resolution_units = "0.5degree";
+//                    break;
+//                case "1D":
+//                    resolution_units = "1degree";
+//                    break;
+//            }
+//
+//            keyString = replaceAnyKeyStringVariant(keyString, "resolution-units", resolution_units, DELIMITOR_NUMBER);
+//            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION-UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
+//        }
+
+        keyString = getOfileAddOnResolutionL2BinL3Bin(resolution, keyString);
+
+
+
+        if (checkForVariantMatch(keyString, "prodtype") || checkForVariantMatch(keyString, "PRODTYPE") ) {
+            if (prodtype == null) {
+                prodtype = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "prodtype", prodtype, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODTYPE", prodtype.toUpperCase(), DELIMITOR_STRING);
+        }
+
+
+
+        if (checkForVariantMatch(keyString, "suite") || checkForVariantMatch(keyString, "SUITE")) {
+            if (suite == null) {
+                suite = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "suite", suite, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "SUITE", suite.toUpperCase(), DELIMITOR_STRING);
+        }
+
+        keyString = keystringReplaceNSWE(keyString, north, south, west, east);
+
+
+        return keyString;
+    }
+
+
+    private static String getOfileAddOnResolutionL2BinL3Bin(String resolution, String keyString) {
+
+
         if (checkForVariantMatch(keyString, "resolution") || checkForVariantMatch(keyString, "RESOLUTION")) {
             if (resolution == null) {
                 resolution = "";
@@ -2660,7 +2758,19 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-        if (checkForVariantMatch(keyString, "resolution-units") || checkForVariantMatch(keyString, "RESOLUTION-UNITS")) {
+        if (checkForVariantMatch(keyString, "resolve") || checkForVariantMatch(keyString, "RESOLVE")) {
+            if (resolution == null) {
+                resolution = "";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "resolve", resolution, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE", resolution.toUpperCase(), DELIMITOR_NUMBER);
+        }
+
+
+
+        if (checkForVariantMatch(keyString, "resolution-units") || checkForVariantMatch(keyString, "RESOLUTION-UNITS")
+        || checkForVariantMatch(keyString, "resolve-units") || checkForVariantMatch(keyString, "RESOLVE-UNITS")
+        ) {
             if (resolution == null) {
                 resolution = "";
             }
@@ -2709,32 +2819,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
 
             keyString = replaceAnyKeyStringVariant(keyString, "resolution-units", resolution_units, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "resolve-units", resolution_units, DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION-UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE-UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
         }
-
-
-
-
-        if (checkForVariantMatch(keyString, "prodtype") || checkForVariantMatch(keyString, "PRODTYPE") ) {
-            if (prodtype == null) {
-                prodtype = "";
-            }
-            keyString = replaceAnyKeyStringVariant(keyString, "prodtype", prodtype, DELIMITOR_STRING);
-            keyString = replaceAnyKeyStringVariant(keyString, "PRODTYPE", prodtype.toUpperCase(), DELIMITOR_STRING);
-        }
-
-
-
-        if (checkForVariantMatch(keyString, "suite") || checkForVariantMatch(keyString, "SUITE")) {
-            if (suite == null) {
-                suite = "";
-            }
-            keyString = replaceAnyKeyStringVariant(keyString, "suite", suite, DELIMITOR_STRING);
-            keyString = replaceAnyKeyStringVariant(keyString, "SUITE", suite.toUpperCase(), DELIMITOR_STRING);
-        }
-
-        keyString = keystringReplaceNSWE(keyString, north, south, west, east);
-
 
         return keyString;
     }
