@@ -163,7 +163,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[l3bprod][resolution]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[l3bprod][resolution][suite]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[l3bprod][resolution-units][suite]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[l3bprod][resolution][suite][nswe°]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[l3bprod][resolution][nswe°]";
     
