@@ -573,11 +573,7 @@ public class ParamUtils {
                         paramInfo.setValue(OCSSW_L2binController.getPreferenceDeltaCross());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_NIGHT_LABEL:
-                        if (OCSSW_L2binController.getPreferenceNight()) {
-                            paramInfo.setValue("true");
-                        } else {
-                            paramInfo.setValue("false");
-                        }
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceNight());
                         break;
                 }
             }

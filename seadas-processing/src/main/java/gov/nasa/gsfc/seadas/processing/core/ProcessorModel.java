@@ -1378,15 +1378,35 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, auxParFile);
                     }
                     if (auxParFile.exists()) {
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceResolution());
+
+                        if (OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse());
+                        }
+
+                        if (OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod());
+                        }
+
+                        if (OCSSW_L2binController.getPreferenceAutoFillEnable()) {
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "minobs", "");
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "qual_prod", "");
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "qual_max", "");
+                        }
                     }
                 } catch (IOException e) {
                     SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
@@ -1489,131 +1509,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    public void updateParamInfosFromL2binAuxParFile(String parfile) throws IOException {
-
-        boolean l3bprodSet = false;
-        boolean flaguseSet = false;
-        boolean resolutionSet = false;
-
-        System.out.println("updateParamInfosFromL2binAuxParFile");
-
-        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
-            String flagUsePref = OCSSW_L2binController.getPreferenceFlaguse();
-            if (flagUsePref == null) {
-                flagUsePref = "";
-            }
-            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-            if (flaguseParamInfo != null) {
-                String originalFlaguse = flaguseParamInfo.getValue();
-                updateParamInfo("flaguse", flagUsePref);
-                fireEvent("flaguse", originalFlaguse, flagUsePref);
-                flaguseSet = true;
-            }
-        }
-
-        if (!OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-            String l3bprodPref = OCSSW_L2binController.getPreferenceL3bprod();
-            if (l3bprodPref == null) {
-                l3bprodPref = "";
-            }
-            ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
-            if (l3bprodParamInfo != null) {
-                String l3bprodValueOriginal = l3bprodParamInfo.getValue();
-                updateParamInfo("l3bprod", l3bprodPref);
-                fireEvent("l3bprod", l3bprodValueOriginal, l3bprodPref);
-                l3bprodSet = true;
-            }
-        }
-//
-//        {
-//            String prefValue = OCSSW_L2binController.getPreferenceResolution();
-//            if (prefValue != null && prefValue.trim().length() > 0) {
-//                resolutionSet = true;
-//            }
-//        }
-
-
-
-
-
-        if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable() && !OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-            return;
-        }
-
-
-        BufferedReader br = new BufferedReader(new FileReader(parfile));
-        try {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-
-
-            while (line != null) {
-                sb.append(line);
-                sb.append(System.lineSeparator());
-                line = br.readLine();
-
-                if (line != null) {
-                    String[] values = line.split("=", 2);
-                    if (values != null && values.length == 2) {
-                        String name = values[0].trim();
-                        String value = values[1].trim();
-
-                        if ("flaguse".equals(name) && !flaguseSet && OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
-                            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-                            String flaguseValueOriginal = flaguseParamInfo.getValue();
-                            updateParamInfo("flaguse", value);
-                            fireEvent("flaguse", flaguseValueOriginal, value);
-                            flaguseSet = true;
-                        }
-
-                        if ("l3bprod".equals(name) && !l3bprodSet && OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-                            ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
-                            String l3bprodOriginalValue = l3bprodParamInfo.getValue();
-                            updateParamInfo("l3bprod", value);
-                            fireEvent("l3bprod", l3bprodOriginalValue, value);
-                            l3bprodSet = true;
-                        }
-
-//                        if (!resolutionSet && "resolution".equals(name)) {
-//                            ParamInfo paramInfo = paramList.getInfo("resolution");
-//                            String originalValue = paramInfo.getValue();
-//                            updateParamInfo("resolution", value);
-//                            fireEvent("resolution", originalValue, value);
-//                            resolutionSet = true;
-//                        }
-                    }
-                }
-
-            }
-//                String everything = sb.toString();
-        } finally {
-            br.close();
-        }
-
-
-        if (!flaguseSet) {
-            ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-            String flaguseValueOriginal = flaguseParamInfo.getValue();
-            updateParamInfo("flaguse", flaguseParamInfo.getDefaultValue());
-            fireEvent("flaguse", flaguseValueOriginal, flaguseParamInfo.getDefaultValue());
-        }
-
-        if (!l3bprodSet) {
-            ParamInfo l3bprodParamInfo = paramList.getInfo("l3bprod");
-            String l3bprodValueOriginal = l3bprodParamInfo.getValue();
-            updateParamInfo("l3bprod", l3bprodParamInfo.getDefaultValue());
-            fireEvent("l3bprod", l3bprodValueOriginal, l3bprodParamInfo.getDefaultValue());
-        }
-//
-//        if (!resolutionSet) {
-//            ParamInfo l3bprodParamInfo = paramList.getInfo("resolution");
-//            String l3bprodValueOriginal = l3bprodParamInfo.getValue();
-//            updateParamInfo("resolution", l3bprodParamInfo.getDefaultValue());
-//            fireEvent("resolution", l3bprodValueOriginal, l3bprodParamInfo.getDefaultValue());
-//        }
-    }
-
-
 
 
 
@@ -1623,19 +1518,21 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return;
         }
 
-        boolean resolutionSet = false;
+        ParamInfo paramInfo = paramList.getInfo(parameter);
 
-        System.out.println("updateParamInfosFromL2binAuxParFile");
-
-
-        {
-            prefValue = OCSSW_L2binController.getPreferenceResolution();
-            if (prefValue != null && prefValue.trim().length() > 0) {
-                resolutionSet = true;
-            }
+        if (paramInfo == null) {
+            return;
         }
 
-        if (resolutionSet) {
+        boolean paramValueSet = false;
+
+
+            if (prefValue != null && prefValue.trim().length() > 0) {
+                paramValueSet = true;
+            }
+
+
+        if (paramValueSet) {
             return;
         }
 
@@ -1657,12 +1554,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         String name = values[0].trim();
                         String value = values[1].trim();
 
-                        if (!resolutionSet && parameter.equals(name)) {
-                            ParamInfo paramInfo = paramList.getInfo(parameter);
-                            String originalValue = paramInfo.getValue();
-                            updateParamInfo(parameter, value);
-                            fireEvent(parameter, originalValue, value);
-                            return;
+                        if (!paramValueSet && parameter.equals(name)) {
+                                String originalValue = paramInfo.getValue();
+                                updateParamInfo(parameter, value);
+                                fireEvent(parameter, originalValue, value);
+                                return;
                         }
                     }
                 }
@@ -1674,11 +1570,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-        if (!resolutionSet) {
-            ParamInfo l3bprodParamInfo = paramList.getInfo(parameter);
-            String l3bprodValueOriginal = l3bprodParamInfo.getValue();
-            updateParamInfo(parameter, l3bprodParamInfo.getDefaultValue());
-            fireEvent(parameter, l3bprodValueOriginal, l3bprodParamInfo.getDefaultValue());
+        if (!paramValueSet) {
+            String l3bprodValueOriginal = paramInfo.getValue();
+            updateParamInfo(parameter, paramInfo.getDefaultValue());
+            fireEvent(parameter, l3bprodValueOriginal, paramInfo.getDefaultValue());
         }
     }
 
@@ -1718,7 +1613,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         File commonDir = null;
         if (missionDir != null && missionDir.getParentFile() != null) {
-            new File(missionDir.getParentFile().getAbsolutePath(), "common");
+            commonDir = new File(missionDir.getParentFile().getAbsolutePath(), "common");
         }
 
         String[] suitesByMission = null;
