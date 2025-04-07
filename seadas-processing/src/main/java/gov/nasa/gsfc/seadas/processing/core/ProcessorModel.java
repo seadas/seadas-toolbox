@@ -1379,6 +1379,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
                     if (auxParFile.exists()) {
                         updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceResolution());
                     }
                 } catch (IOException e) {
                     SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
@@ -1485,6 +1493,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         boolean l3bprodSet = false;
         boolean flaguseSet = false;
+        boolean resolutionSet = false;
 
         System.out.println("updateParamInfosFromL2binAuxParFile");
 
@@ -1515,6 +1524,16 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 l3bprodSet = true;
             }
         }
+//
+//        {
+//            String prefValue = OCSSW_L2binController.getPreferenceResolution();
+//            if (prefValue != null && prefValue.trim().length() > 0) {
+//                resolutionSet = true;
+//            }
+//        }
+
+
+
 
 
         if (!OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable() && !OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
@@ -1554,6 +1573,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                             fireEvent("l3bprod", l3bprodOriginalValue, value);
                             l3bprodSet = true;
                         }
+
+//                        if (!resolutionSet && "resolution".equals(name)) {
+//                            ParamInfo paramInfo = paramList.getInfo("resolution");
+//                            String originalValue = paramInfo.getValue();
+//                            updateParamInfo("resolution", value);
+//                            fireEvent("resolution", originalValue, value);
+//                            resolutionSet = true;
+//                        }
                     }
                 }
 
@@ -1577,7 +1604,85 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             updateParamInfo("l3bprod", l3bprodParamInfo.getDefaultValue());
             fireEvent("l3bprod", l3bprodValueOriginal, l3bprodParamInfo.getDefaultValue());
         }
+//
+//        if (!resolutionSet) {
+//            ParamInfo l3bprodParamInfo = paramList.getInfo("resolution");
+//            String l3bprodValueOriginal = l3bprodParamInfo.getValue();
+//            updateParamInfo("resolution", l3bprodParamInfo.getDefaultValue());
+//            fireEvent("resolution", l3bprodValueOriginal, l3bprodParamInfo.getDefaultValue());
+//        }
     }
+
+
+
+
+
+    public void updateParamInfosFromL2binAuxParFile(String parfile, String parameter, String prefValue) throws IOException {
+
+        if (parameter == null || parameter.trim().length() == 0) {
+            return;
+        }
+
+        boolean resolutionSet = false;
+
+        System.out.println("updateParamInfosFromL2binAuxParFile");
+
+
+        {
+            prefValue = OCSSW_L2binController.getPreferenceResolution();
+            if (prefValue != null && prefValue.trim().length() > 0) {
+                resolutionSet = true;
+            }
+        }
+
+        if (resolutionSet) {
+            return;
+        }
+
+
+        BufferedReader br = new BufferedReader(new FileReader(parfile));
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+
+                if (line != null) {
+                    String[] values = line.split("=", 2);
+                    if (values != null && values.length == 2) {
+                        String name = values[0].trim();
+                        String value = values[1].trim();
+
+                        if (!resolutionSet && parameter.equals(name)) {
+                            ParamInfo paramInfo = paramList.getInfo(parameter);
+                            String originalValue = paramInfo.getValue();
+                            updateParamInfo(parameter, value);
+                            fireEvent(parameter, originalValue, value);
+                            return;
+                        }
+                    }
+                }
+
+            }
+        } finally {
+            br.close();
+        }
+
+
+
+        if (!resolutionSet) {
+            ParamInfo l3bprodParamInfo = paramList.getInfo(parameter);
+            String l3bprodValueOriginal = l3bprodParamInfo.getValue();
+            updateParamInfo(parameter, l3bprodParamInfo.getDefaultValue());
+            fireEvent(parameter, l3bprodValueOriginal, l3bprodParamInfo.getDefaultValue());
+        }
+    }
+
+
 
 
     private void updateSuite(File selectedFile) {
@@ -1609,6 +1714,88 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
         File missionDir = ifileInfo.getMissionDirectory();
+        File subSensorDir = ifileInfo.getSubsensorDirectory();
+
+        File commonDir = null;
+        if (missionDir != null && missionDir.getParentFile() != null) {
+            new File(missionDir.getParentFile().getAbsolutePath(), "common");
+        }
+
+        String[] suitesByMission = null;
+        String[] suitesByCommon = null;
+        String[] suitesBySubSensor = null;
+        ArrayList<String> suitesArrayList = new ArrayList();
+
+        try {
+            suitesByMission = getSuites(selectedFile, missionDir, programName);
+            if (suitesByMission != null && suitesByMission.length > 0) {
+                for (String suite : suitesByMission) {
+                    if (suite != null && suite.trim().length() > 0) {
+                        suitesArrayList.add(suite);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            suitesByCommon = getSuites(selectedFile, commonDir, programName);
+            if (suitesByCommon != null && suitesByCommon.length > 0) {
+                for (String suite : suitesByCommon) {
+                    if (suite != null && suite.trim().length() > 0) {
+                        suitesArrayList.add(suite);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            suitesBySubSensor = getSuites(selectedFile, subSensorDir, programName);
+            if (suitesBySubSensor != null && suitesBySubSensor.length > 0) {
+                for (String suite : suitesBySubSensor) {
+                    if (suite != null && suite.trim().length() > 0) {
+                        suitesArrayList.add(suite);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
+
+
+
+        String[] suites = new String[suitesArrayList.size()];
+        suitesArrayList.toArray(suites);
+        Arrays.sort(suites);
+
+
+        ArrayList<String> suitesArrayListCleaned = new ArrayList();
+        for (String suite : suites) {
+            suitesArrayListCleaned.add(suite);
+        }
+        String[] suitesCleaned = new String[suitesArrayListCleaned.size()];
+        suitesArrayListCleaned.toArray(suitesCleaned);
+
+
+        String suiteName;
+        ArrayList<ParamValidValueInfo> suiteValidValues = new ArrayList<ParamValidValueInfo>();
+        for (String fileName : suitesCleaned) {
+            suiteName = fileName.substring(fileName.indexOf("_", fileName.indexOf("_") + 1) + 1, fileName.indexOf("."));
+            suiteValidValues.add(new ParamValidValueInfo(suiteName));
+        }
+        ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) getParamInfo("suite").getValidValueInfos().clone();
+        getParamInfo("suite").setValidValueInfos(suiteValidValues);
+        fireEvent("suite", oldValidValues, suiteValidValues);
+        // todo commenting out this to test
+//            updateFlagUse(DEFAULT_PAR_FILE_NAME);
+    }
+
+
+
+    private String[] getSuites(File selectedFile, File missionDir, String programName) {
+        FileInfo ifileInfo = new FileInfo(selectedFile, ocssw);
+
         if (missionDir == null) {
             try {
                 LineNumberReader reader = new LineNumberReader(new FileReader(selectedFile));
@@ -1623,21 +1810,37 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        String[] suites;
+        String[] suites = null;
         HashMap<String, Boolean> missionSuites;
         if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
             suites = missionDir.list(new FilenameFilter() {
                 @Override
+
                 public boolean accept(File file, String s) {
-                    return s.contains("l2bin_defaults_");
+                    if ("l2bin".equalsIgnoreCase(programName)) {
+                        return s.contains("l2bin_defaults_");
+                    }
+                    if ("l3mapgen".equalsIgnoreCase(programName)) {
+                        return s.contains("l3mapgen_defaults_");
+                    }
+                    return false;
                 }
+
             });
         } else {
             OCSSWClient ocsswClient = new OCSSWClient();
             WebTarget target = ocsswClient.getOcsswWebTarget();
-            missionSuites = target.path("ocssw").path("l2bin_suites").path(ifileInfo.getMissionName()).request(MediaType.APPLICATION_JSON)
+            if ("l2bin".equalsIgnoreCase(programName)) {
+                missionSuites = target.path("ocssw").path("l2bin_suites").path(ifileInfo.getMissionName()).request(MediaType.APPLICATION_JSON)
+                        .get(new GenericType<HashMap<String, Boolean>>() {
+                        });
+            } else if ("l3mapgen".equalsIgnoreCase(programName)) {
+                missionSuites = target.path("ocssw").path("l3mapgen_suites").path(ifileInfo.getMissionName()).request(MediaType.APPLICATION_JSON)
                     .get(new GenericType<HashMap<String, Boolean>>() {
                     });
+            } else {
+                return suites;
+            }
             int i = 0;
             suites = new String[missionSuites.size()];
             for (Map.Entry<String, Boolean> entry : missionSuites.entrySet()) {
@@ -1651,20 +1854,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         }
 
-        Arrays.sort(suites);
-
-        String suiteName;
-        ArrayList<ParamValidValueInfo> suiteValidValues = new ArrayList<ParamValidValueInfo>();
-        for (String fileName : suites) {
-            suiteName = fileName.substring(fileName.indexOf("_", fileName.indexOf("_") + 1) + 1, fileName.indexOf("."));
-            suiteValidValues.add(new ParamValidValueInfo(suiteName));
-        }
-        ArrayList<ParamValidValueInfo> oldValidValues = (ArrayList<ParamValidValueInfo>) getParamInfo("suite").getValidValueInfos().clone();
-        getParamInfo("suite").setValidValueInfos(suiteValidValues);
-        fireEvent("suite", oldValidValues, suiteValidValues);
-        // todo commenting out this to test
-//            updateFlagUse(DEFAULT_PAR_FILE_NAME);
+        return suites;
     }
+
+
+
+
+
+
 
 
     private static class L2Bin_Processor extends ProcessorModel {

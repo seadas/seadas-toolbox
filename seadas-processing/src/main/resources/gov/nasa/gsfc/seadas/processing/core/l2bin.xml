@@ -6,11 +6,11 @@
         <parFileOptionName>par</parFileOptionName>
         <numColumns>6</numColumns>
         <columnWidth>18</columnWidth>
-        <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
-        <subPanel2Title> Geospatial Parameters </subPanel2Title>
+        <subPanel0Title> Product Parameters </subPanel0Title>
         <subPanel1Title> Flag Masking Parameters </subPanel1Title>
+        <subPanel2Title> Geospatial Parameters </subPanel2Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
-        <subPanel4Title> Bin Method Parameters </subPanel4Title>
+        <subPanel4Title> General &amp; Bin Method Parameters </subPanel4Title>
 
 
         <!--krow:   810 out of   2160  (-22.50 to   0.00) Tue Jun 26 16:14:55 2012-->
@@ -76,7 +76,7 @@
             <description>Comma delimited list of 3D wavelengths
             </description>
             <usedAs>option</usedAs>
-            <colSpan>3</colSpan>
+            <colSpan>2</colSpan>
             <order>4</order>
         </option>
 
@@ -92,6 +92,7 @@
                 <description>suite defaults [see OCSSWROOT/common/l2bin_defaults.par and  OCSSWROOT/SENSOR/l2bin_defaults.par]</description>
             </validValue>
             <usedAs>option</usedAs>
+            <subPanelIndex>0</subPanelIndex>
             <order>6</order>
         </option>
 
@@ -291,6 +292,7 @@
                 <description>Cumulative</description>
             </validValue>
             <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
             <order>6</order>
         </option>
 
@@ -426,6 +428,7 @@
             <default></default>
             <description># of bin rows to process at once</description>
             <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
             <order>9</order>
         </option>
 
