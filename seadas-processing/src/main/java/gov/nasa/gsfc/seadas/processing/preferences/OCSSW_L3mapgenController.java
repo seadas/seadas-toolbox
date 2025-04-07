@@ -134,7 +134,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_OFORMAT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".oformat";
     public static final String PROPERTY_L3MAPGEN_OFORMAT_LABEL = "oformat";
     public static final String PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP = "Field 'oformat'";
-    public static final String PROPERTY_L3MAPGEN_OFORMAT_DEFAULT = "netCDF4";
+    public static final String PROPERTY_L3MAPGEN_OFORMAT_DEFAULT = "";
 
 
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_SPATIAL_IMAGE_MODE_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".parameters.spatial.section";
@@ -144,7 +144,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".projection";
     public static final String PROPERTY_L3MAPGEN_PROJECTION_LABEL = "projection";
     public static final String PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP = "Projection";
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_DEFAULT = "platecarree";
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".resolution";
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_LABEL = "resolution";
@@ -155,7 +155,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_INTERP_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".interp";
     public static final String PROPERTY_L3MAPGEN_INTERP_LABEL = "interp";
     public static final String PROPERTY_L3MAPGEN_INTERP_TOOLTIP = "Interpolation type";
-    public static final String PROPERTY_L3MAPGEN_INTERP_DEFAULT = "nearest";
+    public static final String PROPERTY_L3MAPGEN_INTERP_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FUDGE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".fudge";
     public static final String PROPERTY_L3MAPGEN_FUDGE_LABEL = "fudge";
@@ -233,7 +233,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_MASK_LAND_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".mask_land";
     public static final String PROPERTY_L3MAPGEN_MASK_LAND_LABEL = "mask_land";
     public static final String PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP = "Apply land mask (rgb land)";
-    public static final boolean PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT = false;
+    public static final String PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT = "";
 
     
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".rgb_land";
@@ -1192,8 +1192,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         @Preference(key = PROPERTY_L3MAPGEN_MASK_LAND_KEY,
                 label = PROPERTY_L3MAPGEN_MASK_LAND_LABEL,
-                description = PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP)
-        boolean L3mapgen_MASK_LAND = PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT;
+                description = PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String L3mapgen_MASK_LAND = PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT;
 
         @Preference(key = PROPERTY_L3MAPGEN_RGB_LAND_KEY,
                 label = PROPERTY_L3MAPGEN_RGB_LAND_LABEL,
@@ -1311,9 +1312,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-    public static boolean getPreferenceApplyPal() {
+    public static String getPreferenceApplyPal() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT);
+        if (preferences.getPropertyBool(PROPERTY_L3MAPGEN_APPLY_PAL_KEY, PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT)) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
 
@@ -1346,16 +1351,20 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-    public static boolean getPreferenceUseTransparency() {
+    public static String getPreferenceUseTransparency() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT);
+        if (preferences.getPropertyBool(PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY, PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT)) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
 
 
-    public static boolean getPreferenceMaskLand() {
+    public static String getPreferenceMaskLand() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT);
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT);
     }
 
     public static String getPreferenceRGBLand() {
@@ -1364,9 +1373,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     }
 
 
-    public static boolean getPreferenceUseRGB() {
+    public static String getPreferenceUseRGB() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_DEFAULT);
+        if (preferences.getPropertyBool(PROPERTY_L3MAPGEN_USE_RGB_KEY, PROPERTY_L3MAPGEN_USE_RGB_DEFAULT)) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     public static String getPreferenceProductRGB() {

@@ -483,32 +483,20 @@ public class ParamUtils {
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceRGBLand());
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_LABEL:
-                        if (OCSSW_L3mapgenController.getPreferenceMaskLand()) {
-                            paramInfo.setValue("true");
-                        } else {
-                            paramInfo.setValue("false");
+                        if ("TRUE".equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceMaskLand()) ||
+                                "FALSE".equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceMaskLand())
+                        ) {
+                            paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceMaskLand());
                         }
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_LABEL:
-                        if (OCSSW_L3mapgenController.getPreferenceApplyPal()) {
-                            paramInfo.setValue("true");
-                        } else {
-                            paramInfo.setValue("false");
-                        }
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceApplyPal());
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL:
-                        if (OCSSW_L3mapgenController.getPreferenceUseTransparency()) {
-                            paramInfo.setValue("true");
-                        } else {
-                            paramInfo.setValue("false");
-                        }
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceUseTransparency());
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_LABEL:
-                        if (OCSSW_L3mapgenController.getPreferenceUseRGB()) {
-                            paramInfo.setValue("true");
-                        } else {
-                            paramInfo.setValue("false");
-                        }
+                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceUseRGB());
                         break;
 
 
@@ -573,11 +561,7 @@ public class ParamUtils {
                         paramInfo.setValue(OCSSW_L2binController.getPreferenceDeltaCross());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_NIGHT_LABEL:
-                        if (OCSSW_L2binController.getPreferenceNight()) {
-                            paramInfo.setValue("true");
-                        } else {
-                            paramInfo.setValue("false");
-                        }
+                        paramInfo.setValue(OCSSW_L2binController.getPreferenceNight());
                         break;
                 }
             }
