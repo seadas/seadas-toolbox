@@ -74,6 +74,56 @@
     </tr>
 
     <tr>
+        <td><b>area_weighting</b></td>
+        <td> int</td>
+        <td>Enable area weighting
+            0: off
+            1: pixel box
+            2: pixel bounding box
+            3: pixel polygon
+        </td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><b>composite_prod</b></td>
+        <td> string</td>
+        <td>product fieldname</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>composite_scheme</b></td>
+        <td> string</td>
+        <td>composite scheme (min/max)</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>delta_crossing_time</b></td>
+        <td> float</td>
+        <td>equator crossing time delta in minutes
+            Caveat...if zero, the sensor default equator crossing time will be used
+            This is not necessarily noon
+        </td>
+        <td>Optional</td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td><b>eday</b></td>
+        <td> int</td>
+        <td>end datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td>2038018</td>
+    </tr>
+    <tr>
+        <td><b>flaguse</b></td>
+        <td> string</td>
+        <td>flags masked</td>
+        <td>Optional</td>
+        <td>[see /SENSOR/l2bin_defaults.par]</td>
+    </tr>
+    <tr>
         <td><b>l3bprod</b></td>
         <td> string</td>
         <td>bin products
@@ -87,11 +137,76 @@
         <td>all products</td>
     </tr>
     <tr>
+        <td><b>latnorth</b></td>
+        <td> float</td>
+        <td>northern most latitude</td>
+        <td>Optional</td>
+        <td>90</td>
+    </tr>
+    <tr>
+        <td><b>latsouth</b></td>
+        <td> float</td>
+        <td>southern most latitude</td>
+        <td>Optional</td>
+        <td>-90</td>
+    </tr>
+    <tr>
+        <td><b>loneast</b></td>
+        <td> float</td>
+        <td>eastern most longitude</td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><b>lonwest</b></td>
+        <td> float</td>
+        <td>western most longitude</td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><b>minobs</b></td>
+        <td> int</td>
+        <td>required minimum number of observations</td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><b>night</b></td>
+        <td> boolean</td>
+        <td>Check for SST night processing</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>output_wavelengths</b></td>
+        <td> string</td>
+        <td>comma separated list of
+            wavelengths for multi-wavelength products
+        </td>
+        <td>Optional</td>
+        <td>ALL</td>
+    </tr>
+    <tr>
         <td><b>prodtype</b></td>
         <td>string</td>
         <td>product type (Set to "regional" to bin all scans.)</td>
         <td>Optional</td>
         <td>day</td>
+    </tr>
+    <tr>
+        <td><b>qual_max</b></td>
+        <td> int</td>
+        <td>maximum acceptable quality</td>
+        <td>Optional</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td><b>qual_prod</b></td>
+        <td>string</td>
+        <td>quality product field name</td>
+        <td>Optional</td>
+        <td></td>
     </tr>
     <tr>
         <td><b>resolution</b></td>
@@ -115,46 +230,6 @@
         <td>Optional</td>
         <td>H</td>
     </tr>
-
-
-    <tr>
-        <td><b>flaguse</b></td>
-        <td> string</td>
-        <td>flags masked</td>
-        <td>Optional</td>
-        <td>[see /SENSOR/l2bin_defaults.par]</td>
-    </tr>
-
-
-    <tr>
-        <td><b>sday</b></td>
-        <td> int</td>
-        <td>start datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
-        <td>Optional</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><b>eday</b></td>
-        <td> int</td>
-        <td>end datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
-        <td>Optional</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><b>suite</b></td>
-        <td> string</td>
-        <td></td>
-        <td>Optional</td>
-        <td></td>
-    </tr>
-
-    <tr>
-        <td><b>pversion</b></td>
-        <td> string</td>
-        <td>production version</td>
-        <td>Optional</td>
-        <td>unspecified</td>
-    </tr>
     <tr>
         <td><b>rowgroup</b></td>
         <td>int</td>
@@ -163,30 +238,39 @@
         <td>-1</td>
     </tr>
     <tr>
-        <td><b>qual_prod</b></td>
-        <td>string</td>
-        <td>quality product field name</td>
+        <td><b>sday</b></td>
+        <td> int</td>
+        <td>start datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td>1970001</td>
+    </tr>
+    <tr>
+        <td><b>suite</b></td>
+        <td> string</td>
+        <td>suite for default parameters</td>
         <td>Optional</td>
         <td></td>
     </tr>
-    <tr>
-        <td><b>qual_max</b></td>
-        <td> int</td>
-        <td>maximum acceptable quality</td>
-        <td>Optional</td>
-        <td>2</td>
-    </tr>
-    <tr>
-        <td><b>oformat</b></td>
-        <td>string</td>
-        <td>defines output format:
-            <pre>
-        hdf4:    output a HDF4 file
-        netcdf4: output a netCDF4 file
-    </pre>
-        <td>Optional</td>
-        <td>netcdf4</td>
-    </tr>
+
+<!--    <tr>-->
+<!--        <td><b>pversion</b></td>-->
+<!--        <td> string</td>-->
+<!--        <td>production version</td>-->
+<!--        <td>Optional</td>-->
+<!--        <td>unspecified</td>-->
+<!--    </tr>-->
+
+<!--    <tr>-->
+<!--        <td><b>oformat</b></td>-->
+<!--        <td>string</td>-->
+<!--        <td>defines output format:-->
+<!--            <pre>-->
+<!--        hdf4:    output a HDF4 file-->
+<!--        netcdf4: output a netCDF4 file-->
+<!--    </pre>-->
+<!--        <td>Optional</td>-->
+<!--        <td>netcdf4</td>-->
+<!--    </tr>-->
     <!--<tr>-->
     <!--<td><b>noext</b></td>-->
     <!--<td> boolean</td>-->
@@ -194,13 +278,6 @@
     <!--<td>Optional</td>-->
     <!--<td>false</td>-->
     <!--</tr>-->
-    <tr>
-        <td><b>night</b></td>
-        <td> boolean</td>
-        <td>Check for SST night processing</td>
-        <td>Optional</td>
-        <td>false</td>
-    </tr>
     <!--<tr>-->
     <!--<td><b>verbose</b></td>-->
     <!--<td> boolean</td>-->
@@ -279,8 +356,8 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l2bin 7.1.0 (Nov 14 2024 12:14:51)
-7.1.0
+l2bin 7.1.1 (Jan 30 2025 18:48:02)
+7.1.1
 Usage: l2bin argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
