@@ -4,10 +4,11 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <subPanel0Title> Product &amp; General Parameters </subPanel0Title>
+        <subPanel0Title> Product Parameters </subPanel0Title>
         <subPanel1Title> Geospatial Parameters </subPanel1Title>
-        <subPanel3Title> Image Mode Parameters </subPanel3Title>
-        <subPanel4Title>  Pseudo True Color (RGB) Image Parameters </subPanel4Title>
+        <subPanel2Title> Image Mode Parameters </subPanel2Title>
+        <subPanel3Title>  Pseudo True Color (RGB) Image Parameters </subPanel3Title>
+        <subPanel4Title>  General Parameters </subPanel4Title>
         <numColumns>12</numColumns>
         <columnWidth>10</columnWidth>
         <primaryOptions>
@@ -117,7 +118,7 @@
             <source>default</source>
             <description>Comma delimited list of 3D wavelengths</description>
             <usedAs>option</usedAs>
-            <colSpan>6</colSpan>
+            <colSpan>4</colSpan>
             <order>3</order>
         </option>
 
@@ -139,6 +140,7 @@
             </validValue>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
+            <subPanelIndex>0</subPanelIndex>
             <order>4</order>
         </option>
 
@@ -148,11 +150,12 @@
             <name>num_cache</name>
             <value></value>
             <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <!--            <subPanelIndex>2</subPanelIndex>-->
             <source>default</source>
             <description>number of rows to cache in memory</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
             <order>5</order>
         </option>
 
@@ -164,6 +167,7 @@
             <description>deflation level</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
             <order>6</order>
         </option>
 
@@ -172,7 +176,7 @@
             <name>oformat</name>
             <value>netCDF4</value>
             <default></default>
-            <!--            <subPanelIndex>3</subPanelIndex>-->
+            <!--            <subPanelIndex>2</subPanelIndex>-->
             <description>output file format</description>
             <source>default</source>
             <validValues>
@@ -203,6 +207,7 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
             <order>7</order>
         </option>
 
@@ -233,7 +238,7 @@
 <!--        <option type="string">-->
 <!--            <name>pversion</name>-->
 <!--            <value></value>-->
-<!--            &lt;!&ndash;            <subPanelIndex>3</subPanelIndex>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <subPanelIndex>2</subPanelIndex>&ndash;&gt;-->
 <!--            <default></default>-->
 <!--            <source>default</source>-->
 <!--            <description>processing version string</description>-->
@@ -841,7 +846,7 @@
 <!--                </validValue>-->
 <!--            </validValues>-->
 <!--            <usedAs>option</usedAs>-->
-<!--            <subPanelIndex>3</subPanelIndex>-->
+<!--            <subPanelIndex>2</subPanelIndex>-->
 <!--            <order>292</order>-->
 <!--        </option>-->
 
@@ -852,7 +857,7 @@
 <!--            <source>default</source>-->
 <!--            <description>second output filename</description>-->
 <!--            <usedAs>option</usedAs>-->
-<!--            <subPanelIndex>3</subPanelIndex>-->
+<!--            <subPanelIndex>2</subPanelIndex>-->
 <!--            <colSpan>10</colSpan>-->
 <!--            <order>293</order>-->
 <!--        </option>-->
@@ -866,7 +871,7 @@
             <source>default</source>
             <description>apply color palette</description>
             <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <putInBooleanPanel>false</putInBooleanPanel>
             <order>299</order>
         </option>
@@ -965,7 +970,7 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>3</colSpan>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <order>300</order>
         </option>
 
@@ -978,7 +983,7 @@
             <description>minimum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <order>301</order>
         </option>
 
@@ -989,7 +994,7 @@
             <description>maximum value for scaling (default from product.xml)</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <order>302</order>
         </option>
 
@@ -1019,7 +1024,7 @@
             </validValues>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <order>303</order>
         </option>
 
@@ -1031,7 +1036,7 @@
             <source>default</source>
             <description>make missing data transparent (only valid for color PNG and TIFF)</description>
             <usedAs>option</usedAs>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <putInBooleanPanel>false</putInBooleanPanel>
             <colSpan>2</colSpan>
             <order>304</order>
@@ -1045,7 +1050,7 @@
             <description>mask land</description>
             <usedAs>option</usedAs>
             <putInBooleanPanel>false</putInBooleanPanel>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <order>305</order>
         </option>
 
@@ -1057,7 +1062,7 @@
             <description>land colors (default=160,82,45)</description>
             <usedAs>option</usedAs>
             <colSpan>3</colSpan>
-            <subPanelIndex>3</subPanelIndex>
+            <subPanelIndex>2</subPanelIndex>
             <order>306</order>
         </option>
 
@@ -1074,7 +1079,7 @@
             <source>default</source>
             <description>should we use product_rgb to make a psudo true color image</description>
             <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <putInBooleanPanel>false</putInBooleanPanel>
             <order>353</order>
         </option>
@@ -1087,7 +1092,7 @@
             <description> 3 products to use for RGB.  Default is sensor specific</description>
             <usedAs>option</usedAs>
             <colSpan>3</colSpan>
-            <subPanelIndex>4</subPanelIndex>
+            <subPanelIndex>3</subPanelIndex>
             <order>355</order>
         </option>
 
