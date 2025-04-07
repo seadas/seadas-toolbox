@@ -1193,7 +1193,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         @Preference(key = PROPERTY_L3MAPGEN_MASK_LAND_KEY,
                 label = PROPERTY_L3MAPGEN_MASK_LAND_LABEL,
                 description = PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP,
-                valueSet = {" ", "TRUE", "FALSE"})
+                valueSet = {"", "TRUE", "FALSE"})
         String L3mapgen_MASK_LAND = PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT;
 
         @Preference(key = PROPERTY_L3MAPGEN_RGB_LAND_KEY,
