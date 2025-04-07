@@ -68,7 +68,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private int columnWidth;
 
     private static final String DELIMITOR_NUMBER = "_";
-    private static final  String DELIMITOR_STRING = ".";
+    private static final String DELIMITOR_STRING = ".";
 
     private boolean readyToRun;
     private final String runButtonPropertyName = "RUN_BUTTON_STATUS_CHANGED";
@@ -340,7 +340,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     public boolean doTheyEqual(String string1, String string2) {
-        if (string1 == null && string2 == null ) {
+        if (string1 == null && string2 == null) {
             return true;
         }
 
@@ -360,7 +360,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
     public void updateParamInfo(ParamInfo currentOption, String newValue) {
         if (currentOption == null || currentOption.getName() == null) {
             return;
@@ -377,14 +376,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         if (currentOption.getName().equals("suite")) {
             suiteChanged = !doTheyEqualAfterTrimming(currentOption.getValue(), newValue);
-            System.out.println("suite"+ "|" + currentOption.getValue() + "|" + newValue + "|" +suiteChanged);
+            System.out.println("suite" + "|" + currentOption.getValue() + "|" + newValue + "|" + suiteChanged);
             if (!suiteChanged) {
                 ignore = true;
             }
         }
         if (currentOption.getName().equals("ifile")) {
             ifileChanged = !doTheyEqualAfterTrimming(currentOption.getValue(), newValue);
-            System.out.println("ifile"+ "|" + currentOption.getValue() + "|" + newValue + "|" + ifileChanged);
+            System.out.println("ifile" + "|" + currentOption.getValue() + "|" + newValue + "|" + ifileChanged);
             if (!ifileChanged) {
                 ignore = true;
             }
@@ -395,6 +394,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if ("l2bin".equalsIgnoreCase(programName)) {
                 if (suiteChanged || ifileChanged) {
                     updateFlagUse(null);
+                }
+            }
+            if ("l3mapgen".equalsIgnoreCase(programName)) {
+                if (suiteChanged || ifileChanged) {
+                    updateL3MapgenParams();
                 }
             }
 
@@ -505,7 +509,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 String south = getParamValue("latsouth");
                 String west = getParamValue("lonwest");
                 String east = getParamValue("loneast");
-                
+
                 String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
 
                 if (ofileName != null) {
@@ -892,7 +896,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
         ArrayList<String> products = new ArrayList<String>();
         if (ncFile != null) {
 
@@ -911,6 +914,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     }
 
                 } catch (Exception e) {
+                }
+
+                if ("l3mapgen".equalsIgnoreCase(programName)) {
+                    updateL3MapgenParams();
                 }
 
             } else {
@@ -970,43 +977,43 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private void updateFlagUseWrapper(Variable flagGroup) {
 
-            try {
-                Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
-                Array array = flagMeaningAttribute.getValues();
-                String flagMeanings = array.toString();
+        try {
+            Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
+            Array array = flagMeaningAttribute.getValues();
+            String flagMeanings = array.toString();
 
-                if (flagMeanings.length() > 0) {
-                    if ("l2bin".equalsIgnoreCase(programName)) {
-                        ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-                        if (flaguseParamInfo == null) {
-                            flaguseParamInfo = new ParamInfo("flaguse");
-                            flaguseParamInfo.setDescription("flaguse");
-                        }
-                        flaguseParamInfo.clearValidValueInfos();
+            if (flagMeanings.length() > 0) {
+                if ("l2bin".equalsIgnoreCase(programName)) {
+                    ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
+                    if (flaguseParamInfo == null) {
+                        flaguseParamInfo = new ParamInfo("flaguse");
+                        flaguseParamInfo.setDescription("flaguse");
+                    }
+                    flaguseParamInfo.clearValidValueInfos();
 
-                        String[] values1 = flagMeanings.split("[,\\s]");
-                        Arrays.sort(values1);
+                    String[] values1 = flagMeanings.split("[,\\s]");
+                    Arrays.sort(values1);
 
-                        for (String value : values1) {
-                            ParamValidValueInfo test = new ParamValidValueInfo(value);
-                            test.setDescription(value);
-                            flaguseParamInfo.getValidValueInfos().add(test);
-                        }
+                    for (String value : values1) {
+                        ParamValidValueInfo test = new ParamValidValueInfo(value);
+                        test.setDescription(value);
+                        flaguseParamInfo.getValidValueInfos().add(test);
+                    }
 
 //                                        ParamValidValueInfo test = new ParamValidValueInfo("NONE");
 //                                        test.setDescription("NONE");
 //                                        flaguseParamInfo.getValidValueInfos().add(test);
 
 //                                    paramList.getPropertyChangeSupport().firePropertyChange("flaguse", oldValue, newValue);
-                    }
                 }
-
-            } catch (Exception e) {
             }
 
-            if ("l2bin".equalsIgnoreCase(programName)) {
-                updateFlagUse(null);
-            }
+        } catch (Exception e) {
+        }
+
+        if ("l2bin".equalsIgnoreCase(programName)) {
+            updateFlagUse(null);
+        }
 
 
     }
@@ -1031,7 +1038,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             fireEvent(field, "-1", newValue);
         }
     }
-
 
 
     @Override
@@ -1069,7 +1075,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         this.subPanel0Title = subPanel0Title;
     }
 
-    
+
     public String getSubPanel1Title() {
         return subPanel1Title;
     }
@@ -1081,6 +1087,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public String getSubPanel2Title() {
         return subPanel2Title;
     }
+
     public void setSubPanel2Title(String subPanel2Title) {
         this.subPanel2Title = subPanel2Title;
     }
@@ -1088,6 +1095,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public String getSubPanel3Title() {
         return subPanel3Title;
     }
+
     public void setSubPanel3Title(String subPanel3Title) {
         this.subPanel3Title = subPanel3Title;
     }
@@ -1095,6 +1103,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public String getSubPanel4Title() {
         return subPanel4Title;
     }
+
     public void setSubPanel4Title(String subPanel4Title) {
         this.subPanel4Title = subPanel4Title;
     }
@@ -1119,7 +1128,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             this.columnWidth = columnWidth;
         }
     }
-
 
 
     public OCSSW getOcssw() {
@@ -1328,6 +1336,86 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
+    private void updateL3MapgenParams() {
+
+        if (!"l3mapgen".equalsIgnoreCase(programName)) {
+            return;
+        }
+
+        ParamInfo ifileParamInfo = paramList.getInfo("ifile");
+        if (ifileParamInfo != null) {
+            File ifile = new File(ifileParamInfo.getValue());
+            File textFile = null;
+
+
+            if (ifile != null && ifile.exists()) {
+                String suite = null;
+                ParamInfo suiteParamInfo = paramList.getInfo("suite");
+                if (suiteParamInfo != null) {
+                    suite = suiteParamInfo.getValue();
+                }
+
+
+                final String L3MAPGEN_PROGRAM_NAME = "l3mapgen";
+                File dataDir = SystemUtils.getApplicationDataDir();
+                File l3mapgenAuxDir = new File(dataDir, L3MAPGEN_PROGRAM_NAME);
+                l3mapgenAuxDir.mkdirs();
+
+                File auxParFile = new File(l3mapgenAuxDir, L3MAPGEN_PROGRAM_NAME + "_params.par");
+                try {
+                    createL2binAuxParFile(L3MAPGEN_PROGRAM_NAME, ifile, suite, auxParFile);
+
+                    if (auxParFile.exists()) {
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand());
+//                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "mask_land", "");
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB());
+                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat());
+
+
+
+
+//                        if (OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+//                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse());
+//                        }
+//
+                    }
+                } catch (IOException e) {
+                    SimpleDialogMessage dialog = new SimpleDialogMessage(L3MAPGEN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
+                    dialog.setVisible(true);
+                    dialog.setEnabled(true);
+                }
+
+
+// todo the xml file for l2bin is badly fomatted for V2025.0, if they fix this then consider using xml file in command block below to potentially fill more parameters
+
+//                    File xmlFile = new File(l2binAuxDir, "l2bin" + "_params.xml");
+//
+//                    try {
+////                        InputStream paramInfoStream = new FileInputStream(xmlFile);
+//                        InputStream paramInfoStream = getParamInfoInputStream("l2bin", ifile, suite, xmlFile);
+//                        if (auxParFile.exists()) {
+//                            updateParamInfosWithXml(paramInfoStream);
+//                        }
+//                    } catch (IOException e) {
+//                        SimpleDialogMessage dialog = new SimpleDialogMessage("l2bin - Warning", "Failed to initialize default params from file: " + xmlFile.getAbsolutePath());
+//                        dialog.setVisible(true);
+//                        dialog.setEnabled(true);
+//                    }
+            }
+        }
+
+
+    }
+
     private void updateFlagUse(String parFileName) {
 
         if (!"l2bin".equalsIgnoreCase(programName)) {
@@ -1346,7 +1434,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (suiteParamInfo != null) {
                     suite = suiteParamInfo.getValue();
                 }
-
 
 
                 if (ifile != null && ifile.exists() && ifile.getName().endsWith(".txt")) {
@@ -1509,9 +1596,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
-
-
     public void updateParamInfosFromL2binAuxParFile(String parfile, String parameter, String prefValue) throws IOException {
 
         if (parameter == null || parameter.trim().length() == 0) {
@@ -1527,9 +1611,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         boolean paramValueSet = false;
 
 
-            if (prefValue != null && prefValue.trim().length() > 0) {
-                paramValueSet = true;
-            }
+        if (prefValue != null && prefValue.trim().length() > 0) {
+            paramValueSet = true;
+        }
 
 
         if (paramValueSet) {
@@ -1555,10 +1639,20 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         String value = values[1].trim();
 
                         if (!paramValueSet && parameter.equals(name)) {
-                                String originalValue = paramInfo.getValue();
-                                updateParamInfo(parameter, value);
-                                fireEvent(parameter, originalValue, value);
-                                return;
+                            String originalValue = paramInfo.getValue();
+
+                            if ("boolean".equals(paramInfo.getType())) {
+                                if ("1".equals(value) || "true".equalsIgnoreCase(value)) {
+                                    value = "true";
+                                } else {
+                                    value = "false";
+                                }
+                                originalValue = "";
+                            }
+
+                            updateParamInfo(parameter, value);
+                            fireEvent(parameter, originalValue, value);
+                            return;
                         }
                     }
                 }
@@ -1569,15 +1663,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
         if (!paramValueSet) {
-            String l3bprodValueOriginal = paramInfo.getValue();
+            String valueOriginal = paramInfo.getValue();
             updateParamInfo(parameter, paramInfo.getDefaultValue());
-            fireEvent(parameter, l3bprodValueOriginal, paramInfo.getDefaultValue());
+            fireEvent(parameter, valueOriginal, paramInfo.getDefaultValue());
         }
     }
-
-
 
 
     private void updateSuite(File selectedFile) {
@@ -1658,8 +1749,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
-
         String[] suites = new String[suitesArrayList.size()];
         suitesArrayList.toArray(suites);
         Arrays.sort(suites);
@@ -1685,7 +1774,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         // todo commenting out this to test
 //            updateFlagUse(DEFAULT_PAR_FILE_NAME);
     }
-
 
 
     private String[] getSuites(File selectedFile, File missionDir, String programName) {
@@ -1731,8 +1819,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         });
             } else if ("l3mapgen".equalsIgnoreCase(programName)) {
                 missionSuites = target.path("ocssw").path("l3mapgen_suites").path(ifileInfo.getMissionName()).request(MediaType.APPLICATION_JSON)
-                    .get(new GenericType<HashMap<String, Boolean>>() {
-                    });
+                        .get(new GenericType<HashMap<String, Boolean>>() {
+                        });
             } else {
                 return suites;
             }
@@ -1753,12 +1841,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
-
-
-
-
-
     private static class L2Bin_Processor extends ProcessorModel {
 
         private static final String DEFAULT_PAR_FILE_NAME = "l2bin_defaults.par";
@@ -1772,7 +1854,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             setProdPramName("l3bprod");
             setMultipleInputFiles(true);
             missionDir = null;
-
 
 
             addPropertyChangeListener("resolution", new PropertyChangeListener() {
@@ -2419,7 +2500,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
     private static class L3BinDump_Processor extends ProcessorModel {
 
         L3BinDump_Processor(String programName, String xmlFileName, OCSSW ocssw) {
@@ -2489,7 +2569,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
     }
-
 
 
     private static String getOfileForL2BinOcssw(String ifileOriginal, String ofilenameDefault) {
@@ -2578,7 +2657,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
     private static String getOfileForL3BinAddOns(String resolution, String l3bprod, String north, String south, String west, String east) {
 
         if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
@@ -2603,11 +2681,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
         if (keyString == null || keyString.trim().length() == 0) {
             return "";
         }
-
 
 
         if (checkForVariantMatch(keyString, "prod") || checkForVariantMatch(keyString, "PROD")) {
@@ -2626,8 +2702,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "prod", productSingle, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "PROD", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
-
-
 
 
         if (checkForVariantMatch(keyString, "prod_list") || checkForVariantMatch(keyString, "PROD_LIST")) {
@@ -2650,8 +2724,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
-
 //        if (checkForVariantMatch(keyString, "resolve") || checkForVariantMatch(keyString, "RESOLVE")) {
 //            if (resolution == null) {
 //                resolution = "";
@@ -2668,10 +2740,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return keyString;
     }
 
-
-
-    
-    
 
     private static String getOfileForL2BinAddOns(String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
 
@@ -2702,7 +2770,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
         if (checkForVariantMatch(keyString, "l3bprod") || checkForVariantMatch(keyString, "L3BPROD")) {
             String productSingle = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
@@ -2719,8 +2786,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productSingle, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
-
-
 
 
         if (checkForVariantMatch(keyString, "l3bprod_list") || checkForVariantMatch(keyString, "L3BPROD_LIST")) {
@@ -2741,7 +2806,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "l3bprod_list", productList, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD_LIST", productList.toUpperCase(), DELIMITOR_STRING);
         }
-
 
 
 //        if (checkForVariantMatch(keyString, "resolution") || checkForVariantMatch(keyString, "RESOLUTION")) {
@@ -2810,15 +2874,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         keyString = getOfileAddOnResolutionL2BinL3Bin(resolution, keyString);
 
 
-
-        if (checkForVariantMatch(keyString, "prodtype") || checkForVariantMatch(keyString, "PRODTYPE") ) {
+        if (checkForVariantMatch(keyString, "prodtype") || checkForVariantMatch(keyString, "PRODTYPE")) {
             if (prodtype == null) {
                 prodtype = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "prodtype", prodtype, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "PRODTYPE", prodtype.toUpperCase(), DELIMITOR_STRING);
         }
-
 
 
         if (checkForVariantMatch(keyString, "suite") || checkForVariantMatch(keyString, "SUITE")) {
@@ -2848,8 +2910,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
-
         if (checkForVariantMatch(keyString, "resolve") || checkForVariantMatch(keyString, "RESOLVE")) {
             if (resolution == null) {
                 resolution = "";
@@ -2859,9 +2919,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
         if (checkForVariantMatch(keyString, "resolution-units") || checkForVariantMatch(keyString, "RESOLUTION-UNITS")
-        || checkForVariantMatch(keyString, "resolve-units") || checkForVariantMatch(keyString, "RESOLVE-UNITS")
+                || checkForVariantMatch(keyString, "resolve-units") || checkForVariantMatch(keyString, "RESOLVE-UNITS")
         ) {
             if (resolution == null) {
                 resolution = "";
@@ -2920,7 +2979,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
     private static String getOfileForL3MapGenAddOns(String resolution, String product, String projection, String interp, String north, String south, String west, String east) {
 
 
@@ -2951,8 +3009,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-;
-
+        ;
 
 
         if (checkForVariantMatch(keyString, "product") || checkForVariantMatch(keyString, "PRODUCT")) {
@@ -2971,7 +3028,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "product", productSingle, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
-
 
 
         if (checkForVariantMatch(keyString, "product_list") || checkForVariantMatch(keyString, "PRODUCT_LIST")) {
@@ -3002,7 +3058,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution, DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase(), DELIMITOR_NUMBER);
         }
-
 
 
         if (checkForVariantMatch(keyString, "projection") || checkForVariantMatch(keyString, "PROJECTION")) {
@@ -3036,16 +3091,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
-
         keyString = keystringReplaceNSWE(keyString, north, south, west, east);
 
         return keyString;
     }
 
-    
-    
-    
+
     private static String keystringReplaceNSWE(String keyString, String north, String south, String west, String east) {
 
         //    [_nswe]  [_nswe°] [_NSWE°] [_nswedegrees]
@@ -3067,12 +3118,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east°");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "eastdegrees");
-        
+
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe°");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswedegrees");
-        
-        
+
+
         if (checkForVariantMatch(keyString, "north")
                 || checkForVariantMatch(keyString, "north°")
                 || checkForVariantMatch(keyString, "northdegrees")
@@ -3123,9 +3174,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "east°", east, null, "°E", DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "eastdegrees", east, null, "°E", DELIMITOR_NUMBER);
         }
-        
-        
-
 
 
         if (checkForVariantMatch(keyString, "nswe")
@@ -3179,8 +3227,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return keyString;
     }
 
-    
-    
+
     private static String convertAnyUpperCaseKeyToLowerCase(String keyString, String key) {
 
         String keyUpperCase = key.toUpperCase();
@@ -3195,7 +3242,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     private static String replaceAnyKeyStringVariant(String keyString, String key, String value, String delimitorDefault) {
-        return replaceAnyKeyStringVariant( keyString,  key, value, null, null, delimitorDefault);
+        return replaceAnyKeyStringVariant(keyString, key, value, null, null, delimitorDefault);
     }
 
     private static String replaceAnyKeyStringVariant(String keyString, String key, String value, String prefix, String suffix, String delimitorDefault) {
@@ -3239,10 +3286,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         return false;
     }
-
-
-
-
 
 
     private static String trimStringChars(String string, String key, boolean trimStart, boolean trimEnd, boolean trimDuplicates) {
@@ -3323,8 +3366,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
-
     public static String getOfileForL3BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolve, String prod, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
@@ -3358,15 +3399,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             ofileName = getOfileSimple(ifileName);
         } else {
             String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
-            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);        }
-
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
+        }
 
 
         // if it fails gives it a simple name (for example 'output')
         if (ofileName == null || ofileName.length() == 0) {
             ofileName = getOfileSimple(ifileName);
         }
-
 
 
         String foundExtension = "";
@@ -3384,9 +3424,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
         ofileName += getOfileForL3BinAddOns(resolve, prod, north, south, west, east);
-        
+
 
         if (ofileName.contains(" ")) {
             ofileName = ofileName.replace(" ", "");
@@ -3407,15 +3446,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return ofileName;
     }
 
-    
-    
-    
-
 
     public static String getOfileForL2BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
-        
+
         String ofileName;
 
         if (OCSSW_L2binController.OFILE_NAMING_SCHEME_IFILE_REPLACE.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
@@ -3445,15 +3480,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             ofileName = getOfileSimple(ifileName);
         } else {
             String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
-            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);        }
-        
+            ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
+        }
 
 
         // if it fails gives it a simple name (for example 'output')
         if (ofileName == null || ofileName.length() == 0) {
             ofileName = getOfileSimple(ifileName);
         }
-
 
 
         String foundExtension = "";
@@ -3472,11 +3506,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
         ofileName += getOfileForL2BinAddOns(resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-
-
-
-
 
 
         if (ofileName.contains(" ")) {
@@ -3499,8 +3528,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         return ofileName;
     }
-
-
 
 
     public static String getOfileForL3MapGenWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String oformat, String product, String projection, String interp, String north, String south, String west, String east) {
@@ -3545,7 +3572,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-
         String foundExtension = "";
         if (ofileName.endsWith(".sub")) {
             foundExtension = ".sub";
@@ -3561,14 +3587,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        ofileName += getOfileForL3MapGenAddOns(resolution, product, projection, interp,  north, south, west, east);
+        ofileName += getOfileForL3MapGenAddOns(resolution, product, projection, interp, north, south, west, east);
 
 
         if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
             String suffix = "_suffix";
             ofileName += suffix;
         }
-
 
 
         if (ofileName.contains(" ")) {
@@ -3612,10 +3637,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         return ofilename;
     }
-
-
-
-
 
 
     private static String getOfileWithReplaceForL3MapGen(String ifilename, String orginalKeyString, String replacementKeyString) {
@@ -3664,7 +3685,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         return ofilename;
     }
-
 
 
     private static class L3MAPGEN_Processor extends ProcessorModel {
@@ -3936,7 +3956,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             });
 
 
-
             // todo bypassing all this additional ofile renaming at least for now as it does not always return the best name
             if (1 == 2) {
                 addPropertyChangeListener("product", new PropertyChangeListener() {
@@ -4122,8 +4141,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             paramList.getInfo(VALID_TAGS_OPTION_NAME).setValidValueInfos(tagValidValues);
             //System.out.println(paramList.getInfo(TAG_OPTION_NAME).getName());
         }
-
-
 
 
         private boolean includeOfficialReleaseTagsOnly() {
