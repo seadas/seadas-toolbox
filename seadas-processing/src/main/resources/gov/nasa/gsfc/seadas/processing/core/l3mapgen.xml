@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <subPanel0Title> Product Parameters </subPanel0Title>
+        <subPanel0Title> Product Parameters &amp; Suite </subPanel0Title>
         <subPanel1Title> Geospatial Parameters </subPanel1Title>
         <subPanel2Title> Image Mode Parameters </subPanel2Title>
         <subPanel3Title>  Pseudo True Color (RGB) Image Parameters </subPanel3Title>
@@ -146,30 +146,6 @@
 
 
 
-        <option type="int">
-            <name>num_cache</name>
-            <value></value>
-            <default></default>
-            <!--            <subPanelIndex>2</subPanelIndex>-->
-            <source>default</source>
-            <description>number of rows to cache in memory</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>4</subPanelIndex>
-            <order>5</order>
-        </option>
-
-        <option type="int">
-            <name>deflate</name>
-            <value></value>
-            <default></default>
-            <source>default</source>
-            <description>deflation level</description>
-            <usedAs>option</usedAs>
-            <colSpan>2</colSpan>
-            <subPanelIndex>4</subPanelIndex>
-            <order>6</order>
-        </option>
 
 
         <option type="string">
@@ -208,10 +184,37 @@
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
             <subPanelIndex>4</subPanelIndex>
-            <order>7</order>
+            <order>5</order>
         </option>
 
 
+
+        <option type="int">
+            <name>deflate</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>deflation level</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
+            <order>6</order>
+        </option>
+
+
+
+        <option type="int">
+            <name>num_cache</name>
+            <value></value>
+            <default></default>
+            <!--            <subPanelIndex>2</subPanelIndex>-->
+            <source>default</source>
+            <description>number of rows to cache in memory</description>
+            <usedAs>option</usedAs>
+            <colSpan>2</colSpan>
+            <subPanelIndex>4</subPanelIndex>
+            <order>7</order>
+        </option>
 
 
 

@@ -6,7 +6,7 @@
         <parFileOptionName>par</parFileOptionName>
         <numColumns>6</numColumns>
         <columnWidth>18</columnWidth>
-        <subPanel0Title> Product Parameters </subPanel0Title>
+        <subPanel0Title> Product Parameters &amp; Suite </subPanel0Title>
         <subPanel1Title> Flag Masking Parameters </subPanel1Title>
         <subPanel2Title> Geospatial Parameters </subPanel2Title>
         <subPanel3Title> Temporal Parameters </subPanel3Title>
@@ -422,15 +422,6 @@
 
 
 
-        <option type="int">
-            <name>rowgroup</name>
-            <value></value>
-            <default></default>
-            <description># of bin rows to process at once</description>
-            <usedAs>option</usedAs>
-            <subPanelIndex>4</subPanelIndex>
-            <order>9</order>
-        </option>
 
 
 
@@ -484,17 +475,6 @@
 
 
 
-        <option type="string">
-            <name>minobs</name>
-            <subPanelIndex>4</subPanelIndex>
-            <value></value>
-            <default></default>
-            <description>minimum observations</description>
-            <usedAs>option</usedAs>
-            <order>16</order>
-        </option>
-
-
 
 
         <!--<option type="boolean">-->
@@ -544,9 +524,7 @@
             <order>21</order>
         </option>
 
-
-
-
+        
         <option type="string">
             <name>qual_prod</name>
             <subPanelIndex>4</subPanelIndex>
@@ -567,9 +545,31 @@
             <order>23</order>
         </option>
 
+        <option type="string">
+            <name>minobs</name>
+            <subPanelIndex>4</subPanelIndex>
+            <value></value>
+            <default></default>
+            <description>minimum observations</description>
+            <usedAs>option</usedAs>
+            <order>24</order>
+        </option>
+
+        <option type="int">
+            <name>rowgroup</name>
+            <value></value>
+            <default></default>
+            <description># of bin rows to process at once</description>
+            <usedAs>option</usedAs>
+            <subPanelIndex>4</subPanelIndex>
+            <order>25</order>
+        </option>
 
 
-<!--        <option type="string">-->
+
+
+
+        <!--        <option type="string">-->
 <!--            <name>pversion</name>-->
 <!--            <value></value>-->
 <!--            <default></default>-->

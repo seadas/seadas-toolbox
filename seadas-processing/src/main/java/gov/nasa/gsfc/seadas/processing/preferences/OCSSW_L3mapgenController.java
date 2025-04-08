@@ -112,20 +112,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     // Preferences property prefix
     private static final String PROPERTY_L3MAPGEN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l3mapgen";
-
-
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.other";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_LABEL = "Autofill other fields with suite defaults";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_TOOLTIP = "<html>Autofills other field with the suite defaults. <br> Note: if a field is set in the preferences then it overrides the suite default.</html>";
-    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT = true;
-
-
+    
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.product";
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_LABEL = "Autofill field 'product' with suite defaults";
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_TOOLTIP = "<html>Autofills fields with the suite defaults. <br>Note: if field is set in the preferences then it overrides the suite default.</html>";
     public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT = true;
 
-
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.other";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_LABEL = "Autofill other fields with suite defaults";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_TOOLTIP = "<html>Autofills other field with the suite defaults. <br> Note: if a field is set in the preferences then it overrides the suite default.</html>";
+    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT = true;
+    
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.precedence";
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL = "Preference values take precedence over suite defaults";
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preferences takes precedence over suite defaults when suite is specified.  <br>Note: if suite not specified then preferences always takes precedence.</html>";
@@ -139,10 +136,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-    public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.parameters.section";
-    public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_LABEL = "Product & General Parameters";
-    public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_TOOLTIP = "L3mapgen parameters";
-
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".products.section";
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_LABEL = "Product & Suite Parameters";
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_TOOLTIP = "Product and suite parameters";
 
     public static final String PROPERTY_L3MAPGEN_PRODUCT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".product";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_LABEL = "product";
@@ -154,16 +150,12 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_WAVELENGTH_3D_TOOLTIP = "Field 'wavelength_3d'";
     public static final String PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT = "";
 
-    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".num_cache";
-    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_LABEL = "num_cache";
-    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_TOOLTIP = "Field 'num_cache'";
-    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_DEFAULT = "";
-
-    public static final String PROPERTY_L3MAPGEN_OFORMAT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".oformat";
-    public static final String PROPERTY_L3MAPGEN_OFORMAT_LABEL = "oformat";
-    public static final String PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP = "Field 'oformat'";
-    public static final String PROPERTY_L3MAPGEN_OFORMAT_DEFAULT = "netCDF4";
-
+    public static final String PROPERTY_L3MAPGEN_SUITE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".suite";
+    public static final String PROPERTY_L3MAPGEN_SUITE_LABEL = "suite";
+    public static final String PROPERTY_L3MAPGEN_SUITE_TOOLTIP = "Product Suite";
+    public static final String PROPERTY_L3MAPGEN_SUITE_DEFAULT = "";
+    
+  
 
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_SPATIAL_IMAGE_MODE_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".parameters.spatial.section";
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_SPATIAL_IMAGE_MODE_SECTION_LABEL = "Geospatial Parameters";
@@ -176,25 +168,27 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".resolution";
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_LABEL = "resolution";
-    public static final String PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP = "Resolution";
+    public static final String PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP = "Size of the output mapped pixels in meters or SMI dimensions";
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_DEFAULT = "";
-
-
+    
     public static final String PROPERTY_L3MAPGEN_INTERP_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".interp";
     public static final String PROPERTY_L3MAPGEN_INTERP_LABEL = "interp";
-    public static final String PROPERTY_L3MAPGEN_INTERP_TOOLTIP = "Interpolation type";
+    public static final String PROPERTY_L3MAPGEN_INTERP_TOOLTIP = "<html>Interpolation method:<br>" +
+            "nearest: use the value of the nearest bin for the pixel<br>" +
+            "bin: bin all of the pixels that intersect the area of the output pixel<br>" +
+            "area: bin weighted by area of all the pixels that intersect the area of the output pixel" +
+            "</html>";
     public static final String PROPERTY_L3MAPGEN_INTERP_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_FUDGE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".fudge";
     public static final String PROPERTY_L3MAPGEN_FUDGE_LABEL = "fudge";
-    public static final String PROPERTY_L3MAPGEN_FUDGE_TOOLTIP = "Fudge factor";
+    public static final String PROPERTY_L3MAPGEN_FUDGE_TOOLTIP = "Fudge factor used to modify size of L3 pixels";
     public static final String PROPERTY_L3MAPGEN_FUDGE_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_WIDTH_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".width";
     public static final String PROPERTY_L3MAPGEN_WIDTH_LABEL = "width";
-    public static final String PROPERTY_L3MAPGEN_WIDTH_TOOLTIP = "Width of output image (overrides field 'resolution')";
+    public static final String PROPERTY_L3MAPGEN_WIDTH_TOOLTIP = "Width of output image in pixels; supercedes 'resolution' parameter";
     public static final String PROPERTY_L3MAPGEN_WIDTH_DEFAULT = "";
-    
     
     public static final String PROPERTY_L3MAPGEN_NORTH_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".north";
     public static final String PROPERTY_L3MAPGEN_NORTH_LABEL = "north";
@@ -217,12 +211,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_EAST_DEFAULT = "";
 
     
+    
+    
+    
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".parameters.image.mode.section";
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_LABEL = "Image Mode Parameters";
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_TOOLTIP = "L3mapgen parameters for Image Mode";
-
-
-
+    
     public static final String PROPERTY_L3MAPGEN_APPLY_PAL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".apply_pal";
     public static final String PROPERTY_L3MAPGEN_APPLY_PAL_LABEL = "apply_pal";
     public static final String PROPERTY_L3MAPGEN_APPLY_PAL_TOOLTIP = "Apply color palette (palfile)";
@@ -232,8 +227,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_PALFILE_LABEL = "palfile";
     public static final String PROPERTY_L3MAPGEN_PALFILE_TOOLTIP = "Field 'palfile'";
     public static final String PROPERTY_L3MAPGEN_PALFILE_DEFAULT = "";
-
-
+    
     public static final String PROPERTY_L3MAPGEN_DATAMIN_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".datamin";
     public static final String PROPERTY_L3MAPGEN_DATAMIN_LABEL = "datamin";
     public static final String PROPERTY_L3MAPGEN_DATAMIN_TOOLTIP = "Field 'datamin'";
@@ -248,21 +242,16 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_SCALE_TYPE_LABEL = "scale_type";
     public static final String PROPERTY_L3MAPGEN_SCALE_TYPE_TOOLTIP = "Field 'scale_type'";
     public static final String PROPERTY_L3MAPGEN_SCALE_TYPE_DEFAULT = "";
-
-
     
     public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".use_transparency";
     public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL = "use_transparency";
     public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_TOOLTIP = "Set image tranparency";
     public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT =  "";
-
-
     
     public static final String PROPERTY_L3MAPGEN_MASK_LAND_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".mask_land";
     public static final String PROPERTY_L3MAPGEN_MASK_LAND_LABEL = "mask_land";
     public static final String PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP = "Apply land mask (rgb land)";
     public static final String PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT = "";
-
     
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".rgb_land";
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_LABEL = "rgb_land";
@@ -270,22 +259,40 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT = "";
 
 
+    
+    
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".parameters_pseudo_rgb.section";
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_LABEL = "Pseudo True Color (RGB) Image Parameters";
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_TOOLTIP = "L3mapgen parameters forPseudo True/False Color RGB ";
-
-
     
     public static final String PROPERTY_L3MAPGEN_USE_RGB_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".use_rgb";
     public static final String PROPERTY_L3MAPGEN_USE_RGB_LABEL = "use_rgb";
     public static final String PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP = "Make Pseudo True Color RGB Image (product_rgb)";
     public static final String PROPERTY_L3MAPGEN_USE_RGB_DEFAULT =  "";
 
-
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".product_rgb";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL = "product_rgb";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_TOOLTIP = "RGB Products (comma delimited)";
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT = "";
+
+    
+    
+
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".general.section";
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_LABEL = "General Parameters";
+    public static final String PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_TOOLTIP = "General parameters";
+    
+    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".num_cache";
+    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_LABEL = "num_cache";
+    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_TOOLTIP = "Field 'num_cache'";
+    public static final String PROPERTY_L3MAPGEN_NUM_CACHE_DEFAULT = "";
+
+    public static final String PROPERTY_L3MAPGEN_OFORMAT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".oformat";
+    public static final String PROPERTY_L3MAPGEN_OFORMAT_LABEL = "oformat";
+    public static final String PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP = "Field 'oformat'";
+    public static final String PROPERTY_L3MAPGEN_OFORMAT_DEFAULT = "netCDF4";
+
+
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.section";
@@ -493,6 +500,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_KEY, PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_WAVELENGTH_3D_KEY, PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_SUITE_KEY, PROPERTY_L3MAPGEN_SUITE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_NUM_CACHE_KEY, PROPERTY_L3MAPGEN_NUM_CACHE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_OFORMAT_KEY, PROPERTY_L3MAPGEN_OFORMAT_DEFAULT);
 
@@ -520,6 +528,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_USE_RGB_KEY, PROPERTY_L3MAPGEN_USE_RGB_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY, PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT);
+
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_KEY, true);
 
 
 
@@ -1020,6 +1030,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_PARAMETERS_SECTION_TOOLTIP)
         boolean l3mapgen_PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY = true;
 
+
+
+
+
+
         @Preference(key = PROPERTY_L3MAPGEN_PRODUCT_KEY,
                 label = PROPERTY_L3MAPGEN_PRODUCT_LABEL,
                 description = PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP)
@@ -1030,16 +1045,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_WAVELENGTH_3D_TOOLTIP)
         String l3mapgenWavelength3dDefault = PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT;
 
-        @Preference(key = PROPERTY_L3MAPGEN_NUM_CACHE_KEY,
-                label = PROPERTY_L3MAPGEN_NUM_CACHE_LABEL,
-                description = PROPERTY_L3MAPGEN_NUM_CACHE_TOOLTIP)
-        String l3mapgenNumCacheDefault = PROPERTY_L3MAPGEN_NUM_CACHE_DEFAULT;
+        @Preference(key = PROPERTY_L3MAPGEN_SUITE_KEY,
+                label = PROPERTY_L3MAPGEN_SUITE_LABEL,
+                description = PROPERTY_L3MAPGEN_SUITE_TOOLTIP)
+        String l3mapgenSuiteDefault = PROPERTY_L3MAPGEN_SUITE_DEFAULT;
 
-        @Preference(key = PROPERTY_L3MAPGEN_OFORMAT_KEY,
-                label = PROPERTY_L3MAPGEN_OFORMAT_LABEL,
-                valueSet = {"", "netCDF4", "HDF4", "png", "ppm", "TIFF"},
-                description = PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP)
-        String l3mapgenOformatDefault = PROPERTY_L3MAPGEN_OFORMAT_DEFAULT;
 
 
 
@@ -1099,6 +1109,108 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 label = PROPERTY_L3MAPGEN_FUDGE_LABEL,
                 description = PROPERTY_L3MAPGEN_FUDGE_TOOLTIP)
         String l3mapgenFudgeDefault = PROPERTY_L3MAPGEN_FUDGE_DEFAULT;
+
+
+
+
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_KEY,
+                label = PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_LABEL,
+                description = PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_TOOLTIP)
+        boolean l3mapgenParametersImageModeSection = true;
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_APPLY_PAL_KEY,
+                label = PROPERTY_L3MAPGEN_APPLY_PAL_LABEL,
+                description = PROPERTY_L3MAPGEN_APPLY_PAL_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String l3mapgenApplyPalDefault = PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_PALFILE_KEY,
+                label = PROPERTY_L3MAPGEN_PALFILE_LABEL,
+                description = PROPERTY_L3MAPGEN_PALFILE_TOOLTIP)
+        String l3mapgenPalfileDefault = PROPERTY_L3MAPGEN_PALFILE_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_DATAMIN_KEY,
+                label = PROPERTY_L3MAPGEN_DATAMIN_LABEL,
+                description = PROPERTY_L3MAPGEN_DATAMIN_TOOLTIP)
+        String l3mapgenDataminDefault = PROPERTY_L3MAPGEN_DATAMIN_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_DATAMAX_KEY,
+                label = PROPERTY_L3MAPGEN_DATAMAX_LABEL,
+                description = PROPERTY_L3MAPGEN_DATAMAX_TOOLTIP)
+        String l3mapgenDatamaxDefault = PROPERTY_L3MAPGEN_DATAMAX_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_SCALE_TYPE_KEY,
+                label = PROPERTY_L3MAPGEN_SCALE_TYPE_LABEL,
+                valueSet = {"", "linear", "log", "arctan"},
+                description = PROPERTY_L3MAPGEN_SCALE_TYPE_TOOLTIP)
+        String l3mapgenScaleTypeDefault = PROPERTY_L3MAPGEN_SCALE_TYPE_DEFAULT;
+
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY,
+                label = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL,
+                description = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String l3mapgenUseTransparencyDefault = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT;
+
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_MASK_LAND_KEY,
+                label = PROPERTY_L3MAPGEN_MASK_LAND_LABEL,
+                description = PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String L3mapgen_MASK_LAND = PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_RGB_LAND_KEY,
+                label = PROPERTY_L3MAPGEN_RGB_LAND_LABEL,
+                description = PROPERTY_L3MAPGEN_RGB_LAND_TOOLTIP)
+        String l3mapgenRgbLandDefault = PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY,
+                label = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_LABEL,
+                description = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_TOOLTIP)
+        boolean l3mapgenParametersPseudoRgbSection = true;
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_USE_RGB_KEY,
+                label = PROPERTY_L3MAPGEN_USE_RGB_LABEL,
+                description = PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String l3mapgenUseRgbDefault = PROPERTY_L3MAPGEN_USE_RGB_DEFAULT;
+
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY,
+                label = PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL,
+                description = PROPERTY_L3MAPGEN_PRODUCT_RGB_TOOLTIP)
+        String l3mapgenProductRgbDefault = PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT;
+
+
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_KEY,
+                label = PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_LABEL,
+                description = PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_TOOLTIP)
+        boolean l3mapgen_PROPERTY_L3MAPGEN_PARAMETERS_GENERAL_SECTION_KEY = true;
+
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_NUM_CACHE_KEY,
+                label = PROPERTY_L3MAPGEN_NUM_CACHE_LABEL,
+                description = PROPERTY_L3MAPGEN_NUM_CACHE_TOOLTIP)
+        String l3mapgenNumCacheDefault = PROPERTY_L3MAPGEN_NUM_CACHE_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_OFORMAT_KEY,
+                label = PROPERTY_L3MAPGEN_OFORMAT_LABEL,
+                valueSet = {"", "netCDF4", "HDF4", "png", "ppm", "TIFF"},
+                description = PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP)
+        String l3mapgenOformatDefault = PROPERTY_L3MAPGEN_OFORMAT_DEFAULT;
 
 
 
@@ -1223,87 +1335,6 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-
-        @Preference(key = PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_KEY,
-                label = PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_LABEL,
-                description = PROPERTY_L3MAPGEN_PARAMETERS_IMAGE_MODE_SECTION_TOOLTIP)
-        boolean l3mapgenParametersImageModeSection = true;
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_APPLY_PAL_KEY,
-                label = PROPERTY_L3MAPGEN_APPLY_PAL_LABEL,
-                description = PROPERTY_L3MAPGEN_APPLY_PAL_TOOLTIP,
-                valueSet = {"", "TRUE", "FALSE"})
-        String l3mapgenApplyPalDefault = PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT;
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_PALFILE_KEY,
-                label = PROPERTY_L3MAPGEN_PALFILE_LABEL,
-                description = PROPERTY_L3MAPGEN_PALFILE_TOOLTIP)
-        String l3mapgenPalfileDefault = PROPERTY_L3MAPGEN_PALFILE_DEFAULT;
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_DATAMIN_KEY,
-                label = PROPERTY_L3MAPGEN_DATAMIN_LABEL,
-                description = PROPERTY_L3MAPGEN_DATAMIN_TOOLTIP)
-        String l3mapgenDataminDefault = PROPERTY_L3MAPGEN_DATAMIN_DEFAULT;
-
-        @Preference(key = PROPERTY_L3MAPGEN_DATAMAX_KEY,
-                label = PROPERTY_L3MAPGEN_DATAMAX_LABEL,
-                description = PROPERTY_L3MAPGEN_DATAMAX_TOOLTIP)
-        String l3mapgenDatamaxDefault = PROPERTY_L3MAPGEN_DATAMAX_DEFAULT;
-
-        @Preference(key = PROPERTY_L3MAPGEN_SCALE_TYPE_KEY,
-                label = PROPERTY_L3MAPGEN_SCALE_TYPE_LABEL,
-                valueSet = {"", "linear", "log", "arctan"},
-                description = PROPERTY_L3MAPGEN_SCALE_TYPE_TOOLTIP)
-        String l3mapgenScaleTypeDefault = PROPERTY_L3MAPGEN_SCALE_TYPE_DEFAULT;
-
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY,
-                label = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL,
-                description = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_TOOLTIP,
-                valueSet = {"", "TRUE", "FALSE"})
-        String l3mapgenUseTransparencyDefault = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT;
-
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_MASK_LAND_KEY,
-                label = PROPERTY_L3MAPGEN_MASK_LAND_LABEL,
-                description = PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP,
-                valueSet = {"", "TRUE", "FALSE"})
-        String L3mapgen_MASK_LAND = PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT;
-
-        @Preference(key = PROPERTY_L3MAPGEN_RGB_LAND_KEY,
-                label = PROPERTY_L3MAPGEN_RGB_LAND_LABEL,
-                description = PROPERTY_L3MAPGEN_RGB_LAND_TOOLTIP)
-        String l3mapgenRgbLandDefault = PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT;
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY,
-                label = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_LABEL,
-                description = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_TOOLTIP)
-        boolean l3mapgenParametersPseudoRgbSection = true;
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_USE_RGB_KEY,
-                label = PROPERTY_L3MAPGEN_USE_RGB_LABEL,
-                description = PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP,
-                valueSet = {"", "TRUE", "FALSE"})
-        String l3mapgenUseRgbDefault = PROPERTY_L3MAPGEN_USE_RGB_DEFAULT;
-
-
-
-        @Preference(key = PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY,
-                label = PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL,
-                description = PROPERTY_L3MAPGEN_PRODUCT_RGB_TOOLTIP)
-        String l3mapgenProductRgbDefault = PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT;
-
-
-
-
-
         // Restore Defaults Section
 
         @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
@@ -1348,6 +1379,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static String getPreferenceWavelength3D() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_DEFAULT);
+    }
+
+    public static String getPreferenceSuite() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SUITE_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SUITE_DEFAULT);
     }
 
 
