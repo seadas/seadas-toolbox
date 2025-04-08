@@ -1067,6 +1067,19 @@
         </option>
 
 
+        <option type="ifile">
+            <name>land</name>
+            <value></value>
+            <default></default>
+            <source>default</source>
+            <description>file to use for masking land pixels</description>
+            <usedAs>option</usedAs>
+            <colSpan>8</colSpan>
+            <subPanelIndex>2</subPanelIndex>
+            <order>307</order>
+        </option>
+
+
 
 
 
