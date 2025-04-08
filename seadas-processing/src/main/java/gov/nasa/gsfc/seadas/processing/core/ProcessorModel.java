@@ -2704,7 +2704,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    private static String getOfileForL3BinAddOns(String resolution, String l3bprod, String north, String south, String west, String east) {
+    private static String getOfileForL3BinAddOns(String resolution, String prod, String north, String south, String west, String east) {
 
         if (OCSSW_L3binController.OFILE_NAMING_SCHEME_SUFFIX_NONE.equals(OCSSW_L3binController.getPreferenceOfileNamingSchemeSuffixOptions())) {
             return "";
@@ -2733,10 +2733,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        if (checkForVariantMatch(keyString, "prod") || checkForVariantMatch(keyString, "PROD")) {
+        if (checkForVariantMatch(keyString, "prod") || checkForVariantMatch(keyString, "PROD") ||
+                checkForVariantMatch(keyString, "product") || checkForVariantMatch(keyString, "PRODUCT")
+        ) {
             String productSingle = "";
-            if (l3bprod != null && l3bprod.trim().length() > 0) {
-                String[] productsArray = l3bprod.split("[,\\s]");
+            if (prod != null && prod.trim().length() > 0) {
+                String[] productsArray = prod.split("[,\\s]");
                 if (productsArray != null && productsArray.length == 1) {
                     if (productsArray[0] != null) {
                         productSingle = productsArray[0].trim();
@@ -2747,19 +2749,23 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
             keyString = replaceAnyKeyStringVariant(keyString, "prod", productSingle, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "product", productSingle, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "PROD", productSingle.toUpperCase(), DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
 
 
-        if (checkForVariantMatch(keyString, "prod_list") || checkForVariantMatch(keyString, "PROD_LIST")) {
+        if (checkForVariantMatch(keyString, "prod_list") || checkForVariantMatch(keyString, "PROD_LIST") ||
+                checkForVariantMatch(keyString, "product_list") || checkForVariantMatch(keyString, "PRODUCT_LIST")
+        ) {
             String productList = "";
-            if (l3bprod != null && l3bprod.trim().length() > 0) {
-                String[] productsArray = l3bprod.split("[,\\s]");
+            if (prod != null && prod.trim().length() > 0) {
+                String[] productsArray = prod.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.toLowerCase().contains("[.prod_list]")) {
+                    if (keyString.toLowerCase().contains("[.prod_list]") || keyString.toLowerCase().contains("[.product_list]")) {
                         productList += "." + currProduct;
-                    } else if (keyString.toLowerCase().contains("[-prod_list]")) {
+                    } else if (keyString.toLowerCase().contains("[-prod_list]") || keyString.toLowerCase().contains("[-product_list]")) {
                         productList += "-" + currProduct;
                     } else {
                         productList += "_" + currProduct;
@@ -2767,17 +2773,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
             keyString = replaceAnyKeyStringVariant(keyString, "prod_list", productList, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "product_list", productList, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "PROD_LIST", productList.toUpperCase(), DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT_LIST", productList.toUpperCase(), DELIMITOR_STRING);
         }
 
-
-//        if (checkForVariantMatch(keyString, "resolve") || checkForVariantMatch(keyString, "RESOLVE")) {
-//            if (resolution == null) {
-//                resolution = "";
-//            }
-//            keyString = replaceAnyKeyStringVariant(keyString, "resolve", resolution, DELIMITOR_NUMBER);
-//            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE", resolution.toUpperCase(), DELIMITOR_NUMBER);
-//        }
 
         keyString = getOfileAddOnResolutionL2BinL3Bin(resolution, keyString);
 
@@ -2817,7 +2817,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        if (checkForVariantMatch(keyString, "l3bprod") || checkForVariantMatch(keyString, "L3BPROD")) {
+        if (checkForVariantMatch(keyString, "l3bprod") || checkForVariantMatch(keyString, "L3BPROD") ||
+                checkForVariantMatch(keyString, "product") || checkForVariantMatch(keyString, "PRODUCT")
+        ) {
             String productSingle = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
                 String[] productsArray = l3bprod.split("[,\\s]");
@@ -2831,19 +2833,23 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
             keyString = replaceAnyKeyStringVariant(keyString, "l3bprod", productSingle, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "product", productSingle, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD", productSingle.toUpperCase(), DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT", productSingle.toUpperCase(), DELIMITOR_STRING);
         }
 
 
-        if (checkForVariantMatch(keyString, "l3bprod_list") || checkForVariantMatch(keyString, "L3BPROD_LIST")) {
+        if (checkForVariantMatch(keyString, "l3bprod_list") || checkForVariantMatch(keyString, "L3BPROD_LIST") ||
+                checkForVariantMatch(keyString, "product_list") || checkForVariantMatch(keyString, "PRODUCT_LIST")
+        ) {
             String productList = "";
             if (l3bprod != null && l3bprod.trim().length() > 0) {
                 String[] productsArray = l3bprod.split("[,\\s]");
 
                 for (String currProduct : productsArray) {
-                    if (keyString.toLowerCase().contains("[.l3bprod_list]")) {
+                    if (keyString.toLowerCase().contains("[.l3bprod_list]") || keyString.toLowerCase().contains("[.product_list]")) {
                         productList += "." + currProduct;
-                    } else if (keyString.toLowerCase().contains("[-l3bprod_list]")) {
+                    } else if (keyString.toLowerCase().contains("[-l3bprod_list]") || keyString.toLowerCase().contains("[-product_list]")) {
                         productList += "-" + currProduct;
                     } else {
                         productList += "_" + currProduct;
@@ -2851,72 +2857,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             }
             keyString = replaceAnyKeyStringVariant(keyString, "l3bprod_list", productList, DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "product_list", productList, DELIMITOR_STRING);
             keyString = replaceAnyKeyStringVariant(keyString, "L3BPROD_LIST", productList.toUpperCase(), DELIMITOR_STRING);
+            keyString = replaceAnyKeyStringVariant(keyString, "PRODUCT_LIST", productList.toUpperCase(), DELIMITOR_STRING);
         }
 
-
-//        if (checkForVariantMatch(keyString, "resolution") || checkForVariantMatch(keyString, "RESOLUTION")) {
-//            if (resolution == null) {
-//                resolution = "";
-//            }
-//            keyString = replaceAnyKeyStringVariant(keyString, "resolution", resolution, DELIMITOR_NUMBER);
-//            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase(), DELIMITOR_NUMBER);
-//        }
-//
-
-
-//
-//        if (checkForVariantMatch(keyString, "resolution-units") || checkForVariantMatch(keyString, "RESOLUTION-UNITS")) {
-//            if (resolution == null) {
-//                resolution = "";
-//            }
-//
-//            String resolution_units = resolution;
-//            switch (resolution) {
-//                case "HH":
-//                    resolution_units = "50m";
-//                    break;
-//                case "HQ":
-//                    resolution_units = "100m";
-//                    break;
-//                case "Q":
-//                    resolution_units = "250m";
-//                    break;
-//                case "H":
-//                    resolution_units = "500m";
-//                    break;
-//                case "1":
-//                    resolution_units = "1.1km";
-//                    break;
-//                case "2":
-//                    resolution_units = "2.3km";
-//                    break;
-//                case "4":
-//                    resolution_units = "4.6km";
-//                    break;
-//                case "9":
-//                    resolution_units = "9.2km";
-//                    break;
-//                case "18":
-//                    resolution_units = "18.5km";
-//                    break;
-//                case "36":
-//                    resolution_units = "36km";
-//                    break;
-//                case "QD":
-//                    resolution_units = "0.25degree";
-//                    break;
-//                case "HD":
-//                    resolution_units = "0.5degree";
-//                    break;
-//                case "1D":
-//                    resolution_units = "1degree";
-//                    break;
-//            }
-//
-//            keyString = replaceAnyKeyStringVariant(keyString, "resolution-units", resolution_units, DELIMITOR_NUMBER);
-//            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION-UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
-//        }
 
         keyString = getOfileAddOnResolutionL2BinL3Bin(resolution, keyString);
 
@@ -2966,8 +2911,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        if (checkForVariantMatch(keyString, "resolution-units") || checkForVariantMatch(keyString, "RESOLUTION-UNITS")
-                || checkForVariantMatch(keyString, "resolve-units") || checkForVariantMatch(keyString, "RESOLVE-UNITS")
+        if (checkForVariantMatch(keyString, "resolution_units") || checkForVariantMatch(keyString, "RESOLUTION_UNITS")
+                || checkForVariantMatch(keyString, "resolve_units") || checkForVariantMatch(keyString, "RESOLVE_UNITS")
         ) {
             if (resolution == null) {
                 resolution = "";
@@ -3016,10 +2961,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     break;
             }
 
-            keyString = replaceAnyKeyStringVariant(keyString, "resolution-units", resolution_units, DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "resolve-units", resolution_units, DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION-UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE-UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "resolution_units", resolution_units, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "resolve_units", resolution_units, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION_UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLVE_UNITS", resolution_units.toUpperCase(), DELIMITOR_NUMBER);
         }
 
         return keyString;
@@ -3152,80 +3097,80 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         // make sure key is uppercase
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north°");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "northdegrees");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "north_deg");
 
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south°");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "southdegrees");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "south_deg");
 
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west°");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "westdegrees");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "west_deg");
 
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east°");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "eastdegrees");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "east_deg");
 
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe");
         keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe°");
-        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswedegrees");
+        keyString = convertAnyUpperCaseKeyToLowerCase(keyString, "nswe_deg");
 
 
         if (checkForVariantMatch(keyString, "north")
                 || checkForVariantMatch(keyString, "north°")
-                || checkForVariantMatch(keyString, "northdegrees")
+                || checkForVariantMatch(keyString, "north_deg")
         ) {
             if (north == null) {
                 north = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "north", north, null, "N", DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "north°", north, null, "°N", DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "northdegrees", north, null, "°N", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "north_deg", north, null, "°N", DELIMITOR_NUMBER);
         }
 
 
         if (checkForVariantMatch(keyString, "south")
                 || checkForVariantMatch(keyString, "south°")
-                || checkForVariantMatch(keyString, "southdegrees")
+                || checkForVariantMatch(keyString, "south_deg")
         ) {
             if (south == null) {
                 south = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "south", south, null, "S", DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "south°", south, null, "°S", DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "southdegrees", south, null, "°S", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "south_deg", south, null, "°S", DELIMITOR_NUMBER);
         }
 
 
         if (checkForVariantMatch(keyString, "west")
                 || checkForVariantMatch(keyString, "west°")
-                || checkForVariantMatch(keyString, "westdegrees")
+                || checkForVariantMatch(keyString, "west_deg")
         ) {
             if (west == null) {
                 west = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "west", west, null, "W", DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "west°", west, null, "°W", DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "westdegrees", west, null, "°W", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "west_deg", west, null, "°W", DELIMITOR_NUMBER);
         }
 
 
         if (checkForVariantMatch(keyString, "east")
                 || checkForVariantMatch(keyString, "east°")
-                || checkForVariantMatch(keyString, "eastdegrees")
+                || checkForVariantMatch(keyString, "east_deg")
         ) {
             if (east == null) {
                 east = "";
             }
             keyString = replaceAnyKeyStringVariant(keyString, "east", east, null, "E", DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "east°", east, null, "°E", DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "eastdegrees", east, null, "°E", DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "east_deg", east, null, "°E", DELIMITOR_NUMBER);
         }
 
 
         if (checkForVariantMatch(keyString, "nswe")
                 || checkForVariantMatch(keyString, "nswe°")
-                || checkForVariantMatch(keyString, "nswedegrees")
+                || checkForVariantMatch(keyString, "nswe_deg")
         ) {
             if (north == null) {
                 north = "";
@@ -3268,7 +3213,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             keyString = replaceAnyKeyStringVariant(keyString, "nswe", nswe, DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "nswe°", nsweDeg, DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "nswedegrees", nsweDeg, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "nswe_deg", nsweDeg, DELIMITOR_NUMBER);
         }
 
         return keyString;

@@ -149,9 +149,6 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     boolean propertyValueChangeEventsEnabled = true;
 
-    // todo compare param tooltips here and with .xml file and with ocssw help
-    // todo update help page
-
 
     public static final String  OFILE_NAMING_SCHEME_SIMPLE = "output";
     public static final String OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX = "IFILE + SUFFIX";
@@ -163,10 +160,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[l3bprod][resolution-units]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[l3bprod][resolution-units][suite]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[l3bprod][resolution][suite][nswe°]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[l3bprod][resolution][nswe°]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[l3bprod][resolution_units]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[l3bprod][resolution_units][suite]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[l3bprod][resolution][suite][nswe_deg]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[l3bprod][resolution][nswe_deg]";
     
     
 
@@ -191,10 +188,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
             "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
+            "[l3bprod] : adds 'l3bprod' field with '.' as delimiter<br>" +
             "[_l3bprod] : adds 'l3bprod' field with '_' as delimiter<br>" +
-            "[_resolution] : adds 'resolution' field with '_' as delimiter<br>" +
-            "[_prodtype] : adds 'prodtype' field with '_' as delimiter<br>" +
-            "[_suite] : adds 'suite' field with '_' as delimiter<br>" +
+            "[-l3bprod] : adds 'resolution' field with '-' as delimiter<br>" +
+            "[.l3bprod] : adds 'projection' field with '.' as delimiter<br>" +
             "</html>";
 
     public static final String PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.naming.scheme.suffix1";

@@ -67,8 +67,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
     boolean propertyValueChangeEventsEnabled = true;
 
-
-
+    
 
     public static final String  OFILE_NAMING_SCHEME_SIMPLE = "output";
     public static final String  OFILE_NAMING_SCHEME_OCSSW_SHORT = "OCSSW (do not derive time field)";
@@ -78,8 +77,8 @@ public final class OCSSW_L3binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[prod][resolve-units]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[prod][resolve][nswe°]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[prod][resolve_units]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[prod][resolve][nswe_deg]";
 //    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.product][.resolution][.projection]";
 //    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_product][_resolution][_projection]";
 
@@ -155,9 +154,10 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
             "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
-            "[_product] : adds 'product' field with '_' as delimiter<br>" +
-            "[_resolution] : adds 'resolution' field with '_' as delimiter<br>" +
-            "[_projection] : adds 'projection' field with '_' as delimiter<br>" +
+            "[prod] : adds 'prod' field with '.' as delimiter<br>" +
+            "[_prod] : adds 'prod' field with '_' as delimiter<br>" +
+            "[-prod] : adds 'resolution' field with '-' as delimiter<br>" +
+            "[.prod] : adds 'projection' field with '.' as delimiter<br>" +
             "</html>";
 
     public static final String PROPERTY_L3BIN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.naming.scheme.suffix1";

@@ -89,12 +89,6 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     boolean propertyValueChangeEventsEnabled = true;
 
 
-
-    // todo add more parameters:    suite, fudge, num_cache, oformat, use_rgb, mask_land, rgb_land
-    // todo add some more favorite projections
-    // todo compare param tooltips here and with .xml file and with ocssw help
-    // todo update help page
-
     public static final String  OFILE_NAMING_SCHEME_SIMPLE = "output";
     public static final String OFILE_NAMING_SCHEME_IFILE_PLUS_SUFFIX = "IFILE + SUFFIX";
     public static final String  OFILE_NAMING_SCHEME_OCSSW_SHORT = "OCSSW (do not derive time field)";
@@ -106,8 +100,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[product][resolution]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[product][resolution][projection]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[product][resolution][projection][nswe°]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[product][resolution][nswe°]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[product][resolution][projection][nswe_deg]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[product][resolution][nswe_deg]";
 
 
     // Preferences property prefix
@@ -313,9 +307,10 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
             "ofile Naming scheme keyed add-ons as suffix of ofile name<br>" +
+            "[product] : adds 'product' field with '.' as delimiter<br>" +
             "[_product] : adds 'product' field with '_' as delimiter<br>" +
-            "[_resolution] : adds 'resolution' field with '_' as delimiter<br>" +
-            "[_projection] : adds 'projection' field with '_' as delimiter<br>" +
+            "[-product] : adds 'resolution' field with '-' as delimiter<br>" +
+            "[.product] : adds 'projection' field with '.' as delimiter<br>" +
             "</html>";
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
