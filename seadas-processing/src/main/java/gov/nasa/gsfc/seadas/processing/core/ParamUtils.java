@@ -483,20 +483,16 @@ public class ParamUtils {
                         paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceRGBLand());
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_LABEL:
-                        if ("TRUE".equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceMaskLand()) ||
-                                "FALSE".equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceMaskLand())
-                        ) {
-                            paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceMaskLand());
-                        }
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceMaskLand());
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_LABEL:
-                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceApplyPal());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceApplyPal());
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL:
-                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceUseTransparency());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceUseTransparency());
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_LABEL:
-                        paramInfo.setValue(OCSSW_L3mapgenController.getPreferenceUseRGB());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceUseRGB());
                         break;
 
 
@@ -610,6 +606,12 @@ public class ParamUtils {
         return paramList;
     }
 
+
+    private static void setParamInfoPreference(ParamInfo paramInfo, String preference) {
+        if (preference != null && preference.trim().length() > 0) {
+            paramInfo.setValue(preference);
+        }
+    }
 
 
     private static void addValidValueToParamInfo(String fav, String favName, ParamInfo paramInfo) {

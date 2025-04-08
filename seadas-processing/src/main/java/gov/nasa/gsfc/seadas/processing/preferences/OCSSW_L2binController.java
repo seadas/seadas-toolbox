@@ -353,7 +353,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_NIGHT_KEY = PROPERTY_L2BIN_ROOT_KEY + ".night";
     public static final String PROPERTY_L2BIN_NIGHT_LABEL = "night";
     public static final String PROPERTY_L2BIN_NIGHT_TOOLTIP = "Night";
-    public static final boolean PROPERTY_L2BIN_NIGHT_DEFAULT = false;
+    public static final String PROPERTY_L2BIN_NIGHT_DEFAULT =  "";
 
 
 
@@ -1774,8 +1774,9 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
         @Preference(key = PROPERTY_L2BIN_NIGHT_KEY,
                 label = PROPERTY_L2BIN_NIGHT_LABEL,
-                description = PROPERTY_L2BIN_NIGHT_TOOLTIP)
-        boolean l2binNightDefault= PROPERTY_L2BIN_NIGHT_DEFAULT;
+                description = PROPERTY_L2BIN_NIGHT_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String l2binNightDefault= PROPERTY_L2BIN_NIGHT_DEFAULT;
 
 
 
@@ -2299,11 +2300,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     }
     public static String getPreferenceNight() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        if (preferences.getPropertyBool(PROPERTY_L2BIN_NIGHT_KEY, PROPERTY_L2BIN_NIGHT_DEFAULT)) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return preferences.getPropertyString(PROPERTY_L2BIN_NIGHT_KEY, PROPERTY_L2BIN_NIGHT_DEFAULT);
     }
 
 

@@ -111,6 +111,18 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     private static final String PROPERTY_L3MAPGEN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l3mapgen";
 
 
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.other";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_LABEL = "Autofill other fields with suite defaults";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_TOOLTIP = "<html>Autofills other field with the suite defaults. <br> Note: if a field is set in the preferences then it overrides the suite default.</html>";
+    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT = true;
+
+
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.product";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_LABEL = "Autofill field 'product' with suite defaults";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_TOOLTIP = "<html>Autofills fields with the suite defaults. <br> Note: if field is set in the preferences then it overrides the suite default.</html>";
+    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT = true;
+    
+
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.parameters.section";
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_LABEL = "Product & General Parameters";
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_TOOLTIP = "L3mapgen parameters";
@@ -198,7 +210,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_APPLY_PAL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".apply_pal";
     public static final String PROPERTY_L3MAPGEN_APPLY_PAL_LABEL = "apply_pal";
     public static final String PROPERTY_L3MAPGEN_APPLY_PAL_TOOLTIP = "Apply color palette (palfile)";
-    public static final boolean PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT = true;
+    public static final String PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT =  "";
 
     public static final String PROPERTY_L3MAPGEN_PALFILE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".palfile";
     public static final String PROPERTY_L3MAPGEN_PALFILE_LABEL = "palfile";
@@ -226,7 +238,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".use_transparency";
     public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL = "use_transparency";
     public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_TOOLTIP = "Set image tranparency";
-    public static final boolean PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT = false;
+    public static final String PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT =  "";
 
 
     
@@ -251,7 +263,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_USE_RGB_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + FAV + ".use_rgb";
     public static final String PROPERTY_L3MAPGEN_USE_RGB_LABEL = "use_rgb";
     public static final String PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP = "Make Pseudo True Color RGB Image (product_rgb)";
-    public static final boolean PROPERTY_L3MAPGEN_USE_RGB_DEFAULT = false;
+    public static final String PROPERTY_L3MAPGEN_USE_RGB_DEFAULT =  "";
 
 
     public static final String PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".product_rgb";
@@ -455,6 +467,10 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         // Initialize the default value contained within each property descriptor
         // This is done so subsequently the restoreDefaults actions can be performed
         //
+
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
+
 
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PRODUCT_KEY, PROPERTY_L3MAPGEN_PRODUCT_DEFAULT);
@@ -891,6 +907,18 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     static class SeadasToolboxBean {
 
 
+
+        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_KEY,
+                label = PROPERTY_L3MAPGEN_AUTOFILL_LABEL,
+                description = PROPERTY_L3MAPGEN_AUTOFILL_TOOLTIP)
+        boolean l3mapgenAutofillDefault = PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY,
+                label = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_LABEL,
+                description = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_TOOLTIP)
+        boolean l3mapgenAutofillProductDefault = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT;
+
+
         @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY,
                 label = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_LABEL,
                 description = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP)
@@ -1155,8 +1183,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         @Preference(key = PROPERTY_L3MAPGEN_APPLY_PAL_KEY,
                 label = PROPERTY_L3MAPGEN_APPLY_PAL_LABEL,
-                description = PROPERTY_L3MAPGEN_APPLY_PAL_TOOLTIP)
-        boolean l3mapgenApplyPalDefault = PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT;
+                description = PROPERTY_L3MAPGEN_APPLY_PAL_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String l3mapgenApplyPalDefault = PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT;
 
 
         @Preference(key = PROPERTY_L3MAPGEN_PALFILE_KEY,
@@ -1185,8 +1214,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         @Preference(key = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY,
                 label = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL,
-                description = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_TOOLTIP)
-        boolean l3mapgenUseTransparencyDefault = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT;
+                description = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String l3mapgenUseTransparencyDefault = PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT;
 
 
 
@@ -1210,8 +1240,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         @Preference(key = PROPERTY_L3MAPGEN_USE_RGB_KEY,
                 label = PROPERTY_L3MAPGEN_USE_RGB_LABEL,
-                description = PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP)
-        boolean l3mapgenUseRgbDefault = PROPERTY_L3MAPGEN_USE_RGB_DEFAULT;
+                description = PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP,
+                valueSet = {"", "TRUE", "FALSE"})
+        String l3mapgenUseRgbDefault = PROPERTY_L3MAPGEN_USE_RGB_DEFAULT;
 
 
 
@@ -1237,6 +1268,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         boolean restoreDefaultsDefault = PROPERTY_RESTORE_DEFAULTS_DEFAULT;
     }
 
+
+
+    public static boolean getPreferenceAutoFillOther() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT);
+    }
+
+    public static boolean getPreferenceAutoFillProduct() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
+    }
 
 
     public static String getPreferenceProduct() {
@@ -1314,11 +1356,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     public static String getPreferenceApplyPal() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        if (preferences.getPropertyBool(PROPERTY_L3MAPGEN_APPLY_PAL_KEY, PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT)) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_DEFAULT);
     }
 
 
@@ -1353,11 +1391,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     public static String getPreferenceUseTransparency() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        if (preferences.getPropertyBool(PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY, PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT)) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return preferences.getPropertyString(PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY, PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT);
     }
 
 
@@ -1375,19 +1409,13 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     public static String getPreferenceUseRGB() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        if (preferences.getPropertyBool(PROPERTY_L3MAPGEN_USE_RGB_KEY, PROPERTY_L3MAPGEN_USE_RGB_DEFAULT)) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_DEFAULT);
     }
 
     public static String getPreferenceProductRGB() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_DEFAULT);
     }
-
-
 
 
 

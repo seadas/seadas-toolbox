@@ -1366,27 +1366,25 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     createL2binAuxParFile(L3MAPGEN_PROGRAM_NAME, ifile, suite, auxParFile);
 
                     if (auxParFile.exists()) {
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand());
-//                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "mask_land", "");
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB());
-                        updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat());
+                        if (OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D());
+                        }
 
+                        if (OCSSW_L3mapgenController.getPreferenceAutoFillOther()) {
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "use_transparency", OCSSW_L3mapgenController.getPreferenceUseTransparency());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB());
+                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat());
 
-
-
-//                        if (OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
-//                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse());
-//                        }
-//
+                        }
                     }
                 } catch (IOException e) {
                     SimpleDialogMessage dialog = new SimpleDialogMessage(L3MAPGEN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
