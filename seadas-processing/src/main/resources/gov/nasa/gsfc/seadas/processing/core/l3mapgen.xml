@@ -4,7 +4,7 @@
     <programMetaData>
         <hasParFile>true</hasParFile>
         <parFileOptionName>par</parFileOptionName>
-        <subPanel0Title> Product Parameters &amp; Suite </subPanel0Title>
+        <subPanel0Title> Product &amp; Suite Parameters </subPanel0Title>
         <subPanel1Title> Geospatial Parameters </subPanel1Title>
         <subPanel2Title> Image Mode Parameters </subPanel2Title>
         <subPanel3Title>  Pseudo True Color (RGB) Image Parameters </subPanel3Title>

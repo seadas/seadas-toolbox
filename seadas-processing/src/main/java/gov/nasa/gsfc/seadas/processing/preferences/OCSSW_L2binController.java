@@ -222,8 +222,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
-    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.section";
-    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL = "Product & General Parameters";
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".product.parameters.section";
+    public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL = "Product & Suite Parameters";
     public static final String PROPERTY_L2BIN_PARAMETERS_SECTION_TOOLTIP = "L2bin parameters";
     
     
@@ -268,7 +268,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_PARAMETERS_GEOSPATIAL_SECTION_TOOLTIP = "L2bin geospatial parameters";
 
     public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.bin_method.section";
-    public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL = "Bin Method Parameters";
+    public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL = "General Parameters";
     public static final String PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_TOOLTIP = "L2bin bin method parameters";
 
     public static final String PROPERTY_L2BIN_PARAMETERS_FLAGUSE_SECTION_KEY = PROPERTY_L2BIN_ROOT_KEY + ".ofile.parameters.flag_masking.section";
@@ -334,7 +334,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".l3bprod.autofill";
     public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL = "Autofill field 'l3bprod' with suite defaults";
     public static final String PROPERTY_L2BIN_L3BPROD_AUTOFILL_TOOLTIP = "<html>Autofills l3bprod with the suite defaults. <br> Note: if field is set in the preferences then it overrides the suite default.</html>";
-    public static final boolean PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT = false;
+    public static final boolean PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT = true;
 
 
     public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".autofill.precedence";
@@ -1628,6 +1628,9 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         boolean l2binAutofillPrecedenceNullSuiteDefault = PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_NULL_SUITE_DEFAULT;
         
 
+
+
+
         @Preference(key = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_KEY,
                 label = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_LABEL,
                 description = PROPERTY_L2BIN_OFILE_NAMING_SCHEME_SECTION_TOOLTIP)
@@ -1675,22 +1678,19 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+
+
+
         @Preference(key = PROPERTY_L2BIN_PARAMETERS_SECTION_KEY,
                 label = PROPERTY_L2BIN_PARAMETERS_SECTION_LABEL,
                 description = PROPERTY_L2BIN_PARAMETERS_SECTION_TOOLTIP)
         boolean l2bin_PROPERTY_L2BIN_PARAMETERS_SECTION_KEY = true;
 
 
-
-        
-
-
         @Preference(key = PROPERTY_L2BIN_L3BPROD_KEY,
                 label = PROPERTY_L2BIN_L3BPROD_LABEL,
                 description = PROPERTY_L2BIN_L3BPROD_TOOLTIP)
         String l2binL3bprodDefault = PROPERTY_L2BIN_L3BPROD_DEFAULT;
-
-
 
 
         @Preference(key = PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_KEY,
@@ -1705,15 +1705,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         String l2binSuiteDefault = PROPERTY_L2BIN_SUITE_DEFAULT;
 
 
-        @Preference(key = PROPERTY_L2BIN_PRODTYPE_KEY,
-                label = PROPERTY_L2BIN_PRODTYPE_LABEL,
-                description = PROPERTY_L2BIN_PRODTYPE_TOOLTIP)
-        String l2binProdtypeDefault = PROPERTY_L2BIN_PRODTYPE_DEFAULT;
 
-        @Preference(key = PROPERTY_L2BIN_ROW_GROUP_KEY,
-                label = PROPERTY_L2BIN_ROW_GROUP_LABEL,
-                description = PROPERTY_L2BIN_ROW_GROUP_TOOLTIP)
-        String l2binRowGroupDefault = PROPERTY_L2BIN_ROW_GROUP_DEFAULT;
 
 
 
@@ -1735,6 +1727,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 label = PROPERTY_L2BIN_FLAGUSE_LABEL,
                 description = PROPERTY_L2BIN_FLAGUSE_TOOLTIP)
         String l2binFlaguseDefault = PROPERTY_L2BIN_FLAGUSE_DEFAULT;
+
+
 
 
 
@@ -1782,24 +1776,6 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
-        @Preference(key = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY,
-                label = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL,
-                description = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_TOOLTIP)
-        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY = true;
-
-        @Preference(key = PROPERTY_L2BIN_COMPOSITE_PROD_KEY,
-                label = PROPERTY_L2BIN_COMPOSITE_PROD_LABEL,
-                description = PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP)
-        String l2binCompositeProdDefault = PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY,
-                label = PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL,
-                description = PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP)
-        String l2binCompositeSchemeDefault = PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT;
-
-
-
-
         @Preference(key = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_KEY,
                 label = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_LABEL,
                 description = PROPERTY_L2BIN_PARAMETERS_TEMPORAL_SECTION_TOOLTIP)
@@ -1830,6 +1806,35 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
+
+
+        @Preference(key = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY,
+                label = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_LABEL,
+                description = PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_TOOLTIP)
+        boolean l2bin_PROPERTY_L2BIN_PARAMETERS_BINNING_SECTION_KEY = true;
+
+
+        @Preference(key = PROPERTY_L2BIN_PRODTYPE_KEY,
+                label = PROPERTY_L2BIN_PRODTYPE_LABEL,
+                description = PROPERTY_L2BIN_PRODTYPE_TOOLTIP)
+        String l2binProdtypeDefault = PROPERTY_L2BIN_PRODTYPE_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_PROD_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_PROD_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_PROD_TOOLTIP)
+        String l2binCompositeProdDefault = PROPERTY_L2BIN_COMPOSITE_PROD_DEFAULT;
+
+        @Preference(key = PROPERTY_L2BIN_COMPOSITE_SCHEME_KEY,
+                label = PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL,
+                description = PROPERTY_L2BIN_COMPOSITE_SCHEME_TOOLTIP)
+        String l2binCompositeSchemeDefault = PROPERTY_L2BIN_COMPOSITE_SCHEME_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L2BIN_ROW_GROUP_KEY,
+                label = PROPERTY_L2BIN_ROW_GROUP_LABEL,
+                description = PROPERTY_L2BIN_ROW_GROUP_TOOLTIP)
+        String l2binRowGroupDefault = PROPERTY_L2BIN_ROW_GROUP_DEFAULT;
 
 
 

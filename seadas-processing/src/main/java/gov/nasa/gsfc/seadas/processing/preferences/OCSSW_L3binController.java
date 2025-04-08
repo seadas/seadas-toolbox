@@ -78,8 +78,8 @@ public final class OCSSW_L3binController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[prod][resolve]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[prod][resolve-units][nswe°]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[prod][resolve-units]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[prod][resolve][nswe°]";
 //    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[.product][.resolution][.projection]";
 //    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[_product][_resolution][_projection]";
 
@@ -88,10 +88,9 @@ public final class OCSSW_L3binController extends DefaultConfigController {
     private static final String PROPERTY_L3BIN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l3bin";
 
 
-    public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_KEY = PROPERTY_L3BIN_ROOT_KEY + ".ofile.parameters.section";
-    public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_LABEL = "Product & General Parameters";
+    public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_KEY = PROPERTY_L3BIN_ROOT_KEY + ".product.parameters.section";
+    public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_LABEL = "Product Parameters";
     public static final String PROPERTY_L3BIN_PARAMETERS_SECTION_TOOLTIP = "L3bin parameters";
-
 
     public static final String PROPERTY_L3BIN_PRODUCT_KEY = PROPERTY_L3BIN_ROOT_KEY + ".prod";
     public static final String PROPERTY_L3BIN_PRODUCT_LABEL = "prod";
@@ -99,6 +98,12 @@ public final class OCSSW_L3binController extends DefaultConfigController {
     public static final String PROPERTY_L3BIN_PRODUCT_DEFAULT = "";
 
 
+
+
+
+    public static final String PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY = PROPERTY_L3BIN_ROOT_KEY + ".geospatial.parameters.section";
+    public static final String PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_LABEL = "Geospatial Parameters";
+    public static final String PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_TOOLTIP = "L3bin geospatial parameters";
 
     public static final String PROPERTY_L3BIN_RESOLUTION_KEY = PROPERTY_L3BIN_ROOT_KEY + ".resolve";
     public static final String PROPERTY_L3BIN_RESOLUTION_LABEL = "resolve";
@@ -221,7 +226,7 @@ public final class OCSSW_L3binController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L3BIN_PARAMETERS_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L3BIN_PRODUCT_KEY, PROPERTY_L3BIN_PRODUCT_DEFAULT);
 
-;
+        initPropertyDefaults(context, PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY, true);
         initPropertyDefaults(context, PROPERTY_L3BIN_RESOLUTION_KEY, PROPERTY_L3BIN_RESOLUTION_DEFAULT);
         north = initPropertyDefaults(context, PROPERTY_L3BIN_NORTH_KEY, PROPERTY_L3BIN_NORTH_DEFAULT);
         south = initPropertyDefaults(context, PROPERTY_L3BIN_SOUTH_KEY, PROPERTY_L3BIN_SOUTH_DEFAULT);
@@ -525,7 +530,6 @@ public final class OCSSW_L3binController extends DefaultConfigController {
                 description = PROPERTY_L3BIN_PARAMETERS_SECTION_TOOLTIP)
         boolean l3bin_PROPERTY_L3BIN_PARAMETERS_SECTION_KEY = true;
 
-
         @Preference(key = PROPERTY_L3BIN_PRODUCT_KEY,
                 label = PROPERTY_L3BIN_PRODUCT_LABEL,
                 description = PROPERTY_L3BIN_PRODUCT_TOOLTIP)
@@ -533,12 +537,15 @@ public final class OCSSW_L3binController extends DefaultConfigController {
 
 
 
+        @Preference(key = PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY,
+                label = PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_LABEL,
+                description = PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_TOOLTIP)
+        boolean l3bin_PROPERTY_L3BIN_PARAMETERS_GEOSPATIAL_SECTION_KEY = true;
+
         @Preference(key = PROPERTY_L3BIN_RESOLUTION_KEY,
                 label = PROPERTY_L3BIN_RESOLUTION_LABEL,
                 description = PROPERTY_L3BIN_RESOLUTION_TOOLTIP)
         String l3binResolutionDefault = PROPERTY_L3BIN_RESOLUTION_DEFAULT;
-
-
 
         @Preference(key = PROPERTY_L3BIN_NORTH_KEY,
                 label = PROPERTY_L3BIN_NORTH_LABEL,

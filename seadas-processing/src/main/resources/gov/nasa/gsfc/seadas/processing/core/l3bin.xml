@@ -283,7 +283,7 @@
             <name>median</name>
             <subPanelIndex>2</subPanelIndex>
             <value>false</value>
-            <default>false</default>
+            <default></default>
             <source>default</source>
             <description>use median '1' otherwise use mean [default='0']</description>
             <usedAs>option</usedAs>
@@ -297,7 +297,7 @@
             <name>unit_wgt</name>
             <subPanelIndex>2</subPanelIndex>
             <value>false</value>
-            <default>false</default>
+            <default></default>
             <source>default</source>
             <description>use equal weighting across all input bin files</description>
             <usedAs>option</usedAs>

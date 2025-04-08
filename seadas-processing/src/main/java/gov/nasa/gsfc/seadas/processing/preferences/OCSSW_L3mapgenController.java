@@ -1201,17 +1201,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-        @Preference(key = PROPERTY_L3MAPGEN_NUM_CACHE_KEY,
-                label = PROPERTY_L3MAPGEN_NUM_CACHE_LABEL,
-                description = PROPERTY_L3MAPGEN_NUM_CACHE_TOOLTIP)
-        String l3mapgenNumCacheDefault = PROPERTY_L3MAPGEN_NUM_CACHE_DEFAULT;
-
         @Preference(key = PROPERTY_L3MAPGEN_OFORMAT_KEY,
                 label = PROPERTY_L3MAPGEN_OFORMAT_LABEL,
                 valueSet = {"", "netCDF4", "HDF4", "png", "ppm", "TIFF"},
                 description = PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP)
         String l3mapgenOformatDefault = PROPERTY_L3MAPGEN_OFORMAT_DEFAULT;
 
+
+        @Preference(key = PROPERTY_L3MAPGEN_NUM_CACHE_KEY,
+                label = PROPERTY_L3MAPGEN_NUM_CACHE_LABEL,
+                description = PROPERTY_L3MAPGEN_NUM_CACHE_TOOLTIP)
+        String l3mapgenNumCacheDefault = PROPERTY_L3MAPGEN_NUM_CACHE_DEFAULT;
 
 
 
