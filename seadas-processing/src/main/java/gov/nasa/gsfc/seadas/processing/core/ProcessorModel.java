@@ -3051,6 +3051,19 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION", resolution.toUpperCase(), DELIMITOR_NUMBER);
         }
 
+        if (checkForVariantMatch(keyString, "resolution_units") || checkForVariantMatch(keyString, "RESOLUTION_UNITS")) {
+            if (resolution == null) {
+                resolution = "";
+            }
+
+            resolution = resolution.trim();
+            if (isNumeric(resolution)) {
+                resolution = resolution + "m";
+            }
+            keyString = replaceAnyKeyStringVariant(keyString, "resolution_units", resolution, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "RESOLUTION_UNITS", resolution.toUpperCase(), DELIMITOR_NUMBER);
+        }
+
 
         if (checkForVariantMatch(keyString, "projection") || checkForVariantMatch(keyString, "PROJECTION")) {
             String projectionName = "";
@@ -3088,6 +3101,15 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return keyString;
     }
 
+
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
 
     private static String keystringReplaceNSWE(String keyString, String north, String south, String west, String east) {
 

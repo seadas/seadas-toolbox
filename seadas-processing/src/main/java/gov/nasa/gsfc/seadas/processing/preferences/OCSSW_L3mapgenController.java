@@ -98,8 +98,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[product][resolution]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[product][resolution][projection]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[product][resolution_units]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[product][resolution_units][projection]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[product][resolution][projection][nswe_deg]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[product][resolution][nswe_deg]";
 
