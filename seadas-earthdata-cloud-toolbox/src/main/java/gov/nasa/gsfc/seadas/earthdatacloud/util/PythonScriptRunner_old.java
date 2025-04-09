@@ -9,6 +9,26 @@ import java.util.Set;
 
 public class PythonScriptRunner_old {
 
+    static Path toolboxRoot = resolveToolboxRoot();
+    static Path scriptPath = toolboxRoot.resolve("src/main/MissionDateRangeFinder.py");
+    public static Path resourceDir = toolboxRoot.resolve("src/main/resources/json-files");
+    public static Path resolveToolboxRoot() {
+        Path current = Paths.get("").toAbsolutePath(); // Starting from current working dir
+
+        while (current != null) {
+            Path candidate = current.resolve("seadas-toolbox/seadas-earthdata-cloud-toolbox");
+            Path scriptPath = candidate.resolve("src/main/MissionDateRangeFinder.py");
+
+            if (Files.exists(scriptPath)) {
+                return candidate;
+            }
+
+            current = current.getParent();  // Move up one level
+        }
+
+        throw new RuntimeException("❌ Could not locate toolbox root containing seadas-earthdata-cloud-toolbox");
+    }
+
     public static void runMetadataScript() {
         runPythonScript("seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/CMR_script.py");
     }
@@ -49,9 +69,12 @@ public class PythonScriptRunner_old {
 
     public static void runMissionDateRangeScript(String missionListPath) {
         try {
-            String script = "seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/MissionDateRangeFinder.py";
+            String script = scriptPath.toString();
+            System.out.println("toolbox root:" + toolboxRoot.toString());
+            System.out.println("script path = " + scriptPath.toString());
+            System.out.println("resources root:" + resourceDir.toString());
             ProcessBuilder pb = new ProcessBuilder("python", script, missionListPath);
-            pb.directory(new File(System.getProperty("user.dir")));
+            pb.directory(new File(String.valueOf(toolboxRoot)));
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
@@ -66,6 +89,7 @@ public class PythonScriptRunner_old {
                 System.err.println("❌ Python script exited with code " + exitCode);
             }
         } catch (Exception e) {
+            System.out.println("script path = " + scriptPath.toString());
             System.err.println("❌ Error running generate_mission_date_ranges.py: " + e.getMessage());
             e.printStackTrace();
         }

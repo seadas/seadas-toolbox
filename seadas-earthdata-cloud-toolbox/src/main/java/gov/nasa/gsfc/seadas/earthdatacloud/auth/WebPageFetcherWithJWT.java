@@ -186,7 +186,7 @@ public class WebPageFetcherWithJWT {
         } catch (JSONException e) {
             System.out.println("Error: " + e.getMessage());
         }
-        System.out.print("access_token: " + access_token + "  !!! end of access token!");
+        //System.out.print("access_token: " + access_token + "  !!! end of access token!");
 
         if (access_token.contains("empty")) {
             try {

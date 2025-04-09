@@ -12,6 +12,9 @@ public class PythonScriptRunner {
     private static final String BASE_SCRIPT_PATH = "seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/";
 
     private static final String TOOLBOX_SCRIPT_ROOT = resolveToolboxScriptRoot();
+    Path toolboxRoot = resolveToolboxRoot();
+    Path scriptPath = toolboxRoot.resolve("src/main/MissionDateRangeFinder.py");
+    Path resourceDir = toolboxRoot.resolve("src/main/resources/json-files");
 
     private static String resolveToolboxScriptRoot() {
         // Try to find seadas-toolbox root dynamically
@@ -30,6 +33,18 @@ public class PythonScriptRunner {
         // Fallback if not found
         System.err.println("❌ Could not locate seadas-toolbox root from: " + baseDir);
         return baseDir;  // default to current dir
+    }
+
+    private static Path resolveToolboxRoot() {
+        Path current = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
+
+        while (current != null) {
+            if (Files.exists(current.resolve("seadas-toolbox/seadas-earthdata-cloud-toolbox"))) {
+                return current.resolve("seadas-toolbox/seadas-earthdata-cloud-toolbox");
+            }
+            current = current.getParent();
+        }
+        throw new RuntimeException("Could not locate seadas-earthdata-cloud-toolbox directory");
     }
 
 //    public static void runAllScripts() {

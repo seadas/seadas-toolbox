@@ -36,17 +36,16 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
         helpButton = getHelpButton();
         //createSearchServiceInputPanel();
-        OBDAACDataBrowser embeddedBrowser = new OBDAACDataBrowser();
+        OBDAACDataBrowser embeddedBrowser = new OBDAACDataBrowser(this);
         add(embeddedBrowser, BorderLayout.CENTER);
-//        SwingUtilities.invokeLater(() -> {
-//            JFrame frame = new JFrame("OB_CLOUD Data Browser via Harmony Search Service");
-//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//            frame.setContentPane(new OBDAACDataBrowser());
-//            frame.setSize(900, 700);
-//            frame.setLocationRelativeTo(null);
-//            frame.setVisible(true);
-//        });
+        pack();  // This fixes layout sizing
+        setLocationRelativeTo(null);  // Center on screen (optional but nice)
+        Window parent = SnapApp.getDefault().getMainFrame();
+        setLocationRelativeTo(parent);  // Centers over the SeaDAS window
+        Point location = getLocation();
+        setLocation(location.x-200, Math.max(0, location.y - 200));
     }
+
 
     protected AbstractButton getHelpButton() {
         if (helpId != null) {

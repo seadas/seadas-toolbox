@@ -69,7 +69,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JPanel resultsContainer;
     private JScrollPane scrollPane;
     private final Map<String, String> fileSpatialMap = new HashMap<>();
-
+    private JDialog parentDialog;
 
     Map<String, String[]> missionDateRanges = Map.of(
             "SeaHawk/HawkEye", new String[]{"2018-12-01", "2023-12-31"},
@@ -77,9 +77,10 @@ public class OBDAACDataBrowser extends JPanel {
             "VIIRSN", new String[]{"2011-10-28", "2024-12-31"}
             // Add more as needed
     );
-    public OBDAACDataBrowser() {
+    public OBDAACDataBrowser(JDialog parentDialog) {
 //        setTitle("OB_CLOUD Data Browser - powered by Harmony Search");
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.parentDialog = parentDialog;
         setLayout(new GridBagLayout());
         setSize(850, 600);
         setLayout(new GridBagLayout());
@@ -160,11 +161,10 @@ public class OBDAACDataBrowser extends JPanel {
     private void loadMetadata() {
         boolean usedExternal = false;
         try {
-            Path jsonDir = Paths.get(System.getProperty("user.dir"), "seadas-toolbox",
-                    "seadas-earthdata-cloud-toolbox", "src", "main", "resources", "json-files");
+            Path jsonDir = PythonScriptRunner_old.resourceDir;
 
 
-            if (!Files.exists(jsonDir) || !Files.isDirectory(jsonDir)) {
+            if (!Files.exists(PythonScriptRunner_old.resourceDir) || !Files.isDirectory(PythonScriptRunner_old.resourceDir)) {
                 PythonScriptRunner.runMetadataScript();
             }
             JSONTokener tokener;
@@ -314,7 +314,12 @@ public class OBDAACDataBrowser extends JPanel {
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(e -> fetchGranules());
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> System.exit(0));
+        cancelButton.addActionListener(
+                e -> {
+                    if (parentDialog != null) {
+                        parentDialog.dispose();
+                    }
+                });
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(searchButton);
         buttonPanel.add(cancelButton);
@@ -487,10 +492,6 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-
-    private String getPreviewUrl(String fileName) {
-        return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
-    }
     private void showImagePreview(String fileName, Point screenLocation) {
         if (imagePreviewWindow == null) {
             imagePreviewWindow = new JWindow();
@@ -1324,7 +1325,7 @@ public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> {
         JFrame frame = new JFrame("OB_CLOUD Data Browser via Harmony Search Service");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(new OBDAACDataBrowser());
+        frame.setContentPane(new OBDAACDataBrowser(new JDialog()));
         frame.setSize(900, 700);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
