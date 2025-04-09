@@ -86,44 +86,214 @@
         <td></td>
     </tr>
     <tr>
+        <td><b>apply_pal</b></td>
+        <td> boolean</td>
+        <td>apply color palette:
+            <pre>
+        yes: color image
+        no: grayscale image
+        </pre>
+        </td>
+        <td>Optional</td>
+        <td>yes</td>
+    </tr>
+    <tr>
+        <td><b>azimuth</b></td>
+        <td> Button</td>
+        <td>projection rotation angle in deg north.
+            Used only for predefined projections above as required.
+        </td>
+    </tr>
+    <tr>
+        <td><b>central_meridian</b></td>
+        <td> float</td>
+        <td>central meridian for projection in deg east.
+            Used only for raw dump and predefined projections as above.</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>datamin</b></td>
+        <td> float</td>
+        <td>minimum value for data scaling</td>
+        <td>Optional</td>
+        <td>default from product.xml</td>
+    </tr>
+    <tr>
+        <td><b>datamax</b></td>
+        <td> float</td>
+        <td>maximum value for data scaling</td>
+        <td>Optional</td>
+        <td>default from product.xml</td>
+    </tr>
+    <tr>
+        <td><b>deflate</b></td>
+        <td> int</td>
+        <td>netCDF4 deflation level</td>
+        <td>Optional</td>
+        <td>4</td>
+    </tr>
+    <tr>
+        <td><b>east</b></td>
+        <td>float</td>
+        <td>Easternmost Longitude</td>
+        <td>Optional</td>
+        <td>file east</td>
+    </tr>
+    <tr>
+        <td><b>fudge</b></td>
+        <td> float</td>
+        <td>fudge factor used to modify size of L3 pixels</td>
+        <td>Optional</td>
+        <td>1.0</td>
+    </tr>
+    <tr>
+        <td><b>interp</b></td>
+        <td> string</td>
+        <td>interpolation method:
+            nearest: use the value of the nearest bin for the pixel
+            bin:     bin all of the pixels that intersect the area of the
+            output pixel
+            area:    bin weighted by area of all the pixels that intersect
+            the area of the output pixel
+        </td>
+        <td>Optional</td>
+        <td>nearest</td>
+    </tr>
+    <tr>
+        <td><b>lat_0</b></td>
+        <td>float</td>
+        <td>latitude of origin for projection in deg north.
+            Used only for predefined projections above as required.
+        </td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>lat_1</b></td>
+        <td> float</td>
+        <td>latitude of first standard parallel (south).
+            Used only for predefined projections above as required.
+        </td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>lat_2</b></td>
+        <td> float</td>
+        <td>latitude of second standard parallel (north).
+            Used only for predefined projections above as required.
+        </td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>lat_ts</b></td>
+        <td> float</td>
+        <td>latitude of true scale for projection in deg north.
+            Used only for predefined projections above as required.
+        </td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>mask_land</b></td>
+        <td> boolean</td>
+        <td>set land pixels to pixel value 254</td>
+        <td>Optional</td>
+        <td>no</td>
+    </tr>
+    <tr>
+        <td><b>north</b></td>
+        <td> float</td>
+        <td>Northernmost Latitude</td>
+        <td>Optional</td>
+        <td>file north</td>
+    </tr>
+    <tr>
+        <td><b>num_cache</b></td>
+        <td> int</td>
+        <td>number of rows to cache in memory.e</td>
+        <td>Optional</td>
+        <td>500</td>
+    </tr>
+    <tr>
+        <td><b>oformat</b></td>
+        <td> string</td>
+        <td>output file format :
+            <pre>
+        netcdf4: netCDF4 file, can contain more than one product
+        hdf4:    HDF4 file (old SMI format)
+        png:     PNG image file
+        ppm:     PPM image file
+        tiff:    TIFF file with georeference tags
+            </pre>
+        </td>
+        <td>Optional</td>
+        <td>netcdf4</td>
+    </tr>
+    <tr>
+        <td><b>palfile</b></td>
+        <td> ifile</td>
+        <td>palette file name</td>
+        <td>Optional</td>
+        <td>default from product.xml</td>
+    </tr>
+    <tr>
+        <td><b>Product_rgb</b></td>
+        <td> string</td>
+        <td>Three products to use for RGB.
+            Default is sensor-specific
+        </td>
+        <td>Optional</td>
+        <td>rhos_670,rhos_555,rhos_412</td>
+    </tr>
+    <tr>
         <td><b>projection</b></td>
-        <td>string</td>
-        <td> One of the following predefined (proj4) projections may be selected:
+        <td> string</td>
+        <td> proj.4 projection string or one
+            of the following predefined projections:
             <pre>
         smi:       Standard Mapped image, cylindrical projection,
                    uses central_meridian.  NSEW defaults to whole globe.
-                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=eqc +lon_0=<central_meridian>"
         platecarree: Plate Carree image, cylindrical projection,
                    uses central_meridian.
-                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=eqc +lon_0=<central_meridian>"
         mollweide: Mollweide projection
-                   projection="+proj=moll +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=moll +lon_0=<central_meridian>"
         lambert:   Lambert conformal conic (2SP) projection
-                   projection="+proj=lcc +lon_0=&lt;central_meridian&gt;
-                                +lat_0=&lt;scene center latitude&gt;
-                                +lat_1=&lt;scene south latitude&gt;
-                                +lat_2=&lt;scene north latitude&gt;"
+                   projection="+proj=lcc +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>
+                                +lat_1=<scene south latitude>
+                                +lat_2=<scene north latitude>"
         albersconic: Albers Equal Area Conic projection
-                   projection="+proj=aea +lon_0=&lt;central_meridian>
-                                +lat_0=&lt;scene center latitude&gt;
-                                +lat_1=&lt;scene south latitude&gt;
-                                +lat_2=&lt;scene north latitude&gt;"
+                   projection="+proj=aea +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>
+                                +lat_1=<scene south latitude>
+                                +lat_2=<scene north latitude>"
+        aeqd:      Azimuthal Equidistant projection
+                   projection="+proj=aeqd +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>"
         mercator:  Mercator cylindrical map projection
-                   projection="+proj=merc +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=merc +lon_0=<central_meridian>"
         transmerc:  Transverse Mercator cylindrical map projection
-                   projection="+proj=tmerc +lon_0=&lt;central_meridian&gt;
-                                +lat_0=&lt;scene center latitude&gt;"
+                   projection="+proj=tmerc +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>"
         utm:  Universal Transverse Mercator cylindrical map projection
-                   projection="+proj=utm +zone=&lt;utm_zone&gt; [+south]"
+                   projection="+proj=utm +zone=<utm_zone> [+south]"
         obliquemerc:  Oblique Mercator cylindrical map projection
-                   projection="+proj=omerc +gamma=0 +lat_0=&lt;lat_0&gt;
-                          +lonc=&lt;central_meridian&gt; +alpha=&lt;azimuth&gt;
+                   projection="+proj=omerc +gamma=0 +lat_0=<lat_0>
+                          +lonc=<central_meridian> +alpha=<azimuth>
                           +k_0=1 +x_0=0 +y_0=0"
         ease2:     EASE-Grid 2.0 projection
                    projection="EPSG:6933"
+        ortho:     Orthographic projection
+                   projection="+proj=ortho +lat_0=<lat_0> +lon_0=<central_meridian>
+                          +ellps=GRS80 +units=m"
         stere:     Stereographic projection
-                   projection="+proj=stere +lat_0=&lt;lat_0&gt; +lat_ts=&lt;lat_ts&gt;
-                          +lon_0=&lt;central_meridian&gt;
+                   projection="+proj=stere +lat_0=<lat_0> +lat_ts=<lat_ts>
+                          +lon_0=<central_meridian>
                           +ellps=WGS84 +datum=WGS84 +units=m"
         conus:     USA Contiguous Albers Equal Area Conic USGS version
                    projection="+proj=aea +lat_1=29.5 +lat_2=45.5
@@ -136,9 +306,9 @@
                    else use Polar Sterographic
                    North Polar: projection="EPSG:3413"
                    South Polar: projection="EPSG:3031"
-         raw:       Raw dump of bin file contents.
+         raw:      Raw dump of bin file contents.
 
-         </pre>
+          </pre>
         </td>
         <td>Optional</td>
         <td>platecarree</td>
@@ -171,33 +341,11 @@
         <td>9km</td>
     </tr>
     <tr>
-        <td><b>interp</b></td>
-        <td>string</td>
-        <td>interpolation method:
-            <pre>
-        nearest: Nearest Neighbor
-        bin:     bin all of the pixels that intersect the
-                area of the output pixel
-        area:    bin weighted by area all of the pixels that
-                intersect the area of the output pixel
-        </pre>
-        </td>
-        <td>Optional</td>
-        <td>nearest</td>
-    </tr>
-    <tr>
         <td><b>pversion</b></td>
         <td> string</td>
         <td>Processing version string</td>
         <td>Optional</td>
         <td>Unspecified</td>
-    </tr>
-    <tr>
-        <td><b>north</b></td>
-        <td>float</td>
-        <td>Northern most Latitude</td>
-        <td>Optional</td>
-        <td>-999</td>
     </tr>
     <tr>
         <td><b>south</b></td>
@@ -207,70 +355,11 @@
         <td>-999</td>
     </tr>
     <tr>
-        <td><b>east</b></td>
-        <td>float</td>
-        <td>Eastern most Longitude</td>
-        <td>Optional</td>
-        <td>-999</td>
-    </tr>
-    <tr>
         <td><b>west</b></td>
         <td>float</td>
         <td>Western most Longitude</td>
         <td>Optional</td>
         <td>-999</td>
-    </tr>
-    <tr>
-        <td><b>oformat</b></td>
-        <td>string</td>
-        <td>format of the output file :
-            <pre>
-        netCDF:  netCDF file, can contain more than one product
-        hdf4:    HDF4 file (old SMI format)
-        png:     PNG image file
-        ppm:     PPM image file
-        tiff:    TIFF file with georeference tags
-        </pre>
-        </td>
-        <td>Optional</td>
-        <td>netCDF4</td>
-    </tr>
-    <tr>
-        <td><b>deflate</b></td>
-        <td>int</td>
-        <td>netCDF4 deflation level</td>
-        <td>Optional</td>
-        <td>4</td>
-    </tr>
-    <tr>
-        <td><b>central_meridian</b></td>
-        <td>float</td>
-        <td>central meridian for projection in deg east.  Used only <br>
-            for raw dump and predefined projections as above.</td>
-        <td>Optional</td>
-        <td>0</td>
-    </tr>
-    <tr>
-        <td><b>palfile</b></td>
-        <td> ifile</td>
-        <td>palette file name</td>
-        <td>Optional</td>
-        <td>palette filename</td>
-        <td>default from product.xml</td>
-    </tr>
-    <tr>
-        <td><b>datamin</b></td>
-        <td> float</td>
-        <td>minimum value for data scaling</td>
-        <td>Optional</td>
-        <td>default from product.xml</td>
-    </tr>
-    <tr>
-        <td><b>datamax</b></td>
-        <td> float</td>
-        <td>maximum value for data scaling</td>
-        <td>Optional</td>
-        <td>default from product.xml</td>
     </tr>
     <tr>
         <td><b>scale_type</b></td>
@@ -286,40 +375,12 @@
         <td>default from product.xml</td>
     </tr>
     <tr>
-        <td><b>Product_rgb</b></td>
-        <td> string</td>
-        <td>Three products to use for RGB.
-            Default is sensor-specific</td>
-        <td>Optional</td>
-        <td>rhos_670,rhos_555,rhos_412</td>
-    </tr>
-    <tr>
-        <td><b>fudge</b></td>
-        <td> float</td>
-        <td>fudge factor used to modify size of L3 pixels</td>
-        <td>Optional</td>
-        <td>1.0</td>
-    </tr>
-    <tr>
         <td><b>threshold</b></td>
         <td> float</td>
         <td>minimum percentage of filled pixels before
             an image is generated</td>
         <td>Optional</td>
         <td>0</td>
-    </tr>
-
-    <tr>
-        <td><b>apply_pal</b></td>
-        <td>boolean</td>
-        <td>apply color palette:
-            <pre>
-        yes: color image
-        no: grayscale image
-        </pre>
-        </td>
-        <td>Optional</td>
-        <td>yes</td>
     </tr>
     <tr>
         <td><b>use_quality</b></td>
@@ -439,7 +500,7 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l3mapgen 2.4.0-V2024.8 (Nov 14 2024 12:13:34)
+l3mapgen 2.4.0-V2025.1 (Jan 30 2025 18:46:35)
 Usage: l3mapgen argument-list
 
   This program takes a product (or products if netCDF output) from an L3 bin
@@ -519,44 +580,44 @@ The list of valid keywords follows:
         of the following predefined projections:
         smi:       Standard Mapped image, cylindrical projection,
                    uses central_meridian.  NSEW defaults to whole globe.
-                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=eqc +lon_0=<central_meridian>"
         platecarree: Plate Carree image, cylindrical projection,
                    uses central_meridian.
-                   projection="+proj=eqc +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=eqc +lon_0=<central_meridian>"
         mollweide: Mollweide projection
-                   projection="+proj=moll +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=moll +lon_0=<central_meridian>"
         lambert:   Lambert conformal conic (2SP) projection
-                   projection="+proj=lcc +lon_0=&lt;central_meridian&gt;
-                                +lat_0=&lt;scene center latitude&gt;
-                                +lat_1=&lt;scene south latitude&gt;
-                                +lat_2=&lt;scene north latitude&gt;"
+                   projection="+proj=lcc +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>
+                                +lat_1=<scene south latitude>
+                                +lat_2=<scene north latitude>"
         albersconic: Albers Equal Area Conic projection
-                   projection="+proj=aea +lon_0=&lt;central_meridian&gt;
-                                +lat_0=&lt;scene center latitude&gt;
-                                +lat_1=&lt;scene south latitude&gt;
-                                +lat_2=&lt;scene north latitude&gt;"
+                   projection="+proj=aea +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>
+                                +lat_1=<scene south latitude>
+                                +lat_2=<scene north latitude>"
         aeqd:      Azimuthal Equidistant projection
-                   projection="+proj=aeqd +lon_0=&lt;central_meridian&gt;
-                                +lat_0=&lt;scene center latitude&gt;"
+                   projection="+proj=aeqd +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>"
         mercator:  Mercator cylindrical map projection
-                   projection="+proj=merc +lon_0=&lt;central_meridian&gt;"
+                   projection="+proj=merc +lon_0=<central_meridian>"
         transmerc:  Transverse Mercator cylindrical map projection
-                   projection="+proj=tmerc +lon_0=&lt;central_meridian&gt;
-                                +lat_0=&lt;scene center latitude&gt;"
+                   projection="+proj=tmerc +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>"
         utm:  Universal Transverse Mercator cylindrical map projection
-                   projection="+proj=utm +zone=&lt;utm_zone&gt; [+south]"
+                   projection="+proj=utm +zone=<utm_zone> [+south]"
         obliquemerc:  Oblique Mercator cylindrical map projection
-                   projection="+proj=omerc +gamma=0 +lat_0=&lt;lat_0&gt;
-                          +lonc=&lt;central_meridian&gt; +alpha=&lt;azimuth&gt;
+                   projection="+proj=omerc +gamma=0 +lat_0=<lat_0>
+                          +lonc=<central_meridian> +alpha=<azimuth>
                           +k_0=1 +x_0=0 +y_0=0"
         ease2:     EASE-Grid 2.0 projection
                    projection="EPSG:6933"
         ortho:     Orthographic projection
-                   projection="+proj=ortho +lat_0=&lt;lat_0&gt; +lon_0=&lt;central_meridian&gt;
+                   projection="+proj=ortho +lat_0=<lat_0> +lon_0=<central_meridian>
                           +ellps=GRS80 +units=m"
         stere:     Stereographic projection
-                   projection="+proj=stere +lat_0=&lt;lat_0&gt; +lat_ts=&lt;lat_ts&gt;
-                          +lon_0=&lt;central_meridian&gt;
+                   projection="+proj=stere +lat_0=<lat_0> +lat_ts=<lat_ts>
+                          +lon_0=<central_meridian>
                           +ellps=WGS84 +datum=WGS84 +units=m"
         conus:     USA Contiguous Albers Equal Area Conic USGS version
                    projection="+proj=aea +lat_1=29.5 +lat_2=45.5
