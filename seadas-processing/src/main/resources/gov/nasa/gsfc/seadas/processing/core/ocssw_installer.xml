@@ -18,7 +18,7 @@
         <option type="string">
             <name>--tag</name>
             <value></value>
-            <default>V2024.1</default>
+            <default>V2025.1</default>
             <usedAs>source</usedAs>
             <description>valid ocssw tags</description>
             <validValues>
