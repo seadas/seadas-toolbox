@@ -3193,6 +3193,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (checkForVariantMatch(keyString, "nswe")
                 || checkForVariantMatch(keyString, "nswe°")
                 || checkForVariantMatch(keyString, "nswe_deg")
+                || checkForVariantMatch(keyString, "nsew")
+                || checkForVariantMatch(keyString, "nsew°")
+                || checkForVariantMatch(keyString, "nsew_deg°")
         ) {
             if (north == null) {
                 north = "";
@@ -3209,22 +3212,52 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             String nswe = "";
             String nsweDeg = "";
+            String nsweDegSymbol = "";
+            String nsew = "";
+            String nsewDeg = "";
+            String nsewDegSymbol = "";
+            
             if (north.length() > 0) {
                 nswe = nswe + "_" + north + "N";
-                nsweDeg = nsweDeg + "_" + north + "°N";
+                nsweDeg = nsweDeg + "_" + north + "degN";
+                nsweDegSymbol = nsweDegSymbol + "_" + north + "°N";
+
+                nsew = nsew + "_" + north + "N";
+                nsewDeg = nsewDeg + "_" + north + "degN";
+                nsewDegSymbol = nsewDegSymbol + "_" + north + "°N";
             }
+            
             if (south.length() > 0) {
                 nswe = nswe + "_" + south + "S";
-                nsweDeg = nsweDeg + "_" + south + "°S";
+                nsweDeg = nsweDeg + "_" + south + "degS";
+                nsweDegSymbol = nsweDegSymbol + "_" + south + "°S";
+
+                nsew = nsew + "_" + south + "S";
+                nsewDeg = nsewDeg + "_" + south + "degS";
+                nsewDegSymbol = nsewDegSymbol + "_" + south + "°S";
             }
+            
             if (west.length() > 0) {
                 nswe = nswe + "_" + west + "W";
-                nsweDeg = nsweDeg + "_" + west + "°W";
+                nsweDeg = nsweDeg + "_" + west + "degW";
+                nsweDegSymbol = nsweDegSymbol + "_" + west + "°W";
             }
             if (east.length() > 0) {
                 nswe = nswe + "_" + east + "E";
-                nsweDeg = nsweDeg + "_" + east + "°E";
+                nsweDeg = nsweDeg + "_" + east + "degE";
+                nsweDegSymbol = nsweDegSymbol + "_" + east + "°E";
+
+                nsew = nsew + "_" + east + "E";
+                nsewDeg = nsewDeg + "_" + east + "degE";
+                nsewDegSymbol = nsewDegSymbol + "_" + east + "°E";
             }
+            
+            if (west.length() > 0) {
+                nsew = nsew + "_" + west + "W";
+                nsewDeg = nsewDeg + "_" + west + "degW";
+                nsewDegSymbol = nsewDegSymbol + "_" + west + "°W";
+            }
+            
 
             if (nswe.length() > 0) {
                 nswe = nswe.substring(1);
@@ -3232,10 +3265,27 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if (nsweDeg.length() > 0) {
                 nsweDeg = nsweDeg.substring(1);
             }
+            if (nsweDegSymbol.length() > 0) {
+                nsweDegSymbol = nsweDegSymbol.substring(1);
+            }
+
+            if (nsew.length() > 0) {
+                nsew = nsew.substring(1);
+            }
+            if (nsewDeg.length() > 0) {
+                nsewDeg = nsewDeg.substring(1);
+            }
+            if (nsewDegSymbol.length() > 0) {
+                nsewDegSymbol = nsewDegSymbol.substring(1);
+            }
+            
 
             keyString = replaceAnyKeyStringVariant(keyString, "nswe", nswe, DELIMITOR_NUMBER);
-            keyString = replaceAnyKeyStringVariant(keyString, "nswe°", nsweDeg, DELIMITOR_NUMBER);
             keyString = replaceAnyKeyStringVariant(keyString, "nswe_deg", nsweDeg, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "nswe°", nsweDegSymbol, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "nsew", nsew, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "nsew_deg", nsewDeg, DELIMITOR_NUMBER);
+            keyString = replaceAnyKeyStringVariant(keyString, "nsew°", nsewDegSymbol, DELIMITOR_NUMBER);
         }
 
         return keyString;

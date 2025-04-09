@@ -100,9 +100,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String OFILE_NAMING_SCHEME_SUFFIX_NONE = "No Suffix";
     public static final String OFILE_NAMING_SCHEME_SUFFIX1 = "Suffix Custom 1";
     public static final String OFILE_NAMING_SCHEME_SUFFIX2 = "Suffix Custom 2";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[product][resolution_units]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[product][resolution_units][projection]";
-    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[product][resolution][projection][nswe_deg]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT = "[product][resolution_units][nswe]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT2 = "[resolution_units][nswe]";
+    public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT3 = "[product][resolution_units][projection][nswe_deg]";
     public static final String OFILE_NAMING_SCHEME_SUFFIX_DEFAULT4 = "[product][resolution][nswe_deg]";
 
 
@@ -304,7 +304,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix.options";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_LABEL = "Suffix Options";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_TOOLTIP = "ofile Add Suffix Scheme";
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX_OPTIONS_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX1;
 
 
     public  static  final  String SUFFIX_LIST_TOOLTIPS = "<html>" +
@@ -318,7 +318,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix1";
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_LABEL = OFILE_NAMING_SCHEME_SUFFIX1;
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_TOOLTIP = SUFFIX_LIST_TOOLTIPS;
-    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = EMPTY_STRING;
+    public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX1_DEFAULT = OFILE_NAMING_SCHEME_SUFFIX_DEFAULT;
 
 
     public static final String PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SUFFIX2_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".ofile.naming.scheme.suffix2";
