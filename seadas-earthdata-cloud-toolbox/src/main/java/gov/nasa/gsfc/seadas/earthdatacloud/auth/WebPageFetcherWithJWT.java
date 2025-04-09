@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.earthdatacloud.action;
+package gov.nasa.gsfc.seadas.earthdatacloud.auth;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -9,6 +9,7 @@ import java.net.*;
 
 import java.util.Base64;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.action.LinkCellRenderer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

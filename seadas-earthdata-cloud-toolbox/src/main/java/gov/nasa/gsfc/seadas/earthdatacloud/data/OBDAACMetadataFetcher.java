@@ -1,12 +1,11 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.data;
 
-import gov.nasa.gsfc.seadas.earthdatacloud.action.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

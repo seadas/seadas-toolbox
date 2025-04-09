@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.action;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;

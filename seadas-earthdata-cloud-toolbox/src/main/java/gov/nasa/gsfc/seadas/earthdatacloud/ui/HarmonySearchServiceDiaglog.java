@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.action.DataRetrievalTask;
-import gov.nasa.gsfc.seadas.earthdatacloud.action.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -11,8 +11,6 @@ import org.openide.util.HelpCtx;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.event.SwingPropertyChangeSupport;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
@@ -32,12 +30,22 @@ public class HarmonySearchServiceDiaglog extends JDialog{
     public HarmonySearchServiceDiaglog(){
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         setLayout(new BorderLayout());
-        setSize(2000, 1000);
+        setSize(900, 700);
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
         helpButton = getHelpButton();
-        createSearchServiceInputPanel();
+        //createSearchServiceInputPanel();
+        OBDAACDataBrowser embeddedBrowser = new OBDAACDataBrowser();
+        add(embeddedBrowser, BorderLayout.CENTER);
+//        SwingUtilities.invokeLater(() -> {
+//            JFrame frame = new JFrame("OB_CLOUD Data Browser via Harmony Search Service");
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            frame.setContentPane(new OBDAACDataBrowser());
+//            frame.setSize(900, 700);
+//            frame.setLocationRelativeTo(null);
+//            frame.setVisible(true);
+//        });
     }
 
     protected AbstractButton getHelpButton() {
