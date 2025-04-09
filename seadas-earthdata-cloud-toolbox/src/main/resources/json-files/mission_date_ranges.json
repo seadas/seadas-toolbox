@@ -1,0 +1,14 @@
+{
+  "MERGED_S3_OLCI": {
+    "start": "2016-02-16",
+    "end": "present"
+  },
+  "SeaWiFS": {
+    "start": "1997-09-01",
+    "end": "2010-12-31"
+  },
+  "HAWKEYE": {
+    "start": "2024-01-01",
+    "end": "present"
+  }
+}

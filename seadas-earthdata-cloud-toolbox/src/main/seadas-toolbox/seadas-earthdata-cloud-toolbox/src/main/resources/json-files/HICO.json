@@ -1,0 +1,20 @@
+{
+    "L0": [
+        {
+            "product_name": "General",
+            "short_name": "HICO_L0"
+        }
+    ],
+    "L1": [
+        {
+            "product_name": "General",
+            "short_name": "HICO_L1"
+        }
+    ],
+    "L2": [
+        {
+            "product_name": "OC",
+            "short_name": "HICO_L2_OC"
+        }
+    ]
+}
