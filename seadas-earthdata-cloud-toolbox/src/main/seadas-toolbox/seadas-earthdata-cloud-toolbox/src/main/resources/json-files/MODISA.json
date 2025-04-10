@@ -55,10 +55,6 @@
             "short_name": "MODISA_L3b_IOP"
         },
         {
-            "product_name": "LAND",
-            "short_name": "MODISA_L3b_LAND"
-        },
-        {
             "product_name": "PIC_NRT",
             "short_name": "MODISA_L3b_PIC_NRT"
         },
