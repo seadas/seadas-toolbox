@@ -5,13 +5,26 @@ import gov.nasa.gsfc.seadas.earthdatacloud.ui.BrowseImagePreview;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 public class ImagePreviewHandler extends Component {
 
     private static final String BASE_IMAGE_URL = "https://oceandata.sci.gsfc.nasa.gov/browse_images/";
-
+    private JWindow previewWindow;
+    private JLabel previewLabel;
+    private Timer hideTimer;
+    public ImagePreviewHandler() {
+        previewWindow = new JWindow();
+        previewLabel = new JLabel();
+        previewWindow.getContentPane().add(previewLabel);
+        previewWindow.setAlwaysOnTop(true);
+        previewWindow.setFocusableWindowState(false);
+        previewWindow.setType(Window.Type.POPUP);
+    }
     /**
      * Generates a preview URL based on file name.
      */
@@ -19,29 +32,53 @@ public class ImagePreviewHandler extends Component {
         return BASE_IMAGE_URL + fileName + ".png";
     }
 
+    public void attachToTable(JTable table) {
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                int col = table.columnAtPoint(e.getPoint());
+
+                if (row >= 0 && col == 0) {
+                    String fileName = (String) table.getValueAt(row, col);
+                    showImagePreview(fileName, e.getLocationOnScreen());
+                } else {
+                    hideImagePreview();
+                }
+            }
+        });
+
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                hideImagePreview();
+            }
+        });
+    }
+
     /**
      * Shows an image dialog for the given image URL.
      */
-    public void showFullImageDialog(String fileName, Component parentComponent) {
-        String imageUrl = getPreviewUrl(fileName);
-        if (imageUrl == null) return;
-
-        try {
-            Image image = ImageIO.read(new URL(imageUrl));
-            if (image != null) {
-                ImageIcon icon = new ImageIcon(image);
-                JLabel label = new JLabel(icon);
-                JScrollPane scrollPane = new JScrollPane(label);
-                scrollPane.setPreferredSize(new Dimension(600, 600));
-                JOptionPane.showMessageDialog(parentComponent, scrollPane, "Full Preview", JOptionPane.PLAIN_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Image could not be loaded.");
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(parentComponent, "Failed to load image preview.");
-            e.printStackTrace();
-        }
-    }
+//    public void showFullImageDialog(String fileName, Component parentComponent) {
+//        String imageUrl = getPreviewUrl(fileName);
+//        if (imageUrl == null) return;
+//
+//        try {
+//            Image image = ImageIO.read(new URL(imageUrl));
+//            if (image != null) {
+//                ImageIcon icon = new ImageIcon(image);
+//                JLabel label = new JLabel(icon);
+//                JScrollPane scrollPane = new JScrollPane(label);
+//                scrollPane.setPreferredSize(new Dimension(600, 600));
+//                JOptionPane.showMessageDialog(parentComponent, scrollPane, "Full Preview", JOptionPane.PLAIN_MESSAGE);
+//            } else {
+//                JOptionPane.showMessageDialog(parentComponent, "Image could not be loaded.");
+//            }
+//        } catch (IOException e) {
+//            JOptionPane.showMessageDialog(parentComponent, "Failed to load image preview.");
+//            e.printStackTrace();
+//        }
+//    }
 
     public static void showImageInDialog(Component parentComponent, String imageUrl) {
         try {
@@ -80,32 +117,76 @@ public class ImagePreviewHandler extends Component {
             e.printStackTrace();
         }
     }
-    public static void showImagePreview(String fileName, Point screenLocation, JWindow imagePreviewWindow, JLabel imageLabel) {
-        if (imagePreviewWindow == null) {
-            imagePreviewWindow = new JWindow();
-            imageLabel = new JLabel();
-            imagePreviewWindow.getContentPane().add(imageLabel);
-        }
 
+    private void showImagePreview(String fileName, Point locationOnScreen) {
+        String url = getPreviewUrl(fileName);
         try {
-            String imageUrl = BrowseImagePreview.getPreviewUrl(fileName);
-            ImageIcon icon = BrowseImagePreview.loadPreviewImage(fileName);
-            if (icon != null) {
-                imageLabel.setIcon(icon);
-                imagePreviewWindow.pack();
-                imagePreviewWindow.setLocation(screenLocation.x + 20, screenLocation.y + 20);
-                imagePreviewWindow.setVisible(true);
-            } else {
-                hideImagePreview(imagePreviewWindow);
-            }
-        } catch (Exception e) {
-            hideImagePreview(imagePreviewWindow);
-        }
-    }
+            BufferedImage image = ImageIO.read(new URL(url));
+            if (image == null) return;
 
-    public static void hideImagePreview(JWindow imagePreviewWindow) {
-        if (imagePreviewWindow != null) {
-            imagePreviewWindow.setVisible(false);
+            Image scaled = image.getScaledInstance(200, -1, Image.SCALE_SMOOTH);
+            previewLabel.setIcon(new ImageIcon(scaled));
+            previewWindow.pack();
+
+            // Show slightly offset from cursor
+            previewWindow.setLocation(locationOnScreen.x + 15, locationOnScreen.y + 15);
+            previewWindow.setVisible(true);
+
+            if (hideTimer != null && hideTimer.isRunning()) {
+                hideTimer.stop();
+            }
+
+        } catch (IOException ex) {
+            hideImagePreview();
         }
     }
+//    public static void showImagePreview(String fileName, Point screenLocation, JWindow imagePreviewWindow, JLabel imageLabel) {
+//        if (imagePreviewWindow == null) {
+//            imagePreviewWindow = new JWindow();
+//            imageLabel = new JLabel();
+//            imagePreviewWindow.getContentPane().add(imageLabel);
+//        }
+//
+//        try {
+//            String imageUrl = BrowseImagePreview.getPreviewUrl(fileName);
+//            ImageIcon icon = BrowseImagePreview.loadPreviewImage(fileName);
+//            if (icon != null) {
+//                imageLabel.setIcon(icon);
+//                imagePreviewWindow.pack();
+//                imagePreviewWindow.setLocation(screenLocation.x + 20, screenLocation.y + 20);
+//                imagePreviewWindow.setVisible(true);
+//            } else {
+//                hideImagePreview(imagePreviewWindow);
+//            }
+//        } catch (Exception e) {
+//            hideImagePreview(imagePreviewWindow);
+//        }
+//    }
+
+    public void showFullImageDialog(String fileName, Component parent) {
+        try {
+            String url = getPreviewUrl(fileName);
+            BufferedImage image = ImageIO.read(new URL(url));
+            if (image != null) {
+                JLabel label = new JLabel(new ImageIcon(image));
+                JScrollPane scrollPane = new JScrollPane(label);
+                scrollPane.setPreferredSize(new Dimension(800, 600));
+                JOptionPane.showMessageDialog(parent, scrollPane, "Full Preview", JOptionPane.PLAIN_MESSAGE);
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(parent, "Failed to load image preview.");
+        }
+    }
+    private void hideImagePreview() {
+        if (hideTimer != null && hideTimer.isRunning()) return;
+
+        hideTimer = new Timer(500, e -> previewWindow.setVisible(false));
+        hideTimer.setRepeats(false);
+        hideTimer.start();
+    }
+//    public static void hideImagePreview(JWindow imagePreviewWindow) {
+//        if (imagePreviewWindow != null) {
+//            imagePreviewWindow.setVisible(false);
+//        }
+//    }
 }

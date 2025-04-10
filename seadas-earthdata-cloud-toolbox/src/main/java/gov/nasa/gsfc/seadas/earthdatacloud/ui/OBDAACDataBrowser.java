@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.earthdatacloud.util.ImagePreviewHelper;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.MissionNameWriter;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner_old;
@@ -18,6 +19,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -28,8 +30,11 @@ import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.Timer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static gov.nasa.gsfc.seadas.earthdatacloud.ui.BrowseImagePreview.getPreviewUrl;
 
 public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
@@ -70,6 +75,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JScrollPane scrollPane;
     private final Map<String, String> fileSpatialMap = new HashMap<>();
     private JDialog parentDialog;
+    private ImagePreviewHelper imagePreviewHelper;
 
     Map<String, String[]> missionDateRanges = Map.of(
             "SeaHawk/HawkEye", new String[]{"2018-12-01", "2023-12-31"},
@@ -85,6 +91,7 @@ public class OBDAACDataBrowser extends JPanel {
         setSize(850, 600);
         setLayout(new GridBagLayout());
         loadMetadata();
+        imagePreviewHelper = new ImagePreviewHelper();
 //        Set<String> allSatellites = metadataMap.keySet(); // or your satelliteDropdown items
 //        missionDateRanges = fetchMissionDateRanges(allSatellites);
         loadMissionDateRangesFromFile();
@@ -92,11 +99,11 @@ public class OBDAACDataBrowser extends JPanel {
         //thumbnailPreview = new ThumbnailPreview(this);
     }
 
-    private void showProgressDialog(int max) {
-        progressDialog = new JDialog();
+    private void showProgressDialog(Component parent, int max) {
+        progressDialog = new JDialog(SwingUtilities.getWindowAncestor(parent), "Downloading...", Dialog.ModalityType.APPLICATION_MODAL);
         progressDialog.setLayout(new BorderLayout());
         progressDialog.setSize(400, 100);
-        progressDialog.setLocationRelativeTo(this);
+        progressDialog.setLocationRelativeTo(parent);
 
         progressBar = new JProgressBar(0, max);
         progressBar.setValue(0);
@@ -104,10 +111,12 @@ public class OBDAACDataBrowser extends JPanel {
 
         progressDialog.add(new JLabel("Please wait..."), BorderLayout.NORTH);
         progressDialog.add(progressBar, BorderLayout.CENTER);
+        progressDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        // Run in a separate thread so UI stays responsive
-        SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
+        new Thread(() -> progressDialog.setVisible(true)).start(); // Run in a separate thread
     }
+
+
 
     private void updateProgressBar(int value) {
         if (progressBar != null) {
@@ -116,7 +125,9 @@ public class OBDAACDataBrowser extends JPanel {
     }
     private void hideProgressDialog() {
         if (progressDialog != null) {
+            progressDialog.setVisible(false);  // Optional, in case it's still visible
             progressDialog.dispose();
+            progressDialog = null;
         }
     }
 
@@ -343,6 +354,7 @@ public class OBDAACDataBrowser extends JPanel {
         };
 
         resultsTable = new JTable(tableModel);
+        imagePreviewHelper.attachToTable(resultsTable, fileLinkMap);
         resultsTable.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -352,21 +364,21 @@ public class OBDAACDataBrowser extends JPanel {
             }
         });
 
-        resultsTable.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                int row = resultsTable.rowAtPoint(e.getPoint());
-                int col = resultsTable.columnAtPoint(e.getPoint());
-
-                // Only show preview if hovering over the File Name column (e.g., column 0)
-                if (col == 0 && row >= 0) {
-                    String fileName = (String) tableModel.getValueAt(row, 0);
-                    showImagePreview(fileName, e.getLocationOnScreen());
-                } else {
-                    hideImagePreview();
-                }
-            }
-        });
+//        resultsTable.addMouseMotionListener(new MouseMotionAdapter() {
+//            @Override
+//            public void mouseMoved(MouseEvent e) {
+//                int row = resultsTable.rowAtPoint(e.getPoint());
+//                int col = resultsTable.columnAtPoint(e.getPoint());
+//
+//                // Only show preview if hovering over the File Name column (e.g., column 0)
+//                if (col == 0 && row >= 0) {
+//                    String fileName = (String) tableModel.getValueAt(row, 0);
+//                    showImagePreview(fileName, e.getLocationOnScreen());
+//                } else {
+//                    hideImagePreview();
+//                }
+//            }
+//        });
 
         resultsTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -500,7 +512,7 @@ public class OBDAACDataBrowser extends JPanel {
         }
 
         try {
-            String imageUrl = BrowseImagePreview.getPreviewUrl(fileName);
+            String imageUrl = getPreviewUrl(fileName);
             ImageIcon icon = BrowseImagePreview.loadPreviewImage(fileName);
             if (icon != null) {
                 imageLabel.setIcon(icon);
@@ -514,7 +526,6 @@ public class OBDAACDataBrowser extends JPanel {
             hideImagePreview();
         }
     }
-
     private void hideImagePreview() {
         if (imagePreviewWindow != null) {
             imagePreviewWindow.setVisible(false);
@@ -549,8 +560,10 @@ public class OBDAACDataBrowser extends JPanel {
             return;
         }
 
+        SwingUtilities.invokeLater(() -> showProgressDialog(this, filesToDownload.size()));
+
         new Thread(() -> {
-            SwingUtilities.invokeLater(() -> showProgressDialog(filesToDownload.size()));
+
             int downloadedCount = 0;
 
             for (int i = 0; i < filesToDownload.size(); i++) {
@@ -562,11 +575,15 @@ public class OBDAACDataBrowser extends JPanel {
                 }
                 int progress = i + 1;
                 SwingUtilities.invokeLater(() -> updateProgressBar(progress));
+                lockFileCheckbox(fileName);
             }
 
             int finalDownloadedCount = downloadedCount;
+// First hide the progress dialog
+            SwingUtilities.invokeLater(() -> hideProgressDialog());
+
+// Then show the message in a separate EDT task
             SwingUtilities.invokeLater(() -> {
-                hideProgressDialog();
                 JOptionPane.showMessageDialog(this, finalDownloadedCount + " file(s) downloaded to:\n" + selectedDir.getAbsolutePath());
             });
 
@@ -1061,9 +1078,9 @@ public class OBDAACDataBrowser extends JPanel {
 
             Files.createDirectories(outFile.getParent());
             Files.writeString(outFile, json.toString(4), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-            System.out.println("💾 Saved mission date ranges to: " + outFile.toAbsolutePath());
+            System.out.println("Saved mission date ranges to: " + outFile.toAbsolutePath());
         } catch (IOException e) {
-            System.err.println("❌ Failed to save mission date ranges: " + e.getMessage());
+            System.err.println("Failed to save mission date ranges: " + e.getMessage());
         }
     }
 
@@ -1192,6 +1209,12 @@ public class OBDAACDataBrowser extends JPanel {
                     resultsContainer.revalidate();
                     resultsContainer.repaint();
                 });
+                Window topLevelWindow = SwingUtilities.getWindowAncestor(resultsContainer);
+                if (topLevelWindow != null) {
+                    topLevelWindow.revalidate();
+                    topLevelWindow.repaint();
+                    topLevelWindow.pack(); // optional: resizes the window to fit content
+                }
             }
 
             // Setup pagination
