@@ -6,7 +6,7 @@
 
     <groupId>obdaac</groupId>
     <artifactId>OBDAAC-JavaFX-GUI</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version><!-- <version>1.0-SNAPSHOT</version>-->
     <packaging>jar</packaging>
 
     <name>OBDAAC JavaFX GUI</name>

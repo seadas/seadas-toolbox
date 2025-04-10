@@ -72,6 +72,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     Property l3bprodAutofill;
     Property flaguseAutofill;
     Property autoFillOther;
+    Property autoFillAll;
 
     Property favoriteFlaguseSection;
     Property fav1SetToDefault;
@@ -318,8 +319,18 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     public static final String PROPERTY_L2BIN_LONEAST_DEFAULT = "";
 
 
+    public static final String PROPERTY_L2BIN_PASS_ALL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".pass.all";
+    public static final String PROPERTY_L2BIN_PASS_ALL_LABEL = "Pass all fields";
+    public static final String PROPERTY_L2BIN_PASS_ALL_TOOLTIP = "<html>Pass all fields, otherwise only pass fields which are not the default value.</html>";
+    public static final boolean PROPERTY_L2BIN_PASS_ALL_DEFAULT = false;
+    
+    public static final String PROPERTY_L2BIN_AUTOFILL_ALL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".autofill.all";
+    public static final String PROPERTY_L2BIN_AUTOFILL_ALL_LABEL = "Autofill all fields with defaults";
+    public static final String PROPERTY_L2BIN_AUTOFILL_ALL_TOOLTIP = "<html>Autofills all fields with the  defaults. <br> Note: if a field is set in the preferences then it overrides the suite default.</html>";
+    public static final boolean PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT = true;
+
     public static final String PROPERTY_L2BIN_AUTOFILL_KEY = PROPERTY_L2BIN_ROOT_KEY + ".autofill.other";
-    public static final String PROPERTY_L2BIN_AUTOFILL_LABEL = "Autofill other fields with suite defaults";
+    public static final String PROPERTY_L2BIN_AUTOFILL_LABEL = "Autofill only fields with suite defaults";
     public static final String PROPERTY_L2BIN_AUTOFILL_TOOLTIP = "<html>Autofills other field with the suite defaults. <br> Note: if a field is set in the preferences then it overrides the suite default.</html>";
     public static final boolean PROPERTY_L2BIN_AUTOFILL_DEFAULT = true;
 
@@ -752,6 +763,8 @@ public final class OCSSW_L2binController extends DefaultConfigController {
         flaguseAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
         l3bprodAutofill = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
         autoFillOther = initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_KEY, PROPERTY_L2BIN_AUTOFILL_DEFAULT);
+        autoFillAll = initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_ALL_KEY, PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L2BIN_PASS_ALL_KEY, PROPERTY_L2BIN_PASS_ALL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY, PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY, PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_NULL_SUITE_DEFAULT);
         
@@ -1607,6 +1620,17 @@ public final class OCSSW_L2binController extends DefaultConfigController {
                 description = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_TOOLTIP)
         boolean l2binFlaguseAutofillDefault = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT;
 
+
+        @Preference(key = PROPERTY_L2BIN_PASS_ALL_KEY,
+                label = PROPERTY_L2BIN_PASS_ALL_LABEL,
+                description = PROPERTY_L2BIN_PASS_ALL_TOOLTIP)
+        boolean l2binPassAllDefault = PROPERTY_L2BIN_PASS_ALL_DEFAULT;
+        
+        @Preference(key = PROPERTY_L2BIN_AUTOFILL_ALL_KEY,
+                label = PROPERTY_L2BIN_AUTOFILL_ALL_LABEL,
+                description = PROPERTY_L2BIN_AUTOFILL_ALL_TOOLTIP)
+        boolean l2binAutofillAllDefault = PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT;
+
         @Preference(key = PROPERTY_L2BIN_AUTOFILL_KEY,
                 label = PROPERTY_L2BIN_AUTOFILL_LABEL,
                 description = PROPERTY_L2BIN_AUTOFILL_TOOLTIP)
@@ -2355,6 +2379,16 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     }
 
 
+    public static boolean getPreferencePassAll() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2BIN_PASS_ALL_KEY, PROPERTY_L2BIN_PASS_ALL_DEFAULT);
+    }
+
+
+    public static boolean getPreferenceAutoFillAll() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L2BIN_AUTOFILL_ALL_KEY, PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT);
+    }
 
 
     public static boolean getPreferenceAutoFillEnable() {

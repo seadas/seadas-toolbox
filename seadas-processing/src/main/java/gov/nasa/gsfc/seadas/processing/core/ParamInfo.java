@@ -51,6 +51,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     private String value = NULL_STRING;
     private Type type = Type.STRING;
     private String defaultValue = NULL_STRING;
+    private String defaultValueOriginal = NULL_STRING;  // default can get overridden and this is used to restore that if needed
     private String description = NULL_STRING;
     private String source = NULL_STRING;
     private boolean isBit = false;
@@ -69,6 +70,7 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
         setType(type);
         setValue(value);
         setDefaultValue(defaultValue);
+        setDefaultValueOriginal(defaultValue);
     }
 
     public ParamInfo(String name, String value, Type type) {
@@ -212,6 +214,34 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
     public boolean isDefault() {
         return getValue().equals(getDefaultValue());
     }
+
+
+    public String getDefaultValueOriginal() {
+        return defaultValueOriginal;
+    }
+
+    public boolean isDefaultOriginal() {
+        return getValue().equals(getDefaultValueOriginal());
+    }
+
+    public void setDefaultValueOriginal(String defaultValueOriginal) {
+        // Clean up and handle input exceptions
+        if (defaultValueOriginal == null) {
+            this.defaultValueOriginal = NULL_STRING;
+            return;
+        }
+
+        defaultValueOriginal = defaultValueOriginal.trim();
+
+        if (defaultValueOriginal.length() == 0) {
+            this.defaultValueOriginal = NULL_STRING;
+        } else if (getType() == Type.BOOLEAN) {
+            this.defaultValueOriginal = getStandardizedBooleanString(defaultValueOriginal);
+        } else {
+            this.defaultValueOriginal = defaultValueOriginal;
+        }
+    }
+
 
     protected void setDefaultValue(String defaultValue) {
         // Clean up and handle input exceptions
