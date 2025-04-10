@@ -1150,6 +1150,14 @@ private void loadMissionDateRangesFromFile() {
         String maxLon = maxLonField.getText().trim();
         boolean hasSpatial = !minLat.isEmpty() && !maxLat.isEmpty() && !minLon.isEmpty() && !maxLon.isEmpty();
 
+        String dayNightFlag = null;
+        if (dayButton.isSelected()) {
+            dayNightFlag = "Day";
+        } else if (nightButton.isSelected()) {
+            dayNightFlag = "Night";
+        }
+        // "Both" selected means we skip adding the flag
+
         int pageSize = 2000;
         int page = 1;
         int totalFetched = 0;
@@ -1175,6 +1183,11 @@ private void loadMissionDateRangesFromFile() {
                             .append(maxLon).append(",")
                             .append(maxLat);
                 }
+
+                if (dayNightFlag != null) {
+                    urlBuilder.append("&day_night_flag=").append(dayNightFlag);
+                }
+
 
                 URL url = new URL(urlBuilder.toString());
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -1325,9 +1338,9 @@ private void loadMissionDateRangesFromFile() {
         panel.setBorder(BorderFactory.createTitledBorder("Day/Night Filter"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JRadioButton dayButton = new JRadioButton("Day");
+        JRadioButton dayButton = new JRadioButton("Day", true);
         JRadioButton nightButton = new JRadioButton("Night");
-        JRadioButton bothButton = new JRadioButton("Both", true);
+        JRadioButton bothButton = new JRadioButton("Both");
 
         ButtonGroup group = new ButtonGroup();
         group.add(dayButton);
