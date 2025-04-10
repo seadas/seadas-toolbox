@@ -282,6 +282,7 @@ public class ParamUtils {
             //ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, value) : new ParamInfo(name, value, type, value);
             ParamInfo paramInfo = (type.equals(ParamInfo.Type.OFILE)) ? new OFileParamInfo(name, value, type, defaultValue) : new ParamInfo(name, value, type, defaultValue);
             paramInfo.setDescription(description);
+            paramInfo.setDefaultValueOriginal(paramInfo.getDefaultValue());
 
             int defaultColSpan = 1;
             if (colSpan != null) {
@@ -534,68 +535,58 @@ public class ParamUtils {
             if ("l2bin.xml".equals(paramXmlFileName)) {
                 switch (optionName) {
                     case OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceL3bprod());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceL3bprod(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceOutputWavelengths());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceOutputWavelengths(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_SUITE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSuite());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSuite(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
-
-
                     case OCSSW_L2binController.PROPERTY_L2BIN_FLAGUSE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceFlaguse());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceFlaguse(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
-
-
                     case OCSSW_L2binController.PROPERTY_L2BIN_RESOLUTION_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceResolution());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceResolution(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_AREA_WEIGHTING_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceAreaWeighting());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceAreaWeighting(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LATNORTH_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatnorth());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatnorth(),OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LATSOUTH_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatsouth());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatsouth(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LONWEST_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLonwest());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLonwest(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LONEAST_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLoneast());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLoneast(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
-
-
-
                     case OCSSW_L2binController.PROPERTY_L2BIN_SDAY_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSday());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSday(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_EDAY_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceEday());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceEday(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_DELTA_CROSS_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceDeltaCross());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceDeltaCross(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_NIGHT_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceNight());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceNight(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
-
-
-
                     case OCSSW_L2binController.PROPERTY_L2BIN_PRODTYPE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceProdtype());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceProdtype(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_ROW_GROUP_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceRowGroup());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceRowGroup(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_COMPOSITE_PROD_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeProd());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeProd(),OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeScheme());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeScheme(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
                         break;
                 }
             }
@@ -650,7 +641,21 @@ public class ParamUtils {
 
 
     private static void setParamInfoPreference(ParamInfo paramInfo, String preference) {
+        setParamInfoPreference(paramInfo, preference, false, false);
+    }
+
+    private static void setParamInfoPreference(ParamInfo paramInfo, String preference, boolean fillAll, boolean passAll) {
         if (paramInfo != null) {
+//            paramInfo.setDefaultValueOriginal(paramInfo.getDefaultValue());
+
+            if (fillAll) {
+                paramInfo.setValue(paramInfo.getDefaultValue());
+            }
+
+            if (passAll) {
+                paramInfo.setDefaultValue("");
+            }
+
             if (preference != null && preference.trim().length() > 0) {
                 paramInfo.setValue(preference);
             }

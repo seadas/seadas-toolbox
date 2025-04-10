@@ -1477,34 +1477,35 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                         boolean precedence = OCSSW_L2binController.getPreferenceAutoFillPrecedence();
                         boolean precedenceNullSuite = OCSSW_L2binController.getPreferenceAutoFillPrecedenceNullSuite();
+                        boolean passAll = OCSSW_L2binController.getPreferencePassAll();
 
-                        if (OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, precedenceNullSuite);
+                        if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, precedenceNullSuite, passAll);
                         }
 
-                        if (OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, precedenceNullSuite);
+                        if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, precedenceNullSuite, passAll);
                         }
 
-                        if (OCSSW_L2binController.getPreferenceAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_prod", "", precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_max", "", precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "minobs", "", precedence, precedenceNullSuite);
+                        if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceAutoFillEnable()) {
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_prod", "", precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_max", "", precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "minobs", "", precedence, precedenceNullSuite, passAll);
                         }
                     }
                 } catch (IOException e) {
@@ -1609,6 +1610,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     public void updateParamInfosFromAuxParFile(String parfile, String parameter, String prefValue, boolean precedence, boolean precedenceNullSuite) throws IOException {
+        updateParamInfosFromAuxParFile(parfile, parameter, prefValue, precedence, precedenceNullSuite, false);
+    }
+
+
+    public void updateParamInfosFromAuxParFile(String parfile, String parameter, String prefValue, boolean precedence, boolean precedenceNullSuite, boolean passAll) throws IOException {
 
         if (parameter == null || parameter.trim().length() == 0) {
             return;
@@ -1627,25 +1633,35 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return;
         }
 
+        if (passAll) {
+            paramInfo.setDefaultValue("");
+        } else {
+            paramInfo.setDefaultValue(paramInfo.getDefaultValueOriginal());
+        }
+
         boolean paramValueSet = false;
 
-
         // todo this handles suite precedence
-
         String valueOriginal = paramInfo.getValue();
         if (valueOriginal == null) {
             valueOriginal = "";
         }
-        if (prefValue == null) {
-            prefValue = "";
+
+        if (prefValue != null && prefValue.length() > 0) {
+            if (!prefValue.equals(paramInfo.getValue())) {
+                updateParamInfo(parameter, prefValue);
+                fireEvent(parameter, paramInfo.getValue(), prefValue);
+            }
+
+        } else {
+            if (!valueOriginal.equals(paramInfo.getDefaultValueOriginal())) {
+                updateParamInfo(parameter, paramInfo.getDefaultValueOriginal());
+                fireEvent(parameter, valueOriginal, paramInfo.getDefaultValueOriginal());
+            }
         }
 
-        if (!prefValue.equals(valueOriginal)) {
-            updateParamInfo(parameter, prefValue);
-            fireEvent(parameter, valueOriginal, prefValue);
-        }
 
-        if (prefValue.length() > 0) {
+        if (prefValue != null && prefValue.length() > 0) {
             if (suiteIsSet) {
                 if (precedence) {
                     paramValueSet = true;
@@ -1657,12 +1673,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         }
 
-
-
-
-        if (paramValueSet) {
-            return;
-        }
 
 
         BufferedReader br = new BufferedReader(new FileReader(parfile));
@@ -1694,9 +1704,15 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                                 originalValue = "";
                             }
 
-                            updateParamInfo(parameter, value);
-                            fireEvent(parameter, originalValue, value);
-                            return;
+                            if (!passAll) {
+                                paramInfo.setDefaultValue(value);
+                            }
+
+                            if (!paramValueSet) {
+                                updateParamInfo(parameter, value);
+                                fireEvent(parameter, originalValue, value);
+                                return;
+                            }
                         }
                     }
                 }
@@ -1707,14 +1723,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        if (prefValue.length() > 0) {
-            paramValueSet = true;
-        }
-
-        if (!paramValueSet) {
-            updateParamInfo(parameter, paramInfo.getDefaultValue());
-            fireEvent(parameter, valueOriginal, paramInfo.getDefaultValue());
-        }
+        return;
     }
 
 
