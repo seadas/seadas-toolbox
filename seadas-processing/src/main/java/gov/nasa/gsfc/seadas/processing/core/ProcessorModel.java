@@ -1650,16 +1650,20 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             valueOriginal = "";
         }
 
+        String valueNew = "";
+
         if (prefValue != null && prefValue.length() > 0) {
             if (!prefValue.equals(paramInfo.getValue())) {
-                updateParamInfo(parameter, prefValue);
-                fireEvent(parameter, paramInfo.getValue(), prefValue);
+                valueNew = prefValue;
+//                updateParamInfo(parameter, prefValue);
+//                fireEvent(parameter, paramInfo.getValue(), prefValue);
             }
 
         } else {
             if (!valueOriginal.equals(paramInfo.getDefaultValueOriginal())) {
-                updateParamInfo(parameter, paramInfo.getDefaultValueOriginal());
-                fireEvent(parameter, valueOriginal, paramInfo.getDefaultValueOriginal());
+                valueNew = paramInfo.getDefaultValueOriginal();
+//                updateParamInfo(parameter, paramInfo.getDefaultValueOriginal());
+//                fireEvent(parameter, valueOriginal, paramInfo.getDefaultValueOriginal());
             }
         }
 
@@ -1712,9 +1716,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                             }
 
                             if (!paramValueSet) {
-                                updateParamInfo(parameter, value);
-                                fireEvent(parameter, originalValue, value);
-                                return;
+                                valueNew = value;
+//                                updateParamInfo(parameter, value);
+//                                fireEvent(parameter, originalValue, value);
+                                break;
                             }
                         }
                     }
@@ -1725,6 +1730,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             br.close();
         }
 
+        updateParamInfo(parameter, valueNew);
+        fireEvent(parameter, valueOriginal, valueNew);
 
         return;
     }

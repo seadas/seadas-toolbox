@@ -710,6 +710,12 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
             enablement(context);
         });
 
+        autoFillAll.addPropertyChangeListener(evt -> {
+            enablement(context);
+            handleFillAll();
+        });
+
+
 
 
         // Add listeners to all components in order to uncheck restoreDefaults checkbox accordingly
@@ -736,6 +742,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         boolean autoFillOtherBool =  autoFillOther.getValue();
         boolean autoFillOtherProduct =  autoFillProduct.getValue();
+        boolean autoFillAllBool = autoFillAll.getValue();
 
         if (autoFillOtherBool || autoFillOtherProduct) {
             context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, true);
@@ -744,6 +751,20 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
             context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, false);
             context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY, false);
         }
+
+
+
+
+        if (autoFillAllBool) {
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, false);
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_KEY, false);
+        } else {
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, true);
+            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_KEY, true);
+        }
+
+
+
 //        context.bindEnabledState(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, PROPERTY_L3MAPGEN_AUTOFILL_KEY);
 //        context.bindEnabledState(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY, PROPERTY_L3MAPGEN_AUTOFILL_KEY);
 
@@ -835,6 +856,32 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
             context.setComponentsEnabled(PROPERTY_RESTORE_DEFAULTS_KEY, false);
         }
     }
+
+
+
+    /**
+     * Handles autofillall action
+     *
+     * @author Daniel Knowles
+     */
+    private void handleFillAll() {
+        if (propertyValueChangeEventsEnabled) {
+            propertyValueChangeEventsEnabled = false;
+            try {
+                boolean autoFillAllValue = autoFillAll.getValue();
+                autoFillProduct.setValue(autoFillAllValue);
+                autoFillOther.setValue(autoFillAllValue);
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
+            propertyValueChangeEventsEnabled = true;
+        }
+    }
+
+
+
+
+
 
 
 
@@ -967,11 +1014,6 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     static class SeadasToolboxBean {
 
 
-        @Preference(key = PROPERTY_L3MAPGEN_PASS_ALL_KEY,
-                label = PROPERTY_L3MAPGEN_PASS_ALL_LABEL,
-                description = PROPERTY_L3MAPGEN_PASS_ALL_TOOLTIP)
-        boolean l2binPassAllDefault = PROPERTY_L3MAPGEN_PASS_ALL_DEFAULT;
-
         @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY,
                 label = PROPERTY_L3MAPGEN_AUTOFILL_ALL_LABEL,
                 description = PROPERTY_L3MAPGEN_AUTOFILL_ALL_TOOLTIP)
@@ -987,6 +1029,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_AUTOFILL_TOOLTIP)
         boolean l3mapgenAutofillDefault = PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT;
 
+
+
         @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY,
                 label = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL,
                 description = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP)
@@ -996,6 +1040,12 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 label = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_LABEL,
                 description = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_TOOLTIP)
         boolean l3mapgenAutofillPrecedenceNullSuiteDefault = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_DEFAULT;
+
+
+        @Preference(key = PROPERTY_L3MAPGEN_PASS_ALL_KEY,
+                label = PROPERTY_L3MAPGEN_PASS_ALL_LABEL,
+                description = PROPERTY_L3MAPGEN_PASS_ALL_TOOLTIP)
+        boolean l2binPassAllDefault = PROPERTY_L3MAPGEN_PASS_ALL_DEFAULT;
 
 
         @Preference(key = PROPERTY_L3MAPGEN_OFILE_NAMING_SCHEME_SECTION_KEY,
