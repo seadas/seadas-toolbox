@@ -346,6 +346,11 @@ private void loadMissionDateRangesFromFile() {
         resultsPerPageSpinner = new JSpinner(new SpinnerNumberModel(25, 1, 1000, 1));
         resultsPerPageSpinner.setPreferredSize(new Dimension(80, 25));
         paginationPanel.add(resultsPerPageSpinner);
+
+        //TODO: Add a button to refresh the metadata
+//        JButton refreshButton = new JButton("Refresh Metadata");
+//        refreshButton.addActionListener(e -> refreshMetadata());
+//        paginationPanel.add(refreshButton);
         add(paginationPanel, gbc);
 
         gbc.gridy++;
@@ -1265,6 +1270,34 @@ private void loadMissionDateRangesFromFile() {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void refreshMetadata() {
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "This will refresh metadata and mission date ranges.\nDo you want to continue?",
+                "Refresh Metadata", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                // Run scripts
+                PythonScriptRunner_old.runAllScripts();
+
+                // Reload data
+                loadMetadata();  // Should re-read updated JSON files
+                missionDateRanges = metadataLoader.loadMissionDateRanges();
+
+                // Repopulate dropdowns
+                populateSatelliteDropdown();
+                updateLevels();
+                updateProducts();
+
+                JOptionPane.showMessageDialog(this, "✅ Metadata and date ranges refreshed successfully.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "❌ Failed to refresh metadata.\n" + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
     }
 
