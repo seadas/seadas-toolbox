@@ -131,43 +131,71 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-    private void loadMissionDateRangesFromFile() {
-        missionDateRanges = new HashMap<>();
-
-        Path filePath = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
-                "src", "main", "resources", "json-files", "mission_date_ranges_from_java.json");
-
-//        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
-//            JSONTokener tokener = new JSONTokener(reader);
-//            JSONObject json = new JSONObject(tokener);
+//    private void loadMissionDateRangesFromFile() {
+//        missionDateRanges = new HashMap<>();
 //
-//            for (String key : json.keySet()) {
-//                JSONObject dateRange = json.getJSONObject(key);
-//                String start = dateRange.optString("start", null);
-//                String end = dateRange.optString("end", "present");
-//                missionDateRanges.put(key, new String[]{start, end});
+//        Path filePath = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
+//                "src", "main", "resources", "json-files", "mission_date_ranges.json");
+//            Path missionRangePath = filePath.resolve("mission_date_ranges.json");
+//            if (Files.exists(missionRangePath)) {
+//                try (BufferedReader reader = Files.newBufferedReader(missionRangePath, StandardCharsets.UTF_8)) {
+//                    JSONObject json = new JSONObject(new JSONTokener(reader));
+//                    for (String key : json.keySet()) {
+//                        JSONObject dates = json.getJSONObject(key);
+//                        String start = dates.optString("start", null);
+//                        String end = dates.optString("end", "present");
+//                        if (start != null) {
+//                            missionDateRanges.put(key, new String[]{start, end});
+//                        }
+//                    }
+//                } catch (IOException e) {
+//                    System.err.println("Failed to read mission date ranges: " + e.getMessage());
+//                }
 //            }
+//    }
+private void loadMissionDateRangesFromFile() {
+    missionDateRanges = new HashMap<>();
 
-            // ---------- 3. Load mission_date_ranges.json if exists ----------
-            Path missionRangePath = filePath.resolve("mission_date_ranges.json");
-            if (Files.exists(missionRangePath)) {
-                try (BufferedReader reader = Files.newBufferedReader(missionRangePath, StandardCharsets.UTF_8)) {
-                    JSONObject json = new JSONObject(new JSONTokener(reader));
-                    for (String key : json.keySet()) {
-                        JSONObject dates = json.getJSONObject(key);
-                        String start = dates.optString("start", null);
-                        String end = dates.optString("end", "present");
-                        if (start != null) {
-                            missionDateRanges.put(key, new String[]{start, end});
-                        }
-                    }
-                } catch (IOException e) {
-                    System.err.println("Failed to read mission date ranges: " + e.getMessage());
-                }
-            }
-            //System.out.println("Loaded mission date ranges from JSON.");
+    // First try external file override
+    Path externalFile = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
+            "src", "main", "resources", "json-files", "mission_date_ranges.json");
 
+    if (Files.exists(externalFile)) {
+        System.out.println("Loading mission_date_ranges.json from external path: " + externalFile.toAbsolutePath());
+        try (BufferedReader reader = Files.newBufferedReader(externalFile, StandardCharsets.UTF_8)) {
+            loadDateRangesFromReader(reader);
+            return;
+        } catch (IOException e) {
+            System.err.println("Failed to read external mission date ranges: " + e.getMessage());
+        }
     }
+
+    // Otherwise fall back to classpath (e.g., bundled in JAR)
+    System.out.println("Loading mission_date_ranges.json from classpath");
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream("json-files/mission_date_ranges.json")) {
+        if (input != null) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+            loadDateRangesFromReader(reader);
+        } else {
+            System.err.println("Could not find mission_date_ranges.json in resources");
+        }
+    } catch (IOException e) {
+        System.err.println("Failed to read mission date ranges from classpath: " + e.getMessage());
+    }
+}
+
+    private void loadDateRangesFromReader(BufferedReader reader) throws IOException {
+        JSONObject json = new JSONObject(new JSONTokener(reader));
+        for (String key : json.keySet()) {
+            JSONObject dates = json.getJSONObject(key);
+            String start = dates.optString("start", null);
+            String end = dates.optString("end", "present");
+            if (start != null) {
+                missionDateRanges.put(key, new String[]{start, end});
+            }
+        }
+    }
+
 
     private void loadMetadata() {
         boolean usedExternal = false;
@@ -1074,7 +1102,7 @@ public class OBDAACDataBrowser extends JPanel {
                     "main",
                     "resources",
                     "json-files",
-                    "mission_date_ranges_from_java.json");
+                    "mission_date_ranges.json");
 
             Files.createDirectories(outFile.getParent());
             Files.writeString(outFile, json.toString(4), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);

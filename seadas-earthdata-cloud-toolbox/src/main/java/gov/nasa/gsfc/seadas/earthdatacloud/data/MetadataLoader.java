@@ -59,7 +59,7 @@ public class MetadataLoader {
         missionDateRanges = new HashMap<>();
 
         Path filePath = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
-                "src", "main", "resources", "json-files", "mission_date_ranges_from_java.json");
+                "src", "main", "resources", "json-files", "mission_date_ranges.json");
 
         try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
             JSONTokener tokener = new JSONTokener(reader);

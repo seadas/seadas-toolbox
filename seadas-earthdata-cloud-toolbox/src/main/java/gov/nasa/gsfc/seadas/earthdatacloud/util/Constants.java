@@ -15,7 +15,6 @@ public class Constants {
 
     public static final String METADATA_JSON = "obdaac_metadata.json";
     public static final String MISSION_RANGES_JSON = "mission_date_ranges.json";
-    public static final String MISSION_RANGES_GENERATED_JSON = "mission_date_ranges_from_java.json";
 
     public static final int DEFAULT_WIDTH = 850;
     public static final int DEFAULT_HEIGHT = 600;
