@@ -150,8 +150,8 @@
 
         <option type="string">
             <name>oformat</name>
-            <value>netCDF4</value>
-            <default></default>
+            <value></value>
+            <default>netCDF4</default>
             <!--            <subPanelIndex>2</subPanelIndex>-->
             <description>output file format</description>
             <source>default</source>
@@ -192,7 +192,7 @@
         <option type="int">
             <name>deflate</name>
             <value></value>
-            <default></default>
+            <default>4</default>
             <source>default</source>
             <description>deflation level</description>
             <usedAs>option</usedAs>
@@ -206,7 +206,7 @@
         <option type="int">
             <name>num_cache</name>
             <value></value>
-            <default></default>
+            <default>500</default>
             <!--            <subPanelIndex>2</subPanelIndex>-->
             <source>default</source>
             <description>number of rows to cache in memory</description>
@@ -266,8 +266,8 @@
 
         <option type="string">
             <name>projection</name>
-            <value>platecarree</value>
-            <default></default>
+            <value></value>
+            <default>platecarree</default>
             <subPanelIndex>1</subPanelIndex>
             <description>proj.4 projection string or one of the following predefined projections:</description>
             <source>default</source>
@@ -621,8 +621,8 @@
 
         <option type="string">
             <name>interp</name>
-            <value>nearest</value>
-            <default></default>
+            <value></value>
+            <default>nearest</default>
             <subPanelIndex>1</subPanelIndex>
             <description>interpolation method:</description>
             <source>default</source>
@@ -701,7 +701,7 @@
         <option type="float">
             <name>fudge</name>
             <value></value>
-            <default></default>
+            <default>1.0</default>
             <subPanelIndex>1</subPanelIndex>
             <source>default</source>
             <description>fudge factor used to modify size of L3 pixels</description>
@@ -717,10 +717,10 @@
 
         <option type="float">
             <name>threshold</name>
-            <value>0</value>
-            <subPanelIndex>1</subPanelIndex>
-            <default></default>
+            <value></value>
+            <default>0</default>
             <source>default</source>
+            <subPanelIndex>1</subPanelIndex>
             <description>minimum percentage of filled pixels before an image is generated</description>
             <usedAs>option</usedAs>
             <colSpan>2</colSpan>
@@ -869,8 +869,8 @@
 
         <option type="boolean">
             <name>apply_pal</name>
-            <value>true</value>
-            <default></default>
+            <value></value>
+            <default>true</default>
             <source>default</source>
             <description>apply color palette</description>
             <usedAs>option</usedAs>
@@ -1034,8 +1034,8 @@
 
         <option type="boolean">
             <name>use_transparency</name>
-            <value>false</value>
-            <default></default>
+            <value></value>
+            <default>false</default>
             <source>default</source>
             <description>make missing data transparent (only valid for color PNG and TIFF)</description>
             <usedAs>option</usedAs>
@@ -1047,8 +1047,8 @@
 
         <option type="boolean">
             <name>mask_land</name>
-            <value>false</value>
-            <default></default>
+            <value></value>
+            <default>false</default>
             <source>default</source>
             <description>mask land</description>
             <usedAs>option</usedAs>
@@ -1060,7 +1060,7 @@
         <option type="string">
             <name>rgb_land</name>
             <value></value>
-            <default></default>
+            <default>160,82,45</default>
             <source>default</source>
             <description>land colors (default=160,82,45)</description>
             <usedAs>option</usedAs>
@@ -1090,8 +1090,8 @@
 
         <option type="boolean">
             <name>use_rgb</name>
-            <value>false</value>
-            <default></default>
+            <value></value>
+            <default>false</default>
             <source>default</source>
             <description>should we use product_rgb to make a psudo true color image</description>
             <usedAs>option</usedAs>
@@ -1103,7 +1103,7 @@
         <option type="string">
             <name>product_rgb</name>
             <value></value>
-            <default></default>
+            <default>rhos_670,rhos_555,rhos_412</default>
             <source>default</source>
             <description> 3 products to use for RGB.  Default is sensor specific</description>
             <usedAs>option</usedAs>

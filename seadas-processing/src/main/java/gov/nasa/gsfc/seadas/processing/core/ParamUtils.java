@@ -403,22 +403,26 @@ public class ParamUtils {
 //
 
             if ("l3mapgen.xml".equals(paramXmlFileName)) {
+                boolean passAll = OCSSW_L3mapgenController.getPreferencePassAll();
+                boolean autoFillAll = OCSSW_L3mapgenController.getPreferenceAutoFillAll();
+                
+                
                 switch (optionName) {
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceProduct());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceProduct(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceWavelength3D());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceWavelength3D(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WAVELENGTH_3D_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SUITE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceSuite());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceSuite(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SUITE_TOOLTIP);
                         break;
 
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceProjection());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceProjection(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP);
                         break;
 
@@ -444,88 +448,88 @@ public class ParamUtils {
 //                        paramInfo.addValidValueInfo(paramValidValueInfo);
 
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RESOLUTION_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceResolution());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceResolution(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceWidth());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceWidth(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WIDTH_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceInterp());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceInterp(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_INTERP_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceNorth());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceNorth(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NORTH_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SOUTH_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceSouth());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceSouth(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SOUTH_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WEST_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceWest());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceWest(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_WEST_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceEast());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceEast(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_EAST_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FUDGE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceFudge());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceFudge(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_FUDGE_TOOLTIP);
                         break;
 
 
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceApplyPal());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceApplyPal(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_APPLY_PAL_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PALFILE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferencePalfile());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferencePalfile(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PALFILE_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMIN_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceDataMin());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceDataMin(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMIN_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMAX_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceDataMax());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceDataMax(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_DATAMAX_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SCALE_TYPE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceScaleType());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceScaleType(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_SCALE_TYPE_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceUseTransparency());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceUseTransparency(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_TRANSPARENCY_TOOLTIP);
                         break;
 
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceMaskLand());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceMaskLand(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_MASK_LAND_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RGB_LAND_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceRGBLand());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceRGBLand(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RGB_LAND_TOOLTIP);
                         break;
 
 
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceUseRGB());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceUseRGB(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_USE_RGB_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceProductRGB());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceProductRGB(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PRODUCT_RGB_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NUM_CACHE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceNumCache());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceNumCache(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_NUM_CACHE_TOOLTIP);
                         break;
                     case OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFORMAT_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceOformat());
+                        setParamInfoPreference(paramInfo, OCSSW_L3mapgenController.getPreferenceOformat(), autoFillAll, passAll);
                         setParamInfoToolTip(paramInfo, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP);
                         break;
                 }
@@ -533,60 +537,63 @@ public class ParamUtils {
 
 
             if ("l2bin.xml".equals(paramXmlFileName)) {
+                boolean passAll = OCSSW_L2binController.getPreferencePassAll();
+                boolean autoFillAll = OCSSW_L2binController.getPreferenceAutoFillAll();
+                
                 switch (optionName) {
                     case OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceL3bprod(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceL3bprod(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_OUTPUT_WAVELENGTHS_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceOutputWavelengths(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceOutputWavelengths(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_SUITE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSuite(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSuite(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_FLAGUSE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceFlaguse(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceFlaguse(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_RESOLUTION_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceResolution(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceResolution(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_AREA_WEIGHTING_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceAreaWeighting(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceAreaWeighting(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LATNORTH_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatnorth(),OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatnorth(),autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LATSOUTH_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatsouth(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLatsouth(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LONWEST_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLonwest(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLonwest(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_LONEAST_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLoneast(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceLoneast(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_SDAY_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSday(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceSday(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_EDAY_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceEday(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceEday(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_DELTA_CROSS_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceDeltaCross(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceDeltaCross(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_NIGHT_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceNight(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceNight(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_PRODTYPE_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceProdtype(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceProdtype(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_ROW_GROUP_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceRowGroup(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceRowGroup(), autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_COMPOSITE_PROD_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeProd(),OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeProd(),autoFillAll, passAll);
                         break;
                     case OCSSW_L2binController.PROPERTY_L2BIN_COMPOSITE_SCHEME_LABEL:
-                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeScheme(), OCSSW_L2binController.getPreferenceAutoFillAll(), OCSSW_L2binController.getPreferencePassAll());
+                        setParamInfoPreference(paramInfo, OCSSW_L2binController.getPreferenceCompositeScheme(), autoFillAll, passAll);
                         break;
                 }
             }

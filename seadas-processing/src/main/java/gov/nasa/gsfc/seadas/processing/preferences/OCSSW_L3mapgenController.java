@@ -54,6 +54,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     Property restoreDefaults;
     Property autoFillOther;
+    Property autoFillAll;
     Property autoFillProduct;
     Property projection;
     Property north;
@@ -108,6 +109,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     // Preferences property prefix
     private static final String PROPERTY_L3MAPGEN_ROOT_KEY = SeadasToolboxDefaults.PROPERTY_SEADAS_ROOT_KEY + ".l3mapgen";
+
+    public static final String PROPERTY_L3MAPGEN_PASS_ALL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".pass.all";
+    public static final String PROPERTY_L3MAPGEN_PASS_ALL_LABEL = "Pass all fields";
+    public static final String PROPERTY_L3MAPGEN_PASS_ALL_TOOLTIP = "<html>Pass all fields, otherwise only pass fields which are not the default value.</html>";
+    public static final boolean PROPERTY_L3MAPGEN_PASS_ALL_DEFAULT = false;
+
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.all";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_ALL_LABEL = "Autofill all fields with defaults";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_ALL_TOOLTIP = "<html>Autofills all fields with the  defaults. <br> Note: if a field is set in the preferences then it overrides the suite default.</html>";
+    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT = true;
+    
     
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.product";
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_LABEL = "Autofill field 'product' with suite defaults";
@@ -160,7 +172,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".projection";
     public static final String PROPERTY_L3MAPGEN_PROJECTION_LABEL = "projection";
     public static final String PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP = "Projection";
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_DEFAULT = "platecarree";
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_DEFAULT = "";
 
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".resolution";
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_LABEL = "resolution";
@@ -286,7 +298,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_OFORMAT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".oformat";
     public static final String PROPERTY_L3MAPGEN_OFORMAT_LABEL = "oformat";
     public static final String PROPERTY_L3MAPGEN_OFORMAT_TOOLTIP = "Field 'oformat'";
-    public static final String PROPERTY_L3MAPGEN_OFORMAT_DEFAULT = "netCDF4";
+    public static final String PROPERTY_L3MAPGEN_OFORMAT_DEFAULT = "";
 
 
 
@@ -488,6 +500,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
+        autoFillAll = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_PASS_ALL_KEY, PROPERTY_L3MAPGEN_PASS_ALL_DEFAULT);
         autoFillOther = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT);
         autoFillProduct = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT);
@@ -953,6 +967,15 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     static class SeadasToolboxBean {
 
 
+        @Preference(key = PROPERTY_L3MAPGEN_PASS_ALL_KEY,
+                label = PROPERTY_L3MAPGEN_PASS_ALL_LABEL,
+                description = PROPERTY_L3MAPGEN_PASS_ALL_TOOLTIP)
+        boolean l2binPassAllDefault = PROPERTY_L3MAPGEN_PASS_ALL_DEFAULT;
+
+        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY,
+                label = PROPERTY_L3MAPGEN_AUTOFILL_ALL_LABEL,
+                description = PROPERTY_L3MAPGEN_AUTOFILL_ALL_TOOLTIP)
+        boolean l2binAutofillAllDefault = PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT;
 
         @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY,
                 label = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_LABEL,
@@ -1346,6 +1369,17 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     }
 
 
+
+    public static boolean getPreferencePassAll() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L3MAPGEN_PASS_ALL_KEY, PROPERTY_L3MAPGEN_PASS_ALL_DEFAULT);
+    }
+
+
+    public static boolean getPreferenceAutoFillAll() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT);
+    }
 
     public static boolean getPreferenceAutoFillOther() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();

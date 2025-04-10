@@ -1367,31 +1367,34 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     if (auxParFile.exists()) {
                         boolean precedence = OCSSW_L3mapgenController.getPreferenceAutoFillPrecedence();
                         boolean precedenceNullSuite = OCSSW_L3mapgenController.getPreferenceAutoFillPrecedenceNullSuite();
-                        if (OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D(), precedence, precedenceNullSuite);
+                        boolean passAll = OCSSW_L3mapgenController.getPreferencePassAll();
+
+
+                        if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D(), precedence, precedenceNullSuite, passAll);
                         }
 
-                        if (OCSSW_L3mapgenController.getPreferenceAutoFillOther()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "width",  "", precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "threshold",  "", precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "land",  "", precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "palfile", OCSSW_L3mapgenController.getPreferencePalfile(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamin", OCSSW_L3mapgenController.getPreferenceDataMin(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamax", OCSSW_L3mapgenController.getPreferenceDataMax(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "scale_type", OCSSW_L3mapgenController.getPreferenceScaleType(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_transparency", OCSSW_L3mapgenController.getPreferenceUseTransparency(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "num_cache", OCSSW_L3mapgenController.getPreferenceNumCache(), precedence, precedenceNullSuite);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat(), precedence, precedenceNullSuite);
+                        if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillOther()) {
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "width",  "", precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "threshold",  "", precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "land",  "", precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "palfile", OCSSW_L3mapgenController.getPreferencePalfile(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamin", OCSSW_L3mapgenController.getPreferenceDataMin(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamax", OCSSW_L3mapgenController.getPreferenceDataMax(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "scale_type", OCSSW_L3mapgenController.getPreferenceScaleType(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_transparency", OCSSW_L3mapgenController.getPreferenceUseTransparency(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "num_cache", OCSSW_L3mapgenController.getPreferenceNumCache(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat(), precedence, precedenceNullSuite, passAll);
 
                         }
                     }
