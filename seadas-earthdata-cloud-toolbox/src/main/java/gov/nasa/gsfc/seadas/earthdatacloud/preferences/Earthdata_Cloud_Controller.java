@@ -45,7 +45,9 @@ import java.awt.*;
         displayName = "#Options_DisplayName_Earthdata_Cloud",
         keywords = "#Options_Keywords_Earthdata_Cloud",
         keywordsCategory = "General Tools",
-        id = "Earthdata_Cloud_preferences")
+        id = "Earthdata_Cloud_preferences",
+        position = 7)
+
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_Earthdata_Cloud=Earthdata Cloud",
         "Options_Keywords_Earthdata_Cloud=seadas, earthdata, cloud"
