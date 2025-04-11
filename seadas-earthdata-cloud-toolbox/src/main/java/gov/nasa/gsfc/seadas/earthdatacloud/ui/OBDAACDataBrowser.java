@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.ImagePreviewHelper;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.MissionNameWriter;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner;
@@ -306,6 +307,17 @@ private void loadMissionDateRangesFromFile() {
                 // Set tooltip on individual components
                 ((JComponent) startDatePicker.getComponent(0)).setToolTipText(tooltip);
                 ((JComponent) startDatePicker.getComponent(1)).setToolTipText(tooltip);
+//                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//                if (startDatePicker.getModel().getValue() != null) {
+//                    startDatePicker.getModel().setValue("");
+//                }
+//                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//                Date minDate1 = sdf.parse("2025 Apr 2");
+//                Date maxDate1 = sdf.parse("2025 Apr 3");
+                startDatePicker.getModel().setYear(2025);
+                startDatePicker.getModel().setDay(3);
+                startDatePicker.getModel().setMonth(2);
+
                 ((JComponent) endDatePicker.getComponent(0)).setToolTipText(tooltip);
                 ((JComponent) endDatePicker.getComponent(1)).setToolTipText(tooltip);
 
@@ -479,7 +491,7 @@ private void loadMissionDateRangesFromFile() {
         resultsContainer.setPreferredSize(new Dimension(750, 400));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
-        resultsContainer.add(scrollPane, BorderLayout.CENTER);
+        resultsContainer.add(scrollPane, BorderLayout.WEST);
         resultsContainer.add(createPaginationPanel(), BorderLayout.SOUTH);
         resultsContainer.setVisible(false); // 👈 initially hidden
 
@@ -493,8 +505,19 @@ private void loadMissionDateRangesFromFile() {
         add(resultsContainer, gbc);
 
 
+
         if (satelliteDropdown.getItemCount() > 0) {
-            satelliteDropdown.setSelectedIndex(0);
+            int satelliteIndex = 0;
+            String satellitePref = Earthdata_Cloud_Controller.getPreferenceSatellite();
+            if (satellitePref != null && satellitePref.trim().length() > 0) {
+                for (int i = 0; i < satelliteDropdown.getItemCount(); i++) {
+                    String satellite = (String) satelliteDropdown.getItemAt(i);
+                    if (satellitePref.trim().equalsIgnoreCase(satellite)) {
+                        satelliteIndex = i;
+                    }
+                }
+            }
+            satelliteDropdown.setSelectedIndex(satelliteIndex);
             updateLevelsAndProducts();
         }
     }
@@ -755,7 +778,18 @@ private void loadMissionDateRangesFromFile() {
 
         levelDropdown.addActionListener(e -> updateProducts());
         if (levelDropdown.getItemCount() > 0) {
-            levelDropdown.setSelectedIndex(0);
+            int levelIndex = 0;
+            String dataLevelPref = Earthdata_Cloud_Controller.getPreferenceDataLevel();
+            if (dataLevelPref != null && dataLevelPref.trim().length() > 0) {
+                for (int i = 0; i < levelDropdown.getItemCount(); i++) {
+                    String level = (String) levelDropdown.getItemAt(i);
+                    if (dataLevelPref.trim().equalsIgnoreCase(level)) {
+                        levelIndex = i;
+                    }
+                }
+            }
+
+            levelDropdown.setSelectedIndex(levelIndex);
             updateProducts();
         }
         productDropdown.setRenderer(new DefaultListCellRenderer() {
@@ -800,10 +834,30 @@ private void loadMissionDateRangesFromFile() {
             Collections.sort(productNames);
 
             // Populate dropdown
+//            int i = 0;
+            int selectedIndex = 0;
             for (String name : productNames) {
                 productDropdown.addItem(name);
+//                if ("BGC".equals(name)) {
+//                    selectedIndex = i;
+//                }
                 productNameTooltips.put(name, tooltipMap.get(name));
+//                i++;
             }
+
+            String productPref = Earthdata_Cloud_Controller.getPreferenceProduct();
+            if (productPref != null && productPref.trim().length() > 0) {
+                for (int i = 0; i < productDropdown.getItemCount(); i++) {
+                    String product = (String) productDropdown.getItemAt(i);
+                    if (productPref.trim().equalsIgnoreCase(product)) {
+                        selectedIndex = i;
+                    }
+                }
+            }
+
+
+
+            productDropdown.setSelectedIndex(selectedIndex);
         }
     }
 
@@ -950,7 +1004,7 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        minLatField = new JTextField();
+        minLatField = new JTextField("Min Lat Danny");
         panel.add(minLatField, gbc);
 
         // Max Lat
@@ -963,7 +1017,7 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        maxLatField = new JTextField();
+        maxLatField = new JTextField("Max Lat Danny");
         panel.add(maxLatField, gbc);
 
         // Min Lon
@@ -976,7 +1030,7 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        minLonField = new JTextField();
+        minLonField = new JTextField("Min Lon Danny");
         panel.add(minLonField, gbc);
 
         // Max Lon
@@ -989,7 +1043,7 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        maxLonField = new JTextField();
+        maxLonField = new JTextField("Max Lon Danny");
         panel.add(maxLonField, gbc);
 
         return panel;
