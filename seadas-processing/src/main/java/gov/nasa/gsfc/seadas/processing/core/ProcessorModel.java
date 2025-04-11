@@ -1366,35 +1366,45 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                     if (auxParFile.exists()) {
                         boolean precedence = OCSSW_L3mapgenController.getPreferenceAutoFillPrecedence();
-                        boolean precedenceNullSuite = OCSSW_L3mapgenController.getPreferenceAutoFillPrecedenceNullSuite();
                         boolean passAll = OCSSW_L3mapgenController.getPreferencePassAll();
 
 
                         if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D(), precedence, passAll);
                         }
 
                         if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillOther()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "width",  "", precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "threshold",  "", precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "land",  "", precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "palfile", OCSSW_L3mapgenController.getPreferencePalfile(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamin", OCSSW_L3mapgenController.getPreferenceDataMin(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamax", OCSSW_L3mapgenController.getPreferenceDataMax(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "scale_type", OCSSW_L3mapgenController.getPreferenceScaleType(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_transparency", OCSSW_L3mapgenController.getPreferenceUseTransparency(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "num_cache", OCSSW_L3mapgenController.getPreferenceNumCache(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection(), precedence, passAll);
+
+                            // replace smi if specified in preferences
+                            ParamInfo projectionParamInfo = paramList.getInfo("projection");
+                            if (projectionParamInfo != null && "smi".equals(projectionParamInfo.getValue())) {
+                                String smiReplacement = OCSSW_L3mapgenController.getPreferenceProjectionSmiReplacement();
+                                    if (smiReplacement != null && smiReplacement.trim().length() > 0) {
+                                        updateParamInfo("projection", smiReplacement);
+                                        fireEvent("projection", "smi", smiReplacement);
+                                    }
+                            }
+
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "width",  OCSSW_L3mapgenController.getPreferenceWidth(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge(), precedence, passAll);
+//                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "threshold",  "", precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "land",  OCSSW_L3mapgenController.getPreferenceLand(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "palfile", OCSSW_L3mapgenController.getPreferencePalfile(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamin", OCSSW_L3mapgenController.getPreferenceDataMin(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamax", OCSSW_L3mapgenController.getPreferenceDataMax(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "scale_type", OCSSW_L3mapgenController.getPreferenceScaleType(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_transparency", OCSSW_L3mapgenController.getPreferenceUseTransparency(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "num_cache", OCSSW_L3mapgenController.getPreferenceNumCache(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat(), precedence, passAll);
 
                         }
                     }
@@ -1479,36 +1489,35 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     if (auxParFile.exists()) {
 
                         boolean precedence = OCSSW_L2binController.getPreferenceAutoFillPrecedence();
-                        boolean precedenceNullSuite = OCSSW_L2binController.getPreferenceAutoFillPrecedenceNullSuite();
                         boolean passAll = OCSSW_L2binController.getPreferencePassAll();
 
                         if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, passAll);
                         }
 
                         if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, passAll);
                         }
 
                         if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_prod", "", precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_max", "", precedence, precedenceNullSuite, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "minobs", "", precedence, precedenceNullSuite, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_prod", "", precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_max", "", precedence, passAll);
+                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "minobs", "", precedence, passAll);
                         }
                     }
                 } catch (IOException e) {
@@ -1612,23 +1621,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    public void updateParamInfosFromAuxParFile(String parfile, String parameter, String prefValue, boolean precedence, boolean precedenceNullSuite) throws IOException {
-        updateParamInfosFromAuxParFile(parfile, parameter, prefValue, precedence, precedenceNullSuite, false);
-    }
 
 
-    public void updateParamInfosFromAuxParFile(String parfile, String parameter, String prefValue, boolean precedence, boolean precedenceNullSuite, boolean passAll) throws IOException {
+    public void updateParamInfosFromAuxParFile(String parfile, String parameter, String prefValue, boolean precedence, boolean passAll) throws IOException {
 
         if (parameter == null || parameter.trim().length() == 0) {
             return;
         }
-        
-        boolean suiteIsSet = false;
-        ParamInfo suiteParamInfo = paramList.getInfo("suite");
-        if (suiteParamInfo != null && suiteParamInfo.getValue() != null && suiteParamInfo.getValue().trim().length() > 0) {
-            suiteIsSet = true;
-        }
-
 
         ParamInfo paramInfo = paramList.getInfo(parameter);
 
@@ -1644,7 +1643,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         boolean paramValueSet = false;
 
-        // todo this handles suite precedence
         String valueOriginal = paramInfo.getValue();
         if (valueOriginal == null) {
             valueOriginal = "";
@@ -1653,40 +1651,23 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         String valueNew = "";
 
         if (prefValue != null && prefValue.length() > 0) {
-            if (!prefValue.equals(paramInfo.getValue())) {
                 valueNew = prefValue;
-//                updateParamInfo(parameter, prefValue);
-//                fireEvent(parameter, paramInfo.getValue(), prefValue);
-            }
-
         } else {
             if (!valueOriginal.equals(paramInfo.getDefaultValueOriginal())) {
                 valueNew = paramInfo.getDefaultValueOriginal();
-//                updateParamInfo(parameter, paramInfo.getDefaultValueOriginal());
-//                fireEvent(parameter, valueOriginal, paramInfo.getDefaultValueOriginal());
             }
         }
 
 
-        if (prefValue != null && prefValue.length() > 0) {
-            if (suiteIsSet) {
-                if (precedence) {
-                    paramValueSet = true;
-                }
-            } else {
-                if (precedenceNullSuite) {
-                    paramValueSet = true;
-                }
-            }
+        if (prefValue != null && prefValue.length() > 0 && !precedence) {
+            paramValueSet = true;
         }
-
 
 
         BufferedReader br = new BufferedReader(new FileReader(parfile));
         try {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
-
 
             while (line != null) {
                 sb.append(line);
@@ -1700,15 +1681,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         String value = values[1].trim();
 
                         if (!paramValueSet && parameter.equals(name)) {
-                            String originalValue = paramInfo.getValue();
-
                             if ("boolean".equals(paramInfo.getType())) {
                                 if ("1".equals(value) || "true".equalsIgnoreCase(value)) {
                                     value = "true";
                                 } else {
                                     value = "false";
                                 }
-                                originalValue = "";
                             }
 
                             if (!passAll) {
@@ -1717,8 +1695,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                             if (!paramValueSet) {
                                 valueNew = value;
-//                                updateParamInfo(parameter, value);
-//                                fireEvent(parameter, originalValue, value);
                                 break;
                             }
                         }

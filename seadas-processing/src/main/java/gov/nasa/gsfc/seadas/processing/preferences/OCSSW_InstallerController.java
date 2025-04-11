@@ -47,7 +47,8 @@ import static com.bc.ceres.swing.TableLayout.cell;
         displayName = "#Options_DisplayName_OCSSW_Installer",
         keywords = "#Options_Keywords_OCSSW_Installer",
         keywordsCategory = "Installer",
-        id = "OCSSW_Installer_preferences")
+        id = "OCSSW_Installer_preferences",
+        position = 5)
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_Installer=OCSSW-Installer",
         "Options_Keywords_OCSSW_Installer=seadas, ocssw, installer"

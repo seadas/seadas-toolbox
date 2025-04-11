@@ -43,7 +43,8 @@ import java.awt.*;
         displayName = "#Options_DisplayName_OCSSW_L3mapgen",
         keywords = "#Options_Keywords_OCSSW_L3mapgen",
         keywordsCategory = "Processors",
-        id = "L3mapgen_preferences")
+        id = "L3mapgen_preferences",
+        position = 4)
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L3mapgen=L3mapgen",
         "Options_Keywords_OCSSW_L3mapgen=seadas, ocssw, l3mapgen. mapping, mapped, l3m"
@@ -132,16 +133,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT = true;
     
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.precedence";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL = "Preference values take precedence over suite defaults";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preferences takes precedence over suite defaults when suite is specified.  <br>Note: if suite not specified then preferences always takes precedence.</html>";
-    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT = false;
-
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.precedence_null_suite";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_LABEL = "Preference values take precedence over null suite defaults";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_TOOLTIP = "<html>Preferences takes precedence over suite defaults when suite is specified.  <br>Note: if suite not specified then preferences always takes precedence.</html>";
-    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_DEFAULT = true;
-
-
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL = "Only set preference if default value not set";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preference value takes precedence and overrides any defaults values.  <br>Otherwise, preference is only used if default value is not set.</html>";
+    public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT = true;
 
 
     public static final String PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".products.section";
@@ -171,8 +165,14 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     
     public static final String PROPERTY_L3MAPGEN_PROJECTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".projection";
     public static final String PROPERTY_L3MAPGEN_PROJECTION_LABEL = "projection";
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP = "Projection";
-    public static final String PROPERTY_L3MAPGEN_PROJECTION_DEFAULT = "";
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP = "Map projection: can be a proj.4 projection string or one of many predefined projections";
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_DEFAULT = EMPTY_STRING;
+
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".projection.smi_replacement";
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_LABEL = "*projection (smi)";
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_TOOLTIP = "Set 'projection' to this only when 'projection' is 'smi'";
+    public static final String PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_DEFAULT = "platecarree";
+    
 
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".resolution";
     public static final String PROPERTY_L3MAPGEN_RESOLUTION_LABEL = "resolution";
@@ -266,6 +266,10 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_TOOLTIP = "Field 'rgb_land'";
     public static final String PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT = EMPTY_STRING;
 
+    public static final String PROPERTY_L3MAPGEN_LAND_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".land";
+    public static final String PROPERTY_L3MAPGEN_LAND_LABEL = "land";
+    public static final String PROPERTY_L3MAPGEN_LAND_TOOLTIP = "Land Geofile used to create land mask";
+    public static final String PROPERTY_L3MAPGEN_LAND_DEFAULT = EMPTY_STRING;
 
     
     
@@ -505,7 +509,6 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         autoFillOther = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT);
         autoFillProduct = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_DEFAULT);
 
 
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_SECTION_KEY, true);
@@ -534,6 +537,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_SCALE_TYPE_KEY, PROPERTY_L3MAPGEN_SCALE_TYPE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_MASK_LAND_KEY, PROPERTY_L3MAPGEN_MASK_LAND_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_RGB_LAND_KEY, PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_L3MAPGEN_LAND_KEY, PROPERTY_L3MAPGEN_LAND_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_USE_TRANSPARENCY_KEY, PROPERTY_L3MAPGEN_USE_TRANSPARENCY_DEFAULT);
 
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY, true);
@@ -746,10 +750,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
         if (autoFillOtherBool || autoFillOtherProduct) {
             context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, true);
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY, true);
         } else {
             context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, false);
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY, false);
         }
 
 
@@ -1036,10 +1038,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP)
         boolean l3mapgenAutofillPrecedenceDefault = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT;
 
-        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY,
-                label = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_LABEL,
-                description = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_TOOLTIP)
-        boolean l3mapgenAutofillPrecedenceNullSuiteDefault = PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_DEFAULT;
+
 
 
         @Preference(key = PROPERTY_L3MAPGEN_PASS_ALL_KEY,
@@ -1134,6 +1133,12 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_PROJECTION_TOOLTIP)
         String l3mapgenProjectionDefault = PROPERTY_L3MAPGEN_PROJECTION_DEFAULT;
 
+
+        @Preference(key = PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_KEY,
+                label = PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_LABEL,
+                description = PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_TOOLTIP)
+        String l3mapgenProjectionSmiReplacementDefault = PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_DEFAULT;
+        
         @Preference(key = PROPERTY_L3MAPGEN_RESOLUTION_KEY,
                 label = PROPERTY_L3MAPGEN_RESOLUTION_LABEL,
                 description = PROPERTY_L3MAPGEN_RESOLUTION_TOOLTIP)
@@ -1241,6 +1246,10 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
                 description = PROPERTY_L3MAPGEN_RGB_LAND_TOOLTIP)
         String l3mapgenRgbLandDefault = PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT;
 
+        @Preference(key = PROPERTY_L3MAPGEN_LAND_KEY,
+                label = PROPERTY_L3MAPGEN_LAND_LABEL,
+                description = PROPERTY_L3MAPGEN_LAND_TOOLTIP)
+        String l3mapgenLandDefault = PROPERTY_L3MAPGEN_LAND_DEFAULT;
 
         @Preference(key = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_KEY,
                 label = PROPERTY_L3MAPGEN_PARAMETERS_PSEUDO_RGB_SECTION_LABEL,
@@ -1446,11 +1455,6 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT);
     }
 
-    public static boolean getPreferenceAutoFillPrecedenceNullSuite() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_NULL_SUITE_DEFAULT);
-    }
-
 
     public static String getPreferenceProduct() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
@@ -1484,6 +1488,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static String getPreferenceProjection() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_DEFAULT);
+    }
+
+    public static String getPreferenceProjectionSmiReplacement() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_PROJECTION_SMI_REPLACEMENT_DEFAULT);
     }
 
     public static String getPreferenceResolution() {
@@ -1580,6 +1589,11 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static String getPreferenceRGBLand() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RGB_LAND_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_RGB_LAND_DEFAULT);
+    }
+
+    public static String getPreferenceLand() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_LAND_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_LAND_DEFAULT);
     }
 
 

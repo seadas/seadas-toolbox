@@ -45,7 +45,9 @@ import java.awt.*;
         displayName = "#Options_DisplayName_OCSSW_L2gen",
         keywords = "#Options_Keywords_OCSSW_L2gen",
         keywordsCategory = "Processors",
-        id = "L2gen_preferences")
+        id = "L2gen_preferences",
+        position = 2)
+
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L2gen=L2gen",
         "Options_Keywords_OCSSW_L2gen=seadas, ocssw, l2gen"
