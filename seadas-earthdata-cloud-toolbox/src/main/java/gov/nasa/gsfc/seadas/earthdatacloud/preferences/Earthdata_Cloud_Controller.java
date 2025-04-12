@@ -58,12 +58,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     boolean propertyValueChangeEventsEnabled = true;
 
-
-    public static final String RESOLUTION_50m = "50 m (SRTM_GC)";
-    public static final String RESOLUTION_150m = "150 m (SRTM_GC)";
-    public static final String RESOLUTION_1km = "1 km (GSHHS)";
-    public static final String RESOLUTION_10km = "10 km (GSHHS)";
-
     // Preferences property prefix
     private static final String PROPERTY_ROOT_KEY = "seadas.toolbox.earthdata_cloud";
 
@@ -72,12 +66,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_SATELLITE_LABEL = "Satellite/Instrument";
     public static final String PROPERTY_SATELLITE_TOOLTIP = "Satellite";
     public static final String PROPERTY_SATELLITE_DEFAULT = "";
-
-
-
-    public static final String PROPERTY_LANDMASK_SECTION_KEY = PROPERTY_ROOT_KEY + ".landmask.section";
-    public static final String PROPERTY_LANDMASK_SECTION_LABEL = "Land Mask Options";
-    public static final String PROPERTY_LANDMASK_SECTION_TOOLTIP = "Land mask options";
 
     public static final String PROPERTY_DATA_LEVEL_KEY = PROPERTY_ROOT_KEY + ".data_level";
     public static final String PROPERTY_DATA_LEVEL_LABEL = "Data Level";
@@ -89,20 +77,26 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_PRODUCT_TOOLTIP = "Product";
     public static final String PROPERTY_PRODUCT_DEFAULT = "";
 
-    public static final String PROPERTY_LANDMASK_COLOR_KEY = PROPERTY_ROOT_KEY + ".landmask.color";
-    public static final String PROPERTY_LANDMASK_COLOR_LABEL = "Land Mask Color";
-    public static final String PROPERTY_LANDMASK_COLOR_TOOLTIP = "Land mask color";
-    public static final Color PROPERTY_LANDMASK_COLOR_DEFAULT = new Color(0,0,0);
+    public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
+    public static final String PROPERTY_MINLAT_LABEL = "Min Lat";
+    public static final String PROPERTY_MINLAT_TOOLTIP = "Minumum latitude";
+    public static final String PROPERTY_MINLAT_DEFAULT = "";
 
-    public static final String PROPERTY_LANDMASK_TRANSPARENCY_KEY = PROPERTY_ROOT_KEY + ".landmask.transparency";
-    public static final String PROPERTY_LANDMASK_TRANSPARENCY_LABEL = "Land Mask Transparency";
-    public static final String PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP = "Land mask transparency ";
-    public static final double PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT = 0.0;
+    public static final String PROPERTY_MAXLAT_KEY = PROPERTY_ROOT_KEY + ".maxlat";
+    public static final String PROPERTY_MAXLAT_LABEL = "Max Lat";
+    public static final String PROPERTY_MAXLAT_TOOLTIP = "Maximum latitude";
+    public static final String PROPERTY_MAXLAT_DEFAULT = "";
 
-    public static final String PROPERTY_LANDMASK_SHOW_KEY = PROPERTY_ROOT_KEY + ".landmask.show";
-    public static final String PROPERTY_LANDMASK_SHOW_LABEL = "Land Mask Show";
-    public static final String PROPERTY_LANDMASK_SHOW_TOOLTIP = "Land mask will be displayed in all bands ";
-    public static final boolean PROPERTY_LANDMASK_SHOW_DEFAULT = false;
+    public static final String PROPERTY_MINLON_KEY = PROPERTY_ROOT_KEY + ".minlon";
+    public static final String PROPERTY_MINLON_LABEL = "Min Lon";
+    public static final String PROPERTY_MINLON_TOOLTIP = "Minimum longitude";
+    public static final String PROPERTY_MINLON_DEFAULT = "";
+
+    public static final String PROPERTY_MAXLON_KEY = PROPERTY_ROOT_KEY + ".maxlon";
+    public static final String PROPERTY_MAXLON_LABEL = "Max Lon";
+    public static final String PROPERTY_MAXLON_TOOLTIP = "Maximum longitude";
+    public static final String PROPERTY_MAXLON_DEFAULT = "";
+
 
 
 
@@ -118,7 +112,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_RESTORE_DEFAULTS_LABEL = "Default (L3mapgen Preferences)";
     public static final String PROPERTY_RESTORE_DEFAULTS_TOOLTIP = "Restore all L3mapgen preferences to the original default";
     public static final boolean PROPERTY_RESTORE_DEFAULTS_DEFAULT = false;
-    
+
 
     protected PropertySet createPropertySet() {
         return createPropertySet(new SeadasToolboxBean());
@@ -135,13 +129,12 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
         initPropertyDefaults(context, PROPERTY_SATELLITE_NAME_KEY, PROPERTY_SATELLITE_DEFAULT);
-
-        initPropertyDefaults(context, PROPERTY_LANDMASK_SECTION_KEY, true);
-        initPropertyDefaults(context, PROPERTY_LANDMASK_COLOR_KEY, PROPERTY_LANDMASK_COLOR_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DATA_LEVEL_KEY, PROPERTY_DATA_LEVEL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRODUCT_KEY, PROPERTY_PRODUCT_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_LANDMASK_TRANSPARENCY_KEY, PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_LANDMASK_SHOW_KEY, PROPERTY_LANDMASK_SHOW_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_MINLAT_KEY, PROPERTY_MINLAT_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_MAXLAT_KEY, PROPERTY_MAXLAT_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
 
 
 
@@ -330,16 +323,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
-        
+
         @Preference(key = PROPERTY_SATELLITE_NAME_KEY,
                 label = PROPERTY_SATELLITE_LABEL,
                 description = PROPERTY_SATELLITE_TOOLTIP)
         String satelliteDefault = PROPERTY_SATELLITE_DEFAULT;
-
-        @Preference(key = PROPERTY_LANDMASK_SECTION_KEY,
-                label = PROPERTY_LANDMASK_SECTION_LABEL,
-                description = PROPERTY_LANDMASK_SECTION_TOOLTIP)
-        boolean landmaskSectionDefault = true;
 
         @Preference(key = PROPERTY_DATA_LEVEL_KEY,
                 label = PROPERTY_DATA_LEVEL_LABEL,
@@ -350,21 +338,26 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 label = PROPERTY_PRODUCT_LABEL,
                 description = PROPERTY_PRODUCT_TOOLTIP)
         String productDefault = PROPERTY_PRODUCT_DEFAULT;
-        
-        @Preference(key = PROPERTY_LANDMASK_COLOR_KEY,
-                label = PROPERTY_LANDMASK_COLOR_LABEL,
-                description = PROPERTY_LANDMASK_COLOR_TOOLTIP)
-        Color landmaskColorDefault = PROPERTY_LANDMASK_COLOR_DEFAULT;
 
-        @Preference(key = PROPERTY_LANDMASK_TRANSPARENCY_KEY,
-                label = PROPERTY_LANDMASK_TRANSPARENCY_LABEL,
-                description = PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP)
-        double landmaskTransparencyDefault = PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT;
+        @Preference(key = PROPERTY_MINLAT_KEY,
+                label = PROPERTY_MINLAT_LABEL,
+                description = PROPERTY_MINLAT_TOOLTIP)
+        String minlatDefault = PROPERTY_MINLAT_DEFAULT;
 
-        @Preference(key = PROPERTY_LANDMASK_SHOW_KEY,
-                label = PROPERTY_LANDMASK_SHOW_LABEL,
-                description = PROPERTY_LANDMASK_SHOW_TOOLTIP)
-        boolean landmaskShowDefault = PROPERTY_LANDMASK_SHOW_DEFAULT;
+        @Preference(key = PROPERTY_MAXLAT_KEY,
+                label = PROPERTY_MAXLAT_LABEL,
+                description = PROPERTY_MAXLAT_TOOLTIP)
+        String maxlatDefault = PROPERTY_MAXLAT_DEFAULT;
+
+        @Preference(key = PROPERTY_MINLON_KEY,
+                label = PROPERTY_MINLON_LABEL,
+                description = PROPERTY_MINLON_TOOLTIP)
+        String minlonDefault = PROPERTY_MINLON_DEFAULT;
+
+        @Preference(key = PROPERTY_MAXLON_KEY,
+                label = PROPERTY_MAXLON_LABEL,
+                description = PROPERTY_MAXLON_TOOLTIP)
+        String maxlonDefault = PROPERTY_MAXLON_DEFAULT;
 
 
 
@@ -400,21 +393,54 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     }
 
 
-    public static Color getPreferenceLandMaskColor() {
+    public static String getPreferenceMinLat() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyColor(PROPERTY_LANDMASK_COLOR_KEY, PROPERTY_LANDMASK_COLOR_DEFAULT);
+        String minLat = preferences.getPropertyString(PROPERTY_MINLAT_KEY, PROPERTY_MINLAT_DEFAULT);
+        return authenticatedStringNumber(minLat);
     }
 
-    public static double getPreferenceLandMaskTransparency() {
+    public static String getPreferenceMaxLat() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyDouble(PROPERTY_LANDMASK_TRANSPARENCY_KEY, PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT);
+        String maxLat = preferences.getPropertyString(PROPERTY_MAXLAT_KEY, PROPERTY_MAXLAT_DEFAULT);
+        return authenticatedStringNumber(maxLat);
     }
 
-    public static boolean getPreferenceLandMaskShow() {
+    public static String getPreferenceMinLon() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(PROPERTY_LANDMASK_SHOW_KEY, PROPERTY_LANDMASK_SHOW_DEFAULT);
+        String minLon = preferences.getPropertyString(PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
+        return authenticatedStringNumber(minLon);
     }
 
-    
+    public static String getPreferenceMaxLon() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        String maxLon = preferences.getPropertyString(PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
+        return authenticatedStringNumber(maxLon);
+    }
+
+
+
+
+    public static String authenticatedStringNumber(String strNum) {
+        if (isNumeric(strNum)) {
+            return strNum;
+        } else {
+            return "";
+        }
+
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+
 
 }
