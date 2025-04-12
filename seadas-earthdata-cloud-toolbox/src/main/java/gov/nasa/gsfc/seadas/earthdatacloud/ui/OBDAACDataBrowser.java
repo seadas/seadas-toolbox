@@ -1406,9 +1406,9 @@ private void loadMissionDateRangesFromFile() {
         panel.setBorder(BorderFactory.createTitledBorder("Day/Night Filter"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JRadioButton dayButton = new JRadioButton("Day", true);
-        JRadioButton nightButton = new JRadioButton("Night");
-        JRadioButton bothButton = new JRadioButton("Both");
+        JRadioButton dayButton = new JRadioButton("Day", Earthdata_Cloud_Controller.getPreferenceIsDay());
+        JRadioButton nightButton = new JRadioButton("Night", Earthdata_Cloud_Controller.getPreferenceIsNight());
+        JRadioButton bothButton = new JRadioButton("Both", Earthdata_Cloud_Controller.getPreferenceIsDayNightBoth());
 
         ButtonGroup group = new ButtonGroup();
         group.add(dayButton);

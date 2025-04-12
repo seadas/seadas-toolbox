@@ -58,9 +58,13 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     boolean propertyValueChangeEventsEnabled = true;
 
+    public static final String MODE_EMPTY = "";
+    public static final String MODE_DAY = "Day";
+    public static final String MODE_NIGHT = "Night";
+    public static final String MODE_BOTH = "Both";
+    
     // Preferences property prefix
     private static final String PROPERTY_ROOT_KEY = "seadas.toolbox.earthdata_cloud";
-
 
     public static final String PROPERTY_SATELLITE_NAME_KEY = PROPERTY_ROOT_KEY + ".satellite";
     public static final String PROPERTY_SATELLITE_LABEL = "Satellite/Instrument";
@@ -97,6 +101,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_MAXLON_TOOLTIP = "Maximum longitude";
     public static final String PROPERTY_MAXLON_DEFAULT = "";
 
+    public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
+    public static final String PROPERTY_DAYNIGHT_MODE_LABEL = "Day/Night";
+    public static final String PROPERTY_DAYNIGHT_MODE_TOOLTIP = "Retrieve files with data acquired during daytime, nighttime, or both";
+    public static final String PROPERTY_DAYNIGHT_MODE_DEFAULT = MODE_DAY;
+    
 
 
 
@@ -109,8 +118,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_RESTORE_SECTION_TOOLTIP = "Restores preferences to the package defaults";
 
     public static final String PROPERTY_RESTORE_DEFAULTS_KEY = PROPERTY_RESTORE_KEY_SUFFIX + ".apply";
-    public static final String PROPERTY_RESTORE_DEFAULTS_LABEL = "Default (L3mapgen Preferences)";
-    public static final String PROPERTY_RESTORE_DEFAULTS_TOOLTIP = "Restore all L3mapgen preferences to the original default";
+    public static final String PROPERTY_RESTORE_DEFAULTS_LABEL = "Default (Earthdata Cloud Preferences)";
+    public static final String PROPERTY_RESTORE_DEFAULTS_TOOLTIP = "Restore all Earthdata Cloud preferences to the original default";
     public static final boolean PROPERTY_RESTORE_DEFAULTS_DEFAULT = false;
 
 
@@ -135,6 +144,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_MAXLAT_KEY, PROPERTY_MAXLAT_DEFAULT);
         initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
 
 
 
@@ -359,6 +369,13 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_MAXLON_TOOLTIP)
         String maxlonDefault = PROPERTY_MAXLON_DEFAULT;
 
+        @Preference(key = PROPERTY_DAYNIGHT_MODE_KEY,
+                label = PROPERTY_DAYNIGHT_MODE_LABEL,
+                description = PROPERTY_DAYNIGHT_MODE_TOOLTIP,
+                valueSet = {MODE_EMPTY, MODE_DAY, MODE_NIGHT, MODE_BOTH})
+        String daynightModeDefault = PROPERTY_DAYNIGHT_MODE_DEFAULT;
+
+
 
 
         // Restore Defaults Section
@@ -417,7 +434,35 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         return authenticatedStringNumber(maxLon);
     }
 
+    public static String getPreferenceDayNightMode() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
+    }
 
+
+    public static boolean getPreferenceIsDay() {
+        if (MODE_DAY.equals(getPreferenceDayNightMode())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean getPreferenceIsNight() {
+        if (MODE_NIGHT.equals(getPreferenceDayNightMode())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean getPreferenceIsDayNightBoth() {
+        if (MODE_BOTH.equals(getPreferenceDayNightMode())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
     public static String authenticatedStringNumber(String strNum) {
