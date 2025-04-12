@@ -34,6 +34,8 @@ import org.openide.util.HelpCtx;
 import javax.swing.*;
 import java.awt.*;
 
+import static gov.nasa.gsfc.seadas.earthdatacloud.preferences.Preference_Utils.*;
+
 /**
  * * Panel handling LandCoastMask preferences. Sub-panel of the "SeaDAS-Toolbox"-panel.
  *
@@ -55,6 +57,13 @@ import java.awt.*;
 public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     Property restoreDefaults;
+
+    Property minLatProperty;
+    Property maxLatProperty;
+    Property minLonProperty;
+    Property maxLonProperty;
+
+    boolean working = false;
 
     boolean propertyValueChangeEventsEnabled = true;
 
@@ -140,10 +149,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_SATELLITE_NAME_KEY, PROPERTY_SATELLITE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DATA_LEVEL_KEY, PROPERTY_DATA_LEVEL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRODUCT_KEY, PROPERTY_PRODUCT_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_MINLAT_KEY, PROPERTY_MINLAT_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_MAXLAT_KEY, PROPERTY_MAXLAT_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
+        minLatProperty = initPropertyDefaults(context, PROPERTY_MINLAT_KEY, PROPERTY_MINLAT_DEFAULT);
+        maxLatProperty = initPropertyDefaults(context, PROPERTY_MAXLAT_KEY, PROPERTY_MAXLAT_DEFAULT);
+        minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
+        maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
 
 
@@ -189,6 +198,51 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     @Override
     protected void configure(BindingContext context) {
+
+        minLatProperty.addPropertyChangeListener(evt -> {
+            double lowerLimit = -90.0;
+            double upperLimit = 90.0;
+
+            if (!working) {
+                working = true;
+                authenticatePropertyStringNumber(minLatProperty, lowerLimit, upperLimit, PROPERTY_MINLAT_LABEL);
+                working = false;
+            }
+        });
+
+
+        maxLatProperty.addPropertyChangeListener(evt -> {
+            double lowerLimit = -90.0;
+            double upperLimit = 90.0;
+
+            if (!working) {
+                working = true;
+                authenticatePropertyStringNumber(maxLatProperty, lowerLimit, upperLimit, PROPERTY_MAXLAT_LABEL);
+                working = false;
+            }
+        });
+
+        minLonProperty.addPropertyChangeListener(evt -> {
+            double lowerLimit = -180.0;
+            double upperLimit = 180.0;
+
+            if (!working) {
+                working = true;
+                authenticatePropertyStringNumber(minLonProperty, lowerLimit, upperLimit, PROPERTY_MINLON_LABEL);
+                working = false;
+            }
+        });
+
+        maxLonProperty.addPropertyChangeListener(evt -> {
+            double lowerLimit = -180.0;
+            double upperLimit = 180.0;
+
+            if (!working) {
+                working = true;
+                authenticatePropertyStringNumber(maxLonProperty, lowerLimit, upperLimit, PROPERTY_MAXLON_LABEL);
+                working = false;
+            }
+        });
 
 
         // Handle resetDefaults events - set all other components to defaults
@@ -273,11 +327,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
 
 
-
-
-
-
-
     /**
      * Set restoreDefault component because a property has changed
      * @param context
@@ -308,8 +357,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
      */
     private Property initPropertyDefaults(BindingContext context, String propertyName, Object propertyDefault) {
 
-//        System.out.println("propertyName=" + propertyName);
-
         if (context == null) {
             System.out.println("WARNING: context is null");
         }
@@ -324,7 +371,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         return property;
     }
 
-    // todo add a help page ... see the ColorBarLayerController for example
 
     @Override
     public HelpCtx getHelpCtx() {
@@ -463,29 +509,4 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
             return false;
         }
     }
-
-
-    public static String authenticatedStringNumber(String strNum) {
-        if (isNumeric(strNum)) {
-            return strNum;
-        } else {
-            return "";
-        }
-
-    }
-
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
-
-
 }
