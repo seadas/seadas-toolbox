@@ -4,7 +4,7 @@
 <filesystem>
     <folder name="Services">
         <folder name="javahelp">
-            <file name="gov-nasa-gsfc-seadas-WatermaskOp-helpset.xml" url="helpset.xml">
+            <file name="gov-nasa-gsfc-seadas-earthdatacloud-helpset.xml" url="helpset.xml">
                 <attr name="position" intvalue="8510"/>
             </file>
         </folder>
