@@ -29,7 +29,8 @@ public class ImagePreviewHelper {
                 int row = table.rowAtPoint(e.getPoint());
                 int col = table.columnAtPoint(e.getPoint());
 
-                if (row >= 0 && col == 0) { // Only for file name column
+//                if (row >= 0 && col == 0) { // Only for file name column
+                if (row >= 0) { // for all columns in the row
                     String fileName = (String) table.getValueAt(row, 0);
                     String imageUrl = getPreviewUrl(fileName);
                     if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
@@ -39,6 +40,14 @@ public class ImagePreviewHelper {
                 } else {
                     hideImagePreview();
                 }
+
+
+                table.setRowSelectionInterval(row, row);
+                table.setBackground(Color.WHITE);
+                table.setForeground(Color.BLACK);
+                table.setSelectionBackground(Color.BLUE);
+                table.setSelectionForeground(Color.WHITE);
+
             }
         });
 
@@ -58,10 +67,16 @@ public class ImagePreviewHelper {
         try {
             Image image = ImageIO.read(new URL(imageUrl));
             if (image != null) {
-                Image scaled = image.getScaledInstance(300, -1, Image.SCALE_SMOOTH);
+                // todo  Danny preferences
+                int browseImageHeight = 500;
+                Image scaled = image.getScaledInstance(-1, browseImageHeight, Image.SCALE_SMOOTH);
                 previewLabel.setIcon(new ImageIcon(scaled));
                 previewWindow.pack();
-                previewWindow.setLocation(screenLocation.x + 15, screenLocation.y + 15);
+               int windowHeight = previewWindow.getHeight();
+               int offsetY = (int) Math.round(-0.75 * windowHeight);
+               int offsetX = 75;
+                // todo
+                previewWindow.setLocation(screenLocation.x + 75, screenLocation.y + offsetY);
                 previewWindow.setVisible(true);
             } else {
                 hideImagePreview();

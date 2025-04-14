@@ -388,6 +388,37 @@ private void loadMissionDateRangesFromFile() {
         };
 
         resultsTable = new JTable(tableModel);
+
+
+
+        Font fontOriginal = resultsTable.getFont();
+
+        // todo Danny preferences
+        double fontSizeZoom = 200;
+        // restrict to realistic values just in case
+        if (fontSizeZoom < 50 || fontSizeZoom > 400) {
+            fontSizeZoom = 100;
+        }
+
+        int fontSizeOriginal = fontOriginal.getSize();
+        int fontSizeNew = (int) Math.round(fontSizeOriginal * fontSizeZoom / 100);
+        Font fontNew = new Font(fontOriginal.getName(),fontOriginal.getStyle(),fontSizeNew);
+        resultsTable.setFont(fontNew);
+
+        int rowHeightOriginal = resultsTable.getRowHeight();
+        int rowBuffer = 20;
+        int rowHeightNew = (int) Math.round(rowHeightOriginal * (fontSizeZoom + rowBuffer) / 100);
+        resultsTable.setRowHeight(rowHeightNew);
+
+
+        JLabel tmpCol1Label = new JLabel(" Download File ");
+        int tmpVol1LabelWidth = (int) Math.ceil(tmpCol1Label.getPreferredSize().getWidth());
+        resultsTable.getColumnModel().getColumn(1).setPreferredWidth(tmpVol1LabelWidth);
+        resultsTable.getColumnModel().getColumn(1).setMinWidth(tmpVol1LabelWidth);
+        resultsTable.getColumnModel().getColumn(1).setMaxWidth(tmpVol1LabelWidth);
+
+
+
         imagePreviewHelper.attachToTable(resultsTable, fileLinkMap);
         resultsTable.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
@@ -446,6 +477,13 @@ private void loadMissionDateRangesFromFile() {
                     String tooltip = fileSpatialMap.getOrDefault(fileName, "No spatial info");
                     ((JComponent) c).setToolTipText(tooltip);
                 }
+
+                if (column == 0) {
+                    setHorizontalAlignment(JLabel.LEFT);
+                }
+                if (column == 1) {
+                    setHorizontalAlignment(JLabel.LEFT);
+                }
                 return c;
             }
         });
@@ -471,13 +509,15 @@ private void loadMissionDateRangesFromFile() {
 
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
-        scrollPane.setPreferredSize(new Dimension(800, 300));
+        // todo Danny
+        scrollPane.setPreferredSize(new Dimension(1000, 300));
 
 
         // Results container that holds the table and pagination
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
-        resultsContainer.setPreferredSize(new Dimension(750, 400));  // Adjust height as needed
+        // todo Danny
+        resultsContainer.setPreferredSize(new Dimension(850, 400));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
         resultsContainer.add(scrollPane, BorderLayout.CENTER);
@@ -588,6 +628,11 @@ private void loadMissionDateRangesFromFile() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select Directory to Save Files");
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        // todo Danny
+//        File downloadDir = new File("/Users/dknowles/test");
+//        fileChooser.setCurrentDirectory(downloadDir);
+//        File file2 = new File(downloadDir, "results");
+//        fileChooser.setSelectedFile(file2);
         if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
 
         File selectedDir = fileChooser.getSelectedFile();
