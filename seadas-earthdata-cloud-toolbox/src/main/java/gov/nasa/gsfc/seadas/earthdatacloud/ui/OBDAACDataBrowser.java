@@ -2,10 +2,7 @@ package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.ImagePreviewHelper;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.MissionNameWriter;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner_old;
+import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.core.util.SystemUtils;
 import org.jdatepicker.impl.*;
 import org.json.JSONArray;
@@ -39,6 +36,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
     private JDatePickerImpl startDatePicker, endDatePicker;
     private JTextField minLatField, maxLatField, minLonField, maxLonField;
+    private JComboBox regions;
     private JTable resultsTable;
     private DefaultTableModel tableModel;
     private final Map<String, String> productNameTooltips = new HashMap<>();
@@ -507,14 +505,14 @@ private void loadMissionDateRangesFromFile() {
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
         // todo Danny
-        scrollPane.setPreferredSize(new Dimension(750, 400));
+        scrollPane.setPreferredSize(new Dimension(850, 400));
 
 
         // Results container that holds the table and pagination
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
         // todo Danny
-        resultsContainer.setPreferredSize(new Dimension(750, 500));  // Adjust height as needed
+        resultsContainer.setPreferredSize(new Dimension(850, 500));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
         resultsContainer.add(scrollPane, BorderLayout.CENTER);
@@ -647,6 +645,7 @@ private void loadMissionDateRangesFromFile() {
                 parentDownloadDirFile = userHomeDir;
             }
         }
+
 
 
         if (parentDownloadDirFile != null && parentDownloadDirFile.exists()) {
@@ -1105,6 +1104,7 @@ private void loadMissionDateRangesFromFile() {
     }
 
     private JPanel createSpatialPanel() {
+        System.out.println("Creating createSpatialPanel");
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Spatial Filter"));
 
@@ -1164,10 +1164,66 @@ private void loadMissionDateRangesFromFile() {
         maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
         panel.add(maxLonField, gbc);
 
-        JLabel tmp = new JLabel("1234567890123456789012345");
-        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
-        panel.setMinimumSize(tmpDimension);
-        panel.setPreferredSize(tmpDimension);
+
+
+
+        ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions();
+
+        try {
+            Object[] regionsInfosArray = regionsInfos.toArray();
+
+            gbc.gridy++;
+            gbc.gridx = 0;
+            JLabel regionLabel = new JLabel("Region:");
+            panel.add(regionLabel, gbc);
+
+            gbc.gridx = 1;
+            regions = new JComboBox(regionsInfosArray);
+            panel.add(regions, gbc);
+
+            // Handle resetDefaults events - set all other components to defaults
+            regions.addActionListener(evt -> {
+                RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
+                System.out.println("regions change" + selectedRegionInfo.getName() );
+
+                if (!"-999".equals(selectedRegionInfo.getNorth())) {
+                    maxLatField.setText(selectedRegionInfo.getNorth());
+                    minLatField.setText(selectedRegionInfo.getSouth());
+                    minLonField.setText(selectedRegionInfo.getWest());
+                    maxLonField.setText(selectedRegionInfo.getEast());
+                } else {
+                    maxLatField.setText("");
+                    minLatField.setText("");
+                    minLonField.setText("");
+                    maxLonField.setText("");
+                }
+                panel.repaint();
+                panel.updateUI();
+                parentDialog.repaint();
+            });
+
+
+
+
+
+        } catch (Exception e) {
+
+        }
+
+
+        JTextField tmp = new JTextField("1234567890123");
+        minLonField.setMinimumSize(tmp.getPreferredSize());
+
+        JTextField tmp2 = new JTextField("1234567890123456789012");
+        regions.setMinimumSize(tmp2.getPreferredSize());
+
+//        JLabel tmp = new JLabel("1234567890123456789012345");
+//        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
+//
+//        panel.setMinimumSize(tmpDimension);
+//        panel.setPreferredSize(tmpDimension);
+        panel.setMinimumSize(panel.getPreferredSize());
+        panel.setPreferredSize(panel.getPreferredSize());
 
         return panel;
     }
