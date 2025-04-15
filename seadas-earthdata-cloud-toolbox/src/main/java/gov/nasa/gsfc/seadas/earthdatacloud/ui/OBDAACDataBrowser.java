@@ -659,9 +659,9 @@ private void loadMissionDateRangesFromFile() {
 
             String downloadDirStrIndexed = null;
             File file2 = null;
-            int i = 0;
+            int i = 1;
             while (file2 == null && i < 1000) {
-                if (i == 0) {
+                if (i == 1) {
                     downloadDirStrIndexed = downloadDirStr;
                 } else {
                     downloadDirStrIndexed = downloadDirStr + "-" + i;
