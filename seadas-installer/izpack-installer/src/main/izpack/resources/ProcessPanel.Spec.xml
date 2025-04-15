@@ -4,6 +4,12 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
 
+    <job name="Detect Architecture">
+        <executefile name="$INSTALL_PATH/detect_arch.sh" stage="postinstall" keep="true">
+            <os family="mac"/>
+        </executefile>
+    </job>
+
     <job name="Archive .seadas9 directory">
         <os family="unix" />
         <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">

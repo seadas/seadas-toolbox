@@ -112,7 +112,14 @@
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
         </condition>
-        >
+        <condition id="isMacAarch64" type="variable">
+            <name>arch</name>
+            <value>arm64</value>
+        </condition>
+        <condition id="isMacX64" type="variable">
+            <name>arch</name>
+            <value>x86_64</value>
+        </condition>
     </conditions>
 
 
@@ -144,6 +151,7 @@
 
     <dynamicvariables>
         <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
+        <variable name="arch" fromfile="$INSTALL_PATH/arch.properties"/>
     </dynamicvariables>
 
     <packs>
@@ -204,8 +212,8 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
-            <description>JDK11 JRE</description>
+        <pack name="JDK11 JRE (aarch64)" required="yes" id="pack.jdk11.jre">
+            <description>JDK11 Apple Silicon JRE</description>
             <file src="packs/jre/OpenJDK11U-jre_aarch64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
