@@ -91,24 +91,24 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_PRODUCT_DEFAULT = "BGC_NRT";
 
     public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
-    public static final String PROPERTY_MINLAT_LABEL = "Min Lat";
+    public static final String PROPERTY_MINLAT_LABEL = "South (Min Lat)";
     public static final String PROPERTY_MINLAT_TOOLTIP = "Minumum latitude";
-    public static final String PROPERTY_MINLAT_DEFAULT = "";
+    public static final String PROPERTY_MINLAT_DEFAULT = "36";
 
     public static final String PROPERTY_MAXLAT_KEY = PROPERTY_ROOT_KEY + ".maxlat";
-    public static final String PROPERTY_MAXLAT_LABEL = "Max Lat";
+    public static final String PROPERTY_MAXLAT_LABEL = "North (Max Lat)";
     public static final String PROPERTY_MAXLAT_TOOLTIP = "Maximum latitude";
-    public static final String PROPERTY_MAXLAT_DEFAULT = "";
+    public static final String PROPERTY_MAXLAT_DEFAULT = "37";
 
     public static final String PROPERTY_MINLON_KEY = PROPERTY_ROOT_KEY + ".minlon";
-    public static final String PROPERTY_MINLON_LABEL = "Min Lon";
+    public static final String PROPERTY_MINLON_LABEL = "East (Min Lon)";
     public static final String PROPERTY_MINLON_TOOLTIP = "Minimum longitude";
-    public static final String PROPERTY_MINLON_DEFAULT = "";
+    public static final String PROPERTY_MINLON_DEFAULT = "-76";
 
     public static final String PROPERTY_MAXLON_KEY = PROPERTY_ROOT_KEY + ".maxlon";
-    public static final String PROPERTY_MAXLON_LABEL = "Max Lon";
+    public static final String PROPERTY_MAXLON_LABEL = "West (Max Lon)";
     public static final String PROPERTY_MAXLON_TOOLTIP = "Maximum longitude";
-    public static final String PROPERTY_MAXLON_DEFAULT = "";
+    public static final String PROPERTY_MAXLON_DEFAULT = "-75";
 
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
     public static final String PROPERTY_DAYNIGHT_MODE_LABEL = "Day/Night";
@@ -125,6 +125,21 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_DOWNLOAD_DIR_MODE_LABEL = "Download Folder";
     public static final String PROPERTY_DOWNLOAD_DIR_MODE_TOOLTIP = "Download Folder in the Parent Directory";
     public static final String PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT = "";
+
+    public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY = PROPERTY_ROOT_KEY + ".results_font_zoom";
+    public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_LABEL = "Results Font Zoom";
+    public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_TOOLTIP = "Set zoom for font size (in percent) for the search results filename list";
+    public static final double PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT = 150.0;
+    public static final double PROPERTY_RESULTS_FONT_ZOOM_MODE_MIN_VALUE = 75;
+    public static final double PROPERTY_RESULTS_FONT_ZOOM_MODE_MAX_VALUE = 300.0;
+
+    public static final String PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY = PROPERTY_ROOT_KEY + ".image_preview_size";
+    public static final String PROPERTY_IMAGE_PREVIEW_SIZE_MODE_LABEL = "Image Preview Size";
+    public static final String PROPERTY_IMAGE_PREVIEW_SIZE_MODE_TOOLTIP = "Height (in pixels) of the image preview when hovering over filename";
+    public static final int PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT = 600;
+    public static final int PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MIN_VALUE = 100;
+    public static final int PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MAX_VALUE = 1000;
+
 
     // Property Setting: Restore Defaults
 
@@ -164,6 +179,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY, PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
 
 
 
@@ -443,7 +460,19 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         String downloadDirModeDefault = PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT;
 
 
+        @Preference(key = PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY,
+                label = PROPERTY_RESULTS_FONT_ZOOM_MODE_LABEL,
+                description = PROPERTY_RESULTS_FONT_ZOOM_MODE_TOOLTIP,
+                interval = "[" + PROPERTY_RESULTS_FONT_ZOOM_MODE_MIN_VALUE + " ," + PROPERTY_RESULTS_FONT_ZOOM_MODE_MAX_VALUE + "]")
+        double resultsFontZoomModeDefault = PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT;
 
+
+        @Preference(key = PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY,
+                label = PROPERTY_IMAGE_PREVIEW_SIZE_MODE_LABEL,
+                description = PROPERTY_IMAGE_PREVIEW_SIZE_MODE_TOOLTIP,
+                interval = "[" + PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MIN_VALUE + " ," + PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MAX_VALUE + "]")
+        int imagePreviewSizeModeDefault = PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT;
+        
         // Restore Defaults Section
 
         @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
@@ -552,4 +581,16 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
             return false;
         }
     }
+
+    public static double getPreferenceResultFontZoom() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyDouble(PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY, PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT);
+    }
+
+
+    public static int getPreferenceBrowseImageSize() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyInt(PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
+    }
+
 }

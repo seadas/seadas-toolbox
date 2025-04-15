@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.util;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +24,7 @@ public class ImagePreviewHelper {
         previewWindow.setAlwaysOnTop(true);
     }
 
-    public void attachToTable(JTable table, Map<String, String> fileLinkMap) {
+    public void attachToTable(JTable table, Map<String, String> fileLinkMap, JDialog parentDialog) {
         table.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -36,7 +38,7 @@ public class ImagePreviewHelper {
                     String fileName = (String) table.getValueAt(row, 0);
                     String imageUrl = getPreviewUrl(fileName);
                     if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
-                        showImagePreview(imageUrl, table, e.getLocationOnScreen());
+                        showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
                         currentImageUrl = imageUrl;
                     }
                 } else {
@@ -44,11 +46,17 @@ public class ImagePreviewHelper {
                 }
 
 
-                table.setRowSelectionInterval(row, row);
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
-                table.setSelectionBackground(Color.BLUE);
-                table.setSelectionForeground(Color.WHITE);
+
+                if (row >= 0 && row < table.getRowCount()) {
+                    table.setRowSelectionInterval(row, row);
+                    table.setSelectionBackground(new Color(0, 100, 200));
+                    table.setSelectionForeground(Color.WHITE);
+                }
+
+//                table.setSelectionBackground(Color.BLUE);
+
 
             }
         });
@@ -57,6 +65,8 @@ public class ImagePreviewHelper {
             @Override
             public void mouseExited(MouseEvent e) {
                 hideImagePreview();
+                table.setSelectionBackground(Color.WHITE);
+                table.setSelectionForeground(Color.BLACK);
             }
         });
     }
@@ -65,20 +75,83 @@ public class ImagePreviewHelper {
         return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
     }
 
-    private void showImagePreview(String imageUrl, Component parent, Point screenLocation) {
+    private void showImagePreview(String imageUrl, Component parent, Point screenLocation, JDialog parentDialog) {
         try {
             Image image = ImageIO.read(new URL(imageUrl));
             if (image != null) {
+//
+//               Rectangle bounds = image.getGraphics().getClipBounds();
+//               double crop = 0.5;
+//               int widthRaw = bounds.width - bounds.x;
+//               int clipWidth = (int) Math.round(crop * widthRaw);
+//               int clipX = bounds.x + (int) Math.round(widthRaw * crop/2.0);
+//               image.getGraphics().getClipBounds(new Rectangle(clipX,bounds.y,clipWidth,bounds.height));
+
                 // todo  Danny preferences
-                int browseImageHeight = 500;
-                Image scaled = image.getScaledInstance(-1, browseImageHeight, Image.SCALE_SMOOTH);
+                int browseImageSize = Earthdata_Cloud_Controller.getPreferenceBrowseImageSize();
+
+                Image scaled = null;
+                boolean scaleOnHeight = false;
+                if (scaleOnHeight) {
+                    scaled = image.getScaledInstance(-1, browseImageSize, Image.SCALE_SMOOTH);
+                } else {
+                    scaled = image.getScaledInstance(browseImageSize, -1, Image.SCALE_SMOOTH);
+                }
+
+
                 previewLabel.setIcon(new ImageIcon(scaled));
                 previewWindow.pack();
-               int windowHeight = previewWindow.getHeight();
-               int offsetY = (int) Math.round(-0.75 * windowHeight);
-               int offsetX = 75;
+
+                Point parentDialogLocation = parentDialog.getLocationOnScreen();
+                Point parentDialogLocationBottom = new Point(parentDialogLocation.x, parentDialogLocation.y + parentDialog.getHeight());
+                Point tableLocationTop = parent.getLocationOnScreen();
+                int windowHeight = previewWindow.getHeight();
+
+                int offsetX = parentDialog.getWidth();
+
+
+
+
+                // default to anchor at top of table
+                int locationY = tableLocationTop.y;
+                int offsetY = (int) Math.abs(parentDialogLocation.y - tableLocationTop.y);
+                offsetY = (int) Math.round(0.6 * offsetY);
+
+                boolean floating = false;
+                if (!floating) {
+                    if (windowHeight > parentDialog.getHeight()) {
+                        System.out.println("Anchor Main TOP");
+                        // anchor at top of main GUI
+                        locationY = parentDialog.getLocationOnScreen().y;
+                    } else if (windowHeight > (parent.getHeight() +  offsetY)) {
+                        System.out.println("Anchor Main BOTTOM");
+                        // anchor at bottom of the main GUI
+                        locationY = parentDialogLocationBottom.y - windowHeight;
+                    } else if (windowHeight > offsetY) {
+                        System.out.println("Anchor Above Table TOP");
+                        // anchor near top of the main GUI
+                        locationY = tableLocationTop.y - offsetY;
+                    } else {
+                        System.out.println("Anchor Table TOP");
+                        // use dafault of anchor at top of table but if image is very small then floating
+                        if (windowHeight < (int) Math.round(0.5 * parent.getHeight())) {
+                            System.out.println("Anchor FLOATING");
+                            floating = true;
+                        }
+                    }
+                }
+
+                if (floating) {
+                    locationY = screenLocation.y - (int) Math.round(0.5 * windowHeight);
+                }
+
+
+
+                previewWindow.setLocation(parentDialogLocation.x + offsetX, locationY);
+
+
                 // todo
-                previewWindow.setLocation(screenLocation.x + 75, screenLocation.y + offsetY);
+//                previewWindow.setLocation(screenLocation.x + 75, screenLocation.y + offsetY);
                 previewWindow.setVisible(true);
             } else {
                 hideImagePreview();

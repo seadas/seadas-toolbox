@@ -39,9 +39,9 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
 
     Product product;
     //    private boolean enabled = false;
-    // todo Danny
-    public static String SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
-    public static String LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
+    // todo - later - Danny this is where icon would go
+//    public static String SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
+//    public static String LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
 
     private final Lookup lookup;
 
@@ -65,13 +65,13 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         SnapApp snapApp = SnapApp.getDefault();
         //product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
-        SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
-        LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
+//        SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
+//        LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
 //        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
 //        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
-        SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
-        LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
+//        SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
+//        LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
 //        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
 //        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();

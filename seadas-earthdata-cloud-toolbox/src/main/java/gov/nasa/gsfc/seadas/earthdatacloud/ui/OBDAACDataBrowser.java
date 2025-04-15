@@ -391,10 +391,10 @@ private void loadMissionDateRangesFromFile() {
         Font fontOriginal = resultsTable.getFont();
 
         // todo Danny preferences
-        double fontSizeZoom = 200;
-        // restrict to realistic values just in case
-        if (fontSizeZoom < 50 || fontSizeZoom > 400) {
-            fontSizeZoom = 100;
+        double fontSizeZoom = Earthdata_Cloud_Controller.getPreferenceResultFontZoom();
+        // restrict to realistic values just in case - probable not needed
+        if (fontSizeZoom < Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_MIN_VALUE || fontSizeZoom > Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_MAX_VALUE) {
+            fontSizeZoom = Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT;
         }
 
         int fontSizeOriginal = fontOriginal.getSize();
@@ -403,7 +403,7 @@ private void loadMissionDateRangesFromFile() {
         resultsTable.setFont(fontNew);
 
         int rowHeightOriginal = resultsTable.getRowHeight();
-        int rowBuffer = 20;
+        int rowBuffer = 30;
         int rowHeightNew = (int) Math.round(rowHeightOriginal * (fontSizeZoom + rowBuffer) / 100);
         resultsTable.setRowHeight(rowHeightNew);
 
@@ -416,7 +416,7 @@ private void loadMissionDateRangesFromFile() {
 
 
 
-        imagePreviewHelper.attachToTable(resultsTable, fileLinkMap);
+        imagePreviewHelper.attachToTable(resultsTable, fileLinkMap, parentDialog);
         resultsTable.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -507,14 +507,14 @@ private void loadMissionDateRangesFromFile() {
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
         // todo Danny
-        scrollPane.setPreferredSize(new Dimension(1000, 300));
+        scrollPane.setPreferredSize(new Dimension(750, 400));
 
 
         // Results container that holds the table and pagination
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
         // todo Danny
-        resultsContainer.setPreferredSize(new Dimension(850, 400));  // Adjust height as needed
+        resultsContainer.setPreferredSize(new Dimension(750, 500));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
         resultsContainer.add(scrollPane, BorderLayout.CENTER);
@@ -856,11 +856,33 @@ private void loadMissionDateRangesFromFile() {
         previewWindow.setVisible(true);
     }
     private JPanel createFilterPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
 
-        panel.add(createTemporalPanel());
-        panel.add(createSpatialPanel());
-        panel.add(createDayNightPanel());
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+
+        JPanel panel = new JPanel(layout);
+        gbc.insets = new Insets(0, 10, 0, 10);
+        panel.add(createTemporalPanel(),gbc);
+
+        gbc.gridx++;
+        gbc.insets = new Insets(0, 0, 0, 10);
+        panel.add(createSpatialPanel(),gbc);
+
+        gbc.gridx++;
+        gbc.insets = new Insets(0, 0, 0, 10);
+        panel.add(createDayNightPanel(),gbc);
+
+//        // todo Danny
+//        JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
+//
+//        panel.add(createTemporalPanel());
+//        panel.add(createSpatialPanel());
+//        panel.add(createDayNightPanel());
 
         return panel;
     }
@@ -1141,6 +1163,11 @@ private void loadMissionDateRangesFromFile() {
         gbc.weightx = 1.0;
         maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
         panel.add(maxLonField, gbc);
+
+        JLabel tmp = new JLabel("1234567890123456789012345");
+        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
+        panel.setMinimumSize(tmpDimension);
+        panel.setPreferredSize(tmpDimension);
 
         return panel;
     }
@@ -1542,6 +1569,11 @@ private void loadMissionDateRangesFromFile() {
         panel.add(Box.createVerticalStrut(5));
         panel.add(bothButton);
         panel.add(Box.createVerticalGlue());
+
+        JLabel tmp = new JLabel("12345678901234567");
+        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
+        panel.setMinimumSize(tmpDimension);
+        panel.setPreferredSize(tmpDimension);
 
         // Save for later use
         this.dayButton = dayButton;
