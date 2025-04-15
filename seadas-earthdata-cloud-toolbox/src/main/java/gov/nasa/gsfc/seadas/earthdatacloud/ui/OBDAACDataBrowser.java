@@ -6,6 +6,7 @@ import gov.nasa.gsfc.seadas.earthdatacloud.util.ImagePreviewHelper;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.MissionNameWriter;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner_old;
+import org.esa.snap.core.util.SystemUtils;
 import org.jdatepicker.impl.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -631,44 +632,58 @@ private void loadMissionDateRangesFromFile() {
 
         String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
 
+        File parentDownloadDirFile = null;
         if (parentDownloadDirStr != null && parentDownloadDirStr.trim().length() > 0) {
-            File parentDownloadDirFile = new File(parentDownloadDirStr);
-            fileChooser.setCurrentDirectory(parentDownloadDirFile);
+            parentDownloadDirFile = new File(parentDownloadDirStr);
             if (!parentDownloadDirFile.exists()) {
                 parentDownloadDirFile.mkdirs();
             }
-            if (parentDownloadDirFile.exists()) {
-                String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
-                if (downloadDirStr == null || downloadDirStr.trim().length() == 0) {
-                    downloadDirStr = "results";
-                }
+        }
 
-                String downloadDirStrIndexed = null;
-                File file2 = null;
-                int i = 0;
-                while (file2 == null && i < 1000) {
-                    if (i == 0) {
-                        downloadDirStrIndexed = downloadDirStr;
-                    } else {
-                        downloadDirStrIndexed = downloadDirStr + "-" + i;
-                    }
+        if (parentDownloadDirFile == null) {
+            File userHomeDir = SystemUtils.getUserHomeDir();
 
-                    System.out.println("downloadDirStrIndexed=" + downloadDirStrIndexed);
-                    file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
-                    System.out.println("file2=" + file2.getAbsolutePath());
-                    if (!file2.exists()) {
-                        System.out.println("breaking");
-                        break;
-                    }
-                    file2 = null;
-                    i++;
-                }
-
-                if (file2 != null) {
-                    fileChooser.setSelectedFile(file2);
-                }
+            parentDownloadDirFile = new File(userHomeDir, "Downloads");
+            if (!parentDownloadDirFile.exists()) {
+                parentDownloadDirFile = userHomeDir;
             }
         }
+
+
+        if (parentDownloadDirFile != null && parentDownloadDirFile.exists()) {
+            fileChooser.setCurrentDirectory(parentDownloadDirFile);
+
+            String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
+            if (downloadDirStr == null || downloadDirStr.trim().length() == 0) {
+                downloadDirStr = "results";
+            }
+
+            String downloadDirStrIndexed = null;
+            File file2 = null;
+            int i = 0;
+            while (file2 == null && i < 1000) {
+                if (i == 0) {
+                    downloadDirStrIndexed = downloadDirStr;
+                } else {
+                    downloadDirStrIndexed = downloadDirStr + "-" + i;
+                }
+
+                System.out.println("downloadDirStrIndexed=" + downloadDirStrIndexed);
+                file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
+                System.out.println("file2=" + file2.getAbsolutePath());
+                if (!file2.exists()) {
+                    System.out.println("breaking");
+                    break;
+                }
+                file2 = null;
+                i++;
+            }
+
+            if (file2 != null) {
+                fileChooser.setSelectedFile(file2);
+            }
+        }
+
 
         // todo Danny end
 
