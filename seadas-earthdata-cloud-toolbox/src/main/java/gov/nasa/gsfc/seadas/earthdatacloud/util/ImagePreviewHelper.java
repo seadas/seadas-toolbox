@@ -30,7 +30,8 @@ public class ImagePreviewHelper {
                 int col = table.columnAtPoint(e.getPoint());
 
 //                if (row >= 0 && col == 0) { // Only for file name column
-                if (row >= 0) { // for all columns in the row
+                // todo Danny preferences which columns to hover
+                if (row >= 0 && col == 1) { // for all columns in the row
                     String fileName = (String) table.getValueAt(row, 0);
                     String imageUrl = getPreviewUrl(fileName);
                     if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {

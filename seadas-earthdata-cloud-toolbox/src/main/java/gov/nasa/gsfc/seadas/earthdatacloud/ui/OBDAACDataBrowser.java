@@ -19,8 +19,6 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -31,7 +29,6 @@ import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
-import java.util.Timer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -628,14 +625,73 @@ private void loadMissionDateRangesFromFile() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select Directory to Save Files");
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+
         // todo Danny
-//        File downloadDir = new File("/Users/dknowles/test");
-//        fileChooser.setCurrentDirectory(downloadDir);
-//        File file2 = new File(downloadDir, "results");
-//        fileChooser.setSelectedFile(file2);
+
+        String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
+
+        if (parentDownloadDirStr != null && parentDownloadDirStr.trim().length() > 0) {
+            File parentDownloadDirFile = new File(parentDownloadDirStr);
+            fileChooser.setCurrentDirectory(parentDownloadDirFile);
+            if (!parentDownloadDirFile.exists()) {
+                parentDownloadDirFile.mkdirs();
+            }
+            if (parentDownloadDirFile.exists()) {
+                String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
+                if (downloadDirStr == null || downloadDirStr.trim().length() == 0) {
+                    downloadDirStr = "results";
+                }
+
+                String downloadDirStrIndexed = null;
+                File file2 = null;
+                int i = 0;
+                while (file2 == null && i < 1000) {
+                    if (i == 0) {
+                        downloadDirStrIndexed = downloadDirStr;
+                    } else {
+                        downloadDirStrIndexed = downloadDirStr + "-" + i;
+                    }
+
+                    System.out.println("downloadDirStrIndexed=" + downloadDirStrIndexed);
+                    file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
+                    System.out.println("file2=" + file2.getAbsolutePath());
+                    if (!file2.exists()) {
+                        System.out.println("breaking");
+                        break;
+                    }
+                    file2 = null;
+                    i++;
+                }
+
+                if (file2 != null) {
+                    fileChooser.setSelectedFile(file2);
+                }
+            }
+        }
+
+        // todo Danny end
+
+
         if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
 
+
+
+
         File selectedDir = fileChooser.getSelectedFile();
+
+        // todo Danny
+
+        String selectedParent = selectedDir.getParentFile().getAbsolutePath();
+        if (selectedParent != null) {
+            Earthdata_Cloud_Controller.setPreferenceDownloadParentDir(selectedParent);
+        }
+
+        String selectedDownloadDir = selectedDir.getName();
+        if (selectedDownloadDir != null) {
+            Earthdata_Cloud_Controller.setPreferenceDownloadDir(selectedDownloadDir);
+        }
+
 
         List<String> filesToDownload = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {

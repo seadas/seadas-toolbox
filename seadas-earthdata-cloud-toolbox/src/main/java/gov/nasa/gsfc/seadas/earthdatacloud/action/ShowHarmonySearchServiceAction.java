@@ -39,6 +39,7 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
 
     Product product;
     //    private boolean enabled = false;
+    // todo Danny
     public static String SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
     public static String LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
 
@@ -52,8 +53,8 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_HarmonySearchServiceActionName());
-        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
-        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
+//        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+//        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         putValue(SHORT_DESCRIPTION, Bundle.CTL_HarmonySearchServiceActionToolTip());
         this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
         updateEnabledState();
@@ -66,13 +67,13 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
         LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorGreen24.png";
-        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
-        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
+//        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+//        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
         SMALLICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
         LARGEICON = "gov/nasa/gsfc/seadas/image-animator/ui/icons/ImageAnimatorWhite24.png";
-        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
-        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
+//        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
+//        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
 
         HarmonySearchServiceDiaglog harmonySearchServiceDiaglog = new HarmonySearchServiceDiaglog();
@@ -102,7 +103,7 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
     public Component getToolbarPresenter() {
         JButton button = new JButton(this);
         button.setText(null);
-        button.setIcon(ImageUtilities.loadImageIcon(LARGEICON,false));
+//        button.setIcon(ImageUtilities.loadImageIcon(LARGEICON,false));
         return button;
     }
 }

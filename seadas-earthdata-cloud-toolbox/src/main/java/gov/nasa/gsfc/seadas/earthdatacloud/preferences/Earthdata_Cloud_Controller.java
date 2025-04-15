@@ -78,17 +78,17 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_SATELLITE_NAME_KEY = PROPERTY_ROOT_KEY + ".satellite";
     public static final String PROPERTY_SATELLITE_LABEL = "Satellite/Instrument";
     public static final String PROPERTY_SATELLITE_TOOLTIP = "Satellite";
-    public static final String PROPERTY_SATELLITE_DEFAULT = "";
+    public static final String PROPERTY_SATELLITE_DEFAULT = "PACE_OCI";
 
     public static final String PROPERTY_DATA_LEVEL_KEY = PROPERTY_ROOT_KEY + ".data_level";
     public static final String PROPERTY_DATA_LEVEL_LABEL = "Data Level";
     public static final String PROPERTY_DATA_LEVEL_TOOLTIP = "Data level";
-    public static final String PROPERTY_DATA_LEVEL_DEFAULT = "";
+    public static final String PROPERTY_DATA_LEVEL_DEFAULT = "L2";
 
     public static final String PROPERTY_PRODUCT_KEY = PROPERTY_ROOT_KEY + ".product";
     public static final String PROPERTY_PRODUCT_LABEL = "Product Name";
     public static final String PROPERTY_PRODUCT_TOOLTIP = "Product";
-    public static final String PROPERTY_PRODUCT_DEFAULT = "";
+    public static final String PROPERTY_PRODUCT_DEFAULT = "BGC_NRT";
 
     public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
     public static final String PROPERTY_MINLAT_LABEL = "Min Lat";
@@ -114,9 +114,17 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_DAYNIGHT_MODE_LABEL = "Day/Night";
     public static final String PROPERTY_DAYNIGHT_MODE_TOOLTIP = "Retrieve files with data acquired during daytime, nighttime, or both";
     public static final String PROPERTY_DAYNIGHT_MODE_DEFAULT = MODE_DAY;
-    
 
 
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_parent_dir";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL = "Download Parent Directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP = "Download Parent Directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT = "";
+
+    public static final String PROPERTY_DOWNLOAD_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_dir";
+    public static final String PROPERTY_DOWNLOAD_DIR_MODE_LABEL = "Download Folder";
+    public static final String PROPERTY_DOWNLOAD_DIR_MODE_TOOLTIP = "Download Folder in the Parent Directory";
+    public static final String PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT = "";
 
     // Property Setting: Restore Defaults
 
@@ -154,6 +162,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
         maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
 
 
 
@@ -421,6 +431,16 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 valueSet = {MODE_EMPTY, MODE_DAY, MODE_NIGHT, MODE_BOTH})
         String daynightModeDefault = PROPERTY_DAYNIGHT_MODE_DEFAULT;
 
+        
+        @Preference(key = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY,
+                label = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL,
+                description = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP)
+        String downloadParentDirModeDefault = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT;
+
+        @Preference(key = PROPERTY_DOWNLOAD_DIR_MODE_KEY,
+                label = PROPERTY_DOWNLOAD_DIR_MODE_LABEL,
+                description = PROPERTY_DOWNLOAD_DIR_MODE_TOOLTIP)
+        String downloadDirModeDefault = PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT;
 
 
 
@@ -483,6 +503,29 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static String getPreferenceDayNightMode() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
+    }
+
+
+    public static String getPreferenceDownloadParentDir() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
+    }
+    
+    public static void setPreferenceDownloadParentDir(String parentDirStr) {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        preferences.setPropertyString(PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, parentDirStr);
+        return;
+    }
+
+    public static String getPreferenceDownloadDir() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
+    }
+
+    public static void setPreferenceDownloadDir(String parentDirStr) {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        preferences.setPropertyString(PROPERTY_DOWNLOAD_DIR_MODE_KEY, parentDirStr);
+        return;
     }
 
 
