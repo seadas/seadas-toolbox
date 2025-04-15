@@ -200,8 +200,6 @@ private void loadMissionDateRangesFromFile() {
         boolean usedExternal = false;
         try {
             Path jsonDir = PythonScriptRunner_old.resourceDir;
-
-
             if (!Files.exists(PythonScriptRunner_old.resourceDir) || !Files.isDirectory(PythonScriptRunner_old.resourceDir)) {
                 PythonScriptRunner.runMetadataScript();
             }

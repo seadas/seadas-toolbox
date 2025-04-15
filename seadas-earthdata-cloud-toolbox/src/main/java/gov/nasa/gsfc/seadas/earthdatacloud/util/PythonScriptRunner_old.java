@@ -12,22 +12,65 @@ public class PythonScriptRunner_old {
     static Path toolboxRoot = resolveToolboxRoot();
     static Path scriptPath = toolboxRoot.resolve("src/main/MissionDateRangeFinder.py");
     public static Path resourceDir = toolboxRoot.resolve("src/main/resources/json-files");
+//    public static Path resolveToolboxRoot() {
+//        Path current = Paths.get("").toAbsolutePath(); // Starting from current working dir
+//
+//        while (current != null) {
+//            Path candidate = current.resolve("seadas-toolbox/seadas-earthdata-cloud-toolbox");
+//            Path scriptPath = candidate.resolve("src/main/MissionDateRangeFinder.py");
+//
+//            if (Files.exists(scriptPath)) {
+//                return candidate;
+//            }
+//
+//            current = current.getParent();  // Move up one level
+//        }
+//
+//        throw new RuntimeException("❌ Could not locate toolbox root containing seadas-earthdata-cloud-toolbox");
+//    }
+
     public static Path resolveToolboxRoot() {
-        Path current = Paths.get("").toAbsolutePath(); // Starting from current working dir
-
-        while (current != null) {
-            Path candidate = current.resolve("seadas-toolbox/seadas-earthdata-cloud-toolbox");
-            Path scriptPath = candidate.resolve("src/main/MissionDateRangeFinder.py");
-
-            if (Files.exists(scriptPath)) {
-                return candidate;
+        // 1. Check system property
+        String systemProp = System.getProperty("toolbox.root");
+        if (systemProp != null) {
+            Path path = Paths.get(systemProp);
+            if (Files.exists(path)) {
+                return path;
             }
-
-            current = current.getParent();  // Move up one level
         }
 
-        throw new RuntimeException("❌ Could not locate toolbox root containing seadas-earthdata-cloud-toolbox");
+        // 2. Check environment variable
+        String envVar = System.getenv("SEADAS_TOOLBOX_ROOT");
+        if (envVar != null) {
+            Path path = Paths.get(envVar);
+            if (Files.exists(path)) {
+                return path;
+            }
+        }
+
+        // 3. Check relative to current working directory
+        Path cwd = Paths.get(System.getProperty("user.dir"));
+        Path relativePath = cwd.resolve("seadas-toolbox/modules/gov-nasa-gsfc-seadas-seadas-earthdata-cloud-toolbox.jar");
+        if (Files.exists(relativePath)) {
+            return relativePath;
+        }
+
+        // 4. Check relative to the location of the running JAR
+        try {
+            Path jarPath = Paths.get(PythonScriptRunner_old.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI()).getParent();
+            Path jarRelativePath = jarPath.resolve("seadas-toolbox/modules/gov-nasa-gsfc-seadas-seadas-earthdata-cloud-toolbox.jar");
+            if (Files.exists(jarRelativePath)) {
+                return jarRelativePath;
+            }
+        } catch (Exception e) {
+            // Log or handle exception if necessary
+        }
+
+        throw new RuntimeException("❌ Could not locate toolbox JAR: gov-nasa-gsfc-seadas-seadas-earthdata-cloud-toolbox.jar");
     }
+
+
 
     public static void runMetadataScript() {
         runPythonScript("seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/CMR_script.py");
