@@ -93,22 +93,22 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
     public static final String PROPERTY_MINLAT_LABEL = "South (Min Lat)";
     public static final String PROPERTY_MINLAT_TOOLTIP = "Minumum latitude";
-    public static final String PROPERTY_MINLAT_DEFAULT = "36";
+    public static final String PROPERTY_MINLAT_DEFAULT = "";
 
     public static final String PROPERTY_MAXLAT_KEY = PROPERTY_ROOT_KEY + ".maxlat";
     public static final String PROPERTY_MAXLAT_LABEL = "North (Max Lat)";
     public static final String PROPERTY_MAXLAT_TOOLTIP = "Maximum latitude";
-    public static final String PROPERTY_MAXLAT_DEFAULT = "37";
+    public static final String PROPERTY_MAXLAT_DEFAULT = "";
 
     public static final String PROPERTY_MINLON_KEY = PROPERTY_ROOT_KEY + ".minlon";
     public static final String PROPERTY_MINLON_LABEL = "East (Min Lon)";
     public static final String PROPERTY_MINLON_TOOLTIP = "Minimum longitude";
-    public static final String PROPERTY_MINLON_DEFAULT = "-76";
+    public static final String PROPERTY_MINLON_DEFAULT = "";
 
     public static final String PROPERTY_MAXLON_KEY = PROPERTY_ROOT_KEY + ".maxlon";
     public static final String PROPERTY_MAXLON_LABEL = "West (Max Lon)";
     public static final String PROPERTY_MAXLON_TOOLTIP = "Maximum longitude";
-    public static final String PROPERTY_MAXLON_DEFAULT = "-75";
+    public static final String PROPERTY_MAXLON_DEFAULT = "";
 
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
     public static final String PROPERTY_DAYNIGHT_MODE_LABEL = "Day/Night";
