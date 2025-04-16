@@ -114,14 +114,7 @@
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
         </condition>
-        <condition id="isMacAarch64" type="variable">
-            <name>arch</name>
-            <value>arm64</value>
-        </condition>
-        <condition id="isMacX64" type="variable">
-            <name>arch</name>
-            <value>x86_64</value>
-        </condition>
+        >
     </conditions>
 
 
@@ -139,15 +132,20 @@
         <!--    </panel>-->
 
 
-    <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
-    </dynamicvariables>
+        <!--        <panel classname="InstallationTypePanel"/>-->
+        <panel classname="HTMLLicencePanel" id="licence"/>
+        <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
+        <panel classname="TargetPanel" id="install_dir"/>
+        <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
+        <panel classname="InstallPanel" id="install"/>
+        <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
+        <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
+        <panel classname="ProcessPanel" id="processPanelSpec.xml" />
+        <panel classname="FinishPanel" id="finish"/>
+    </panels>
 
     <dynamicvariables>
-        <variable name="arch" value="arm64" checkonce="false"/>
-        <variable name="arch" fromfile="$INSTALL_PATH/arch.properties" checkonce="false"/>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home" condition="isMacX64"/>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre-aarch64/Contents/Home" condition="isMacAarch64"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
     </dynamicvariables>
 
     <packs>
@@ -208,8 +206,8 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="JDK11 JRE (aarch64)" required="yes" id="pack.jdk11.jre">
-            <description>JDK11 Apple Silicon JRE</description>
+        <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
+            <description>JDK11 JRE</description>
             <file src="packs/jre/OpenJDK11U-jre_aarch64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
