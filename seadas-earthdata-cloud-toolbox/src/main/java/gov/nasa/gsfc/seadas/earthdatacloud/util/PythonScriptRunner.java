@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
 
 public class PythonScriptRunner {
 
@@ -46,67 +45,39 @@ public class PythonScriptRunner {
         }
         throw new RuntimeException("Could not locate seadas-earthdata-cloud-toolbox directory");
     }
+    private static File extractScript(String scriptName) throws IOException {
+        // Construct the path to the script within the JAR
+        String resourcePath = "scripts/" + scriptName;
 
-//    public static void runAllScripts() {
-//        System.out.println("🔄 Running all Python scripts...");
-//        runMetadataScript();
-//        runDateRangeScript();
-//    }
-//
-//    public static void runDateRangeScript(Set<String> missionKeys) {
-//        Path missionListFile = Paths.get("mission_names.txt");
-//        try {
-//            Files.write(missionListFile, missionKeys, StandardCharsets.UTF_8);
-//            runPythonScriptWithArgs(DATE_RANGE_SCRIPT, missionListFile.toAbsolutePath().toString());
-//        } catch (IOException e) {
-//            System.err.println("❌ Failed to write mission list file: " + e.getMessage());
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                Files.deleteIfExists(missionListFile);
-//            } catch (IOException e) {
-//                System.err.println("⚠️ Failed to delete temporary mission list file.");
-//            }
-//        }
-//    }
+        // Load the resource as a stream
+        InputStream inputStream = PythonScriptRunner.class.getClassLoader().getResourceAsStream(resourcePath);
+        if (inputStream == null) {
+            throw new FileNotFoundException("Resource not found: " + resourcePath);
+        }
 
-//    private static void runPythonScript(String scriptPath) {
-//        runPythonScriptWithArgs(scriptPath);
-//    }
-//
-//    private static void runPythonScriptWithArgs(String... args) {
-//        try {
-//            ProcessBuilder pb = new ProcessBuilder();
-//            pb.command(buildPythonCommand(args));
-//            pb.directory(new File(System.getProperty("user.dir")));
-//            pb.redirectErrorStream(true);
-//
-//            Process process = pb.start();
-//            try (BufferedReader reader = new BufferedReader(
-//                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    System.out.println("[PYTHON] " + line);
-//                }
-//            }
-//
-//            int exitCode = process.waitFor();
-//            if (exitCode != 0) {
-//                System.err.println("❌ Python script exited with code: " + exitCode);
-//            }
-//
-//        } catch (IOException | InterruptedException e) {
-//            System.err.println("❌ Error running Python script: " + String.join(" ", args));
-//            e.printStackTrace();
-//        }
-//    }
+        // Create a temporary file to write the script to
+        File tempScript = File.createTempFile(scriptName, null);
+        tempScript.deleteOnExit();
+
+        // Copy the contents of the resource to the temporary file
+        try (OutputStream outputStream = new FileOutputStream(tempScript)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+
+        return tempScript;
+    }
+
 
     public static void runMetadataScript() {
-        runPythonScript("CMR_script.py");
+        runPythonScript("scripts/CMR_script.py");
     }
 
     public static void runDateRangeScript() {
-        runPythonScript("MissionDateRangeFinder.py");
+        runPythonScript("scripts/MissionDateRangeFinder.py");
     }
 
     private static void runPythonScript(String scriptName) {

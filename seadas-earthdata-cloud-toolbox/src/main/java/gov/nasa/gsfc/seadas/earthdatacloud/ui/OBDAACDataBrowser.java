@@ -198,31 +198,32 @@ private void loadMissionDateRangesFromFile() {
 
     private void loadMetadata() {
         boolean usedExternal = false;
+        JSONTokener tokener;
+        Set<String> missionKeys = new HashSet<>();
         try {
-            Path jsonDir = PythonScriptRunner_old.resourceDir;
-            if (!Files.exists(PythonScriptRunner_old.resourceDir) || !Files.isDirectory(PythonScriptRunner_old.resourceDir)) {
-                PythonScriptRunner.runMetadataScript();
-            }
-            JSONTokener tokener;
-            Set<String> missionKeys = new HashSet<>();
-            if (Files.exists(jsonDir) && Files.isDirectory(jsonDir)) {
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(jsonDir, "*.json")) {
-                    for (Path path : stream) {
-                        String key = path.getFileName().toString().replace(".json", "");
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                                new FileInputStream(path.toFile()), StandardCharsets.UTF_8))) {
-                            tokener = new JSONTokener(reader);
-                            JSONObject json = new JSONObject(tokener);
-                            metadataMap.put(key, json);
-                        }
-                        String fileName = path.getFileName().toString();
-                        if (!fileName.equals("mission_date_ranges.json")) {
-                            missionKeys.add(key);
-                        }
-                    }
-                }
-                usedExternal = true;
-            }
+//            Path jsonDir = PythonScriptRunner_old.resourceDir;
+//            if (!Files.exists(PythonScriptRunner_old.resourceDir) || !Files.isDirectory(PythonScriptRunner_old.resourceDir)) {
+//                PythonScriptRunner.runMetadataScript();
+//            }
+//
+//            if (Files.exists(jsonDir) && Files.isDirectory(jsonDir)) {
+//                try (DirectoryStream<Path> stream = Files.newDirectoryStream(jsonDir, "*.json")) {
+//                    for (Path path : stream) {
+//                        String key = path.getFileName().toString().replace(".json", "");
+//                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+//                                new FileInputStream(path.toFile()), StandardCharsets.UTF_8))) {
+//                            tokener = new JSONTokener(reader);
+//                            JSONObject json = new JSONObject(tokener);
+//                            metadataMap.put(key, json);
+//                        }
+//                        String fileName = path.getFileName().toString();
+//                        if (!fileName.equals("mission_date_ranges.json")) {
+//                            missionKeys.add(key);
+//                        }
+//                    }
+//                }
+//                usedExternal = true;
+//            }
             if (!usedExternal) {
                 String[] resourceFiles = {
                         "CZCS.json", "HAWKEYE.json","HICO.json", "MERGED_S3_OLCI.json", "MERIS.json",
@@ -249,15 +250,15 @@ private void loadMissionDateRangesFromFile() {
                 }
             }
 
-            if (!Files.exists(jsonDir.resolve("mission_date_ranges.json"))) {
-                //PythonScriptRunner.runDateRangeScript(missionKeys);
-                // 1. Generate mission_names.txt from dropdown values
-                String missionListPath = "seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/resources/json-files/mission_names.txt";
-                MissionNameWriter.writeMissionNames(metadataMap.keySet(), missionListPath);
-
-                // 2. Call Python to generate mission_date_ranges.json
-                PythonScriptRunner_old.runMissionDateRangeScript(missionListPath);
-            }
+//            if (!Files.exists(jsonDir.resolve("mission_date_ranges.json"))) {
+//                //PythonScriptRunner.runDateRangeScript(missionKeys);
+//                // 1. Generate mission_names.txt from dropdown values
+//                String missionListPath = "seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/resources/json-files/mission_names.txt";
+//                MissionNameWriter.writeMissionNames(metadataMap.keySet(), missionListPath);
+//
+//                // 2. Call Python to generate mission_date_ranges.json
+//                PythonScriptRunner_old.runMissionDateRangeScript(missionListPath);
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

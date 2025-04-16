@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Set;
 
 public class PythonScriptRunner_old {
@@ -71,19 +72,116 @@ public class PythonScriptRunner_old {
     }
 
 
-
-    public static void runMetadataScript() {
-        runPythonScript("seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/CMR_script.py");
+    public  void runMetadataScript() {
+        runScript("CMR_script.py");
     }
 
-    public static void runDateRangeScript() {
-        runPythonScript("seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/MissionDateRangeFinder.py");
+    public void runDateRangeScript() {
+        runScript("MissionDateRangeFinder.py");
     }
 
-    public static void runAllScripts() {
+    public void runAllScripts() {
         System.out.println("Running all Python scripts...");
         runMetadataScript();
         runDateRangeScript();
+    }
+
+
+    public void runScript(String scriptName) {
+        // Load the script as a resource
+        Path tempScript = null;
+        try {
+            InputStream scriptStream = getClass().getClassLoader().getResourceAsStream("scripts/" + scriptName);
+            if (scriptStream == null) {
+                throw new FileNotFoundException("Script not found: scripts/" + scriptName);
+            }
+
+            // Create a temporary file to write the script content
+            tempScript = Files.createTempFile("script-", ".py");
+            Files.copy(scriptStream, tempScript, StandardCopyOption.REPLACE_EXISTING);
+            scriptStream.close();
+
+            // Make the script executable (optional, depending on the environment)
+            tempScript.toFile().setExecutable(true);
+
+            // Execute the script
+            ProcessBuilder pb = new ProcessBuilder("python", tempScript.toAbsolutePath().toString());
+            pb.inheritIO(); // To inherit IO streams (optional)
+            Process process = pb.start();
+
+            // Wait for the process to complete
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                throw new RuntimeException("Script exited with code: " + exitCode);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Delete the temporary script file
+            assert tempScript != null;
+            try {
+                Files.deleteIfExists(tempScript);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private static File extractPythonScript(String scriptName) throws IOException {
+        // Construct the path to the script within the JAR
+        String resourcePath = "scripts/" + scriptName;
+
+        // Load the resource as a stream
+        InputStream inputStream = PythonScriptRunner.class.getClassLoader().getResourceAsStream(resourcePath);
+        if (inputStream == null) {
+            throw new FileNotFoundException("Resource not found: " + resourcePath);
+        }
+
+        // Create a temporary file to write the script to
+        File tempScript = File.createTempFile(scriptName, null);
+        tempScript.deleteOnExit();
+
+        // Copy the contents of the resource to the temporary file
+        try (OutputStream outputStream = new FileOutputStream(tempScript)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+
+        return tempScript;
+    }
+
+    private static void runPythonScript_new(String scriptName) {
+        File scriptFile = null;
+        try {
+            scriptFile = extractPythonScript(scriptName);
+
+            ProcessBuilder pb = new ProcessBuilder("python", scriptFile.getAbsolutePath());
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            int exitCode = 0;
+            exitCode = process.waitFor();
+            System.out.println("Script exited with code " + exitCode);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private static void runPythonScript(String scriptPath) {
@@ -137,6 +235,7 @@ public class PythonScriptRunner_old {
             e.printStackTrace();
         }
     }
+
     public static void runDateRangeScript(Set<String> missionKeys) {
         try {
             // Write mission names to a temp file
