@@ -1,40 +1,118 @@
-Chesapeake = -75,-75,37,37
-Chesapeake2 Long long name = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
-Chesapeake2 = -74,-74,34,34
+-- BLANK --
+-- UNITED STATES --
+Cape Canaveral = 28°28′N 80°32′W
+Cape Hatteras = 35°13′21″N 75°31′48″W
+Chesapeake Bay = 37.8°N 76.1°W
+Delaware Bay = 39°04′N 75°10′W
+Galveston Bay = 29°34′11″N 94°56′12″W
+Great Salt Lake = 41°10′N 112°32′W
+Gulf of Alaska = 57°N 144°W
+Gulf of America = 25°N 90°W
+Gulf of Maine = 43°N 68°W
+Lake Erie = 42.2°N 81.2°W
+Lake Huron = 44.8°N 82.4°W
+Lake Michigan = 44°N 87°W
+Lake Okeechobee = 26°56′N 80°48′W
+Lake Ontario = 43.7°N 77.9°W
+Lake Superior = 47.7°N 87.5°W
+Long Island Sound = 41°05′48″N 72°52′52″W
+Mobile Bay = 30°26′34″N 88°00′33″W
+Monterey Bay = 36°48′N 121°54′W
+Salton Sea = 33°18′47″N 115°50′04″W
+San Francisco Bay = 37°40′N 122°16′W
+Straits of Florida = 24°00′00″N 80°50′00″W
+Tampa Bay = 27°45′45″N 82°32′45″W
+
+
+-- BLANK --
+-- EUROPE --
+Adriatic Sea = 43, 15
+Aegean Sea = 39, 25
+Alboran Sea = 36, 3
+Balearic Sea = 40, 1.30'
+Baltic Sea = 58, 20
+Barents Sea = 75, 40
+Bay of Biscay = 45.30',-4.24'
+Black Sea = 44, 35
+Caspian Sea = 42, 50.5
+English Channel = 50.2, 2
+Gulf of Bothnia = 63,20
+Gulf of Finland = 59.50', 26
+Ionian Sea = 38, 19
+Irish Sea = 53.5, -5
+Ligurian Sea = 43.30', 9
+Mediterranean Sea = 35, 18
+North Sea = 56, 3
+Norwegian Sea = 69, 2
+Sea of Azov = 46, 37
+Sea of Crete = 36, 25
+Tyrrhenian Sea = 40, 12
+White Sea = 65.5, 37.5
+
+-- BLANK --
+-- AFRICA --
+Cape Fria = -18.27', 12.01'
+Cape Verde = 15.3, -23.7
+Cape of Good Hope = -34.21'29", 18.28'32"
+Gulf of Aden = 12, 48
+Gulf of Gabes = 34, 10.25'
+Gulf of Guinea = 0,0
+Gulf of Sidra = 31.30', 18
+Lake Victoria = -1, 33
+Mozambique Channel = -18, 41
+Red Sea = 22, 38
+
+-- BLANK --
+-- ASIA --
+Andaman Sea = 10, 96
+Arabian Sea = 14, 65
+Arafura Sea = -9, 133
+Aral Sea = 45, 60
+Banda Sea = -6, 127
+Bay of Bengal = 15, 88
+Bering Sea = 58, 178
+Celebes Sea = 3, 122
+Chukchi Sea = 69, 172
+East China Sea = 30, 125
+East Siberian Sea = 72, 163
+Gulf of Oman = 25, 58
+Gulf of Thailand = 9.30', 102
+Java Sea = -5, 110
+Kara Sea = 77, 77
+Lake Baikal = 53.30', 108
+Lake Balkhash = 46.10', 74.20'
+Laptev Sea = 76, 125
+Persian Gulf = 26, 52
+Philippine Sea = 20, 130
+Sea of Japan = 40, 135
+Sea of Okhotsk = 55, 150
+South China Sea = 12, 113
+Timor Sea = -10, 127
+Yellow Sea = 38, 123
+
+-- BLANK --
+-- AUSTRALIA/OCEANIA --
+Bay of Plenty = -37.40', 177
+Bismarck Sea = -4, 148
+Cook Strait = -41.13'46", 174.28'59"
+Coral Sea = -18, 158
+Encounter Bay = -35.34'40", 138.35'35"
+Geographe Bay = -33.58, 115.25
+Great Australia Bight = -33, 130
+Great Barrier Reef = -16.24', 145.48'
+Gulf of Carpentaria = -14, 139
+Joseph Bonaparte Gulf = -14.06', 128.50'
+Solomon Sea = -8, 154
+Spencer Gulf = -34.25', 136.45'
+Tasman Sea = -40, 160
+
+
+-- BLANK --
+-- ? --
+Caribbean Sea = 15°N 75°W
+
+
+
+
+
+

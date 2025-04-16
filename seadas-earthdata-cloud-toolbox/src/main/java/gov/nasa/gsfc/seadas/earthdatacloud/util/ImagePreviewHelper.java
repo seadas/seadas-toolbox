@@ -107,7 +107,7 @@ public class ImagePreviewHelper {
                 Point tableLocationTop = parent.getLocationOnScreen();
                 int windowHeight = previewWindow.getHeight();
 
-                int offsetX = parentDialog.getWidth();
+                int offsetX = parentDialog.getWidth() + 5;
 
 
 
