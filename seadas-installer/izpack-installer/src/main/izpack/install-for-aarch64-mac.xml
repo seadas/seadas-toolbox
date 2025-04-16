@@ -149,9 +149,15 @@
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
+<!--    <dynamicvariables>-->
+<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>-->
+<!--        <variable name="arch" fromfile="$INSTALL_PATH/arch.properties"/>-->
+<!--    </dynamicvariables>-->
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
-        <variable name="arch" fromfile="$INSTALL_PATH/arch.properties"/>
+        <variable name="arch" value="arm64" checkonce="false"/>
+        <variable name="arch" fromfile="$INSTALL_PATH/arch.properties" checkonce="false"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home" condition="isMacX64"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre-aarch64/Contents/Home" condition="isMacAarch64"/>
     </dynamicvariables>
 
     <packs>
