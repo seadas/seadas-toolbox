@@ -1,30 +1,3 @@
-
--- BLANK --
--- NORTH AMERICA --
-Amundsen Gulf = 71°00′01″N 124°00′10″W
-Baffin Bay = 74°N 68°W
-Bay of Fundy = 45°00′N 65°45′W
-Beaufort Sea = 72°N 137°W
-Bering Strait = 65°45′00″N 168°58′37″W
-Bristol Bay = 57°40′N 159°50′W
-Davis Strait = 65°N 58°W
-Denmark Strait = 67°N 24°W
-Foxe Basin = 65°55′50″N 77°55′10″W
-Greenland Sea = 76°N 8°W
-Gulf of Boothia = 70°40′N 91°00′W
-Gulf of St. Lawrence = 48°36′N 61°24′W
-Hudson Bay = 60°N 86°W
-James Bay = 53°30′N 80°30′W
-Labrador Sea = 61°N 56°W
-Lancaster Sound = 74°13′00″N 84°00′00″W
-Lincoln Sea = 83°N 58°W
-M'Clintock Channel = 72°00′N 102°00′W
-Nares Strait = 80°N 070°W
-Norton Sound = 63.9°N 163.3°W
-Viscount Melville Sound = 74°15′N 105°00′W
-Wandel Sea = 82°15′N 17°00′W
-
-
 -- BLANK --
 -- UNITED STATES --
 Cape Canaveral = 28°28′N 80°32′W
@@ -52,32 +25,6 @@ Straits of Florida = 24°00′00″N 80°50′00″W
 Tampa Bay = 27°45′45″N 82°32′45″W
 
 
-
--- BLANK --
--- MEXICO --
-Bay of Campeche = 20°00′00″N 94°00′00″W
-Caribbean Sea = 15°N 75°W
-Gulf of California = 28°0′N 112°0′W
-Gulf of Tehuantepec = 16°N 95°W
-
-
-
--- BLANK --
--- SOUTH AMERICA --
-Argentine Sea = 46°S 63°W
-Cape Horn = 55°58′48″S 67°17′21″W
-Cape São Roque = 5°28′57″S 35°15′41″W
-Drake Passage = 58°35′S 65°54′W
-Gulf of Panama = 8.08642°N 79.28284°W
-Lake Titicaca = 15°49′30″S 69°19′30″W
-Río de la Plata = 35°40′S 55°47′W
-San Jorge Gulf = 46°04′52″S 66°50′11″W
-San Matías Gulf = 41°30′S 64°30′W
-Scotia Sea = 57°30′S 40°00′W
-
-
-
-
 -- BLANK --
 -- EUROPE --
 Adriatic Sea = 43°N 15°E
@@ -103,6 +50,21 @@ Sea of Azov = 46°N 37°E
 Sea of Crete = 36°N 25°E
 Tyrrhenian Sea = 40°N 12°E
 White Sea = 65°30′N 37°30′E
+
+-- BLANK --
+-- AFRICA --
+Cape Fria = 18°27′00.00″S 12°01′00.00″E
+Cape Verde = 15.3°N 23.7°W
+Cape of Good Hope = 34°21′29″S 18°28′32″E
+Gulf of Aden = 12°N 48°E
+Gulf of Gabès = 34°00′N 10°25′E
+Gulf of Guinea = 0°0′N 0°0′E
+Gulf of Sidra = 31°30′N 18°0′E
+Lake Malawi = 12°00′S 34°30′E
+Lake Tanganyika = 6°06′S 29°30′E
+Lake Victoria = 1°S 33°E
+Mozambique Channel = 18°S 41°E
+Red Sea = 22°N 38°E
 
 -- BLANK --
 -- ASIA --
@@ -134,25 +96,6 @@ South China Sea = 12°N 113°E
 Timor Sea = 10°S 127°E
 Yellow Sea = 38°0′N 123°0′E
 
-
-
--- BLANK --
--- AFRICA --
-Cape Fria = 18°27′00.00″S 12°01′00.00″E
-Cape Verde = 15.3°N 23.7°W
-Cape of Good Hope = 34°21′29″S 18°28′32″E
-Gulf of Aden = 12°N 48°E
-Gulf of Gabès = 34°00′N 10°25′E
-Gulf of Guinea = 0°0′N 0°0′E
-Gulf of Sidra = 31°30′N 18°0′E
-Lake Malawi = 12°00′S 34°30′E
-Lake Tanganyika = 6°06′S 29°30′E
-Lake Victoria = 1°S 33°E
-Mozambique Channel = 18°S 41°E
-Red Sea = 22°N 38°E
-
-
-
 -- BLANK --
 -- AUSTRALIA/OCEANIA --
 Bay of Plenty = 37°40′S 177°00′E
@@ -172,6 +115,53 @@ Tasman Sea = 40°S 160°E
 
 
 
+-- BLANK --
+-- MEXICO --
+Bay of Campeche = 20°00′00″N 94°00′00″W
+Caribbean Sea = 15°N 75°W
+Gulf of California = 28°0′N 112°0′W
+Gulf of Tehuantepec = 16°N 95°W
+
+
+-- BLANK --
+-- NORTH AMERICA --
+Amundsen Gulf = 71°00′01″N 124°00′10″W
+Baffin Bay = 74°N 68°W
+Bay of Fundy = 45°00′N 65°45′W
+Beaufort Sea = 72°N 137°W
+Bering Strait = 65°45′00″N 168°58′37″W
+Bristol Bay = 57°40′N 159°50′W
+Davis Strait = 65°N 58°W
+Denmark Strait = 67°N 24°W
+Foxe Basin = 65°55′50″N 77°55′10″W
+Greenland Sea = 76°N 8°W
+Gulf of Boothia = 70°40′N 91°00′W
+Gulf of St. Lawrence = 48°36′N 61°24′W
+Hudson Bay = 60°N 86°W
+Hudson Strait =
+James Bay = 53°30′N 80°30′W
+Labrador Sea = 61°N 56°W
+Lancaster Sound = 74°13′00″N 84°00′00″W
+Lincoln Sea = 83°N 58°W
+M'Clintock Channel = 72°00′N 102°00′W
+Nares Strait = 80°N 070°W
+Norton Sound = 63.9°N 163.3°W
+Viscount Melville Sound = 74°15′N 105°00′W
+Wandel Sea = 82°15′N 17°00′W
+
+
+
+-- BLANK --
+-- SOUTH AMERICA --
+Argentine Sea = 46°S 63°W
+Cape Horn = 55°58′48″S 67°17′21″W
+Cape São Roque = 5°28′57″S 35°15′41″W
+Drake Passage = 58°35′S 65°54′W
+Gulf of Panama = 8.08642°N 79.28284°W
+Río de la Plata = 35°40′S 55°47′W
+San Jorge Gulf = 46°04′52″S 66°50′11″W
+San Matías Gulf = 41°30′S 64°30′W
+Scotia Sea = 57°30′S 40°00′W
 
 
 
@@ -195,6 +185,10 @@ Weddell Sea = 75°S 45°W
 
 
 
+-- BLANK --
+-- GYRES --
+Weddell Gyre =
+
 
 -- BLANK --
 -- ICE SHELFS --
@@ -212,6 +206,29 @@ Galápagos Islands = 0°30′S 90°30′W
 Hawaiian Islands = 20°54′00″N 156°36′00″W
 New Zealand = 42°S 173°E
 Fiji = 18°S 179°E
+
+-- BLANK --
+-- LAKES --
+Caspian Sea
+Lake Superior
+Lake Victoria
+Lake Huron
+Lake Michigan
+Lake Tanganyika
+Lake Baikal
+Great Bear Lake
+Malawi
+Great Slave Lake
+Lake Erie
+Winnipeg
+Lake Ontario
+Ladoga
+Balkhash
+Vostok
+Onega
+Lake Titicaca
+Nicaragua
+Athabasca
 
 
 
