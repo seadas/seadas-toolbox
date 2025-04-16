@@ -985,7 +985,7 @@ private void loadMissionDateRangesFromFile() {
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(2, 2, 2, 2);
-        c.anchor = GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints.NORTHWEST;
 
         // Create date pickers
         startDatePicker = createDatePicker();
@@ -1034,7 +1034,9 @@ private void loadMissionDateRangesFromFile() {
         c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 2;
-        c.anchor = GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
         temporalPanel.add(dateRangeLabel, c);
 
@@ -1179,6 +1181,7 @@ private void loadMissionDateRangesFromFile() {
 
             gbc.gridx = 1;
             regions = new JComboBox(regionsInfosArray);
+            regions.setMaximumRowCount(20);
             panel.add(regions, gbc);
 
             // Handle resetDefaults events - set all other components to defaults
