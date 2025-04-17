@@ -652,29 +652,42 @@ private void loadMissionDateRangesFromFile() {
             fileChooser.setCurrentDirectory(parentDownloadDirFile);
 
             String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
-            if (downloadDirStr == null || downloadDirStr.trim().length() == 0) {
-                downloadDirStr = "results";
+
+            int currIndex = 1;
+            String downloadDirStrNoSuffix = "results";
+            boolean retainSuffix = false;
+
+            if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
+                downloadDirStrNoSuffix = downloadDirStr;
+                String[] downloadDirStrSplitArray = downloadDirStr.split("-");
+                if (downloadDirStrSplitArray.length == 2) {
+                    String suffix = downloadDirStrSplitArray[1];
+                    int currIndexTmp = RegionUtils.convertStringToInt(suffix, -999);
+                    if (currIndexTmp != -999) {
+                        downloadDirStrNoSuffix = downloadDirStrSplitArray[0];
+                        currIndex = currIndexTmp;
+                        if (currIndex == 1) {
+                            retainSuffix = true;
+                        }
+                    }
+                }
             }
 
-            String downloadDirStrIndexed = null;
+            String downloadDirStrIndexed;
             File file2 = null;
-            int i = 1;
-            while (file2 == null && i < 1000) {
-                if (i == 1) {
-                    downloadDirStrIndexed = downloadDirStr;
+            while (file2 == null && currIndex < 1000) {
+                if (currIndex == 1 && !retainSuffix) {
+                    downloadDirStrIndexed = downloadDirStrNoSuffix;
                 } else {
-                    downloadDirStrIndexed = downloadDirStr + "-" + i;
+                    downloadDirStrIndexed = downloadDirStrNoSuffix + "-" + currIndex;
                 }
 
-                System.out.println("downloadDirStrIndexed=" + downloadDirStrIndexed);
                 file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
-                System.out.println("file2=" + file2.getAbsolutePath());
                 if (!file2.exists()) {
-                    System.out.println("breaking");
                     break;
                 }
                 file2 = null;
-                i++;
+                currIndex++;
             }
 
             if (file2 != null) {
