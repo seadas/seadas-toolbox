@@ -176,7 +176,7 @@ private void loadMissionDateRangesFromFile() {
             BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
             loadDateRangesFromReader(reader);
         } else {
-            System.err.println("Could not find mission_date_ranges.json in resources");
+            System.err.println("Resource not found: json-files/mission_date_ranges.json");
         }
     } catch (IOException e) {
         System.err.println("Failed to read mission date ranges from classpath: " + e.getMessage());
