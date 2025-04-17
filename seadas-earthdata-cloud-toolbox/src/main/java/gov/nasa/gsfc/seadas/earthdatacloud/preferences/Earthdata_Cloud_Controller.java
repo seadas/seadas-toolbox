@@ -91,23 +91,23 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_PRODUCT_DEFAULT = "BGC_NRT";
 
     public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
-    public static final String PROPERTY_MINLAT_LABEL = "South (Min Lat)";
-    public static final String PROPERTY_MINLAT_TOOLTIP = "Minumum latitude";
+    public static final String PROPERTY_MINLAT_LABEL = "South";
+    public static final String PROPERTY_MINLAT_TOOLTIP = "<html>Southernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
     public static final String PROPERTY_MINLAT_DEFAULT = "";
 
     public static final String PROPERTY_MAXLAT_KEY = PROPERTY_ROOT_KEY + ".maxlat";
-    public static final String PROPERTY_MAXLAT_LABEL = "North (Max Lat)";
-    public static final String PROPERTY_MAXLAT_TOOLTIP = "Maximum latitude";
+    public static final String PROPERTY_MAXLAT_LABEL = "North";
+    public static final String PROPERTY_MAXLAT_TOOLTIP = "<html>Northernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
     public static final String PROPERTY_MAXLAT_DEFAULT = "";
 
     public static final String PROPERTY_MINLON_KEY = PROPERTY_ROOT_KEY + ".minlon";
-    public static final String PROPERTY_MINLON_LABEL = "East (Min Lon)";
-    public static final String PROPERTY_MINLON_TOOLTIP = "Minimum longitude";
+    public static final String PROPERTY_MINLON_LABEL = "East";
+    public static final String PROPERTY_MINLON_TOOLTIP = "<html>Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
     public static final String PROPERTY_MINLON_DEFAULT = "";
 
     public static final String PROPERTY_MAXLON_KEY = PROPERTY_ROOT_KEY + ".maxlon";
-    public static final String PROPERTY_MAXLON_LABEL = "West (Max Lon)";
-    public static final String PROPERTY_MAXLON_TOOLTIP = "Maximum longitude";
+    public static final String PROPERTY_MAXLON_LABEL = "West";
+    public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Westernmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
     public static final String PROPERTY_MAXLON_DEFAULT = "";
 
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
