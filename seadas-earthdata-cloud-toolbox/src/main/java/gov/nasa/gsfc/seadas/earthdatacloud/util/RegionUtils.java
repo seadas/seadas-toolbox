@@ -206,7 +206,7 @@ public class RegionUtils {
                         // good
                         if (coordMinutesSplitArray.length == 1) {
                             double convertedValue = degreesDouble + minutesDouble/60.0;
-                            DecimalFormat df = new DecimalFormat("###.##");
+                            DecimalFormat df = new DecimalFormat("###.###");
                             return df.format(convertedValue);
                             // todo combine degrees and minutes
 
@@ -217,7 +217,7 @@ public class RegionUtils {
                                 double secondsDouble = convertStringToDouble(seconds, -9999.0);
                                 if (secondsDouble != -9999.0) {
                                     double convertedValue = degreesDouble + minutesDouble/60.0 + secondsDouble/(60*60);
-                                    DecimalFormat df = new DecimalFormat("###.##");
+                                    DecimalFormat df = new DecimalFormat("###.###");
                                     return df.format(convertedValue);
                                     //  todo combine degrees and minutes and seconds
                                 }
