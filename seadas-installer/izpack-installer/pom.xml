@@ -22,7 +22,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <staging.dir>${project.build.directory}/staging</staging.dir>
-    <izpack.version>5.1.3</izpack.version>
+    <izpack.version>5.2.4</izpack.version>
     <installer-output-filename>seadas-izpack-installer.jar</installer-output-filename>
   </properties>
 
