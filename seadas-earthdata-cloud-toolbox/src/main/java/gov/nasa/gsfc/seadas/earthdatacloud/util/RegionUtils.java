@@ -13,10 +13,9 @@ import java.util.ArrayList;
 public class RegionUtils {
 
 
-    public static ArrayList<RegionsInfo> getAuxDataRegions() {
+    public static ArrayList<RegionsInfo> getAuxDataRegions(String REGIONS_FILE, boolean replaceExisting) {
 
         String REGIONS = "regions";
-        String REGIONS_FILE = "regions.txt";
 
         Path auxdataDirPath = SystemUtils.getAuxDataPath().resolve(REGIONS);
         File regionsAuxDir = auxdataDirPath.toFile();
@@ -29,7 +28,7 @@ public class RegionUtils {
                 Path sourceBasePath = ResourceInstaller.findModuleCodeBasePath(RegionUtils.class);
                 Path sourceDirPath = sourceBasePath.resolve("auxdata");
 
-                final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirPath, false);
+                final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirPath, replaceExisting);
 
                 resourceInstaller.install(".*." + REGIONS_FILE, ProgressMonitor.NULL);
 

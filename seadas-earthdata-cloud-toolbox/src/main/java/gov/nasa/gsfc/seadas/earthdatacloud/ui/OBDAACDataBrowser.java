@@ -37,6 +37,8 @@ public class OBDAACDataBrowser extends JPanel {
     private JDatePickerImpl startDatePicker, endDatePicker;
     private JTextField minLatField, maxLatField, minLonField, maxLonField;
     private JComboBox regions;
+    private JComboBox regions2;
+    private boolean working = false;
     private JTable resultsTable;
     private DefaultTableModel tableModel;
     private final Map<String, String> productNameTooltips = new HashMap<>();
@@ -1283,117 +1285,216 @@ private void loadMissionDateRangesFromFile() {
         gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Label on the left (column 0)
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        panel.add(new JLabel("Min Lat:"), gbc);
-
-        // Field on the right (column 1)
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        minLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
-        panel.add(minLatField, gbc);
 
         // Max Lat
-        gbc.gridy++;
+        gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        panel.add(new JLabel("Max Lat:"), gbc);
+        JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
+        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        panel.add(maxLatLabel, gbc);
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         maxLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
+        maxLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
         panel.add(maxLatField, gbc);
+
+
+        // Min Lat
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        JLabel minLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLAT_LABEL + ":");
+        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(minLatLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        minLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
+        minLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(minLatField, gbc);
+
 
         // Min Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        panel.add(new JLabel("Min Lon:"), gbc);
+        JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
+        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        panel.add(minLonLabel, gbc);
+
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         minLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
+        minLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
         panel.add(minLonField, gbc);
+
+
 
         // Max Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        panel.add(new JLabel("Max Lon:"), gbc);
+        JLabel maxLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL + ":");
+        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        panel.add(maxLonLabel, gbc);
+
+
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
+        maxLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
         panel.add(maxLonField, gbc);
 
 
 
+        // VERTICAL FILLER - silliness to get this filled
+        gbc.gridy++;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        JLabel fill = new JLabel("");
+        panel.add(fill, gbc);
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
 
-        ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions();
+
 
         try {
+            String REGIONS_FILE = "regions.txt";
+            String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas9/auxdata/regions/regions.txt</html>";
+            ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
+
             Object[] regionsInfosArray = regionsInfos.toArray();
 
             gbc.gridy++;
             gbc.gridx = 0;
             gbc.fill = GridBagConstraints.NONE;
             gbc.weightx = 0;
-            JLabel regionLabel = new JLabel("Region:");
+            JLabel regionLabel = new JLabel("Location:");
+            regionLabel.setToolTipText(TOOLTIP);
             panel.add(regionLabel, gbc);
 
             gbc.gridx = 1;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.weightx = 1.0;
-            gbc.weighty = 1;
             regions = new JComboBox(regionsInfosArray);
             regions.setMaximumRowCount(20);
+            regions.setToolTipText(TOOLTIP);
+
             panel.add(regions, gbc);
+            JTextField tmp2 = new JTextField("1234567890123456789012");
+            regions.setMinimumSize(tmp2.getPreferredSize());
 
             // Handle resetDefaults events - set all other components to defaults
             regions.addActionListener(evt -> {
-                RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
-                System.out.println("regions change" + selectedRegionInfo.getName() );
+                if (!working) {
+                    working = true;
+                    RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
+                    System.out.println("regions change" + selectedRegionInfo.getName());
 
-                if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
-                    maxLatField.setText(selectedRegionInfo.getNorth());
-                    minLatField.setText(selectedRegionInfo.getSouth());
-                    minLonField.setText(selectedRegionInfo.getWest());
-                    maxLonField.setText(selectedRegionInfo.getEast());
-                } else {
-                    maxLatField.setText("");
-                    minLatField.setText("");
-                    minLonField.setText("");
-                    maxLonField.setText("");
+                    if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
+                        maxLatField.setText(selectedRegionInfo.getNorth());
+                        minLatField.setText(selectedRegionInfo.getSouth());
+                        minLonField.setText(selectedRegionInfo.getWest());
+                        maxLonField.setText(selectedRegionInfo.getEast());
+                    } else {
+                        maxLatField.setText("");
+                        minLatField.setText("");
+                        minLonField.setText("");
+                        maxLonField.setText("");
+                    }
+
+                    regions2.setSelectedIndex(0);
+
+                    panel.repaint();
+                    panel.updateUI();
+                    parentDialog.repaint();
+
+                    working = false;
                 }
-                panel.repaint();
-                panel.updateUI();
-                parentDialog.repaint();
             });
-
-
-
-
-
         } catch (Exception e) {
-
         }
+
+
+
+
+        try {
+            String REGIONS_FILE = "user_regions.txt";
+            String TOOLTIP = "<html>User-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas9/auxdata/regions/user_regions.txt</html>";
+
+            ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false);
+
+            Object[] regionsInfosArray = regionsInfos.toArray();
+
+            gbc.gridy++;
+            gbc.gridx = 0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.weightx = 0;
+            JLabel regionLabel = new JLabel("Custom:");
+            regionLabel.setToolTipText(TOOLTIP);
+            panel.add(regionLabel, gbc);
+
+            gbc.gridx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 1.0;
+            regions2 = new JComboBox(regionsInfosArray);
+            regions2.setMaximumRowCount(20);
+            regions2.setToolTipText(TOOLTIP);
+
+            panel.add(regions2, gbc);
+            JTextField tmp2 = new JTextField("1234567890123456789012");
+            regions2.setMinimumSize(tmp2.getPreferredSize());
+
+            // Handle resetDefaults events - set all other components to defaults
+            regions2.addActionListener(evt -> {
+                if (!working) {
+                    working = true;
+                    RegionsInfo selectedRegionInfo = (RegionsInfo) regions2.getSelectedItem();
+                    System.out.println("regions change" + selectedRegionInfo.getName());
+
+                    if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
+                        maxLatField.setText(selectedRegionInfo.getNorth());
+                        minLatField.setText(selectedRegionInfo.getSouth());
+                        minLonField.setText(selectedRegionInfo.getWest());
+                        maxLonField.setText(selectedRegionInfo.getEast());
+                    } else {
+                        maxLatField.setText("");
+                        minLatField.setText("");
+                        minLonField.setText("");
+                        maxLonField.setText("");
+                    }
+
+                    regions.setSelectedIndex(0);
+
+                    panel.repaint();
+                    panel.updateUI();
+                    parentDialog.repaint();
+
+                    working = false;
+                }
+            });
+        } catch (Exception e) {
+        }
+
+
 
 
         JTextField tmp = new JTextField("1234567890123");
         minLonField.setMinimumSize(tmp.getPreferredSize());
 
-        JTextField tmp2 = new JTextField("1234567890123456789012");
-        regions.setMinimumSize(tmp2.getPreferredSize());
+
 
 //        JLabel tmp = new JLabel("1234567890123456789012345");
 //        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
