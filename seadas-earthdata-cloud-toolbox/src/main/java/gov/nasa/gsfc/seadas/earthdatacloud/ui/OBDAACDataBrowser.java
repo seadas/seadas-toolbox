@@ -331,8 +331,7 @@ private void loadMissionDateRangesFromFile() {
 
 
         // Add panel for max API results and results per page
-        gbc.gridy++;
-        gbc.gridx = 0;
+
 //        gbc.gridwidth = 2;
         JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paginationPanel.add(new JLabel("Max Results:"));
@@ -344,15 +343,25 @@ private void loadMissionDateRangesFromFile() {
         resultsPerPageSpinner = new JSpinner(new SpinnerNumberModel(25, 1, 1000, 1));
         resultsPerPageSpinner.setPreferredSize(new Dimension(80, 25));
         paginationPanel.add(resultsPerPageSpinner);
+        paginationPanel.add(Box.createHorizontalStrut(60));
+
+
+
+
+
+
+
+
+
+
 
         //TODO: Add a button to refresh the metadata
 //        JButton refreshButton = new JButton("Refresh Metadata");
 //        refreshButton.addActionListener(e -> refreshMetadata());
 //        paginationPanel.add(refreshButton);
-        add(paginationPanel, gbc);
 
-        gbc.gridy++;
-        gbc.gridx = 0;
+
+
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(e -> fetchGranules());
         JButton cancelButton = new JButton("Cancel");
@@ -366,7 +375,19 @@ private void loadMissionDateRangesFromFile() {
         buttonPanel.add(searchButton);
         buttonPanel.add(cancelButton);
 //        gbc.gridwidth = 2;
-        add(buttonPanel, gbc);
+
+
+//        paginationPanel.add(buttonPanel);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+//        add(paginationPanel, gbc);
+
+        add(createPaginationButtonPanel(paginationPanel, buttonPanel), gbc);
+//
+//        gbc.gridy++;
+//        gbc.gridx = 0;
+//        add(buttonPanel, gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -507,14 +528,14 @@ private void loadMissionDateRangesFromFile() {
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
         // todo Danny
-        scrollPane.setPreferredSize(new Dimension(850, 400));
+        scrollPane.setPreferredSize(new Dimension(700, 500));
 
 
         // Results container that holds the table and pagination
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
         // todo Danny
-        resultsContainer.setPreferredSize(new Dimension(850, 500));  // Adjust height as needed
+        resultsContainer.setPreferredSize(new Dimension(700, 600));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
         resultsContainer.add(scrollPane, BorderLayout.CENTER);
@@ -546,6 +567,44 @@ private void loadMissionDateRangesFromFile() {
             updateLevelsAndProducts();
         }
     }
+
+
+
+    private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+
+        JPanel panel = new JPanel(layout);
+//        gbc.insets = new Insets(0, 0, 0, 0);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        panel.add(panel1, gbc);
+
+
+        // silliness to get this filled
+        gbc.gridx++;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel fill = new JLabel("");
+        panel.add(fill, gbc);
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+
+
+
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+//        gbc.insets = new Insets(10, 0, 0, 10);
+        panel.add(panel2,gbc);
+
+        return panel;
+    }
+
 
     private void showImageInDialog(String imageUrl) {
         try {
@@ -1745,7 +1804,7 @@ private void loadMissionDateRangesFromFile() {
         panel.add(bothButton);
         panel.add(Box.createVerticalGlue());
 
-        JLabel tmp = new JLabel("12345678901234567");
+        JLabel tmp = new JLabel("1234567890123");
         Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
         panel.setMinimumSize(tmpDimension);
         panel.setPreferredSize(tmpDimension);
