@@ -1,6 +1,12 @@
 
 -- BLANK --
 -- NORTH AMERICA --
+#TEST1 = 35°30′00″N 100°30′00″W
+#TEST2 = 35.3 100.3
+#TEST3 = 40°30′00″N 30°30′00″N 90°30′00″E 110°30′00″E
+#TEST4 = 40.3 30.3 90.3 110.3
+
+
 Amundsen Gulf = 71°00′01″N 124°00′10″W
 Baffin Bay = 74°N 68°W
 Bay of Fundy = 45°00′N 65°45′W

@@ -43,128 +43,82 @@ public class RegionUtils {
 
         ArrayList<RegionsInfo> regionsInfos = new ArrayList<RegionsInfo>();
 
-        if (regionsAuxDirFile != null) {
-            if (regionsAuxDirFile.exists()) {
+        if (regionsAuxDirFile != null && regionsAuxDirFile.exists()) {
 
-                try (BufferedReader br = new BufferedReader(new FileReader(regionsAuxDirFile))) {
-                    RegionsInfo selectInfo = new RegionsInfo("Select", "-999", "-999", "-999", "-999");
-                    regionsInfos.add(selectInfo);
+            try (BufferedReader br = new BufferedReader(new FileReader(regionsAuxDirFile))) {
+                RegionsInfo selectInfo = new RegionsInfo("Select", RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
+                regionsInfos.add(selectInfo);
 
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        boolean regionFound = false;
-                        line = line.trim();
-                        if (line.startsWith("--") && line.endsWith("--")) {
-                            if (line.contains("BLANK")) {
-                                RegionsInfo sectionInfo = new RegionsInfo("", "-999", "-999", "-999", "-999");
-                                regionsInfos.add(sectionInfo);
-                            } else {
-                                RegionsInfo sectionInfo = new RegionsInfo(line, "-999", "-999", "-999", "-999");
-                                regionsInfos.add(sectionInfo);
-                            }
+                String line;
+                while ((line = br.readLine()) != null) {
+
+                    line = line.trim();
+                    if (line.length() == 0 ||  line.startsWith("#")) {
+                        continue;
+                    }
+                    if (line.startsWith("--") && line.endsWith("--")) {
+                        if (line.contains("BLANK")) {
+                            RegionsInfo sectionInfo = new RegionsInfo("", RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
+                            regionsInfos.add(sectionInfo);
                         } else {
-                            String[] values = line.split("=");
-                            if (values != null && values.length == 2) {
-                                String name = trimString(values[0]);
-                                String coords = trimString(values[1]);
+                            RegionsInfo sectionInfo = new RegionsInfo(line, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
+                            regionsInfos.add(sectionInfo);
+                        }
+                    } else {
+                        String[] lineSplitOnEqualsSignArray = line.split("=");
+                        if (lineSplitOnEqualsSignArray != null && lineSplitOnEqualsSignArray.length == 2) {
+                            String name = trimString(lineSplitOnEqualsSignArray[0]);
 
-                                if (!regionFound) {
-                                    String[] coordinatesArray = coords.split(",");
+                            if (name != null || name.length() > 0) {
+                                String coordinates = trimString(lineSplitOnEqualsSignArray[1]);
 
+                                String[] coordinatesSplitArray = coordinates.split("\\s+");
 
-                                    if (coordinatesArray != null) {
-                                        String north = "";
-                                        String south = "";
-                                        String west = "";
-                                        String east = "";
+                                if (coordinatesSplitArray != null) {
+                                    String north = null;
+                                    String south = null;
+                                    String west = null;
+                                    String east = null;
 
-                                        if (coordinatesArray.length == 4) {
-                                            north = trimString(coordinatesArray[0]);
-                                            south = trimString(coordinatesArray[1]);
-                                            west = trimString(coordinatesArray[2]);
-                                            east = trimString(coordinatesArray[3]);
-                                        } else if (coordinatesArray.length == 2) {
-                                            north = trimString(coordinatesArray[0]);
-                                            south = trimString(coordinatesArray[0]);
-                                            west = trimString(coordinatesArray[1]);
-                                            east = trimString(coordinatesArray[1]);
-                                        }
+                                    if (coordinatesSplitArray.length == 2) {
+                                        String lat = convertLatToDecimal(coordinatesSplitArray[0]);
+                                        String lon = convertLonToDecimal(coordinatesSplitArray[1]);
 
-                                        if (name.length() > 0 && north.length() > 0 && south.length() > 0 && west.length() > 0 && east.length() > 0) {
-                                            north = convertFromMinutesToDecimal(north);
-                                            south = convertFromMinutesToDecimal(south);
-                                            west = convertFromMinutesToDecimal(west);
-                                            east = convertFromMinutesToDecimal(east);
+                                        north = lat;
+                                        south = lat;
+                                        west = lon;
+                                        east = lon;
 
-                                            if (validateCoordinates(north, south, west, east)) {
-                                                RegionsInfo regionsInfo = new RegionsInfo(name, north, south, west, east);
-                                                regionsInfos.add(regionsInfo);
-                                                regionFound = true;
-                                            }
-                                        }
+                                    } else if (coordinatesSplitArray.length == 4) {
+                                        north = convertLatToDecimal(coordinatesSplitArray[0]);
+                                        south = convertLatToDecimal(coordinatesSplitArray[1]);
+                                        west = convertLonToDecimal(coordinatesSplitArray[2]);
+                                        east = convertLonToDecimal(coordinatesSplitArray[3]);
+                                    }
+
+                                    if (validateCoordinates(north, south, west, east)) {
+                                        RegionsInfo regionsInfo = new RegionsInfo(name, north, south, west, east);
+                                        regionsInfos.add(regionsInfo);
                                     }
                                 }
-
-
-                                if (!regionFound) {
-
-                                    String[] coordinatesSpaceSplitArray = coords.split("\\s+");
-
-                                    if (coordinatesSpaceSplitArray != null) {
-
-                                        String lat = "";
-                                        String lon = "";
-
-                                        if (coordinatesSpaceSplitArray.length >= 2) {
-                                            lat = trimString(coordinatesSpaceSplitArray[0]);
-                                            lon = trimString(coordinatesSpaceSplitArray[1]);
-                                            System.out.println(line);
-                                            System.out.println("lat=" + lat);
-                                            System.out.println("lon=" + lon);
-
-                                            if (name.length() > 0 && lat.length() > 0 && lon.length() > 0) {
-                                                lat = convertLatFromMinutesSecondsToDecimal(lat);
-                                                lon = convertLonFromMinutesSecondsToDecimal(lon);
-                                            }
-
-                                            System.out.println("converted lat=" + lat);
-                                            System.out.println("converted lon=" + lon);
-                                            String north = lat;
-                                            String south = lat;
-                                            String west = lon;
-                                            String east = lon;
-
-                                            if (validateCoordinates(north, south, west, east)) {
-//                                            System.out.println(name);
-                                                RegionsInfo regionsInfo = new RegionsInfo(name, north, south, west, east);
-                                                regionsInfos.add(regionsInfo);
-                                                regionFound = true;
-                                            }
-                                        }
-
-                                    }
-                                }
-
-
-
-
                             }
                         }
                     }
-                } catch (Exception e) {
-
                 }
+            } catch (Exception e) {
+
             }
         }
 
         return regionsInfos;
-
     }
 
 
 
 
-    private static String convertLatFromMinutesSecondsToDecimal(String latStr) {
+
+
+    private static String convertLatToDecimal(String latStr) {
         if (latStr == null) {
             return latStr;
         }
@@ -195,7 +149,7 @@ public class RegionUtils {
 
 
 
-    private static String convertLonFromMinutesSecondsToDecimal(String lonStr) {
+    private static String convertLonToDecimal(String lonStr) {
         if (lonStr == null) {
             return lonStr;
         }
@@ -352,7 +306,7 @@ public class RegionUtils {
                     }
                 }
             }
-            if (north == -999 && south == -999 && west == -999 && east == -999) {
+            if (north == RegionsInfo.SPECIAL_ENTRY_DOUBLE && south == RegionsInfo.SPECIAL_ENTRY_DOUBLE && west == RegionsInfo.SPECIAL_ENTRY_DOUBLE && east == RegionsInfo.SPECIAL_ENTRY_DOUBLE) {
                 return true;
             }
         } catch (NullPointerException e) {

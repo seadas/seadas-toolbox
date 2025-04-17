@@ -8,6 +8,9 @@ public class RegionsInfo {
     private String west;
     private String east;
 
+    public final static String SPECIAL_ENTRY = "-999";
+    public final static double SPECIAL_ENTRY_DOUBLE = -999;
+
     public RegionsInfo(String name, String north, String south, String west, String east) {
         this.setName(name);
         this.setNorth(north);

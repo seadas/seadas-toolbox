@@ -1189,7 +1189,7 @@ private void loadMissionDateRangesFromFile() {
                 RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
                 System.out.println("regions change" + selectedRegionInfo.getName() );
 
-                if (!"-999".equals(selectedRegionInfo.getNorth())) {
+                if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
                     maxLatField.setText(selectedRegionInfo.getNorth());
                     minLatField.setText(selectedRegionInfo.getSouth());
                     minLonField.setText(selectedRegionInfo.getWest());
