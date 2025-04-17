@@ -311,29 +311,31 @@ private void loadMissionDateRangesFromFile() {
         });
 
         //gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Satellite/Instrument:"), gbc);
-        gbc.gridx = 1; add(satelliteDropdown, gbc);
+//        add(new JLabel("Satellite/Instrument:"), gbc);
+//        gbc.gridx = 1; add(satelliteDropdown, gbc);
+//
+//        gbc.gridx = 0; gbc.gridy++;
+//        add(new JLabel("Data Level:"), gbc);
+//        gbc.gridx = 1; add(levelDropdown, gbc);
+//
+//        gbc.gridx = 0; gbc.gridy++;
+//        add(new JLabel("Product Name:"), gbc);
+//        gbc.gridx = 1; add(productDropdown, gbc);
 
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Data Level:"), gbc);
-        gbc.gridx = 1; add(levelDropdown, gbc);
-
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Product Name:"), gbc);
-        gbc.gridx = 1; add(productDropdown, gbc);
 
         // Filters in grouped panel
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridwidth = 2;
         add(createFilterPanel(), gbc);
+//        gbc.gridwidth = 2;
+
 
         // Add panel for max API results and results per page
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridwidth = 2;
+//        gbc.gridwidth = 2;
         JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        paginationPanel.add(new JLabel("Max API Results:"));
+        paginationPanel.add(new JLabel("Max Results:"));
         maxApiResultsSpinner = new JSpinner(new SpinnerNumberModel(100, 1, 10000, 1));
         maxApiResultsSpinner.setPreferredSize(new Dimension(80, 25));
         paginationPanel.add(maxApiResultsSpinner);
@@ -363,12 +365,12 @@ private void loadMissionDateRangesFromFile() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(searchButton);
         buttonPanel.add(cancelButton);
-        gbc.gridwidth = 2;
+//        gbc.gridwidth = 2;
         add(buttonPanel, gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridwidth = 2;
+//        gbc.gridwidth = 2;
         String[] columnNames = {"File Name", "Download File"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -867,6 +869,60 @@ private void loadMissionDateRangesFromFile() {
         previewWindow.setLocation(location.x + 10, location.y + 10);
         previewWindow.setVisible(true);
     }
+
+
+
+    private JPanel createLeftPanel() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        JPanel panel = new JPanel(layout);
+        gbc.insets = new Insets(0, 0, 0, 0);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        panel.add(createSatelliteProductsPanel(), gbc);
+
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.insets = new Insets(10, 0, 0, 10);
+        gbc.gridwidth = 1;
+        panel.add(createTemporalPanel(),gbc);
+
+        gbc.gridy = 1;
+        gbc.gridx = 1;
+        gbc.insets = new Insets(10, 0, 0, 0);
+        panel.add(createDayNightPanel(),gbc);
+
+        return panel;
+    }
+
+
+    private JPanel createRightPanel() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        JPanel panel = new JPanel(layout);
+        gbc.insets = new Insets(0, 0, 0, 0);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.weighty = 1;
+        panel.add(createSpatialPanel(),gbc);
+
+        return panel;
+    }
+
+
     private JPanel createFilterPanel() {
         GridBagConstraints gbc = new GridBagConstraints();
         GridBagLayout layout = new GridBagLayout();
@@ -874,30 +930,26 @@ private void loadMissionDateRangesFromFile() {
         GridBagConstraints c = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridy = 0;
-        gbc.gridx = 0;
 
         JPanel panel = new JPanel(layout);
         gbc.insets = new Insets(0, 10, 0, 10);
-        panel.add(createTemporalPanel(),gbc);
 
-        gbc.gridx++;
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        panel.add(createLeftPanel(), gbc);
+
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.weighty = 1;
         gbc.insets = new Insets(0, 0, 0, 10);
-        panel.add(createSpatialPanel(),gbc);
-
-        gbc.gridx++;
-        gbc.insets = new Insets(0, 0, 0, 10);
-        panel.add(createDayNightPanel(),gbc);
-
-//        // todo Danny
-//        JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
-//
-//        panel.add(createTemporalPanel());
-//        panel.add(createSpatialPanel());
-//        panel.add(createDayNightPanel());
+        panel.add(createRightPanel(),gbc);
 
         return panel;
     }
+
+
+
+
     private void updateLevelsAndProducts() {
         String selectedSatellite = (String) satelliteDropdown.getSelectedItem();
         if (selectedSatellite == null || !metadataMap.containsKey(selectedSatellite)) return;
@@ -990,6 +1042,51 @@ private void loadMissionDateRangesFromFile() {
             productDropdown.setSelectedIndex(selectedIndex);
         }
     }
+
+
+    private JPanel createSatelliteProductsPanel() {
+        System.out.println("Creating Satellite Products Panel");
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEtchedBorder());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(new JLabel("Satellite/Instrument:"), gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(satelliteDropdown, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(new JLabel("Data Level:"), gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(levelDropdown, gbc);
+
+        gbc.weighty = 1;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(new JLabel("Product Name:"), gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(productDropdown, gbc);
+
+        return panel;
+    }
+
 
 
     private JPanel createTemporalPanel() {
@@ -1131,6 +1228,7 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
         panel.add(new JLabel("Min Lat:"), gbc);
 
         // Field on the right (column 1)
@@ -1189,10 +1287,15 @@ private void loadMissionDateRangesFromFile() {
 
             gbc.gridy++;
             gbc.gridx = 0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.weightx = 0;
             JLabel regionLabel = new JLabel("Region:");
             panel.add(regionLabel, gbc);
 
             gbc.gridx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 1.0;
+            gbc.weighty = 1;
             regions = new JComboBox(regionsInfosArray);
             regions.setMaximumRowCount(20);
             panel.add(regions, gbc);
@@ -1617,7 +1720,7 @@ private void loadMissionDateRangesFromFile() {
 
     private JPanel createDayNightPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder("Day/Night Filter"));
+        panel.setBorder(BorderFactory.createTitledBorder("Day/Night"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JRadioButton dayButton = new JRadioButton("Day", Earthdata_Cloud_Controller.getPreferenceIsDay());
