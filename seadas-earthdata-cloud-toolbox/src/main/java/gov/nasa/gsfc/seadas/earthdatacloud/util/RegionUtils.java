@@ -201,8 +201,8 @@ public class RegionUtils {
 
                 if (coordMinutesSplitArray != null && coordMinutesSplitArray.length > 0) {
                     String minutes = coordMinutesSplitArray[0];
-                    double degreesDouble = convertToDecimal(degrees, -9999.0);
-                    double minutesDouble = convertToDecimal(minutes, -9999.0);
+                    double degreesDouble = convertStringToDouble(degrees, -9999.0);
+                    double minutesDouble = convertStringToDouble(minutes, -9999.0);
                     if (degreesDouble != -9999.0 && minutesDouble != -9999.0) {
                         // good
                         if (coordMinutesSplitArray.length == 1) {
@@ -215,7 +215,7 @@ public class RegionUtils {
                             String seconds = coordMinutesSplitArray[1];
                             if (seconds != null && seconds.endsWith("″")) {
                                 seconds = seconds.substring(0, seconds.length() - 1);
-                                double secondsDouble = convertToDecimal(seconds, -9999.0);
+                                double secondsDouble = convertStringToDouble(seconds, -9999.0);
                                 if (secondsDouble != -9999.0) {
                                     double convertedValue = degreesDouble + minutesDouble/60.0 + secondsDouble/(60*60);
                                     DecimalFormat df = new DecimalFormat("###.##");
@@ -271,22 +271,35 @@ public class RegionUtils {
 
 
 
-    private static double convertToDecimal(String coordInput, double fail) {
-        if (coordInput == null || coordInput.trim().length() == 0) {
-            return fail;
+    public static int convertStringToInt(String valueStr, int valueFailInt) {
+        double valueDouble = convertStringToDouble(valueStr, (double) valueFailInt);
+
+        if (valueDouble != valueFailInt) {
+            double valueFloor = Math.floor(valueDouble);
+            if (valueDouble == valueFloor) {
+                return (int) valueFloor;
+            }
         }
 
-        coordInput = coordInput.trim();
+        return valueFailInt;
+    }
+
+    public static double convertStringToDouble(String valueStr, double valueFailDouble) {
+        if (valueStr == null || valueStr.trim().length() == 0) {
+            return valueFailDouble;
+        }
+
+        valueStr = valueStr.trim();
 
         try {
-            double coordInputDouble = Double.parseDouble(coordInput);
-            return coordInputDouble;
+            double valueDouble = Double.parseDouble(valueStr);
+            return valueDouble;
         } catch (NullPointerException e) {
         } catch (NumberFormatException e) {
         } catch (ArithmeticException e) {
         }
 
-        return fail;
+        return valueFailDouble;
     }
 
 
