@@ -1665,6 +1665,25 @@ private void loadMissionDateRangesFromFile() {
         String maxLat = maxLatField.getText().trim();
         String minLon = minLonField.getText().trim();
         String maxLon = maxLonField.getText().trim();
+
+        // support coordinates such as  20°54′00″N
+        minLat = RegionUtils.convertLatToDecimal(minLat);
+        maxLat = RegionUtils.convertLatToDecimal(maxLat);
+        minLon = RegionUtils.convertLonToDecimal(minLon);
+        maxLon = RegionUtils.convertLonToDecimal(maxLon);
+
+        System.out.println("minLat=" + minLat);
+        System.out.println("maxLat=" + maxLat);
+        System.out.println("minLon=" + minLon);
+        System.out.println("maxLon=" + maxLon);
+
+        if (minLat.length() == 0) {
+            minLat = maxLat;
+        }
+        if (maxLon.length() == 0) {
+            maxLon = minLon;
+        }
+
         boolean hasSpatial = !minLat.isEmpty() && !maxLat.isEmpty() && !minLon.isEmpty() && !maxLon.isEmpty();
 
         String dayNightFlag = null;

@@ -117,7 +117,7 @@ public class RegionUtils {
 
 
 
-    private static String convertLatToDecimal(String latStr) {
+    public static String convertLatToDecimal(String latStr) {
         if (latStr == null) {
             return latStr;
         }
@@ -148,7 +148,7 @@ public class RegionUtils {
 
 
 
-    private static String convertLonToDecimal(String lonStr) {
+    public static String convertLonToDecimal(String lonStr) {
         if (lonStr == null) {
             return lonStr;
         }
