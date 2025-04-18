@@ -80,23 +80,20 @@ public class RegionUtils {
                                     String east = null;
 
                                     if (coordinatesSplitArray.length == 2) {
+                                        String latOrig = coordinatesSplitArray[0];
+                                        String lonOrig = coordinatesSplitArray[1];
                                         String lat = convertLatToDecimal(coordinatesSplitArray[0]);
                                         String lon = convertLonToDecimal(coordinatesSplitArray[1]);
 
-//                                        north = lat;
-//                                        south = lat;
-//                                        west = lon;
-//                                        east = lon;
+                                        north = lat;
+                                        south = lat;
+                                        west = lon;
+                                        east = lon;
 
                                         // todo Danny
 
-                                        north = lat;
-                                        south = "";
-                                        west = lon;
-                                        east =  "";
-
-                                        if (validateCoordinates(north, west)) {
-                                            RegionsInfo regionsInfo = new RegionsInfo(name, north, south, west, east);
+                                        if (validateCoordinates(lat, lon)) {
+                                            RegionsInfo regionsInfo = new RegionsInfo(name, latOrig, lonOrig, north, south, west, east);
                                             regionsInfos.add(regionsInfo);
                                         }
 
@@ -218,7 +215,7 @@ public class RegionUtils {
                         // good
                         if (coordMinutesSplitArray.length == 1) {
                             double convertedValue = degreesDouble + minutesDouble/60.0;
-                            DecimalFormat df = new DecimalFormat("###.###");
+                            DecimalFormat df = new DecimalFormat("###.####");
                             return df.format(convertedValue);
                             // todo combine degrees and minutes
 
@@ -229,7 +226,7 @@ public class RegionUtils {
                                 double secondsDouble = convertStringToDouble(seconds, -9999.0);
                                 if (secondsDouble != -9999.0) {
                                     double convertedValue = degreesDouble + minutesDouble/60.0 + secondsDouble/(60*60);
-                                    DecimalFormat df = new DecimalFormat("###.###");
+                                    DecimalFormat df = new DecimalFormat("###.####");
                                     return df.format(convertedValue);
                                     //  todo combine degrees and minutes and seconds
                                 }
@@ -313,7 +310,7 @@ public class RegionUtils {
         return valueFailDouble;
     }
 
-    private static boolean validateCoordinates(String northStr, String westStr) {
+    public static boolean validateCoordinates(String northStr, String westStr) {
         try {
             double north = Double.parseDouble(northStr);
             double west = Double.parseDouble(westStr);
@@ -334,7 +331,7 @@ public class RegionUtils {
 
 
 
-    private static boolean validateCoordinates(String northStr, String southStr, String westStr, String eastStr) {
+    public static boolean validateCoordinates(String northStr, String southStr, String westStr, String eastStr) {
         try {
             double north = Double.parseDouble(northStr);
             double south = Double.parseDouble(southStr);

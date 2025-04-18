@@ -3,6 +3,9 @@ package gov.nasa.gsfc.seadas.earthdatacloud.util;
 public class RegionsInfo {
 
     private String name;
+    private boolean isRegion = false;
+    private String lat;
+    private String lon;
     private String north;
     private String south;
     private String west;
@@ -17,6 +20,18 @@ public class RegionsInfo {
         this.setSouth(south);
         this.setWest(west);
         this.setEast(east);
+        this.isRegion = true;
+    }
+
+    public RegionsInfo(String name, String lat, String lon, String north, String south, String west, String east) {
+        this.setName(name);
+        this.setNorth(north);
+        this.setSouth(south);
+        this.setWest(west);
+        this.setEast(east);
+        this.lat = lat;
+        this.lon = lon;
+        this.isRegion = false;
     }
 
     public String getName() {
@@ -25,6 +40,13 @@ public class RegionsInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCoordinates() {
+        if (lat != null && lat.length() > 0 && lon != null && lon.length() > 0) {
+            return lat + " " + lon;
+        }
+        return "";
     }
 
     public String getNorth() {
@@ -61,5 +83,17 @@ public class RegionsInfo {
 
     public String toString() {
         return name;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public boolean isRegion() {
+        return isRegion;
     }
 }
