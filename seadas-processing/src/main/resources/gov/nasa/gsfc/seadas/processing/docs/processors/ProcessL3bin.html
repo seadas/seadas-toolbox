@@ -75,32 +75,18 @@
         <td></td>
     </tr>
     <tr>
-        <td><b>prod</b></td>
+        <td><b>composite_prod</b></td>
         <td> string</td>
-        <td>data products list</td>
+        <td>composite product fieldname</td>
         <td>Optional</td>
         <td></td>
     </tr>
-    <!--<tr>-->
-    <!--<td><b>reduce_fac</b></td>-->
-    <!--<td> string</td>-->
-    <!--<td>scale reduction factor (power of 2)</td>-->
-    <!--<td>Optional</td>-->
-    <!--<td></td>-->
-    <!--</tr>-->
     <tr>
-        <td><b>loneast</b></td>
-        <td>float</td>
-        <td>Easternmost longitude</td>
+        <td><b>composite_scheme</b></td>
+        <td> string</td>
+        <td>composite scheme (min/max)</td>
         <td>Optional</td>
-        <td>+180</td>
-    </tr>
-    <tr>
-        <td><b>lonwest</b></td>
-        <td>float</td>
-        <td>Westernmost longitude</td>
-        <td>Optional</td>
-        <td>-180</td>
+        <td></td>
     </tr>
     <tr>
         <td><b>latnorth</b></td>
@@ -116,6 +102,27 @@
         <td>Optional</td>
         <td>-90</td>
     </tr>
+    <tr>
+        <td><b>loneast</b></td>
+        <td>float</td>
+        <td>Easternmost longitude</td>
+        <td>Optional</td>
+        <td>+180</td>
+    </tr>
+    <tr>
+        <td><b>lonwest</b></td>
+        <td>float</td>
+        <td>Westernmost longitude</td>
+        <td>Optional</td>
+        <td>-180</td>
+    </tr>
+    <tr>
+        <td><b>median</b></td>
+        <td>int</td>
+        <td>median</td>
+        <td>Optional</td>
+        <td>0</td>
+    </tr>
 
     <!--<tr>-->
     <!--<td><b>verbose</b></td>-->
@@ -124,24 +131,67 @@
     <!--<td>Optional</td>-->
     <!--<td>false</td>-->
     <!--</tr>-->
+<!--    <tr>-->
+<!--        <td><b>pversion</b></td>-->
+<!--        <td> string</td>-->
+<!--        <td>processing version</td>-->
+<!--        <td>Optional</td>-->
+<!--        <td>unspecified</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td><b>oformat</b></td>-->
+<!--        <td>string</td>-->
+<!--        <td>defines output format:-->
+<!--            <pre>-->
+<!--        hdf4:    output a HDF4 file-->
+<!--        netCDF4: output a netCDF4 file-->
+<!--        hdf5:    output a HDF5 file-->
+<!--            </pre>-->
+<!--        <td>Optional</td>-->
+<!--        <td>netcdf4</td>-->
+<!--    </tr>-->
     <tr>
-        <td><b>pversion</b></td>
+        <td><b>prod</b></td>
         <td> string</td>
-        <td>processing version</td>
+        <td>data products list</td>
         <td>Optional</td>
-        <td>unspecified</td>
+        <td></td>
     </tr>
     <tr>
-        <td><b>oformat</b></td>
-        <td>string</td>
-        <td>defines output format:
-            <pre>
-    hdf4:    output a HDF4 file
-    netCDF4: output a netCDF4 file
-    hdf5:    output a HDF5 file
-    </pre>
+        <td><b>reduce_fac</b></td>
+        <td> int</td>
+        <td>scale reduction factor (power of 2)</td>
         <td>Optional</td>
-        <td>netcdf4</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td><b>resolve</b></td>
+        <td>string</td>
+        <td>bin resolution, overrides reduce_frac if defined:
+            <pre>
+         H: 0.5km
+         Q: 250m
+        HQ: 100m
+        HH: 50m
+         1: 1.1km
+         2: 2.3km
+         4: 4.6km
+         9: 9.2km
+        18: 18.5km
+        36: 36km
+        1D: 1 degree
+        HD: 0.5 degree
+        QD: 0.25 degree
+            </pre>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>unit_wgt</b></td>
+        <td> int</td>
+        <td>unit_wgt</td>
+        <td>Optional</td>
+        <td>0</td>
     </tr>
     <!--<tr>-->
     <!--<td><b>noext</b></td>-->
