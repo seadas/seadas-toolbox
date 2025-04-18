@@ -15,7 +15,7 @@ Fiji = 18°S 179°E
 
 -- BLANK --
 -- LAKES --
-Lake Titicaca
+Lake Titicaca = 15°49′30″S 69°19′30″W
 
 
 

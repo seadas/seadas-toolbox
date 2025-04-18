@@ -101,13 +101,13 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_MAXLAT_DEFAULT = "";
 
     public static final String PROPERTY_MINLON_KEY = PROPERTY_ROOT_KEY + ".minlon";
-    public static final String PROPERTY_MINLON_LABEL = "East";
-    public static final String PROPERTY_MINLON_TOOLTIP = "<html>Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLON_LABEL = "West";
+    public static final String PROPERTY_MINLON_TOOLTIP = "<html>Westernmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
     public static final String PROPERTY_MINLON_DEFAULT = "";
 
     public static final String PROPERTY_MAXLON_KEY = PROPERTY_ROOT_KEY + ".maxlon";
-    public static final String PROPERTY_MAXLON_LABEL = "West";
-    public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Westernmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLON_LABEL = "East";
+    public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
     public static final String PROPERTY_MAXLON_DEFAULT = "";
 
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
