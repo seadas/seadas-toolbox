@@ -4,7 +4,7 @@ Shackleton Ice Shelf = 66°00′S 100°00′E
 
 -- BLANK --
 -- ISLANDS OF ATLANTIC --
-Iceland = 65°N 18°W
+Iceland = 65°N 65°N 18°W 18°W
 
 -- BLANK --
 -- ISLANDS OF PACIFIC --

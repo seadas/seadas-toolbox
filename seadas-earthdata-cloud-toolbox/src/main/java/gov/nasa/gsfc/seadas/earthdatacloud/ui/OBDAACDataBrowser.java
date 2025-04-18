@@ -24,18 +24,20 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static gov.nasa.gsfc.seadas.earthdatacloud.preferences.Preference_Utils.authenticatePropertyStringNumber;
 import static gov.nasa.gsfc.seadas.earthdatacloud.ui.BrowseImagePreview.getPreviewUrl;
 
 public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
     private JDatePickerImpl startDatePicker, endDatePicker;
-    private JTextField minLatField, maxLatField, minLonField, maxLonField;
+    private JTextField minLatField, maxLatField, minLonField, maxLonField, coordinates, boxSize;
     private JComboBox regions;
     private JComboBox regions2;
     private boolean working = false;
@@ -1358,6 +1360,19 @@ private void loadMissionDateRangesFromFile() {
         panel.add(maxLonField, gbc);
 
 
+        // Separator Line
+        gbc.gridy += 1;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        Insets insetsOrig = gbc.insets;
+        gbc.insets.right = 10;
+        gbc.insets.left = 10;
+        gbc.gridwidth = 2;
+        panel.add(new JSeparator(), gbc);
+        gbc.insets = insetsOrig;
+        gbc.gridwidth = 1;
+
+
 
         // VERTICAL FILLER - silliness to get this filled
         gbc.gridy++;
@@ -1368,6 +1383,137 @@ private void loadMissionDateRangesFromFile() {
         gbc.weighty = 0;
         gbc.fill = GridBagConstraints.NONE;
 
+
+
+        // Coordinates
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        JLabel coordinatesLabel = new JLabel("Coordinates:");
+        coordinatesLabel.setToolTipText("Used to set fields north, south, west and east");
+        panel.add(coordinatesLabel, gbc);
+
+
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        coordinates = new JTextField("");
+        coordinates.setToolTipText("Used to set fields north, south, west and east");
+        panel.add(coordinates, gbc);
+
+
+        // Box Size
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        JLabel boxSizeLabel = new JLabel("Box Size:");
+        boxSizeLabel.setToolTipText("Used to set fields north, south, west and east");
+        panel.add(boxSizeLabel, gbc);
+
+
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        boxSize = new JTextField("0.1");
+        boxSize.setToolTipText("Used to set fields north, south, west and east");
+        panel.add(boxSize, gbc);
+
+
+
+        minLatField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if (!working) {
+                    working = true;
+
+                    coordinates.setText("");
+                    regions.setSelectedIndex(0);
+                    regions2.setSelectedIndex(0);
+
+                    working = false;
+                }
+            }
+        });
+
+        maxLatField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if (!working) {
+                    working = true;
+
+                    coordinates.setText("");
+                    regions.setSelectedIndex(0);
+                    regions2.setSelectedIndex(0);
+
+                    working = false;
+                }
+            }
+        });
+
+        minLonField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if (!working) {
+                    working = true;
+
+                    coordinates.setText("");
+                    regions.setSelectedIndex(0);
+                    regions2.setSelectedIndex(0);
+
+                    working = false;
+                }
+            }
+        });
+
+        maxLonField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if (!working) {
+                    working = true;
+
+                    coordinates.setText("");
+                    regions.setSelectedIndex(0);
+                    regions2.setSelectedIndex(0);
+
+                    working = false;
+                }
+            }
+        });
+
+
+
+        coordinates.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    if (!working) {
+                        working = true;
+                        handleUpdateFromCoordinates();
+                    }
+                } catch (Exception ex) {
+                }
+
+                regions.setSelectedIndex(0);
+                regions2.setSelectedIndex(0);
+
+                working = false;
+            }
+        });
+
+
+
+        boxSize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    if (!working) {
+                        working = true;
+                        handleUpdateFromCoordinates();
+                    }
+                } catch (Exception ex) {
+                }
+
+                working = false;
+            }
+        });
 
 
         try {
@@ -1408,14 +1554,18 @@ private void loadMissionDateRangesFromFile() {
                         minLatField.setText(selectedRegionInfo.getSouth());
                         minLonField.setText(selectedRegionInfo.getWest());
                         maxLonField.setText(selectedRegionInfo.getEast());
+                        coordinates.setText(selectedRegionInfo.getCoordinates());
                     } else {
                         maxLatField.setText("");
                         minLatField.setText("");
                         minLonField.setText("");
                         maxLonField.setText("");
+                        coordinates.setText("");
                     }
 
                     regions2.setSelectedIndex(0);
+
+                    handleUpdateFromCoordinates();
 
                     panel.repaint();
                     panel.updateUI();
@@ -1469,14 +1619,19 @@ private void loadMissionDateRangesFromFile() {
                         minLatField.setText(selectedRegionInfo.getSouth());
                         minLonField.setText(selectedRegionInfo.getWest());
                         maxLonField.setText(selectedRegionInfo.getEast());
+                        coordinates.setText(selectedRegionInfo.getCoordinates());
                     } else {
                         maxLatField.setText("");
                         minLatField.setText("");
                         minLonField.setText("");
                         maxLonField.setText("");
+                        coordinates.setText("");
                     }
 
                     regions.setSelectedIndex(0);
+
+                    handleUpdateFromCoordinates();
+
 
                     panel.repaint();
                     panel.updateUI();
@@ -1496,6 +1651,11 @@ private void loadMissionDateRangesFromFile() {
 
 
 
+
+
+
+
+
 //        JLabel tmp = new JLabel("1234567890123456789012345");
 //        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
 //
@@ -1508,6 +1668,70 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
+    private  void handleUpdateFromCoordinates() {
+        boolean valid = false;
+
+        String coordinatesValue = coordinates.getText();
+        String[] coordinatesSplitArray = coordinatesValue.split("\\s+");
+
+        if (coordinatesSplitArray.length == 2) {
+            String lat = RegionUtils.convertLatToDecimal(coordinatesSplitArray[0]);
+            String lon = RegionUtils.convertLonToDecimal(coordinatesSplitArray[1]);
+
+            if (RegionUtils.validateCoordinates(lat, lon)) {
+                valid = true;
+                double FAIL_DOUBLE = -9999.0;
+                double latDouble = RegionUtils.convertStringToDouble(lat, FAIL_DOUBLE);
+                double lonDouble = RegionUtils.convertStringToDouble(lon, FAIL_DOUBLE);
+                double boxSizeDouble = RegionUtils.convertStringToDouble(boxSize.getText(), FAIL_DOUBLE);
+                if (latDouble != FAIL_DOUBLE && lonDouble != FAIL_DOUBLE && boxSizeDouble != FAIL_DOUBLE) {
+                    double minLat = latDouble - 0.5 * boxSizeDouble;
+                    double maxLat = latDouble + 0.5 * boxSizeDouble;
+                    double minLon = lonDouble - 0.5 * boxSizeDouble;
+                    double maxLon = lonDouble + 0.5 * boxSizeDouble;
+
+                    if (maxLat > 90) {
+                        maxLat = 90;
+                    }
+                    if (minLat < -90) {
+                        minLat = -90;
+                    }
+                    // todo Danny confine lat and lon bounds
+
+                    if (maxLon > 180) {
+                        maxLon = -180 + (maxLon -180);
+                    }
+                    if (minLon < -180) {
+                        minLon = 180 + (minLon + 180);
+                    }
+
+                    DecimalFormat df = new DecimalFormat("###.####");
+                    String minLatStr = df.format(minLat);
+                    String maxLatStr = df.format(maxLat);
+                    String minLonStr = df.format(minLon);
+                    String maxLonStr = df.format(maxLon);
+
+                    minLatField.setText(minLatStr);
+                    maxLatField.setText(maxLatStr);
+                    minLonField.setText(minLonStr);
+                    maxLonField.setText(maxLonStr);
+                } else {
+                    maxLatField.setText(lat);
+                    minLatField.setText(lat);
+                    minLonField.setText(lon);
+                    maxLonField.setText(lon);
+                }
+            }
+        }
+
+        if (!valid) {
+            minLatField.setText("");
+            maxLatField.setText("");
+            minLonField.setText("");
+            maxLonField.setText("");
+        }
+
+    }
 
     private JDatePickerImpl createDatePicker() {
         UtilDateModel model = new UtilDateModel();
@@ -1678,18 +1902,18 @@ private void loadMissionDateRangesFromFile() {
         System.out.println("maxLon=" + maxLon);
 
         // todo Danny
-        if (minLat.length() == 0 && maxLat.length() > 0) {
-            minLat = maxLat;
-        }
-        if (maxLat.length() == 0 && minLat.length() > 0) {
-            maxLat = minLat;
-        }
-        if (maxLon.length() == 0 && minLon.length() > 0) {
-            maxLon = minLon;
-        }
-        if (minLon.length() == 0 && maxLon.length() > 0)  {
-            minLon = maxLon;
-        }
+//        if (minLat.length() == 0 && maxLat.length() > 0) {
+//            minLat = maxLat;
+//        }
+//        if (maxLat.length() == 0 && minLat.length() > 0) {
+//            maxLat = minLat;
+//        }
+//        if (maxLon.length() == 0 && minLon.length() > 0) {
+//            maxLon = minLon;
+//        }
+//        if (minLon.length() == 0 && maxLon.length() > 0)  {
+//            minLon = maxLon;
+//        }
 
         boolean hasSpatial = !minLat.isEmpty() && !maxLat.isEmpty() && !minLon.isEmpty() && !maxLon.isEmpty();
 
