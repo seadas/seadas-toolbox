@@ -2,10 +2,7 @@ package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.ImagePreviewHelper;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.MissionNameWriter;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.PythonScriptRunner_old;
+import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.core.util.SystemUtils;
 import org.jdatepicker.impl.*;
 import org.json.JSONArray;
@@ -39,6 +36,9 @@ public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
     private JDatePickerImpl startDatePicker, endDatePicker;
     private JTextField minLatField, maxLatField, minLonField, maxLonField;
+    private JComboBox regions;
+    private JComboBox regions2;
+    private boolean working = false;
     private JTable resultsTable;
     private DefaultTableModel tableModel;
     private final Map<String, String> productNameTooltips = new HashMap<>();
@@ -313,29 +313,30 @@ private void loadMissionDateRangesFromFile() {
         });
 
         //gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Satellite/Instrument:"), gbc);
-        gbc.gridx = 1; add(satelliteDropdown, gbc);
+//        add(new JLabel("Satellite/Instrument:"), gbc);
+//        gbc.gridx = 1; add(satelliteDropdown, gbc);
+//
+//        gbc.gridx = 0; gbc.gridy++;
+//        add(new JLabel("Data Level:"), gbc);
+//        gbc.gridx = 1; add(levelDropdown, gbc);
+//
+//        gbc.gridx = 0; gbc.gridy++;
+//        add(new JLabel("Product Name:"), gbc);
+//        gbc.gridx = 1; add(productDropdown, gbc);
 
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Data Level:"), gbc);
-        gbc.gridx = 1; add(levelDropdown, gbc);
-
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Product Name:"), gbc);
-        gbc.gridx = 1; add(productDropdown, gbc);
 
         // Filters in grouped panel
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridwidth = 2;
         add(createFilterPanel(), gbc);
+//        gbc.gridwidth = 2;
+
 
         // Add panel for max API results and results per page
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 2;
+
+//        gbc.gridwidth = 2;
         JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        paginationPanel.add(new JLabel("Max API Results:"));
+        paginationPanel.add(new JLabel("Max Results:"));
         maxApiResultsSpinner = new JSpinner(new SpinnerNumberModel(100, 1, 10000, 1));
         maxApiResultsSpinner.setPreferredSize(new Dimension(80, 25));
         paginationPanel.add(maxApiResultsSpinner);
@@ -344,15 +345,25 @@ private void loadMissionDateRangesFromFile() {
         resultsPerPageSpinner = new JSpinner(new SpinnerNumberModel(25, 1, 1000, 1));
         resultsPerPageSpinner.setPreferredSize(new Dimension(80, 25));
         paginationPanel.add(resultsPerPageSpinner);
+        paginationPanel.add(Box.createHorizontalStrut(60));
+
+
+
+
+
+
+
+
+
+
 
         //TODO: Add a button to refresh the metadata
 //        JButton refreshButton = new JButton("Refresh Metadata");
 //        refreshButton.addActionListener(e -> refreshMetadata());
 //        paginationPanel.add(refreshButton);
-        add(paginationPanel, gbc);
 
-        gbc.gridy++;
-        gbc.gridx = 0;
+
+
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(e -> fetchGranules());
         JButton cancelButton = new JButton("Cancel");
@@ -365,12 +376,24 @@ private void loadMissionDateRangesFromFile() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(searchButton);
         buttonPanel.add(cancelButton);
-        gbc.gridwidth = 2;
-        add(buttonPanel, gbc);
+//        gbc.gridwidth = 2;
+
+
+//        paginationPanel.add(buttonPanel);
 
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridwidth = 2;
+//        add(paginationPanel, gbc);
+
+        add(createPaginationButtonPanel(paginationPanel, buttonPanel), gbc);
+//
+//        gbc.gridy++;
+//        gbc.gridx = 0;
+//        add(buttonPanel, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+//        gbc.gridwidth = 2;
         String[] columnNames = {"File Name", "Download File"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -391,10 +414,10 @@ private void loadMissionDateRangesFromFile() {
         Font fontOriginal = resultsTable.getFont();
 
         // todo Danny preferences
-        double fontSizeZoom = 200;
-        // restrict to realistic values just in case
-        if (fontSizeZoom < 50 || fontSizeZoom > 400) {
-            fontSizeZoom = 100;
+        double fontSizeZoom = Earthdata_Cloud_Controller.getPreferenceResultFontZoom();
+        // restrict to realistic values just in case - probable not needed
+        if (fontSizeZoom < Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_MIN_VALUE || fontSizeZoom > Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_MAX_VALUE) {
+            fontSizeZoom = Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT;
         }
 
         int fontSizeOriginal = fontOriginal.getSize();
@@ -403,7 +426,7 @@ private void loadMissionDateRangesFromFile() {
         resultsTable.setFont(fontNew);
 
         int rowHeightOriginal = resultsTable.getRowHeight();
-        int rowBuffer = 20;
+        int rowBuffer = 30;
         int rowHeightNew = (int) Math.round(rowHeightOriginal * (fontSizeZoom + rowBuffer) / 100);
         resultsTable.setRowHeight(rowHeightNew);
 
@@ -416,7 +439,7 @@ private void loadMissionDateRangesFromFile() {
 
 
 
-        imagePreviewHelper.attachToTable(resultsTable, fileLinkMap);
+        imagePreviewHelper.attachToTable(resultsTable, fileLinkMap, parentDialog);
         resultsTable.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -507,14 +530,14 @@ private void loadMissionDateRangesFromFile() {
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
         // todo Danny
-        scrollPane.setPreferredSize(new Dimension(1000, 300));
+        scrollPane.setPreferredSize(new Dimension(700, 500));
 
 
         // Results container that holds the table and pagination
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
         // todo Danny
-        resultsContainer.setPreferredSize(new Dimension(850, 400));  // Adjust height as needed
+        resultsContainer.setPreferredSize(new Dimension(700, 600));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
         resultsContainer.add(scrollPane, BorderLayout.CENTER);
@@ -546,6 +569,44 @@ private void loadMissionDateRangesFromFile() {
             updateLevelsAndProducts();
         }
     }
+
+
+
+    private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+
+        JPanel panel = new JPanel(layout);
+//        gbc.insets = new Insets(0, 0, 0, 0);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        panel.add(panel1, gbc);
+
+
+        // silliness to get this filled
+        gbc.gridx++;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel fill = new JLabel("");
+        panel.add(fill, gbc);
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+
+
+
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+//        gbc.insets = new Insets(10, 0, 0, 10);
+        panel.add(panel2,gbc);
+
+        return panel;
+    }
+
 
     private void showImageInDialog(String imageUrl) {
         try {
@@ -649,33 +710,47 @@ private void loadMissionDateRangesFromFile() {
         }
 
 
+
         if (parentDownloadDirFile != null && parentDownloadDirFile.exists()) {
             fileChooser.setCurrentDirectory(parentDownloadDirFile);
 
             String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
-            if (downloadDirStr == null || downloadDirStr.trim().length() == 0) {
-                downloadDirStr = "results";
+
+            int currIndex = 1;
+            String downloadDirStrNoSuffix = "results";
+            boolean retainSuffix = false;
+
+            if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
+                downloadDirStrNoSuffix = downloadDirStr;
+                String[] downloadDirStrSplitArray = downloadDirStr.split("-");
+                if (downloadDirStrSplitArray.length == 2) {
+                    String suffix = downloadDirStrSplitArray[1];
+                    int currIndexTmp = RegionUtils.convertStringToInt(suffix, -999);
+                    if (currIndexTmp != -999) {
+                        downloadDirStrNoSuffix = downloadDirStrSplitArray[0];
+                        currIndex = currIndexTmp;
+                        if (currIndex == 1) {
+                            retainSuffix = true;
+                        }
+                    }
+                }
             }
 
-            String downloadDirStrIndexed = null;
+            String downloadDirStrIndexed;
             File file2 = null;
-            int i = 0;
-            while (file2 == null && i < 1000) {
-                if (i == 0) {
-                    downloadDirStrIndexed = downloadDirStr;
+            while (file2 == null && currIndex < 1000) {
+                if (currIndex == 1 && !retainSuffix) {
+                    downloadDirStrIndexed = downloadDirStrNoSuffix;
                 } else {
-                    downloadDirStrIndexed = downloadDirStr + "-" + i;
+                    downloadDirStrIndexed = downloadDirStrNoSuffix + "-" + currIndex;
                 }
 
-                System.out.println("downloadDirStrIndexed=" + downloadDirStrIndexed);
                 file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
-                System.out.println("file2=" + file2.getAbsolutePath());
                 if (!file2.exists()) {
-                    System.out.println("breaking");
                     break;
                 }
                 file2 = null;
-                i++;
+                currIndex++;
             }
 
             if (file2 != null) {
@@ -855,15 +930,87 @@ private void loadMissionDateRangesFromFile() {
         previewWindow.setLocation(location.x + 10, location.y + 10);
         previewWindow.setVisible(true);
     }
-    private JPanel createFilterPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
 
-        panel.add(createTemporalPanel());
-        panel.add(createSpatialPanel());
-        panel.add(createDayNightPanel());
+
+
+    private JPanel createLeftPanel() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        JPanel panel = new JPanel(layout);
+        gbc.insets = new Insets(0, 0, 0, 0);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        panel.add(createSatelliteProductsPanel(), gbc);
+
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.insets = new Insets(10, 0, 0, 10);
+        gbc.gridwidth = 1;
+        panel.add(createTemporalPanel(),gbc);
+
+        gbc.gridy = 1;
+        gbc.gridx = 1;
+        gbc.insets = new Insets(10, 0, 0, 0);
+        panel.add(createDayNightPanel(),gbc);
 
         return panel;
     }
+
+
+    private JPanel createRightPanel() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        JPanel panel = new JPanel(layout);
+        gbc.insets = new Insets(0, 0, 0, 0);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.weighty = 1;
+        panel.add(createSpatialPanel(),gbc);
+
+        return panel;
+    }
+
+
+    private JPanel createFilterPanel() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        JPanel panel = new JPanel(layout);
+        gbc.insets = new Insets(0, 10, 0, 10);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        panel.add(createLeftPanel(), gbc);
+
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.weighty = 1;
+        gbc.insets = new Insets(0, 0, 0, 10);
+        panel.add(createRightPanel(),gbc);
+
+        return panel;
+    }
+
+
+
+
     private void updateLevelsAndProducts() {
         String selectedSatellite = (String) satelliteDropdown.getSelectedItem();
         if (selectedSatellite == null || !metadataMap.containsKey(selectedSatellite)) return;
@@ -958,13 +1105,58 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
+    private JPanel createSatelliteProductsPanel() {
+        System.out.println("Creating Satellite Products Panel");
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEtchedBorder());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(new JLabel("Satellite/Instrument:"), gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(satelliteDropdown, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(new JLabel("Data Level:"), gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(levelDropdown, gbc);
+
+        gbc.weighty = 1;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(new JLabel("Product Name:"), gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(productDropdown, gbc);
+
+        return panel;
+    }
+
+
+
     private JPanel createTemporalPanel() {
         temporalPanel = new JPanel(new GridBagLayout());
         temporalPanel.setBorder(BorderFactory.createTitledBorder("Temporal Filter"));
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(2, 2, 2, 2);
-        c.anchor = GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints.NORTHWEST;
 
         // Create date pickers
         startDatePicker = createDatePicker();
@@ -1013,7 +1205,9 @@ private void loadMissionDateRangesFromFile() {
         c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 2;
-        c.anchor = GridBagConstraints.WEST;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
         temporalPanel.add(dateRangeLabel, c);
 
@@ -1083,6 +1277,7 @@ private void loadMissionDateRangesFromFile() {
     }
 
     private JPanel createSpatialPanel() {
+        System.out.println("Creating createSpatialPanel");
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Spatial Filter"));
 
@@ -1090,57 +1285,224 @@ private void loadMissionDateRangesFromFile() {
         gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Label on the left (column 0)
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        panel.add(new JLabel("Min Lat:"), gbc);
-
-        // Field on the right (column 1)
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        minLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
-        panel.add(minLatField, gbc);
 
         // Max Lat
-        gbc.gridy++;
+        gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        panel.add(new JLabel("Max Lat:"), gbc);
+        JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
+        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        panel.add(maxLatLabel, gbc);
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         maxLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
+        maxLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
         panel.add(maxLatField, gbc);
+
+
+        // Min Lat
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        JLabel minLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLAT_LABEL + ":");
+        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(minLatLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        minLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
+        minLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(minLatField, gbc);
+
 
         // Min Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        panel.add(new JLabel("Min Lon:"), gbc);
+        JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
+        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        panel.add(minLonLabel, gbc);
+
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         minLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
+        minLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
         panel.add(minLonField, gbc);
+
+
 
         // Max Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        panel.add(new JLabel("Max Lon:"), gbc);
+        JLabel maxLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL + ":");
+        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        panel.add(maxLonLabel, gbc);
+
+
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
+        maxLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
         panel.add(maxLonField, gbc);
+
+
+
+        // VERTICAL FILLER - silliness to get this filled
+        gbc.gridy++;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        JLabel fill = new JLabel("");
+        panel.add(fill, gbc);
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+
+
+
+        try {
+            String REGIONS_FILE = "regions.txt";
+            String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas9/auxdata/regions/regions.txt</html>";
+            ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
+
+            Object[] regionsInfosArray = regionsInfos.toArray();
+
+            gbc.gridy++;
+            gbc.gridx = 0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.weightx = 0;
+            JLabel regionLabel = new JLabel("Location:");
+            regionLabel.setToolTipText(TOOLTIP);
+            panel.add(regionLabel, gbc);
+
+            gbc.gridx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 1.0;
+            regions = new JComboBox(regionsInfosArray);
+            regions.setMaximumRowCount(20);
+            regions.setToolTipText(TOOLTIP);
+
+            panel.add(regions, gbc);
+            JTextField tmp2 = new JTextField("1234567890123456789012");
+            regions.setMinimumSize(tmp2.getPreferredSize());
+
+            // Handle resetDefaults events - set all other components to defaults
+            regions.addActionListener(evt -> {
+                if (!working) {
+                    working = true;
+                    RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
+                    System.out.println("regions change" + selectedRegionInfo.getName());
+
+                    if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
+                        maxLatField.setText(selectedRegionInfo.getNorth());
+                        minLatField.setText(selectedRegionInfo.getSouth());
+                        minLonField.setText(selectedRegionInfo.getWest());
+                        maxLonField.setText(selectedRegionInfo.getEast());
+                    } else {
+                        maxLatField.setText("");
+                        minLatField.setText("");
+                        minLonField.setText("");
+                        maxLonField.setText("");
+                    }
+
+                    regions2.setSelectedIndex(0);
+
+                    panel.repaint();
+                    panel.updateUI();
+                    parentDialog.repaint();
+
+                    working = false;
+                }
+            });
+        } catch (Exception e) {
+        }
+
+
+
+
+        try {
+            String REGIONS_FILE = "user_regions.txt";
+            String TOOLTIP = "<html>User-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas9/auxdata/regions/user_regions.txt</html>";
+
+            ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false);
+
+            Object[] regionsInfosArray = regionsInfos.toArray();
+
+            gbc.gridy++;
+            gbc.gridx = 0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.weightx = 0;
+            JLabel regionLabel = new JLabel("Custom:");
+            regionLabel.setToolTipText(TOOLTIP);
+            panel.add(regionLabel, gbc);
+
+            gbc.gridx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 1.0;
+            regions2 = new JComboBox(regionsInfosArray);
+            regions2.setMaximumRowCount(20);
+            regions2.setToolTipText(TOOLTIP);
+
+            panel.add(regions2, gbc);
+            JTextField tmp2 = new JTextField("1234567890123456789012");
+            regions2.setMinimumSize(tmp2.getPreferredSize());
+
+            // Handle resetDefaults events - set all other components to defaults
+            regions2.addActionListener(evt -> {
+                if (!working) {
+                    working = true;
+                    RegionsInfo selectedRegionInfo = (RegionsInfo) regions2.getSelectedItem();
+                    System.out.println("regions change" + selectedRegionInfo.getName());
+
+                    if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
+                        maxLatField.setText(selectedRegionInfo.getNorth());
+                        minLatField.setText(selectedRegionInfo.getSouth());
+                        minLonField.setText(selectedRegionInfo.getWest());
+                        maxLonField.setText(selectedRegionInfo.getEast());
+                    } else {
+                        maxLatField.setText("");
+                        minLatField.setText("");
+                        minLonField.setText("");
+                        maxLonField.setText("");
+                    }
+
+                    regions.setSelectedIndex(0);
+
+                    panel.repaint();
+                    panel.updateUI();
+                    parentDialog.repaint();
+
+                    working = false;
+                }
+            });
+        } catch (Exception e) {
+        }
+
+
+
+
+        JTextField tmp = new JTextField("1234567890123");
+        minLonField.setMinimumSize(tmp.getPreferredSize());
+
+
+
+//        JLabel tmp = new JLabel("1234567890123456789012345");
+//        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
+//
+//        panel.setMinimumSize(tmpDimension);
+//        panel.setPreferredSize(tmpDimension);
+        panel.setMinimumSize(panel.getPreferredSize());
+        panel.setPreferredSize(panel.getPreferredSize());
 
         return panel;
     }
@@ -1518,7 +1880,7 @@ private void loadMissionDateRangesFromFile() {
 
     private JPanel createDayNightPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder("Day/Night Filter"));
+        panel.setBorder(BorderFactory.createTitledBorder("Day/Night"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JRadioButton dayButton = new JRadioButton("Day", Earthdata_Cloud_Controller.getPreferenceIsDay());
@@ -1542,6 +1904,11 @@ private void loadMissionDateRangesFromFile() {
         panel.add(Box.createVerticalStrut(5));
         panel.add(bothButton);
         panel.add(Box.createVerticalGlue());
+
+        JLabel tmp = new JLabel("1234567890123");
+        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
+        panel.setMinimumSize(tmpDimension);
+        panel.setPreferredSize(tmpDimension);
 
         // Save for later use
         this.dayButton = dayButton;
