@@ -161,6 +161,13 @@
         <td>nearest</td>
     </tr>
     <tr>
+        <td><b>land</b></td>
+        <td> ifile</td>
+        <td>land mask file</td>
+        <td>Optional</td>
+        <td>$OCDATAROOT/common/landmask_GMT15ARC.nc</td>
+    </tr>
+    <tr>
         <td><b>lat_0</b></td>
         <td>float</td>
         <td>latitude of origin for projection in deg north.
@@ -340,26 +347,19 @@
         <td>Optional</td>
         <td>9km</td>
     </tr>
+<!--    <tr>-->
+<!--        <td><b>pversion</b></td>-->
+<!--        <td> string</td>-->
+<!--        <td>Processing version string</td>-->
+<!--        <td>Optional</td>-->
+<!--        <td>Unspecified</td>-->
+<!--    </tr>-->
     <tr>
-        <td><b>pversion</b></td>
+        <td><b>rgb_land</b></td>
         <td> string</td>
-        <td>Processing version string</td>
+        <td>RGB value to use for land mask; comma separate string</td>
         <td>Optional</td>
-        <td>Unspecified</td>
-    </tr>
-    <tr>
-        <td><b>south</b></td>
-        <td>float</td>
-        <td>Southern most Latitude</td>
-        <td>Optional</td>
-        <td>-999</td>
-    </tr>
-    <tr>
-        <td><b>west</b></td>
-        <td>float</td>
-        <td>Western most Longitude</td>
-        <td>Optional</td>
-        <td>-999</td>
+        <td>160,82,45</td>
     </tr>
     <tr>
         <td><b>scale_type</b></td>
@@ -369,10 +369,24 @@
         linear:   linear scaling
         log:      logarithmic scaling
         arctan:   arc tangent scaling
-    </pre>
+            </pre>
         </td>
         <td>Optional</td>
         <td>default from product.xml</td>
+    </tr>
+    <tr>
+        <td><b>south</b></td>
+        <td>float</td>
+        <td>Southern most Latitude</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>suite</b></td>
+        <td> string</td>
+        <td>suite for default parameters</td>
+        <td>Optional</td>
+        <td></td>
     </tr>
     <tr>
         <td><b>threshold</b></td>
@@ -382,13 +396,13 @@
         <td>Optional</td>
         <td>0</td>
     </tr>
-    <tr>
-        <td><b>use_quality</b></td>
-        <td>boolean</td>
-        <td>should we do quality factor processing</td>
-        <td>Optional</td>
-        <td>yes</td>
-    </tr>
+<!--    <tr>-->
+<!--        <td><b>use_quality</b></td>-->
+<!--        <td>boolean</td>-->
+<!--        <td>should we do quality factor processing</td>-->
+<!--        <td>Optional</td>-->
+<!--        <td>yes</td>-->
+<!--    </tr>-->
     <tr>
         <td><b>use_rgb</b></td>
         <td>boolean</td>
@@ -396,6 +410,33 @@
             pseudo-true color image</td>
         <td>Optional</td>
         <td>no</td>
+    </tr>
+    <tr>
+        <td><b>use_transparency</b></td>
+        <td>boolean</td>
+        <td>make missing data transparent (only valid for color PNG and TIFF)</td>
+        <td>Optional</td>
+        <td>no</td>
+    <tr>
+        <td><b>wavelength_3d</b></td>
+        <td> string</td>
+        <td>comma separated list of wavelengths for 3D products</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>west</b></td>
+        <td>float</td>
+        <td>Western most Longitude</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>width</b></td>
+        <td> int</td>
+        <td>width of output image in pixels; supercedes resolution parameter.d</td>
+        <td>Optional</td>
+        <td></td>
     </tr>
 
 </table>
