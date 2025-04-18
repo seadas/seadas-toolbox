@@ -83,21 +83,33 @@ public class RegionUtils {
                                         String lat = convertLatToDecimal(coordinatesSplitArray[0]);
                                         String lon = convertLonToDecimal(coordinatesSplitArray[1]);
 
+//                                        north = lat;
+//                                        south = lat;
+//                                        west = lon;
+//                                        east = lon;
+
+                                        // todo Danny
+
                                         north = lat;
-                                        south = lat;
+                                        south = "";
                                         west = lon;
-                                        east = lon;
+                                        east =  "";
+
+                                        if (validateCoordinates(north, west)) {
+                                            RegionsInfo regionsInfo = new RegionsInfo(name, north, south, west, east);
+                                            regionsInfos.add(regionsInfo);
+                                        }
 
                                     } else if (coordinatesSplitArray.length == 4) {
                                         north = convertLatToDecimal(coordinatesSplitArray[0]);
                                         south = convertLatToDecimal(coordinatesSplitArray[1]);
                                         west = convertLonToDecimal(coordinatesSplitArray[2]);
                                         east = convertLonToDecimal(coordinatesSplitArray[3]);
-                                    }
 
-                                    if (validateCoordinates(north, south, west, east)) {
-                                        RegionsInfo regionsInfo = new RegionsInfo(name, north, south, west, east);
-                                        regionsInfos.add(regionsInfo);
+                                        if (validateCoordinates(north, south, west, east)) {
+                                            RegionsInfo regionsInfo = new RegionsInfo(name, north, south, west, east);
+                                            regionsInfos.add(regionsInfo);
+                                        }
                                     }
                                 }
                             }
@@ -299,6 +311,25 @@ public class RegionUtils {
         }
 
         return valueFailDouble;
+    }
+
+    private static boolean validateCoordinates(String northStr, String westStr) {
+        try {
+            double north = Double.parseDouble(northStr);
+            double west = Double.parseDouble(westStr);
+            if (north >= -90 && north <= 90) {
+                if (west >= -180 && west <= 180) {
+                    return true;
+                }
+            }
+            if (north == RegionsInfo.SPECIAL_ENTRY_DOUBLE && west == RegionsInfo.SPECIAL_ENTRY_DOUBLE) {
+                return true;
+            }
+        } catch (NullPointerException e) {
+        } catch (NumberFormatException e) {
+        }
+
+        return false;
     }
 
 
