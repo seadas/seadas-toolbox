@@ -1677,11 +1677,18 @@ private void loadMissionDateRangesFromFile() {
         System.out.println("minLon=" + minLon);
         System.out.println("maxLon=" + maxLon);
 
-        if (minLat.length() == 0) {
+        // todo Danny
+        if (minLat.length() == 0 && maxLat.length() > 0) {
             minLat = maxLat;
         }
-        if (maxLon.length() == 0) {
+        if (maxLat.length() == 0 && minLat.length() > 0) {
+            maxLat = minLat;
+        }
+        if (maxLon.length() == 0 && minLon.length() > 0) {
             maxLon = minLon;
+        }
+        if (minLon.length() == 0 && maxLon.length() > 0)  {
+            minLon = maxLon;
         }
 
         boolean hasSpatial = !minLat.isEmpty() && !maxLat.isEmpty() && !minLon.isEmpty() && !maxLon.isEmpty();
