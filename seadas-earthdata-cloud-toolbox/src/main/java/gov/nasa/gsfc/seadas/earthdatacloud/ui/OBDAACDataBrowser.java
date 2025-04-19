@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
-import com.bc.ceres.binding.ValidationException;
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
@@ -12,7 +11,6 @@ import org.json.JSONTokener;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -35,7 +33,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static gov.nasa.gsfc.seadas.earthdatacloud.preferences.Preference_Utils.authenticatePropertyStringNumber;
 import static gov.nasa.gsfc.seadas.earthdatacloud.ui.BrowseImagePreview.getPreviewUrl;
 
 public class OBDAACDataBrowser extends JPanel {
@@ -1427,119 +1424,7 @@ private void loadMissionDateRangesFromFile() {
         panel.add(boxSize, gbc);
 
 
-
-
-        minLatField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                handleMinLatField();
-            }
-        });
-        minLatField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                handleMinLatField();
-            }
-        });
-
-
-
-        maxLatField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                handleMaxLatField();
-            }
-        });
-        maxLatField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                handleMaxLatField();
-            }
-        });
-
-        
-        
-        
-
-        minLonField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                handleMinLonField();
-            }
-        });
-        minLonField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                handleMinLonField();
-            }
-        });
-
-
-        
-        
-        
-        maxLonField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                handleMaxLonField();
-            }
-        });
-        maxLonField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                handleMaxLonField();
-            }
-        });
-
-
-
-
-
-
-        coordinates.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                try {
-                    if (!working) {
-                        working = true;
-                        handleUpdateFromCoordinates();
-                    }
-                } catch (Exception ex) {
-                }
-
-                regions.setSelectedIndex(0);
-                regions2.setSelectedIndex(0);
-
-                working = false;
-            }
-        });
-
-
-
-        boxSize.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                try {
-                    if (!working) {
-                        working = true;
-                        handleUpdateFromCoordinates();
-                    }
-                } catch (Exception ex) {
-                }
-
-                working = false;
-            }
-        });
+        createSpatialPanelHandlers();
 
 
         try {
@@ -1672,6 +1557,7 @@ private void loadMissionDateRangesFromFile() {
 
 
 
+
         JTextField tmp = new JTextField("1234567890123");
         minLonField.setMinimumSize(tmp.getPreferredSize());
 
@@ -1694,156 +1580,293 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
+    private void createSpatialPanelHandlers() {
 
 
-    private void handleMinLatField() {
+        minLatField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setLatControlsHandler(minLatField);
+            }
+        });
+        minLatField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                setLatControlsHandler(minLatField);
+            }
+        });
+
+
+
+        maxLatField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setLatControlsHandler(maxLatField);
+            }
+        });
+        maxLatField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                setLatControlsHandler(maxLatField);            }
+        });
+
+
+
+
+
+        minLonField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setLonControlsHandler(minLonField);
+            }
+        });
+        minLonField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                setLonControlsHandler(minLonField);
+            }
+        });
+
+
+
+
+
+        maxLonField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setLonControlsHandler(maxLonField);
+            }
+        });
+        maxLonField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                setLonControlsHandler(maxLonField);
+            }
+        });
+
+
+
+
+
+
+        coordinates.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    if (!working) {
+                        working = true;
+                        handleUpdateFromCoordinates();
+                    }
+                } catch (Exception ex) {
+                }
+
+                regions.setSelectedIndex(0);
+                regions2.setSelectedIndex(0);
+
+                working = false;
+            }
+        });
+
+
+
+        boxSize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    if (!working) {
+                        working = true;
+                        handleUpdateFromCoordinates();
+                    }
+                } catch (Exception ex) {
+                }
+
+                working = false;
+            }
+        });
+
+    }
+
+
+
+
+
+
+
+
+    private void setLatControlsHandler(Object sourceControl) {
+
         if (!working) {
             working = true;
+            
+            boolean minSet = false;
+            boolean maxSet = false;
+            if (minLatField != null && minLatField.getText() != null && minLatField.getText().trim().length() > 0) {
+                minSet = true;
+            }
+            if (maxLatField != null && maxLatField.getText() != null && maxLatField.getText().trim().length() > 0) {
+                maxSet = true;
+            }
 
-            coordinates.setText("");
-            regions.setSelectedIndex(0);
-            regions2.setSelectedIndex(0);
+            if (sourceControl == minLatField || sourceControl == maxLatField) {
+                coordinates.setText("");
+                regions.setSelectedIndex(0);
+                regions2.setSelectedIndex(0);
+            }
+
+            
+            
+            boolean valid = true;
+            double FAIL_DOUBLE = -9999.0;
+
+            String minLat = RegionUtils.convertLatToDecimal(minLatField.getText());
+            String maxLat = RegionUtils.convertLatToDecimal(maxLatField.getText());
+
+            double minLatDouble = RegionUtils.convertStringToDouble(minLat , FAIL_DOUBLE);
+            if (minSet) {
+                if (!minLat.equals(minLatField.getText())) {
+                    minLatField.setText(minLat);
+                }
+                if (minLatDouble == FAIL_DOUBLE || minLatDouble < -90 || minLatDouble > 90) {
+                    valid = false;
+                    JOptionPane.showMessageDialog(null, "WARNING!: 'South' is invalid");
+                    minLatField.setText("");
+                }
+            }
 
 
+            double maxLatDouble = RegionUtils.convertStringToDouble(maxLat , FAIL_DOUBLE);
+            if (maxSet) {
+                if (!maxLat.equals(maxLatField.getText())) {
+                    maxLatField.setText(maxLat);
+                }
+                if (maxLatDouble == FAIL_DOUBLE || maxLatDouble < -90 || maxLatDouble > 90) {
+                    valid = false;
+                    JOptionPane.showMessageDialog(null, "WARNING!: 'North' is invalid");
+                    maxLatField.setText("");
+                }
+            }
+            
+            if (valid && minSet && maxSet && minLatDouble > maxLatDouble) {
+                if (sourceControl == minLatField) {
+                    JOptionPane.showMessageDialog(null, "WARNING!: 'South' cannot be greater than 'North'");
+                    minLatField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(null, "WARNING!: 'North' cannot be less than 'South'");
+                    maxLatField.setText("");                
+                }
+            }
+            
             working = false;
         }
     }
 
 
 
-    private void handleMaxLatField() {
+
+    private void setLonControlsHandler(Object sourceControl) {
+
         if (!working) {
             working = true;
 
-            coordinates.setText("");
-            regions.setSelectedIndex(0);
-            regions2.setSelectedIndex(0);
-
-
-            working = false;
-        }
-    }
-
-    
-    
-    
-    private void handleMaxLonField() {
-        if (!working) {
-            working = true;
-
-            coordinates.setText("");
-            regions.setSelectedIndex(0);
-            regions2.setSelectedIndex(0);
+            boolean minSet = false;
+            boolean maxSet = false;
+            if (minLonField != null && minLonField.getText() != null && minLonField.getText().trim().length() > 0) {
+                minSet = true;
+            }
+            if (maxLonField != null && maxLonField.getText() != null && maxLonField.getText().trim().length() > 0) {
+                maxSet = true;
+            }
+            
+            if (sourceControl == minLonField || sourceControl == maxLonField) {
+                coordinates.setText("");
+                regions.setSelectedIndex(0);
+                regions2.setSelectedIndex(0);
+            }
 
             boolean valid = true;
             double FAIL_DOUBLE = -9999.0;
 
-            String lonMin = RegionUtils.convertLonToDecimal(minLonField.getText());
-            String lonMax = RegionUtils.convertLonToDecimal(maxLonField.getText());
+            String minLon = RegionUtils.convertLonToDecimal(minLonField.getText());
+            String maxLon = RegionUtils.convertLonToDecimal(maxLonField.getText());
 
-            double lonMaxDouble = RegionUtils.convertStringToDouble(lonMax , FAIL_DOUBLE);
-            if (lonMaxDouble != FAIL_DOUBLE) {
-                if (lonMaxDouble >= -180 && lonMaxDouble <= 180) {
-                    double lonMinDouble = RegionUtils.convertStringToDouble(lonMin , FAIL_DOUBLE);
-                    if (lonMinDouble != FAIL_DOUBLE) {
-                        valid = compareSpan(lonMinDouble, lonMaxDouble);
 
-                    }
-                } else {
+            double minLonDouble = RegionUtils.convertStringToDouble(minLon , FAIL_DOUBLE);
+            if (minSet) {
+                if (!minLon.equals(minLonField.getText())) {
+                    minLonField.setText(minLon);
+                }
+                if (minLonDouble == FAIL_DOUBLE || minLonDouble < -180 || minLonDouble > 180) {
                     valid = false;
-                    // lonMax bad
-                }
-            } else {
-                valid = false;
-                // lonMax bad
-            }
-
-            if (!valid) {
-                try {
-                    maxLonField.setText("");
-                } catch (Exception exx) {
-                }
-                JOptionPane.showMessageDialog(null, "WARNING!: ");
-                maxLonField.setText("");
-
-                // todo notify
-            }
-
-            working = false;
-        }
-    }
-
-    
-    private void handleMinLonField() {
-        if (!working) {
-            working = true;
-
-            coordinates.setText("");
-            regions.setSelectedIndex(0);
-            regions2.setSelectedIndex(0);
-
-            boolean valid = true;
-            double FAIL_DOUBLE = -9999.0;
-
-            String lonMin = RegionUtils.convertLonToDecimal(minLonField.getText());
-            String lonMax = RegionUtils.convertLonToDecimal(maxLonField.getText());
-
-            double lonMinDouble = RegionUtils.convertStringToDouble(lonMin , FAIL_DOUBLE);
-            if (lonMinDouble != FAIL_DOUBLE) {
-                if (lonMinDouble >= -180 && lonMinDouble <= 180) {
-                    double lonMaxDouble = RegionUtils.convertStringToDouble(lonMax , FAIL_DOUBLE);
-                    if (lonMaxDouble != FAIL_DOUBLE) {
-                        valid = compareSpan(lonMinDouble, lonMaxDouble);
-
-                    }
-                } else {
-                    valid = false;
-                    // lonMin bad
-                }
-            } else {
-                valid = false;
-                // lonMin bad
-            }
-
-            if (!valid) {
-                try {
+                    JOptionPane.showMessageDialog(null, "WARNING!: 'West' is invalid");
                     minLonField.setText("");
-                } catch (Exception exx) {
                 }
-                JOptionPane.showMessageDialog(null, "WARNING!: ");
-                minLonField.setText("");
+            }
 
+
+            double maxLonDouble = RegionUtils.convertStringToDouble(maxLon , FAIL_DOUBLE);
+            if (maxSet) {
+                if (!maxLon.equals(maxLonField.getText())) {
+                    maxLonField.setText(maxLon);
+                }
+                if (maxLonDouble == FAIL_DOUBLE || maxLonDouble < -180 || maxLonDouble > 180) {
+                    valid = false;
+                    JOptionPane.showMessageDialog(null, "WARNING!: 'East' is invalid");
+                    maxLonField.setText("");
+                }
+            }
+
+            if (valid && minSet && maxSet) {
+//                if (minLonDouble > maxLonDouble) {
+//                    // todo figure out span maybe 90?
+//                    valid = checkDatelineSpan(minLonDouble, maxLonDouble, 360);
+//                    if (!valid) {
+//                        if (sourceControl == minLonField) {
+//                            JOptionPane.showMessageDialog(null, "<html>WARNING!: Dateline crossing: 'West' is greater than 'East'<br>Span cannot be greater than 90 degrees</html>");
+//                            minLonField.setText("");
+//                        } else {
+//                            JOptionPane.showMessageDialog(null, "<html>WARNING!: Dateline crossing: 'West' is greater than 'East'<br>Span cannot be greater than 90 degrees</html>");
+//                            maxLonField.setText("");
+//                        }
+//                    }
+//                } else if (minLonDouble == maxLonDouble) {
+//                    if (sourceControl == minLonField) {
+//                        JOptionPane.showMessageDialog(null, "<html>WARNING!: 'West' cannot equal 'East'");
+//                        minLonField.setText("");
+//                    } else {
+//                        JOptionPane.showMessageDialog(null, "<html>WARNING!: 'East' cannot equal 'West'");
+//                        maxLonField.setText("");
+//                    }
+//                }
             }
 
             working = false;
         }
     }
-    
-    
-    
+
     
 
-    private boolean compareSpan(double lonMinDouble, double lonMaxDouble) {
-        boolean valid = true;
+    
 
-        if (lonMinDouble == lonMaxDouble) {
-            valid = false;
-            // cannot equal
-        }  else if (lonMaxDouble > lonMinDouble) {
-            if ((lonMaxDouble - lonMinDouble) > 360) {
-                valid = false;
-                // span too big
-            }
-        } else {
-            double lonMinAdjusted = lonMinDouble + 360;
-            if ((lonMaxDouble - lonMinAdjusted) > 90) {
-                valid = false;
-                // span too big
+    private boolean checkDatelineSpan(double westDouble, double eastDouble, double maxSpan) {
+
+        if (westDouble > eastDouble) {
+            double westAdjustedDouble = westDouble - 360;
+            if ((eastDouble - westAdjustedDouble) > maxSpan) {
+                return  false;
             }
         }
 
-        return valid;
-
+        return true;
     }
 
 
@@ -1862,49 +1885,65 @@ private void loadMissionDateRangesFromFile() {
             String lon = RegionUtils.convertLonToDecimal(coordinatesSplitArray[1]);
 
             if (RegionUtils.validateCoordinates(lat, lon)) {
-                valid = true;
                 double FAIL_DOUBLE = -9999.0;
                 double latDouble = RegionUtils.convertStringToDouble(lat, FAIL_DOUBLE);
                 double lonDouble = RegionUtils.convertStringToDouble(lon, FAIL_DOUBLE);
                 double boxSizeDouble = RegionUtils.convertStringToDouble(boxSize.getText(), FAIL_DOUBLE);
-                if (latDouble != FAIL_DOUBLE && lonDouble != FAIL_DOUBLE && boxSizeDouble != FAIL_DOUBLE) {
-                    double minLat = latDouble - 0.5 * boxSizeDouble;
-                    double maxLat = latDouble + 0.5 * boxSizeDouble;
-                    double minLon = lonDouble - 0.5 * boxSizeDouble;
-                    double maxLon = lonDouble + 0.5 * boxSizeDouble;
+                if (latDouble != FAIL_DOUBLE && lonDouble != FAIL_DOUBLE && boxSizeDouble != FAIL_DOUBLE && boxSizeDouble >= 0) {
+                    valid = true;
 
-                    if (maxLat > 90) {
-                        maxLat = 90;
-                    }
-                    if (minLat < -90) {
-                        minLat = -90;
-                    }
-                    // todo Danny confine lat and lon bounds
+                    if (boxSizeDouble > 0) {
+                        double minLat = latDouble - 0.5 * boxSizeDouble;
+                        double maxLat = latDouble + 0.5 * boxSizeDouble;
+                        double minLon = lonDouble - 0.5 * boxSizeDouble;
+                        double maxLon = lonDouble + 0.5 * boxSizeDouble;
 
-                    if (maxLon > 180) {
-                        maxLon = -180 + (maxLon -180);
-                    }
-                    if (minLon < -180) {
-                        minLon = 180 + (minLon + 180);
-                    }
+                        if (maxLat > 90) {
+                            maxLat = 90;
+                        }
+                        if (minLat < -90) {
+                            minLat = -90;
+                        }
+                        // todo Danny confine lat and lon bounds
 
-                    DecimalFormat df = new DecimalFormat("###.####");
-                    String minLatStr = df.format(minLat);
-                    String maxLatStr = df.format(maxLat);
-                    String minLonStr = df.format(minLon);
-                    String maxLonStr = df.format(maxLon);
+                        if (maxLon > 180) {
+                            maxLon = -180 + (maxLon - 180);
+                        }
+                        if (minLon < -180) {
+                            minLon = 180 + (minLon + 180);
+                        }
 
-                    minLatField.setText(minLatStr);
-                    maxLatField.setText(maxLatStr);
-                    minLonField.setText(minLonStr);
-                    maxLonField.setText(maxLonStr);
+
+                        DecimalFormat df = new DecimalFormat("###.####");
+                        String minLatStr = df.format(minLat);
+                        String maxLatStr = df.format(maxLat);
+                        String minLonStr = df.format(minLon);
+                        String maxLonStr = df.format(maxLon);
+
+                        minLatField.setText(minLatStr);
+                        maxLatField.setText(maxLatStr);
+                        minLonField.setText(minLonStr);
+                        maxLonField.setText(maxLonStr);
+                    } else {
+                        maxLatField.setText(lat);
+                        minLatField.setText(lat);
+                        minLonField.setText(lon);
+                        maxLonField.setText(lon);
+                    }
                 } else {
-                    maxLatField.setText(lat);
-                    minLatField.setText(lat);
-                    minLonField.setText(lon);
-                    maxLonField.setText(lon);
+                    if (latDouble == FAIL_DOUBLE) {
+                        JOptionPane.showMessageDialog(null, "WARNING!: Coordinates has invalid 'latitude'");
+                    } else if (lonDouble == FAIL_DOUBLE) {
+                        JOptionPane.showMessageDialog(null, "WARNING!: Coordinates has invalid 'longitude'");
+                    } else if (boxSizeDouble == FAIL_DOUBLE) {
+                        JOptionPane.showMessageDialog(null, "WARNING!: Box size must be >= 0");
+                    }
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "WARNING!: Coordinates not valid");
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "WARNING!: Coordinates not valid");
         }
 
         if (!valid) {

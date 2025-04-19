@@ -1070,7 +1070,7 @@
         </option>
 
 
-        <option type="ifile">
+        <option type="ofile">
             <name>land</name>
             <value></value>
             <default></default>
