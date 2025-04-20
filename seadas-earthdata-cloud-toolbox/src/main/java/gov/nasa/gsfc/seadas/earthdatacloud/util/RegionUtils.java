@@ -357,7 +357,7 @@ public class RegionUtils {
     }
 
 
-    private static String trimString(String str) {
+    public static String trimString(String str) {
         if (str != null) {
             return str.trim();
         }

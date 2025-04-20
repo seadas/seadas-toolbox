@@ -35,6 +35,9 @@ public class RegionsInfo {
     }
 
     public String getName() {
+        if (name != null) {
+            return name.trim();
+        }
         return name;
     }
 

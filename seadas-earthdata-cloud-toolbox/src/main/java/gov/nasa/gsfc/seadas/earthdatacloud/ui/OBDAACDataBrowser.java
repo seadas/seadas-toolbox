@@ -1366,23 +1366,22 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         Insets insetsOrig = gbc.insets;
-        gbc.insets.right = 10;
-        gbc.insets.left = 10;
+//        gbc.insets.right = 10;
+//        gbc.insets.left = 10;
         gbc.gridwidth = 2;
         panel.add(new JSeparator(), gbc);
         gbc.insets = insetsOrig;
-        gbc.gridwidth = 1;
-
-
 
         // VERTICAL FILLER - silliness to get this filled
         gbc.gridy++;
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = 2;
         JLabel fill = new JLabel("");
         panel.add(fill, gbc);
         gbc.weighty = 0;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 1;
+
 
 
 
@@ -1410,9 +1409,8 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        JLabel boxSizeLabel = new JLabel("Box Size (km):");
-        boxSizeLabel.setToolTipText("<html>In units of kilometers.  Used to set fields north, south, west and east<br>" +
-                "Option1: Box Size = 'value' (applies equally to width and height)<br>Option2: Box Size = 'width x height'<br></html>");
+        JLabel boxSizeLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_BOX_SIZE_LABEL + ":");
+        boxSizeLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_BOX_SIZE_TOOLTIP);
         panel.add(boxSizeLabel, gbc);
 
 
@@ -1420,8 +1418,8 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        boxSize = new JTextField("10x10");
-        boxSize.setToolTipText("Used to set fields north, south, west and east");
+        boxSize = new JTextField(Earthdata_Cloud_Controller.getPreferenceBoxSize());
+        boxSize.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_BOX_SIZE_TOOLTIP);
         panel.add(boxSize, gbc);
 
 
@@ -1439,7 +1437,7 @@ private void loadMissionDateRangesFromFile() {
             gbc.gridx = 0;
             gbc.fill = GridBagConstraints.NONE;
             gbc.weightx = 0;
-            JLabel regionLabel = new JLabel("Location:");
+            JLabel regionLabel = new JLabel("Region:");
             regionLabel.setToolTipText(TOOLTIP);
             panel.add(regionLabel, gbc);
 
@@ -1486,6 +1484,9 @@ private void loadMissionDateRangesFromFile() {
                     working = false;
                 }
             });
+
+
+
         } catch (Exception e) {
         }
 
@@ -1504,7 +1505,7 @@ private void loadMissionDateRangesFromFile() {
             gbc.gridx = 0;
             gbc.fill = GridBagConstraints.NONE;
             gbc.weightx = 0;
-            JLabel regionLabel = new JLabel("Custom:");
+            JLabel regionLabel = new JLabel("User Region:");
             regionLabel.setToolTipText(TOOLTIP);
             panel.add(regionLabel, gbc);
 
@@ -1552,9 +1553,38 @@ private void loadMissionDateRangesFromFile() {
                     working = false;
                 }
             });
+
+
+
         } catch (Exception e) {
         }
 
+
+
+
+        if (Earthdata_Cloud_Controller.getPreferenceRegion() != null && Earthdata_Cloud_Controller.getPreferenceRegion().length() > 0) {
+            if (regions != null) {
+                for (int i = 0; i < regions.getItemCount(); i++) {
+                    if (regions.getItemAt(i) != null) {
+                        RegionsInfo regionsInfo = (RegionsInfo) regions.getItemAt(i);
+                        if (Earthdata_Cloud_Controller.getPreferenceRegion().trim().equalsIgnoreCase(regionsInfo.getName())) {
+                            regions.setSelectedIndex(i);
+                        }
+                    }
+                }
+            }
+
+            if (regions2 != null) {
+                for (int i = 0; i < regions2.getItemCount(); i++) {
+                    if (regions2.getItemAt(i) != null) {
+                        RegionsInfo regionsInfo = (RegionsInfo) regions2.getItemAt(i);
+                        if (Earthdata_Cloud_Controller.getPreferenceRegion().trim().equalsIgnoreCase(regionsInfo.getName())) {
+                            regions2.setSelectedIndex(i);
+                        }
+                    }
+                }
+            }
+        }
 
 
 
@@ -1894,7 +1924,7 @@ private void loadMissionDateRangesFromFile() {
 
                 double boxLat = 0;
                 double boxLon = 0;
-                String units = "km";
+//                String units = "km";
                 boolean boxValid = true;
 
                 String warnMsg = "";
@@ -1932,22 +1962,29 @@ private void loadMissionDateRangesFromFile() {
                 if (!boxValid) {
                     JOptionPane.showMessageDialog(null, warnMsg);
                     // todo set to preference value
-                    boxSize.setText("0");
+//                    boxSize.setText(Earthdata_Cloud_Controller.getPreferenceBoxSize());
                 }
 
 
                 if (latDouble != FAIL_DOUBLE && lonDouble != FAIL_DOUBLE && boxValid) {
                     valid = true;
 
-                    double EARTH_CIRCUMFERENCE =  40075.017;
-                    double degreesPerKm = 360/EARTH_CIRCUMFERENCE;
-                    System.out.println("degreesPerKm=" + degreesPerKm);
+
 
                     if (boxLat >= 0 && boxLon >= 0) {
-                        double minLat = latDouble - 0.5 * boxLat * degreesPerKm;
-                        double maxLat = latDouble + 0.5 * boxLat * degreesPerKm;
-                        double minLon = lonDouble - 0.5 * boxLon * degreesPerKm;
-                        double maxLon = lonDouble + 0.5 * boxLon * degreesPerKm;
+                        // todo Convert to units of km would be difficult and the following could not be quite right, it would need cosine ... but still would not be quite accurate to what the satellite views
+//                        double EARTH_CIRCUMFERENCE =  40075.017;
+//                        double degreesPerKm = 360/EARTH_CIRCUMFERENCE;
+//                        double minLat = latDouble - 0.5 * boxLat * degreesPerKm;
+//                        double maxLat = latDouble + 0.5 * boxLat * degreesPerKm;
+//                        double minLon = lonDouble - 0.5 * boxLon * degreesPerKm;
+//                        double maxLon = lonDouble + 0.5 * boxLon * degreesPerKm;
+                        // todo end of comment
+
+                        double minLat = latDouble - 0.5 * boxLat;
+                        double maxLat = latDouble + 0.5 * boxLat;
+                        double minLon = lonDouble - 0.5 * boxLon;
+                        double maxLon = lonDouble + 0.5 * boxLon;
 
                         if (maxLat > 90) {
                             maxLat = 90;

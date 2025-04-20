@@ -110,6 +110,17 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
     public static final String PROPERTY_MAXLON_DEFAULT = "";
 
+    public static final String PROPERTY_REGION_KEY = PROPERTY_ROOT_KEY + ".region";
+    public static final String PROPERTY_REGION_LABEL = "Region";
+    public static final String PROPERTY_REGION_TOOLTIP = "Set region for the 'Region' or 'User Region' selector";
+    public static final String PROPERTY_REGION_DEFAULT = "";
+    
+    public static final String PROPERTY_BOX_SIZE_KEY = PROPERTY_ROOT_KEY + ".boxsize";
+    public static final String PROPERTY_BOX_SIZE_LABEL = "Box Size";
+    public static final String PROPERTY_BOX_SIZE_TOOLTIP = "\"<html>In units of degrees.  Used to set fields north, south, west and east<br>\" +\n" +
+            "                \"Option1: Box Size = 'value' (applies equally to width and height)<br>Option2: Box Size = 'width x height'<br></html>\"";
+    public static final String PROPERTY_BOX_SIZE_DEFAULT = "0";
+    
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
     public static final String PROPERTY_DAYNIGHT_MODE_LABEL = "Day/Night";
     public static final String PROPERTY_DAYNIGHT_MODE_TOOLTIP = "Retrieve files with data acquired during daytime, nighttime, or both";
@@ -176,6 +187,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         maxLatProperty = initPropertyDefaults(context, PROPERTY_MAXLAT_KEY, PROPERTY_MAXLAT_DEFAULT);
         minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
         maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
@@ -442,6 +455,16 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_MAXLON_TOOLTIP)
         String maxlonDefault = PROPERTY_MAXLON_DEFAULT;
 
+        @Preference(key = PROPERTY_REGION_KEY,
+                label = PROPERTY_REGION_LABEL,
+                description = PROPERTY_REGION_TOOLTIP)
+        String regionDefault = PROPERTY_REGION_DEFAULT;
+        
+        @Preference(key = PROPERTY_BOX_SIZE_KEY,
+                label = PROPERTY_BOX_SIZE_LABEL,
+                description = PROPERTY_BOX_SIZE_TOOLTIP)
+        String boxSizeDefault = PROPERTY_BOX_SIZE_DEFAULT;
+        
         @Preference(key = PROPERTY_DAYNIGHT_MODE_KEY,
                 label = PROPERTY_DAYNIGHT_MODE_LABEL,
                 description = PROPERTY_DAYNIGHT_MODE_TOOLTIP,
@@ -529,6 +552,18 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         return authenticatedStringNumber(maxLon);
     }
 
+    public static String getPreferenceRegion() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
+    }
+
+    
+    public static String getPreferenceBoxSize() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
+    }
+
+    
     public static String getPreferenceDayNightMode() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
