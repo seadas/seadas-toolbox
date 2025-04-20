@@ -1420,7 +1420,7 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        boxSize = new JTextField("0.1");
+        boxSize = new JTextField("10x10");
         boxSize.setToolTipText("Used to set fields north, south, west and east");
         panel.add(boxSize, gbc);
 
