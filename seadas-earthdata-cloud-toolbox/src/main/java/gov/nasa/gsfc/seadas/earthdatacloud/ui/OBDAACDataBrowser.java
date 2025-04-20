@@ -1888,15 +1888,58 @@ private void loadMissionDateRangesFromFile() {
                 double FAIL_DOUBLE = -9999.0;
                 double latDouble = RegionUtils.convertStringToDouble(lat, FAIL_DOUBLE);
                 double lonDouble = RegionUtils.convertStringToDouble(lon, FAIL_DOUBLE);
-                double boxSizeDouble = RegionUtils.convertStringToDouble(boxSize.getText(), FAIL_DOUBLE);
-                if (latDouble != FAIL_DOUBLE && lonDouble != FAIL_DOUBLE && boxSizeDouble != FAIL_DOUBLE && boxSizeDouble >= 0) {
+
+                String boxSizeValue = boxSize.getText();
+                String[] boxSizeSplitArray = boxSizeValue.split("\\s+");
+
+                double boxLat = 0;
+                double boxLon = 0;
+                String units = "km";
+                boolean boxValid = true;
+
+                if (boxSizeSplitArray.length == 1) {
+                    String[] boxSizeSplitOnXArray = boxSizeValue.split("x");
+                    if (boxSizeSplitOnXArray.length == 1) {
+                        double boxValueDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[0], FAIL_DOUBLE);
+                        if (boxValueDouble != FAIL_DOUBLE && boxValueDouble >= 0) {
+                            boxLat = boxValueDouble;
+                            boxLon = boxValueDouble;
+                        } else {
+                            // FAIL
+                            boxValid = false;
+                        }
+                    } else if (boxSizeSplitOnXArray.length == 2) {
+                        double boxValueLatDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[0], FAIL_DOUBLE);
+                        if (boxValueLatDouble != FAIL_DOUBLE && boxValueLatDouble >= 0) {
+                            double boxValueLonDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[1], FAIL_DOUBLE);
+                            if (boxValueLonDouble != FAIL_DOUBLE && boxValueLonDouble >= 0) {
+                                boxLat = boxValueLatDouble;
+                                boxLon = boxValueLonDouble;
+                            } else {
+                                //todo FAIL
+                                boxValid = false;
+                            }
+                        } else {
+                            // todo FAIL
+                            boxValid = false;
+                        }
+                    } else {
+                        // todo FAIL
+                        boxValid = false;
+                    }
+                } else if (boxSizeSplitArray.length == 2) {
+                    String boxEntry = boxSizeSplitArray[0];
+                    units = boxSizeSplitArray[1];
+                }
+
+                if (latDouble != FAIL_DOUBLE && lonDouble != FAIL_DOUBLE && boxValid) {
                     valid = true;
 
-                    if (boxSizeDouble > 0) {
-                        double minLat = latDouble - 0.5 * boxSizeDouble;
-                        double maxLat = latDouble + 0.5 * boxSizeDouble;
-                        double minLon = lonDouble - 0.5 * boxSizeDouble;
-                        double maxLon = lonDouble + 0.5 * boxSizeDouble;
+                    if (boxLat >= 0 && boxLon >= 0) {
+                        double minLat = latDouble - 0.5 * boxLat;
+                        double maxLat = latDouble + 0.5 * boxLat;
+                        double minLon = lonDouble - 0.5 * boxLon;
+                        double maxLon = lonDouble + 0.5 * boxLon;
 
                         if (maxLat > 90) {
                             maxLat = 90;
@@ -1935,8 +1978,8 @@ private void loadMissionDateRangesFromFile() {
                         JOptionPane.showMessageDialog(null, "WARNING!: Coordinates has invalid 'latitude'");
                     } else if (lonDouble == FAIL_DOUBLE) {
                         JOptionPane.showMessageDialog(null, "WARNING!: Coordinates has invalid 'longitude'");
-                    } else if (boxSizeDouble == FAIL_DOUBLE) {
-                        JOptionPane.showMessageDialog(null, "WARNING!: Box size must be >= 0");
+                    } else if (!boxValid) {
+                        JOptionPane.showMessageDialog(null, "WARNING!: Box size error - must be numeric and >= 0");
                     }
                 }
             } else {
