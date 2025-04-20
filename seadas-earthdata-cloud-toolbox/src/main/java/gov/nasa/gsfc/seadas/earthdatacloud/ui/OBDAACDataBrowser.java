@@ -1410,8 +1410,9 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        JLabel boxSizeLabel = new JLabel("Box Size:");
-        boxSizeLabel.setToolTipText("Used to set fields north, south, west and east");
+        JLabel boxSizeLabel = new JLabel("Box Size (km):");
+        boxSizeLabel.setToolTipText("<html>In units of kilometers.  Used to set fields north, south, west and east<br>" +
+                "Option1: Box Size = 'value' (applies equally to width and height)<br>Option2: Box Size = 'width x height'<br></html>");
         panel.add(boxSizeLabel, gbc);
 
 
@@ -1890,56 +1891,63 @@ private void loadMissionDateRangesFromFile() {
                 double lonDouble = RegionUtils.convertStringToDouble(lon, FAIL_DOUBLE);
 
                 String boxSizeValue = boxSize.getText();
-                String[] boxSizeSplitArray = boxSizeValue.split("\\s+");
 
                 double boxLat = 0;
                 double boxLon = 0;
                 String units = "km";
                 boolean boxValid = true;
 
-                if (boxSizeSplitArray.length == 1) {
-                    String[] boxSizeSplitOnXArray = boxSizeValue.split("x");
-                    if (boxSizeSplitOnXArray.length == 1) {
-                        double boxValueDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[0], FAIL_DOUBLE);
-                        if (boxValueDouble != FAIL_DOUBLE && boxValueDouble >= 0) {
-                            boxLat = boxValueDouble;
-                            boxLon = boxValueDouble;
-                        } else {
-                            // FAIL
-                            boxValid = false;
-                        }
-                    } else if (boxSizeSplitOnXArray.length == 2) {
-                        double boxValueLatDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[0], FAIL_DOUBLE);
+                String warnMsg = "";
+
+                String[] boxSizeSplitOnXArray = boxSizeValue.split("x");
+                if (boxSizeSplitOnXArray.length == 1) {
+                    double boxValueDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[0], FAIL_DOUBLE);
+                    if (boxValueDouble != FAIL_DOUBLE && boxValueDouble >= 0) {
+                        boxLat = boxValueDouble;
+                        boxLon = boxValueDouble;
+                    } else {
+                        boxValid = false;
+                        warnMsg = "WARNING!: Box Size is invalid";
+                    }
+                } else if (boxSizeSplitOnXArray.length == 2) {
+                    double boxValueLonDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[0], FAIL_DOUBLE);
+                    if (boxValueLonDouble != FAIL_DOUBLE && boxValueLonDouble >= 0) {
+                        double boxValueLatDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[1], FAIL_DOUBLE);
                         if (boxValueLatDouble != FAIL_DOUBLE && boxValueLatDouble >= 0) {
-                            double boxValueLonDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[1], FAIL_DOUBLE);
-                            if (boxValueLonDouble != FAIL_DOUBLE && boxValueLonDouble >= 0) {
-                                boxLat = boxValueLatDouble;
-                                boxLon = boxValueLonDouble;
-                            } else {
-                                //todo FAIL
-                                boxValid = false;
-                            }
+                            boxLat = boxValueLatDouble;
+                            boxLon = boxValueLonDouble;
                         } else {
-                            // todo FAIL
+                            warnMsg = "WARNING!: Box Size (height) is invalid";
                             boxValid = false;
                         }
                     } else {
-                        // todo FAIL
+                        warnMsg = "WARNING!: Box Size (width) is invalid";
                         boxValid = false;
                     }
-                } else if (boxSizeSplitArray.length == 2) {
-                    String boxEntry = boxSizeSplitArray[0];
-                    units = boxSizeSplitArray[1];
+                } else {
+                    boxValid = false;
+                    warnMsg = "WARNING!: Box Size is invalid";
                 }
+
+                if (!boxValid) {
+                    JOptionPane.showMessageDialog(null, warnMsg);
+                    // todo set to preference value
+                    boxSize.setText("0");
+                }
+
 
                 if (latDouble != FAIL_DOUBLE && lonDouble != FAIL_DOUBLE && boxValid) {
                     valid = true;
 
+                    double EARTH_CIRCUMFERENCE =  40075.017;
+                    double degreesPerKm = 360/EARTH_CIRCUMFERENCE;
+                    System.out.println("degreesPerKm=" + degreesPerKm);
+
                     if (boxLat >= 0 && boxLon >= 0) {
-                        double minLat = latDouble - 0.5 * boxLat;
-                        double maxLat = latDouble + 0.5 * boxLat;
-                        double minLon = lonDouble - 0.5 * boxLon;
-                        double maxLon = lonDouble + 0.5 * boxLon;
+                        double minLat = latDouble - 0.5 * boxLat * degreesPerKm;
+                        double maxLat = latDouble + 0.5 * boxLat * degreesPerKm;
+                        double minLon = lonDouble - 0.5 * boxLon * degreesPerKm;
+                        double maxLon = lonDouble + 0.5 * boxLon * degreesPerKm;
 
                         if (maxLat > 90) {
                             maxLat = 90;
