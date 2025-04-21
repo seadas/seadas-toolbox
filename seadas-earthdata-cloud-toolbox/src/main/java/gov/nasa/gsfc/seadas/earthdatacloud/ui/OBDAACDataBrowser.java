@@ -1922,8 +1922,8 @@ private void loadMissionDateRangesFromFile() {
 
                 String boxSizeValue = boxSize.getText();
 
-                double boxLat = 0;
-                double boxLon = 0;
+                double boxHeight = 0;
+                double boxWidth = 0;
 //                String units = "km";
                 boolean boxValid = true;
 
@@ -1933,8 +1933,8 @@ private void loadMissionDateRangesFromFile() {
                 if (boxSizeSplitOnXArray.length == 1) {
                     double boxValueDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[0], FAIL_DOUBLE);
                     if (boxValueDouble != FAIL_DOUBLE && boxValueDouble >= 0) {
-                        boxLat = boxValueDouble;
-                        boxLon = boxValueDouble;
+                        boxHeight = boxValueDouble;
+                        boxWidth = boxValueDouble;
                     } else {
                         boxValid = false;
                         warnMsg = "WARNING!: Box Size is invalid";
@@ -1944,8 +1944,8 @@ private void loadMissionDateRangesFromFile() {
                     if (boxValueLonDouble != FAIL_DOUBLE && boxValueLonDouble >= 0) {
                         double boxValueLatDouble = RegionUtils.convertStringToDouble(boxSizeSplitOnXArray[1], FAIL_DOUBLE);
                         if (boxValueLatDouble != FAIL_DOUBLE && boxValueLatDouble >= 0) {
-                            boxLat = boxValueLatDouble;
-                            boxLon = boxValueLonDouble;
+                            boxHeight = boxValueLatDouble;
+                            boxWidth = boxValueLonDouble;
                         } else {
                             warnMsg = "WARNING!: Box Size (height) is invalid";
                             boxValid = false;
@@ -1971,20 +1971,47 @@ private void loadMissionDateRangesFromFile() {
 
 
 
-                    if (boxLat >= 0 && boxLon >= 0) {
+                    if (boxHeight >= 0 && boxWidth >= 0) {
                         // todo Convert to units of km would be difficult and the following could not be quite right, it would need cosine ... but still would not be quite accurate to what the satellite views
-//                        double EARTH_CIRCUMFERENCE =  40075.017;
-//                        double degreesPerKm = 360/EARTH_CIRCUMFERENCE;
-//                        double minLat = latDouble - 0.5 * boxLat * degreesPerKm;
-//                        double maxLat = latDouble + 0.5 * boxLat * degreesPerKm;
-//                        double minLon = lonDouble - 0.5 * boxLon * degreesPerKm;
-//                        double maxLon = lonDouble + 0.5 * boxLon * degreesPerKm;
-                        // todo end of comment
+                        double EARTH_CIRCUMFERENCE =  40075.017;
+                        double degreesPerKmAlongLat = 360/EARTH_CIRCUMFERENCE;
 
-                        double minLat = latDouble - 0.5 * boxLat;
-                        double maxLat = latDouble + 0.5 * boxLat;
-                        double minLon = lonDouble - 0.5 * boxLon;
-                        double maxLon = lonDouble + 0.5 * boxLon;
+                        boolean unitsKm = false;    // todo investigate this
+
+                        double minLat;
+                        double maxLat;
+                        double minLon;
+                        double maxLon;
+                        if (unitsKm) {
+                            double EARTH_RADIUS_EQUATOR = 6378.1370;
+                            // units km (approx)
+                            double midLatRadiansAbs = Math.abs(latDouble) * Math.PI / 180.0;
+                            double cosineMidLat = Math.cos(midLatRadiansAbs);
+                            double circumferenceAtMidLat = 2.0 * Math.PI * EARTH_RADIUS_EQUATOR * Math.cos(midLatRadiansAbs);
+                            double circumferenceAtEquator = 2.0 * Math.PI * EARTH_RADIUS_EQUATOR;
+                            System.out.println("cosineMidLat=" + cosineMidLat);
+                            System.out.println("circumferenceAtMidLat=" + circumferenceAtMidLat);
+                            System.out.println("circumferenceAtEquator=" + circumferenceAtEquator);
+
+                            minLat = latDouble - 0.5 * boxHeight * degreesPerKmAlongLat;
+                            maxLat = latDouble + 0.5 * boxHeight * degreesPerKmAlongLat;
+
+                            if (latDouble >= -89 && latDouble <= 89) {
+                                double degreesPerKmAlongLon = 360.0 / circumferenceAtMidLat;
+                                minLon = lonDouble - 0.5 * boxWidth * degreesPerKmAlongLon;
+                                maxLon = lonDouble + 0.5 * boxWidth * degreesPerKmAlongLon;
+                            } else {
+                                minLon = -180.0;
+                                maxLon = 180.0;
+                            }
+                        } else {
+                            //  units degree
+                            minLat = latDouble - 0.5 * boxHeight;
+                            maxLat = latDouble + 0.5 * boxHeight;
+                            minLon = lonDouble - 0.5 * boxWidth;
+                            maxLon = lonDouble + 0.5 * boxWidth;
+                        }
+
 
                         if (maxLat > 90) {
                             maxLat = 90;
@@ -1992,7 +2019,6 @@ private void loadMissionDateRangesFromFile() {
                         if (minLat < -90) {
                             minLat = -90;
                         }
-                        // todo Danny confine lat and lon bounds
 
                         if (maxLon > 180) {
                             maxLon = -180 + (maxLon - 180);
