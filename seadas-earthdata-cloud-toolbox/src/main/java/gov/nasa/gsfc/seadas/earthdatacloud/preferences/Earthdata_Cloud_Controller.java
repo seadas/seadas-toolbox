@@ -117,9 +117,16 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     
     public static final String PROPERTY_BOX_SIZE_KEY = PROPERTY_ROOT_KEY + ".boxsize";
     public static final String PROPERTY_BOX_SIZE_LABEL = "Box Size";
-    public static final String PROPERTY_BOX_SIZE_TOOLTIP = "\"<html>In units of degrees.  Used to set fields north, south, west and east<br>\" +\n" +
-            "                \"Option1: Box Size = 'value' (applies equally to width and height)<br>Option2: Box Size = 'width x height'<br></html>\"";
+    public static final String PROPERTY_BOX_SIZE_TOOLTIP = "<html>In units of degrees.  Used to set fields north, south, west and east<br>" +
+            "Option1: Box Size = 'value' (applies equally to width and height)<br>Option2: Box Size = 'width x height'<br></html>";
     public static final String PROPERTY_BOX_SIZE_DEFAULT = "0";
+
+
+    public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".region";
+    public static final String PROPERTY_USER_REGION_INCLUDE_LABEL = "User Region Selector";
+    public static final String PROPERTY_USER_REGION_INCLUDE_TOOLTIP = "Include 'user_region' selector in GUI";
+    public static final boolean PROPERTY_USER_REGION_INCLUDE_DEFAULT = false;
+    
     
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
     public static final String PROPERTY_DAYNIGHT_MODE_LABEL = "Day/Night";
@@ -188,6 +195,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
         maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
@@ -459,6 +467,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 label = PROPERTY_REGION_LABEL,
                 description = PROPERTY_REGION_TOOLTIP)
         String regionDefault = PROPERTY_REGION_DEFAULT;
+
+        @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
+                label = PROPERTY_USER_REGION_INCLUDE_LABEL,
+                description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
+        boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
         
         @Preference(key = PROPERTY_BOX_SIZE_KEY,
                 label = PROPERTY_BOX_SIZE_LABEL,
@@ -555,6 +568,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static String getPreferenceRegion() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
+    }
+
+    public static boolean getPreferenceUserRegionSelectorInclude() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
     }
 
     

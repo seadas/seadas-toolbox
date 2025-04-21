@@ -179,6 +179,13 @@ Tasman Sea = 40°S 160°E
 
 
 
+-- BLANK --
+-- ISLANDS OF PACIFIC --
+Galápagos Islands = 0°30′S 90°30′W
+Hawaiian Islands = 20°54′00″N 156°36′00″W
+New Zealand = 42°S 173°E
+Fiji = 18°S 179°E
+
 
 
 
