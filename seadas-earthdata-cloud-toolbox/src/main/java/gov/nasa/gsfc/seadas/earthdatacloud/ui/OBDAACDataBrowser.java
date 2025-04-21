@@ -1473,7 +1473,9 @@ private void loadMissionDateRangesFromFile() {
                         coordinates.setText("");
                     }
 
-                    regions2.setSelectedIndex(0);
+                    if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
+                        regions2.setSelectedIndex(0);
+                    }
 
                     handleUpdateFromCoordinates();
 
