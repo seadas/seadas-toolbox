@@ -5,6 +5,7 @@ import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -43,8 +44,11 @@ public class RegionUtils {
         ArrayList<RegionsInfo> regionsInfos = new ArrayList<RegionsInfo>();
 
         if (regionsAuxDirFile != null && regionsAuxDirFile.exists()) {
-
-            try (BufferedReader br = new BufferedReader(new FileReader(regionsAuxDirFile))) {
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(regionsAuxDirFile),
+                            StandardCharsets.UTF_8))) {
+            //try (BufferedReader br = new BufferedReader(new FileReader(regionsAuxDirFile))) {
                 RegionsInfo selectInfo = new RegionsInfo("Select", RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
                 regionsInfos.add(selectInfo);
 
@@ -194,9 +198,9 @@ public class RegionUtils {
             return coord;
         }
 
-        coord = coord.trim();
+        coord  = coord.trim().replace("°"," ");    // strip degree // = coord.trim();
 
-        String[] coordDegreeSplitArray = coord.split("°");
+        String[] coordDegreeSplitArray = coord.split("[′″\\s]+");   //coord.split("°");
 
         if (coordDegreeSplitArray != null && coordDegreeSplitArray.length > 0) {
             String degrees = coordDegreeSplitArray[0];
