@@ -13,6 +13,9 @@ import java.util.ArrayList;
 
 public class RegionUtils {
 
+    private static String DEGREES_SYMBOL_STRING_REPLACEMENT = "_DEGREES_SYMBOL_REPLACEMENT_UNIQUE_IDENTIFIER_";
+    private static String MINUTES_SYMBOL_STRING_REPLACEMENT = "_MINUTES_SYMBOL_REPLACEMENT_UNIQUE_IDENTIFIER_";
+    private static String SECONDS_SYMBOL_STRING_REPLACEMENT = "_SECONDS_SYMBOL_REPLACEMENT_UNIQUE_IDENTIFIER_";
 
     public static ArrayList<RegionsInfo> getAuxDataRegions(String REGIONS_FILE, boolean replaceExisting) {
 
@@ -192,15 +195,24 @@ public class RegionUtils {
 
     private static String convertFromMinutesSecondsToDecimal(String coord) {
 
-        String convertedCoord = coord;
-
-        if (coord == null) {
+        if (coord == null || coord.trim().length() == 0) {
             return coord;
         }
 
-        coord  = coord.trim().replace("°"," ");    // strip degree // = coord.trim();
 
-        String[] coordDegreeSplitArray = coord.split("[′″\\s]+");   //coord.split("°");
+        coord  = coord.trim().replace("°", DEGREES_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
+        coord  = coord.trim().replace("′", MINUTES_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
+        coord  = coord.trim().replace("″", SECONDS_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
+
+        // some people may enter the single quote and double quote for minutes and seconds so support this as well
+        coord  = coord.trim().replace("\'", MINUTES_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
+        coord  = coord.trim().replace("\"", SECONDS_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
+
+
+        String convertedCoord = coord;
+
+
+        String[] coordDegreeSplitArray = coord.split(DEGREES_SYMBOL_STRING_REPLACEMENT);   //coord.split("°");
 
         if (coordDegreeSplitArray != null && coordDegreeSplitArray.length > 0) {
             String degrees = coordDegreeSplitArray[0];
@@ -209,7 +221,7 @@ public class RegionUtils {
                 convertedCoord = degrees;
             } else if (coordDegreeSplitArray.length == 2) {
                 String minutesSeconds = coordDegreeSplitArray[1];
-                String[] coordMinutesSplitArray = minutesSeconds.split("′");
+                String[] coordMinutesSplitArray = minutesSeconds.split(MINUTES_SYMBOL_STRING_REPLACEMENT);
 
                 if (coordMinutesSplitArray != null && coordMinutesSplitArray.length > 0) {
                     String minutes = coordMinutesSplitArray[0];
@@ -225,8 +237,8 @@ public class RegionUtils {
 
                         } else if (coordMinutesSplitArray.length == 2) {
                             String seconds = coordMinutesSplitArray[1];
-                            if (seconds != null && seconds.endsWith("″")) {
-                                seconds = seconds.substring(0, seconds.length() - 1);
+                            if (seconds != null && seconds.endsWith(SECONDS_SYMBOL_STRING_REPLACEMENT)) {
+                                seconds = seconds.substring(0, seconds.length() - SECONDS_SYMBOL_STRING_REPLACEMENT.length());
                                 double secondsDouble = convertStringToDouble(seconds, -9999.0);
                                 if (secondsDouble != -9999.0) {
                                     double convertedValue = degreesDouble + minutesDouble/60.0 + secondsDouble/(60*60);
@@ -242,6 +254,12 @@ public class RegionUtils {
                 }
             }
         }
+
+
+        // restore if not converted
+        convertedCoord  = convertedCoord.trim().replace(DEGREES_SYMBOL_STRING_REPLACEMENT,"°");    // strip degree // = coord.trim();
+        convertedCoord  = convertedCoord.trim().replace(MINUTES_SYMBOL_STRING_REPLACEMENT, "′");    // strip degree // = coord.trim();
+        convertedCoord  = convertedCoord.trim().replace(SECONDS_SYMBOL_STRING_REPLACEMENT, "″");    // strip degree // = coord.trim();
 
         return convertedCoord;
     }
