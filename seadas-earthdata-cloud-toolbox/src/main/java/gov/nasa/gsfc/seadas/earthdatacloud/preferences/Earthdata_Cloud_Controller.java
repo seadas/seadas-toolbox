@@ -159,6 +159,21 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final int PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MAX_VALUE = 1000;
 
 
+    public static final String PROPERTY_FETCH_MAX_RESULTS_KEY = PROPERTY_ROOT_KEY + ".fetch.max_results";
+    public static final String PROPERTY_FETCH_MAX_RESULTS_LABEL = "Max Results";
+    public static final String PROPERTY_FETCH_MAX_RESULTS_TOOLTIP = "Maximum number of files to request be retrieved";
+    public static final int PROPERTY_FETCH_MAX_RESULTS_DEFAULT = 1000;
+    public static final int PROPERTY_FETCH_MAX_RESULTS_MIN_VALUE = 1;
+    public static final int PROPERTY_FETCH_MAX_RESULTS_MAX_VALUE = 10000;
+
+    public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_KEY = PROPERTY_ROOT_KEY + ".fetch.results_per_page";
+    public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_LABEL = "Results per Page";
+    public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP = "Maximum number of files to display per page";
+    public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT = 50;
+    public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE = 1;
+    public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE = 1000;
+    
+
     // Property Setting: Restore Defaults
 
     private static final String PROPERTY_RESTORE_KEY_SUFFIX = PROPERTY_ROOT_KEY + ".restore.defaults";
@@ -202,6 +217,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY, PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_FETCH_MAX_RESULTS_KEY, PROPERTY_FETCH_MAX_RESULTS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_FETCH_RESULTS_PER_PAGE_KEY, PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT);
 
 
 
@@ -508,7 +525,19 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_IMAGE_PREVIEW_SIZE_MODE_TOOLTIP,
                 interval = "[" + PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MIN_VALUE + " ," + PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MAX_VALUE + "]")
         int imagePreviewSizeModeDefault = PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT;
-        
+
+
+        @Preference(key = PROPERTY_FETCH_MAX_RESULTS_KEY,
+                label = PROPERTY_FETCH_MAX_RESULTS_LABEL,
+                description = PROPERTY_FETCH_MAX_RESULTS_TOOLTIP,
+                interval = "[" + PROPERTY_FETCH_MAX_RESULTS_MIN_VALUE + " ," + PROPERTY_FETCH_MAX_RESULTS_MAX_VALUE + "]")
+        int fetchMaxResultsDefault = PROPERTY_FETCH_MAX_RESULTS_DEFAULT;
+
+        @Preference(key = PROPERTY_FETCH_RESULTS_PER_PAGE_KEY,
+                label = PROPERTY_FETCH_RESULTS_PER_PAGE_LABEL,
+                description = PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP,
+                interval = "[" + PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE + " ," + PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE + "]")
+        int fetchResultsPerPageDefault = PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT;
         // Restore Defaults Section
 
         @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
@@ -644,6 +673,16 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static int getPreferenceBrowseImageSize() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyInt(PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
+    }
+
+    public static int getPreferenceFetchMaxResults() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyInt(PROPERTY_FETCH_MAX_RESULTS_KEY, PROPERTY_FETCH_MAX_RESULTS_DEFAULT);
+    }
+
+    public static int getPreferenceFetchResultsPerPage() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyInt(PROPERTY_FETCH_RESULTS_PER_PAGE_KEY, PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT);
     }
 
 }

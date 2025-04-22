@@ -1,13 +1,17 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
+import com.bc.ceres.core.Assert;
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
+import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.core.util.SystemUtils;
 import org.jdatepicker.impl.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.netbeans.beaninfo.editors.ObjectEditor;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -52,6 +56,7 @@ public class OBDAACDataBrowser extends JPanel {
     private final Map<String, String> fileLinkMap = new HashMap<>();
 
     private int currentPage = 1;
+    private int totalFetched = 1;
     private int totalPages = 1;
     private List<String[]> pagedResults = new ArrayList<>();
     private JLabel pageInfoLabel;
@@ -61,6 +66,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JSpinner resultsPerPageSpinner;
 
     private JLabel pageLabel;
+    private JLabel fetchedLabel;
     private List<String[]> allGranules = new ArrayList<>();
     private JWindow imagePreviewWindow;
     private JLabel imageLabel;
@@ -85,6 +91,7 @@ public class OBDAACDataBrowser extends JPanel {
             "VIIRSN", new String[]{"2011-10-28", "2024-12-31"}
             // Add more as needed
     );
+
     public OBDAACDataBrowser(JDialog parentDialog) {
 //        setTitle("OB_CLOUD Data Browser - powered by Harmony Search");
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -119,12 +126,12 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
 
-
     private void updateProgressBar(int value) {
         if (progressBar != null) {
             progressBar.setValue(value);
         }
     }
+
     private void hideProgressDialog() {
         if (progressDialog != null) {
             progressDialog.setVisible(false);  // Optional, in case it's still visible
@@ -133,7 +140,7 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-//    private void loadMissionDateRangesFromFile() {
+    //    private void loadMissionDateRangesFromFile() {
 //        missionDateRanges = new HashMap<>();
 //
 //        Path filePath = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
@@ -155,36 +162,36 @@ public class OBDAACDataBrowser extends JPanel {
 //                }
 //            }
 //    }
-private void loadMissionDateRangesFromFile() {
-    missionDateRanges = new HashMap<>();
+    private void loadMissionDateRangesFromFile() {
+        missionDateRanges = new HashMap<>();
 
-    // First try external file override
-    Path externalFile = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
-            "src", "main", "resources", "json-files", "mission_date_ranges.json");
+        // First try external file override
+        Path externalFile = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
+                "src", "main", "resources", "json-files", "mission_date_ranges.json");
 
-    if (Files.exists(externalFile)) {
-        System.out.println("Loading mission_date_ranges.json from external path: " + externalFile.toAbsolutePath());
-        try (BufferedReader reader = Files.newBufferedReader(externalFile, StandardCharsets.UTF_8)) {
-            loadDateRangesFromReader(reader);
-            return;
+        if (Files.exists(externalFile)) {
+            System.out.println("Loading mission_date_ranges.json from external path: " + externalFile.toAbsolutePath());
+            try (BufferedReader reader = Files.newBufferedReader(externalFile, StandardCharsets.UTF_8)) {
+                loadDateRangesFromReader(reader);
+                return;
+            } catch (IOException e) {
+                System.err.println("Failed to read external mission date ranges: " + e.getMessage());
+            }
+        }
+
+        // Otherwise fall back to classpath (e.g., bundled in JAR)
+        System.out.println("Loading mission_date_ranges.json from classpath");
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("json-files/mission_date_ranges.json")) {
+            if (input != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+                loadDateRangesFromReader(reader);
+            } else {
+                System.err.println("Resource not found: json-files/mission_date_ranges.json");
+            }
         } catch (IOException e) {
-            System.err.println("Failed to read external mission date ranges: " + e.getMessage());
+            System.err.println("Failed to read mission date ranges from classpath: " + e.getMessage());
         }
     }
-
-    // Otherwise fall back to classpath (e.g., bundled in JAR)
-    System.out.println("Loading mission_date_ranges.json from classpath");
-    try (InputStream input = getClass().getClassLoader().getResourceAsStream("json-files/mission_date_ranges.json")) {
-        if (input != null) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
-            loadDateRangesFromReader(reader);
-        } else {
-            System.err.println("Resource not found: json-files/mission_date_ranges.json");
-        }
-    } catch (IOException e) {
-        System.err.println("Failed to read mission date ranges from classpath: " + e.getMessage());
-    }
-}
 
     private void loadDateRangesFromReader(BufferedReader reader) throws IOException {
         JSONObject json = new JSONObject(new JSONTokener(reader));
@@ -229,10 +236,10 @@ private void loadMissionDateRangesFromFile() {
 //            }
             if (!usedExternal) {
                 String[] resourceFiles = {
-                        "CZCS.json", "HAWKEYE.json","HICO.json", "MERGED_S3_OLCI.json", "MERIS.json",
+                        "CZCS.json", "HAWKEYE.json", "HICO.json", "MERGED_S3_OLCI.json", "MERIS.json",
                         "MODISA.json", "MODIST.json", "OCTS.json", "OLCIS3A.json", "OLCIS3B.json",
                         "PACE_HARP2.json", "PACE_OCI.json", "PACE_SPEXONE.json", // Add expected resources
-                        "SeaWiFS.json", "VIIRSJ1.json","VIIRSJ2.json","VIIRSN.json"
+                        "SeaWiFS.json", "VIIRSJ1.json", "VIIRSJ2.json", "VIIRSN.json"
                 };
 
                 for (String fileName : resourceFiles) {
@@ -340,24 +347,28 @@ private void loadMissionDateRangesFromFile() {
 //        gbc.gridwidth = 2;
         JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paginationPanel.add(new JLabel("Max Results:"));
-        maxApiResultsSpinner = new JSpinner(new SpinnerNumberModel(100, 1, 10000, 1));
+
+        int maxResultsPref = Earthdata_Cloud_Controller.getPreferenceFetchMaxResults();
+        int maxResultsMin = Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_MIN_VALUE;
+        int maxResultsMax = Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_MAX_VALUE;
+        maxApiResultsSpinner = new JSpinner(new SpinnerNumberModel(maxResultsPref, maxResultsMin, maxResultsMax, 1));
         maxApiResultsSpinner.setPreferredSize(new Dimension(80, 25));
+        maxApiResultsSpinner.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_TOOLTIP);
+
+
         paginationPanel.add(maxApiResultsSpinner);
         paginationPanel.add(Box.createHorizontalStrut(20));
         paginationPanel.add(new JLabel("Results Per Page:"));
-        resultsPerPageSpinner = new JSpinner(new SpinnerNumberModel(25, 1, 1000, 1));
+
+        int resultsPerPagePref = Earthdata_Cloud_Controller.getPreferenceFetchResultsPerPage();
+        int resultsPerPageMin = Earthdata_Cloud_Controller.PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE;
+        int resultsPerPageMax = Earthdata_Cloud_Controller.PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE;
+        resultsPerPageSpinner = new JSpinner(new SpinnerNumberModel(resultsPerPagePref, resultsPerPageMin, resultsPerPageMax, 1));
         resultsPerPageSpinner.setPreferredSize(new Dimension(80, 25));
+        resultsPerPageSpinner.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP);
+
         paginationPanel.add(resultsPerPageSpinner);
         paginationPanel.add(Box.createHorizontalStrut(60));
-
-
-
-
-
-
-
-
-
 
 
         //TODO: Add a button to refresh the metadata
@@ -368,7 +379,7 @@ private void loadMissionDateRangesFromFile() {
 
 
         JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> fetchGranules());
+        searchButton.addActionListener(e -> runFetchWrapper());
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(
                 e -> {
@@ -413,7 +424,6 @@ private void loadMissionDateRangesFromFile() {
         resultsTable = new JTable(tableModel);
 
 
-
         Font fontOriginal = resultsTable.getFont();
 
         // todo Danny preferences
@@ -425,7 +435,7 @@ private void loadMissionDateRangesFromFile() {
 
         int fontSizeOriginal = fontOriginal.getSize();
         int fontSizeNew = (int) Math.round(fontSizeOriginal * fontSizeZoom / 100);
-        Font fontNew = new Font(fontOriginal.getName(),fontOriginal.getStyle(),fontSizeNew);
+        Font fontNew = new Font(fontOriginal.getName(), fontOriginal.getStyle(), fontSizeNew);
         resultsTable.setFont(fontNew);
 
         int rowHeightOriginal = resultsTable.getRowHeight();
@@ -439,7 +449,6 @@ private void loadMissionDateRangesFromFile() {
         resultsTable.getColumnModel().getColumn(1).setPreferredWidth(tmpVol1LabelWidth);
         resultsTable.getColumnModel().getColumn(1).setMinWidth(tmpVol1LabelWidth);
         resultsTable.getColumnModel().getColumn(1).setMaxWidth(tmpVol1LabelWidth);
-
 
 
         imagePreviewHelper.attachToTable(resultsTable, fileLinkMap, parentDialog);
@@ -574,6 +583,41 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
+    private void runFetchWrapper() {
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(),
+                "Earthdata Cloud Browser") {
+
+            @Override
+            protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+
+                int totalWorkPlannedMaster = 100;
+                int workDoneMaster = 0;
+                pm.beginTask("Searching for results", totalWorkPlannedMaster);
+
+
+                try {
+                    fetchGranules(pm);
+
+                    if (pm != null && pm.isCanceled()) {
+                        pm.done();
+                        return null;
+                    }
+                } finally {
+                    if (pm != null && pm.isCanceled()) {
+                        pm.done();
+                        return null;
+                    }
+                    pm.done();
+                }
+
+                return null;
+            }
+        };
+
+        pmSwingWorker.executeWithBlocking();
+
+    }
+
 
     private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
         GridBagConstraints gbc = new GridBagConstraints();
@@ -601,11 +645,10 @@ private void loadMissionDateRangesFromFile() {
         gbc.fill = GridBagConstraints.NONE;
 
 
-
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTHEAST;
 //        gbc.insets = new Insets(10, 0, 0, 10);
-        panel.add(panel2,gbc);
+        panel.add(panel2, gbc);
 
         return panel;
     }
@@ -671,6 +714,7 @@ private void loadMissionDateRangesFromFile() {
             hideImagePreview();
         }
     }
+
     private void hideImagePreview() {
         if (imagePreviewWindow != null) {
             imagePreviewWindow.setVisible(false);
@@ -711,7 +755,6 @@ private void loadMissionDateRangesFromFile() {
                 parentDownloadDirFile = userHomeDir;
             }
         }
-
 
 
         if (parentDownloadDirFile != null && parentDownloadDirFile.exists()) {
@@ -766,8 +809,6 @@ private void loadMissionDateRangesFromFile() {
 
 
         if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
-
-
 
 
         File selectedDir = fileChooser.getSelectedFile();
@@ -922,6 +963,7 @@ private void loadMissionDateRangesFromFile() {
 
     private JWindow previewWindow;
     private JLabel previewLabel;
+
     private void showImagePreview(ImageIcon imageIcon, Point location) {
         if (previewWindow == null) {
             previewWindow = new JWindow();
@@ -933,7 +975,6 @@ private void loadMissionDateRangesFromFile() {
         previewWindow.setLocation(location.x + 10, location.y + 10);
         previewWindow.setVisible(true);
     }
-
 
 
     private JPanel createLeftPanel() {
@@ -956,12 +997,12 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 0;
         gbc.insets = new Insets(10, 0, 0, 10);
         gbc.gridwidth = 1;
-        panel.add(createTemporalPanel(),gbc);
+        panel.add(createTemporalPanel(), gbc);
 
         gbc.gridy = 1;
         gbc.gridx = 1;
         gbc.insets = new Insets(10, 0, 0, 0);
-        panel.add(createDayNightPanel(),gbc);
+        panel.add(createDayNightPanel(), gbc);
 
         return panel;
     }
@@ -981,7 +1022,7 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.weighty = 1;
-        panel.add(createSpatialPanel(),gbc);
+        panel.add(createSpatialPanel(), gbc);
 
         return panel;
     }
@@ -1006,12 +1047,10 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridx = 1;
         gbc.weighty = 1;
         gbc.insets = new Insets(0, 0, 0, 10);
-        panel.add(createRightPanel(),gbc);
+        panel.add(createRightPanel(), gbc);
 
         return panel;
     }
-
-
 
 
     private void updateLevelsAndProducts() {
@@ -1152,7 +1191,6 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
-
     private JPanel createTemporalPanel() {
         temporalPanel = new JPanel(new GridBagLayout());
         temporalPanel.setBorder(BorderFactory.createTitledBorder("Temporal Filter"));
@@ -1216,6 +1254,7 @@ private void loadMissionDateRangesFromFile() {
 
         return temporalPanel;
     }
+
     private void updateDateRangeLabel(String minDate, String maxDate) {
         String labelText = "Valid date range: " + minDate + " to " + maxDate;
         if (dateRangeLabel != null) {
@@ -1254,6 +1293,7 @@ private void loadMissionDateRangesFromFile() {
             dateRangeHintLabel.setText("");
         }
     }
+
     private void updateDateRangeHint() {
         String satellite = (String) satelliteDropdown.getSelectedItem();
         if (satellite != null && missionDateRanges.containsKey(satellite)) {
@@ -1341,7 +1381,6 @@ private void loadMissionDateRangesFromFile() {
         panel.add(minLonField, gbc);
 
 
-
         // Max Lon
         gbc.gridy++;
         gbc.gridx = 0;
@@ -1350,7 +1389,6 @@ private void loadMissionDateRangesFromFile() {
         JLabel maxLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL + ":");
         maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
         panel.add(maxLonLabel, gbc);
-
 
 
         gbc.gridx = 1;
@@ -1383,8 +1421,6 @@ private void loadMissionDateRangesFromFile() {
         gbc.gridwidth = 1;
 
 
-
-
         // Coordinates
         gbc.gridy++;
         gbc.gridx = 0;
@@ -1393,7 +1429,6 @@ private void loadMissionDateRangesFromFile() {
         JLabel coordinatesLabel = new JLabel("Coordinates:");
         coordinatesLabel.setToolTipText("Used to set fields north, south, west and east");
         panel.add(coordinatesLabel, gbc);
-
 
 
         gbc.gridx = 1;
@@ -1412,7 +1447,6 @@ private void loadMissionDateRangesFromFile() {
         JLabel boxSizeLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_BOX_SIZE_LABEL + ":");
         boxSizeLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_BOX_SIZE_TOOLTIP);
         panel.add(boxSizeLabel, gbc);
-
 
 
         gbc.gridx = 1;
@@ -1488,10 +1522,8 @@ private void loadMissionDateRangesFromFile() {
             });
 
 
-
         } catch (Exception e) {
         }
-
 
 
         if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
@@ -1590,16 +1622,8 @@ private void loadMissionDateRangesFromFile() {
         }
 
 
-
-
         JTextField tmp = new JTextField("1234567890123");
         minLonField.setMinimumSize(tmp.getPreferredSize());
-
-
-
-
-
-
 
 
 //        JLabel tmp = new JLabel("1234567890123456789012345");
@@ -1634,7 +1658,6 @@ private void loadMissionDateRangesFromFile() {
         });
 
 
-
         maxLatField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -1647,11 +1670,9 @@ private void loadMissionDateRangesFromFile() {
         });
         maxLatField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                setLatControlsHandler(maxLatField);            }
+                setLatControlsHandler(maxLatField);
+            }
         });
-
-
-
 
 
         minLonField.addFocusListener(new FocusListener() {
@@ -1671,9 +1692,6 @@ private void loadMissionDateRangesFromFile() {
         });
 
 
-
-
-
         maxLonField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -1691,10 +1709,29 @@ private void loadMissionDateRangesFromFile() {
         });
 
 
+        coordinates.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
 
+            @Override
+            public void focusLost(FocusEvent e) {
+                try {
+                    if (!working) {
+                        working = true;
+                        handleUpdateFromCoordinates();
+                    }
+                } catch (Exception ex) {
+                }
 
+                regions.setSelectedIndex(0);
+                if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
+                    regions2.setSelectedIndex(0);
+                }
 
-
+                working = false;
+            }
+        });
         coordinates.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 try {
@@ -1715,7 +1752,24 @@ private void loadMissionDateRangesFromFile() {
         });
 
 
+        boxSize.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
 
+            @Override
+            public void focusLost(FocusEvent e) {
+                try {
+                    if (!working) {
+                        working = true;
+                        handleUpdateFromCoordinates();
+                    }
+                } catch (Exception ex) {
+                }
+
+                working = false;
+            }
+        });
         boxSize.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 try {
@@ -1733,17 +1787,11 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
-
-
-
-
-
-
     private void setLatControlsHandler(Object sourceControl) {
 
         if (!working) {
             working = true;
-            
+
             boolean minSet = false;
             boolean maxSet = false;
             if (minLatField != null && minLatField.getText() != null && minLatField.getText().trim().length() > 0) {
@@ -1761,15 +1809,14 @@ private void loadMissionDateRangesFromFile() {
                 }
             }
 
-            
-            
+
             boolean valid = true;
             double FAIL_DOUBLE = -9999.0;
 
             String minLat = RegionUtils.convertLatToDecimal(minLatField.getText());
             String maxLat = RegionUtils.convertLatToDecimal(maxLatField.getText());
 
-            double minLatDouble = RegionUtils.convertStringToDouble(minLat , FAIL_DOUBLE);
+            double minLatDouble = RegionUtils.convertStringToDouble(minLat, FAIL_DOUBLE);
             if (minSet) {
                 if (!minLat.equals(minLatField.getText())) {
                     minLatField.setText(minLat);
@@ -1782,7 +1829,7 @@ private void loadMissionDateRangesFromFile() {
             }
 
 
-            double maxLatDouble = RegionUtils.convertStringToDouble(maxLat , FAIL_DOUBLE);
+            double maxLatDouble = RegionUtils.convertStringToDouble(maxLat, FAIL_DOUBLE);
             if (maxSet) {
                 if (!maxLat.equals(maxLatField.getText())) {
                     maxLatField.setText(maxLat);
@@ -1793,22 +1840,20 @@ private void loadMissionDateRangesFromFile() {
                     maxLatField.setText("");
                 }
             }
-            
+
             if (valid && minSet && maxSet && minLatDouble > maxLatDouble) {
                 if (sourceControl == minLatField) {
                     JOptionPane.showMessageDialog(null, "WARNING!: 'South' cannot be greater than 'North'");
                     minLatField.setText("");
                 } else {
                     JOptionPane.showMessageDialog(null, "WARNING!: 'North' cannot be less than 'South'");
-                    maxLatField.setText("");                
+                    maxLatField.setText("");
                 }
             }
-            
+
             working = false;
         }
     }
-
-
 
 
     private void setLonControlsHandler(Object sourceControl) {
@@ -1824,7 +1869,7 @@ private void loadMissionDateRangesFromFile() {
             if (maxLonField != null && maxLonField.getText() != null && maxLonField.getText().trim().length() > 0) {
                 maxSet = true;
             }
-            
+
             if (sourceControl == minLonField || sourceControl == maxLonField) {
                 coordinates.setText("");
                 regions.setSelectedIndex(0);
@@ -1840,7 +1885,7 @@ private void loadMissionDateRangesFromFile() {
             String maxLon = RegionUtils.convertLonToDecimal(maxLonField.getText());
 
 
-            double minLonDouble = RegionUtils.convertStringToDouble(minLon , FAIL_DOUBLE);
+            double minLonDouble = RegionUtils.convertStringToDouble(minLon, FAIL_DOUBLE);
             if (minSet) {
                 if (!minLon.equals(minLonField.getText())) {
                     minLonField.setText(minLon);
@@ -1853,7 +1898,7 @@ private void loadMissionDateRangesFromFile() {
             }
 
 
-            double maxLonDouble = RegionUtils.convertStringToDouble(maxLon , FAIL_DOUBLE);
+            double maxLonDouble = RegionUtils.convertStringToDouble(maxLon, FAIL_DOUBLE);
             if (maxSet) {
                 if (!maxLon.equals(maxLonField.getText())) {
                     maxLonField.setText(maxLon);
@@ -1893,16 +1938,13 @@ private void loadMissionDateRangesFromFile() {
         }
     }
 
-    
-
-    
 
     private boolean checkDatelineSpan(double westDouble, double eastDouble, double maxSpan) {
 
         if (westDouble > eastDouble) {
             double westAdjustedDouble = westDouble - 360;
             if ((eastDouble - westAdjustedDouble) > maxSpan) {
-                return  false;
+                return false;
             }
         }
 
@@ -1910,11 +1952,7 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
-
-
-
-
-    private  void handleUpdateFromCoordinates() {
+    private void handleUpdateFromCoordinates() {
         boolean valid = false;
 
         String coordinatesValue = coordinates.getText();
@@ -1922,7 +1960,6 @@ private void loadMissionDateRangesFromFile() {
             return;
         }
         String[] coordinatesSplitArray = coordinatesValue.split("\\s+");
-
 
 
         if (coordinatesSplitArray.length == 2) {
@@ -1984,11 +2021,10 @@ private void loadMissionDateRangesFromFile() {
                     valid = true;
 
 
-
                     if (boxHeight >= 0 && boxWidth >= 0) {
                         // todo Convert to units of km would be difficult and the following could not be quite right, it would need cosine ... but still would not be quite accurate to what the satellite views
-                        double EARTH_CIRCUMFERENCE =  40075.017;
-                        double degreesPerKmAlongLat = 360/EARTH_CIRCUMFERENCE;
+                        double EARTH_CIRCUMFERENCE = 40075.017;
+                        double degreesPerKmAlongLat = 360 / EARTH_CIRCUMFERENCE;
 
                         boolean unitsKm = false;    // todo investigate this
 
@@ -2141,7 +2177,8 @@ private void loadMissionDateRangesFromFile() {
                     String e = col.optString("time_end", null);
 
                     if (s != null && !suspiciousDates.contains(s.split("T")[0])) startDates.add(s.split("T")[0]);
-                    if (e != null && !e.equals("present") && !suspiciousDates.contains(e.split("T")[0])) endDates.add(e.split("T")[0]);
+                    if (e != null && !e.equals("present") && !suspiciousDates.contains(e.split("T")[0]))
+                        endDates.add(e.split("T")[0]);
                 }
 
                 String earliest = startDates.isEmpty() ? null : Collections.min(startDates);
@@ -2204,15 +2241,43 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
-
-    private void fetchGranules() {
+    private void fetchGranules(com.bc.ceres.core.ProgressMonitor pm) {
         fileLinkMap.clear();
         tableModel.setRowCount(0);
         allGranules.clear();
 
+
+        // Clear and paint empty table at beginning of search
+        totalPages = 1;
+        currentPage = 1;
+
+        int workDone = 0;
+        int workDoneThisIncrement = 0;
+        int totalWork = 100;
+
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            tableModel.removeRow(i);
+            allGranules.remove(i);
+        }
+
+        totalFetched = 0;
+        updateResultsTable(currentPage);
+
+        resultsTable.revalidate();
+        resultsTable.repaint();
+        SwingUtilities.invokeLater(() -> {
+            resultsTable.revalidate();
+            resultsTable.repaint();
+        });
+
+
+
+
         String productName = (String) productDropdown.getSelectedItem();
         String shortName = productNameTooltips.getOrDefault(productName, productName);
         int maxApiResults = (Integer) maxApiResultsSpinner.getValue();
+        double workInAnIncrement = (int) Math.floor(maxApiResults / totalWork);
+        System.out.println("workInAnIncrement=" + workInAnIncrement);
 
         String startDate = null, endDate = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -2246,10 +2311,10 @@ private void loadMissionDateRangesFromFile() {
         minLon = RegionUtils.convertLonToDecimal(minLon);
         maxLon = RegionUtils.convertLonToDecimal(maxLon);
 
-        System.out.println("minLat=" + minLat);
-        System.out.println("maxLat=" + maxLat);
-        System.out.println("minLon=" + minLon);
-        System.out.println("maxLon=" + maxLon);
+//        System.out.println("minLat=" + minLat);
+//        System.out.println("maxLat=" + maxLat);
+//        System.out.println("minLon=" + minLon);
+//        System.out.println("maxLon=" + maxLon);
 
         // todo Danny
 //        if (minLat.length() == 0 && maxLat.length() > 0) {
@@ -2277,9 +2342,9 @@ private void loadMissionDateRangesFromFile() {
 
         int pageSize = 2000;
         int page = 1;
-        int totalFetched = 0;
+        totalFetched = 0;
 
-        resultsContainer.setVisible(false); // before the loop
+//        resultsContainer.setVisible(false); // before the loop
 
         try {
             while (totalFetched < maxApiResults) {
@@ -2309,54 +2374,89 @@ private void loadMissionDateRangesFromFile() {
                 URL url = new URL(urlBuilder.toString());
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                JSONTokener tokener = new JSONTokener(in);
-                JSONObject json = new JSONObject(tokener);
-                JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
 
-                for (int i = 0; i < entries.length(); i++) {
-                    JSONObject entry = entries.getJSONObject(i);
-
-                    String fileName = entry.optString("producer_granule_id", "");
-                    JSONArray links = entry.optJSONArray("links");
-
-                    if (fileName != null && !fileName.isEmpty() && links != null) {
-                        for (int j = 0; j < links.length(); j++) {
-                            JSONObject link = links.getJSONObject(j);
-
-                            String spatialInfo = "No spatial info";
-                            if (entry.has("boxes")) {
-                                JSONArray boxes = entry.getJSONArray("boxes");
-                                if (!boxes.isEmpty()) {
-                                    spatialInfo = "Bounding Box: " + boxes.getString(0);
-                                }
-                            } else if (entry.has("polygons")) {
-                                spatialInfo = "Polygon coverage available";
-                            } else if (entry.has("center")) {
-                                spatialInfo = "Center: " + entry.getString("center");
-                            }
-                            fileSpatialMap.put(fileName, spatialInfo);
-
-                            if (link.has("href") && link.getString("href").endsWith(".nc")) {
-                                String href = link.getString("href");
-                                allGranules.add(new String[]{fileName, href});
-                                tableModel.addRow(new Object[]{fileName});
-                                resultsTable.putClientProperty(fileName, href);
-                                fileLinkMap.put(fileName, href);
-
-                                break;
-                            }
-
-
+                BufferedReader bufferedReader = null;
+                if (conn != null) {
+                    InputStream inputStream = conn.getInputStream();
+                    if (inputStream != null) {
+                        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                        if (inputStreamReader != null) {
+                            bufferedReader = new BufferedReader(inputStreamReader);
                         }
                     }
-
-                    totalFetched++;
-                    if (totalFetched >= maxApiResults) break;
                 }
 
-                if (entries.length() < pageSize) break;
-                page++;
+                if (bufferedReader != null) {
+                    JSONTokener tokener = new JSONTokener(bufferedReader);
+
+                    JSONObject json = new JSONObject(tokener);
+
+                    JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
+
+
+                    for (int i = 0; i < entries.length(); i++) {
+                        JSONObject entry = entries.getJSONObject(i);
+
+                        String fileName = entry.optString("producer_granule_id", "");
+                        JSONArray links = entry.optJSONArray("links");
+
+                        if (fileName != null && !fileName.isEmpty() && links != null) {
+                            for (int j = 0; j < links.length(); j++) {
+                                JSONObject link = links.getJSONObject(j);
+
+                                String spatialInfo = "No spatial info";
+                                if (entry.has("boxes")) {
+                                    JSONArray boxes = entry.getJSONArray("boxes");
+                                    if (!boxes.isEmpty()) {
+                                        spatialInfo = "Bounding Box: " + boxes.getString(0);
+                                    }
+                                } else if (entry.has("polygons")) {
+                                    spatialInfo = "Polygon coverage available";
+                                } else if (entry.has("center")) {
+                                    spatialInfo = "Center: " + entry.getString("center");
+                                }
+                                fileSpatialMap.put(fileName, spatialInfo);
+
+                                if (link.has("href") && link.getString("href").endsWith(".nc")) {
+                                    String href = link.getString("href");
+                                    allGranules.add(new String[]{fileName, href});
+                                    tableModel.addRow(new Object[]{fileName});
+                                    resultsTable.putClientProperty(fileName, href);
+                                    fileLinkMap.put(fileName, href);
+
+                                    break;
+                                }
+
+
+                            }
+                        }
+
+                        totalFetched++;
+
+                        if (pm != null) {
+                            if (workDone < (totalWork - 2)) {
+                                if (workDoneThisIncrement >= workInAnIncrement) {
+                                    if (pm.isCanceled()) {
+                                        return;
+                                    }
+                                    pm.worked(1);
+
+                                    workDone++;
+                                    workDoneThisIncrement = 0;
+//                                System.out.println("workDone=" + workDone);
+
+                                } else {
+                                    workDoneThisIncrement++;
+                                }
+                            }
+                        }
+
+                        if (totalFetched >= maxApiResults) break;
+                    }
+
+                    if (entries.length() < pageSize) break;
+                    page++;
+                }
             }
 
             if (!allGranules.isEmpty()) {
@@ -2416,11 +2516,15 @@ private void loadMissionDateRangesFromFile() {
     private JPanel createPaginationPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
+        JPanel fetchedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+
         // Left side: Pagination buttons
         JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton prevButton = new JButton("Previous");
         JButton nextButton = new JButton("Next");
         pageLabel = new JLabel("Page 1");
+        fetchedLabel = new JLabel("");
 
         prevButton.addActionListener(e -> {
             if (currentPage > 1) {
@@ -2436,6 +2540,7 @@ private void loadMissionDateRangesFromFile() {
             }
         });
 
+        fetchedPanel.add(fetchedLabel);
         navPanel.add(prevButton);
         navPanel.add(pageLabel);
         navPanel.add(nextButton);
@@ -2447,6 +2552,7 @@ private void loadMissionDateRangesFromFile() {
         downloadPanel.add(downloadButton);
 
         // Add both to main panel
+        panel.add(fetchedPanel, BorderLayout.WEST);
         panel.add(navPanel, BorderLayout.CENTER);
         panel.add(downloadPanel, BorderLayout.EAST);
 
@@ -2467,8 +2573,18 @@ private void loadMissionDateRangesFromFile() {
             resultsTable.putClientProperty(row[0], row[1]);  // Store URL
         }
 
-        if (pageLabel != null) {
-            pageLabel.setText("Page " + page + " of " + totalPages);
+        if (totalFetched > 0) {
+            if (pageLabel != null) {
+                pageLabel.setText("Page " + page + " of " + totalPages);
+            }
+        } else {
+            if (pageLabel != null) {
+                pageLabel.setText("");
+            }
+        }
+
+        if (fetchedLabel != null) {
+            fetchedLabel.setText("Files found: " + totalFetched + "     ");
         }
     }
 
@@ -2506,7 +2622,7 @@ private void loadMissionDateRangesFromFile() {
         panel.add(Box.createVerticalGlue());
 
         JLabel tmp = new JLabel("1234567890123");
-        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
+        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width, panel.getPreferredSize().height);
         panel.setMinimumSize(tmpDimension);
         panel.setPreferredSize(tmpDimension);
 
@@ -2532,19 +2648,19 @@ private void loadMissionDateRangesFromFile() {
     }
 
 
-//    public static void main(String[] args) {
+    //    public static void main(String[] args) {
 //        SwingUtilities.invokeLater(() -> new OBDAACDataBrowser().setVisible(true));
 //    }
-public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> {
-        JFrame frame = new JFrame("OB_CLOUD Data Browser via Harmony Search Service");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(new OBDAACDataBrowser(new JDialog()));
-        frame.setSize(900, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    });
-}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("OB_CLOUD Data Browser via Harmony Search Service");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setContentPane(new OBDAACDataBrowser(new JDialog()));
+            frame.setSize(900, 700);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
 
 //    String imageUrl = ImagePreviewHandler.getPreviewUrl(fileName);
 //ImagePreviewHandler.showImageInDialog(this, imageUrl);

@@ -120,22 +120,22 @@ public class ImagePreviewHelper {
                 boolean floating = false;
                 if (!floating) {
                     if (windowHeight > parentDialog.getHeight()) {
-                        System.out.println("Anchor Main TOP");
+//                        System.out.println("Anchor Main TOP");
                         // anchor at top of main GUI
                         locationY = parentDialog.getLocationOnScreen().y;
                     } else if (windowHeight > (parent.getHeight() +  offsetY)) {
-                        System.out.println("Anchor Main BOTTOM");
+//                        System.out.println("Anchor Main BOTTOM");
                         // anchor at bottom of the main GUI
                         locationY = parentDialogLocationBottom.y - windowHeight;
                     } else if (windowHeight > offsetY) {
-                        System.out.println("Anchor Above Table TOP");
+//                        System.out.println("Anchor Above Table TOP");
                         // anchor near top of the main GUI
                         locationY = tableLocationTop.y - offsetY;
                     } else {
-                        System.out.println("Anchor Table TOP");
+//                        System.out.println("Anchor Table TOP");
                         // use dafault of anchor at top of table but if image is very small then floating
                         if (windowHeight < (int) Math.round(0.5 * parent.getHeight())) {
-                            System.out.println("Anchor FLOATING");
+//                            System.out.println("Anchor FLOATING");
                             floating = true;
                         }
                     }
