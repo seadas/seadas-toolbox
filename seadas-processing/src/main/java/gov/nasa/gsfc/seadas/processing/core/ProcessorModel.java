@@ -2641,6 +2641,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private static String getOfileForL2BinOcssw(String ifileOriginal, String ofilenameDefault) {
 
+        if (ifileOriginal == null || ifileOriginal.trim().length() == 0 |  ofilenameDefault == null || ofilenameDefault.trim().length() == 0) {
+            return "";
+        }
+
         // add the path
         File file = new File(ifileOriginal);
         if (file != null) {
@@ -2668,6 +2672,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     private static String getOfileForL3MapGenOcssw(String ifileOriginal, String ofilenameDefault, String resolution, String oformat, String product, String projection) {
+
+        if (ifileOriginal == null || ifileOriginal.trim().length() == 0 |  ofilenameDefault == null || ofilenameDefault.trim().length() == 0) {
+            return "";
+        }
 
         // add the path
         File file = new File(ifileOriginal);
