@@ -2644,14 +2644,20 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         // add the path
         File file = new File(ifileOriginal);
         if (file != null) {
-            if (file.getParentFile() != null) {
-                String parentPath = file.getParentFile().getAbsolutePath();
-                File file2 = new File(parentPath, ofilenameDefault);
-                if (file2 != null) {
-                    ofilenameDefault = file2.getAbsolutePath();
+            File parentFile = file.getParentFile();
+
+            if (parentFile != null) {
+                String parentPath = parentFile.getAbsolutePath();
+
+                if (parentPath != null && parentPath.trim().length() > 0) {
+                    File file2 = new File(parentPath, ofilenameDefault);
+                    if (file2 != null) {
+                        ofilenameDefault = file2.getAbsolutePath();
+                    }
                 }
             }
         }
+
 //
 
         String ofilename = stripFilenameExtension(ofilenameDefault);
@@ -2666,10 +2672,17 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         // add the path
         File file = new File(ifileOriginal);
         if (file != null) {
-            String parentPath = file.getParentFile().getAbsolutePath();
-            File file2 = new File(parentPath, ofilenameDefault);
-            if (file2 != null) {
-                ofilenameDefault = file2.getAbsolutePath();
+            File parentFile = file.getParentFile();
+
+            if (parentFile != null) {
+                String parentPath = parentFile.getAbsolutePath();
+
+                if (parentPath != null && parentPath.trim().length() > 0) {
+                    File file2 = new File(parentPath, ofilenameDefault);
+                    if (file2 != null) {
+                        ofilenameDefault = file2.getAbsolutePath();
+                    }
+                }
             }
         }
 //
