@@ -51,6 +51,11 @@ import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
  */
 public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
+    // todo temporarily disabling these for Docker
+    private boolean runProcessorToAutoPopulateL2bin = true;
+    private boolean runProcessorToAutoPopulateL3mapgen = true;
+
+
     protected String programName;
 
     protected ParamList paramList;
@@ -1337,6 +1342,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     private void updateL3MapgenParams() {
+        if (!runProcessorToAutoPopulateL3mapgen) {
+            return;
+        }
 
         if (!"l3mapgen".equalsIgnoreCase(programName)) {
             return;
@@ -1355,65 +1363,72 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
                 final String L3MAPGEN_PROGRAM_NAME = "l3mapgen";
-                File dataDir = SystemUtils.getApplicationDataDir();
-                File auxDir = new File(dataDir, "auxdata");
-                File l3mapgenAuxDir = new File(auxDir, L3MAPGEN_PROGRAM_NAME);
-                l3mapgenAuxDir.mkdirs();
+//                File dataDir = SystemUtils.getApplicationDataDir();
+//                File auxDir = new File(dataDir, "auxdata");
+//                File l3mapgenAuxDir = new File(auxDir, L3MAPGEN_PROGRAM_NAME);
+//                l3mapgenAuxDir.mkdirs();
 
-                File auxParFile = new File(l3mapgenAuxDir, L3MAPGEN_PROGRAM_NAME + "_params.par");
-                try {
-                    createL2binAuxParFile(L3MAPGEN_PROGRAM_NAME, ifile, suite, auxParFile);
+                File workingDir = ifile.getParentFile();
 
-                    if (auxParFile.exists()) {
-                        boolean precedence = OCSSW_L3mapgenController.getPreferenceAutoFillPrecedence();
-                        boolean passAll = OCSSW_L3mapgenController.getPreferencePassAll();
+                if (workingDir != null && workingDir.exists()) {
+
+                    File l2binConfigParFile = new File(workingDir, L3MAPGEN_PROGRAM_NAME + "_" + ifile.getName() +"_config_params.par");
+                    try {
+                        createL2binAuxParFile(L3MAPGEN_PROGRAM_NAME, ifile, suite, l2binConfigParFile);
+
+                        if (l2binConfigParFile.exists()) {
+                            boolean precedence = OCSSW_L3mapgenController.getPreferenceAutoFillPrecedence();
+                            boolean passAll = OCSSW_L3mapgenController.getPreferencePassAll();
 
 
-                        if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D(), precedence, passAll);
-                        }
+                            if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "product", OCSSW_L3mapgenController.getPreferenceProduct(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "wavelength_3D", OCSSW_L3mapgenController.getPreferenceWavelength3D(), precedence, passAll);
+                            }
 
-                        if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillOther()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection(), precedence, passAll);
+                            if (OCSSW_L3mapgenController.getPreferenceAutoFillAll() || OCSSW_L3mapgenController.getPreferenceAutoFillOther()) {
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "projection", OCSSW_L3mapgenController.getPreferenceProjection(), precedence, passAll);
 
-                            // replace smi if specified in preferences
-                            ParamInfo projectionParamInfo = paramList.getInfo("projection");
-                            if (projectionParamInfo != null && "smi".equals(projectionParamInfo.getValue())) {
-                                String smiReplacement = OCSSW_L3mapgenController.getPreferenceProjectionSmiReplacement();
+                                // replace smi if specified in preferences
+                                ParamInfo projectionParamInfo = paramList.getInfo("projection");
+                                if (projectionParamInfo != null && "smi".equals(projectionParamInfo.getValue())) {
+                                    String smiReplacement = OCSSW_L3mapgenController.getPreferenceProjectionSmiReplacement();
                                     if (smiReplacement != null && smiReplacement.trim().length() > 0) {
                                         updateParamInfo("projection", smiReplacement);
                                         fireEvent("projection", "smi", smiReplacement);
                                     }
-                            }
+                                }
 
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "width",  OCSSW_L3mapgenController.getPreferenceWidth(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "resolution", OCSSW_L3mapgenController.getPreferenceResolution(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "width", OCSSW_L3mapgenController.getPreferenceWidth(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "interp", OCSSW_L3mapgenController.getPreferenceInterp(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "fudge", OCSSW_L3mapgenController.getPreferenceFudge(), precedence, passAll);
 //                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "threshold",  "", precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "land",  OCSSW_L3mapgenController.getPreferenceLand(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "palfile", OCSSW_L3mapgenController.getPreferencePalfile(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamin", OCSSW_L3mapgenController.getPreferenceDataMin(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "datamax", OCSSW_L3mapgenController.getPreferenceDataMax(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "scale_type", OCSSW_L3mapgenController.getPreferenceScaleType(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_transparency", OCSSW_L3mapgenController.getPreferenceUseTransparency(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "num_cache", OCSSW_L3mapgenController.getPreferenceNumCache(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "mask_land", OCSSW_L3mapgenController.getPreferenceMaskLand(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "rgb_land", OCSSW_L3mapgenController.getPreferenceRGBLand(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "land", OCSSW_L3mapgenController.getPreferenceLand(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "apply_pal", OCSSW_L3mapgenController.getPreferenceApplyPal(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "palfile", OCSSW_L3mapgenController.getPreferencePalfile(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "datamin", OCSSW_L3mapgenController.getPreferenceDataMin(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "datamax", OCSSW_L3mapgenController.getPreferenceDataMax(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "scale_type", OCSSW_L3mapgenController.getPreferenceScaleType(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "use_transparency", OCSSW_L3mapgenController.getPreferenceUseTransparency(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "use_rgb", OCSSW_L3mapgenController.getPreferenceUseRGB(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "product_rgb", OCSSW_L3mapgenController.getPreferenceProductRGB(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "num_cache", OCSSW_L3mapgenController.getPreferenceNumCache(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "oformat", OCSSW_L3mapgenController.getPreferenceOformat(), precedence, passAll);
 
+                            }
                         }
+                    } catch (IOException e) {
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(L3MAPGEN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + l2binConfigParFile.getAbsolutePath());
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
-                } catch (IOException e) {
-                    SimpleDialogMessage dialog = new SimpleDialogMessage(L3MAPGEN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
-                    dialog.setVisible(true);
-                    dialog.setEnabled(true);
-                }
 
+                    l2binConfigParFile.delete();
+
+                }
 
 // todo the xml file for l2bin is badly fomatted for V2025.0, if they fix this then consider using xml file in command block below to potentially fill more parameters
 
@@ -1437,6 +1452,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     private void updateL2BinParams() {
+        if (!runProcessorToAutoPopulateL2bin) {
+            return;
+        }
 
         if (!"l2bin".equalsIgnoreCase(programName)) {
             return;
@@ -1473,59 +1491,67 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
                 final String L2BIN_PROGRAM_NAME = "l2bin";
-                File dataDir = SystemUtils.getApplicationDataDir();
-                File auxDir = new File(dataDir, "auxdata");
-                File l2binAuxDir = new File(auxDir, L2BIN_PROGRAM_NAME);
-                l2binAuxDir.mkdirs();
+//                File dataDir = SystemUtils.getApplicationDataDir();
+//                File auxDir = new File(dataDir, "auxdata");
+//                File l2binAuxDir = new File(auxDir, L2BIN_PROGRAM_NAME);
+//                l2binAuxDir.mkdirs();
+
+                File workingDir = ifile.getParentFile();
 
 
-                File auxParFile = new File(l2binAuxDir, L2BIN_PROGRAM_NAME + "_params.par");
-                try {
-                    if (textFile != null) {
-                        createL2binAuxParFile(L2BIN_PROGRAM_NAME, textFile, suite, auxParFile);
-                    } else {
-                        createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, auxParFile);
+                if (workingDir != null && workingDir.exists()) {
+
+
+                    File l3mapgenConfigParFile = new File(workingDir, L2BIN_PROGRAM_NAME + "_" + ifile.getName() +"_config_params.par");
+                    try {
+                        if (textFile != null) {
+                            createL2binAuxParFile(L2BIN_PROGRAM_NAME, textFile, suite, l3mapgenConfigParFile);
+                        } else {
+                            createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, l3mapgenConfigParFile);
+                        }
+                        if (l3mapgenConfigParFile.exists()) {
+
+                            boolean precedence = OCSSW_L2binController.getPreferenceAutoFillPrecedence();
+                            boolean passAll = OCSSW_L2binController.getPreferencePassAll();
+
+                            if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, passAll);
+                            }
+
+                            if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, passAll);
+                            }
+
+                            if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceAutoFillEnable()) {
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "qual_prod", "", precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "qual_max", "", precedence, passAll);
+                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "minobs", "", precedence, passAll);
+                            }
+                        }
+                    } catch (IOException e) {
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + l3mapgenConfigParFile.getAbsolutePath());
+                        dialog.setVisible(true);
+                        dialog.setEnabled(true);
                     }
-                    if (auxParFile.exists()) {
 
-                        boolean precedence = OCSSW_L2binController.getPreferenceAutoFillPrecedence();
-                        boolean passAll = OCSSW_L2binController.getPreferencePassAll();
+                    l3mapgenConfigParFile.delete();
 
-                        if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, passAll);
-                        }
-
-                        if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, passAll);
-                        }
-
-                        if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceAutoFillEnable()) {
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_prod", "", precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "qual_max", "", precedence, passAll);
-                            updateParamInfosFromAuxParFile(auxParFile.getAbsolutePath(), "minobs", "", precedence, passAll);
-                        }
-                    }
-                } catch (IOException e) {
-                    SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
-                    dialog.setVisible(true);
-                    dialog.setEnabled(true);
                 }
-
 
 // todo the xml file for l2bin is badly fomatted for V2025.0, if they fix this then consider using xml file in command block below to potentially fill more parameters
 
@@ -3752,30 +3778,41 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             super(programName, xmlFileName, ocssw);
             setOpenInSeadas(true);
 
-            OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
-            String ocsswDataDirPath = ocsswInfo.getOcsswDataDirPath();
-            if (ocsswDataDirPath != null) {
-                ParamInfo palfileParamInfo = getParamInfo("palfile");
+            ParamInfo palfileParamInfo = getParamInfo("palfile");
 
-                if (palfileParamInfo != null) {
-                    String palfileDirName = ocsswDataDirPath + System.getProperty("file.separator") + "common" + System.getProperty("file.separator") + "palette";
-                    File palfileFile = new File(palfileDirName);
-                    File[] palfileFiles = palfileFile.listFiles();
-                    palfileParamInfo.clearValidValueInfos();
+            if (palfileParamInfo != null) {
+                OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
+                if (ocsswInfo != null) {
+                    String ocsswDataDirPath = ocsswInfo.getOcsswDataDirPath();
+                    File ocsswDataDirFile = new File(ocsswDataDirPath);
 
-                    String basenames[] = new String[palfileFiles.length];
-                    int data[] = new int[10];
-                    for (int i = 0; i < palfileFiles.length; i++) {
-                        basenames[i] = palfileFiles[i].getName();
-                    }
+                    if (ocsswDataDirFile != null && ocsswDataDirFile.exists()) {
+                        File ocsswCommonDirFile = new File(ocsswDataDirFile, "common");
 
-                    Arrays.sort(basenames);
+                        if (ocsswCommonDirFile != null && ocsswCommonDirFile.exists()) {
+                            File ocsswCommonPaletteDirFile = new File(ocsswCommonDirFile, "palette");
 
-                    for (String basename : basenames) {
-                        basename = stripPalFilenameExtension(basename);
-                        ParamValidValueInfo validValueInfo = new ParamValidValueInfo(basename);
-                        validValueInfo.setDescription(basename);
-                        palfileParamInfo.getValidValueInfos().add(validValueInfo);
+                            if (ocsswCommonPaletteDirFile != null && ocsswCommonPaletteDirFile.exists()) {
+                                File[] palfileFiles = ocsswCommonPaletteDirFile.listFiles();
+
+                                palfileParamInfo.clearValidValueInfos();
+
+                                String basenames[] = new String[palfileFiles.length];
+                                int data[] = new int[10];
+                                for (int i = 0; i < palfileFiles.length; i++) {
+                                    basenames[i] = palfileFiles[i].getName();
+                                }
+
+                                Arrays.sort(basenames);
+
+                                for (String basename : basenames) {
+                                    basename = stripPalFilenameExtension(basename);
+                                    ParamValidValueInfo validValueInfo = new ParamValidValueInfo(basename);
+                                    validValueInfo.setDescription(basename);
+                                    palfileParamInfo.getValidValueInfos().add(validValueInfo);
+                                }
+                            }
+                        }
                     }
                 }
             }
