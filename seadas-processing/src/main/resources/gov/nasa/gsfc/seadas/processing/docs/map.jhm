@@ -61,6 +61,7 @@
     <mapID target="importSeaDASTrack" url="FieldMeasurements/ImportSeaDASTrack.html"/>
     <mapID target="fieldMeasurementsFindMatchups" url="FieldMeasurements/FindMatchups.html"/>
     <mapID target="fieldMeasurementsMakeMatchups" url="FieldMeasurements/MakeMatchups.html"/>
+    <mapID target="earthdataCloudSearch" url="EarthdataCloud/EarthdataCloudSearch.html"/>
 
     <mapID target="universalPalettes" url="Topics/Palettes/UniversalPalettes.html"/>
     <mapID target="virtualFiles" url="Topics/VirtualFiles.html"/>

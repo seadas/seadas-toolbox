@@ -118,8 +118,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_KEY = PROPERTY_ROOT_KEY + ".boxsize";
     public static final String PROPERTY_BOX_SIZE_LABEL = "Box Size";
     public static final String PROPERTY_BOX_SIZE_TOOLTIP = "<html>In units of degrees.  Used to set fields north, south, west and east<br>" +
-            "Option1: Box Size = 'value' (applies equally to width and height)<br>Option2: Box Size = 'width x height'<br></html>";
-    public static final String PROPERTY_BOX_SIZE_DEFAULT = "0";
+            "Option1: Box Size = 'value' (applies equal width and height)<br>Option2: Box Size = 'width x height'<br></html>";
+    public static final String PROPERTY_BOX_SIZE_DEFAULT = "0x0";
 
 
     public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".region";
@@ -147,7 +147,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY = PROPERTY_ROOT_KEY + ".results_font_zoom";
     public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_LABEL = "Results Font Zoom";
     public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_TOOLTIP = "Set zoom for font size (in percent) for the search results filename list";
-    public static final double PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT = 150.0;
+    public static final double PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT = 125.0;
     public static final double PROPERTY_RESULTS_FONT_ZOOM_MODE_MIN_VALUE = 75;
     public static final double PROPERTY_RESULTS_FONT_ZOOM_MODE_MAX_VALUE = 300.0;
 
@@ -439,7 +439,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("coastlineLandMasks");
+        return new HelpCtx("earthdataCloudSearch");
     }
 
     @SuppressWarnings("UnusedDeclaration")

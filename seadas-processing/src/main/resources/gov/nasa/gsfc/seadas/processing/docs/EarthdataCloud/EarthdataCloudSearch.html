@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+
+
+<html>
+<head>
+    <title>Earthdata Cloud Search</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header" width="100%">
+    <tr class="header">
+        <td class="header">&nbsp;
+            Earthdata Cloud Search
+        </td>
+        <td class="header" align="right"><a href="index.html"><img src="../images/SeaDASHeader.png"
+                                                                   border=0></a></td>
+    </tr>
+</table>
+
+<br>
+
+
+
+
+<p>
+    The SeaDAS Earthdata Cloud Search tool is a browser for OB.DAAC data stored on NASA's Earthdata Website.
+</p>
+
+
+<br>
+
+
+<p align="center">
+    <img src="images/earthdata_search_01.png" width="450" border="0"><br><br>
+    <i>Image 1: Earthdata Search Tool</i>
+</p>
+<br>
+
+
+
+
+<!--<h3>Location</h3>-->
+<!--<p>-->
+<!--    <b>Layer Toggle</b> - The Map Gridlines layer is toggled on and off via the Map Gridlines icon in the <i>Overlay</i> toolbar-->
+<!--    or-->
+<!--    <i>Layer-&gt;Map Gridlines Overlay</i> within the menu system. Initially the Map Gridlines layer does not exist, but is-->
+<!--    created during the first-->
+<!--    instance of the Map Gridlines layer being toggled on. Default settings are applied when the Map Gridlines layer is-->
+<!--    created.<br><br>-->
+
+<!--    <b>Layer Editor</b> - Subsequent to the creation of the Map Gridlines layer, any of the properties such as font size,-->
+<!--    line spacing, etc., may-->
+<!--    be edited by using the <i>Layer Editor</i>. This editor is accessed by opening the <i>Layer Manager</i>, clicking on-->
+<!--    the word-->
+<!--    <i>Map Gridlines</i> (this selects the layer as the active layer), and then either clicking of the pencil icon within-->
+<!--    the-->
+<!--    <i>Layer Manager</i> or selecting <i>Layer-&gt;Layer Editor</i> from within the menu system.<br><br>-->
+
+<!--    <b>Preferences Editor</b> - To edit the default values of the Map Gridlines layer properties go to-->
+<!--    <i>Tools-&gt;Options-&gt;Layer-&gt;Map Gridlines Layer</i>. (see <a href="OptionsDialog.html#graticulelayer">Options-->
+<!--    Dialog</a>)-->
+<!--</p>-->
+<!--<br>-->
+
+
+
+<!--<h3>Properties</h3>-->
+
+
+<!--<br>-->
+<!--<h4>&#45;&#45;&#45;&#45; Grid Spacing &#45;&#45;&#45;&#45;</h4>-->
+<!--<pre>-->
+<!--These fields govern how many grid lines get created and their major and minor spacing.-->
+
+<!--&#x2022; Latitude Spacing:-->
+<!--    Spacing between latitude gridlines (in degrees).-->
+<!--    &#x25E6; Note: Setting this field to zero results in auto-spacing (uses the field "Number of Gridlines").-->
+<!--      Lines are placed at the nearest "rounded" degree value.-->
+
+<!--&#x2022; Longitude Spacing:-->
+<!--    Spacing between longitude gridlines (in degrees).-->
+<!--    &#x25E6; Note: Setting this field to zero results in auto-spacing (uses the field "Number of Gridlines").-->
+<!--      Lines are placed at the nearest "rounded" degree value.-->
+
+<!--&#x2022; Number of Gridlines (auto-spacing):-->
+<!--    Spacing used when "Latitude Spacing" and/or "Longitude Spacing" set to zero.-->
+<!--    &#x25E6; Note: If both "Latitude Spacing" and "Longitude Spacing" are being set, spacing is in set to be the same on both axis.-->
+
+<!--&#x2022; Minor Steps Between Gridlines:-->
+<!--    Number of points being drawn (anchored to) between the major gridlines.-->
+<!--</pre>-->
+
+
+<!--<br>-->
+<!--<h4>&#45;&#45;&#45;&#45; Labels &#45;&#45;&#45;&#45;</h4>-->
+<!--<pre>-->
+<!--Configuration options for the labels: isibility, placement, and text-formatting of the map gridlines labels associated which indicate geographic position.-->
+
+<!--&#x2022; Labels Rotation (Latitude):-->
+<!--    Rotate latitude labels (0 degrees = perpendicular).-->
+
+<!--&#x2022; Labels Rotation (Longitude):-->
+<!--    Rotate longitude labels (0 degrees = perpendicular).-->
+
+<!--&#x2022; Labels Suffix (N,S,W,E):-->
+<!--    Format label text with suffix (N,S,W,E) instead of (+/-).-->
+
+<!--&#x2022; Labels Decimal Value:-->
+<!--    Format label text with decimal value instead of degrees/minutes/seconds.-->
+
+<!--&#x2022; Show North Labels:-->
+<!--    Displays north (top axis) labels.-->
+
+<!--&#x2022; Show South Labels:-->
+<!--    Displays south (bottom axis) labels.-->
+
+<!--&#x2022; Show West Labels:-->
+<!--    Displays west (left axis) labels.-->
+
+<!--&#x2022; Show East Labels:-->
+<!--    Displays east (right axis) labels.-->
+
+<!--&#x2022; Show North Corner Labels:-->
+<!--    Display north corner labels.-->
+
+<!--&#x2022; Show South Corner Labels:-->
+<!--    Display south corner labels.-->
+
+<!--&#x2022; Show West Corner Labels:-->
+<!--    Display west corner labels.-->
+
+<!--&#x2022; Show East Corner Labels:-->
+<!--    Display east corner labels.-->
+
+<!--&#x2022; Put Labels Inside:-->
+<!--    Put labels inside of the data image (also see backdrop options below).-->
+<!--</pre>-->
+
+
+
+<!--<br>-->
+<!--<h4>&#45;&#45;&#45;&#45; Labels Formatting &#45;&#45;&#45;&#45;</h4>-->
+<!--<pre>-->
+<!--Configuration options for the labels: font-formatting of the map gridlines labels associated which indicate geographic position.-->
+
+<!--&#x2022; Labels Font Size:-->
+<!--    Set size of the label text.-->
+
+<!--&#x2022; Labels Font Color:-->
+<!--    Set color of the label text.-->
+
+<!--&#x2022; Label Font Type:-->
+<!--    Set the text font of the labels.-->
+
+<!--&#x2022; Labels Font Italic:-->
+<!--    Format label text font in italic.-->
+
+<!--&#x2022; Labels Font Bold:-->
+<!--    Format label text font in bold.-->
+<!--</pre>-->
+
+
+
+<!--<br>-->
+<!--<h4>&#45;&#45;&#45;&#45; Gridlines &#45;&#45;&#45;&#45;</h4>-->
+<!--<pre>-->
+<!--Configuration options for the gridlines.-->
+
+<!--&#x2022; Show:-->
+<!--    Display gridlines.-->
+
+<!--&#x2022; Gridline Width:-->
+<!--    Set the width of the gridlines.-->
+
+<!--&#x2022; Gridline Dash Length:-->
+<!--    Set dash length of gridlines or set to solid gridlines (0=SOLID).-->
+
+<!--&#x2022; Gridline Transparency:-->
+<!--    Set the transparency of the gridlines.-->
+
+<!--&#x2022; Gridline Color:-->
+<!--    Set the color of the gridlines.-->
+<!--</pre>-->
+
+
+
+<!--<br>-->
+<!--<h4>&#45;&#45;&#45;&#45; Border &#45;&#45;&#45;&#45;</h4>-->
+<!--<pre>-->
+<!--Configuration options for the image border.-->
+
+<!--&#x2022; Show:-->
+<!--    Display image border.-->
+
+<!--&#x2022; Border Width:-->
+<!--    Set the width of the border.-->
+
+<!--&#x2022; Border Color:-->
+<!--    Set the color of the border.-->
+<!--</pre>-->
+
+
+
+
+<!--<br>-->
+<!--<h4>&#45;&#45;&#45;&#45; Tickmarks &#45;&#45;&#45;&#45;</h4>-->
+<!--<pre>-->
+<!--Configuration options for the label tickmarks.-->
+
+<!--&#x2022; Show:-->
+<!--    Display tickmarks.-->
+
+<!--&#x2022; Put Tickmarks Inside:-->
+<!--    Place tickmarks on the inside of the data image.-->
+
+<!--&#x2022; Tickmarks Length:-->
+<!--    Set the length of the tickmarks.-->
+
+<!--&#x2022; Tickmarks Color:-->
+<!--    Set the color of the tickmarks.-->
+<!--</pre>-->
+
+
+
+
+<!--<br>-->
+<!--<h4>&#45;&#45;&#45;&#45; Inside Labels Backdrop &#45;&#45;&#45;&#45;</h4>-->
+<!--<pre>-->
+<!--Configuration options for backdrop of labels placed on the inside of the image.-->
+
+<!--&#x2022; Labels Backdrop Transparency:-->
+<!--    Set transparency of the backdrop of the inside labels.-->
+
+<!--&#x2022; Labels Backdrop Color:-->
+<!--    Set the color of the backdrop of the inside labels.-->
+<!--</pre>-->
+
+
+
+
+
+
+<!--<br>-->
+
+<!--<h3>Notes, Pitfalls and Issues</h3>-->
+
+<!--<p>-->
+<!--    <b>Note: Font Sizing</b> - The user font size property is in term of "approximated" points rather than pixels. This enables a-->
+<!--    sensible default font size setting which will work well with files of any resolution. Internally the font sizes-->
+<!--    are actually tied to the pixel sizes and there is a conversion of points to pixels being made.-->
+<!--</p>-->
+
+<!--<p>-->
+<!--    <b>Note: Small Images</b> - For extremely small files (less than about 100 pixels in one dimension)-->
+<!--    you may likely see problems with the map gridlines, such as missing labels.  This is because there is not enough-->
+<!--    pixels on the image to generate the font.  A workaround to this would be to reproject the low resolution image to-->
+<!--    a much higher resolution image using nearest neighbor sampling.  This will effectively give the appearance and shape-->
+<!--    of the original low resolution pixels while using a high resolution raster grid.-->
+<!--</p>-->
+
+
+<!--<p>-->
+<!--    <b>Pitfall: Blurry Text Labels</b> - Scene images are exported using a raster file format (png, gif, etc.).  This-->
+<!--    means that any text overlayed on the image such as the map gridlines labels and other text annotations will also be-->
+<!--    rasterized.  In order to maintain the appearance of sharp text labels you may need to increase the image dimension-->
+<!--    of the file to be exported.  This can be done within the <i>Export Image</i> tool.-->
+<!--</p>-->
+
+<!--<p>-->
+<!--    <b>Pitfall: No Labels because they are Outside of View Window</b> - -->
+<!--    When labels are placed outside of the image border this will also likely-->
+<!--    place them outside of the view window, in which case so you will need to zoom out to see them.  When you export the-->
+<!--    image using the <i>Export Image</i> tool, you will need to specify "View region" and not "Full scene" as the Image Region.-->
+<!--</p>-->
+
+
+
+<!--<p>-->
+<!--    <b>Issue: Image Orientation</b> - The logic of the current map gridlines tool assumes that north is at the top of the image,-->
+<!--    and west is to the left of the image.  For any images which do not conform to this orientation, the map gridlines-->
+<!--    labels may fail to display.-->
+<!--</p>-->
+
+<!--<p>-->
+<!--    <b>Issue: Projection</b> - Certain projections such as polar projections may fail to display map gridlines.-->
+<!--</p>-->
+
+
+<br>
+<hr>
+</body>
+</html>

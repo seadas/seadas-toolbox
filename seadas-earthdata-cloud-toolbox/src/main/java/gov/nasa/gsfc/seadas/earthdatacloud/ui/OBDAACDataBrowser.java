@@ -4,6 +4,7 @@ import com.bc.ceres.core.Assert;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
+import org.esa.snap.core.jexp.impl.AbstractFunction;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.core.util.SystemUtils;
@@ -1319,10 +1320,11 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-    private JPanel createSpatialPanel() {
-        System.out.println("Creating createSpatialPanel");
+
+    private JPanel createBoundingBoxPanel() {
+        System.out.println("Creating BoundingBox Panel");
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Spatial Filter"));
+        panel.setBorder(BorderFactory.createLineBorder(new Color(0,100,100)));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2, 2, 2, 2);
@@ -1397,6 +1399,221 @@ public class OBDAACDataBrowser extends JPanel {
         maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
         maxLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
         panel.add(maxLonField, gbc);
+
+        panel.setMinimumSize(panel.getPreferredSize());
+        panel.setPreferredSize(panel.getPreferredSize());
+
+        return panel;
+
+    }
+
+
+
+    private JPanel createClassicBoundingBoxPanel() {
+        System.out.println("Creating Classic BoundingBox Panel");
+
+
+        JTextField tmpTextField = new JTextField(" 124°00′10″W ");
+        Dimension preferredTextFieldSize = tmpTextField.getPreferredSize();
+        int preferredColWidth = (int) Math.ceil(preferredTextFieldSize.getWidth() / 2.0);
+        Dimension preferredLabelSize = new Dimension(preferredColWidth, 1);
+
+
+
+        JPanel panel = new JPanel(new GridBagLayout());
+//        panel.setBorder(BorderFactory.createLineBorder(new Color(0,100,100)));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.insets = new Insets(2, 2, 2, 2);
+        gbc.insets.top = 0;
+        gbc.insets.bottom = 0;
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+        gbc.fill = GridBagConstraints.NONE;
+
+
+        // setup evenly spaced columns
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel0 = new JLabel("");
+        tmpLabel0.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel0, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel1 = new JLabel("");
+        tmpLabel1.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel1, gbc);
+
+        gbc.gridx = 2;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel2 = new JLabel("");
+        tmpLabel2.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel2, gbc);
+
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel3 = new JLabel("");
+        tmpLabel3.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel3, gbc);
+
+        gbc.gridx = 4;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel4 = new JLabel("");
+        tmpLabel4.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel4, gbc);
+
+        gbc.gridx = 5;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel5 = new JLabel("");
+        tmpLabel5.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel5, gbc);
+
+
+
+        // Max Lat
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+//        gbc.weightx = 1.0;
+        JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
+        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        panel.add(maxLatLabel, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+//        gbc.weightx = 1.0;
+        maxLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
+        maxLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        panel.add(maxLatField, gbc);
+        gbc.gridwidth = 1;
+
+
+
+
+
+
+        // Min Lon
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+//        gbc.weightx = 1.0;
+        JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
+        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        panel.add(minLonLabel, gbc);
+
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets.left = 0;
+        gbc.insets.right = 2;
+//        gbc.weightx = 1.0;
+        minLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
+        minLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        panel.add(minLonField, gbc);
+        gbc.gridwidth = 1;
+
+
+
+        // Max Lon
+        gbc.gridx = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets.left = 2;
+        gbc.insets.right = 0;
+//        gbc.weightx = 1.0;
+        maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
+        maxLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        panel.add(maxLonField, gbc);
+        gbc.gridwidth = 1;
+
+
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+//        gbc.weightx = 1.0;
+        JLabel maxLonLabel = new JLabel(":" + Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL);
+        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        panel.add(maxLonLabel, gbc);
+
+
+
+
+
+
+        // Min Lat
+        gbc.gridy++;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        JLabel minLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLAT_LABEL + ":");
+        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(minLatLabel, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        minLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
+        minLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(minLatField, gbc);
+        gbc.gridwidth = 1;
+
+
+
+        minLatField.setMinimumSize(preferredTextFieldSize);
+        minLatField.setPreferredSize(preferredTextFieldSize);
+        maxLatField.setMinimumSize(preferredTextFieldSize);
+        maxLatField.setPreferredSize(preferredTextFieldSize);
+        minLonField.setMinimumSize(preferredTextFieldSize);
+        minLonField.setPreferredSize(preferredTextFieldSize);
+        maxLonField.setMinimumSize(preferredTextFieldSize);
+        maxLonField.setPreferredSize(preferredTextFieldSize);
+
+
+        panel.setMinimumSize(panel.getPreferredSize());
+        panel.setPreferredSize(panel.getPreferredSize());
+
+        return panel;
+
+    }
+
+
+    private JPanel createSpatialPanel() {
+        System.out.println("Creating createSpatialPanel");
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Spatial Filter"));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 2, 2, 2);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+
+        // Max Lat
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0;
+
+        panel.add(createClassicBoundingBoxPanel(), gbc);
+
+        gbc.anchor = GridBagConstraints.WEST;
+
 
 
         // Separator Line
