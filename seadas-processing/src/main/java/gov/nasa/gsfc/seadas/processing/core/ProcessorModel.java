@@ -52,8 +52,8 @@ import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
 public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     // todo temporarily disabling these for Docker
-    private boolean runProcessorToAutoPopulateL2bin = true;
-    private boolean runProcessorToAutoPopulateL3mapgen = true;
+    private boolean runProcessorToAutoPopulateL2bin = false;
+    private boolean runProcessorToAutoPopulateL3mapgen = false;
 
 
     protected String programName;
