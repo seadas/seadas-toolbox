@@ -717,16 +717,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     private void badIfileClearAndWarn(String ifileName) {
-        SimpleDialogMessage dialog = new SimpleDialogMessage(programName, "<html><br>&nbsp;&nbsp;WARNING!!<br> " +
-                "&nbsp;&nbsp;File '" + ifileName + "' is an invalid input file. &nbsp;&nbsp;<br>&nbsp;</html>");
+        SimpleDialogMessage dialog = new SimpleDialogMessage(programName, "<html><br>&nbsp;&nbsp;&nbsp;&nbsp;WARNING!!<br> " +
+                "&nbsp;&nbsp;&nbsp;&nbsp;File '" + ifileName + "' is an invalid input file. &nbsp;&nbsp;<br>&nbsp;</html>");
         dialog.setVisible(true);
         dialog.setEnabled(true);
 
-        updateParamInfo(getPrimaryInputFileOptionName(), "");
-        updateParamInfo(getPrimaryOutputFileOptionName(), "");
-        for (ParamInfo paramInfo : paramList.getParamArray()) {
-            paramInfo.setValue(paramInfo.getDefaultValue());
-        }
+        // todo This doesn't seem to clear correctly the params in the GUI
+//        for (ParamInfo paramInfo : paramList.getParamArray()) {
+//            updateParamInfo(paramInfo.getName(), paramInfo.getDefaultValueOriginal());
+//        }
+//        updateParamInfo(getPrimaryInputFileOptionName(), "");
+//        updateParamInfo(getPrimaryOutputFileOptionName(), "");
+
     }
 
     //todo: change the path to get geo filename from ifile
@@ -2163,7 +2165,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             if (projection != null && projection.trim().startsWith("#")) {
                 ParamInfo projectionParamInfo = getParamInfo("projection");
-                projectionParamInfo.setValue(projectionParamInfo.getDefaultValue());
+                projectionParamInfo.setValue(projectionParamInfo.getDefaultValueOriginal());
                 // todo Maybe this?
 //                updateParamInfo("projection", projectionParamInfo.getDefaultValue());
             }
