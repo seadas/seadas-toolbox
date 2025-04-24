@@ -56,6 +56,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private boolean runProcessorToAutoPopulateL3mapgen = false;
 
 
+    private boolean workingUpdateOfile = false;
+
     protected String programName;
 
     protected ParamList paramList;
@@ -438,6 +440,15 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return null;
     }
 
+    public boolean workingUpdateOfile() {
+        return workingUpdateOfile;
+    }
+
+    public void setWorkingUpdateOfile(boolean workingUpdateOfile) {
+         this.workingUpdateOfile = workingUpdateOfile;
+    }
+
+
     public void updateParamInfo(String paramName, String newValue) {
 
         ParamInfo option = getParamInfo(paramName);
@@ -454,9 +465,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public boolean updateIFileInfo(String ifileName) {
 
+
         if (programName != null && (programName.equals("multilevel_processor"))) {
             return true;
         }
+
+        workingUpdateOfile = true;
+
 
         File ifile = new File(ifileName);
 
@@ -486,26 +501,33 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     updateParamValues(new File(ifileName));
                 }
             } else if ("l2bin".equalsIgnoreCase(programName)) {
-                String resolution = getParamValue("resolution");
-                String suite = getParamValue("suite");
-                String l3bprod = getParamValue("l3bprod");
-                String prodtype = getParamValue("prodtype");
-                String north = getParamValue("latnorth");
-                String south = getParamValue("latsouth");
-                String west = getParamValue("lonwest");
-                String east = getParamValue("loneast");
 
 
-                String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+                String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
 
-                if (ofileName != null) {
+                if (ofileNameDefault != null) {
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                     updateGeoFileInfo(ifileName, inputFileInfo);
-                    updateOFileInfo(ofileName);
 
                     updateParamValues(new File(ifileName));
+
+                    String resolution = getParamValue("resolution");
+                    String suite = getParamValue("suite");
+                    String l3bprod = getParamValue("l3bprod");
+                    String prodtype = getParamValue("prodtype");
+                    String north = getParamValue("latnorth");
+                    String south = getParamValue("latsouth");
+                    String west = getParamValue("lonwest");
+                    String east = getParamValue("loneast");
+                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
+                    updateOFileInfo(ofileName);
+
+
                 }
+
+
 
             } else if ("l3bin".equalsIgnoreCase(programName)) {
                 String resolve = getParamValue("resolve");
@@ -551,6 +573,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     break;
             }
         }
+
+        workingUpdateOfile = false;
+
+
         return isIfileValid;
     }
 
@@ -1549,6 +1575,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                         dialog.setEnabled(true);
                     }
 
+
+
                     l3mapgenConfigParFile.delete();
 
                 }
@@ -1909,6 +1937,29 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
+
+    public void l2BinPropertyChangeHandler() {
+        if (!workingUpdateOfile()) {
+            setWorkingUpdateOfile(true);
+
+            String ifileName = getParamValue(getPrimaryInputFileOptionName());
+            String resolution = getParamValue("resolution");
+            String l3bprod = getParamValue("l3bprod");
+            String suite = getParamValue("suite");
+            String prodtype = getParamValue("prodtype");
+            String north = getParamValue("latnorth");
+            String south = getParamValue("latsouth");
+            String west = getParamValue("lonwest");
+            String east = getParamValue("loneast");
+
+            String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+
+            updateOFileInfo(ofileName);
+
+            setWorkingUpdateOfile(false);
+        }
+    }
+
     private static class L2Bin_Processor extends ProcessorModel {
 
         private static final String DEFAULT_PAR_FILE_NAME = "l2bin_defaults.par";
@@ -1927,100 +1978,36 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             addPropertyChangeListener("resolution", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
                 }
             });
 
             addPropertyChangeListener("l3bprod", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
                 }
             });
 
             addPropertyChangeListener("suite", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
+                    int stillHere = 0;
                 }
             });
 
             addPropertyChangeListener("prodtype", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
                 }
             });
 
             addPropertyChangeListener("latnorth", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
                 }
             });
 
@@ -2028,20 +2015,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             addPropertyChangeListener("latsouth", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
                 }
             });
 
@@ -2049,20 +2023,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             addPropertyChangeListener("lonwest", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
                 }
             });
 
@@ -2070,20 +2031,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             addPropertyChangeListener("loneast", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String resolution = getParamValue("resolution");
-                    String l3bprod = getParamValue("l3bprod");
-                    String suite = getParamValue("suite");
-                    String prodtype = getParamValue("prodtype");
-                    String north = getParamValue("latnorth");
-                    String south = getParamValue("latsouth");
-                    String west = getParamValue("lonwest");
-                    String east = getParamValue("loneast");
-
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
-
-                    updateOFileInfo(ofileName);
+                    l2BinPropertyChangeHandler();
                 }
             });
 
@@ -2641,7 +2589,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private static String getOfileForL2BinOcssw(String ifileOriginal, String ofilenameDefault) {
 
-        if (ifileOriginal == null || ifileOriginal.trim().length() == 0 |  ofilenameDefault == null || ofilenameDefault.trim().length() == 0) {
+        if (ifileOriginal == null || ifileOriginal.trim().length() == 0 ||  ofilenameDefault == null || ofilenameDefault.trim().length() == 0) {
             return "";
         }
 
@@ -2673,7 +2621,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private static String getOfileForL3MapGenOcssw(String ifileOriginal, String ofilenameDefault, String resolution, String oformat, String product, String projection) {
 
-        if (ifileOriginal == null || ifileOriginal.trim().length() == 0 |  ofilenameDefault == null || ofilenameDefault.trim().length() == 0) {
+        if (ifileOriginal == null || ifileOriginal.trim().length() == 0 ||  ofilenameDefault == null || ofilenameDefault.trim().length() == 0) {
             return "";
         }
 
