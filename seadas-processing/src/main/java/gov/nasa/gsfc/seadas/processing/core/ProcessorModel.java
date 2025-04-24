@@ -2755,6 +2755,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (ifileOriginal == null || ifileOriginal.trim().length() == 0 ||  ofilenameDefault == null || ofilenameDefault.trim().length() == 0) {
             return "";
         }
+        //added the following line to prevent have double parent path for ofile
+        ofilenameDefault = ofilenameDefault.substring( ofilenameDefault.lastIndexOf(File.separator) + 1);
 
         // add the path
         File file = new File(ifileOriginal);
@@ -2773,11 +2775,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         }
 
-//
-
         String ofilename = stripFilenameExtension(ofilenameDefault);
-
-
         return ofilename;
     }
 

@@ -1193,14 +1193,16 @@ public class OCSSWRemote extends OCSSW {
                         ifileDir = value.substring(0, value.lastIndexOf(File.separator));
                     }
                     //uploadClientFile(value);
-                    value = value.substring(value.indexOf(SEADAS_CLIENT_SERVER_SHARED_DIR_NAME) + SEADAS_CLIENT_SERVER_SHARED_DIR_NAME.length() + 1);
+                    value = value.substring(value.indexOf(ifileDir) + ifileDir.length() + 1);
+                    //value = value.substring(value.indexOf(SEADAS_CLIENT_SERVER_SHARED_DIR_NAME) + SEADAS_CLIENT_SERVER_SHARED_DIR_NAME.length() + 1);
 
                 } else if (key.equals(MLP_PAR_FILE_ODIR_KEY_NAME) && new File(value).isDirectory()) {
                     ofileDir = value;
                     //if item is ofile
                 } else if (key.equals(processorModel.getPrimaryOutputFileOptionName())) {
                     ofileDir = value.substring(0, value.lastIndexOf(File.separator));
-                    value = value.substring(value.indexOf(SEADAS_CLIENT_SERVER_SHARED_DIR_NAME) + SEADAS_CLIENT_SERVER_SHARED_DIR_NAME.length() + 1);
+                    value = value.substring(value.indexOf(ofileDir) + ofileDir.length() + 1);
+                    //value = value.substring(value.indexOf(SEADAS_CLIENT_SERVER_SHARED_DIR_NAME) + SEADAS_CLIENT_SERVER_SHARED_DIR_NAME.length() + 1);
                 }
                 token = key + "=" + value;
             }
