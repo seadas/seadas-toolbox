@@ -133,7 +133,7 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT = true;
     
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.precedence";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL = "Preference overrides any default value";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL = "Preference overrides default value";
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preference value takes precedence and overrides any defaults values.  <br>If set to false then, preference is only used if default value is not set.</html>";
     public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT = true;
 

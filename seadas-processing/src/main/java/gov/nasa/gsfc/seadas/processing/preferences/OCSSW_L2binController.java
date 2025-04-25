@@ -348,7 +348,7 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".autofill.precedence";
-    public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_LABEL = "Preference overrides any default values";
+    public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_LABEL = "Preference overrides default value";
     public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preference value takes precedence and overrides any defaults values.  <br>If set to false then, preference is only used if default value is not set.</html>";
     public static final boolean PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_DEFAULT = true;
 
