@@ -62,7 +62,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private boolean workingUpdateOfile = false;
 
     protected String programName;
-
+    String ofileNameDefault = "";
     protected ParamList paramList;
     private boolean acceptsParFile;
     private boolean hasGeoFile;
@@ -597,7 +597,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             if ("l3mapgen".equalsIgnoreCase(programName)) {
 
-                String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+                ofileNameDefault = ocssw.getOfileName(ifileName, programName);
 
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
@@ -616,7 +616,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String west = getParamValue("west");
                     String east = getParamValue("east");
 
-                    String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, programName, resolution, oformat, product, projection, interp, north, south, west, east);
 
                     updateOFileInfo(ofileName);
 
@@ -627,7 +627,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             } else if ("l2bin".equalsIgnoreCase(programName)) {
 
-                String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+                ofileNameDefault = ocssw.getOfileName(ifileName, programName);
 
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
@@ -643,7 +643,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String south = getParamValue("latsouth");
                     String west = getParamValue("lonwest");
                     String east = getParamValue("loneast");
-                    String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+                    String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
 
                     updateOFileInfo(ofileName);
 
@@ -655,7 +655,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             } else if ("l3bin".equalsIgnoreCase(programName)) {
 
-                String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+                ofileNameDefault = ocssw.getOfileName(ifileName, programName);
 
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
@@ -670,7 +670,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String west = getParamValue("lonwest");
                     String east = getParamValue("loneast");
 
-                    String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
+                    String ofileName = getOfileForL3BinWrapper(ifileName, ofileNameDefault, programName, resolve, prod, north, south, west, east);
 
                     updateOFileInfo(ofileName);
 
@@ -1792,6 +1792,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private void createL2binAuxParFile(String thisProgramName, File ifile, String suite, File parfile) throws IOException {
 
+        System.out.println("CHECK START creating parfile=" + parfile.getAbsolutePath());
         if (parfile.exists()) {
             parfile.delete();
         }
@@ -1842,6 +1843,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } catch (IOException e) {
             throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
         }
+        System.out.println("CHECK END creating parfile=" + parfile.getAbsolutePath());
+
     }
 
 
@@ -2119,7 +2122,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String west = getParamValue("lonwest");
             String east = getParamValue("loneast");
 
-            String ofileName = getOfileForL3BinWrapper(ifileName, getOcssw(), programName, resolve, prod, north, south, west, east);
+            String ofileName = getOfileForL3BinWrapper(ifileName, ofileNameDefault, programName, resolve, prod, north, south, west, east);
+
+            updateOFileInfo(ofileName);
 
             setWorkingUpdateOfile(false);
         }
@@ -2140,7 +2145,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String west = getParamValue("lonwest");
             String east = getParamValue("loneast");
 
-            String ofileName = getOfileForL2BinWrapper(ifileName, getOcssw(), programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+            String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
 
             updateOFileInfo(ofileName);
 
@@ -2170,7 +2175,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                updateParamInfo("projection", projectionParamInfo.getDefaultValue());
             }
 
-            String ofileName = getOfileForL3MapGenWrapper(ifileName, getOcssw(), programName, resolution, oformat, product, projection, interp, north, south, west, east);
+            String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, programName, resolution, oformat, product, projection, interp, north, south, west, east);
 
 
             updateOFileInfo(ofileName);
@@ -2708,46 +2713,46 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-
-    private static class SMIGEN_Processor extends ProcessorModel {
-
-        SMIGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
-            super(programName, xmlFileName, ocssw);
-            setOpenInSeadas(true);
-            addPropertyChangeListener("prod", new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    if (ifileName != null) {
-                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
-                        String newProdValue = (String) propertyChangeEvent.getNewValue();
-                        String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution")};
-                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
-                        updateOFileInfo(ofileName);
-                    }
-                }
-            });
-
-            addPropertyChangeListener("resolution", new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
-                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-                    String suite = getParamValue("prod");
-                    if (suite == null || suite.trim().length() == 0) {
-                        suite = "all";
-                    }
-                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite};
-                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
-                    updateOFileInfo(ofileName);
-                }
-            });
-        }
-
-    }
+//
+//    private static class SMIGEN_Processor extends ProcessorModel {
+//
+//        SMIGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
+//            super(programName, xmlFileName, ocssw);
+//            setOpenInSeadas(true);
+//            addPropertyChangeListener("prod", new PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+//                    if (ifileName != null) {
+//                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
+//                        String newProdValue = (String) propertyChangeEvent.getNewValue();
+//                        String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution")};
+//                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+//                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+//                        updateOFileInfo(ofileName);
+//                    }
+//                }
+//            });
+//
+//            addPropertyChangeListener("resolution", new PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+//                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+//                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+//                    String suite = getParamValue("prod");
+//                    if (suite == null || suite.trim().length() == 0) {
+//                        suite = "all";
+//                    }
+//                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite};
+//                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+//                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+//                    updateOFileInfo(ofileName);
+//                }
+//            });
+//        }
+//
+//    }
 
 
     private static String getOfileForL2BinOcssw(String ifileOriginal, String ofilenameDefault) {
@@ -3581,7 +3586,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    public static String getOfileForL3BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolve, String prod, String north, String south, String west, String east) {
+    public static String getOfileForL3BinWrapper(String ifileName, String ofileNameDefault, String programName, String resolve, String prod, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
 
@@ -3592,12 +3597,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String replacementKeyString = OCSSW_L3binController.getPreferenceOfileNamingSchemeIfileReplace();
             ofileName = getOfileWithReplaceForL3MapGen(ifileName, orginalKeyString, replacementKeyString);
         } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
         } else if (OCSSW_L3binController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L3binController.getPreferenceOfileNamingScheme())) {
-//            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
-
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
             ofileName = ofileName.replace(".DAY.", ".");
             ofileName = ofileName.replace(".DAY", "");
@@ -3613,7 +3614,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
             ofileName = getOfileSimple(ifileName);
         } else {
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
         }
 
@@ -3662,7 +3662,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    public static String getOfileForL2BinWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
+    public static String getOfileForL2BinWrapper(String ifileName, String ofileNameDefault, String programName, String resolution, String l3bprod, String suite, String prodtype, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
 
@@ -3673,12 +3673,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String replacementKeyString = OCSSW_L2binController.getPreferenceOfileNamingSchemeIfileReplace();
             ofileName = getOfileWithReplaceForL3MapGen(ifileName, orginalKeyString, replacementKeyString);
         } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
         } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
-//            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
-
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
             ofileName = ofileName.replace(".DAY.", ".");
             ofileName = ofileName.replace(".DAY", "");
@@ -3694,7 +3690,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } else if (OCSSW_L2binController.OFILE_NAMING_SCHEME_SIMPLE.equalsIgnoreCase(OCSSW_L2binController.getPreferenceOfileNamingScheme())) {
             ofileName = getOfileSimple(ifileName);
         } else {
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL2BinOcssw(ifileName, ofileNameDefault);
         }
 
@@ -3745,7 +3740,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    public static String getOfileForL3MapGenWrapper(String ifileName, OCSSW ocssw, String programName, String resolution, String oformat, String product, String projection, String interp, String north, String south, String west, String east) {
+    public static String getOfileForL3MapGenWrapper(String ifileName, String ofileNameDefault, String programName, String resolution, String oformat, String product, String projection, String interp, String north, String south, String west, String east) {
         String ifileBaseName = stripFilenameExtension(ifileName);
 
 
@@ -3755,12 +3750,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String replacementKeyString = OCSSW_L3mapgenController.getPreferenceOfileNamingSchemeIfileReplace();
             ofileName = getOfileWithReplaceForL3MapGen(ifileName, orginalKeyString, replacementKeyString);
         } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_OCSSW.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
             ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
         } else if (OCSSW_L3mapgenController.OFILE_NAMING_SCHEME_OCSSW_SHORT.equalsIgnoreCase(OCSSW_L3mapgenController.getPreferenceOfileNamingScheme())) {
-//            String ofileNameDefault = getOcssw().getOfileName(ifileName, programName);
-            String ofileNameDefault = ocssw.getOfileName(ifileName, programName);
-
             ofileName = getOfileForL3MapGenOcssw(ifileName, ofileNameDefault, resolution, oformat, product, projection);
             ofileName = ofileName.replace(".DAY.", ".");
             ofileName = ofileName.replace(".DAY", "");

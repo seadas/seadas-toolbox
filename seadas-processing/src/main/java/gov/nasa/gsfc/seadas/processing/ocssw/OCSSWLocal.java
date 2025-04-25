@@ -334,8 +334,12 @@ public class OCSSWLocal extends OCSSW {
         if (programName.equals("georegion_gen")) {
             return "georegion_output.nc";
         }
+
         String[] commandArrayParams = {GET_OUTPUT_NAME_PROGRAM_NAME, ifileName, programName};
+        System.out.println("CHECK START findOfileName");
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));
+        System.out.println("CHECK FINISH findOfileName");
+
         return ofileName;
     }
 
