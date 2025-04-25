@@ -18,6 +18,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -1186,16 +1188,31 @@ public class ParamUIFactory {
         if (pi.getDescription() != null) {
             field.setToolTipText(pi.getDescription().replaceAll("\\s+", " "));
         }
+
         field.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                flaguseTextfieldIgnore = true;
-                String flaguse = field.getText();
+//                flaguseTextfieldIgnore = true;
                 processorModel.updateParamInfo(pi, field.getText());
-                String value = pi.getValue();
-                flaguseTextfieldIgnore = false;
+//                flaguseTextfieldIgnore = false;
             }
         });
+
+        field.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+//                flaguseTextfieldIgnore = true;
+                processorModel.updateParamInfo(pi, field.getText());
+//                flaguseTextfieldIgnore = false;
+            }
+        });
+
+
+
 
 
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {

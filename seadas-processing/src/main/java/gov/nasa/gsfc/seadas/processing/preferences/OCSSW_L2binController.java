@@ -71,10 +71,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     Property south;
     Property west;
     Property east;
-    Property autoFillL3bprod;
-    Property autoFillFlaguse;
-    Property autoFillOther;
-    Property autoFillAll;
+//    Property autoFillL3bprod;
+//    Property autoFillFlaguse;
+//    Property autoFillOther;
+//    Property autoFillAll;
 
     Property favoriteFlaguseSection;
     Property fav1SetToDefault;
@@ -348,12 +348,11 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
     public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY = PROPERTY_L2BIN_ROOT_KEY + ".autofill.precedence";
-    public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_LABEL = "Only set preference if default value not set";
-    public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preference value takes precedence and overrides any defaults values.  <br>Otherwise, preference is only used if default value is not set.</html>";
+    public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_LABEL = "Preference overrides any default values";
+    public static final String PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preference value takes precedence and overrides any defaults values.  <br>If set to false then, preference is only used if default value is not set.</html>";
     public static final boolean PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_DEFAULT = true;
-    
 
-    
+
     public static final String PROPERTY_L2BIN_SDAY_KEY = PROPERTY_L2BIN_ROOT_KEY + ".sday";
     public static final String PROPERTY_L2BIN_SDAY_LABEL = "sday";
     public static final String PROPERTY_L2BIN_SDAY_TOOLTIP = "Start day";
@@ -758,10 +757,10 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     protected JPanel createPanel(BindingContext context) {
 
 
-        autoFillFlaguse = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
-        autoFillL3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
-        autoFillOther = initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_KEY, PROPERTY_L2BIN_AUTOFILL_DEFAULT);
-        autoFillAll = initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_ALL_KEY, PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT);
+//        autoFillFlaguse = initPropertyDefaults(context, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT);
+//        autoFillL3bprod = initPropertyDefaults(context, PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT);
+//        autoFillOther = initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_KEY, PROPERTY_L2BIN_AUTOFILL_DEFAULT);
+//        autoFillAll = initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_ALL_KEY, PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_PASS_ALL_KEY, PROPERTY_L2BIN_PASS_ALL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY, PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_DEFAULT);
 
@@ -1221,22 +1220,22 @@ public final class OCSSW_L2binController extends DefaultConfigController {
             enablement(context);
         });
 
-        autoFillFlaguse.addPropertyChangeListener(evt -> {
-            enablement(context);
-        });
-
-        autoFillL3bprod.addPropertyChangeListener(evt -> {
-            enablement(context);
-        });
-
-        autoFillOther.addPropertyChangeListener(evt -> {
-            enablement(context);
-        });
-
-        autoFillAll.addPropertyChangeListener(evt -> {
-            enablement(context);
-            handleFillAll();
-        });
+//        autoFillFlaguse.addPropertyChangeListener(evt -> {
+//            enablement(context);
+//        });
+//
+//        autoFillL3bprod.addPropertyChangeListener(evt -> {
+//            enablement(context);
+//        });
+//
+//        autoFillOther.addPropertyChangeListener(evt -> {
+//            enablement(context);
+//        });
+//
+//        autoFillAll.addPropertyChangeListener(evt -> {
+//            enablement(context);
+//            handleFillAll();
+//        });
         
         
         
@@ -1264,27 +1263,27 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
     private void enablement(BindingContext context) {
-
-        boolean autoFillOtherBool =  autoFillOther.getValue();
-        boolean autoFillAllBool = autoFillAll.getValue();
-        boolean autoFillL3bprodBool =  autoFillL3bprod.getValue();
-        boolean autoFillFlaguseBool =  autoFillFlaguse.getValue();
-
-        if (autoFillOtherBool || autoFillFlaguseBool || autoFillL3bprodBool || autoFillAllBool) {
-            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY, true);
-        } else {
-            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY, false);
-        }
-
-        if (autoFillAllBool) {
-            context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, false);
-            context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, false);
-            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_KEY, false);
-        } else {
-            context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, true);
-            context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, true);
-            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_KEY, true);
-        }
+//
+//        boolean autoFillOtherBool =  autoFillOther.getValue();
+//        boolean autoFillAllBool = autoFillAll.getValue();
+//        boolean autoFillL3bprodBool =  autoFillL3bprod.getValue();
+//        boolean autoFillFlaguseBool =  autoFillFlaguse.getValue();
+//
+//        if (autoFillOtherBool || autoFillFlaguseBool || autoFillL3bprodBool || autoFillAllBool) {
+//            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY, true);
+//        } else {
+//            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_PRECEDENCE_KEY, false);
+//        }
+//
+//        if (autoFillAllBool) {
+//            context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, false);
+//            context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, false);
+//            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_KEY, false);
+//        } else {
+//            context.setComponentsEnabled(PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY, true);
+//            context.setComponentsEnabled(PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY, true);
+//            context.setComponentsEnabled(PROPERTY_L2BIN_AUTOFILL_KEY, true);
+//        }
 
 
 
@@ -1384,25 +1383,25 @@ public final class OCSSW_L2binController extends DefaultConfigController {
 
 
 
-    /**
-     * Handles autofillall action
-     *
-     * @author Daniel Knowles
-     */
-    private void handleFillAll() {
-        if (propertyValueChangeEventsEnabled) {
-            propertyValueChangeEventsEnabled = false;
-            try {
-                boolean autoFillAllValue = autoFillAll.getValue();
-                autoFillFlaguse.setValue(autoFillAllValue);
-                autoFillL3bprod.setValue(autoFillAllValue);
-                autoFillOther.setValue(autoFillAllValue);
-            } catch (ValidationException e) {
-                e.printStackTrace();
-            }
-            propertyValueChangeEventsEnabled = true;
-        }
-    }
+//    /**
+//     * Handles autofillall action
+//     *
+//     * @author Daniel Knowles
+//     */
+//    private void handleFillAll() {
+//        if (propertyValueChangeEventsEnabled) {
+//            propertyValueChangeEventsEnabled = false;
+//            try {
+//                boolean autoFillAllValue = autoFillAll.getValue();
+//                autoFillFlaguse.setValue(autoFillAllValue);
+//                autoFillL3bprod.setValue(autoFillAllValue);
+//                autoFillOther.setValue(autoFillAllValue);
+//            } catch (ValidationException e) {
+//                e.printStackTrace();
+//            }
+//            propertyValueChangeEventsEnabled = true;
+//        }
+//    }
 
 
 
@@ -1647,26 +1646,27 @@ public final class OCSSW_L2binController extends DefaultConfigController {
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
 
+        // todo Removing Auto-Fill toggle options as the OFF mode is not entirely working as expected
 
-        @Preference(key = PROPERTY_L2BIN_AUTOFILL_ALL_KEY,
-                label = PROPERTY_L2BIN_AUTOFILL_ALL_LABEL,
-                description = PROPERTY_L2BIN_AUTOFILL_ALL_TOOLTIP)
-        boolean l2binAutofillAllDefault = PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY,
-                label = PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL,
-                description = PROPERTY_L2BIN_L3BPROD_AUTOFILL_TOOLTIP)
-        boolean l2binL3bprodAutofillDefault = PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY,
-                label = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_LABEL,
-                description = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_TOOLTIP)
-        boolean l2binFlaguseAutofillDefault = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT;
-
-        @Preference(key = PROPERTY_L2BIN_AUTOFILL_KEY,
-                label = PROPERTY_L2BIN_AUTOFILL_LABEL,
-                description = PROPERTY_L2BIN_AUTOFILL_TOOLTIP)
-        boolean l2binAutofillDefault = PROPERTY_L2BIN_AUTOFILL_DEFAULT;
+//        @Preference(key = PROPERTY_L2BIN_AUTOFILL_ALL_KEY,
+//                label = PROPERTY_L2BIN_AUTOFILL_ALL_LABEL,
+//                description = PROPERTY_L2BIN_AUTOFILL_ALL_TOOLTIP)
+//        boolean l2binAutofillAllDefault = PROPERTY_L2BIN_AUTOFILL_ALL_DEFAULT;
+//
+//        @Preference(key = PROPERTY_L2BIN_L3BPROD_AUTOFILL_KEY,
+//                label = PROPERTY_L2BIN_L3BPROD_AUTOFILL_LABEL,
+//                description = PROPERTY_L2BIN_L3BPROD_AUTOFILL_TOOLTIP)
+//        boolean l2binL3bprodAutofillDefault = PROPERTY_L2BIN_L3BPROD_AUTOFILL_DEFAULT;
+//
+//        @Preference(key = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_KEY,
+//                label = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_LABEL,
+//                description = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_TOOLTIP)
+//        boolean l2binFlaguseAutofillDefault = PROPERTY_L2BIN_FLAGUSE_AUTOFILL_DEFAULT;
+//
+//        @Preference(key = PROPERTY_L2BIN_AUTOFILL_KEY,
+//                label = PROPERTY_L2BIN_AUTOFILL_LABEL,
+//                description = PROPERTY_L2BIN_AUTOFILL_TOOLTIP)
+//        boolean l2binAutofillDefault = PROPERTY_L2BIN_AUTOFILL_DEFAULT;
 
 
 

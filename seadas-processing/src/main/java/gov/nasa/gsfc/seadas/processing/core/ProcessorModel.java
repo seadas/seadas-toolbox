@@ -1899,7 +1899,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
 
-        if (prefValue != null && prefValue.length() > 0 && !precedence) {
+        if (prefValue != null && prefValue.length() > 0 && precedence) {
             paramValueSet = true;
         }
 
@@ -2273,6 +2273,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     l2BinPropertyChangeHandler();
                 }
             });
+
 
         }
 

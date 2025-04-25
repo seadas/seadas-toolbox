@@ -54,9 +54,9 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     private static final String FAV = ".favorites";
 
     Property restoreDefaults;
-    Property autoFillOther;
-    Property autoFillAll;
-    Property autoFillProduct;
+//    Property autoFillOther;
+//    Property autoFillAll;
+//    Property autoFillProduct;
     Property projection;
     Property north;
     Property south;
@@ -133,8 +133,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT = true;
     
     public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY = PROPERTY_L3MAPGEN_ROOT_KEY + ".autofill.precedence";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL = "Only set preference if default value not set";
-    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preference value takes precedence and overrides any defaults values.  <br>Otherwise, preference is only used if default value is not set.</html>";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_LABEL = "Preference overrides any default value";
+    public static final String PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_TOOLTIP = "<html>Preference value takes precedence and overrides any defaults values.  <br>If set to false then, preference is only used if default value is not set.</html>";
     public static final boolean PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT = true;
 
 
@@ -504,10 +504,10 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         // This is done so subsequently the restoreDefaults actions can be performed
         //
 
-        autoFillAll = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_PASS_ALL_KEY, PROPERTY_L3MAPGEN_PASS_ALL_DEFAULT);
-        autoFillOther = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT);
-        autoFillProduct = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
+//        autoFillAll = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT);
+//        autoFillOther = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_KEY, PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT);
+//        autoFillProduct = initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
         initPropertyDefaults(context, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT);
 
 
@@ -706,18 +706,18 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
             enablement(context);
         });
 
-        autoFillOther.addPropertyChangeListener(evt -> {
-            enablement(context);
-        });
-
-        autoFillProduct.addPropertyChangeListener(evt -> {
-            enablement(context);
-        });
-
-        autoFillAll.addPropertyChangeListener(evt -> {
-            enablement(context);
-            handleFillAll();
-        });
+//        autoFillOther.addPropertyChangeListener(evt -> {
+//            enablement(context);
+//        });
+//
+//        autoFillProduct.addPropertyChangeListener(evt -> {
+//            enablement(context);
+//        });
+//
+//        autoFillAll.addPropertyChangeListener(evt -> {
+//            enablement(context);
+//            handleFillAll();
+//        });
 
 
 
@@ -744,26 +744,23 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
     private void enablement(BindingContext context) {
 
-        boolean autoFillOtherBool =  autoFillOther.getValue();
-        boolean autoFillOtherProduct =  autoFillProduct.getValue();
-        boolean autoFillAllBool = autoFillAll.getValue();
-
-        if (autoFillOtherBool || autoFillOtherProduct) {
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, true);
-        } else {
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, false);
-        }
-
-
-
-
-        if (autoFillAllBool) {
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, false);
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_KEY, false);
-        } else {
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, true);
-            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_KEY, true);
-        }
+//        boolean autoFillOtherBool =  autoFillOther.getValue();
+//        boolean autoFillOtherProduct =  autoFillProduct.getValue();
+//        boolean autoFillAllBool = autoFillAll.getValue();
+//
+//        if (autoFillOtherBool || autoFillOtherProduct) {
+//            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, true);
+//        } else {
+//            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, false);
+//        }
+//
+//        if (autoFillAllBool) {
+//            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, false);
+//            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_KEY, false);
+//        } else {
+//            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, true);
+//            context.setComponentsEnabled(PROPERTY_L3MAPGEN_AUTOFILL_KEY, true);
+//        }
 
 
 
@@ -861,24 +858,24 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
 
 
 
-    /**
-     * Handles autofillall action
-     *
-     * @author Daniel Knowles
-     */
-    private void handleFillAll() {
-        if (propertyValueChangeEventsEnabled) {
-            propertyValueChangeEventsEnabled = false;
-            try {
-                boolean autoFillAllValue = autoFillAll.getValue();
-                autoFillProduct.setValue(autoFillAllValue);
-                autoFillOther.setValue(autoFillAllValue);
-            } catch (ValidationException e) {
-                e.printStackTrace();
-            }
-            propertyValueChangeEventsEnabled = true;
-        }
-    }
+//    /**
+//     * Handles autofillall action
+//     *
+//     * @author Daniel Knowles
+//     */
+//    private void handleFillAll() {
+//        if (propertyValueChangeEventsEnabled) {
+//            propertyValueChangeEventsEnabled = false;
+//            try {
+//                boolean autoFillAllValue = autoFillAll.getValue();
+//                autoFillProduct.setValue(autoFillAllValue);
+//                autoFillOther.setValue(autoFillAllValue);
+//            } catch (ValidationException e) {
+//                e.printStackTrace();
+//            }
+//            propertyValueChangeEventsEnabled = true;
+//        }
+//    }
 
 
 
@@ -1015,21 +1012,22 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
     @SuppressWarnings("UnusedDeclaration")
     static class SeadasToolboxBean {
 
+        // todo Removing Auto-Fill toggle options as the OFF mode is not entirely working as expected
 
-        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY,
-                label = PROPERTY_L3MAPGEN_AUTOFILL_ALL_LABEL,
-                description = PROPERTY_L3MAPGEN_AUTOFILL_ALL_TOOLTIP)
-        boolean l2binAutofillAllDefault = PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT;
-
-        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY,
-                label = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_LABEL,
-                description = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_TOOLTIP)
-        boolean l3mapgenAutofillProductDefault = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT;
-
-        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_KEY,
-                label = PROPERTY_L3MAPGEN_AUTOFILL_LABEL,
-                description = PROPERTY_L3MAPGEN_AUTOFILL_TOOLTIP)
-        boolean l3mapgenAutofillDefault = PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT;
+//        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_ALL_KEY,
+//                label = PROPERTY_L3MAPGEN_AUTOFILL_ALL_LABEL,
+//                description = PROPERTY_L3MAPGEN_AUTOFILL_ALL_TOOLTIP)
+//        boolean l2binAutofillAllDefault = PROPERTY_L3MAPGEN_AUTOFILL_ALL_DEFAULT;
+//
+//        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY,
+//                label = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_LABEL,
+//                description = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_TOOLTIP)
+//        boolean l3mapgenAutofillProductDefault = PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT;
+//
+//        @Preference(key = PROPERTY_L3MAPGEN_AUTOFILL_KEY,
+//                label = PROPERTY_L3MAPGEN_AUTOFILL_LABEL,
+//                description = PROPERTY_L3MAPGEN_AUTOFILL_TOOLTIP)
+//        boolean l3mapgenAutofillDefault = PROPERTY_L3MAPGEN_AUTOFILL_DEFAULT;
 
 
 
@@ -1449,6 +1447,8 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
     }
+
+
 
     public static boolean getPreferenceAutoFillPrecedence() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
