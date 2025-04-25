@@ -1448,8 +1448,6 @@ public final class OCSSW_L3mapgenController extends DefaultConfigController {
         return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRODUCT_DEFAULT);
     }
 
-
-
     public static boolean getPreferenceAutoFillPrecedence() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyBool(OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_KEY, OCSSW_L3mapgenController.PROPERTY_L3MAPGEN_AUTOFILL_PRECEDENCE_DEFAULT);

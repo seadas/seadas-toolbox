@@ -1541,12 +1541,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (!runProcessorToAutoPopulateL3mapgen) {
             return;
         }
-        if (OCSSW_L3mapgenController.getPreferenceAutoFillAll()  || OCSSW_L3mapgenController.getPreferenceAutoFillOther() ||
-                OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
-            // stay;
-        } else {
-            return;
-        }
 
         if (!"l3mapgen".equalsIgnoreCase(programName)) {
             return;
@@ -1655,13 +1649,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private void updateL2BinParams() {
         if (!runProcessorToAutoPopulateL2bin) {
-            return;
-        }
-
-        if (OCSSW_L2binController.getPreferenceAutoFillAll()  || OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable() ||
-                OCSSW_L2binController.getPreferenceAutoFillEnable()|| OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-            // stay;
-        } else {
             return;
         }
 
@@ -1805,7 +1792,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private void createL2binAuxParFile(String thisProgramName, File ifile, String suite, File parfile) throws IOException {
 
-        System.out.println("CHECK START creating parfile=" + parfile.getAbsolutePath());
         if (parfile.exists()) {
             parfile.delete();
         }
@@ -1856,8 +1842,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } catch (IOException e) {
             throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
         }
-        System.out.println("CHECK END creating parfile=" + parfile.getAbsolutePath());
-
     }
 
 
@@ -2273,7 +2257,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     l2BinPropertyChangeHandler();
                 }
             });
-
 
         }
 
@@ -2727,46 +2710,46 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-//
-//    private static class SMIGEN_Processor extends ProcessorModel {
-//
-//        SMIGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
-//            super(programName, xmlFileName, ocssw);
-//            setOpenInSeadas(true);
-//            addPropertyChangeListener("prod", new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-//                    if (ifileName != null) {
-//                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
-//                        String newProdValue = (String) propertyChangeEvent.getNewValue();
-//                        String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution")};
-//                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-//                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
-//                        updateOFileInfo(ofileName);
-//                    }
-//                }
-//            });
-//
-//            addPropertyChangeListener("resolution", new PropertyChangeListener() {
-//                @Override
-//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
-//                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
-//                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
-//                    String suite = getParamValue("prod");
-//                    if (suite == null || suite.trim().length() == 0) {
-//                        suite = "all";
-//                    }
-//                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite};
-//                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
-//                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
-//                    updateOFileInfo(ofileName);
-//                }
-//            });
-//        }
-//
-//    }
+
+    private static class SMIGEN_Processor extends ProcessorModel {
+
+        SMIGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
+            super(programName, xmlFileName, ocssw);
+            setOpenInSeadas(true);
+            addPropertyChangeListener("prod", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    if (ifileName != null) {
+                        String oldProdValue = (String) propertyChangeEvent.getOldValue();
+                        String newProdValue = (String) propertyChangeEvent.getNewValue();
+                        String[] additionalOptions = {"--suite=" + newProdValue, "--resolution=" + getParamValue("resolution")};
+                        //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                        String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                        updateOFileInfo(ofileName);
+                    }
+                }
+            });
+
+            addPropertyChangeListener("resolution", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                    String ifileName = getParamValue(getPrimaryInputFileOptionName());
+                    String oldResolutionValue = (String) propertyChangeEvent.getOldValue();
+                    String newResolutionValue = (String) propertyChangeEvent.getNewValue();
+                    String suite = getParamValue("prod");
+                    if (suite == null || suite.trim().length() == 0) {
+                        suite = "all";
+                    }
+                    String[] additionalOptions = {"--resolution=" + newResolutionValue, "--suite=" + suite};
+                    //String ofileName = SeadasFileUtils.findNextLevelFileName(getParamValue(getPrimaryInputFileOptionName()), programName, additionalOptions);
+                    String ofileName = ocssw.getOfileName(ifileName, additionalOptions);
+                    updateOFileInfo(ofileName);
+                }
+            });
+        }
+
+    }
 
 
     private static String getOfileForL2BinOcssw(String ifileOriginal, String ofilenameDefault) {
