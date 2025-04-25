@@ -2788,6 +2788,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return "";
         }
 
+        ofilenameDefault = ofilenameDefault.substring(ofilenameDefault.lastIndexOf(File.separator) + 1);
         // add the path
         File file = new File(ifileOriginal);
         if (file != null) {
