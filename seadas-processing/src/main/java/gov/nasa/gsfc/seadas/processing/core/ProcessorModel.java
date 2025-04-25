@@ -1541,6 +1541,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (!runProcessorToAutoPopulateL3mapgen) {
             return;
         }
+        if (OCSSW_L3mapgenController.getPreferenceAutoFillAll()  || OCSSW_L3mapgenController.getPreferenceAutoFillOther() ||
+                OCSSW_L3mapgenController.getPreferenceAutoFillProduct()) {
+            // stay;
+        } else {
+            return;
+        }
 
         if (!"l3mapgen".equalsIgnoreCase(programName)) {
             return;
@@ -1649,6 +1655,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private void updateL2BinParams() {
         if (!runProcessorToAutoPopulateL2bin) {
+            return;
+        }
+
+        if (OCSSW_L2binController.getPreferenceAutoFillAll()  || OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable() ||
+                OCSSW_L2binController.getPreferenceAutoFillEnable()|| OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
+            // stay;
+        } else {
             return;
         }
 
