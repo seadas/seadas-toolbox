@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
         position = 0,
         separatorAfter = 1)
 @NbBundle.Messages({
-        "CTL_ShowTutorialPlaylist08Action_DisplayName=SeaDAS Overview",
+        "CTL_ShowTutorialPlaylist08Action_DisplayName=View Full Playlist",
         "CTL_ShowTutorialPlaylist08Action_MenuText=View Full Playlist",
         "CTL_ShowTutorialPlaylist08Action_ShortDescription=Show YouTube playlist"
 })

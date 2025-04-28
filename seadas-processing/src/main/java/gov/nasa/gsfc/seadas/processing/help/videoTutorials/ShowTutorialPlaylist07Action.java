@@ -33,17 +33,14 @@ import java.awt.event.ActionEvent;
 @ActionID(category = "Video Tutorials Playlist", id = "ShowTutorialPlaylist07Action")
 @ActionRegistration(
         displayName = "#CTL_ShowTutorialPlaylist07Action_DisplayName",
-        menuText = "#CTL_ShowTutorialPlaylist07Action_MenuText",
-        popupText = "#CTL_ShowTutorialPlaylist07Action_ShortDescription",
-lazy = true)
+        popupText = "#CTL_ShowTutorialPlaylist07Action_ShortDescription")
 @ActionReference(
         path = "Menu/Video-Tutorials",
         position = 0,
         separatorAfter = 1)
 @NbBundle.Messages({
-        "CTL_ShowTutorialPlaylist07Action_DisplayName=All Videos",
-        "CTL_ShowTutorialPlaylist07Action_MenuText=View Full Playlist | All Videos",
-        "CTL_ShowTutorialPlaylist07Action_ShortDescription=Opens YouTube Playlist containing all SeaDAS Tutorial Videos"
+        "CTL_ShowTutorialPlaylist07Action_DisplayName=View Full Playlist | All Videos",
+        "CTL_ShowTutorialPlaylist07Action_ShortDescription=Opens YouTube playlist containing all SeaDAS tutorial videos"
 })
 
 public class ShowTutorialPlaylist07Action extends AbstractSnapAction implements  LookupListener, Presenter.Menu {
