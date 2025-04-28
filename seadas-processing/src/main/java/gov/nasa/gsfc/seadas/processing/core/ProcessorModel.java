@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.Version;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.*;
@@ -13,7 +12,6 @@ import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
 import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.util.Dialogs;
@@ -61,7 +59,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private boolean workingUpdateOfile = false;
 
-    protected String programName;
+    private String programName;
     String ofileNameDefault = "";
     protected ParamList paramList;
     private boolean acceptsParFile;
@@ -111,14 +109,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private String[] cmdArraySuffix;
 
     boolean isIfileValid = false;
-    private static OCSSW ocssw;
+    public static OCSSW ocssw;
     private String fileExtensions = null;
 
     FileInfo inputFileInfo;
 
     public ProcessorModel(String name, OCSSW ocssw) {
 
-        programName = name;
+        setProgramName(name);
         this.setOcssw(ocssw);
         acceptsParFile = false;
         hasGeoFile = false;
@@ -133,7 +131,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         setSubPanel4Title("");
         setNumColumns(4);
         setColumnWidth(20);
-        processorID = ProcessorTypeInfo.getProcessorID(programName);
+        processorID = ProcessorTypeInfo.getProcessorID(getProgramName());
         primaryOptions = new HashSet<String>();
         primaryOptions.add("ifile");
         primaryOptions.add("ofile");
@@ -401,7 +399,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         if (!ignore) {
             updateParamInfo(currentOption.getName(), newValue);
-            if ("l2bin".equalsIgnoreCase(programName)) {
+            if ("l2bin".equalsIgnoreCase(getProgramName())) {
                 if (ifileChanged) {
                     updateL2BinParams();
 //                    updateParamsWithProgressMonitor("Re-Initializing with input file '" + getPrimaryInputFileOptionName() + "'");
@@ -410,7 +408,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                    updateParamsWithProgressMonitor("Reconfiguring with suite '" + getParamInfo("suite").getValue());
                 }
             }
-            if ("l3mapgen".equalsIgnoreCase(programName)) {
+            if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
                 if (ifileChanged) {
                     updateL3MapgenParams();
 //                    updateParamsWithProgressMonitor("Re-initializing with input file '" + getPrimaryInputFileOptionName() + "'");
@@ -481,7 +479,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public void updateParamsWithProgressMonitor(String progressMonitorMessage) {
         if (!progressMonitorIsRunning) {
             progressMonitorIsRunning = true;
-            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), programName) {
+            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), getProgramName()) {
 
                 @Override
                 protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
@@ -492,10 +490,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
                     try {
-                        if ("l2bin".equalsIgnoreCase(programName)) {
+                        if ("l2bin".equalsIgnoreCase(getProgramName())) {
                             updateL2BinParams();
                         }
-                        if ("l3mapgen".equalsIgnoreCase(programName)) {
+                        if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
                             updateL3MapgenParams();
                         }
 
@@ -531,7 +529,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (!progressMonitorIsRunning) {
             progressMonitorIsRunning = true;
 
-            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), programName) {
+            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), getProgramName()) {
 
                 @Override
                 protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
@@ -578,7 +576,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public boolean updateIFileInfo(String ifileName) {
 
 
-        if (programName != null && (programName.equals("multilevel_processor"))) {
+        if (getProgramName() != null && (getProgramName().equals("multilevel_processor"))) {
             return true;
         }
 
@@ -593,11 +591,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         inputFileInfo = new FileInfo(ifile.getParent(), ifile.getName(), ocssw);
 
-        if (programName != null && verifyIFilePath(ifileName)) {
+        if (getProgramName() != null && verifyIFilePath(ifileName)) {
 
-            if ("l3mapgen".equalsIgnoreCase(programName)) {
+            if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
 
-                ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+                ofileNameDefault = ocssw.getOfileName(ifileName, getProgramName());
 
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
@@ -616,7 +614,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String west = getParamValue("west");
                     String east = getParamValue("east");
 
-                    String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, programName, resolution, oformat, product, projection, interp, north, south, west, east);
+                    String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
 
                     updateOFileInfo(ofileName);
 
@@ -625,9 +623,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
 
 
-            } else if ("l2bin".equalsIgnoreCase(programName)) {
+            } else if ("l2bin".equalsIgnoreCase(getProgramName())) {
 
-                ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+                ofileNameDefault = ocssw.getOfileName(ifileName, getProgramName());
 
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
@@ -643,7 +641,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String south = getParamValue("latsouth");
                     String west = getParamValue("lonwest");
                     String east = getParamValue("loneast");
-                    String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+                    String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, l3bprod, suite, prodtype, north, south, west, east);
 
                     updateOFileInfo(ofileName);
 
@@ -653,9 +651,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-            } else if ("l3bin".equalsIgnoreCase(programName)) {
+            } else if ("l3bin".equalsIgnoreCase(getProgramName())) {
 
-                ofileNameDefault = ocssw.getOfileName(ifileName, programName);
+                ofileNameDefault = ocssw.getOfileName(ifileName, getProgramName());
 
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
@@ -670,7 +668,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String west = getParamValue("lonwest");
                     String east = getParamValue("loneast");
 
-                    String ofileName = getOfileForL3BinWrapper(ifileName, ofileNameDefault, programName, resolve, prod, north, south, west, east);
+                    String ofileName = getOfileForL3BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolve, prod, north, south, west, east);
 
                     updateOFileInfo(ofileName);
 
@@ -684,7 +682,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
             } else {
                 //ocssw.setIfileName(ifileName);
-                String ofileName = getOcssw().getOfileName(ifileName, programName);
+                String ofileName = getOcssw().getOfileName(ifileName, getProgramName());
 
                 //SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
                 if (ofileName != null) {
@@ -700,7 +698,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
             removePropertyChangeListeners(getPrimaryInputFileOptionName());
 
-            Answer answer = Dialogs.requestDecision(programName, "Cannot compute output file name. Would you like to continue anyway?", true, null);
+            Answer answer = Dialogs.requestDecision(getProgramName(), "Cannot compute output file name. Would you like to continue anyway?", true, null);
             switch (answer) {
                 case CANCELLED:
                     updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
@@ -717,7 +715,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     private void badIfileClearAndWarn(String ifileName) {
-        SimpleDialogMessage dialog = new SimpleDialogMessage(programName, "<html><br>&nbsp;&nbsp;&nbsp;&nbsp;WARNING!!<br> " +
+        SimpleDialogMessage dialog = new SimpleDialogMessage(getProgramName(), "<html><br>&nbsp;&nbsp;&nbsp;&nbsp;WARNING!!<br> " +
                 "&nbsp;&nbsp;&nbsp;&nbsp;File '" + ifileName + "' is an invalid input file. &nbsp;&nbsp;<br>&nbsp;</html>");
         dialog.setVisible(true);
         dialog.setEnabled(true);
@@ -766,7 +764,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 dialog.setEnabled(true);
             } else {
 
-                if ("l2bin".equalsIgnoreCase(programName) || "l3mapgen".equalsIgnoreCase(programName)) {
+                if ("l2bin".equalsIgnoreCase(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName())) {
                     System.out.println("current ifile =" + getParamInfo("ifile").getValue());
                     System.out.println("new ifile =" + value);
                     String currentIfile = getParamInfo("ifile").getValue();
@@ -1047,7 +1045,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public void updateParamValues(File selectedFile) {
 
-        if (selectedFile != null && programName != null && (l2prodProcessors.contains(programName) || "l3mapgen".equalsIgnoreCase(programName))) {
+        if (selectedFile != null && getProgramName() != null && (l2prodProcessors.contains(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName()))) {
             //   stay
         } else {
             return;
@@ -1097,7 +1095,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         ArrayList<String> products = new ArrayList<String>();
         if (ncFile != null) {
 
-            if ("l3mapgen".equalsIgnoreCase(programName) || "l3bin".equalsIgnoreCase(programName)) {
+            if ("l3mapgen".equalsIgnoreCase(getProgramName()) || "l3bin".equalsIgnoreCase(getProgramName())) {
                 try {
                     Attribute unitsAttribute = ncFile.findGlobalAttribute("units");
                     Array array = unitsAttribute.getValues();
@@ -1114,7 +1112,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 } catch (Exception e) {
                 }
 
-                if ("l3mapgen".equalsIgnoreCase(programName)) {
+                if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
 //                    updateParamsWithProgressMonitor("Something l3mapgen testing");
                     updateL3MapgenParams();
                 }
@@ -1137,7 +1135,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     for (Variable v : var) {
                         products.add(v.getShortName());
 
-                        if ("l2bin".equalsIgnoreCase(programName)) {
+                        if ("l2bin".equalsIgnoreCase(getProgramName())) {
                             if (v != null && v.getShortName().equalsIgnoreCase("l2_flags")) {
                                 updateFlagUseWrapper(v);
                             }
@@ -1153,22 +1151,22 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         String testThisToSeeIfProduct = getProdParamName();
 
         if (bandNames != null) {
-            if ("l2bin".equalsIgnoreCase(programName)) {
+            if ("l2bin".equalsIgnoreCase(getProgramName())) {
                 updateProductFieldWithBandNames("l3bprod", bandNames);
                 updateProductFieldWithBandNames("composite_prod", bandNames);
             }
 
-            if ("l3mapgen".equalsIgnoreCase(programName)) {
+            if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
                 updateProductFieldWithBandNames("product", bandNames);
             }
 
-            if ("l3bin".equalsIgnoreCase(programName)) {
+            if ("l3bin".equalsIgnoreCase(getProgramName())) {
                 updateProductFieldWithBandNames("prod", bandNames);
                 updateProductFieldWithBandNames("composite_prod", bandNames);
             }
         }
 
-        if ("l2bin".equalsIgnoreCase(programName) || "l3mapgen".equalsIgnoreCase(programName)) {
+        if ("l2bin".equalsIgnoreCase(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName())) {
             updateSuite(selectedFile);
         }
     }
@@ -1182,7 +1180,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String flagMeanings = array.toString();
 
             if (flagMeanings.length() > 0) {
-                if ("l2bin".equalsIgnoreCase(programName)) {
+                if ("l2bin".equalsIgnoreCase(getProgramName())) {
                     ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
                     if (flaguseParamInfo == null) {
                         flaguseParamInfo = new ParamInfo("flaguse");
@@ -1210,7 +1208,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } catch (Exception e) {
         }
 
-        if ("l2bin".equalsIgnoreCase(programName)) {
+        if ("l2bin".equalsIgnoreCase(getProgramName())) {
 //            updateParamsWithProgressMonitor("Flaguse testing");
             updateL2BinParams();
         }
@@ -1355,7 +1353,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
             selectExtractorProgram();
             isIfileValid = false;
-            if (programName != null && verifyIFilePath(ifileName)) {
+            if (getProgramName() != null && verifyIFilePath(ifileName)) {
                 //ocssw.setIfileName(ifileName);
                 String ofileName = new File(ifileName).getParent() + File.separator + getOcssw().getOfileName(ifileName);
                 //SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
@@ -1373,7 +1371,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
                 removePropertyChangeListeners(getPrimaryInputFileOptionName());
 
-                Answer answer = Dialogs.requestDecision(programName, "Cannot compute output file name. Would you like to continue anyway?", true, null);
+                Answer answer = Dialogs.requestDecision(getProgramName(), "Cannot compute output file name. Would you like to continue anyway?", true, null);
                 switch (answer) {
                     case CANCELLED:
                         updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
@@ -1389,25 +1387,25 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String xmlFileName = ocssw.getXmlFileName();
             if (missionName != null && fileType != null) {
                 if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
-                    programName = L1AEXTRACT_MODIS;
+                    setProgramName(L1AEXTRACT_MODIS);
                     xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
                 } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
-                    programName = L1AEXTRACT_SEAWIFS;
+                    setProgramName(L1AEXTRACT_SEAWIFS);
                     xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
                 } else if ((missionName.indexOf("VIIRS") != -1
                         || missionName.indexOf("VIIRSJ1") != -1
                         || missionName.indexOf("VIIRSJ2") != -1)
                         && fileType.indexOf("1A") != -1) {
-                    programName = L1AEXTRACT_VIIRS;
+                    setProgramName(L1AEXTRACT_VIIRS);
                     xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
                 } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
                         (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
-                    programName = L2EXTRACT;
+                    setProgramName(L2EXTRACT);
                     xmlFileName = L2EXTRACT_XML_FILE;
                 }
             }
-            setProgramName(programName);
-            ocssw.setProgramName(programName);
+            setProgramName(getProgramName());
+            ocssw.setProgramName(getProgramName());
             ocssw.setXmlFileName(xmlFileName);
             setPrimaryOptions(ParamUtils.getPrimaryOptions(xmlFileName));
         }
@@ -1542,7 +1540,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return;
         }
 
-        if (!"l3mapgen".equalsIgnoreCase(programName)) {
+        if (!"l3mapgen".equalsIgnoreCase(getProgramName())) {
             return;
         }
 
@@ -1652,7 +1650,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return;
         }
 
-        if (!"l2bin".equalsIgnoreCase(programName)) {
+        if (!"l2bin".equalsIgnoreCase(getProgramName())) {
             return;
         }
 
@@ -1797,7 +1795,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         String executable = thisProgramName;
-        if (thisProgramName.equalsIgnoreCase(programName)) {
+        if (thisProgramName.equalsIgnoreCase(getProgramName())) {
 //            System.out.println("I am " + thisProgramName);
         }
 //        System.out.println("programName=" + programName);
@@ -1979,7 +1977,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         ArrayList<String> suitesArrayList = new ArrayList();
 
         try {
-            suitesByMission = getSuites(selectedFile, missionDir, programName);
+            suitesByMission = getSuites(selectedFile, missionDir, getProgramName());
             if (suitesByMission != null && suitesByMission.length > 0) {
                 for (String suite : suitesByMission) {
                     if (suite != null && suite.trim().length() > 0) {
@@ -1991,7 +1989,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         try {
-            suitesByCommon = getSuites(selectedFile, commonDir, programName);
+            suitesByCommon = getSuites(selectedFile, commonDir, getProgramName());
             if (suitesByCommon != null && suitesByCommon.length > 0) {
                 for (String suite : suitesByCommon) {
                     if (suite != null && suite.trim().length() > 0) {
@@ -2003,7 +2001,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         try {
-            suitesBySubSensor = getSuites(selectedFile, subSensorDir, programName);
+            suitesBySubSensor = getSuites(selectedFile, subSensorDir, getProgramName());
             if (suitesBySubSensor != null && suitesBySubSensor.length > 0) {
                 for (String suite : suitesBySubSensor) {
                     if (suite != null && suite.trim().length() > 0) {
@@ -2119,7 +2117,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String west = getParamValue("lonwest");
             String east = getParamValue("loneast");
 
-            String ofileName = getOfileForL3BinWrapper(ifileName, ofileNameDefault, programName, resolve, prod, north, south, west, east);
+            String ofileName = getOfileForL3BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolve, prod, north, south, west, east);
 
             updateOFileInfo(ofileName);
 
@@ -2142,7 +2140,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String west = getParamValue("lonwest");
             String east = getParamValue("loneast");
 
-            String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, programName, resolution, l3bprod, suite, prodtype, north, south, west, east);
+            String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, l3bprod, suite, prodtype, north, south, west, east);
 
             updateOFileInfo(ofileName);
 
@@ -2172,7 +2170,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                updateParamInfo("projection", projectionParamInfo.getDefaultValue());
             }
 
-            String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, programName, resolution, oformat, product, projection, interp, north, south, west, east);
+            String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
 
 
             updateOFileInfo(ofileName);
@@ -2530,7 +2528,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
 
             String executable = thisProgramName;
-            if (thisProgramName.equalsIgnoreCase(programName)) {
+            if (thisProgramName.equalsIgnoreCase(getProgramName())) {
 //                System.out.println("I am " + thisProgramName);
             }
 //            System.out.println("programName=" + programName);

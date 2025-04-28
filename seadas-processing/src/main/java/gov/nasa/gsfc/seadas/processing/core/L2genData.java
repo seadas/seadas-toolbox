@@ -203,6 +203,8 @@ public class L2genData implements SeaDASProcessorModel {
         return mode;
     }
 
+    public String getProgramName(){return "l2gen";};
+
     public void setMode(Mode mode) {
 
         this.mode = mode;

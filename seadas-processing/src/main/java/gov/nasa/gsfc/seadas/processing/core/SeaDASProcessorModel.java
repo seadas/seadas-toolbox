@@ -22,4 +22,5 @@ public interface SeaDASProcessorModel {
     public boolean isMultipleInputFiles();
     public void updateParamValues(File selectedFile);
     public String getImplicitInputFileExtensions();
+    public String getProgramName();
 }
