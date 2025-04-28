@@ -34,6 +34,9 @@ public class L2genIfileSelector {
         fileSelector.setFileNameLabel(new JLabel(seaDASProcessorModel.getPrimaryInputFileOptionName()));
         fileSelector.getFileNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
+        fileSelector.getFileNameComboBox().addActionListener(e ->
+                System.out.println("ComboBox action: selected="
+                        + fileSelector.getSelectedFile()));
 
         addControlListeners();
         addEventListeners();
@@ -43,11 +46,15 @@ public class L2genIfileSelector {
         fileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
+                System.out.println("▶ selectionChanged control-listener fired; controlHandlerEnabled="
+                                + controlHandlerEnabled + ", selected=" + getSelectedIFileName());
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-                    disableEventHandler();
-                    //disableControlHandler();
+//                    disableEventHandler();
+                    disableControlHandler();
                     seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
+                    System.out.println("▶ model.param now = "
+                            + seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName()));
                     enableEventHandler();
                 }
             }
@@ -59,9 +66,10 @@ public class L2genIfileSelector {
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         String ifileName = seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName());
-                        //System.out.println("processor model property changed! ifileName in file selector " + ifileName);
+                        System.out.println("▶ propertyChange listener fired; eventHandlerEnabled="
+                                + eventHandlerEnabled + ", newValue=" + ifileName);
                         File iFile = new File(ifileName);
-                        if (isEventHandlerEnabled() || ifileName.isEmpty()) {
+                        if (isEventHandlerEnabled() && ! ifileName.isEmpty()) {
                             //disableEventHandler();
                             disableControlHandler();
                             if (iFile.exists()) {

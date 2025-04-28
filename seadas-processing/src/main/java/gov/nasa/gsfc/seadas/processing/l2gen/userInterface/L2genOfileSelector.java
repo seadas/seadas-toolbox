@@ -9,6 +9,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.esa.snap.rcp.SnapApp;
 
+import static gov.nasa.gsfc.seadas.processing.core.ProcessorModel.ocssw;
+
 /**
  * Created by IntelliJ IDEA.
  * User: knowles
@@ -26,6 +28,11 @@ public class L2genOfileSelector {
 
     public L2genOfileSelector(SeaDASProcessorModel seaDASProcessorModel) {
         this.seaDASProcessorModel = seaDASProcessorModel;
+        seaDASProcessorModel.addPropertyChangeListener(
+                seaDASProcessorModel.getPrimaryOutputFileOptionName(),
+                evt -> {
+                    System.out.println("▶ O-file propertyChange fired; newValue=" + evt.getNewValue());
+                });
         outputFileOptionName = seaDASProcessorModel.getPrimaryOutputFileOptionName();
         if(outputFileOptionName == null) {
             outputFileOptionName = DEFAULT_OUTPUT_FILE_OPTION_NAME;
@@ -36,20 +43,41 @@ public class L2genOfileSelector {
 
         addControlListeners();
         addEventListeners();
-    }
-
-    private void addControlListeners() {
-        fileSelector.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (isControlHandlerEnabled()) {
-                    seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryOutputFileOptionName(), fileSelector.getFileName());
-                }
+        String ifileOpt = seaDASProcessorModel.getPrimaryInputFileOptionName();
+        seaDASProcessorModel.addPropertyChangeListener(ifileOpt, evt -> {
+            String ifile = (String) evt.getNewValue();
+            if (ifile != null && ! ifile.isEmpty()) {
+                // 1) got new I-file name
+                String computedOfile = ocssw.getOfileName(seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName()), seaDASProcessorModel.getProgramName());
+                // 2) push into model → will fire your existing model→control listener
+                seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryOutputFileOptionName(), computedOfile);
+                //seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryOutputFileOptionName(), fileSelector.getFileName());
             }
         });
-
     }
 
+//    private void addControlListeners() {
+//        fileSelector.addPropertyChangeListener(new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                System.out.println("▶ ofile control-listener fired; evt="
+//                        + evt.getPropertyName()
+//                        + ", filename=" + fileSelector.getFileName());
+//                if (isControlHandlerEnabled()) {
+//                    seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryOutputFileOptionName(), fileSelector.getFileName());
+//                }
+//            }
+//        });
+//    }
+
+    private void addControlListeners() {
+        // this listener picks up model→control changes and updates the UI field
+        seaDASProcessorModel.addPropertyChangeListener(seaDASProcessorModel.getPrimaryOutputFileOptionName(), evt -> {
+            disableControlHandler();
+            fileSelector.setFilename((String) evt.getNewValue());
+            enableControlHandler();
+        });
+    }
     private void addEventListeners() {
         seaDASProcessorModel.addPropertyChangeListener(seaDASProcessorModel.getPrimaryOutputFileOptionName(), new PropertyChangeListener() {
             @Override

@@ -367,10 +367,23 @@ public class SeadasFileSelector {
             Dimension size = new Dimension();
             size.width = scrollPane.getPreferredSize().width;
             final int boxItemCount = box.getModel().getSize();
-            for (int i = 0; i < boxItemCount; i++) {
-                Product product = (Product) box.getModel().getElementAt(i);
-                final JLabel label = new JLabel();
-                label.setText(product.getDisplayName());
+//            for (int i = 0; i < boxItemCount; i++) {
+//                Product product = (Product) box.getModel().getElementAt(i);
+//                final JLabel label = new JLabel();
+//                label.setText(product.getDisplayName());
+//                size.width = Math.max(label.getPreferredSize().width, size.width);
+//            }
+            for (int i = 0; i < box.getModel().getSize(); i++) {
+                Object item = box.getModel().getElementAt(i);
+                String text;
+                if (item instanceof Product) {
+                    Product product = (Product) item;
+                    text = product.getDisplayName();
+                } else {
+                    // for File, shell-folder proxies, etc.
+                    text = (item == null ? "" : item.toString());
+                }
+                JLabel label = new JLabel(text);
                 size.width = Math.max(label.getPreferredSize().width, size.width);
             }
             size.height = scrollPane.getPreferredSize().height;
