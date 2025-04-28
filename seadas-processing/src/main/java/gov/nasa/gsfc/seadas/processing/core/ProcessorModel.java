@@ -1696,56 +1696,56 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (workingDir != null && workingDir.exists()) {
 
 
-                    File l3mapgenConfigParFile = new File(workingDir, L2BIN_PROGRAM_NAME + "_" + ifile.getName() +"_config_params.par");
+                    File l2binConfigParFile = new File(workingDir, L2BIN_PROGRAM_NAME + "_" + ifile.getName() +"_config_params.par");
                     try {
                         if (textFile != null) {
-                            createL2binAuxParFile(L2BIN_PROGRAM_NAME, textFile, suite, l3mapgenConfigParFile);
+                            createL2binAuxParFile(L2BIN_PROGRAM_NAME, textFile, suite, l2binConfigParFile);
                         } else {
-                            createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, l3mapgenConfigParFile);
+                            createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, l2binConfigParFile);
                         }
-                        if (l3mapgenConfigParFile.exists()) {
+                        if (l2binConfigParFile.exists()) {
 
                             boolean precedence = OCSSW_L2binController.getPreferenceAutoFillPrecedence();
                             boolean passAll = OCSSW_L2binController.getPreferencePassAll();
 
                             if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceFlaguseAutoFillEnable()) {
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "flaguse", OCSSW_L2binController.getPreferenceFlaguse(), precedence, passAll);
                             }
 
                             if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceL3bprodAutoFillEnable()) {
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), OCSSW_L2binController.PROPERTY_L2BIN_L3BPROD_LABEL, OCSSW_L2binController.getPreferenceL3bprod(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "output_wavelengths", OCSSW_L2binController.getPreferenceOutputWavelengths(), precedence, passAll);
                             }
 
                             if (OCSSW_L2binController.getPreferenceAutoFillAll() || OCSSW_L2binController.getPreferenceAutoFillEnable()) {
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "qual_prod", "", precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "qual_max", "", precedence, passAll);
-                                updateParamInfosFromAuxParFile(l3mapgenConfigParFile.getAbsolutePath(), "minobs", "", precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "resolution", OCSSW_L2binController.getPreferenceResolution(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "area_weighting", OCSSW_L2binController.getPreferenceAreaWeighting(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "latnorth", OCSSW_L2binController.getPreferenceLatnorth(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "latsouth", OCSSW_L2binController.getPreferenceLatsouth(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "lonwest", OCSSW_L2binController.getPreferenceLonwest(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "loneast", OCSSW_L2binController.getPreferenceLoneast(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "sday", OCSSW_L2binController.getPreferenceSday(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "eday", OCSSW_L2binController.getPreferenceEday(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "night", OCSSW_L2binController.getPreferenceNight(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "delta_crossing_time", OCSSW_L2binController.getPreferenceDeltaCross(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "prodtype", OCSSW_L2binController.getPreferenceProdtype(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "rowgroup", OCSSW_L2binController.getPreferenceRowGroup(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "composite_prod", OCSSW_L2binController.getPreferenceCompositeProd(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "composite_scheme", OCSSW_L2binController.getPreferenceCompositeScheme(), precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "qual_prod", "", precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "qual_max", "", precedence, passAll);
+                                updateParamInfosFromAuxParFile(l2binConfigParFile.getAbsolutePath(), "minobs", "", precedence, passAll);
                             }
                         }
                     } catch (IOException e) {
-                        SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + l3mapgenConfigParFile.getAbsolutePath());
+                        SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + l2binConfigParFile.getAbsolutePath());
                         dialog.setVisible(true);
                         dialog.setEnabled(true);
                     }
 
 
 
-                    l3mapgenConfigParFile.delete();
+                    l2binConfigParFile.delete();
 
                 }
 
@@ -2336,190 +2336,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             // todo commenting out this to test
 //            updateFlagUse(DEFAULT_PAR_FILE_NAME);
         }
-
-//        @Override
-//        public void updateParamInfo(ParamInfo currentOption, String newValue) {
-//
-////            if (currentOption.getName().equals("suite")) {
-////                updateFlagUse(PAR_FILE_PREFIX + newValue + ".par");
-////            }
-//            super.updateParamInfo(currentOption, newValue);
-//            if (currentOption.getName().equals("suite")  || currentOption.getName().equals("ifile")) {
-//                updateFlagUse(PAR_FILE_PREFIX + newValue + ".par");
-//            }
-//        }
-
-//        private void updateFlagUse(String parFileName) {
-//
-//            ParamInfo ifileParamInfo = paramList.getInfo("ifile");
-//            if (ifileParamInfo != null) {
-//                File ifile = new File(ifileParamInfo.getValue());
-//
-//                if (ifile != null && ifile.exists()) {
-//                    String suite = null;
-//                    ParamInfo suiteParamInfo = paramList.getInfo("suite");
-//                    if (suiteParamInfo != null) {
-//                        suite = suiteParamInfo.getValue();
-//                    }
-//
-//                    final String L2BIN_PROGRAM_NAME = "l2bin";
-//                    File dataDir = SystemUtils.getApplicationDataDir();
-//                    File l2binAuxDir = new File(dataDir, L2BIN_PROGRAM_NAME);
-//                    l2binAuxDir.mkdirs();
-//
-//                    File auxParFile = new File(l2binAuxDir, L2BIN_PROGRAM_NAME + "_params.par");
-//                    try {
-//                        createL2binAuxParFile(L2BIN_PROGRAM_NAME, ifile, suite, auxParFile);
-//                        if (auxParFile.exists()) {
-//                            updateParamInfosFromL2binAuxParFile(auxParFile.getAbsolutePath());
-//                        }
-//                    } catch (IOException e) {
-//                        SimpleDialogMessage dialog = new SimpleDialogMessage(L2BIN_PROGRAM_NAME + " - Warning", "Failed to initialize default params from file: " + auxParFile.getAbsolutePath());
-//                        dialog.setVisible(true);
-//                        dialog.setEnabled(true);
-//                    }
-//
-//
-//// todo the xml file for l2bin is badly fomatted for V2025.0, if they fix this then consider using xml file in command block below to potentially fill more parameters
-//
-////                    File xmlFile = new File(l2binAuxDir, "l2bin" + "_params.xml");
-////
-////                    try {
-//////                        InputStream paramInfoStream = new FileInputStream(xmlFile);
-////                        InputStream paramInfoStream = getParamInfoInputStream("l2bin", ifile, suite, xmlFile);
-////                        if (auxParFile.exists()) {
-////                            updateParamInfosWithXml(paramInfoStream);
-////                        }
-////                    } catch (IOException e) {
-////                        SimpleDialogMessage dialog = new SimpleDialogMessage("l2bin - Warning", "Failed to initialize default params from file: " + xmlFile.getAbsolutePath());
-////                        dialog.setVisible(true);
-////                        dialog.setEnabled(true);
-////                    }
-//                }
-//            }
-//
-//
-//
-//            // OLD CODE
-////            String currentFlagUse = SeadasFileUtils.getKeyValueFromParFile(new File(missionDir, parFileName), "flaguse");
-////            if (currentFlagUse == null) {
-////                currentFlagUse = DEFAULT_FLAGUSE;
-////            }
-////            if (currentFlagUse != null) {
-////                ArrayList<ParamValidValueInfo> validValues = getParamInfo("flaguse").getValidValueInfos();
-////                for (ParamValidValueInfo paramValidValueInfo : validValues) {
-////                    if (currentFlagUse.contains(paramValidValueInfo.getValue().trim())) {
-////                        paramValidValueInfo.setSelected(true);
-////                    } else {
-////                        paramValidValueInfo.setSelected(false);
-////                    }
-////                }
-////                super.updateParamInfo("flaguse", currentFlagUse);
-////                fireEvent("flaguse", null, currentFlagUse);
-////            }
-//        }
-//
-//
-//
-//
-//
-//
-//        private void createL2binAuxParFile(String thisProgramName, File ifile, String suite, File parfile) throws IOException {
-//
-//            if (parfile.exists()) {
-//                parfile.delete();
-//            }
-//
-//            String executable = thisProgramName;
-//            if (thisProgramName.equalsIgnoreCase(programName)) {
-//                System.out.println("I am " + thisProgramName);
-//            }
-//            System.out.println("programName=" + programName);
-//
-//            ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
-//
-//            processorModel.setAcceptsParFile(true);
-//
-//            processorModel.setAcceptsParFile(true);
-//            processorModel.addParamInfo("ifile", ifile.getAbsolutePath(), ParamInfo.Type.IFILE);
-//
-//            if (suite != null) {
-//                processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
-//            }
-//
-//
-//            processorModel.addParamInfo("-dump_options_paramfile", parfile.getAbsolutePath(), ParamInfo.Type.OFILE);
-//
-//            try {
-//                Process p = ocssw.executeSimple(processorModel);
-//                ocssw.waitForProcess();
-//                if (ocssw instanceof OCSSWLocal) {
-//                    File tmpParFileToDel = new File(ParFileManager.tmpParFileToDelString);
-//                    tmpParFileToDel.delete();
-//                }
-//
-//                if (ocssw.getProcessExitValue() != 0) {
-//                    throw new IOException(thisProgramName + " failed to run");
-//                }
-//
-//                ocssw.getIntermediateOutputFiles(processorModel);
-//
-//                if (!parfile.exists()) {
-//                    //SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
-//                    Dialogs.showError("SEVERE: " + parfile.getAbsolutePath() + " not found!");
-//
-//                    throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
-//                } else {
-////                    return new FileInputStream(parfile);
-//                }
-//
-//            } catch (IOException e) {
-//                throw new IOException("problem creating Parameter file: " + parfile.getAbsolutePath());
-//            }
-//        }
-//
-//
-//
-//
-//        public void updateParamInfosFromL2binAuxParFile(String parfile) throws IOException  {
-//
-//            BufferedReader br = new BufferedReader(new FileReader(parfile));
-//            try {
-//                StringBuilder sb = new StringBuilder();
-//                String line = br.readLine();
-//
-//                while (line != null) {
-//                    sb.append(line);
-//                    sb.append(System.lineSeparator());
-//                    line = br.readLine();
-//                    System.out.println(line);
-//
-//                    if (line != null) {
-//                        String[] values = line.split("=");
-//                        if (values != null && values.length == 2) {
-//                            String name = values[0].trim();
-//                            String value = values[1].trim();
-//                            System.out.println("name=" + name + "  value=" + value);
-//
-//                            if ("flaguse".equals(name)) {
-//                                ParamInfo flaguseParamInfo = paramList.getInfo("flaguse");
-//                                String originalFlaguse = flaguseParamInfo.getValue();
-////                                flaguseParamInfo.setValue(value);
-//                                super.updateParamInfo("flaguse", value);
-//                                fireEvent("flaguse", originalFlaguse, value);
-//                            }
-//                        }
-//                    }
-//
-//                }
-////                String everything = sb.toString();
-//            } finally {
-//                br.close();
-//
-//            }
-//
-//        }
-
 
         private InputStream getParamInfoInputStream(String thisProgramName, File ifile, String suite, File xmlFile) throws IOException {
 
