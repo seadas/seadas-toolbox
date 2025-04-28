@@ -30,34 +30,34 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the video playlist.
  */
-@ActionID(category = "Video Tutorials Playlist", id = "ShowTutorialPlaylist07Action")
+@ActionID(category = "Video Tutorials Playlist", id = "ShowPlaylist01Action")
 @ActionRegistration(
-        displayName = "#CTL_ShowTutorialPlaylist07Action_DisplayName",
-        popupText = "#CTL_ShowTutorialPlaylist07Action_ShortDescription")
+        displayName = "#CTL_ShowPlaylist01Action_DisplayName",
+        popupText = "#CTL_ShowPlaylist01Action_ShortDescription")
 @ActionReference(
-        path = "Menu/Video-Tutorials",
+        path = "Menu/Video-Tutorials/Installation",
         position = 0,
         separatorAfter = 1)
 @NbBundle.Messages({
-        "CTL_ShowTutorialPlaylist07Action_DisplayName=View Full Playlist | All Videos",
-        "CTL_ShowTutorialPlaylist07Action_ShortDescription=Opens YouTube playlist containing all SeaDAS tutorial videos"
+        "CTL_ShowPlaylist01Action_DisplayName=PLAYLIST: Installation",
+        "CTL_ShowPlaylist01Action_ShortDescription=Opens YouTube playlist containing SeaDAS tutorial videos"
 })
 
-public class ShowTutorialPlaylist07Action extends AbstractSnapAction implements  LookupListener, Presenter.Menu {
+public class ShowPlaylist01Action extends AbstractSnapAction implements  LookupListener, Presenter.Menu {
 
-    private static final String DEFAULT_PAGE_URL = "https://youtube.com/playlist?list=PLf60TttfDm32bPGSmQ3q9SIbdArMDob6W";
+    private static final String DEFAULT_PAGE_URL = "https://youtube.com/playlist?list=PLf60TttfDm337toY554yD9fKf6moG_jxa";
 
     private final Lookup lookup;
 
-    public  ShowTutorialPlaylist07Action() {
+    public ShowPlaylist01Action() {
         this(null);
     }
 
-    public ShowTutorialPlaylist07Action(Lookup lookup) {
+    public ShowPlaylist01Action(Lookup lookup) {
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
-        putValue(NAME, Bundle.CTL_ShowTutorialPlaylist07Action_DisplayName());
-        putValue(SHORT_DESCRIPTION, Bundle.CTL_ShowTutorialPlaylist07Action_ShortDescription());
+        putValue(NAME, Bundle.CTL_ShowPlaylist01Action_DisplayName());
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_ShowPlaylist01Action_ShortDescription());
         this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
         updateEnabledState();
     }
@@ -71,7 +71,7 @@ public class ShowTutorialPlaylist07Action extends AbstractSnapAction implements 
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorial.playlist.07", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.playlist01", DEFAULT_PAGE_URL));
         updateEnabledState();
     }
 

@@ -16,11 +16,13 @@
 package gov.nasa.gsfc.seadas.processing.help.videoTutorials;
 
 import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
+import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.*;
+import org.openide.util.actions.Presenter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -28,24 +30,38 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the video playlist.
  */
-@ActionID(category = "Video Tutorial", id = "ShowTutorialPlaylist06Action")
+@ActionID(category = "Video Tutorials Playlist", id = "ShowPlaylist06Action")
 @ActionRegistration(
-        displayName = "#CTL_ShowTutorialPlaylist06Action_DisplayName",
-        menuText = "#CTL_ShowTutorialPlaylist06Action_MenuText",
-        popupText = "#CTL_ShowTutorialPlaylist06Action_ShortDescription")
+        displayName = "#CTL_ShowPlaylist06Action_DisplayName",
+        popupText = "#CTL_ShowPlaylist06Action_ShortDescription")
 @ActionReference(
         path = "Menu/Video-Tutorials",
         separatorBefore = 1999,
         position = 2000)
 @NbBundle.Messages({
-        "CTL_ShowTutorialPlaylist06Action_DisplayName=SeaDAS 9.2.0 | What's New",
-        "CTL_ShowTutorialPlaylist06Action_MenuText=What's New: SeaDAS 9.2.0",
-        "CTL_ShowTutorialPlaylist06Action_ShortDescription=Show YouTube playlist"
+        "CTL_ShowPlaylist06Action_DisplayName=SeaDAS 9.2.0 | What's New",
+        "CTL_ShowPlaylist06Action_ShortDescription=Opens YouTube playlist containing SeaDAS What's New tutorial videos"
 })
 
-public class ShowTutorialPlaylist06Action extends AbstractAction {
+public class ShowPlaylist06Action extends AbstractSnapAction implements  LookupListener, Presenter.Menu {
 
     private static final String DEFAULT_PAGE_URL = "https://youtube.com/playlist?list=PLf60TttfDm33yQoYD4DBbXOFtsUMar72J";
+
+    private final Lookup lookup;
+
+    public ShowPlaylist06Action() {
+        this(null);
+    }
+
+    public ShowPlaylist06Action(Lookup lookup) {
+        putValue(ACTION_COMMAND_KEY, getClass().getName());
+        putValue(SELECTED_KEY, false);
+        putValue(NAME, Bundle.CTL_ShowPlaylist06Action_DisplayName());
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_ShowPlaylist06Action_ShortDescription());
+        this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
+        updateEnabledState();
+    }
+
 
     /**
      * Launches the default browser to display the playlist.
@@ -55,6 +71,26 @@ public class ShowTutorialPlaylist06Action extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorial.playlist.06", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.playlist06", DEFAULT_PAGE_URL));
+        updateEnabledState();
     }
+
+
+    protected void updateEnabledState() {
+        super.setEnabled(true);
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ignored) {
+        updateEnabledState();
+    }
+
+
+    @Override
+    public JMenuItem getMenuPresenter() {
+        JMenuItem menuItem = new JMenuItem(this);
+        menuItem.setIcon(null);
+        return menuItem;
+    }
+
 }
