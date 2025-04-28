@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package gov.nasa.gsfc.seadas.processing.help.ocsswDocumentation;
+package gov.nasa.gsfc.seadas.processing.help.videoTutorials;
 
 import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
 import org.esa.snap.runtime.Config;
@@ -25,34 +25,38 @@ import org.openide.util.NbBundle;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-//import org.esa.snap;
-
 /**
- * This action launches the default browser to display the project web page.
+ * This action launches the default browser to display video.
  */
-@ActionID(category = "Help", id = "ShowWebObpgAlgorithmDescriptionsAction")
+@ActionID(category = "Video Tutorial", id = "ShowTutorialVideos01Action")
 @ActionRegistration(
-        displayName = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText",
-        popupText = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText")
+        displayName = "#CTL_ShowTutorialVideos01Action_DisplayName",
+        menuText = "#CTL_ShowTutorialVideos01Action_MenuText",
+        popupText = "#CTL_ShowTutorialVideos01Action_ShortDescription")
 @ActionReference(
-        path = "Menu/Help/SeaDAS",
-        position = 100)
+//        path = "Menu/Help/SeaDAS",
+        path = "Menu/Video-Tutorials/Overview",
+        position = 1000)
 @NbBundle.Messages({
-        "CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText=OBPG Algorithm Descriptions",
-        "CTL_ShowWebObpgAlgorithmDescriptionsAction_ShortDescription=Open the NASA Ocean Color Algorithm Descriptions web page"
+        "CTL_ShowTutorialVideos01Action_DisplayName=Overview SeaDAS | Introduction 30th Anniversary",
+        "CTL_ShowTutorialVideos01Action_MenuText=SeaDAS Introduction: 30th Anniversary",
+        "CTL_ShowTutorialVideos01Action_ShortDescription=Show YouTube playlist"
 })
-public class ShowWebObpgAlgorithmDescriptionsAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://oceancolor.gsfc.nasa.gov/resources/atbd/";
+
+
+public class ShowTutorialVideos01Action extends AbstractAction {
+
+    private static final String DEFAULT_PAGE_URL = "https://www.youtube.com/watch?v=GZG2saE9ecc";
 
     /**
-     * Launches the default browser to display the web site.
+     * Launches the default browser to display the playlist.
      * Invoked when a command action is performed.
      *
      * @param event the command event.
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.showWebObpgAlgorithmDescriptions", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorial.videos.01", DEFAULT_PAGE_URL));
     }
 }

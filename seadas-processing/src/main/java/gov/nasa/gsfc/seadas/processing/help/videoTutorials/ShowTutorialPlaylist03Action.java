@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package gov.nasa.gsfc.seadas.processing.help.ocsswDocumentation;
+package gov.nasa.gsfc.seadas.processing.help.videoTutorials;
 
 import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
 import org.esa.snap.runtime.Config;
@@ -25,34 +25,36 @@ import org.openide.util.NbBundle;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-//import org.esa.snap;
-
 /**
- * This action launches the default browser to display the project web page.
+ * This action launches the default browser to display the video playlist.
  */
-@ActionID(category = "Help", id = "ShowWebObpgProductDefinitionsAction")
+@ActionID(category = "Video Tutorials Playlist", id = "ShowTutorialPlaylist03Action")
 @ActionRegistration(
-        displayName = "#CTL_ShowWebObpgProductDefinitionsAction_MenuText",
-        popupText = "#CTL_ShowWebObpgProductDefinitionsAction_MenuText")
+        displayName = "#CTL_ShowTutorialPlaylist03Action_DisplayName",
+        menuText = "#CTL_ShowTutorialPlaylist03Action_MenuText",
+        popupText = "#CTL_ShowTutorialPlaylist03Action_ShortDescription")
 @ActionReference(
-        path = "Menu/Help/SeaDAS/Documentation",
-        position = 10)
+        path = "Menu/Video-Tutorials/Science Processors (Installation)",
+        separatorAfter = 1,
+        position = 0)
 @NbBundle.Messages({
-        "CTL_ShowWebObpgProductDefinitionsAction_MenuText=OBPG Product Definitions",
-        "CTL_ShowWebObpgProductDefinitionsAction_ShortDescription=Open the NASA Ocean Color OBPG Product Definitions web page"
+        "CTL_ShowTutorialPlaylist03Action_DisplayName=Install Science Processors",
+        "CTL_ShowTutorialPlaylist03Action_MenuText=View Full Playlist",
+        "CTL_ShowTutorialPlaylist03Action_ShortDescription=Show YouTube playlist"
 })
-public class ShowWebObpgProductDefinitionsAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://oceancolor.gsfc.nasa.gov/products/";
+public class ShowTutorialPlaylist03Action extends AbstractAction {
+
+    private static final String DEFAULT_PAGE_URL = "https://youtube.com/playlist?list=PLf60TttfDm30AkfKNAJU6lW_YZODNCFZB&si=j1zUL-LpTnXpPck4";
 
     /**
-     * Launches the default browser to display the web site.
+     * Launches the default browser to display the playlist.
      * Invoked when a command action is performed.
      *
      * @param event the command event.
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.showWebObpgProductDefinitions", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorial.playlist.03", DEFAULT_PAGE_URL));
     }
 }

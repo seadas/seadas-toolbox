@@ -54,7 +54,7 @@ public class OBDAACCloudDataBrowser extends JFrame {
     );
 
     public OBDAACCloudDataBrowser() {
-        setTitle("OB_CLOUD Explorer – Harmony Powered");
+        setTitle("CLOUD Data Browser – Harmony Powered");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 650);
         setLayout(new GridBagLayout());

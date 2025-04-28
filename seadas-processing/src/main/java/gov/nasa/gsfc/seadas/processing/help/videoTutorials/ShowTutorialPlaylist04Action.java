@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package gov.nasa.gsfc.seadas.processing.help.dataAccess;
+package gov.nasa.gsfc.seadas.processing.help.videoTutorials;
 
 import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
 import org.esa.snap.runtime.Config;
@@ -25,34 +25,36 @@ import org.openide.util.NbBundle;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-//import org.esa.snap;
-
 /**
- * This action launches the default browser to display the project web page.
+ * This action launches the default browser to display the video playlist.
  */
-@ActionID(category = "Help", id = "ShowWebL12BrowserAction")
+@ActionID(category = "Video Tutorials Playlist", id = "ShowTutorialPlaylist04Action")
 @ActionRegistration(
-        displayName = "#CTL_ShowWebL12BrowserAction_MenuText",
-        popupText = "#CTL_ShowWebL12BrowserAction_MenuText")
+        displayName = "#CTL_ShowTutorialPlaylist04Action_DisplayName",
+        menuText = "#CTL_ShowTutorialPlaylist04Action_MenuText",
+        popupText = "#CTL_ShowTutorialPlaylist04Action_ShortDescription")
 @ActionReference(
-        path = "Menu/Help/SeaDAS/Data Access",
-        position = 30)
+        path = "Menu/Video-Tutorials/Science Processors",
+        separatorAfter = 1,
+        position = 0)
 @NbBundle.Messages({
-        "CTL_ShowWebL12BrowserAction_MenuText=Level 1 & 2 Browser",
-        "CTL_ShowWebL12BrowserAction_ShortDescription=Open the NASA ocean color Level 1 & 2 Browser web page"
+        "CTL_ShowTutorialPlaylist04Action_DisplayName=Science Processors",
+        "CTL_ShowTutorialPlaylist04Action_MenuText=View Full Playlist",
+        "CTL_ShowTutorialPlaylist04Action_ShortDescription=Show YouTube playlist"
 })
-public class ShowWebL12BrowserAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://oceancolor.gsfc.nasa.gov/cgi/browse.pl";
+public class ShowTutorialPlaylist04Action extends AbstractAction {
+
+    private static final String DEFAULT_PAGE_URL = "https://youtube.com/playlist?list=PLf60TttfDm33j85VSBc3sTDcAjtiZANjB";
 
     /**
-     * Launches the default browser to display the web site.
+     * Launches the default browser to display the playlist.
      * Invoked when a command action is performed.
      *
      * @param event the command event.
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.showWebLevel12Browser", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorial.playlist.04", DEFAULT_PAGE_URL));
     }
 }

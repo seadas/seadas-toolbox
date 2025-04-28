@@ -13,10 +13,10 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package gov.nasa.gsfc.seadas.processing.help;
+package gov.nasa.gsfc.seadas.processing.help.videoTutorials;
 
+import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
 import org.esa.snap.runtime.Config;
-//import org.esa.snap;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -27,31 +27,37 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * This action launches the default browser to display the project web page.
+ * This action launches the default browser to display video.
  */
-@ActionID(category = "Help", id = "ShowSeaDASVideosAction")
+@ActionID(category = "Video Tutorial", id = "ShowTutorialVideos02Action")
 @ActionRegistration(
-        displayName = "#CTL_ShowSeaDASVideosAction_MenuText",
-        popupText = "#CTL_ShowSeaDASVideosAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS",
-        position = 50)
-@NbBundle.Messages({
-        "CTL_ShowSeaDASVideosAction_MenuText=Video Tutorials",
-        "CTL_ShowSeaDASVideosAction_ShortDescription=Browse the SeaDAS video tutorials web page"
-})
-public class ShowSeadasVideosPageAction extends AbstractAction {
+        displayName = "#CTL_ShowTutorialVideos02Action_DisplayName",
+        menuText = "#CTL_ShowTutorialVideos02Action_MenuText",
+        popupText = "#CTL_ShowTutorialVideos02Action_ShortDescription")
 
-    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/tutorials/video_tutorials/";
+@ActionReferences({
+        @ActionReference(path = "Menu/Video-Tutorials/Installation", position = 10)
+})
+@NbBundle.Messages({
+        "CTL_ShowTutorialVideos02Action_DisplayName=Install SeaDAS on a Mac OS",
+        "CTL_ShowTutorialVideos02Action_MenuText=Install and Open SeaDAS (on a Mac OS)",
+        "CTL_ShowTutorialVideos02Action_ShortDescription=Show YouTube playlist"
+})
+
+
+
+public class ShowTutorialVideos02Action extends AbstractAction {
+
+    private static final String DEFAULT_PAGE_URL = "https://www.youtube.com/watch?v=xYjfd--JLFI";
 
     /**
-     * Launches the default browser to display the web site.
+     * Launches the default browser to display the playlist.
      * Invoked when a command action is performed.
      *
      * @param event the command event.
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.videoTutorials", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorial.videos.02", DEFAULT_PAGE_URL));
     }
 }

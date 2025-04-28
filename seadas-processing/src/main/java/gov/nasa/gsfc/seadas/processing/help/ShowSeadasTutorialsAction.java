@@ -13,37 +13,36 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package gov.nasa.gsfc.seadas.processing.help.ocsswDocumentation;
+package gov.nasa.gsfc.seadas.processing.help;
 
-import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
 import org.esa.snap.runtime.Config;
+//import org.esa.snap;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-//import org.esa.snap;
-
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowWebObpgAlgorithmDescriptionsAction")
+@ActionID(category = "Help", id = "ShowSeaDASTutorialsAction")
 @ActionRegistration(
-        displayName = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText",
-        popupText = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText")
+        displayName = "#CTL_ShowSeaDASTutorialsAction_MenuText",
+        popupText = "#CTL_ShowSeaDASTutorialsAction_MenuText")
 @ActionReference(
         path = "Menu/Help/SeaDAS",
-        position = 100)
+        position = 50)
 @NbBundle.Messages({
-        "CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText=OBPG Algorithm Descriptions",
-        "CTL_ShowWebObpgAlgorithmDescriptionsAction_ShortDescription=Open the NASA Ocean Color Algorithm Descriptions web page"
+        "CTL_ShowSeaDASTutorialsAction_MenuText=Tutorials",
+        "CTL_ShowSeaDASTutorialsAction_ShortDescription=Browse the SeaDAS tutorials web page"
 })
-public class ShowWebObpgAlgorithmDescriptionsAction extends AbstractAction {
+public class ShowSeadasTutorialsAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://oceancolor.gsfc.nasa.gov/resources/atbd/";
+    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/tutorials/";
 
     /**
      * Launches the default browser to display the web site.
@@ -53,6 +52,6 @@ public class ShowWebObpgAlgorithmDescriptionsAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.showWebObpgAlgorithmDescriptions", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorials", DEFAULT_PAGE_URL));
     }
 }
