@@ -267,7 +267,7 @@
         <option type="string">
             <name>projection</name>
             <value></value>
-            <default>platecarree</default>
+            <default></default>
             <subPanelIndex>1</subPanelIndex>
             <description>proj.4 projection string or one of the following predefined projections:</description>
             <source>default</source>
