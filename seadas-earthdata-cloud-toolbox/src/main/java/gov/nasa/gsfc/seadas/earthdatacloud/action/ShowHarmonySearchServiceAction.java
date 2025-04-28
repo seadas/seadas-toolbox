@@ -6,6 +6,7 @@ import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 import org.openide.util.*;
@@ -25,13 +26,20 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_HarmonySearchServiceActionName"
 )
 
-@ActionReference(
-        path = "Menu/Earthdata-Cloud/Harmony Services",
-        position = 100
-)
+//@ActionReference(
+//        path = "Menu/Earthdata-Cloud/Harmony Services",
+//        position = 100
+//)
+//@NbBundle.Messages({
+//        "CTL_HarmonySearchServiceActionName=Search Service",
+//        "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
+//})
+@ActionReferences({
+        @ActionReference(path = "Menu/Earthdata-Cloud", position = 40)
+})
 
 @NbBundle.Messages({
-        "CTL_HarmonySearchServiceActionName=Search Service",
+        "CTL_HarmonySearchServiceActionName=OB_CLOUD Data Browser",
         "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
 })
 

@@ -76,7 +76,7 @@
         </tocitem>
 
         <tocitem text="Earthdata Cloud">
-            <tocitem text="Earthdata Cloud Search" target="earthdataCloudSearch"/>
+            <tocitem text="OB_CLOUD Data Browser" target="earthdataCloudSearch"/>
         </tocitem>
 
         <tocitem text="Field Measurements">

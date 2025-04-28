@@ -49,7 +49,16 @@ if [ -d ".seadas9" ]; then
   cp -Rpf .seadas_archive/.seadas9/auxdata/color_palettes .seadas9/auxdata 2> /dev/null
   cp -Rpf .seadas_archive/.seadas9/auxdata/color_schemes .seadas9/auxdata 2> /dev/null
   cp -Rpf .seadas_archive/.seadas9/auxdata/rgb_profiles .seadas9/auxdata 2> /dev/null
+      cp -Rpf .seadas_archive/.seadas9/auxdata/regions .seadas9/auxdata 2> /dev/null
+
   cp -Rpf .seadas_archive/.seadas9/graphs .seadas9 2> /dev/null
+
+    cp -Rpf .seadas_archive/.seadas9/config .seadas9 2> /dev/null
+    rm -rf .seadas9/config/Preferences/org/netbeans 2> /dev/null
+    rm -rf .seadas9/config/Windows2Local 2> /dev/null
+    rm -f .seadas9/config/Preferences/org/esa/snap/snap/rcp.properties 2> /dev/null
+    cat  .seadas_archive/.seadas9/config/Preferences/org/esa/snap/snap/rcp.properties | grep ".favorites." >> .seadas9/config/Preferences/org/esa/snap/snap/rcp.properties 2> /dev/null
+
   echo $(RETAIN_SEADAS9_MSG);
 
 fi
