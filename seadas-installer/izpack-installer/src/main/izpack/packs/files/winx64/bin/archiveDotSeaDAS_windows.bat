@@ -38,6 +38,7 @@ if exist "%SEADAS9_DIR%" (
     copy /y "%SEADAS_ARCHIVE%\.seadas9\auxdata\color_palettes" "%SEADAS9_DIR%\auxdata" >nul 2>&1
     copy /y "%SEADAS_ARCHIVE%\.seadas9\auxdata\color_schemes" "%SEADAS9_DIR%\auxdata" >nul 2>&1
     copy /y "%SEADAS_ARCHIVE%\.seadas9\auxdata\rgb_profiles" "%SEADAS9_DIR%\auxdata" >nul 2>&1
+    copy /y "%SEADAS_ARCHIVE%\.seadas9\auxdata\regions" "%SEADAS9_DIR%\auxdata" >nul 2>&1
     copy /y "%SEADAS_ARCHIVE%\.seadas9\graphs" "%SEADAS9_DIR%" >nul 2>&1
     echo Retained user custom files in %SEADAS9_DIR%
 ) else (
