@@ -714,9 +714,29 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
+
+
     private void badIfileClearAndWarn(String ifileName) {
-        SimpleDialogMessage dialog = new SimpleDialogMessage(getProgramName(), "<html><br>&nbsp;&nbsp;&nbsp;&nbsp;WARNING!!<br> " +
-                "&nbsp;&nbsp;&nbsp;&nbsp;File '" + ifileName + "' is an invalid input file. &nbsp;&nbsp;<br>&nbsp;</html>");
+
+        String SPACES = "&nbsp;&nbsp;&nbsp;&nbsp;";
+
+        String[] msgArray = {"WARNING!: Failed to authenticate input file.",
+                "Input file = '" + ifileName + "'",
+                "",
+                "Possible failure reasons:",
+                "1. The input file is not a valid or supported satellite data file",
+                "2. The python3 'requests' module is not installed.",
+                SPACES + SPACES + "See: Menu > Seadas-Toolbox > Software & System Info",
+                SPACES + SPACES + "Look for: Python3 Requests Installed: YES"};
+
+        StringBuilder stringBuilder = new StringBuilder("<html><br>");
+        for (String msg : msgArray) {
+            stringBuilder.append(SPACES + msg + SPACES + "<br>");
+        }
+        stringBuilder.append("<br>"+ SPACES + "</html>");
+
+
+        SimpleDialogMessage dialog = new SimpleDialogMessage("Process Warning for: " + programName, stringBuilder.toString());
         dialog.setVisible(true);
         dialog.setEnabled(true);
 
