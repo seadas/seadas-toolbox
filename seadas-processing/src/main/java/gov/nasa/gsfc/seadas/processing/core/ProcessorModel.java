@@ -600,8 +600,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                    updateGeoFileInfo(ifileName, inputFileInfo);
-
+                    //updateGeoFileInfo(ifileName, inputFileInfo);
                     updateParamValues(new File(ifileName));
 
                     String resolution = getParamValue("resolution");
@@ -630,7 +629,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (ofileNameDefault != null) {
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                    updateGeoFileInfo(ifileName, inputFileInfo);
+                    //l2bin doesn't need geofile
+                    //updateGeoFileInfo(ifileName, inputFileInfo);
                     updateParamValues(new File(ifileName));
 
                     String resolution = getParamValue("resolution");
@@ -1745,7 +1745,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-                    l2binConfigParFile.delete();
+                    //l2binConfigParFile.delete();
 
                 }
 

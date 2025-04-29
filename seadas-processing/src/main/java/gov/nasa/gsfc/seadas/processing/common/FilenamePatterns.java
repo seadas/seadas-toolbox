@@ -98,6 +98,9 @@ public class FilenamePatterns {
         }
 
         File geoFile = getGeoFile(fileInfo, ocssw);
+        System.out.println("→ getGeoFile returned: " + geoFile);
+        System.out.println("→ parent: " + fileInfo.getFile().getParent());
+        System.out.println("→ absPath: " + geoFile.getAbsolutePath());
 
         if (geoFile == null) {
             return null;
