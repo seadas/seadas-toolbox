@@ -120,7 +120,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         this.setOcssw(ocssw);
         acceptsParFile = false;
         hasGeoFile = false;
-        readyToRun = false;
+        readyToRun = true;
         multipleInputFiles = false;
         paramList = new ParamList();
         setParFileOptionName(ParamUtils.DEFAULT_PAR_FILE_NAME);
@@ -428,7 +428,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         boolean complete = true;
 
         for (ParamInfo param : paramList.getParamArray()) {
-            if (param.getValue() == null || param.getValue().trim().length() == 0) {
+            if ( (param.getType().equals(ParamInfo.Type.IFILE)||param.getType().equals(ParamInfo.Type.OFILE)) &&
+                    (param.getValue() == null || param.getValue().trim().length() == 0) )
+            {
                 complete = false;
                 break;
             }
@@ -466,7 +468,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (option != null) {
             String oldValue = option.getValue();
             option.setValue(newValue);
-            checkCompleteness();
+            //checkCompleteness();
             if (!(oldValue.contains(newValue) && oldValue.trim().length() == newValue.trim().length())) {
                 SeadasFileUtils.debug("property changed from " + oldValue + " to " + newValue);
                 propertyChangeSupport.firePropertyChange(option.getName(), oldValue, newValue);
