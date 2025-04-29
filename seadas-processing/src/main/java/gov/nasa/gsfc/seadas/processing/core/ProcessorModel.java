@@ -1745,7 +1745,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
 
-                    //l2binConfigParFile.delete();
+                    l2binConfigParFile.delete();
 
                 }
 
