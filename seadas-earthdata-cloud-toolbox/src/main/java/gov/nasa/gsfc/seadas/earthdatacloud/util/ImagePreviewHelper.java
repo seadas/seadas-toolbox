@@ -19,6 +19,7 @@ public class ImagePreviewHelper {
     private String hoveringFileName = null;
     private String workingFileName = null;
     private String finishedFileName = null;
+    boolean startingUp = true;
     private boolean previewIsDisplayed = false;
     Thread th = null;
 
@@ -47,7 +48,6 @@ public class ImagePreviewHelper {
 
 
                 boolean hoveringFileNameChanged = false;
-                boolean hoveringFileNameIsPreviewDrawn = false;
 
                 if (row >= 0 & row < table.getRowCount()) { // for all columns in the row
                     String fileName = (String) table.getValueAt(row, 0);
@@ -61,15 +61,9 @@ public class ImagePreviewHelper {
                         }
                     }
 
-                    if (hoveringFileName != null) {
-                        if (hoveringFileName.equalsIgnoreCase(finishedFileName)) {
-                            hoveringFileNameIsPreviewDrawn = true;
-                        }
-                    }
 
-                    if (hoveringFileNameChanged || !hoveringFileNameIsPreviewDrawn) {
+                    if (hoveringFileNameChanged) {
                         hoveringFileName = fileName;
-                        System.out.println("Mouse moved");
                         System.out.println("Hovering fileName=" + hoveringFileName);
 
 
@@ -77,38 +71,94 @@ public class ImagePreviewHelper {
                         table.setForeground(Color.BLACK);
 
                         if (row >= 0 && row < table.getRowCount()) {
+                            System.out.println("Setting row color");
                             table.setRowSelectionInterval(row, row);
                             table.setSelectionBackground(new Color(0, 100, 200));
                             table.setSelectionForeground(Color.WHITE);
                         }
 
-                        // todo do some stuff
+
 
                         String imageUrl = getPreviewUrl(fileName);
                         if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
-                            // todo might have issue with multiple threads running and earlier one being last to paint so need to have running thread do all the work
-////                            if (th != null) {
-//////                                th.interrupt();
-//////                                int i =0;
-//////                                while (th.isAlive() && i < 1000) {
-//////                                    i++;
-//////                                }
-//////                                System.out.println("th alive num iter =" + i);
-//
-//                            }
 
-//                            if (th == null) {
+
+                            if (th == null || !th.isAlive()) {
+                                startingUp = true;
                                 Runnable r = new Runnable() {
                                     public void run() {
-                                        showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
-                                        currentImageUrl = imageUrl;
-                                        finishedFileName = fileName;
+                                        int i =0;
+                                        while (th != null && th.isAlive() && i < 100) {
+                                            System.out.println("th alive num iter =" + i);
+
+                                            if (hoveringFileName != null) {
+                                                String hoveringFileNameSnapshot = hoveringFileName;  // lock this as the main thread could change it
+                                                if (!hoveringFileNameSnapshot.equalsIgnoreCase(finishedFileName) || startingUp) {
+                                                    startingUp = false;
+                                                    String imageUrl = getPreviewUrl(hoveringFileNameSnapshot);
+                                                    showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
+                                                    currentImageUrl = imageUrl;
+                                                    if (hoveringFileNameSnapshot.equalsIgnoreCase(hoveringFileName)) {
+                                                        finishedFileName = hoveringFileNameSnapshot;
+                                                    } else {
+                                                        hideImagePreview();
+                                                        finishedFileName = null;
+                                                    }
+                                                    i = 0;
+                                                }
+                                            } else {
+                                                hideImagePreview();
+                                            }
+
+                                            try {
+                                                // sleep 0.1 second
+                                                Thread.sleep(100);
+                                            } catch (InterruptedException e3) {
+                                                // recommended because catching InterruptedException clears interrupt flag
+                                                Thread.currentThread().interrupt();
+                                                System.out.println("Being killed by exit");
+                                                // you probably want to quit if the thread is interrupted
+                                                return;
+                                            }
+
+                                            i++;
+                                        }
+
+
+                                        killThread();
+
+//                                        // Kill thread started
+//                                        System.out.println("Killing Begin");
+//                                        th.interrupt();
+//
+//                                        i = 0;
+//                                        while (th != null && th.isAlive() && i < 100) {
+//                                            System.out.println("Killing test: is alive num iter =" + i);
+//
+//                                            try {
+//                                                // sleep 1 second
+//                                                Thread.sleep(100);
+//                                            } catch (InterruptedException e3) {
+//                                                // recommended because catching InterruptedException clears interrupt flag
+//                                                Thread.currentThread().interrupt();
+//                                                // you probably want to quit if the thread is interrupted
+//                                                return;
+//                                            }
+//                                            System.out.println("th alive num iter =" + i);
+//
+//                                            i++;
+//                                        }
+//                                        System.out.println("Killed th alive num iter =" + i);
 //                                        th = null;
+//                                        // Kill thread completed
+
+
+
                                     }
                                 };
                                 th = new Thread(r);
                                 th.start();
-//                            }
+                            }
 
                         }
                     }
@@ -138,104 +188,96 @@ public class ImagePreviewHelper {
         });
 
 
-//        table.addMouseMotionListener(new MouseMotionAdapter() {
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                System.out.println("Mouse moved");
-//
-//                int row = table.rowAtPoint(e.getPoint());
-//                int col = table.columnAtPoint(e.getPoint());
-//
-////                if (row >= 0 && col == 0) { // Only for file name column
-//                // todo Danny preferences which columns to hover
-////                if (row >= 0 && col == 1) { // for all columns in the row
-//                if (row >= 0) { // for all columns in the row
-//                    String fileName = (String) table.getValueAt(row, 0);
-//                    String imageUrl = getPreviewUrl(fileName);
-//                    if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
-//                        if (th != null) {
-//                            th.interrupt();
-//                        }
-//                        Runnable r = new Runnable() {
-//                            public void run() {
-//                                showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
-//                            }
-//                        };
-//                        th = new Thread(r);
-//                        th.start();
-//
-//                        currentImageUrl = imageUrl;
-//                    }
-//                } else {
-//                    hideImagePreview();
-//                }
-//
-//
-//                table.setBackground(Color.WHITE);
-//                table.setForeground(Color.BLACK);
-//
-//                if (row >= 0 && row < table.getRowCount()) {
-//                    table.setRowSelectionInterval(row, row);
-//                    table.setSelectionBackground(new Color(0, 100, 200));
-//                    table.setSelectionForeground(Color.WHITE);
-//                }
-//
-////                table.setSelectionBackground(Color.BLUE);
-//
-//
-//            }
-//        });
+
 
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                boolean hoveringFileNameChanged = false;
 
+                boolean hoveringFileNameChanged = false;
                 if (hoveringFileName != null) {
                     hoveringFileNameChanged = true;
                     hoveringFileName = null;
                 }
+                System.out.println("Exited");
+
 
                 if (hoveringFileNameChanged) {
-                    System.out.println("Mouse exited");
                     System.out.println("Hovering fileName=" + hoveringFileName);
-                    table.setBackground(Color.WHITE);
-                    table.setForeground(Color.BLACK);
-
-                    // wait till thread finishes
-                    if (th != null) {
-//                        th.interrupt();
-                        int i =0;
-                        while (th != null && th.isAlive() && i < 100) {
-                            try {
-                                // sleep 1 second
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e3) {
-                                // recommended because catching InterruptedException clears interrupt flag
-                                Thread.currentThread().interrupt();
-                                // you probably want to quit if the thread is interrupted
-                                return;
-                            }
-                            System.out.println("th alive num iter =" + i);
-
-                            i++;
-                        }
-                        System.out.println("OUT th alive num iter =" + i);
-
-                    }
-                    if (hoveringFileName == null) {
-                        hideImagePreview();
-                    }
-
+                    table.setSelectionBackground(Color.WHITE);
+                    table.setSelectionForeground(Color.BLACK);
+//                    table.setBackground(Color.WHITE);
+//                    table.setForeground(Color.BLACK);
+                    hideImagePreview();
                 }
+
+                killThread();
+//                // Kill thread started
+//                if (th != null) {
+//                    th.interrupt();
 //
+//                    int i = 0;
+//                    System.out.println("Killing from exit th alive num iter =" + i);
 //
-//                hideImagePreview();
-//                table.setSelectionBackground(Color.WHITE);
-//                table.setSelectionForeground(Color.BLACK);
+//                    while (th != null && th.isAlive() && i < 100) {
+//                        try {
+//                            // sleep 1 second
+//                            Thread.sleep(100);
+//                        } catch (InterruptedException e3) {
+//                            // recommended because catching InterruptedException clears interrupt flag
+//                            Thread.currentThread().interrupt();
+//                            // you probably want to quit if the thread is interrupted
+//                            return;
+//                        }
+//
+//                        System.out.println("OUT th alive num iter =" + i);
+//
+//                        i++;
+//                    }
+//                    th = null;
+//                    System.out.println("Killed from exit th alive num iter =" + i);
+//
+//                    // Kill thread completed
+//                }
+
+
             }
         });
     }
+
+
+    private void killThread() {
+        // Kill thread started
+        if (th != null) {
+            th.interrupt();
+
+            int i = 0;
+            System.out.println("Killing from exit th alive num iter =" + i);
+
+            while (th != null && th.isAlive() && i < 100) {
+                try {
+                    // sleep 1 second
+                    Thread.sleep(100);
+                } catch (InterruptedException e3) {
+                    // recommended because catching InterruptedException clears interrupt flag
+                    Thread.currentThread().interrupt();
+                    // you probably want to quit if the thread is interrupted
+                    return;
+                }
+
+                System.out.println("OUT th alive num iter =" + i);
+
+                i++;
+            }
+            th = null;
+            System.out.println("Killed from exit th alive num iter =" + i);
+
+            // Kill thread completed
+        }
+    }
+
+
+
 
     private String getPreviewUrl(String fileName) {
         return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
