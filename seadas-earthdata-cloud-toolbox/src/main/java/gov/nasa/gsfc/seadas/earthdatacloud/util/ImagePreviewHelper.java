@@ -64,14 +64,13 @@ public class ImagePreviewHelper {
 
                     if (hoveringFileNameChanged) {
                         hoveringFileName = fileName;
-                        System.out.println("Hovering fileName=" + hoveringFileName);
+//                        System.out.println("Hovering fileName=" + hoveringFileName);
 
 
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
 
                         if (row >= 0 && row < table.getRowCount()) {
-                            System.out.println("Setting row color");
                             table.setRowSelectionInterval(row, row);
                             table.setSelectionBackground(new Color(0, 100, 200));
                             table.setSelectionForeground(Color.WHITE);
@@ -88,8 +87,8 @@ public class ImagePreviewHelper {
                                 Runnable r = new Runnable() {
                                     public void run() {
                                         int i =0;
-                                        while (th != null && th.isAlive() && i < 100) {
-                                            System.out.println("th alive num iter =" + i);
+                                        while (th != null && th.isAlive() && i < 1000) { // stay alive for 100 seconds
+//                                            System.out.println("th alive num iter =" + i);
 
                                             if (hoveringFileName != null) {
                                                 String hoveringFileNameSnapshot = hoveringFileName;  // lock this as the main thread could change it
@@ -116,7 +115,7 @@ public class ImagePreviewHelper {
                                             } catch (InterruptedException e3) {
                                                 // recommended because catching InterruptedException clears interrupt flag
                                                 Thread.currentThread().interrupt();
-                                                System.out.println("Being killed by exit");
+//                                                System.out.println("Being killed by exit");
                                                 // you probably want to quit if the thread is interrupted
                                                 return;
                                             }
@@ -125,34 +124,7 @@ public class ImagePreviewHelper {
                                         }
 
 
-                                        killThread();
-
-//                                        // Kill thread started
-//                                        System.out.println("Killing Begin");
-//                                        th.interrupt();
-//
-//                                        i = 0;
-//                                        while (th != null && th.isAlive() && i < 100) {
-//                                            System.out.println("Killing test: is alive num iter =" + i);
-//
-//                                            try {
-//                                                // sleep 1 second
-//                                                Thread.sleep(100);
-//                                            } catch (InterruptedException e3) {
-//                                                // recommended because catching InterruptedException clears interrupt flag
-//                                                Thread.currentThread().interrupt();
-//                                                // you probably want to quit if the thread is interrupted
-//                                                return;
-//                                            }
-//                                            System.out.println("th alive num iter =" + i);
-//
-//                                            i++;
-//                                        }
-//                                        System.out.println("Killed th alive num iter =" + i);
-//                                        th = null;
-//                                        // Kill thread completed
-
-
+                                        killImagePreviewThread();
 
                                     }
                                 };
@@ -169,19 +141,15 @@ public class ImagePreviewHelper {
                     }
 
                     if (hoveringFileNameChanged) {
-                        System.out.println("Hovering fileName=" + hoveringFileName);
+//                        System.out.println("Hovering fileName=" + hoveringFileName);
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
+                        table.setSelectionBackground(Color.WHITE);
+                        table.setSelectionForeground(Color.BLACK);
 
-                        // todo do some work
                         hideImagePreview();
                     }
                 }
-
-
-
-
-//                table.setSelectionBackground(Color.BLUE);
 
 
             }
@@ -199,54 +167,26 @@ public class ImagePreviewHelper {
                     hoveringFileNameChanged = true;
                     hoveringFileName = null;
                 }
-                System.out.println("Exited");
+//                System.out.println("Exited");
 
 
                 if (hoveringFileNameChanged) {
-                    System.out.println("Hovering fileName=" + hoveringFileName);
+//                    System.out.println("Hovering fileName=" + hoveringFileName);
                     table.setSelectionBackground(Color.WHITE);
                     table.setSelectionForeground(Color.BLACK);
-//                    table.setBackground(Color.WHITE);
-//                    table.setForeground(Color.BLACK);
+
                     hideImagePreview();
                 }
 
-                killThread();
-//                // Kill thread started
-//                if (th != null) {
-//                    th.interrupt();
-//
-//                    int i = 0;
-//                    System.out.println("Killing from exit th alive num iter =" + i);
-//
-//                    while (th != null && th.isAlive() && i < 100) {
-//                        try {
-//                            // sleep 1 second
-//                            Thread.sleep(100);
-//                        } catch (InterruptedException e3) {
-//                            // recommended because catching InterruptedException clears interrupt flag
-//                            Thread.currentThread().interrupt();
-//                            // you probably want to quit if the thread is interrupted
-//                            return;
-//                        }
-//
-//                        System.out.println("OUT th alive num iter =" + i);
-//
-//                        i++;
-//                    }
-//                    th = null;
-//                    System.out.println("Killed from exit th alive num iter =" + i);
-//
-//                    // Kill thread completed
-//                }
-
+                killImagePreviewThread();
 
             }
         });
     }
 
 
-    private void killThread() {
+
+    private void killImagePreviewThread() {
         // Kill thread started
         if (th != null) {
             th.interrupt();
