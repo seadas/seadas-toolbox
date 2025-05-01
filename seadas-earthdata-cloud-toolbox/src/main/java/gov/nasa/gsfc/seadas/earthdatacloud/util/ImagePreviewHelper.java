@@ -16,6 +16,12 @@ public class ImagePreviewHelper {
     private JLabel previewLabel;
     private String currentImageUrl = null;
 
+    private String hoveringFileName = null;
+    private String workingFileName = null;
+    private String finishedFileName = null;
+    private boolean previewIsDisplayed = false;
+    Thread th = null;
+
     public ImagePreviewHelper() {
         previewWindow = new JWindow();
         previewLabel = new JLabel();
@@ -24,36 +30,106 @@ public class ImagePreviewHelper {
         previewWindow.setAlwaysOnTop(true);
     }
 
+//    public void handleMouseMoved(JTable table, JDialog parentDialog, MouseEvent e) {
+//        int row = table.rowAtPoint(e.getPoint());
+//
+//    }
+
+
     public void attachToTable(JTable table, Map<String, String> fileLinkMap, JDialog parentDialog) {
+
         table.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
+
                 int row = table.rowAtPoint(e.getPoint());
                 int col = table.columnAtPoint(e.getPoint());
 
-//                if (row >= 0 && col == 0) { // Only for file name column
-                // todo Danny preferences which columns to hover
-//                if (row >= 0 && col == 1) { // for all columns in the row
-                if (row >= 0) { // for all columns in the row
+
+                boolean hoveringFileNameChanged = false;
+                boolean hoveringFileNameIsPreviewDrawn = false;
+
+                if (row >= 0 & row < table.getRowCount()) { // for all columns in the row
                     String fileName = (String) table.getValueAt(row, 0);
-                    String imageUrl = getPreviewUrl(fileName);
-                    if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
-                        showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
-                        currentImageUrl = imageUrl;
+                    if (fileName != null) {
+                        if (!fileName.equalsIgnoreCase(hoveringFileName)) {
+                            hoveringFileNameChanged = true;
+                        }
+                    } else {
+                        if (hoveringFileName != null) {
+                            hoveringFileNameChanged = true;
+                        }
+                    }
+
+                    if (hoveringFileName != null) {
+                        if (hoveringFileName.equalsIgnoreCase(finishedFileName)) {
+                            hoveringFileNameIsPreviewDrawn = true;
+                        }
+                    }
+
+                    if (hoveringFileNameChanged || !hoveringFileNameIsPreviewDrawn) {
+                        hoveringFileName = fileName;
+                        System.out.println("Mouse moved");
+                        System.out.println("Hovering fileName=" + hoveringFileName);
+
+
+                        table.setBackground(Color.WHITE);
+                        table.setForeground(Color.BLACK);
+
+                        if (row >= 0 && row < table.getRowCount()) {
+                            table.setRowSelectionInterval(row, row);
+                            table.setSelectionBackground(new Color(0, 100, 200));
+                            table.setSelectionForeground(Color.WHITE);
+                        }
+
+                        // todo do some stuff
+
+                        String imageUrl = getPreviewUrl(fileName);
+                        if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
+                            // todo might have issue with multiple threads running and earlier one being last to paint so need to have running thread do all the work
+////                            if (th != null) {
+//////                                th.interrupt();
+//////                                int i =0;
+//////                                while (th.isAlive() && i < 1000) {
+//////                                    i++;
+//////                                }
+//////                                System.out.println("th alive num iter =" + i);
+//
+//                            }
+
+//                            if (th == null) {
+                                Runnable r = new Runnable() {
+                                    public void run() {
+                                        showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
+                                        currentImageUrl = imageUrl;
+                                        finishedFileName = fileName;
+//                                        th = null;
+                                    }
+                                };
+                                th = new Thread(r);
+                                th.start();
+//                            }
+
+                        }
                     }
                 } else {
-                    hideImagePreview();
+                    if (hoveringFileName != null) {
+                        hoveringFileNameChanged = true;
+                        hoveringFileName = null;
+                    }
+
+                    if (hoveringFileNameChanged) {
+                        System.out.println("Hovering fileName=" + hoveringFileName);
+                        table.setBackground(Color.WHITE);
+                        table.setForeground(Color.BLACK);
+
+                        // todo do some work
+                        hideImagePreview();
+                    }
                 }
 
 
-                table.setBackground(Color.WHITE);
-                table.setForeground(Color.BLACK);
 
-                if (row >= 0 && row < table.getRowCount()) {
-                    table.setRowSelectionInterval(row, row);
-                    table.setSelectionBackground(new Color(0, 100, 200));
-                    table.setSelectionForeground(Color.WHITE);
-                }
 
 //                table.setSelectionBackground(Color.BLUE);
 
@@ -61,12 +137,102 @@ public class ImagePreviewHelper {
             }
         });
 
+
+//        table.addMouseMotionListener(new MouseMotionAdapter() {
+//            @Override
+//            public void mouseMoved(MouseEvent e) {
+//                System.out.println("Mouse moved");
+//
+//                int row = table.rowAtPoint(e.getPoint());
+//                int col = table.columnAtPoint(e.getPoint());
+//
+////                if (row >= 0 && col == 0) { // Only for file name column
+//                // todo Danny preferences which columns to hover
+////                if (row >= 0 && col == 1) { // for all columns in the row
+//                if (row >= 0) { // for all columns in the row
+//                    String fileName = (String) table.getValueAt(row, 0);
+//                    String imageUrl = getPreviewUrl(fileName);
+//                    if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
+//                        if (th != null) {
+//                            th.interrupt();
+//                        }
+//                        Runnable r = new Runnable() {
+//                            public void run() {
+//                                showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
+//                            }
+//                        };
+//                        th = new Thread(r);
+//                        th.start();
+//
+//                        currentImageUrl = imageUrl;
+//                    }
+//                } else {
+//                    hideImagePreview();
+//                }
+//
+//
+//                table.setBackground(Color.WHITE);
+//                table.setForeground(Color.BLACK);
+//
+//                if (row >= 0 && row < table.getRowCount()) {
+//                    table.setRowSelectionInterval(row, row);
+//                    table.setSelectionBackground(new Color(0, 100, 200));
+//                    table.setSelectionForeground(Color.WHITE);
+//                }
+//
+////                table.setSelectionBackground(Color.BLUE);
+//
+//
+//            }
+//        });
+
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                hideImagePreview();
-                table.setSelectionBackground(Color.WHITE);
-                table.setSelectionForeground(Color.BLACK);
+                boolean hoveringFileNameChanged = false;
+
+                if (hoveringFileName != null) {
+                    hoveringFileNameChanged = true;
+                    hoveringFileName = null;
+                }
+
+                if (hoveringFileNameChanged) {
+                    System.out.println("Mouse exited");
+                    System.out.println("Hovering fileName=" + hoveringFileName);
+                    table.setBackground(Color.WHITE);
+                    table.setForeground(Color.BLACK);
+
+                    // wait till thread finishes
+                    if (th != null) {
+//                        th.interrupt();
+                        int i =0;
+                        while (th != null && th.isAlive() && i < 100) {
+                            try {
+                                // sleep 1 second
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e3) {
+                                // recommended because catching InterruptedException clears interrupt flag
+                                Thread.currentThread().interrupt();
+                                // you probably want to quit if the thread is interrupted
+                                return;
+                            }
+                            System.out.println("th alive num iter =" + i);
+
+                            i++;
+                        }
+                        System.out.println("OUT th alive num iter =" + i);
+
+                    }
+                    if (hoveringFileName == null) {
+                        hideImagePreview();
+                    }
+
+                }
+//
+//
+//                hideImagePreview();
+//                table.setSelectionBackground(Color.WHITE);
+//                table.setSelectionForeground(Color.BLACK);
             }
         });
     }
@@ -162,6 +328,7 @@ public class ImagePreviewHelper {
     }
 
     private void hideImagePreview() {
+//        th.interrupt();
         previewWindow.setVisible(false);
         currentImageUrl = null;
     }
