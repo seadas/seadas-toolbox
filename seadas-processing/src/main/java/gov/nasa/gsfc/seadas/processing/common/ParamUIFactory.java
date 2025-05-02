@@ -448,15 +448,15 @@ public class ParamUIFactory {
                             break;
                         case BUTTON:
                             if (pi.getSubPanelIndex() == 1) {
-                                addOptionButtons(pi, textFieldSubPanel1, gbcSubPanel1, numColumns);
+                                addOptionActionButtons(pi, textFieldSubPanel1, gbcSubPanel1, numColumns);
                             } else if (pi.getSubPanelIndex() == 2) {
-                                addOptionButtons(pi, textFieldSubPanel2, gbcSubPanel2, numColumns);
+                                addOptionActionButtons(pi, textFieldSubPanel2, gbcSubPanel2, numColumns);
                             } else if (pi.getSubPanelIndex() == 3) {
-                                addOptionButtons(pi, textFieldSubPanel3, gbcSubPanel3, numColumns);
+                                addOptionActionButtons(pi, textFieldSubPanel3, gbcSubPanel3, numColumns);
                             } else if (pi.getSubPanelIndex() == 4) {
-                                addOptionButtons(pi, textFieldSubPanel4, gbcSubPanel4, numColumns);
+                                addOptionActionButtons(pi, textFieldSubPanel4, gbcSubPanel4, numColumns);
                             } else {
-                                addOptionButtons(pi, textFieldSubPanel0, gbcSubPanel0, numColumns);
+                                addOptionActionButtons(pi, textFieldSubPanel0, gbcSubPanel0, numColumns);
                             }
                             break;
                     }
@@ -629,6 +629,22 @@ public class ParamUIFactory {
         gbc.insets.left = origInsetsLeft;
     }
 
+
+
+    private void addOptionActionButtons(ParamInfo pi, JPanel panel, GridBagConstraints gbc, int numColumns) {
+        int origInsetsTop = gbc.insets.top;
+        int origInsetsBottom = gbc.insets.bottom;
+        int origInsetsLeft = gbc.insets.left;
+
+        preIncrementGridy(gbc, numColumns);
+        gbc.gridwidth = pi.getColSpan();
+        panel.add(makeActionButtonPanel(pi), gbc);
+        incrementGridxGridy(gbc, numColumns);
+
+        gbc.insets.top = origInsetsTop;
+        gbc.insets.bottom = origInsetsBottom;
+        gbc.insets.left = origInsetsLeft;
+    }
 
 
 
@@ -1259,6 +1275,8 @@ public class ParamUIFactory {
         singlePanel.add(actionButton);
         return singlePanel;
     }
+
+
 
     public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(name, listener);

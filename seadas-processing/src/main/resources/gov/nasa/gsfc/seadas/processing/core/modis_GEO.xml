@@ -5,6 +5,7 @@
         <hasParFile>false</hasParFile>
         <parFileOptionName>--parfile</parFileOptionName>
         <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <subPanel1Title></subPanel1Title>
         <primaryOptions>
             <primaryOption>file</primaryOption>
             <primaryOption>--output</primaryOption>
@@ -152,6 +153,8 @@
             <description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius
             </description>
             <usedAs>button</usedAs>
+            <subPanelIndex>1</subPanelIndex>
+            <colSpan>4</colSpan>
             <order>15</order>
         </option>
     </options>
