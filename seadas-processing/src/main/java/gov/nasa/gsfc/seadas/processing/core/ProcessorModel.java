@@ -401,19 +401,60 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             updateParamInfo(currentOption.getName(), newValue);
             if ("l2bin".equalsIgnoreCase(getProgramName())) {
                 if (ifileChanged) {
+//                    System.out.println("PROBABLY NOT NEEDED NEVER HIT updateL2BinParams() SPOT zxcvzbzb");
                     updateL2BinParams();
 //                    updateParamsWithProgressMonitor("Re-Initializing with input file '" + getPrimaryInputFileOptionName() + "'");
                 } else if (suiteChanged) {
+                    setWorkingUpdateOfile(true);
+                    System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 1    qweioyrtrt");
                     updateL2BinParams();
+                    System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 2    qweioyrtrt");
+                    setWorkingUpdateOfile(false);
+                    l2BinPropertyChangeHandler();
+
+//
+//                    String resolution = getParamValue("resolution");
+//                    String suite = getParamValue("suite");
+//                    String l3bprod = getParamValue("l3bprod");
+//                    String prodtype = getParamValue("prodtype");
+//                    String north = getParamValue("latnorth");
+//                    String south = getParamValue("latsouth");
+//                    String west = getParamValue("lonwest");
+//                    String east = getParamValue("loneast");
+//
+//                    String ifileName = getPrimaryInputFileOptionName();
+//                    String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, l3bprod, suite, prodtype, north, south, west, east);
+//                    updateOFileInfo(ofileName);
+
+
 //                    updateParamsWithProgressMonitor("Reconfiguring with suite '" + getParamInfo("suite").getValue());
                 }
             }
             if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
                 if (ifileChanged) {
+//                    System.out.println("PROBABLY NOT NEEDED NEVER HIT updateL3MapgenParams() SPOT fdfddss");
                     updateL3MapgenParams();
 //                    updateParamsWithProgressMonitor("Re-initializing with input file '" + getPrimaryInputFileOptionName() + "'");
                 } else if (suiteChanged) {
+                    setWorkingUpdateOfile(true);
+                    System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 1   thhhtv");
                     updateL3MapgenParams();
+                    System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 2   thhhtv");
+                    setWorkingUpdateOfile(false);
+                    l3mapgenPropertyChangeHandler();
+
+//                    String resolution = getParamValue("resolution");
+//                    String oformat = getParamValue("oformat");
+//                    String product = getParamValue("product");
+//                    String projection = getParamValue("projection");
+//                    String interp = getParamValue("interp");
+//                    String north = getParamValue("north");
+//                    String south = getParamValue("south");
+//                    String west = getParamValue("west");
+//                    String east = getParamValue("east");
+//                    String ifileName = getPrimaryInputFileOptionName();
+//                    String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
+//                    updateOFileInfo(ofileName);
 //                    updateParamsWithProgressMonitor("Reconfiguring with suite '" + getParamInfo("suite").getValue());
                 }
             }
@@ -422,6 +463,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
+
+
+    public void retrieveParamsFromProgram(boolean ifileChanged, boolean suiteChanged) {
+        // this gets overridden and used if needed for instance by l2bin and l3mapgen
+
+    }
 
 
     protected void checkCompleteness() {
@@ -493,9 +540,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                     try {
                         if ("l2bin".equalsIgnoreCase(getProgramName())) {
+//                            System.out.println("updateL3MapgenParams() SPOT swswswwsw");
                             updateL2BinParams();
                         }
                         if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
+//                            System.out.println("updateL3MapgenParams() SPOT ddededede");
                             updateL3MapgenParams();
                         }
 
@@ -615,7 +664,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String west = getParamValue("west");
                     String east = getParamValue("east");
 
+                    System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 1 uuuiiiii");
                     String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
+                    System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 2");
 
                     updateOFileInfo(ofileName);
 
@@ -643,7 +694,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String south = getParamValue("latsouth");
                     String west = getParamValue("lonwest");
                     String east = getParamValue("loneast");
+
+                    System.out.println("SPOT IFILE SELECTED: getOfileForL3BinWrapper() 1   reererrre");
                     String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, l3bprod, suite, prodtype, north, south, west, east);
+                    System.out.println("SPOT IFILE SELECTED: getOfileForL3BinWrapper() 2 ");
 
                     updateOFileInfo(ofileName);
 
@@ -1136,7 +1190,16 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                 if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
 //                    updateParamsWithProgressMonitor("Something l3mapgen testing");
+//                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 1  tyuuuii");
+//                    updateL3MapgenParams();
+//                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2 tyuuuii");
+
+                    setWorkingUpdateOfile(true);
+                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 1   tyuuuii");
                     updateL3MapgenParams();
+                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2   tyuuuii");
+                    setWorkingUpdateOfile(false);
+
                 }
 
             } else {
@@ -1159,7 +1222,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                         if ("l2bin".equalsIgnoreCase(getProgramName())) {
                             if (v != null && v.getShortName().equalsIgnoreCase("l2_flags")) {
-                                updateFlagUseWrapper(v);
+                                updateParamValuesFlagUse(v);
                             }
                         }
                     }
@@ -1194,7 +1257,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    private void updateFlagUseWrapper(Variable flagGroup) {
+    private void updateParamValuesFlagUse(Variable flagGroup) {
 
         try {
             Attribute flagMeaningAttribute = flagGroup.attributes().findAttribute("flag_meanings");
@@ -1232,7 +1295,17 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         if ("l2bin".equalsIgnoreCase(getProgramName())) {
 //            updateParamsWithProgressMonitor("Flaguse testing");
+//            System.out.println("SPOT IFILE CHANGED: updateL2BinParams() 1 eeeeeeee");
+//            updateL2BinParams();
+//            System.out.println("SPOT IFILE CHANGED: updateL2BinParams() 2 eeeeeeee");
+
+            setWorkingUpdateOfile(true);
+            System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 1    eeeeeeee");
             updateL2BinParams();
+            System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 2    eeeeeeee");
+            setWorkingUpdateOfile(false);
+//            l2BinPropertyChangeHandler();
+
         }
 
 
@@ -2162,7 +2235,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String west = getParamValue("lonwest");
             String east = getParamValue("loneast");
 
+            System.out.println("SPOT HANDLER: getOfileForL2BinWrapper() 1   rrrrrrrrr");
             String ofileName = getOfileForL2BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, l3bprod, suite, prodtype, north, south, west, east);
+            System.out.println("SPOT HANDLER: getOfileForL2BinWrapper() 2");
 
             updateOFileInfo(ofileName);
 
@@ -2192,7 +2267,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                updateParamInfo("projection", projectionParamInfo.getDefaultValue());
             }
 
+            System.out.println("SPOT HANDLER: getOfileForL3MapGenWrapper() 1 tttttttt");
             String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
+            System.out.println("SPOT HANDLER: getOfileForL3MapGenWrapper() 2");
 
 
             updateOFileInfo(ofileName);
@@ -2232,13 +2309,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
             });
 
-            addPropertyChangeListener("suite", new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    l2BinPropertyChangeHandler();
-                    int stillHere = 0;
-                }
-            });
+//            addPropertyChangeListener("suite", new PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                    l2BinPropertyChangeHandler();
+//                    int stillHere = 0;
+//                }
+//            });
 
             addPropertyChangeListener("prodtype", new PropertyChangeListener() {
                 @Override
@@ -3896,6 +3973,22 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
         }
+
+//
+//        @Override
+//        public void retrieveParamsFromProgram(boolean ifileChanged, boolean suiteChanged) {
+//            // this gets overridden and used if needed for instance by l2bin and l3mapgen
+//
+//            if (ifileChanged) {
+//                updateL3MapgenParams();
+////                    updateParamsWithProgressMonitor("Re-initializing with input file '" + getPrimaryInputFileOptionName() + "'");
+//            } else if (suiteChanged) {
+//                updateL3MapgenParams();
+////                    updateParamsWithProgressMonitor("Reconfiguring with suite '" + getParamInfo("suite").getValue());
+//            }
+//
+//        }
+//
 
     }
 
