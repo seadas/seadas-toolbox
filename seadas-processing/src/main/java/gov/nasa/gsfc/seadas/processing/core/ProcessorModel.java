@@ -51,6 +51,7 @@ import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
  */
 public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
+    private long startTime = 0;
     // todo temporarily disabling these for Docker
     private boolean runProcessorToAutoPopulateL2bin = true;
     private boolean runProcessorToAutoPopulateL3mapgen = true;
@@ -625,6 +626,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     public boolean updateIFileInfo(String ifileName) {
+        System.out.println("TEST 22222");
+        System.out.println("Time elapsed=" + timeElapsed());
+
 
 
         if (getProgramName() != null && (getProgramName().equals("multilevel_processor"))) {
@@ -665,10 +669,13 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String east = getParamValue("east");
 
                     System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 1 uuuiiiii");
+                    System.out.println("Time elapsed=" + timeElapsed());
                     String ofileName = getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
                     System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 2");
+                    System.out.println("Time elapsed=" + timeElapsed());
 
                     updateOFileInfo(ofileName);
+                    System.out.println("Time elapsed=" + timeElapsed());
 
                 } else {
                     badIfileClearAndWarn(ifileName);
@@ -828,7 +835,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         return false;
     }
 
+    private long timeElapsed() {
+        long timeElapsed = (System.nanoTime() - startTime) / 1000000;
+
+        return timeElapsed;
+    }
+
     public void setParamValue(String name, String value) {
+        if (startTime == 0) {
+            startTime = System.nanoTime();
+        }
+        System.out.println("TEST 444444");
+        System.out.println("Time elapsed=" + timeElapsed());
         SeadasFileUtils.debug("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
         SeadasFileUtils.debug("set param value: " + name + " " + value);
         SeadasFileUtils.debug(name + " " + value);
@@ -869,6 +887,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         } else {
             updateParamInfo(name, value);
         }
+
+        System.out.println("Time elapsed=" + timeElapsed());
     }
 
     public String[] getCmdArrayPrefix() {
@@ -1120,6 +1140,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     public void updateParamValues(File selectedFile) {
+        System.out.println("TEST 99999");
+        System.out.println("Time elapsed=" + timeElapsed());
 
         if (selectedFile != null && getProgramName() != null && (l2prodProcessors.contains(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName()))) {
             //   stay
@@ -1195,9 +1217,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2 tyuuuii");
 
                     setWorkingUpdateOfile(true);
+                    System.out.println("Time elapsed=" + timeElapsed());
                     System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 1   tyuuuii");
                     updateL3MapgenParams();
                     System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2   tyuuuii");
+                    System.out.println("Time elapsed=" + timeElapsed());
                     setWorkingUpdateOfile(false);
 
                 }
@@ -2359,6 +2383,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         @Override
         public void updateParamValues(Product selectedProduct) {
+            System.out.println("TEST 54545454");
+
             if (selectedProduct != null) {
                 String sampleFileName = selectedProduct.getFileLocation().getAbsolutePath();
                 ifileInfo = new FileInfo(sampleFileName);
