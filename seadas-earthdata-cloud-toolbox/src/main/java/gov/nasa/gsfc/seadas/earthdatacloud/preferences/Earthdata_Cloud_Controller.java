@@ -122,10 +122,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_DEFAULT = "0x0";
 
 
-    public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".region";
+    public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".region.selector";
     public static final String PROPERTY_USER_REGION_INCLUDE_LABEL = "User Region Selector";
     public static final String PROPERTY_USER_REGION_INCLUDE_TOOLTIP = "Include 'user_region' selector in GUI";
-    public static final boolean PROPERTY_USER_REGION_INCLUDE_DEFAULT = false;
+    public static final boolean PROPERTY_USER_REGION_INCLUDE_DEFAULT = true;
     
     
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";

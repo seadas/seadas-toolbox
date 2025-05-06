@@ -508,7 +508,8 @@ public class OBDAACDataBrowser extends JPanel {
                 if (column == 0 && value instanceof String) {
                     String fileName = (String) value;
                     String tooltip = fileSpatialMap.getOrDefault(fileName, "No spatial info");
-                    ((JComponent) c).setToolTipText(tooltip);
+                    // todo Commenting out as this tooltip gets stuck being shown on screen so removing it for now
+//                    ((JComponent) c).setToolTipText(tooltip);
                 }
 
                 if (column == 0) {
@@ -534,11 +535,11 @@ public class OBDAACDataBrowser extends JPanel {
 //            }
 //        });
 
-        resultsTable.addMouseListener(new MouseAdapter() {
-            public void mouseExited(MouseEvent e) {
-                hideImagePreview();
-            }
-        });
+//        resultsTable.addMouseListener(new MouseAdapter() {
+//            public void mouseExited(MouseEvent e) {
+//                hideImagePreview();
+//            }
+//        });
 
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
@@ -693,34 +694,34 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-    private void showImagePreview(String fileName, Point screenLocation) {
-        if (imagePreviewWindow == null) {
-            imagePreviewWindow = new JWindow();
-            imageLabel = new JLabel();
-            imagePreviewWindow.getContentPane().add(imageLabel);
-        }
+//    private void showImagePreview(String fileName, Point screenLocation) {
+//        if (imagePreviewWindow == null) {
+//            imagePreviewWindow = new JWindow();
+//            imageLabel = new JLabel();
+//            imagePreviewWindow.getContentPane().add(imageLabel);
+//        }
+//
+//        try {
+//            String imageUrl = getPreviewUrl(fileName);
+//            ImageIcon icon = BrowseImagePreview.loadPreviewImage(fileName);
+//            if (icon != null) {
+//                imageLabel.setIcon(icon);
+//                imagePreviewWindow.pack();
+//                imagePreviewWindow.setLocation(screenLocation.x + 20, screenLocation.y + 20);
+//                imagePreviewWindow.setVisible(true);
+//            } else {
+//                hideImagePreview();
+//            }
+//        } catch (Exception e) {
+//            hideImagePreview();
+//        }
+//    }
 
-        try {
-            String imageUrl = getPreviewUrl(fileName);
-            ImageIcon icon = BrowseImagePreview.loadPreviewImage(fileName);
-            if (icon != null) {
-                imageLabel.setIcon(icon);
-                imagePreviewWindow.pack();
-                imagePreviewWindow.setLocation(screenLocation.x + 20, screenLocation.y + 20);
-                imagePreviewWindow.setVisible(true);
-            } else {
-                hideImagePreview();
-            }
-        } catch (Exception e) {
-            hideImagePreview();
-        }
-    }
-
-    private void hideImagePreview() {
-        if (imagePreviewWindow != null) {
-            imagePreviewWindow.setVisible(false);
-        }
-    }
+//    private void hideImagePreview() {
+//        if (imagePreviewWindow != null) {
+//            imagePreviewWindow.setVisible(false);
+//        }
+//    }
 
     private void downloadSelectedFiles() {
         if (earthdataCredentials == null) {

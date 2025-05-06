@@ -246,16 +246,32 @@ public class ImagePreviewHelper {
                     scaled = image.getScaledInstance(browseImageSize, -1, Image.SCALE_SMOOTH);
                 }
 
-
                 previewLabel.setIcon(new ImageIcon(scaled));
                 previewWindow.pack();
+                int windowHeight = previewWindow.getHeight();
+
+
+                // Assess if it is a very tall narrow image and limit to GUI height
+                Image scaled2 = null;
+                if (windowHeight > parentDialog.getHeight()) {
+                    scaled2 = image.getScaledInstance(-1, parentDialog.getHeight(), Image.SCALE_SMOOTH);
+                    previewLabel.setIcon(new ImageIcon(scaled2));
+                    previewWindow.pack();
+                }
+
+                windowHeight = previewWindow.getHeight();
+
+
+
+
 
                 Point parentDialogLocation = parentDialog.getLocationOnScreen();
                 Point parentDialogLocationBottom = new Point(parentDialogLocation.x, parentDialogLocation.y + parentDialog.getHeight());
                 Point tableLocationTop = parent.getLocationOnScreen();
-                int windowHeight = previewWindow.getHeight();
+
 
                 int offsetX = parentDialog.getWidth() + 5;
+
 
 
 
@@ -266,28 +282,44 @@ public class ImagePreviewHelper {
                 offsetY = (int) Math.round(0.6 * offsetY);
 
                 boolean floating = false;
-                if (!floating) {
-                    if (windowHeight > parentDialog.getHeight()) {
-//                        System.out.println("Anchor Main TOP");
-                        // anchor at top of main GUI
-                        locationY = parentDialog.getLocationOnScreen().y;
-                    } else if (windowHeight > (parent.getHeight() +  offsetY)) {
-//                        System.out.println("Anchor Main BOTTOM");
-                        // anchor at bottom of the main GUI
-                        locationY = parentDialogLocationBottom.y - windowHeight;
-                    } else if (windowHeight > offsetY) {
-//                        System.out.println("Anchor Above Table TOP");
-                        // anchor near top of the main GUI
-                        locationY = tableLocationTop.y - offsetY;
-                    } else {
-//                        System.out.println("Anchor Table TOP");
-                        // use dafault of anchor at top of table but if image is very small then floating
-                        if (windowHeight < (int) Math.round(0.5 * parent.getHeight())) {
+
+
+
+//                if (!floating) {
+//                    if (windowHeight > parentDialog.getHeight()) {
+////                        System.out.println("Anchor Main TOP");
+//                        // anchor at top of main GUI
+//                        locationY = parentDialog.getLocationOnScreen().y;
+//                    } else if (windowHeight > (parent.getHeight() +  offsetY)) {
+////                        System.out.println("Anchor Main BOTTOM");
+//                        // anchor at bottom of the main GUI
+//                        locationY = parentDialogLocationBottom.y - windowHeight;
+//                    } else if (windowHeight > offsetY) {
+////                        System.out.println("Anchor Above Table TOP");
+//                        // anchor near top of the main GUI
+//                        locationY = tableLocationTop.y - offsetY;
+//                    } else {
+////                        System.out.println("Anchor Table TOP");
+//                        // use dafault of anchor at top of table but if image is very small then floating
+//                        if (windowHeight < (int) Math.round(0.5 * parent.getHeight())) {
+////                            System.out.println("Anchor FLOATING");
+//                            floating = true;
+//                        }
+//                    }
+//                }
+
+
+                if (windowHeight < (int) Math.round(0.1 * parentDialog.getHeight())) {
 //                            System.out.println("Anchor FLOATING");
-                            floating = true;
-                        }
-                    }
+                    floating = true;
                 }
+
+                if (!floating) {
+                    int offsetYTop = (int) Math.floor((parentDialog.getHeight() - windowHeight) / 2.0);
+//                    int offsetYTop = 100;
+                    locationY = parentDialog.getLocationOnScreen().y + offsetYTop;
+                }
+
 
                 if (floating) {
                     locationY = screenLocation.y - (int) Math.round(0.5 * windowHeight);
