@@ -10,6 +10,7 @@
             <primaryOption>geofile</primaryOption>
         </primaryOptions>
         <progressRegex>scan: (\d+) out of (\d+)</progressRegex>
+        <subPanel1Title></subPanel1Title>
     </programMetaData>
     <options>
         <option type="ifile">
@@ -133,6 +134,8 @@
             <description>update luts for a given mission. MISSION is either seawifs, aqua, or terra
             </description>
             <usedAs>button</usedAs>
+            <subPanelIndex>1</subPanelIndex>
+            <colSpan>4</colSpan>
             <order>14</order>
         </option>
     </options>
