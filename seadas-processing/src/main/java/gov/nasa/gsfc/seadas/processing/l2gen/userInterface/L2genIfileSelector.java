@@ -34,9 +34,13 @@ public class L2genIfileSelector {
         fileSelector.setFileNameLabel(new JLabel(seaDASProcessorModel.getPrimaryInputFileOptionName()));
         fileSelector.getFileNameComboBox().setPrototypeDisplayValue(
                 "123456789 123456789 123456789 123456789 123456789 ");
-        fileSelector.getFileNameComboBox().addActionListener(e ->
+
+        fileSelector.getFileNameComboBox().addActionListener(e -> {
+            if (fileSelector != null) {
                 System.out.println("ComboBox action: selected="
-                        + fileSelector.getSelectedFile()));
+                        + fileSelector.getSelectedFile());
+            }
+        });
 
         addControlListeners();
         addEventListeners();
@@ -50,8 +54,8 @@ public class L2genIfileSelector {
                                 + controlHandlerEnabled + ", selected=" + getSelectedIFileName());
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
-//                    disableEventHandler();
-                    disableControlHandler();
+                    disableEventHandler();
+//                    disableControlHandler();
                     seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
                     System.out.println("▶ model.param now = "
                             + seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName()));

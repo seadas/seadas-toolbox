@@ -751,7 +751,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (ofileName != null) {
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                    updateGeoFileInfo(ifileName, inputFileInfo);
+                    // todo investigate which programs need to bypass this or which should use this
+                    if (!"modis_GEO".equalsIgnoreCase(getProgramName())) {
+                        updateGeoFileInfo(ifileName, inputFileInfo);
+                    }
                     updateOFileInfo(getOFileFullPath(ofileName));
                     updateParamValues(new File(ifileName));
                 }

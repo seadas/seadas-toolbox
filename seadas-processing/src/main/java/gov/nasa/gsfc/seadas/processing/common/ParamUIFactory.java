@@ -1705,7 +1705,7 @@ public class ParamUIFactory {
     }
 
     private void enableControlHandler() {
-        controlHandlerIntEnabled++;
+    controlHandlerIntEnabled++;
     }
 
     private void disableControlHandler() {
