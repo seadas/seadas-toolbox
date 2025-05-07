@@ -739,10 +739,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     badIfileClearAndWarn(ifileName);
                 }
 
-
-
-
-
             } else {
                 //ocssw.setIfileName(ifileName);
                 String ofileName = getOcssw().getOfileName(ifileName, getProgramName());
@@ -751,10 +747,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (ofileName != null) {
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
-                    // todo investigate which programs need to bypass this or which should use this
-                    if (!"modis_GEO".equalsIgnoreCase(getProgramName())) {
-                        updateGeoFileInfo(ifileName, inputFileInfo);
-                    }
+                    updateGeoFileInfo(ifileName, inputFileInfo);
                     updateOFileInfo(getOFileFullPath(ofileName));
                     updateParamValues(new File(ifileName));
                 }
@@ -817,15 +810,19 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     //todo: change the path to get geo filename from ifile
     public boolean updateGeoFileInfo(String ifileName, FileInfo inputFileInfo) {
-        FileInfo geoFileInfo = getGeoFileInfo(inputFileInfo, ocssw);
-        if (geoFileInfo != null) {
-            setHasGeoFile(true);
-            updateParamInfo(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
-            return true;
-        } else {
-            setHasGeoFile(false);
-            return false;
+        if (isGeofileRequired()) {
+            FileInfo geoFileInfo = getGeoFileInfo(inputFileInfo, ocssw);
+            if (geoFileInfo != null) {
+                setHasGeoFile(true);
+                updateParamInfo(GEOFILE, geoFileInfo.getFile().getAbsolutePath());
+                return true;
+            } else {
+                setHasGeoFile(false);
+                return false;
+            }
         }
+
+        return false;
     }
 
     public boolean updateOFileInfo(String newValue) {
