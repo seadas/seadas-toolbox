@@ -1,28 +1,19 @@
 # Sampling of format for user regions
 # Also supports decimal format for instance
 # Label = Coordinates (the text to the left of the = is shown in the selector and the text to the right of the '=' is the actual value
+# Example formats:
 
--- Example Formats --
+Chesapeake Bay  = 37°48′00″N 76°6′00″W
 -- BLANK --
 
-Chesapeake Bay = 37°48′00″N 76°6′00″W
-37°48′00″N 76°6′00″W = 37°48′00″N 76°6′00″W
-Chesapeake Bay = 37.8°N 76.1°W
-37.8°N 76.1°W = 37.8°N 76.1°W
-Chesapeake Bay = 37.8 -76.1
-37.8 -76.1 = 37.8 -76.1
+-- EXAMPLE FORMATS --
+[Degrees Minutes Seconds] = 37°48′00″N 76°6′00″W
+[Decimal-Degrees] = 37.8°N 76.1°W
+[Degrees Decimal-Minutes] = 37°48.0′N 76°6.0′W
+[Decimal] = 37.8 -76.1
 
 
--- BLANK --
--- ISLANDS OF PACIFIC --
-Galápagos Islands = 0°30′S 90°30′W
-Hawaiian Islands = 20°54′00″N 156°36′00″W
-New Zealand = 42°S 173°E
-Fiji = 18°S 179°E
 
--- BLANK --
--- LAKES --
-Lake Titicaca = 15°49′30″S 69°19′30″W
 
 
 
