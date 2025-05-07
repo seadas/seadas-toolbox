@@ -403,12 +403,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if ("l2bin".equalsIgnoreCase(getProgramName())) {
                 if (ifileChanged) {
 //                    System.out.println("PROBABLY NOT NEEDED NEVER HIT updateL2BinParams() SPOT zxcvzbzb");
-                    updateL2BinParams();
+                    updateL2BinParams(true);
 //                    updateParamsWithProgressMonitor("Re-Initializing with input file '" + getPrimaryInputFileOptionName() + "'");
                 } else if (suiteChanged) {
                     setWorkingUpdateOfile(true);
                     System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 1    qweioyrtrt");
-                    updateL2BinParams();
+                    updateL2BinParams(false);
                     System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 2    qweioyrtrt");
                     setWorkingUpdateOfile(false);
                     l2BinPropertyChangeHandler();
@@ -434,12 +434,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
                 if (ifileChanged) {
 //                    System.out.println("PROBABLY NOT NEEDED NEVER HIT updateL3MapgenParams() SPOT fdfddss");
-                    updateL3MapgenParams();
+                    updateL3MapgenParams(true);
 //                    updateParamsWithProgressMonitor("Re-initializing with input file '" + getPrimaryInputFileOptionName() + "'");
                 } else if (suiteChanged) {
                     setWorkingUpdateOfile(true);
                     System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 1   thhhtv");
-                    updateL3MapgenParams();
+                    updateL3MapgenParams(false);
                     System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 2   thhhtv");
                     setWorkingUpdateOfile(false);
                     l3mapgenPropertyChangeHandler();
@@ -525,104 +525,104 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-
-    public void updateParamsWithProgressMonitor(String progressMonitorMessage) {
-        if (!progressMonitorIsRunning) {
-            progressMonitorIsRunning = true;
-            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), getProgramName()) {
-
-                @Override
-                protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
-
-                    int totalWorkPlannedMaster = 100;
-                    int workDoneMaster = 0;
-                    pm.beginTask(progressMonitorMessage, totalWorkPlannedMaster);
-
-
-                    try {
-                        if ("l2bin".equalsIgnoreCase(getProgramName())) {
-//                            System.out.println("updateL3MapgenParams() SPOT swswswwsw");
-                            updateL2BinParams();
-                        }
-                        if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
-//                            System.out.println("updateL3MapgenParams() SPOT ddededede");
-                            updateL3MapgenParams();
-                        }
-
-                        if (pm != null && pm.isCanceled()) {
-                            pm.done();
-                            progressMonitorIsRunning = false;
-
-                            return null;
-                        }
-                    } finally {
-                        if (pm != null && pm.isCanceled()) {
-                            pm.done();
-                            progressMonitorIsRunning = false;
-
-                            return null;
-                        }
-                        pm.done();
-                    }
-
-                    return null;
-                }
-            };
-
-            pmSwingWorker.executeWithBlocking();
-
-            progressMonitorIsRunning = false;
-        }
-    }
-
-
-
-    public boolean updateIFileInfoWithProgressMonitor(String ifileName) {
-        if (!progressMonitorIsRunning) {
-            progressMonitorIsRunning = true;
-
-            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), getProgramName()) {
-
-                @Override
-                protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
-
-                    int totalWorkPlannedMaster = 100;
-                    int workDoneMaster = 0;
-                    pm.beginTask("Initializing with input file '" + ifileName + "'", totalWorkPlannedMaster);
-
-
-                    try {
-                        updateIFileInfo(ifileName);
-
-                        if (pm != null && pm.isCanceled()) {
-                            pm.done();
-                            progressMonitorIsRunning = false;
-                            return null;
-                        }
-                    } finally {
-                        if (pm != null && pm.isCanceled()) {
-                            pm.done();
-                            progressMonitorIsRunning = false;
-
-                            return null;
-                        }
-                        pm.done();
-                    }
-                    progressMonitorIsRunning = false;
-
-                    return null;
-                }
-            };
-
-            pmSwingWorker.executeWithBlocking();
-
-        }
-
-        progressMonitorIsRunning = false;
-
-        return isIfileValid;
-    }
-
+//
+//    public void updateParamsWithProgressMonitor(String progressMonitorMessage) {
+//        if (!progressMonitorIsRunning) {
+//            progressMonitorIsRunning = true;
+//            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), getProgramName()) {
+//
+//                @Override
+//                protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+//
+//                    int totalWorkPlannedMaster = 100;
+//                    int workDoneMaster = 0;
+//                    pm.beginTask(progressMonitorMessage, totalWorkPlannedMaster);
+//
+//
+//                    try {
+//                        if ("l2bin".equalsIgnoreCase(getProgramName())) {
+////                            System.out.println("updateL3MapgenParams() SPOT swswswwsw");
+//                            updateL2BinParams();
+//                        }
+//                        if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
+////                            System.out.println("updateL3MapgenParams() SPOT ddededede");
+//                            updateL3MapgenParams();
+//                        }
+//
+//                        if (pm != null && pm.isCanceled()) {
+//                            pm.done();
+//                            progressMonitorIsRunning = false;
+//
+//                            return null;
+//                        }
+//                    } finally {
+//                        if (pm != null && pm.isCanceled()) {
+//                            pm.done();
+//                            progressMonitorIsRunning = false;
+//
+//                            return null;
+//                        }
+//                        pm.done();
+//                    }
+//
+//                    return null;
+//                }
+//            };
+//
+//            pmSwingWorker.executeWithBlocking();
+//
+//            progressMonitorIsRunning = false;
+//        }
+//    }
+//
+//
+//
+//    public boolean updateIFileInfoWithProgressMonitor(String ifileName) {
+//        if (!progressMonitorIsRunning) {
+//            progressMonitorIsRunning = true;
+//
+//            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(), getProgramName()) {
+//
+//                @Override
+//                protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+//
+//                    int totalWorkPlannedMaster = 100;
+//                    int workDoneMaster = 0;
+//                    pm.beginTask("Initializing with input file '" + ifileName + "'", totalWorkPlannedMaster);
+//
+//
+//                    try {
+//                        updateIFileInfo(ifileName);
+//
+//                        if (pm != null && pm.isCanceled()) {
+//                            pm.done();
+//                            progressMonitorIsRunning = false;
+//                            return null;
+//                        }
+//                    } finally {
+//                        if (pm != null && pm.isCanceled()) {
+//                            pm.done();
+//                            progressMonitorIsRunning = false;
+//
+//                            return null;
+//                        }
+//                        pm.done();
+//                    }
+//                    progressMonitorIsRunning = false;
+//
+//                    return null;
+//                }
+//            };
+//
+//            pmSwingWorker.executeWithBlocking();
+//
+//        }
+//
+//        progressMonitorIsRunning = false;
+//
+//        return isIfileValid;
+//    }
+//
 
 
     public boolean updateIFileInfo(String ifileName) {
@@ -1215,15 +1215,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 }
 
                 if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
-//                    updateParamsWithProgressMonitor("Something l3mapgen testing");
-//                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 1  tyuuuii");
-//                    updateL3MapgenParams();
-//                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2 tyuuuii");
-
                     setWorkingUpdateOfile(true);
                     System.out.println("Time elapsed=" + timeElapsed());
                     System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 1   tyuuuii");
-                    updateL3MapgenParams();
+                    updateL3MapgenParams(true);
                     System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2   tyuuuii");
                     System.out.println("Time elapsed=" + timeElapsed());
                     setWorkingUpdateOfile(false);
@@ -1322,14 +1317,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         if ("l2bin".equalsIgnoreCase(getProgramName())) {
-//            updateParamsWithProgressMonitor("Flaguse testing");
-//            System.out.println("SPOT IFILE CHANGED: updateL2BinParams() 1 eeeeeeee");
-//            updateL2BinParams();
-//            System.out.println("SPOT IFILE CHANGED: updateL2BinParams() 2 eeeeeeee");
-
             setWorkingUpdateOfile(true);
             System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 1    eeeeeeee");
-            updateL2BinParams();
+            updateL2BinParams(true);
             System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 2    eeeeeeee");
             setWorkingUpdateOfile(false);
 //            l2BinPropertyChangeHandler();
@@ -1658,7 +1648,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
 
-    private void updateL3MapgenParams() {
+    private void updateL3MapgenParams(boolean ifileChanged) {
         System.out.println("Enter: updateL3MapgenParams()");
         if (!runProcessorToAutoPopulateL3mapgen) {
             return;
@@ -1673,10 +1663,22 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             File ifile = new File(ifileParamInfo.getValue());
 
             if (ifile != null && ifile.exists()) {
-                String suite = null;
-                ParamInfo suiteParamInfo = paramList.getInfo("suite");
-                if (suiteParamInfo != null) {
-                    suite = suiteParamInfo.getValue();
+                String suite = ParamInfo.NULL_STRING;;
+                if (ifileChanged) {
+                    if (OCSSW_L3mapgenController.getPreferenceSuite() != null && OCSSW_L3mapgenController.getPreferenceSuite().trim().length() > 0 ) {
+                        suite = OCSSW_L3mapgenController.getPreferenceSuite().trim();
+                    }
+
+                    ParamInfo option = getParamInfo("suite");
+                    if (option != null) {
+                        option.setValue(suite);
+                    }
+
+                } else {
+                    ParamInfo suiteParamInfo = paramList.getInfo("suite");
+                    if (suiteParamInfo != null) {
+                        suite = suiteParamInfo.getValue();
+                    }
                 }
 
 
@@ -1769,7 +1771,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     }
 
-    private void updateL2BinParams() {
+    private void updateL2BinParams(boolean ifileChanged) {
         if (!runProcessorToAutoPopulateL2bin) {
             return;
         }
@@ -1785,12 +1787,23 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
             if (ifile != null && ifile.exists()) {
-                String suite = null;
-                ParamInfo suiteParamInfo = paramList.getInfo("suite");
-                if (suiteParamInfo != null) {
-                    suite = suiteParamInfo.getValue();
-                }
+                String suite = ParamInfo.NULL_STRING;;
+                if (ifileChanged) {
+                    if (OCSSW_L2binController.getPreferenceSuite() != null && OCSSW_L2binController.getPreferenceSuite().trim().length() > 0 ) {
+                        suite = OCSSW_L2binController.getPreferenceSuite().trim();
+                    }
 
+                    ParamInfo option = getParamInfo("suite");
+                    if (option != null) {
+                        option.setValue(suite);
+                    }
+
+                } else {
+                    ParamInfo suiteParamInfo = paramList.getInfo("suite");
+                    if (suiteParamInfo != null) {
+                        suite = suiteParamInfo.getValue();
+                    }
+                }
 
                 if (ifile != null && ifile.exists() && ifile.getName().endsWith(".txt")) {
 
