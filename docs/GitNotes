@@ -64,6 +64,10 @@ GIT_COMMITTER_DATE="2023-09-29 12:00" git tag -a 1.4.0 -m "SeaDAS Toolbox releas
 
 
 
+git tag -a SEADAS-9.2.1-Mac-aarch64 -m "SeaDAS 9.2.1 release based on SNAP 10 (April 30, 2024) development version"
+
+
+
 // List tags
 git tag -l
 
