@@ -17,7 +17,6 @@ public class ImagePreviewHelper {
     private String currentImageUrl = null;
 
     private String hoveringFileName = null;
-    private String workingFileName = null;
     private String finishedFileName = null;
     boolean startingUp = true;
     private boolean previewIsDisplayed = false;
@@ -51,21 +50,11 @@ public class ImagePreviewHelper {
 
                 if (row >= 0 & row < table.getRowCount()) { // for all columns in the row
                     String fileName = (String) table.getValueAt(row, 0);
-                    if (fileName != null) {
-                        if (!fileName.equalsIgnoreCase(hoveringFileName)) {
-                            hoveringFileNameChanged = true;
-                        }
-                    } else {
-                        if (hoveringFileName != null) {
-                            hoveringFileNameChanged = true;
-                        }
-                    }
 
+                    hoveringFileNameChanged = !stringCompareEquals(fileName, hoveringFileName);
 
-                    if (hoveringFileNameChanged) {
+                    if (fileName != null && hoveringFileNameChanged) {
                         hoveringFileName = fileName;
-//                        System.out.println("Hovering fileName=" + hoveringFileName);
-
 
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
@@ -77,7 +66,6 @@ public class ImagePreviewHelper {
                         }
 
 
-
                         String imageUrl = getPreviewUrl(fileName);
                         if (imageUrl != null && !imageUrl.equals(currentImageUrl)) {
 
@@ -87,43 +75,68 @@ public class ImagePreviewHelper {
                                 Runnable r = new Runnable() {
                                     public void run() {
                                         int i =0;
+                                        String hoveringFileNameStart = hoveringFileName;
+                                        finishedFileName = null;
+
                                         while (th != null && th.isAlive() && i < 1000) { // stay alive for 100 seconds
 //                                            System.out.println("th alive num iter =" + i);
 
-                                            if (hoveringFileName != null) {
-                                                String hoveringFileNameSnapshot = hoveringFileName;  // lock this as the main thread could change it
-                                                if (!hoveringFileNameSnapshot.equalsIgnoreCase(finishedFileName) || startingUp) {
-                                                    startingUp = false;
-                                                    String imageUrl = getPreviewUrl(hoveringFileNameSnapshot);
-                                                    showImagePreview(imageUrl, table, e.getLocationOnScreen(), parentDialog);
+                                            sleepPreviewThread(100);
+
+                                            String hoveringFileNameCurrent = hoveringFileName; // lock this as it could become null
+                                            Point hoveringLocationCurrent = e.getLocationOnScreen();
+
+                                            // Check to see if mouse has moved to different file
+                                            if (!stringCompareEquals(hoveringFileNameStart, hoveringFileNameCurrent)) {
+                                                if (finishedFileName != null) {
+                                                    hideImagePreview();
+                                                    finishedFileName = null;
+                                                }
+                                                hoveringFileNameStart = hoveringFileName; // get latest
+                                                i = 0;
+                                                continue;  // it has moved continue and sleep
+                                            }
+
+                                            // Account for mouse having left the table
+                                            if (hoveringFileNameCurrent == null) {
+                                                if (finishedFileName != null) {
+                                                    hideImagePreview();
+                                                    finishedFileName = null;
+                                                }
+                                                hoveringFileNameStart =  hoveringFileName; // get latest
+                                                continue;
+                                            }
+
+
+                                            // At this point hovering has maintained over same filename for sleep interval
+                                            // Now try making image
+
+                                            if (hoveringFileNameCurrent != null) {
+                                                if (!stringCompareEquals(hoveringFileNameCurrent, finishedFileName)) {
+                                                    String imageUrl = getPreviewUrl(hoveringFileNameCurrent);
+                                                    showImagePreview(imageUrl, table, hoveringLocationCurrent, parentDialog);
                                                     currentImageUrl = imageUrl;
-                                                    if (hoveringFileNameSnapshot.equalsIgnoreCase(hoveringFileName)) {
-                                                        finishedFileName = hoveringFileNameSnapshot;
+                                                    if (stringCompareEquals(hoveringFileNameCurrent, hoveringFileName)) {
+                                                        finishedFileName = hoveringFileNameCurrent;
                                                     } else {
                                                         hideImagePreview();
                                                         finishedFileName = null;
                                                     }
-                                                    i = 0;
                                                 }
+                                            }
+
+                                            if (finishedFileName == null) {
+                                                i = 0;
                                             } else {
-                                                hideImagePreview();
+                                                i++;
                                             }
 
-                                            try {
-                                                // sleep 0.1 second
-                                                Thread.sleep(100);
-                                            } catch (InterruptedException e3) {
-                                                // recommended because catching InterruptedException clears interrupt flag
-                                                Thread.currentThread().interrupt();
-//                                                System.out.println("Being killed by exit");
-                                                // you probably want to quit if the thread is interrupted
-                                                return;
-                                            }
+                                            hoveringFileNameStart =  hoveringFileName; // get latest
 
-                                            i++;
                                         }
 
 
+                                        hideImagePreview(); // just in case
                                         killImagePreviewThread();
 
                                     }
@@ -134,11 +147,10 @@ public class ImagePreviewHelper {
 
                         }
                     }
+
+                    hoveringFileName = fileName;
                 } else {
-                    if (hoveringFileName != null) {
-                        hoveringFileNameChanged = true;
-                        hoveringFileName = null;
-                    }
+                    hoveringFileName = null;
 
                     if (hoveringFileNameChanged) {
 //                        System.out.println("Hovering fileName=" + hoveringFileName);
@@ -146,8 +158,11 @@ public class ImagePreviewHelper {
                         table.setForeground(Color.BLACK);
                         table.setSelectionBackground(Color.WHITE);
                         table.setSelectionForeground(Color.BLACK);
+                        table.removeRowSelectionInterval(0, table.getRowCount()-1);
+
 
                         hideImagePreview();
+                        finishedFileName = null;
                     }
                 }
 
@@ -162,26 +177,52 @@ public class ImagePreviewHelper {
             @Override
             public void mouseExited(MouseEvent e) {
 
-                boolean hoveringFileNameChanged = false;
-                if (hoveringFileName != null) {
-                    hoveringFileNameChanged = true;
-                    hoveringFileName = null;
-                }
-//                System.out.println("Exited");
+                hoveringFileName = null;
+                table.setSelectionBackground(Color.WHITE);
+                table.setSelectionForeground(Color.BLACK);
+                table.setBackground(Color.WHITE);
+                table.setForeground(Color.BLACK);
+                table.removeRowSelectionInterval(0, table.getRowCount()-1);
 
-
-                if (hoveringFileNameChanged) {
-//                    System.out.println("Hovering fileName=" + hoveringFileName);
-                    table.setSelectionBackground(Color.WHITE);
-                    table.setSelectionForeground(Color.BLACK);
-
-                    hideImagePreview();
-                }
-
-                killImagePreviewThread();
-
+                hideImagePreview();
             }
         });
+    }
+
+
+    private boolean stringCompareEquals(String string1, String string2) {
+
+        if (string1 == null && string2 != null) {
+            return false;
+        }
+
+        if (string1 != null && string2 == null) {
+            return false;
+        }
+
+        if (string1 == null && string2 == null) {
+            return true;
+        }
+
+        if (string1.equalsIgnoreCase(string2)) {
+            return true;
+        } else {
+            return  false;
+        }
+
+    }
+
+    private void sleepPreviewThread(long milliSeconds) {
+        try {
+            // sleep 0.1 second
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException e3) {
+            // recommended because catching InterruptedException clears interrupt flag
+            Thread.currentThread().interrupt();
+//                                                System.out.println("Being killed by exit");
+            // you probably want to quit if the thread is interrupted
+            return;
+        }
     }
 
 

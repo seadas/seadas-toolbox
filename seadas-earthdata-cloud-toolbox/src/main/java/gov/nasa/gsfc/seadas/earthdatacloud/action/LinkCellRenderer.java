@@ -22,8 +22,8 @@ public class LinkCellRenderer extends DefaultTableCellRenderer {
             boolean hasFocus, int row, int column) {
 
         JLabel label = new JLabel("<html><a href=''>" + value + "</a></html>");
-        label.setForeground(Color.BLUE);
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return label;
+//        label.setForeground(Color.BLUE);
+            label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            return label;
     }
 }
