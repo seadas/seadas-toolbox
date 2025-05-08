@@ -158,7 +158,15 @@ public class ImagePreviewHelper {
                         table.setForeground(Color.BLACK);
                         table.setSelectionBackground(Color.WHITE);
                         table.setSelectionForeground(Color.BLACK);
-                        table.removeRowSelectionInterval(0, table.getRowCount()-1);
+                        table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
+                        table.removeColumnSelectionInterval(0,0);
+                        table.removeRowSelectionInterval(row, row);
+                        table.setBackground(Color.WHITE);
+                        table.setForeground(Color.BLACK);
+                        table.setBorder(BorderFactory.createEmptyBorder());
+
+
+//                        table.removeRowSelectionInterval(0, table.getRowCount()-1);
 
 
                         hideImagePreview();
@@ -182,7 +190,13 @@ public class ImagePreviewHelper {
                 table.setSelectionForeground(Color.BLACK);
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
-                table.removeRowSelectionInterval(0, table.getRowCount()-1);
+                table.removeColumnSelectionInterval(0,0);
+                table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
+                table.setBackground(Color.WHITE);
+                table.setForeground(Color.BLACK);
+                table.setBorder(BorderFactory.createEmptyBorder());
+
+//                table.removeRowSelectionInterval(0, table.getRowCount()-1);
 
                 hideImagePreview();
             }
@@ -266,6 +280,8 @@ public class ImagePreviewHelper {
 
     private void showImagePreview(String imageUrl, Component parent, Point screenLocation, JDialog parentDialog) {
         try {
+            previewWindow.setVisible(false);
+
             Image image = ImageIO.read(new URL(imageUrl));
             if (image != null) {
 //
@@ -289,6 +305,7 @@ public class ImagePreviewHelper {
 
                 previewLabel.setIcon(new ImageIcon(scaled));
                 previewWindow.pack();
+
                 int windowHeight = previewWindow.getHeight();
 
 
@@ -298,6 +315,7 @@ public class ImagePreviewHelper {
                     scaled2 = image.getScaledInstance(-1, parentDialog.getHeight(), Image.SCALE_SMOOTH);
                     previewLabel.setIcon(new ImageIcon(scaled2));
                     previewWindow.pack();
+
                 }
 
                 windowHeight = previewWindow.getHeight();

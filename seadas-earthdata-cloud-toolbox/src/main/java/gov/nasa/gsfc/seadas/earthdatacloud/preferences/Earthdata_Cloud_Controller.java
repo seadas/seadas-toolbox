@@ -119,7 +119,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_LABEL = "Box Size";
     public static final String PROPERTY_BOX_SIZE_TOOLTIP = "<html>In units of degrees.  Used to set fields north, south, west and east<br>" +
             "Option1: Box Size = 'value' (applies equal width and height)<br>Option2: Box Size = 'width x height'<br></html>";
-    public static final String PROPERTY_BOX_SIZE_DEFAULT = "0x0";
+    public static final String PROPERTY_BOX_SIZE_DEFAULT = "0.1";
 
 
     public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".region.selector";
@@ -133,6 +133,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_DAYNIGHT_MODE_TOOLTIP = "Retrieve files with data acquired during daytime, nighttime, or both";
     public static final String PROPERTY_DAYNIGHT_MODE_DEFAULT = MODE_DAY;
 
+    
 
     public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_parent_dir";
     public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL = "Download Parent Directory";
@@ -158,6 +159,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final int PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MIN_VALUE = 100;
     public static final int PROPERTY_IMAGE_PREVIEW_SIZE_MODE_MAX_VALUE = 1000;
 
+    public static final String PROPERTY_IMAGE_LINK_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".add_link";
+    public static final String PROPERTY_IMAGE_LINK_INCLUDE_LABEL = "Add Link to Full Image";
+    public static final String PROPERTY_IMAGE_LINK_INCLUDE_TOOLTIP = "When clicking on the filename, the full resolution browse image is opened";
+    public static final boolean PROPERTY_IMAGE_LINK_INCLUDE_DEFAULT = false;
+    
 
     public static final String PROPERTY_FETCH_MAX_RESULTS_KEY = PROPERTY_ROOT_KEY + ".fetch.max_results";
     public static final String PROPERTY_FETCH_MAX_RESULTS_LABEL = "Max Results";
@@ -217,6 +223,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY, PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_IMAGE_LINK_INCLUDE_KEY, PROPERTY_IMAGE_LINK_INCLUDE_DEFAULT);
+
         initPropertyDefaults(context, PROPERTY_FETCH_MAX_RESULTS_KEY, PROPERTY_FETCH_MAX_RESULTS_DEFAULT);
         initPropertyDefaults(context, PROPERTY_FETCH_RESULTS_PER_PAGE_KEY, PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT);
 
@@ -527,6 +535,12 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         int imagePreviewSizeModeDefault = PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT;
 
 
+        @Preference(key = PROPERTY_IMAGE_LINK_INCLUDE_KEY,
+                label = PROPERTY_IMAGE_LINK_INCLUDE_LABEL,
+                description = PROPERTY_IMAGE_LINK_INCLUDE_TOOLTIP)
+        boolean imageLinkIncludeDefault = PROPERTY_IMAGE_LINK_INCLUDE_DEFAULT;
+        
+
         @Preference(key = PROPERTY_FETCH_MAX_RESULTS_KEY,
                 label = PROPERTY_FETCH_MAX_RESULTS_LABEL,
                 description = PROPERTY_FETCH_MAX_RESULTS_TOOLTIP,
@@ -673,6 +687,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static int getPreferenceBrowseImageSize() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyInt(PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
+    }
+
+    public static boolean getPreferenceImageLinkInclude() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_IMAGE_LINK_INCLUDE_KEY, PROPERTY_IMAGE_LINK_INCLUDE_DEFAULT);
     }
 
     public static int getPreferenceFetchMaxResults() {

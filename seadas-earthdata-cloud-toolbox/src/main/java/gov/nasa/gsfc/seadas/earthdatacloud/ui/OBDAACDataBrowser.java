@@ -1,10 +1,8 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
-import com.bc.ceres.core.Assert;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
-import org.esa.snap.core.jexp.impl.AbstractFunction;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.core.util.SystemUtils;
@@ -12,7 +10,6 @@ import org.jdatepicker.impl.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.netbeans.beaninfo.editors.ObjectEditor;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -37,8 +34,6 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static gov.nasa.gsfc.seadas.earthdatacloud.ui.BrowseImagePreview.getPreviewUrl;
 
 public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
@@ -485,7 +480,7 @@ public class OBDAACDataBrowser extends JPanel {
                 int col = resultsTable.columnAtPoint(e.getPoint());
 
                 // Only act if the clicked column is the File Name column (e.g., 0)
-                if (col == 0) {
+                if (Earthdata_Cloud_Controller.getPreferenceImageLinkInclude() && col == 0) {
                     String fileName = (String) tableModel.getValueAt(row, 0);
                     String browseUrl = BrowseImagePreview.getFullImageUrl(fileName);
                     if (browseUrl != null) {
