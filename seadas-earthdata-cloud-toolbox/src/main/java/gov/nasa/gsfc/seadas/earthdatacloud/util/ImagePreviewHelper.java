@@ -158,9 +158,9 @@ public class ImagePreviewHelper {
                         table.setForeground(Color.BLACK);
                         table.setSelectionBackground(Color.WHITE);
                         table.setSelectionForeground(Color.BLACK);
-                        table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
-                        table.removeColumnSelectionInterval(0,0);
-                        table.removeRowSelectionInterval(row, row);
+//                        table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
+//                        table.removeColumnSelectionInterval(0,0);
+//                        table.removeRowSelectionInterval(row, row);
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
                         table.setBorder(BorderFactory.createEmptyBorder());
@@ -190,8 +190,8 @@ public class ImagePreviewHelper {
                 table.setSelectionForeground(Color.BLACK);
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
-                table.removeColumnSelectionInterval(0,0);
-                table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
+//                table.removeColumnSelectionInterval(0,0);
+//                table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
                 table.setBorder(BorderFactory.createEmptyBorder());
