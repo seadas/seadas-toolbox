@@ -6,7 +6,7 @@
 package gov.nasa.gsfc.seadas.about;
 
 import com.bc.ceres.core.runtime.Version;
-import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
+//import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.about.AboutBox;
 import org.esa.snap.rcp.util.BrowserUtils;
@@ -96,7 +96,7 @@ public class SeaDASAboutBox extends JPanel {
 
         add(jPanel, BorderLayout.WEST);
 
-        ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
+//        ModuleInfo seadasProcessingModuleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
 //        System.out.println("SeaDAS Toolbox Specification Version: " + seadasProcessingModuleInfo.getSpecificationVersion());
 //        System.out.println("SeaDAS Toolbox Implementation Version: " + seadasProcessingModuleInfo.getImplementationVersion());
 
@@ -107,9 +107,9 @@ public class SeaDASAboutBox extends JPanel {
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 //        final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(SeaDASAboutBox.class);
         // todo Overrode this because SeaDASAboutBox version not defined in macro
-        final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
+//        final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(OCSSWInfoGUI.class);
 
-        panel.add(new JLabel("<html><b>SeaDAS Toolbox version " + moduleInfo.getSpecificationVersion() + "</b>", SwingConstants.RIGHT));
+//        panel.add(new JLabel("<html><b>SeaDAS Toolbox version " + moduleInfo.getSpecificationVersion() + "</b>", SwingConstants.RIGHT));
 
 //        Version specVersion = Version.parseVersion(moduleInfo.getSpecificationVersion().toString());
 //        String versionString = String.format("%s.%s.%s", specVersion.getMajor(), specVersion.getMinor(), specVersion.getMicro());

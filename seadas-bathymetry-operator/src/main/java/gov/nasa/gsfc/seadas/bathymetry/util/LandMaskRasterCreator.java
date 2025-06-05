@@ -16,7 +16,7 @@
 
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
-import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.multilevel.MultiLevelImage;
 import org.esa.snap.core.dataio.ProductIO;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;

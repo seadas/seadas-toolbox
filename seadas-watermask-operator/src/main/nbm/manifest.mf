@@ -6,5 +6,4 @@ OpenIDE-Module-Display-Category: SeaDAS Toolbox
 OpenIDE-Module-Specification-Version: ${seadas.nbmSpecVersion}
 OpenIDE-Module-Implementation-Version: ${seadas.nbmImplVersion}
 OpenIDE-Module-Layer: layer.xml
-OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
 OpenIDE-Module-Long-Description: Creates a land, coastline, and water mask.

@@ -6,5 +6,4 @@ OpenIDE-Module-Display-Category: SeaDAS Toolbox
 OpenIDE-Module-Specification-Version: ${seadas.nbmSpecVersion}
 OpenIDE-Module-Layer: layer.xml
 OpenIDE-Module-Long-Description: Test
-OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
 

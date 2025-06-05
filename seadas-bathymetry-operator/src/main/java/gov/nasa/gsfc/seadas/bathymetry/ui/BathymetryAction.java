@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
-import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.multilevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import org.esa.snap.core.datamodel.*;
