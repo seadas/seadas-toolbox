@@ -32,9 +32,11 @@ public class RegionUtils {
                 Path sourceBasePath = ResourceInstaller.findModuleCodeBasePath(RegionUtils.class);
                 Path sourceDirPath = sourceBasePath.resolve("auxdata");
 
-                final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirPath, replaceExisting);
+                final ResourceInstaller resourceInstaller = new ResourceInstaller(sourceDirPath, auxdataDirPath);
 
-                resourceInstaller.install(".*." + REGIONS_FILE, ProgressMonitor.NULL);
+                if (!regionsAuxDirFile.exists() || (regionsAuxDirFile.exists()) && replaceExisting) {
+                    resourceInstaller.install(".*." + REGIONS_FILE, ProgressMonitor.NULL);
+                }
 
             } catch (IOException e) {
                 System.out.println("ERROR");
