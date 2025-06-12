@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.imageanimator.operator;
 
 import com.bc.ceres.glayer.support.ImageLayer;
-import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.ceres.multilevel.MultiLevelImage;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.grender.support.BufferedImageRendering;
 import com.bc.ceres.grender.support.DefaultViewport;

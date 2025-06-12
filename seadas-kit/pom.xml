@@ -78,15 +78,15 @@
             <artifactId>seadas-contour-operator</artifactId>
             <version>${seadas-contour-operator.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
-<!--            <artifactId>seadas-image-animator</artifactId>-->
-<!--            <version>${seadas-image-animator.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-image-animator</artifactId>
+            <version>${seadas-image-animator.version}</version>
+        </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-earthdata-cloud-toolbox</artifactId>
-            <version>1.0.1</version>
+            <version>${seadas-earthdata-cloud-toolbox.version}</version>
         </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
