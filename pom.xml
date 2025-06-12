@@ -31,7 +31,7 @@
     <modules>
 
         <module>seadas-watermask-operator</module>
-<!--        <module>seadas-processing</module>-->
+        <module>seadas-processing</module>
         <module>seadas-contour-operator</module>
 <!--        <module>seadas-image-animator</module>-->
         <module>seadas-bathymetry-operator</module>

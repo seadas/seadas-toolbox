@@ -63,11 +63,11 @@
              Make sure the list of dependencies reflects the wanted contents of the SeaDASBX.
              Use same order as in the <modules> tag of the parent POM.
         -->
-<!--        <dependency>-->
-<!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
-<!--            <artifactId>seadas-processing</artifactId>-->
-<!--            <version>${seadas-processing.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-processing</artifactId>
+            <version>${seadas-processing.version}</version>
+        </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-bathymetry-operator</artifactId>

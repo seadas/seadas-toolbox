@@ -1059,9 +1059,8 @@ public class ParamUIFactory {
 
             @Override
             public void propertyChange(PropertyChangeEvent pce) {
-                processorModel.updateParamInfo(pi, (new Boolean(field.isSelected())).toString());
-                SeadasFileUtils.debug(((new Boolean(field.isSelected())).toString() + "  " + field.getText()));
-
+                processorModel.updateParamInfo(pi, Boolean.toString(field.isSelected()));
+                SeadasFileUtils.debug(Boolean.toString(field.isSelected()) + "  " + field.getText());
             }
         });
 
@@ -1305,7 +1304,9 @@ public class ParamUIFactory {
 
         JPanel panel = GridBagUtils.createPanel();
 
-        GridBagConstraints gbc = createConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
         gbc.weightx = 1;
@@ -1313,14 +1314,18 @@ public class ParamUIFactory {
 
 
         JPanel leftPanel = GridBagUtils.createPanel();
-        GridBagConstraints gbcLeft = createConstraints();
+        GridBagConstraints gbcLeft = new GridBagConstraints();
+        gbcLeft.gridx = 0;
+        gbcLeft.gridy = 0;
         gbcLeft.fill = GridBagConstraints.BOTH;
         gbcLeft.weighty = 1;
         gbcLeft.weightx = 1;
         gbcLeft.anchor = GridBagConstraints.NORTHWEST;
 
         JPanel rightPanel = GridBagUtils.createPanel();
-        GridBagConstraints gbcRight = createConstraints();
+        GridBagConstraints gbcRight = new GridBagConstraints();
+        gbcRight.gridx = 0;
+        gbcRight.gridy = 0;
         gbcRight.fill = GridBagConstraints.BOTH;
         gbcRight.weighty = 1;
         gbcRight.weightx = 1;
@@ -1557,7 +1562,9 @@ public class ParamUIFactory {
 
         JPanel panel = GridBagUtils.createPanel();
 
-        GridBagConstraints gbc = createConstraints();
+        GridBagConstraints gbc  = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
@@ -1622,7 +1629,9 @@ public class ParamUIFactory {
             return panel;
         }
 
-        GridBagConstraints gbc = createConstraints();
+        GridBagConstraints gbc  = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
