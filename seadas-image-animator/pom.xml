@@ -22,11 +22,11 @@
     <description>Animates a set of selected images.
     </description>
 
-    <properties>
-<!--        <netbeans.version>RELEASE82</netbeans.version>-->
-        <doc-windows.version>1.0</doc-windows.version>
-        <user.language>en</user.language>
-    </properties>
+<!--    <properties>-->
+<!--&lt;!&ndash;        <netbeans.version>RELEASE82</netbeans.version>&ndash;&gt;-->
+<!--        <doc-windows.version>1.0</doc-windows.version>-->
+<!--        <user.language>en</user.language>-->
+<!--    </properties>-->
 
      <dependencies>
          <dependency>
@@ -112,11 +112,11 @@
              <artifactId>org-openide-awt</artifactId>
              <version>${netbeans.version}</version>
          </dependency>
-         <dependency>
-             <groupId>org.esa.snap.netbeans</groupId>
-             <artifactId>doc-windows</artifactId>
-             <version>${doc-windows.version}</version>
-         </dependency>
+<!--         <dependency>-->
+<!--             <groupId>org.esa.snap.netbeans</groupId>-->
+<!--             <artifactId>doc-windows</artifactId>-->
+<!--             <version>${doc-windows.version}</version>-->
+<!--         </dependency>-->
          <dependency>
              <groupId>org.esa.snap</groupId>
              <artifactId>snap-core</artifactId>
