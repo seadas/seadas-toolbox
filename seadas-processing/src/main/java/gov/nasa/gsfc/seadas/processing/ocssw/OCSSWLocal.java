@@ -423,6 +423,7 @@ public class OCSSWLocal extends OCSSW {
     }
 
 
+
     private String findOfileName(String ifileName, String[] commandArray) {
         setIfileName(ifileName);
         process = execute(commandArray);
@@ -431,16 +432,9 @@ public class OCSSWLocal extends OCSSW {
             return null;
         }
 
-        //wait for process to exit
-        try {
-            Field field = process.getClass().getDeclaredField("hasExited");
-            field.setAccessible(true);
-            while (!(Boolean) field.get(process)) {
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+
+        while (process.isAlive()) {
+            // waiting for process to finish
         }
 
         int exitCode = process.exitValue();

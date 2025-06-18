@@ -1746,15 +1746,23 @@ public class L2genData implements SeaDASProcessorModel {
             // Aquarius will use the static xml file instead of a generated one
             if (getMode() != Mode.L2GEN_AQUARIUS) {
                 Process p = ocssw.executeSimple(processorModel);
-                ocssw.waitForProcess();
+
+                while (p.isAlive()) {
+                    // waiting for process to finish
+                }
+//                ocssw.waitForProcess();
                 if (ocssw instanceof OCSSWLocal) {
                     File tmpParFileToDel = new File(ParFileManager.tmpParFileToDelString);
                     tmpParFileToDel.delete();
                 }
 
-                if (ocssw.getProcessExitValue() != 0) {
+
+                if (p.exitValue() != 0) {
                     throw new IOException("l2gen failed to run");
                 }
+//                if (ocssw.getProcessExitValue() != 0) {
+//                    throw new IOException("l2gen failed to run");
+//                }
 
                 ocssw.getIntermediateOutputFiles(processorModel);
 
