@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.action;
 
-import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySearchServiceDiaglog;
+import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySubsetServiceDiaglog;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -17,12 +17,12 @@ import java.awt.event.ActionEvent;
 
 
 @ActionID(
-        category = "View", id = "HarmonySearchServiceAction"
+        category = "View", id = "HarmonySubsetServiceAction"
 )
 
 @ActionRegistration(
-        displayName = "#CTL_HarmonySearchServiceActionName",
-        popupText = "#CTL_HarmonySearchServiceActionName"
+        displayName = "#CTL_HarmonySubsetServiceActionName",
+        popupText = "#CTL_HarmonySubsetServiceActionName"
 )
 
 //@ActionReference(
@@ -30,16 +30,16 @@ import java.awt.event.ActionEvent;
 //        position = 100
 //)
 //@NbBundle.Messages({
-//        "CTL_HarmonySearchServiceActionName=Search Service",
-//        "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
+//        "CTL_HarmonySubsetServiceActionName=Subset Service",
+//        "CTL_HarmonySubsetServiceActionToolTip=Show/hide Subset Service"
 //})
 @ActionReferences({
         @ActionReference(path = "Menu/Earthdata-Cloud", position = 40)
 })
 
 @NbBundle.Messages({
-        "CTL_HarmonySearchServiceActionName=OB_CLOUD Data Browser",
-        "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
+        "CTL_HarmonySubsetServiceActionName=OB_CLOUD Data Subsetter",
+        "CTL_HarmonySubsetServiceActionToolTip=Show/hide Subset Service"
 })
 
 public class ShowL2SSSubsetServiceAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
@@ -59,10 +59,10 @@ public class ShowL2SSSubsetServiceAction extends AbstractSnapAction implements L
     public ShowL2SSSubsetServiceAction(Lookup lookup) {
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
-        putValue(NAME, Bundle.CTL_HarmonySearchServiceActionName());
+        putValue(NAME, Bundle.CTL_HarmonySubsetServiceActionName());
 //        putValue(SMALL_ICON, ImageUtilities.loadImageIcon(SMALLICON, false));
 //        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
-        putValue(SHORT_DESCRIPTION, Bundle.CTL_HarmonySearchServiceActionToolTip());
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_HarmonySubsetServiceActionToolTip());
         this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
         updateEnabledState();
     }
@@ -83,9 +83,9 @@ public class ShowL2SSSubsetServiceAction extends AbstractSnapAction implements L
 //        putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon(LARGEICON, false));
         updateEnabledState();
 
-        HarmonySearchServiceDiaglog harmonySearchServiceDiaglog = new HarmonySearchServiceDiaglog();
-        harmonySearchServiceDiaglog.setVisible(true);
-        harmonySearchServiceDiaglog.dispose();
+        HarmonySubsetServiceDiaglog harmonySubsetServiceDiaglog = new HarmonySubsetServiceDiaglog();
+        harmonySubsetServiceDiaglog.setVisible(true);
+        harmonySubsetServiceDiaglog.dispose();
         updateEnabledState();
 
     }

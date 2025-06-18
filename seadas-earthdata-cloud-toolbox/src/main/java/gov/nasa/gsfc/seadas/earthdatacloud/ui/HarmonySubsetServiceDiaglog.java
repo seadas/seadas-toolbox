@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 public class HarmonySubsetServiceDiaglog extends JDialog{
 
-    public static final String TITLE = "OB_CLOUD Data Browser - powered by Harmony Search"; /*I18N*/
+    public static final String TITLE = "OB_CLOUD Data Subsetter - powered by Harmony Search"; /*I18N*/
     public static final String DEFAULT_SELECTED_MISSION = "PACE";
     private SwingPropertyChangeSupport propertyChangeSupport;
     private Component helpButton = null;
