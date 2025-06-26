@@ -217,13 +217,36 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
+        setupSatelliteDropdowns();
+        setupSatelliteDropdownListener();
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        add(createFilterPanel(), gbc);
+
+        JPanel paginationPanel = createSpinnerPanel();
+        JPanel buttonPanel = createButtonPanel();
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        add(createPaginationButtonPanel(paginationPanel, buttonPanel), gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        setupResultsTable();
+        setupResultsContainer(gbc);
+    }
+
+    private void setupSatelliteDropdowns() {
         List<String> sortedSatellites = new ArrayList<>(metadataMap.keySet());
         Collections.sort(sortedSatellites);
         satelliteDropdown = new JComboBox<>(sortedSatellites.toArray(new String[0]));
 
         levelDropdown = new JComboBox<>();
         productDropdown = new JComboBox<>();
+    }
 
+    private void setupSatelliteDropdownListener() {
         satelliteDropdown.addActionListener(e -> {
             updateLevelsAndProducts();
             String satelliteKey = (String) satelliteDropdown.getSelectedItem();
@@ -243,15 +266,9 @@ public class OBDAACDataBrowser extends JPanel {
                 temporalPanel.setToolTipText("Valid date range not available.");
             }
         });
+    }
 
-
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        add(createFilterPanel(), gbc);
-
-
-
+    private JPanel createSpinnerPanel() {
         JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paginationPanel.add(new JLabel("Max Results:"));
 
@@ -261,7 +278,6 @@ public class OBDAACDataBrowser extends JPanel {
         maxApiResultsSpinner = new JSpinner(new SpinnerNumberModel(maxResultsPref, maxResultsMin, maxResultsMax, 1));
         maxApiResultsSpinner.setPreferredSize(new Dimension(80, 25));
         maxApiResultsSpinner.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_TOOLTIP);
-
 
         paginationPanel.add(maxApiResultsSpinner);
         paginationPanel.add(Box.createHorizontalStrut(20));
@@ -277,10 +293,39 @@ public class OBDAACDataBrowser extends JPanel {
         paginationPanel.add(resultsPerPageSpinner);
         paginationPanel.add(Box.createHorizontalStrut(60));
 
+        return paginationPanel;
+    }
 
+    private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout layout = new GridBagLayout();
 
+        GridBagConstraints c = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
 
+        JPanel panel = new JPanel(layout);
 
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        panel.add(panel1, gbc);
+
+        gbc.gridx++;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel fill = new JLabel("");
+        panel.add(fill, gbc);
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        panel.add(panel2, gbc);
+
+        return panel;
+    }
+
+    private JPanel createButtonPanel() {
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(e -> runFetchWrapper());
         JButton cancelButton = new JButton("Cancel");
@@ -293,16 +338,18 @@ public class OBDAACDataBrowser extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(searchButton);
         buttonPanel.add(cancelButton);
+        return buttonPanel;
+    }
 
+    private void setupResultsTable() {
+        createTableModel();
+        createTable();
+        configureTableAppearance();
+        setupTableRenderers();
+        setupTableEventHandlers();
+    }
 
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-
-        add(createPaginationButtonPanel(paginationPanel, buttonPanel), gbc);
-
-        gbc.gridy++;
-        gbc.gridx = 0;
+    private void createTableModel() {
         String[] columnNames = {"File Name", "Download File"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -315,10 +362,13 @@ public class OBDAACDataBrowser extends JPanel {
                 return column == 1; // Only checkbox editable
             }
         };
+    }
 
+    private void createTable() {
         resultsTable = new JTable(tableModel);
+    }
 
-
+    private void configureTableAppearance() {
         Font fontOriginal = resultsTable.getFont();
 
         double fontSizeZoom = Earthdata_Cloud_Controller.getPreferenceResultFontZoom();
@@ -336,14 +386,14 @@ public class OBDAACDataBrowser extends JPanel {
         int rowHeightNew = (int) Math.round(rowHeightOriginal * (fontSizeZoom + rowBuffer) / 100);
         resultsTable.setRowHeight(rowHeightNew);
 
-
         JLabel tmpCol1Label = new JLabel(" Download File ");
         int tmpVol1LabelWidth = (int) Math.ceil(tmpCol1Label.getPreferredSize().getWidth());
         resultsTable.getColumnModel().getColumn(1).setPreferredWidth(tmpVol1LabelWidth);
         resultsTable.getColumnModel().getColumn(1).setMinWidth(tmpVol1LabelWidth);
         resultsTable.getColumnModel().getColumn(1).setMaxWidth(tmpVol1LabelWidth);
+    }
 
-
+    private void setupTableRenderers() {
         imagePreviewHelper.attachToTable(resultsTable, fileLinkMap, parentDialog);
         resultsTable.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
@@ -351,27 +401,6 @@ public class OBDAACDataBrowser extends JPanel {
                                                            boolean hasFocus, int row, int column) {
                 JLabel label = new JLabel("<html><a href='#'>" + value + "</a></html>");
                 return label;
-            }
-        });
-
-
-        resultsTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = resultsTable.rowAtPoint(e.getPoint());
-                int col = resultsTable.columnAtPoint(e.getPoint());
-
-                if (Earthdata_Cloud_Controller.getPreferenceImageLinkInclude() && col == 0) {
-                    String fileName = (String) tableModel.getValueAt(row, 0);
-                    String browseUrl = fileName + ".png";
-                    if (browseUrl != null) {
-                        try {
-                            Desktop.getDesktop().browse(new URI(browseUrl));
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
             }
         });
 
@@ -395,13 +424,34 @@ public class OBDAACDataBrowser extends JPanel {
                 return c;
             }
         });
+    }
 
+    private void setupTableEventHandlers() {
+        resultsTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = resultsTable.rowAtPoint(e.getPoint());
+                int col = resultsTable.columnAtPoint(e.getPoint());
 
+                if (Earthdata_Cloud_Controller.getPreferenceImageLinkInclude() && col == 0) {
+                    String fileName = (String) tableModel.getValueAt(row, 0);
+                    String browseUrl = fileName + ".png";
+                    if (browseUrl != null) {
+                        try {
+                            Desktop.getDesktop().browse(new URI(browseUrl));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+    }
 
+    private void setupResultsContainer(GridBagConstraints gbc) {
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
         scrollPane.setPreferredSize(new Dimension(700, 500));
-
 
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
@@ -420,7 +470,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         add(resultsContainer, gbc);
 
-
         if (satelliteDropdown.getItemCount() > 0) {
             int satelliteIndex = 0;
             String satellitePref = Earthdata_Cloud_Controller.getPreferenceSatellite();
@@ -437,6 +486,48 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
+    // Add back the correct createPaginationPanel method
+    private JPanel createPaginationPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JPanel fetchedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton prevButton = new JButton("Previous");
+        JButton nextButton = new JButton("Next");
+        pageLabel = new JLabel("Page 1");
+        fetchedLabel = new JLabel("");
+
+        prevButton.addActionListener(e -> {
+            if (currentPage > 1) {
+                currentPage--;
+                updateResultsTable(currentPage);
+            }
+        });
+
+        nextButton.addActionListener(e -> {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateResultsTable(currentPage);
+            }
+        });
+
+        fetchedPanel.add(fetchedLabel);
+        navPanel.add(prevButton);
+        navPanel.add(pageLabel);
+        navPanel.add(nextButton);
+
+        JButton downloadButton = new JButton("Download");
+        downloadButton.addActionListener(e -> downloadSelectedFiles());
+        JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        downloadPanel.add(downloadButton);
+
+        panel.add(fetchedPanel, BorderLayout.WEST);
+        panel.add(navPanel, BorderLayout.CENTER);
+        panel.add(downloadPanel, BorderLayout.EAST);
+
+        return panel;
+    }
 
     private void runFetchWrapper() {
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(),
@@ -471,38 +562,6 @@ public class OBDAACDataBrowser extends JPanel {
 
         pmSwingWorker.executeWithBlocking();
 
-    }
-
-
-    private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        GridBagLayout layout = new GridBagLayout();
-
-        GridBagConstraints c = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = GridBagConstraints.NONE;
-
-        JPanel panel = new JPanel(layout);
-
-        gbc.gridy = 0;
-        gbc.gridx = 0;
-        panel.add(panel1, gbc);
-
-
-        gbc.gridx++;
-        gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        JLabel fill = new JLabel("");
-        panel.add(fill, gbc);
-        gbc.weightx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-
-
-        gbc.gridx++;
-        gbc.anchor = GridBagConstraints.NORTHEAST;
-        panel.add(panel2, gbc);
-
-        return panel;
     }
 
 
@@ -2421,50 +2480,6 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-
-
-    private JPanel createPaginationPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-
-        JPanel fetchedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-
-        JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton prevButton = new JButton("Previous");
-        JButton nextButton = new JButton("Next");
-        pageLabel = new JLabel("Page 1");
-        fetchedLabel = new JLabel("");
-
-        prevButton.addActionListener(e -> {
-            if (currentPage > 1) {
-                currentPage--;
-                updateResultsTable(currentPage);
-            }
-        });
-
-        nextButton.addActionListener(e -> {
-            if (currentPage < totalPages) {
-                currentPage++;
-                updateResultsTable(currentPage);
-            }
-        });
-
-        fetchedPanel.add(fetchedLabel);
-        navPanel.add(prevButton);
-        navPanel.add(pageLabel);
-        navPanel.add(nextButton);
-
-        JButton downloadButton = new JButton("Download");
-        downloadButton.addActionListener(e -> downloadSelectedFiles());
-        JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        downloadPanel.add(downloadButton);
-
-        panel.add(fetchedPanel, BorderLayout.WEST);
-        panel.add(navPanel, BorderLayout.CENTER);
-        panel.add(downloadPanel, BorderLayout.EAST);
-
-        return panel;
-    }
 
 
     private void updateResultsTable(int page) {
