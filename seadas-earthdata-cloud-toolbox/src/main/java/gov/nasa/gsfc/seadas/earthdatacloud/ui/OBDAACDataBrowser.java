@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
+import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.core.util.SystemUtils;
@@ -48,37 +49,26 @@ public class OBDAACDataBrowser extends JPanel {
 
     private final Map<String, JSONObject> metadataMap = new HashMap<>();
     private JRadioButton dayButton, nightButton, bothButton;
-    private ButtonGroup dayNightGroup;
     private final Map<String, String> fileLinkMap = new HashMap<>();
 
     private int currentPage = 1;
     private int totalFetched = 1;
     private int totalPages = 1;
-    private List<String[]> pagedResults = new ArrayList<>();
-    private JLabel pageInfoLabel;
-    private JButton prevPageButton, nextPageButton;
-    private static final int RESULTS_PER_PAGE = 25;
     private JSpinner maxApiResultsSpinner;
     private JSpinner resultsPerPageSpinner;
 
     private JLabel pageLabel;
     private JLabel fetchedLabel;
     private List<String[]> allGranules = new ArrayList<>();
-    private JWindow imagePreviewWindow;
-    private JLabel imageLabel;
-    private String[] earthdataCredentials;
-    private JSpinner maxResultsSpinner;
     private JLabel dateRangeHintLabel = new JLabel();  // Declare as a class member
     private JPanel temporalPanel;
     private JLabel dateRangeLabel; // add this as a field so we can update it later
 
-    private JDialog progressDialog;
-    private JProgressBar progressBar;
     private JPanel resultsContainer;
-    private JScrollPane scrollPane;
     private final Map<String, String> fileSpatialMap = new HashMap<>();
     private JDialog parentDialog;
     private ImagePreviewHelper imagePreviewHelper;
+    private FileDownloadManager downloadManager;
 
     Map<String, String[]> missionDateRanges = Map.of(
             "SeaHawk/HawkEye", new String[]{"2018-12-01", "2023-12-31"},
@@ -93,40 +83,9 @@ public class OBDAACDataBrowser extends JPanel {
         setLayout(new GridBagLayout());
         loadMetadata();
         imagePreviewHelper = new ImagePreviewHelper();
+        downloadManager = new FileDownloadManager();
         loadMissionDateRangesFromFile();
         initComponents();
-    }
-
-    private void showProgressDialog(Component parent, int max) {
-        progressDialog = new JDialog(SwingUtilities.getWindowAncestor(parent), "Downloading...", Dialog.ModalityType.APPLICATION_MODAL);
-        progressDialog.setLayout(new BorderLayout());
-        progressDialog.setSize(400, 100);
-        progressDialog.setLocationRelativeTo(parent);
-
-        progressBar = new JProgressBar(0, max);
-        progressBar.setValue(0);
-        progressBar.setStringPainted(true);
-
-        progressDialog.add(new JLabel("Please wait..."), BorderLayout.NORTH);
-        progressDialog.add(progressBar, BorderLayout.CENTER);
-        progressDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        new Thread(() -> progressDialog.setVisible(true)).start(); // Run in a separate thread
-    }
-
-
-    private void updateProgressBar(int value) {
-        if (progressBar != null) {
-            progressBar.setValue(value);
-        }
-    }
-
-    private void hideProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.setVisible(false);  // Optional, in case it's still visible
-            progressDialog.dispose();
-            progressDialog = null;
-        }
     }
 
     private void loadMissionDateRangesFromFile() {
@@ -532,149 +491,7 @@ public class OBDAACDataBrowser extends JPanel {
 
     }
 
-
-    private void showImageInDialog(String imageUrl) {
-        try {
-            Image originalImage = ImageIO.read(new URL(imageUrl));
-            if (originalImage == null) {
-                JOptionPane.showMessageDialog(this, "Image not available or not valid.");
-                return;
-            }
-
-            ImageIcon icon = new ImageIcon(originalImage);
-            JLabel label = new JLabel(icon);
-            JScrollPane imageScrollPane = new JScrollPane(label);
-
-            JSlider zoomSlider = new JSlider(10, 400, 100); // zoom range: 10% to 400%
-            zoomSlider.setMajorTickSpacing(50);
-            zoomSlider.setPaintTicks(true);
-            zoomSlider.setPaintLabels(true);
-
-            zoomSlider.addChangeListener(e -> {
-                int zoomPercent = zoomSlider.getValue();
-                int newWidth = originalImage.getWidth(null) * zoomPercent / 100;
-                int newHeight = originalImage.getHeight(null) * zoomPercent / 100;
-                Image scaled = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-                label.setIcon(new ImageIcon(scaled));
-            });
-
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.add(imageScrollPane, BorderLayout.CENTER);
-            panel.add(zoomSlider, BorderLayout.SOUTH);
-            panel.setPreferredSize(new Dimension(800, 600));
-
-            JOptionPane.showMessageDialog(this, panel, "Image Preview (Zoom)", JOptionPane.PLAIN_MESSAGE);
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Failed to load image preview.");
-            e.printStackTrace();
-        }
-    }
-
-
-
     private void downloadSelectedFiles() {
-        if (earthdataCredentials == null) {
-            earthdataCredentials = WebPageFetcherWithJWT.getCredentials("urs.earthdata.nasa.gov");
-            if (earthdataCredentials == null) {
-                JOptionPane.showMessageDialog(this, "Earthdata credentials not found in ~/.netrc");
-                return;
-            }
-        }
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select Directory to Save Files");
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-
-
-        String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
-
-        File parentDownloadDirFile = null;
-        if (parentDownloadDirStr != null && parentDownloadDirStr.trim().length() > 0) {
-            parentDownloadDirFile = new File(parentDownloadDirStr);
-            if (!parentDownloadDirFile.exists()) {
-                parentDownloadDirFile.mkdirs();
-            }
-        }
-
-        if (parentDownloadDirFile == null) {
-            File userHomeDir = SystemUtils.getUserHomeDir();
-
-            parentDownloadDirFile = new File(userHomeDir, "Downloads");
-            if (!parentDownloadDirFile.exists()) {
-                parentDownloadDirFile = userHomeDir;
-            }
-        }
-
-
-        if (parentDownloadDirFile != null && parentDownloadDirFile.exists()) {
-            fileChooser.setCurrentDirectory(parentDownloadDirFile);
-
-            String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
-
-            int currIndex = 1;
-            String downloadDirStrNoSuffix = "results";
-            boolean retainSuffix = false;
-
-            if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
-                downloadDirStrNoSuffix = downloadDirStr;
-                String[] downloadDirStrSplitArray = downloadDirStr.split("-");
-                if (downloadDirStrSplitArray.length == 2) {
-                    String suffix = downloadDirStrSplitArray[1];
-                    int currIndexTmp = RegionUtils.convertStringToInt(suffix, -999);
-                    if (currIndexTmp != -999) {
-                        downloadDirStrNoSuffix = downloadDirStrSplitArray[0];
-                        currIndex = currIndexTmp;
-                        if (currIndex == 1) {
-                            retainSuffix = true;
-                        }
-                    }
-                }
-            }
-
-            String downloadDirStrIndexed;
-            File file2 = null;
-            while (file2 == null && currIndex < 1000) {
-                if (currIndex == 1 && !retainSuffix) {
-                    downloadDirStrIndexed = downloadDirStrNoSuffix;
-                } else {
-                    downloadDirStrIndexed = downloadDirStrNoSuffix + "-" + currIndex;
-                }
-
-                file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
-                if (!file2.exists()) {
-                    break;
-                }
-                file2 = null;
-                currIndex++;
-            }
-
-            if (file2 != null) {
-                fileChooser.setSelectedFile(file2);
-            }
-        }
-
-
-
-
-        if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
-
-
-        File selectedDir = fileChooser.getSelectedFile();
-
-
-        String selectedParent = selectedDir.getParentFile().getAbsolutePath();
-        if (selectedParent != null) {
-            Earthdata_Cloud_Controller.setPreferenceDownloadParentDir(selectedParent);
-        }
-
-        String selectedDownloadDir = selectedDir.getName();
-        if (selectedDownloadDir != null) {
-            Earthdata_Cloud_Controller.setPreferenceDownloadDir(selectedDownloadDir);
-        }
-
-
         List<String> filesToDownload = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
@@ -687,70 +504,13 @@ public class OBDAACDataBrowser extends JPanel {
             return;
         }
 
-        SwingUtilities.invokeLater(() -> showProgressDialog(this, filesToDownload.size()));
-
-        new Thread(() -> {
-
-            int downloadedCount = 0;
-
-            for (int i = 0; i < filesToDownload.size(); i++) {
-                String fileName = filesToDownload.get(i);
-                String url = fileLinkMap.get(fileName);
-                if (url != null && downloadFile(url, selectedDir.toPath())) {
+        downloadManager.downloadSelectedFiles(filesToDownload, fileLinkMap, this, 
+            (downloadedCount, downloadDir) -> {
+                // Callback when download completes
+                for (String fileName : filesToDownload) {
                     lockFileCheckbox(fileName);
-                    downloadedCount++;
                 }
-                int progress = i + 1;
-                SwingUtilities.invokeLater(() -> updateProgressBar(progress));
-                lockFileCheckbox(fileName);
-            }
-
-            int finalDownloadedCount = downloadedCount;
-            SwingUtilities.invokeLater(() -> hideProgressDialog());
-
-            SwingUtilities.invokeLater(() -> {
-                JOptionPane.showMessageDialog(this, finalDownloadedCount + " file(s) downloaded to:\n" + selectedDir.getAbsolutePath());
             });
-
-        }).start();
-    }
-
-
-    private boolean downloadFile(String fileUrl, Path outputDir) {
-        try {
-            String fileName = extractFileNameFromUrl(fileUrl);
-            String token = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
-
-            HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
-            conn.setInstanceFollowRedirects(false);
-            conn.setRequestProperty("Authorization", "Bearer " + token);
-
-            int status = conn.getResponseCode();
-            if (status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_MOVED_TEMP || status == 303) {
-                String newUrl = conn.getHeaderField("Location");
-                conn = (HttpURLConnection) new URL(newUrl).openConnection();
-                conn.setRequestProperty("Authorization", "Bearer " + token);
-                status = conn.getResponseCode();
-            }
-
-            if (status == 200) {
-                try (InputStream in = conn.getInputStream()) {
-                    Files.createDirectories(outputDir);
-                    Path outputPath = outputDir.resolve(fileName);
-                    Files.copy(in, outputPath, StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println("Downloaded: " + fileName);
-                    return true;
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Download failed for " + fileUrl + "\nHTTP status: " + status);
-                return false;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Download failed: " + e.getMessage());
-            return false;
-        }
     }
 
     private void lockFileCheckbox(String fileName) {
@@ -762,64 +522,6 @@ public class OBDAACDataBrowser extends JPanel {
             }
         }
     }
-
-    private void addCombinedDownloadPanel(JPanel panel, GridBagConstraints gbc) {
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-
-        JButton downloadSelectedButton = new JButton("Download Selected");
-        downloadSelectedButton.addActionListener(e -> {
-            try {
-                File downloadsDir = new File("downloads");
-                if (!downloadsDir.exists()) {
-                    downloadsDir.mkdirs();
-                }
-                Desktop.getDesktop().open(downloadsDir);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Failed to open downloads folder: " + ex.getMessage());
-            }
-
-            downloadSelectedFiles();
-        });
-
-        buttonPanel.add(downloadSelectedButton);
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        panel.add(buttonPanel, gbc);
-    }
-
-    private String extractFileNameFromUrl(String url) {
-        try {
-            Pattern pattern = Pattern.compile("([^/]+\\.nc)(\\?.*)?$");
-            Matcher matcher = pattern.matcher(url);
-            if (matcher.find()) {
-                return matcher.group(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "downloaded_file.nc";
-    }
-
-
-    private JWindow previewWindow;
-    private JLabel previewLabel;
-
-    private void showImagePreview(ImageIcon imageIcon, Point location) {
-        if (previewWindow == null) {
-            previewWindow = new JWindow();
-            previewLabel = new JLabel();
-            previewWindow.getContentPane().add(previewLabel);
-        }
-        previewLabel.setIcon(imageIcon);
-        previewWindow.pack();
-        previewWindow.setLocation(location.x + 10, location.y + 10);
-        previewWindow.setVisible(true);
-    }
-
 
     private JPanel createLeftPanel() {
         GridBagConstraints gbc = new GridBagConstraints();
@@ -1097,41 +799,6 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-    private void updateDatePickerBounds() {
-        String selectedSatellite = (String) satelliteDropdown.getSelectedItem();
-        if (missionDateRanges.containsKey(selectedSatellite)) {
-            String[] range = missionDateRanges.get(selectedSatellite);
-            String minDateStr = range[0];
-            String maxDateStr = range[1];
-
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date minDate = sdf.parse(minDateStr);
-                Date maxDate = sdf.parse(maxDateStr);
-
-                UtilDateModel startModel = (UtilDateModel) startDatePicker.getModel();
-
-                UtilDateModel endModel = (UtilDateModel) endDatePicker.getModel();
-
-                dateRangeHintLabel.setText("Valid range for " + selectedSatellite + ": " + minDateStr + " to " + maxDateStr);
-            } catch (java.text.ParseException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            dateRangeHintLabel.setText("");
-        }
-    }
-
-    private void updateDateRangeHint() {
-        String satellite = (String) satelliteDropdown.getSelectedItem();
-        if (satellite != null && missionDateRanges.containsKey(satellite)) {
-            String[] range = missionDateRanges.get(satellite);
-            dateRangeHintLabel.setText("Valid mission range: " + range[0] + " to " + range[1]);
-        } else {
-            dateRangeHintLabel.setText(" ");
-        }
-    }
-
     private boolean isDateInValidRange(String satellite, Date date) {
         if (date == null || !missionDateRanges.containsKey(satellite)) return true;
 
@@ -1147,91 +814,6 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-
-    private JPanel createBoundingBoxPanel() {
-        System.out.println("Creating BoundingBox Panel");
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createLineBorder(new Color(0,100,100)));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2);
-        gbc.anchor = GridBagConstraints.WEST;
-
-
-        gbc.gridy = 0;
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
-        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
-        panel.add(maxLatLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        maxLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
-        maxLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
-        panel.add(maxLatField, gbc);
-
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        JLabel minLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLAT_LABEL + ":");
-        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
-        panel.add(minLatLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        minLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
-        minLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
-        panel.add(minLatField, gbc);
-
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
-        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
-        panel.add(minLonLabel, gbc);
-
-
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        minLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
-        minLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
-        panel.add(minLonField, gbc);
-
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        JLabel maxLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL + ":");
-        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
-        panel.add(maxLonLabel, gbc);
-
-
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
-        maxLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
-        panel.add(maxLonField, gbc);
-
-        panel.setMinimumSize(panel.getPreferredSize());
-        panel.setPreferredSize(panel.getPreferredSize());
-
-        return panel;
-
-    }
-
-
-
     private JPanel createClassicBoundingBoxPanel() {
         System.out.println("Creating Classic BoundingBox Panel");
 
@@ -1240,8 +822,6 @@ public class OBDAACDataBrowser extends JPanel {
         Dimension preferredTextFieldSize = tmpTextField.getPreferredSize();
         int preferredColWidth = (int) Math.ceil(preferredTextFieldSize.getWidth() / 2.0);
         Dimension preferredLabelSize = new Dimension(preferredColWidth, 1);
-
-
 
         JPanel panel = new JPanel(new GridBagLayout());
 
@@ -1311,10 +891,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridwidth = 1;
 
 
-
-
-
-
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.anchor = GridBagConstraints.EAST;
@@ -1335,8 +911,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(minLonField, gbc);
         gbc.gridwidth = 1;
 
-
-
         gbc.gridx = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.EAST;
@@ -1348,7 +922,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(maxLonField, gbc);
         gbc.gridwidth = 1;
 
-
         gbc.insets.left = 0;
         gbc.insets.right = 0;
 
@@ -1358,11 +931,6 @@ public class OBDAACDataBrowser extends JPanel {
         JLabel maxLonLabel = new JLabel(":" + Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL);
         maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
         panel.add(maxLonLabel, gbc);
-
-
-
-
-
 
         gbc.gridy++;
         gbc.gridx = 1;
@@ -1383,8 +951,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(minLatField, gbc);
         gbc.gridwidth = 1;
 
-
-
         minLatField.setMinimumSize(preferredTextFieldSize);
         minLatField.setPreferredSize(preferredTextFieldSize);
         maxLatField.setMinimumSize(preferredTextFieldSize);
@@ -1393,7 +959,6 @@ public class OBDAACDataBrowser extends JPanel {
         minLonField.setPreferredSize(preferredTextFieldSize);
         maxLonField.setMinimumSize(preferredTextFieldSize);
         maxLonField.setPreferredSize(preferredTextFieldSize);
-
 
         panel.setMinimumSize(panel.getPreferredSize());
         panel.setPreferredSize(panel.getPreferredSize());
@@ -1412,7 +977,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.CENTER;
 
-
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1422,8 +986,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(createClassicBoundingBoxPanel(), gbc);
 
         gbc.anchor = GridBagConstraints.WEST;
-
-
 
         gbc.gridy += 1;
         gbc.gridx = 0;
@@ -1442,7 +1004,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.weighty = 0;
         gbc.gridwidth = 1;
 
-
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1459,7 +1020,6 @@ public class OBDAACDataBrowser extends JPanel {
         coordinates.setToolTipText("Used to set fields north, south, west and east");
         panel.add(coordinates, gbc);
 
-
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1468,7 +1028,6 @@ public class OBDAACDataBrowser extends JPanel {
         boxSizeLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_BOX_SIZE_TOOLTIP);
         panel.add(boxSizeLabel, gbc);
 
-
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
@@ -1476,9 +1035,7 @@ public class OBDAACDataBrowser extends JPanel {
         boxSize.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_BOX_SIZE_TOOLTIP);
         panel.add(boxSize, gbc);
 
-
         createSpatialPanelHandlers();
-
 
         try {
             String REGIONS_FILE = "regions.txt";
@@ -1822,7 +1379,6 @@ public class OBDAACDataBrowser extends JPanel {
                 }
             }
 
-
             boolean valid = true;
             double FAIL_DOUBLE = -9999.0;
 
@@ -1928,19 +1484,6 @@ public class OBDAACDataBrowser extends JPanel {
 
             working = false;
         }
-    }
-
-
-    private boolean checkDatelineSpan(double westDouble, double eastDouble, double maxSpan) {
-
-        if (westDouble > eastDouble) {
-            double westAdjustedDouble = westDouble - 360;
-            if ((eastDouble - westAdjustedDouble) > maxSpan) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
 
@@ -2114,124 +1657,10 @@ public class OBDAACDataBrowser extends JPanel {
         return new JDatePickerImpl(new JDatePanelImpl(model, p), new DateComponentFormatter());
     }
 
-    private Map<String, String[]> fetchMissionDateRanges(Set<String> satelliteKeys) {
-        Map<String, String[]> ranges = new HashMap<>();
-
-        Map<String, String[]> knownMissionsMap = Map.ofEntries(
-                Map.entry("SeaWiFS", new String[]{"1997-09-01", "2010-12-31"}),
-                Map.entry("MODIS_Aqua", new String[]{"2002-05-04", "present"}),
-                Map.entry("MODIS_Terra", new String[]{"1999-12-18", "present"}),
-                Map.entry("VIIRS", new String[]{"2011-10-28", "present"}),
-                Map.entry("Landsat_8", new String[]{"2013-02-11", "present"}),
-                Map.entry("PACE_HARP2", new String[]{"2024-02-08", "present"}),
-                Map.entry("PACE_OCI", new String[]{"2024-02-08", "present"}),
-                Map.entry("PACE_SPEXONE", new String[]{"2024-02-08", "present"}),
-                Map.entry("PACE", new String[]{"2024-02-08", "present"}),
-                Map.entry("HAWKEYE", new String[]{"2024-01-01", "present"}),
-                Map.entry("MERGED_S3_OLCI", new String[]{"2016-02-16", "present"}),
-                Map.entry("Sentinel_3_OLCI", new String[]{"2016-02-16", "present"}),
-                Map.entry("Sentinel_3A_OLCI", new String[]{"2016-02-16", "present"}),
-                Map.entry("Sentinel_3B_OLCI", new String[]{"2018-04-25", "present"})
-        );
-
-        List<String> suspiciousDates = List.of(
-                "1960-01-01", "1347-01-01", "1900-01-01", "1970-01-01", "2099-12-31", "2100-12-31"
-        );
-
-        for (String mission : satelliteKeys) {
-            try {
-                String encodedMission = URLEncoder.encode(mission, StandardCharsets.UTF_8);
-                String urlStr = "https://cmr.earthdata.nasa.gov/search/collections.json?keyword=" + encodedMission + "&page_size=100";
-                HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
-                conn.setRequestProperty("Accept", "application/json");
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) response.append(line);
-                reader.close();
-
-                JSONObject json = new JSONObject(response.toString());
-                JSONArray collections = json.getJSONObject("feed").getJSONArray("entry");
-
-                List<String> startDates = new ArrayList<>();
-                List<String> endDates = new ArrayList<>();
-
-                for (int i = 0; i < collections.length(); i++) {
-                    JSONObject col = collections.getJSONObject(i);
-                    String s = col.optString("time_start", null);
-                    String e = col.optString("time_end", null);
-
-                    if (s != null && !suspiciousDates.contains(s.split("T")[0])) startDates.add(s.split("T")[0]);
-                    if (e != null && !e.equals("present") && !suspiciousDates.contains(e.split("T")[0]))
-                        endDates.add(e.split("T")[0]);
-                }
-
-                String earliest = startDates.isEmpty() ? null : Collections.min(startDates);
-                String latest = endDates.isEmpty() ? "present" : Collections.max(endDates);
-
-                if (earliest == null || suspiciousDates.contains(earliest) || suspiciousDates.contains(latest)) {
-                    if (knownMissionsMap.containsKey(mission)) {
-                        String[] fallback = knownMissionsMap.get(mission);
-                        System.out.println("⚠️ Suspicious CMR dates for " + mission + ", using fallback: " + fallback[0] + " → " + fallback[1]);
-                        ranges.put(mission, fallback);
-                    } else {
-                        System.err.println("❌ No valid date range found for " + mission);
-                    }
-                } else {
-                    ranges.put(mission, new String[]{earliest, latest});
-                    System.out.println("🗓️ " + mission + ": " + earliest + " → " + latest);
-                }
-
-            } catch (Exception e) {
-                System.err.println("❌ Error fetching range for " + mission + ": " + e.getMessage());
-                if (knownMissionsMap.containsKey(mission)) {
-                    String[] fallback = knownMissionsMap.get(mission);
-                    System.out.println("🔁 Using fallback for " + mission + ": " + fallback[0] + " → " + fallback[1]);
-                    ranges.put(mission, fallback);
-                }
-            }
-        }
-
-        saveMissionDateRangesToFile(ranges);
-
-        return ranges;
-    }
-
-    private void saveMissionDateRangesToFile(Map<String, String[]> ranges) {
-        JSONObject json = new JSONObject();
-        for (Map.Entry<String, String[]> entry : ranges.entrySet()) {
-            String[] range = entry.getValue();
-            JSONObject rangeObj = new JSONObject();
-            rangeObj.put("start", range[0]);
-            rangeObj.put("end", range[1]);
-            json.put(entry.getKey(), rangeObj);
-        }
-
-        try {
-            Path outFile = Paths.get(System.getProperty("user.dir"),
-                    "seadas-toolbox",
-                    "seadas-earthdata-cloud-toolbox",
-                    "src",
-                    "main",
-                    "resources",
-                    "json-files",
-                    "mission_date_ranges.json");
-
-            Files.createDirectories(outFile.getParent());
-            Files.writeString(outFile, json.toString(4), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-            System.out.println("Saved mission date ranges to: " + outFile.toAbsolutePath());
-        } catch (IOException e) {
-            System.err.println("Failed to save mission date ranges: " + e.getMessage());
-        }
-    }
-
-
     private void fetchGranules(com.bc.ceres.core.ProgressMonitor pm) {
         fileLinkMap.clear();
         tableModel.setRowCount(0);
         allGranules.clear();
-
 
         totalPages = 1;
         currentPage = 1;
@@ -2254,8 +1683,6 @@ public class OBDAACDataBrowser extends JPanel {
             resultsTable.revalidate();
             resultsTable.repaint();
         });
-
-
 
 
         String productName = (String) productDropdown.getSelectedItem();
@@ -2478,11 +1905,9 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-
     private int getResultsPerPage() {
         return (Integer) resultsPerPageSpinner.getValue();
     }
-
 
     private JPanel createDayNightPanel() {
         JPanel panel = new JPanel();
@@ -2518,23 +1943,8 @@ public class OBDAACDataBrowser extends JPanel {
         this.dayButton = dayButton;
         this.nightButton = nightButton;
         this.bothButton = bothButton;
-
         return panel;
     }
-
-    private void showPage(int pageNum) {
-        tableModel.setRowCount(0);
-        int start = (pageNum - 1) * RESULTS_PER_PAGE;
-        int end = Math.min(start + RESULTS_PER_PAGE, pagedResults.size());
-        for (int i = start; i < end; i++) {
-            tableModel.addRow(pagedResults.get(i));
-        }
-        currentPage = pageNum;
-        pageInfoLabel.setText("Page " + currentPage + " of " + totalPages);
-        prevPageButton.setEnabled(currentPage > 1);
-        nextPageButton.setEnabled(currentPage < totalPages);
-    }
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -2546,6 +1956,4 @@ public class OBDAACDataBrowser extends JPanel {
             frame.setVisible(true);
         });
     }
-
-
 }
