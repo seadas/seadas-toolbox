@@ -23,12 +23,9 @@ public class UIComponentsFactory {
     private static JTextField maxLatField;
     private static JTextField minLonField;
     private static JTextField maxLonField;
-    //private JRadioButton dayButton, nightButton, bothButton;
     public static JPanel createHeaderPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        //panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        // Load the SeaDAS logo
         JLabel logoLabel = new JLabel();
         try {
             BufferedImage logoImage = ImageIO.read(UIComponentsFactory.class.getResource("/images/about_seadas.png"));
@@ -76,35 +73,29 @@ public class UIComponentsFactory {
         c.insets = new Insets(2, 2, 2, 2);
         c.anchor = GridBagConstraints.WEST;
 
-        // Create date pickers
         startDatePicker = createDatePicker();
         endDatePicker = createDatePicker();
 
-        // Set fixed size to ensure visibility
         Dimension fieldSize = new Dimension(150, 28);
         startDatePicker.setPreferredSize(fieldSize);
         startDatePicker.setMinimumSize(fieldSize);
         endDatePicker.setPreferredSize(fieldSize);
         endDatePicker.setMinimumSize(fieldSize);
 
-        // Start Date Label
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.NONE;
         temporalPanel.add(new JLabel("Start Date:"), c);
 
-        // Start Date Picker
         c.gridx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         temporalPanel.add(startDatePicker, c);
 
-        // End Date Label
         c.gridx = 0;
         c.gridy = 1;
         c.fill = GridBagConstraints.NONE;
         temporalPanel.add(new JLabel("End Date:"), c);
 
-        // End Date Picker
         c.gridx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         temporalPanel.add(endDatePicker, c);
@@ -138,20 +129,17 @@ public class UIComponentsFactory {
         gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Label on the left (column 0)
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         panel.add(new JLabel("Min Lat:"), gbc);
 
-        // Field on the right (column 1)
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         minLatField = new JTextField();
         panel.add(minLatField, gbc);
 
-        // Max Lat
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -164,7 +152,6 @@ public class UIComponentsFactory {
         maxLatField = new JTextField();
         panel.add(maxLatField, gbc);
 
-        // Min Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -177,7 +164,6 @@ public class UIComponentsFactory {
         minLonField = new JTextField();
         panel.add(minLonField, gbc);
 
-        // Max Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -207,7 +193,6 @@ public class UIComponentsFactory {
         group.add(nightButton);
         group.add(bothButton);
 
-        // Add padding and alignment
         dayButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         nightButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         bothButton.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -220,10 +205,6 @@ public class UIComponentsFactory {
         panel.add(bothButton);
         panel.add(Box.createVerticalGlue());
 
-//        // Save for later use
-//        this.dayButton = dayButton;
-//        this.nightButton = nightButton;
-//        this.bothButton = bothButton;
 
         return panel;
     }
@@ -249,7 +230,6 @@ public class UIComponentsFactory {
         return spinner;
     }
 
-    // Overload for default values (25 results)
     public static JSpinner createResultSpinner() {
         return createResultSpinner(25, 1, 10000, 1);
     }

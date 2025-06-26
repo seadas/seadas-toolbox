@@ -59,26 +59,6 @@ public class ImagePreviewHandler extends Component {
     /**
      * Shows an image dialog for the given image URL.
      */
-//    public void showFullImageDialog(String fileName, Component parentComponent) {
-//        String imageUrl = getPreviewUrl(fileName);
-//        if (imageUrl == null) return;
-//
-//        try {
-//            Image image = ImageIO.read(new URL(imageUrl));
-//            if (image != null) {
-//                ImageIcon icon = new ImageIcon(image);
-//                JLabel label = new JLabel(icon);
-//                JScrollPane scrollPane = new JScrollPane(label);
-//                scrollPane.setPreferredSize(new Dimension(600, 600));
-//                JOptionPane.showMessageDialog(parentComponent, scrollPane, "Full Preview", JOptionPane.PLAIN_MESSAGE);
-//            } else {
-//                JOptionPane.showMessageDialog(parentComponent, "Image could not be loaded.");
-//            }
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(parentComponent, "Failed to load image preview.");
-//            e.printStackTrace();
-//        }
-//    }
 
     public static void showImageInDialog(Component parentComponent, String imageUrl) {
         try {
@@ -128,7 +108,6 @@ public class ImagePreviewHandler extends Component {
             previewLabel.setIcon(new ImageIcon(scaled));
             previewWindow.pack();
 
-            // Show slightly offset from cursor
             previewWindow.setLocation(locationOnScreen.x + 15, locationOnScreen.y + 15);
             previewWindow.setVisible(true);
 
@@ -140,28 +119,6 @@ public class ImagePreviewHandler extends Component {
             hideImagePreview();
         }
     }
-//    public static void showImagePreview(String fileName, Point screenLocation, JWindow imagePreviewWindow, JLabel imageLabel) {
-//        if (imagePreviewWindow == null) {
-//            imagePreviewWindow = new JWindow();
-//            imageLabel = new JLabel();
-//            imagePreviewWindow.getContentPane().add(imageLabel);
-//        }
-//
-//        try {
-//            String imageUrl = BrowseImagePreview.getPreviewUrl(fileName);
-//            ImageIcon icon = BrowseImagePreview.loadPreviewImage(fileName);
-//            if (icon != null) {
-//                imageLabel.setIcon(icon);
-//                imagePreviewWindow.pack();
-//                imagePreviewWindow.setLocation(screenLocation.x + 20, screenLocation.y + 20);
-//                imagePreviewWindow.setVisible(true);
-//            } else {
-//                hideImagePreview(imagePreviewWindow);
-//            }
-//        } catch (Exception e) {
-//            hideImagePreview(imagePreviewWindow);
-//        }
-//    }
 
     public void showFullImageDialog(String fileName, Component parent) {
         try {
@@ -184,9 +141,4 @@ public class ImagePreviewHandler extends Component {
         hideTimer.setRepeats(false);
         hideTimer.start();
     }
-//    public static void hideImagePreview(JWindow imagePreviewWindow) {
-//        if (imagePreviewWindow != null) {
-//            imagePreviewWindow.setVisible(false);
-//        }
-//    }
 }

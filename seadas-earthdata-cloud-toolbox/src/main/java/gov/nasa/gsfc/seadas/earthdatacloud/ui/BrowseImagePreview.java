@@ -30,7 +30,6 @@ public class BrowseImagePreview {
     }
 
     public static String getFullImageUrl(String dataFilename) {
-        // Ensure the filename ends with .nc, then add .png
         if (!dataFilename.endsWith(".nc")) {
             return null;  // Invalid or unsupported file
         }

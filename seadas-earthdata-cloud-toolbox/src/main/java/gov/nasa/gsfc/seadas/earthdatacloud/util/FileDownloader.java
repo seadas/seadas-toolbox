@@ -25,7 +25,6 @@ public class FileDownloader {
 
 
     public FileDownloader() {
-        // empty constructor
     }
 
 

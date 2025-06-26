@@ -15,7 +15,6 @@ public class MetadataLoader {
             "SeaHawk/HawkEye", new String[]{"2018-12-01", "2023-12-31"},
             "MODISA", new String[]{"2002-07-04", "2024-12-31"},
             "VIIRSN", new String[]{"2011-10-28", "2024-12-31"}
-            // Add more as needed
     );
     public static Map<String, JSONObject> loadAllMetadata(String jsonDirPath) {
         Map<String, JSONObject> metadataMap = new TreeMap<>();
@@ -71,7 +70,6 @@ public class MetadataLoader {
                 String end = dateRange.optString("end", "present");
                 missionDateRanges.put(key, new String[]{start, end});
             }
-            //System.out.println("Loaded mission date ranges from JSON.");
         } catch (IOException e) {
             System.err.println("Failed to read mission date ranges: " + e.getMessage());
         }
