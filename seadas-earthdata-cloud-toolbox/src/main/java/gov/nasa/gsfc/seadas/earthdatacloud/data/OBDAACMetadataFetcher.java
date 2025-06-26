@@ -78,7 +78,6 @@ public class OBDAACMetadataFetcher {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
 
-        // Use pre-fetched authentication token
         conn.setRequestProperty("Authorization", "Bearer " + AUTH_TOKEN);
 
         conn.setRequestProperty("Accept", "application/json");
@@ -98,18 +97,12 @@ public class OBDAACMetadataFetcher {
 
     private static void saveMetadataToFile(JSONArray metadata) {
         try {
-            // Get the module's root directory dynamically
-            //System.getProperty("user.dir"):This will print the absolute path of the current directory from where your application was initialized.
-            //seadas-toolbox\seadas-earthdata-cloud-toolbox\src\main\resources
             String moduleDir = System.getProperty("user.dir") + File.separator + "seadas-toolbox" + File.separator + "seadas-earthdata-cloud-toolbox";
 
-            // Define target path inside the package's resources
             Path targetPath = Paths.get(moduleDir, "src", "main", "resources", "obdaac_metadata.json");
 
-            // Ensure directory exists
             Files.createDirectories(targetPath.getParent());
 
-            // Write JSON to file
             try (FileWriter fileWriter = new FileWriter(targetPath.toFile())) {
                 fileWriter.write(metadata.toJSONString());
                 fileWriter.flush();

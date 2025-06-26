@@ -35,7 +35,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
         helpButton = getHelpButton();
-        //createSearchServiceInputPanel();
         OBDAACDataBrowser embeddedBrowser = new OBDAACDataBrowser(this);
         add(embeddedBrowser, BorderLayout.CENTER);
         pack();  // This fixes layout sizing
@@ -83,7 +82,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         cancelButton.setName("cancelButton");
 
         final DataRetrievalTask[] task = new DataRetrievalTask[1];
-        // Create a JProgressBar
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setMinimumSize(new Dimension(200, 20)); // Min size
         progressBar.setMaximumSize(new Dimension(350, 20)); // Max size
@@ -93,20 +91,15 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         add(progressBar, BorderLayout.CENTER);
 
         searchButton.addActionListener(e -> {
-            // Disable the start button while downloading
             searchButton.setEnabled(false);
             cancelButton.setEnabled(true);
-            // Start a SwingWorker to download data and update the progress bar
             task[0] = new DataRetrievalTask(progressBar, searchButton, cancelButton);
             task[0].execute();// Executes the task in the background
             new Thread(() -> {
                 try {
-                    // Wait for the task to finish and get the result
                     JSONObject jsonObject = task[0].get();    // This blocks until doInBackground() is done
-                    // Update the label in the EDT with the result
                     if (jsonObject != null ) {
                         SwingUtilities.invokeLater(() -> {
-                            //resultLabel.setText(result);
                             searchButton.setEnabled(true); // Re-enable the button after the task
                             WebPageFetcherWithJWT webPageFetcherWithJWT = new WebPageFetcherWithJWT();
                             var pane = new JScrollPane();
@@ -126,7 +119,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             }).start();
         });
 
-        // Action listener for the "Cancel" button
         cancelButton.addActionListener(e -> {
             if (task[0] != null && !task[0].isDone()) {
                 task[0].cancel(true); // Request cancellation of the task
@@ -170,10 +162,8 @@ public class HarmonySearchServiceDiaglog extends JDialog{
     private JPanel getMissionsPanel(){
         JPanel missionSelectionPanel = new JPanel(new GridBagLayout());
 
-        // Create an array of strings for the dropdown options
         String[] options = {"PACE", "Hawkeye", "SeaWIFS"};
         boolean[] disabledItems = {false, true, true};
-        // Create the JComboBox and populate it with options
         JComboBox<String> comboBox = new JComboBox<>(options);
         comboBox.setBounds(50, 50, 200, 10); // Set position and size
         comboBox.setEditable(false);
@@ -185,7 +175,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-                // If the item is disabled, make it gray and non-selectable
                 if (index >= 0 && disabledItems[index]) {
                     component.setEnabled(false);
                     component.setForeground(Color.GRAY);
@@ -198,11 +187,9 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             }
         });
 
-        // Add an ItemListener to prevent selecting disabled items
         comboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                // If the item is disabled, reset the selection to the last valid item
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     int selectedIndex = comboBox.getSelectedIndex();
                     if (disabledItems[selectedIndex]) {
@@ -225,10 +212,8 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
         JPanel productSelectionPanel = new JPanel(new GridBagLayout());
 
-        // Create an array of strings for the dropdown productOptions
         String[] productOptions = {"BGC", "OIP", "OAP"};
         boolean[] disabledItems = {false, true, true};
-        // Create the JComboBox and populate it with productOptions
         JComboBox<String> comboBox = new JComboBox<>(productOptions);
         comboBox.setBounds(50, 50, 200, 10); // Set position and size
         comboBox.setEditable(false);
@@ -240,7 +225,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-                // If the item is disabled, make it gray and non-selectable
                 if (index >= 0 && disabledItems[index]) {
                     component.setEnabled(false);
                     component.setForeground(Color.GRAY);
@@ -252,11 +236,9 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             }
         });
 
-        // Add an ItemListener to prevent selecting disabled items
         comboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                // If the item is disabled, reset the selection to the last valid item
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     int selectedIndex = comboBox.getSelectedIndex();
                     if (disabledItems[selectedIndex]) {
@@ -279,10 +261,8 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
         JPanel dataLevelSelectionPanel = new JPanel(new GridBagLayout());
 
-        // Create an array of strings for the dropdown dataLevelOptions
         String[] dataLevelOptions = {"Level 2", "Level 3"};
         boolean[] disabledItems = {false, true};
-        // Create the JComboBox and populate it with dataLevelOptions
         JComboBox<String> comboBox = new JComboBox<>(dataLevelOptions);
         comboBox.setBounds(50, 50, 200, 10); // Set position and size
         comboBox.setEditable(false);
@@ -294,7 +274,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-                // If the item is disabled, make it gray and non-selectable
                 if (index >= 0 && disabledItems[index]) {
                     component.setEnabled(false);
                     component.setForeground(Color.GRAY);
@@ -306,11 +285,9 @@ public class HarmonySearchServiceDiaglog extends JDialog{
             }
         });
 
-        // Add an ItemListener to prevent selecting disabled items
         comboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                // If the item is disabled, reset the selection to the last valid item
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     int selectedIndex = comboBox.getSelectedIndex();
                     if (disabledItems[selectedIndex]) {

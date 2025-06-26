@@ -68,7 +68,6 @@ public class OBDAACDataBrowser extends JPanel {
     private JLabel imageLabel;
     private String[] earthdataCredentials;
     private JSpinner maxResultsSpinner;
-    private ThumbnailPreview thumbnailPreview;
     private JLabel dateRangeHintLabel = new JLabel();  // Declare as a class member
     private JPanel temporalPanel;
     private JLabel dateRangeLabel; // add this as a field so we can update it later
@@ -85,23 +84,17 @@ public class OBDAACDataBrowser extends JPanel {
             "SeaHawk/HawkEye", new String[]{"2018-12-01", "2023-12-31"},
             "MODISA", new String[]{"2002-07-04", "2024-12-31"},
             "VIIRSN", new String[]{"2011-10-28", "2024-12-31"}
-            // Add more as needed
     );
 
     public OBDAACDataBrowser(JDialog parentDialog) {
-//        setTitle("OB_CLOUD Data Browser - powered by Harmony Search");
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.parentDialog = parentDialog;
         setLayout(new GridBagLayout());
         setSize(850, 600);
         setLayout(new GridBagLayout());
         loadMetadata();
         imagePreviewHelper = new ImagePreviewHelper();
-//        Set<String> allSatellites = metadataMap.keySet(); // or your satelliteDropdown items
-//        missionDateRanges = fetchMissionDateRanges(allSatellites);
         loadMissionDateRangesFromFile();
         initComponents();
-        //thumbnailPreview = new ThumbnailPreview(this);
     }
 
     private void showProgressDialog(Component parent, int max) {
@@ -136,32 +129,9 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-    //    private void loadMissionDateRangesFromFile() {
-//        missionDateRanges = new HashMap<>();
-//
-//        Path filePath = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
-//                "src", "main", "resources", "json-files", "mission_date_ranges.json");
-//            Path missionRangePath = filePath.resolve("mission_date_ranges.json");
-//            if (Files.exists(missionRangePath)) {
-//                try (BufferedReader reader = Files.newBufferedReader(missionRangePath, StandardCharsets.UTF_8)) {
-//                    JSONObject json = new JSONObject(new JSONTokener(reader));
-//                    for (String key : json.keySet()) {
-//                        JSONObject dates = json.getJSONObject(key);
-//                        String start = dates.optString("start", null);
-//                        String end = dates.optString("end", "present");
-//                        if (start != null) {
-//                            missionDateRanges.put(key, new String[]{start, end});
-//                        }
-//                    }
-//                } catch (IOException e) {
-//                    System.err.println("Failed to read mission date ranges: " + e.getMessage());
-//                }
-//            }
-//    }
     private void loadMissionDateRangesFromFile() {
         missionDateRanges = new HashMap<>();
 
-        // First try external file override
         Path externalFile = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
                 "src", "main", "resources", "json-files", "mission_date_ranges.json");
 
@@ -175,7 +145,6 @@ public class OBDAACDataBrowser extends JPanel {
             }
         }
 
-        // Otherwise fall back to classpath (e.g., bundled in JAR)
         System.out.println("Loading mission_date_ranges.json from classpath");
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("json-files/mission_date_ranges.json")) {
             if (input != null) {
@@ -207,29 +176,6 @@ public class OBDAACDataBrowser extends JPanel {
         JSONTokener tokener;
         Set<String> missionKeys = new HashSet<>();
         try {
-//            Path jsonDir = PythonScriptRunner_old.resourceDir;
-//            if (!Files.exists(PythonScriptRunner_old.resourceDir) || !Files.isDirectory(PythonScriptRunner_old.resourceDir)) {
-//                PythonScriptRunner.runMetadataScript();
-//            }
-//
-//            if (Files.exists(jsonDir) && Files.isDirectory(jsonDir)) {
-//                try (DirectoryStream<Path> stream = Files.newDirectoryStream(jsonDir, "*.json")) {
-//                    for (Path path : stream) {
-//                        String key = path.getFileName().toString().replace(".json", "");
-//                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-//                                new FileInputStream(path.toFile()), StandardCharsets.UTF_8))) {
-//                            tokener = new JSONTokener(reader);
-//                            JSONObject json = new JSONObject(tokener);
-//                            metadataMap.put(key, json);
-//                        }
-//                        String fileName = path.getFileName().toString();
-//                        if (!fileName.equals("mission_date_ranges.json")) {
-//                            missionKeys.add(key);
-//                        }
-//                    }
-//                }
-//                usedExternal = true;
-//            }
             if (!usedExternal) {
                 String[] resourceFiles = {
                         "CZCS.json", "HAWKEYE.json", "HICO.json", "MERGED_S3_OLCI.json", "MERIS.json",
@@ -256,15 +202,6 @@ public class OBDAACDataBrowser extends JPanel {
                 }
             }
 
-//            if (!Files.exists(jsonDir.resolve("mission_date_ranges.json"))) {
-//                //PythonScriptRunner.runDateRangeScript(missionKeys);
-//                // 1. Generate mission_names.txt from dropdown values
-//                String missionListPath = "seadas-toolbox/seadas-earthdata-cloud-toolbox/src/main/resources/json-files/mission_names.txt";
-//                MissionNameWriter.writeMissionNames(metadataMap.keySet(), missionListPath);
-//
-//                // 2. Call Python to generate mission_date_ranges.json
-//                PythonScriptRunner_old.runMissionDateRangeScript(missionListPath);
-//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -279,16 +216,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-//
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.insets = new Insets(0, 10, 5, 10);
-//        gbc.gridx = 0;
-//        gbc.gridy = 0;
-//        gbc.gridwidth = 2;  // Full width
-//        gbc.anchor = GridBagConstraints.WEST;
-//        gbc.fill = GridBagConstraints.NONE;
-//
-//        add(UIComponentsFactory.createHeaderPanel(), gbc);
 
         List<String> sortedSatellites = new ArrayList<>(metadataMap.keySet());
         Collections.sort(sortedSatellites);
@@ -307,7 +234,6 @@ public class OBDAACDataBrowser extends JPanel {
                 String[] range = missionDateRanges.get(satelliteKey);
                 String tooltip = "Valid date range: " + range[0] + " to " + range[1];
                 temporalPanel.setToolTipText(tooltip);
-                // Set tooltip on individual components
                 ((JComponent) startDatePicker.getComponent(0)).setToolTipText(tooltip);
                 ((JComponent) startDatePicker.getComponent(1)).setToolTipText(tooltip);
                 ((JComponent) endDatePicker.getComponent(0)).setToolTipText(tooltip);
@@ -318,29 +244,14 @@ public class OBDAACDataBrowser extends JPanel {
             }
         });
 
-        //gbc.gridx = 0; gbc.gridy++;
-//        add(new JLabel("Satellite/Instrument:"), gbc);
-//        gbc.gridx = 1; add(satelliteDropdown, gbc);
-//
-//        gbc.gridx = 0; gbc.gridy++;
-//        add(new JLabel("Data Level:"), gbc);
-//        gbc.gridx = 1; add(levelDropdown, gbc);
-//
-//        gbc.gridx = 0; gbc.gridy++;
-//        add(new JLabel("Product Name:"), gbc);
-//        gbc.gridx = 1; add(productDropdown, gbc);
 
 
-        // Filters in grouped panel
         gbc.gridy++;
         gbc.gridx = 0;
         add(createFilterPanel(), gbc);
-//        gbc.gridwidth = 2;
 
 
-        // Add panel for max API results and results per page
 
-//        gbc.gridwidth = 2;
         JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paginationPanel.add(new JLabel("Max Results:"));
 
@@ -367,10 +278,6 @@ public class OBDAACDataBrowser extends JPanel {
         paginationPanel.add(Box.createHorizontalStrut(60));
 
 
-        //TODO: Add a button to refresh the metadata
-//        JButton refreshButton = new JButton("Refresh Metadata");
-//        refreshButton.addActionListener(e -> refreshMetadata());
-//        paginationPanel.add(refreshButton);
 
 
 
@@ -386,24 +293,16 @@ public class OBDAACDataBrowser extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(searchButton);
         buttonPanel.add(cancelButton);
-//        gbc.gridwidth = 2;
 
 
-//        paginationPanel.add(buttonPanel);
 
         gbc.gridy++;
         gbc.gridx = 0;
-//        add(paginationPanel, gbc);
 
         add(createPaginationButtonPanel(paginationPanel, buttonPanel), gbc);
-//
-//        gbc.gridy++;
-//        gbc.gridx = 0;
-//        add(buttonPanel, gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
-//        gbc.gridwidth = 2;
         String[] columnNames = {"File Name", "Download File"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -422,9 +321,7 @@ public class OBDAACDataBrowser extends JPanel {
 
         Font fontOriginal = resultsTable.getFont();
 
-        // todo Danny preferences
         double fontSizeZoom = Earthdata_Cloud_Controller.getPreferenceResultFontZoom();
-        // restrict to realistic values just in case - probable not needed
         if (fontSizeZoom < Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_MIN_VALUE || fontSizeZoom > Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_MAX_VALUE) {
             fontSizeZoom = Earthdata_Cloud_Controller.PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT;
         }
@@ -457,21 +354,6 @@ public class OBDAACDataBrowser extends JPanel {
             }
         });
 
-//        resultsTable.addMouseMotionListener(new MouseMotionAdapter() {
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                int row = resultsTable.rowAtPoint(e.getPoint());
-//                int col = resultsTable.columnAtPoint(e.getPoint());
-//
-//                // Only show preview if hovering over the File Name column (e.g., column 0)
-//                if (col == 0 && row >= 0) {
-//                    String fileName = (String) tableModel.getValueAt(row, 0);
-//                    showImagePreview(fileName, e.getLocationOnScreen());
-//                } else {
-//                    hideImagePreview();
-//                }
-//            }
-//        });
 
         resultsTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -479,10 +361,9 @@ public class OBDAACDataBrowser extends JPanel {
                 int row = resultsTable.rowAtPoint(e.getPoint());
                 int col = resultsTable.columnAtPoint(e.getPoint());
 
-                // Only act if the clicked column is the File Name column (e.g., 0)
                 if (Earthdata_Cloud_Controller.getPreferenceImageLinkInclude() && col == 0) {
                     String fileName = (String) tableModel.getValueAt(row, 0);
-                    String browseUrl = BrowseImagePreview.getFullImageUrl(fileName);
+                    String browseUrl = fileName + ".png";
                     if (browseUrl != null) {
                         try {
                             Desktop.getDesktop().browse(new URI(browseUrl));
@@ -503,8 +384,6 @@ public class OBDAACDataBrowser extends JPanel {
                 if (column == 0 && value instanceof String) {
                     String fileName = (String) value;
                     String tooltip = fileSpatialMap.getOrDefault(fileName, "No spatial info");
-                    // todo Commenting out as this tooltip gets stuck being shown on screen so removing it for now
-//                    ((JComponent) c).setToolTipText(tooltip);
                 }
 
                 if (column == 0) {
@@ -517,35 +396,15 @@ public class OBDAACDataBrowser extends JPanel {
             }
         });
 
-//        resultsTable.addMouseListener(new MouseAdapter() {
-//            public void mouseClicked(MouseEvent e) {
-//                int row = resultsTable.rowAtPoint(e.getPoint());
-//                if (row >= 0) {
-//                    String fileName = (String) tableModel.getValueAt(row, 0);
-//                    String imageUrl = getPreviewUrl(fileName);
-//                    if (imageUrl != null) {
-//                        showImageInDialog(imageUrl);
-//                    }
-//                }
-//            }
-//        });
 
-//        resultsTable.addMouseListener(new MouseAdapter() {
-//            public void mouseExited(MouseEvent e) {
-//                hideImagePreview();
-//            }
-//        });
 
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
-        // todo Danny
         scrollPane.setPreferredSize(new Dimension(700, 500));
 
 
-        // Results container that holds the table and pagination
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
-        // todo Danny
         resultsContainer.setPreferredSize(new Dimension(700, 600));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
@@ -553,7 +412,6 @@ public class OBDAACDataBrowser extends JPanel {
         resultsContainer.add(createPaginationPanel(), BorderLayout.SOUTH);
         resultsContainer.setVisible(false); // 👈 initially hidden
 
-// Add the container to the frame layout
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 3;
@@ -625,14 +483,12 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
 
         JPanel panel = new JPanel(layout);
-//        gbc.insets = new Insets(0, 0, 0, 0);
 
         gbc.gridy = 0;
         gbc.gridx = 0;
         panel.add(panel1, gbc);
 
 
-        // silliness to get this filled
         gbc.gridx++;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -644,7 +500,6 @@ public class OBDAACDataBrowser extends JPanel {
 
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTHEAST;
-//        gbc.insets = new Insets(10, 0, 0, 10);
         panel.add(panel2, gbc);
 
         return panel;
@@ -689,34 +544,7 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
-//    private void showImagePreview(String fileName, Point screenLocation) {
-//        if (imagePreviewWindow == null) {
-//            imagePreviewWindow = new JWindow();
-//            imageLabel = new JLabel();
-//            imagePreviewWindow.getContentPane().add(imageLabel);
-//        }
-//
-//        try {
-//            String imageUrl = getPreviewUrl(fileName);
-//            ImageIcon icon = BrowseImagePreview.loadPreviewImage(fileName);
-//            if (icon != null) {
-//                imageLabel.setIcon(icon);
-//                imagePreviewWindow.pack();
-//                imagePreviewWindow.setLocation(screenLocation.x + 20, screenLocation.y + 20);
-//                imagePreviewWindow.setVisible(true);
-//            } else {
-//                hideImagePreview();
-//            }
-//        } catch (Exception e) {
-//            hideImagePreview();
-//        }
-//    }
 
-//    private void hideImagePreview() {
-//        if (imagePreviewWindow != null) {
-//            imagePreviewWindow.setVisible(false);
-//        }
-//    }
 
     private void downloadSelectedFiles() {
         if (earthdataCredentials == null) {
@@ -732,7 +560,6 @@ public class OBDAACDataBrowser extends JPanel {
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 
-        // todo Danny
 
         String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
 
@@ -802,7 +629,6 @@ public class OBDAACDataBrowser extends JPanel {
         }
 
 
-        // todo Danny end
 
 
         if (fileChooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
@@ -810,7 +636,6 @@ public class OBDAACDataBrowser extends JPanel {
 
         File selectedDir = fileChooser.getSelectedFile();
 
-        // todo Danny
 
         String selectedParent = selectedDir.getParentFile().getAbsolutePath();
         if (selectedParent != null) {
@@ -854,10 +679,8 @@ public class OBDAACDataBrowser extends JPanel {
             }
 
             int finalDownloadedCount = downloadedCount;
-// First hide the progress dialog
             SwingUtilities.invokeLater(() -> hideProgressDialog());
 
-// Then show the message in a separate EDT task
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this, finalDownloadedCount + " file(s) downloaded to:\n" + selectedDir.getAbsolutePath());
             });
@@ -907,14 +730,12 @@ public class OBDAACDataBrowser extends JPanel {
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             String currentName = (String) tableModel.getValueAt(i, 0);
             if (currentName != null && fileName.contains(currentName.replaceAll(".*?(PACE_OCI\\..*?\\.nc).*", "$1"))) {
-                // Keep it checked and disable editing
                 resultsTable.getColumnModel().getColumn(1).setCellEditor(null);
                 break;
             }
         }
     }
 
-    // Unified "Download Selected" button that opens folder first, then downloads
     private void addCombinedDownloadPanel(JPanel panel, GridBagConstraints gbc) {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
 
@@ -943,7 +764,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(buttonPanel, gbc);
     }
 
-    // Helper to extract clean file name from OAuth-style or CloudFront-style URLs
     private String extractFileNameFromUrl(String url) {
         try {
             Pattern pattern = Pattern.compile("([^/]+\\.nc)(\\?.*)?$");
@@ -1107,7 +927,6 @@ public class OBDAACDataBrowser extends JPanel {
 
         JSONArray products = json.optJSONArray(selectedLevel);
         if (products != null) {
-            // Collect product names and tooltips
             List<String> productNames = new ArrayList<>();
             Map<String, String> tooltipMap = new HashMap<>();
 
@@ -1119,10 +938,8 @@ public class OBDAACDataBrowser extends JPanel {
                 tooltipMap.put(name, shortName);
             }
 
-            // Sort alphabetically
             Collections.sort(productNames);
 
-            // Populate dropdown
             for (String name : productNames) {
                 productDropdown.addItem(name);
                 productNameTooltips.put(name, tooltipMap.get(name));
@@ -1196,35 +1013,29 @@ public class OBDAACDataBrowser extends JPanel {
         c.insets = new Insets(2, 2, 2, 2);
         c.anchor = GridBagConstraints.NORTHWEST;
 
-        // Create date pickers
         startDatePicker = createDatePicker();
         endDatePicker = createDatePicker();
 
-        // Set fixed size to ensure visibility
         Dimension fieldSize = new Dimension(150, 28);
         startDatePicker.setPreferredSize(fieldSize);
         startDatePicker.setMinimumSize(fieldSize);
         endDatePicker.setPreferredSize(fieldSize);
         endDatePicker.setMinimumSize(fieldSize);
 
-        // Start Date Label
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.NONE;
         temporalPanel.add(new JLabel("Start Date:"), c);
 
-        // Start Date Picker
         c.gridx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         temporalPanel.add(startDatePicker, c);
 
-        // End Date Label
         c.gridx = 0;
         c.gridy = 1;
         c.fill = GridBagConstraints.NONE;
         temporalPanel.add(new JLabel("End Date:"), c);
 
-        // End Date Picker
         c.gridx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         temporalPanel.add(endDatePicker, c);
@@ -1271,17 +1082,10 @@ public class OBDAACDataBrowser extends JPanel {
                 Date minDate = sdf.parse(minDateStr);
                 Date maxDate = sdf.parse(maxDateStr);
 
-                // Set constraints
                 UtilDateModel startModel = (UtilDateModel) startDatePicker.getModel();
-                //startModel.setDate(range[0]);
-//                startModel.setMinimum(minDate);
-//                startModel.setMaximum(maxDate);
 
                 UtilDateModel endModel = (UtilDateModel) endDatePicker.getModel();
-//                endModel.setMinimum(minDate);
-//                endModel.setMaximum(maxDate);
 
-                // Update label
                 dateRangeHintLabel.setText("Valid range for " + selectedSatellite + ": " + minDateStr + " to " + maxDateStr);
             } catch (java.text.ParseException e) {
                 throw new RuntimeException(e);
@@ -1327,7 +1131,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
 
 
-        // Max Lat
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1344,7 +1147,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(maxLatField, gbc);
 
 
-        // Min Lat
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1361,7 +1163,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(minLatField, gbc);
 
 
-        // Min Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1379,7 +1180,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(minLonField, gbc);
 
 
-        // Max Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1417,10 +1217,8 @@ public class OBDAACDataBrowser extends JPanel {
 
 
         JPanel panel = new JPanel(new GridBagLayout());
-//        panel.setBorder(BorderFactory.createLineBorder(new Color(0,100,100)));
 
         GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.insets = new Insets(2, 2, 2, 2);
         gbc.insets.top = 0;
         gbc.insets.bottom = 0;
         gbc.insets.left = 0;
@@ -1429,7 +1227,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
 
 
-        // setup evenly spaced columns
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.weightx = 1.0;
@@ -1469,12 +1266,10 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        // Max Lat
         gbc.gridy = 0;
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-//        gbc.weightx = 1.0;
         JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
         maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
         panel.add(maxLatLabel, gbc);
@@ -1483,7 +1278,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
-//        gbc.weightx = 1.0;
         maxLatField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
         maxLatField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
         panel.add(maxLatField, gbc);
@@ -1494,12 +1288,10 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        // Min Lon
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-//        gbc.weightx = 1.0;
         JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
         minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
         panel.add(minLonLabel, gbc);
@@ -1511,7 +1303,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.insets.left = 0;
         gbc.insets.right = 2;
-//        gbc.weightx = 1.0;
         minLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
         minLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
         panel.add(minLonField, gbc);
@@ -1519,14 +1310,12 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        // Max Lon
         gbc.gridx = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.insets.left = 2;
         gbc.insets.right = 0;
-//        gbc.weightx = 1.0;
         maxLonField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
         maxLonField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
         panel.add(maxLonField, gbc);
@@ -1539,7 +1328,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridx = 5;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
-//        gbc.weightx = 1.0;
         JLabel maxLonLabel = new JLabel(":" + Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL);
         maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
         panel.add(maxLonLabel, gbc);
@@ -1549,7 +1337,6 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        // Min Lat
         gbc.gridy++;
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.EAST;
@@ -1599,7 +1386,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
 
 
-        // Max Lat
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1612,18 +1398,14 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        // Separator Line
         gbc.gridy += 1;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         Insets insetsOrig = gbc.insets;
-//        gbc.insets.right = 10;
-//        gbc.insets.left = 10;
         gbc.gridwidth = 2;
         panel.add(new JSeparator(), gbc);
         gbc.insets = insetsOrig;
 
-        // VERTICAL FILLER - silliness to get this filled
         gbc.gridy++;
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
@@ -1634,7 +1416,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridwidth = 1;
 
 
-        // Coordinates
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1652,7 +1433,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(coordinates, gbc);
 
 
-        // Box Size
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -1699,7 +1479,6 @@ public class OBDAACDataBrowser extends JPanel {
             JTextField tmp2 = new JTextField("1234567890123456789012");
             regions.setMinimumSize(tmp2.getPreferredSize());
 
-            // Handle resetDefaults events - set all other components to defaults
             regions.addActionListener(evt -> {
                 if (!working) {
                     working = true;
@@ -1768,7 +1547,6 @@ public class OBDAACDataBrowser extends JPanel {
                 JTextField tmp2 = new JTextField("1234567890123456789012");
                 regions2.setMinimumSize(tmp2.getPreferredSize());
 
-                // Handle resetDefaults events - set all other components to defaults
                 regions2.addActionListener(evt -> {
                     if (!working) {
                         working = true;
@@ -1839,11 +1617,6 @@ public class OBDAACDataBrowser extends JPanel {
         minLonField.setMinimumSize(tmp.getPreferredSize());
 
 
-//        JLabel tmp = new JLabel("1234567890123456789012345");
-//        Dimension tmpDimension = new Dimension(tmp.getPreferredSize().width,panel.getPreferredSize().height);
-//
-//        panel.setMinimumSize(tmpDimension);
-//        panel.setPreferredSize(tmpDimension);
         panel.setMinimumSize(panel.getPreferredSize());
         panel.setPreferredSize(panel.getPreferredSize());
 
@@ -2124,27 +1897,6 @@ public class OBDAACDataBrowser extends JPanel {
             }
 
             if (valid && minSet && maxSet) {
-//                if (minLonDouble > maxLonDouble) {
-//                    // todo figure out span maybe 90?
-//                    valid = checkDatelineSpan(minLonDouble, maxLonDouble, 360);
-//                    if (!valid) {
-//                        if (sourceControl == minLonField) {
-//                            JOptionPane.showMessageDialog(null, "<html>WARNING!: Dateline crossing: 'West' is greater than 'East'<br>Span cannot be greater than 90 degrees</html>");
-//                            minLonField.setText("");
-//                        } else {
-//                            JOptionPane.showMessageDialog(null, "<html>WARNING!: Dateline crossing: 'West' is greater than 'East'<br>Span cannot be greater than 90 degrees</html>");
-//                            maxLonField.setText("");
-//                        }
-//                    }
-//                } else if (minLonDouble == maxLonDouble) {
-//                    if (sourceControl == minLonField) {
-//                        JOptionPane.showMessageDialog(null, "<html>WARNING!: 'West' cannot equal 'East'");
-//                        minLonField.setText("");
-//                    } else {
-//                        JOptionPane.showMessageDialog(null, "<html>WARNING!: 'East' cannot equal 'West'");
-//                        maxLonField.setText("");
-//                    }
-//                }
             }
 
             working = false;
@@ -2188,7 +1940,6 @@ public class OBDAACDataBrowser extends JPanel {
 
                 double boxHeight = 0;
                 double boxWidth = 0;
-//                String units = "km";
                 boolean boxValid = true;
 
                 String warnMsg = "";
@@ -2225,8 +1976,6 @@ public class OBDAACDataBrowser extends JPanel {
 
                 if (!boxValid) {
                     JOptionPane.showMessageDialog(null, warnMsg);
-                    // todo set to preference value
-//                    boxSize.setText(Earthdata_Cloud_Controller.getPreferenceBoxSize());
                 }
 
 
@@ -2235,7 +1984,6 @@ public class OBDAACDataBrowser extends JPanel {
 
 
                     if (boxHeight >= 0 && boxWidth >= 0) {
-                        // todo Convert to units of km would be difficult and the following could not be quite right, it would need cosine ... but still would not be quite accurate to what the satellite views
                         double EARTH_CIRCUMFERENCE = 40075.017;
                         double degreesPerKmAlongLat = 360 / EARTH_CIRCUMFERENCE;
 
@@ -2247,7 +1995,6 @@ public class OBDAACDataBrowser extends JPanel {
                         double maxLon;
                         if (unitsKm) {
                             double EARTH_RADIUS_EQUATOR = 6378.1370;
-                            // units km (approx)
                             double midLatRadiansAbs = Math.abs(latDouble) * Math.PI / 180.0;
                             double cosineMidLat = Math.cos(midLatRadiansAbs);
                             double circumferenceAtMidLat = 2.0 * Math.PI * EARTH_RADIUS_EQUATOR * Math.cos(midLatRadiansAbs);
@@ -2268,7 +2015,6 @@ public class OBDAACDataBrowser extends JPanel {
                                 maxLon = 180.0;
                             }
                         } else {
-                            //  units degree
                             minLat = latDouble - 0.5 * boxHeight;
                             maxLat = latDouble + 0.5 * boxHeight;
                             minLon = lonDouble - 0.5 * boxWidth;
@@ -2460,7 +2206,6 @@ public class OBDAACDataBrowser extends JPanel {
         allGranules.clear();
 
 
-        // Clear and paint empty table at beginning of search
         totalPages = 1;
         currentPage = 1;
 
@@ -2518,30 +2263,12 @@ public class OBDAACDataBrowser extends JPanel {
         String minLon = minLonField.getText().trim();
         String maxLon = maxLonField.getText().trim();
 
-        // support coordinates such as  20°54′00″N
         minLat = RegionUtils.convertLatToDecimal(minLat);
         maxLat = RegionUtils.convertLatToDecimal(maxLat);
         minLon = RegionUtils.convertLonToDecimal(minLon);
         maxLon = RegionUtils.convertLonToDecimal(maxLon);
 
-//        System.out.println("minLat=" + minLat);
-//        System.out.println("maxLat=" + maxLat);
-//        System.out.println("minLon=" + minLon);
-//        System.out.println("maxLon=" + maxLon);
 
-        // todo Danny
-//        if (minLat.length() == 0 && maxLat.length() > 0) {
-//            minLat = maxLat;
-//        }
-//        if (maxLat.length() == 0 && minLat.length() > 0) {
-//            maxLat = minLat;
-//        }
-//        if (maxLon.length() == 0 && minLon.length() > 0) {
-//            maxLon = minLon;
-//        }
-//        if (minLon.length() == 0 && maxLon.length() > 0)  {
-//            minLon = maxLon;
-//        }
 
         boolean hasSpatial = !minLat.isEmpty() && !maxLat.isEmpty() && !minLon.isEmpty() && !maxLon.isEmpty();
 
@@ -2551,13 +2278,11 @@ public class OBDAACDataBrowser extends JPanel {
         } else if (nightButton.isSelected()) {
             dayNightFlag = "Night";
         }
-        // "Both" selected means we skip adding the flag
 
         int pageSize = 2000;
         int page = 1;
         totalFetched = 0;
 
-//        resultsContainer.setVisible(false); // before the loop
 
         try {
             while (totalFetched < maxApiResults) {
@@ -2656,7 +2381,6 @@ public class OBDAACDataBrowser extends JPanel {
 
                                     workDone++;
                                     workDoneThisIncrement = 0;
-//                                System.out.println("workDone=" + workDone);
 
                                 } else {
                                     workDoneThisIncrement++;
@@ -2688,7 +2412,6 @@ public class OBDAACDataBrowser extends JPanel {
                 }
             }
 
-            // Setup pagination
             totalPages = (int) Math.ceil((double) allGranules.size() / getResultsPerPage());
             currentPage = 1;
             updateResultsTable(currentPage);
@@ -2699,32 +2422,6 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
 
-//    private void refreshMetadata() {
-//        int confirm = JOptionPane.showConfirmDialog(this,
-//                "This will refresh metadata and mission date ranges.\nDo you want to continue?",
-//                "Refresh Metadata", JOptionPane.YES_NO_OPTION);
-//
-//        if (confirm == JOptionPane.YES_OPTION) {
-//            try {
-//                // Run scripts
-//                PythonScriptRunner_old.runAllScripts();
-//
-//                // Reload data
-//                loadMetadata();  // Should re-read updated JSON files
-//                missionDateRanges = metadataLoader.loadMissionDateRanges();
-//
-//                // Repopulate dropdowns
-//                populateSatelliteDropdown();
-//                updateLevels();
-//                updateProducts();
-//
-//                JOptionPane.showMessageDialog(this, "✅ Metadata and date ranges refreshed successfully.");
-//            } catch (Exception ex) {
-//                JOptionPane.showMessageDialog(this, "❌ Failed to refresh metadata.\n" + ex.getMessage());
-//                ex.printStackTrace();
-//            }
-//        }
-//    }
 
     private JPanel createPaginationPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -2732,7 +2429,6 @@ public class OBDAACDataBrowser extends JPanel {
         JPanel fetchedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
 
-        // Left side: Pagination buttons
         JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton prevButton = new JButton("Previous");
         JButton nextButton = new JButton("Next");
@@ -2758,13 +2454,11 @@ public class OBDAACDataBrowser extends JPanel {
         navPanel.add(pageLabel);
         navPanel.add(nextButton);
 
-        // Right side: Download button
         JButton downloadButton = new JButton("Download");
         downloadButton.addActionListener(e -> downloadSelectedFiles());
         JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         downloadPanel.add(downloadButton);
 
-        // Add both to main panel
         panel.add(fetchedPanel, BorderLayout.WEST);
         panel.add(navPanel, BorderLayout.CENTER);
         panel.add(downloadPanel, BorderLayout.EAST);
@@ -2821,7 +2515,6 @@ public class OBDAACDataBrowser extends JPanel {
         group.add(nightButton);
         group.add(bothButton);
 
-        // Add padding and alignment
         dayButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         nightButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         bothButton.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -2839,7 +2532,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.setMinimumSize(tmpDimension);
         panel.setPreferredSize(tmpDimension);
 
-        // Save for later use
         this.dayButton = dayButton;
         this.nightButton = nightButton;
         this.bothButton = bothButton;
@@ -2861,9 +2553,6 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
 
-    //    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> new OBDAACDataBrowser().setVisible(true));
-//    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("OB_CLOUD Data Browser via Harmony Search Service");
@@ -2875,7 +2564,5 @@ public class OBDAACDataBrowser extends JPanel {
         });
     }
 
-//    String imageUrl = ImagePreviewHandler.getPreviewUrl(fileName);
-//ImagePreviewHandler.showImageInDialog(this, imageUrl);
 
 }
