@@ -224,8 +224,20 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridx = 0;
         add(createFilterPanel(), gbc);
 
-        JPanel paginationPanel = createSpinnerPanel();
-        JPanel buttonPanel = createButtonPanel();
+        // Initialize spinners first
+        maxApiResultsSpinner = new JSpinner();
+        resultsPerPageSpinner = new JSpinner();
+        
+        OBDAACDataBrowserPanels panels = new OBDAACDataBrowserPanels();
+        JPanel paginationPanel = panels.createSpinnerPanel(maxApiResultsSpinner, resultsPerPageSpinner);
+        JPanel buttonPanel = panels.createButtonPanel(
+            this::runFetchWrapper,
+            () -> {
+                if (parentDialog != null) {
+                    parentDialog.dispose();
+                }
+            }
+        );
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -268,34 +280,6 @@ public class OBDAACDataBrowser extends JPanel {
         });
     }
 
-    private JPanel createSpinnerPanel() {
-        JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        paginationPanel.add(new JLabel("Max Results:"));
-
-        int maxResultsPref = Earthdata_Cloud_Controller.getPreferenceFetchMaxResults();
-        int maxResultsMin = Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_MIN_VALUE;
-        int maxResultsMax = Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_MAX_VALUE;
-        maxApiResultsSpinner = new JSpinner(new SpinnerNumberModel(maxResultsPref, maxResultsMin, maxResultsMax, 1));
-        maxApiResultsSpinner.setPreferredSize(new Dimension(80, 25));
-        maxApiResultsSpinner.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_TOOLTIP);
-
-        paginationPanel.add(maxApiResultsSpinner);
-        paginationPanel.add(Box.createHorizontalStrut(20));
-        paginationPanel.add(new JLabel("Results Per Page:"));
-
-        int resultsPerPagePref = Earthdata_Cloud_Controller.getPreferenceFetchResultsPerPage();
-        int resultsPerPageMin = Earthdata_Cloud_Controller.PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE;
-        int resultsPerPageMax = Earthdata_Cloud_Controller.PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE;
-        resultsPerPageSpinner = new JSpinner(new SpinnerNumberModel(resultsPerPagePref, resultsPerPageMin, resultsPerPageMax, 1));
-        resultsPerPageSpinner.setPreferredSize(new Dimension(80, 25));
-        resultsPerPageSpinner.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP);
-
-        paginationPanel.add(resultsPerPageSpinner);
-        paginationPanel.add(Box.createHorizontalStrut(60));
-
-        return paginationPanel;
-    }
-
     private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
         GridBagConstraints gbc = new GridBagConstraints();
         GridBagLayout layout = new GridBagLayout();
@@ -323,22 +307,6 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(panel2, gbc);
 
         return panel;
-    }
-
-    private JPanel createButtonPanel() {
-        JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> runFetchWrapper());
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(
-                e -> {
-                    if (parentDialog != null) {
-                        parentDialog.dispose();
-                    }
-                });
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(searchButton);
-        buttonPanel.add(cancelButton);
-        return buttonPanel;
     }
 
     private void setupResultsTable() {
