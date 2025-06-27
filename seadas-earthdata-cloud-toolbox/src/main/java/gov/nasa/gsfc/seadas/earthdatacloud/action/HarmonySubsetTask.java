@@ -41,19 +41,22 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             String bearerToken = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
             System.out.println("Authentication token obtained: " + (bearerToken != null ? "SUCCESS" : "FAILED"));
             
-            // Build Harmony subset request URL
-            System.out.println("Building Harmony subset URL...");
+            // Build Harmony job request
+            System.out.println("Building Harmony job request...");
+            String jobRequestJson = buildHarmonyJobRequest();
+            System.out.println("Job request: " + jobRequestJson);
+            dialog.updateStatus("Creating Harmony job...");
+            
+            // Create job via POST request
+            System.out.println("Creating job via POST request...");
             String harmonyUrl = buildHarmonySubsetUrl();
             System.out.println("Harmony URL: " + harmonyUrl);
-            dialog.updateStatus("Requesting subset from Harmony: " + harmonyUrl);
             
-            // Make initial request
-            System.out.println("Making initial request to Harmony...");
-            String response = fetchContent(harmonyUrl, bearerToken);
-            System.out.println("Response received: " + response.substring(0, Math.min(200, response.length())) + "...");
+            String response = createJob(harmonyUrl, jobRequestJson, bearerToken);
+            System.out.println("Job creation response: " + response.substring(0, Math.min(200, response.length())) + "...");
             JSONObject jsonResponse = new JSONObject(response);
             
-            // Check if we got a job ID (asynchronous processing)
+            // Check if we got a job ID
             if (jsonResponse.has("jobID")) {
                 String jobId = jsonResponse.getString("jobID");
                 String jobUrl = "https://harmony.earthdata.nasa.gov/jobs/" + jobId;
@@ -81,86 +84,79 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     private String buildHarmonySubsetUrl() {
         StringBuilder urlBuilder = new StringBuilder();
         
-        // Base URL - we'll need to extract collection ID from the input URL
+        // Use Harmony's job-based API instead of direct coverage API
+        urlBuilder.append("https://harmony.earthdata.nasa.gov/jobs");
+        
+        return urlBuilder.toString();
+    }
+    
+    private String buildHarmonyJobRequest() {
+        JSONObject jobRequest = new JSONObject();
+        
+        // Extract collection ID from input URL
         String inputUrl = subsetParameters.getString("url");
         String collectionId = extractCollectionId(inputUrl);
         
-        urlBuilder.append("https://harmony.earthdata.nasa.gov/")
-                 .append(collectionId)
-                 .append("/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset");
+        // Build the job request
+        jobRequest.put("collection", collectionId);
         
         // Add subset parameters
-        boolean firstParam = true;
+        JSONObject subset = new JSONObject();
         
         // Spatial subset
-        if (subsetParameters.has("latMin") && subsetParameters.has("latMax")) {
-            String latMin = subsetParameters.getString("latMin");
-            String latMax = subsetParameters.getString("latMax");
-            urlBuilder.append(firstParam ? "?" : "&")
-                     .append("subset=lat(").append(latMin).append(":").append(latMax).append(")");
-            firstParam = false;
-        }
-        
-        if (subsetParameters.has("lonMin") && subsetParameters.has("lonMax")) {
-            String lonMin = subsetParameters.getString("lonMin");
-            String lonMax = subsetParameters.getString("lonMax");
-            urlBuilder.append(firstParam ? "?" : "&")
-                     .append("subset=lon(").append(lonMin).append(":").append(lonMax).append(")");
-            firstParam = false;
+        if (subsetParameters.has("latMin") && subsetParameters.has("latMax") && 
+            subsetParameters.has("lonMin") && subsetParameters.has("lonMax")) {
+            JSONObject spatial = new JSONObject();
+            spatial.put("lat", new JSONArray().put(subsetParameters.getDouble("latMin")).put(subsetParameters.getDouble("latMax")));
+            spatial.put("lon", new JSONArray().put(subsetParameters.getDouble("lonMin")).put(subsetParameters.getDouble("lonMax")));
+            subset.put("spatial", spatial);
         }
         
         // Temporal subset
         if (subsetParameters.has("startDate") && subsetParameters.has("endDate")) {
             String startDate = subsetParameters.getString("startDate") + "T00:00:00Z";
             String endDate = subsetParameters.getString("endDate") + "T23:59:59Z";
-            urlBuilder.append(firstParam ? "?" : "&")
-                     .append("subset=time(\"").append(startDate).append("\":\"").append(endDate).append("\")");
-            firstParam = false;
+            subset.put("temporal", new JSONArray().put(startDate).put(endDate));
         }
         
         // Variables
         if (subsetParameters.has("variables")) {
-            JSONArray variablesArray = subsetParameters.getJSONArray("variables");
-            if (variablesArray.length() > 0) {
-                StringBuilder varsBuilder = new StringBuilder();
-                for (int i = 0; i < variablesArray.length(); i++) {
-                    if (i > 0) varsBuilder.append(",");
-                    varsBuilder.append(variablesArray.getString(i));
-                }
-                String varsString = varsBuilder.toString();
-                urlBuilder.append(firstParam ? "?" : "&")
-                         .append("variables=").append(varsString);
-                firstParam = false;
-            }
+            subset.put("variables", subsetParameters.getJSONArray("variables"));
         }
         
-        // Output format
+        if (subset.length() > 0) {
+            jobRequest.put("subset", subset);
+        }
+        
+        // Output options
         if (subsetParameters.has("format")) {
-            String format = subsetParameters.getString("format");
-            urlBuilder.append(firstParam ? "?" : "&")
-                     .append("format=").append(format);
-            firstParam = false;
+            jobRequest.put("format", subsetParameters.getString("format"));
         }
         
-        // Coordinate system
         if (subsetParameters.has("crs")) {
-            String crs = subsetParameters.getString("crs");
-            urlBuilder.append(firstParam ? "?" : "&")
-                     .append("crs=").append(crs);
+            jobRequest.put("crs", subsetParameters.getString("crs"));
         }
         
-        return urlBuilder.toString();
+        return jobRequest.toString();
     }
 
     private String extractCollectionId(String inputUrl) {
+        System.out.println("Extracting collection ID from URL: " + inputUrl);
+        
         // Extract collection ID from input URL
         // This is a simplified approach - in practice, you might need more sophisticated parsing
         if (inputUrl.contains("C3020920290-OB_CLOUD")) {
+            System.out.println("Found PACE collection: C3020920290-OB_CLOUD");
             return "C3020920290-OB_CLOUD";
         } else if (inputUrl.contains("C1265136924-OB_CLOUD")) {
+            System.out.println("Found MODIS collection: C1265136924-OB_CLOUD");
             return "C1265136924-OB_CLOUD";
+        } else if (inputUrl.contains("C1940468264-OB_CLOUD")) {
+            System.out.println("Found VIIRS collection: C1940468264-OB_CLOUD");
+            return "C1940468264-OB_CLOUD";
         } else {
             // Default collection for ocean color data
+            System.out.println("Using default collection: C3020920290-OB_CLOUD");
             return "C3020920290-OB_CLOUD";
         }
     }
@@ -213,6 +209,49 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         return jsonResponse;
     }
 
+    public static String createJob(String urlString, String jsonData, String bearerToken) throws Exception {
+        StringBuilder content = new StringBuilder();
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+        connection.setDoOutput(true);
+
+        // Write JSON data
+        try (java.io.OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonData.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int status = connection.getResponseCode();
+        if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine).append("\n");
+                }
+            }
+        } else {
+            // Read error response for better debugging
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine).append("\n");
+                }
+            } catch (Exception e) {
+                content.append("Could not read error response: ").append(e.getMessage());
+            }
+            
+            throw new Exception("Failed to create job. HTTP status code: " + status + 
+                              ". Response: " + content.toString());
+        }
+
+        return content.toString();
+    }
+
     public static String fetchContent(String urlString, String bearerToken) throws Exception {
         StringBuilder content = new StringBuilder();
         URL url = new URL(urlString);
@@ -242,7 +281,18 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                 }
             }
         } else {
-            throw new Exception("Failed to fetch content. HTTP status code: " + status);
+            // Read error response for better debugging
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine).append("\n");
+                }
+            } catch (Exception e) {
+                content.append("Could not read error response: ").append(e.getMessage());
+            }
+            
+            throw new Exception("Failed to fetch content. HTTP status code: " + status + 
+                              ". Response: " + content.toString());
         }
 
         return content.toString();
