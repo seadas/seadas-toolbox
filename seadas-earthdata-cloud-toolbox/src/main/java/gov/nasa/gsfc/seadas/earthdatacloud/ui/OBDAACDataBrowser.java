@@ -446,7 +446,12 @@ public class OBDAACDataBrowser extends JPanel {
 
         JButton downloadButton = new JButton("Download");
         downloadButton.addActionListener(e -> downloadSelectedFiles());
+        
+        JButton subsetButton = new JButton("Subset");
+        subsetButton.addActionListener(e -> subsetSelectedFiles());
+        
         JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        downloadPanel.add(subsetButton);
         downloadPanel.add(downloadButton);
 
         panel.add(fetchedPanel, BorderLayout.WEST);
@@ -511,6 +516,53 @@ public class OBDAACDataBrowser extends JPanel {
                     lockFileCheckbox(fileName);
                 }
             });
+    }
+
+    private void subsetSelectedFiles() {
+        // Get the first selected file (for now, we'll subset one file at a time)
+        String selectedFile = null;
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
+                selectedFile = (String) tableModel.getValueAt(i, 0);
+                break;
+            }
+        }
+
+        if (selectedFile == null) {
+            JOptionPane.showMessageDialog(this, "Please select a file to subset.", "No File Selected", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Get the URL for the selected file
+        String fileUrl = fileLinkMap.get(selectedFile);
+        if (fileUrl == null) {
+            JOptionPane.showMessageDialog(this, "Could not find URL for selected file: " + selectedFile, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Get current spatial bounds from the search dialog
+        Double latMin = null, latMax = null, lonMin = null, lonMax = null;
+        try {
+            if (!minLatField.getText().trim().isEmpty()) {
+                latMin = Double.parseDouble(minLatField.getText().trim());
+            }
+            if (!maxLatField.getText().trim().isEmpty()) {
+                latMax = Double.parseDouble(maxLatField.getText().trim());
+            }
+            if (!minLonField.getText().trim().isEmpty()) {
+                lonMin = Double.parseDouble(minLonField.getText().trim());
+            }
+            if (!maxLonField.getText().trim().isEmpty()) {
+                lonMax = Double.parseDouble(maxLonField.getText().trim());
+            }
+        } catch (NumberFormatException e) {
+            // If any of the spatial bounds are invalid, just pass null values
+            // The subset dialog will handle this gracefully
+        }
+
+        // Open the Harmony subset service dialog with spatial bounds
+        HarmonySubsetServiceDialog subsetDialog = new HarmonySubsetServiceDialog(fileUrl, latMin, latMax, lonMin, lonMax);
+        subsetDialog.setVisible(true);
     }
 
     private void lockFileCheckbox(String fileName) {
