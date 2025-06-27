@@ -24,11 +24,10 @@ The Harmony Subset Service allows you to request custom data subsets from NASA's
 - **Validate URL**: Check if the URL is accessible and contains valid data
 
 ### Subset Parameters Tab
-- **Use search spatial bounds**: Checkbox to automatically populate spatial bounds from the search dialog (checked by default)
 - **Spatial Bounds**: Define the geographic region
   - Lat Min/Max: Latitude range (e.g., 30.0 to 45.0)
   - Lon Min/Max: Longitude range (e.g., -80.0 to -60.0)
-  - *Note: When "Use search spatial bounds" is checked, these fields are pre-filled with the current search bounds but remain editable*
+  - *Note: When accessed from search results, these fields are automatically pre-filled with the current search bounds but remain fully editable*
 - **Temporal Bounds**: Define the time period
   - Start Date: Beginning of the time range
   - End Date: End of the time range
@@ -52,9 +51,9 @@ The Harmony Subset Service allows you to request custom data subsets from NASA's
 1. **Search for Data**: Use the search functionality with your desired spatial bounds
 2. **Select a File**: Check the checkbox next to the file you want to subset
 3. **Click "Subset"**: Click the "Subset" button in the pagination panel
-4. **Review Spatial Bounds**: The subset dialog opens with spatial bounds pre-filled from your search (if available)
+4. **Review Spatial Bounds**: The subset dialog opens with spatial bounds automatically pre-filled from your search
 5. **Wait for Metadata**: The dialog automatically fetches file metadata to populate available variables
-6. **Configure Parameters**: Adjust subset parameters as needed
+6. **Configure Parameters**: Adjust subset parameters as needed (spatial bounds remain editable)
 7. **Request Subset**: Click "Request Subset" to submit your request
 8. **Processing**: Harmony will process your request (this may take several minutes)
 9. **Job Monitoring**: The dialog shows progress and job status

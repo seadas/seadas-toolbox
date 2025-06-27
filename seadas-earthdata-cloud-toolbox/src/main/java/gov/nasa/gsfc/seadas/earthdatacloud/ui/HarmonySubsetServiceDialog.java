@@ -41,7 +41,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
     // Data
     private String selectedFileUrl;
     private JSONObject fileMetadata;
-    private JCheckBox useSearchBoundsCheckBox;
     private Double searchLatMin, searchLatMax, searchLonMin, searchLonMax;
 
     public HarmonySubsetServiceDialog() {
@@ -343,27 +342,13 @@ public class HarmonySubsetServiceDialog extends JDialog {
         lonMinField = new JTextField(10);
         lonMaxField = new JTextField(10);
 
-        // Checkbox for using search bounds
-        useSearchBoundsCheckBox = new JCheckBox("Use search spatial bounds");
-        useSearchBoundsCheckBox.setSelected(true); // Default to checked
-        
-        // Pre-fill spatial fields if search bounds are available
+        // Pre-fill spatial fields with search bounds if available
         if (searchLatMin != null && searchLatMax != null && searchLonMin != null && searchLonMax != null) {
             latMinField.setText(String.valueOf(searchLatMin));
             latMaxField.setText(String.valueOf(searchLatMax));
             lonMinField.setText(String.valueOf(searchLonMin));
             lonMaxField.setText(String.valueOf(searchLonMax));
         }
-        
-        // Add action listener to checkbox
-        useSearchBoundsCheckBox.addActionListener(e -> {
-            if (useSearchBoundsCheckBox.isSelected() && searchLatMin != null) {
-                latMinField.setText(String.valueOf(searchLatMin));
-                latMaxField.setText(String.valueOf(searchLatMax));
-                lonMinField.setText(String.valueOf(searchLonMin));
-                lonMaxField.setText(String.valueOf(searchLonMax));
-            }
-        });
 
         // Temporal bounds
         JLabel temporalLabel = new JLabel("Temporal Bounds:");
@@ -397,47 +382,44 @@ public class HarmonySubsetServiceDialog extends JDialog {
         panel.add(spatialLabel, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2;
-        panel.add(useSearchBoundsCheckBox, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1;
         panel.add(new JLabel("Lat Min:"), gbc);
         gbc.gridx = 1;
         panel.add(latMinField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 2;
         panel.add(new JLabel("Lat Max:"), gbc);
         gbc.gridx = 1;
         panel.add(latMaxField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0; gbc.gridy = 3;
         panel.add(new JLabel("Lon Min:"), gbc);
         gbc.gridx = 1;
         panel.add(lonMinField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridx = 0; gbc.gridy = 4;
         panel.add(new JLabel("Lon Max:"), gbc);
         gbc.gridx = 1;
         panel.add(lonMaxField, gbc);
 
         // Temporal bounds
-        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
         panel.add(temporalLabel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 1;
         panel.add(new JLabel("Start Date:"), gbc);
         gbc.gridx = 1;
         panel.add(startDateField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 8;
+        gbc.gridx = 0; gbc.gridy = 7;
         panel.add(new JLabel("End Date:"), gbc);
         gbc.gridx = 1;
         panel.add(endDateField, gbc);
 
         // Variables
-        gbc.gridx = 0; gbc.gridy = 9; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
         panel.add(variableLabel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 10; gbc.gridwidth = 2; gbc.weighty = 1.0;
+        gbc.gridx = 0; gbc.gridy = 9; gbc.gridwidth = 2; gbc.weighty = 1.0;
         panel.add(variableScrollPane, gbc);
 
         return panel;
