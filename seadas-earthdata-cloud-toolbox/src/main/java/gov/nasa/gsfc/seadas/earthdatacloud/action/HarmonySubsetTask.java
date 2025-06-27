@@ -120,9 +120,14 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         
         // Variables
         if (subsetParameters.has("variables")) {
-            List<String> variables = (List<String>) subsetParameters.get("variables");
-            if (!variables.isEmpty()) {
-                String varsString = String.join(",", variables);
+            JSONArray variablesArray = subsetParameters.getJSONArray("variables");
+            if (variablesArray.length() > 0) {
+                StringBuilder varsBuilder = new StringBuilder();
+                for (int i = 0; i < variablesArray.length(); i++) {
+                    if (i > 0) varsBuilder.append(",");
+                    varsBuilder.append(variablesArray.getString(i));
+                }
+                String varsString = varsBuilder.toString();
                 urlBuilder.append(firstParam ? "?" : "&")
                          .append("variables=").append(varsString);
                 firstParam = false;

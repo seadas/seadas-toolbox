@@ -6,6 +6,7 @@ import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.openide.util.HelpCtx;
 
 import javax.swing.*;
@@ -582,9 +583,14 @@ public class HarmonySubsetServiceDialog extends JDialog {
         if (!startDateField.getText().isEmpty()) params.put("startDate", startDateField.getText());
         if (!endDateField.getText().isEmpty()) params.put("endDate", endDateField.getText());
         
-        // Variables
+        // Variables - convert List to JSONArray
         if (!variableList.isSelectionEmpty()) {
-            params.put("variables", variableList.getSelectedValuesList());
+            List<String> selectedVariables = variableList.getSelectedValuesList();
+            JSONArray variablesArray = new JSONArray();
+            for (String variable : selectedVariables) {
+                variablesArray.put(variable);
+            }
+            params.put("variables", variablesArray);
         }
         
         // Output options
