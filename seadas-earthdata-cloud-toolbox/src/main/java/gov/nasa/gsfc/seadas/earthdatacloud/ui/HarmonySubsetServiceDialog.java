@@ -500,25 +500,50 @@ public class HarmonySubsetServiceDialog extends JDialog {
     }
 
     private void requestSubset() {
-        // Validate inputs
-        if (!validateInputs()) {
-            return;
+        try {
+            System.out.println("=== Starting subset request ===");
+            
+            // Validate inputs
+            if (!validateInputs()) {
+                System.out.println("Input validation failed");
+                return;
+            }
+
+            System.out.println("Input validation passed");
+
+            // Disable buttons during processing
+            subsetButton.setEnabled(false);
+            cancelButton.setEnabled(false);
+
+            // Get subset parameters
+            JSONObject subsetParams = getSubsetParameters();
+            System.out.println("Subset parameters: " + subsetParams.toString());
+
+            // Create subset task
+            HarmonySubsetTask subsetTask = new HarmonySubsetTask(
+                subsetParams,
+                progressBar,
+                subsetButton,
+                cancelButton,
+                this
+            );
+
+            System.out.println("Starting HarmonySubsetTask...");
+            subsetTask.execute();
+            
+        } catch (Exception e) {
+            System.err.println("Error in requestSubset: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Re-enable buttons on error
+            subsetButton.setEnabled(true);
+            cancelButton.setEnabled(true);
+            
+            JOptionPane.showMessageDialog(this, 
+                "Error starting subset request: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
-
-        // Disable buttons during processing
-        subsetButton.setEnabled(false);
-        cancelButton.setEnabled(false);
-
-        // Create subset task
-        HarmonySubsetTask subsetTask = new HarmonySubsetTask(
-            getSubsetParameters(),
-            progressBar,
-            subsetButton,
-            cancelButton,
-            this
-        );
-
-        subsetTask.execute();
     }
 
     private boolean validateInputs() {

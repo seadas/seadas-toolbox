@@ -33,17 +33,24 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     @Override
     public JSONObject doInBackground() throws Exception {
         try {
+            System.out.println("=== HarmonySubsetTask.doInBackground() started ===");
             dialog.updateStatus("Starting subset request...");
             
             // Get authentication token
+            System.out.println("Getting authentication token...");
             String bearerToken = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
+            System.out.println("Authentication token obtained: " + (bearerToken != null ? "SUCCESS" : "FAILED"));
             
             // Build Harmony subset request URL
+            System.out.println("Building Harmony subset URL...");
             String harmonyUrl = buildHarmonySubsetUrl();
+            System.out.println("Harmony URL: " + harmonyUrl);
             dialog.updateStatus("Requesting subset from Harmony: " + harmonyUrl);
             
             // Make initial request
+            System.out.println("Making initial request to Harmony...");
             String response = fetchContent(harmonyUrl, bearerToken);
+            System.out.println("Response received: " + response.substring(0, Math.min(200, response.length())) + "...");
             JSONObject jsonResponse = new JSONObject(response);
             
             // Check if we got a job ID (asynchronous processing)
@@ -51,17 +58,21 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                 String jobId = jsonResponse.getString("jobID");
                 String jobUrl = "https://harmony.earthdata.nasa.gov/jobs/" + jobId;
                 
+                System.out.println("Job ID received: " + jobId);
                 dialog.updateStatus("Subset job created. Job ID: " + jobId);
                 
                 // Poll for job completion
                 return pollJobCompletion(jobUrl, bearerToken);
             } else {
                 // Synchronous response
+                System.out.println("Synchronous response received");
                 dialog.updateStatus("Subset completed synchronously");
                 return jsonResponse;
             }
             
         } catch (Exception e) {
+            System.err.println("Exception in HarmonySubsetTask.doInBackground(): " + e.getMessage());
+            e.printStackTrace();
             dialog.updateStatus("Error during subset request: " + e.getMessage());
             throw e;
         }
