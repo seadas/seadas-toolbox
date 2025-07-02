@@ -174,7 +174,7 @@ public class FetchOBDAACData extends JFrame {
         }).start();
     }
 
-    private static String getConceptId(String shortName) throws IOException {
+    public static String getConceptId(String shortName) throws IOException {
         String urlString = CMR_COLLECTION_URL + shortName;
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -244,6 +244,45 @@ public class FetchOBDAACData extends JFrame {
         }
 
         return urls;
+    }
+
+    public static String fetchCollectionIdFromCMR(String fileName, String conceptId) {
+        String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName;
+        if (conceptId != null) {
+            cmrUrl += "&concept_id=" + conceptId;
+        }
+        try {
+            System.out.println("CMR granule lookup URL: " + cmrUrl);
+            URL url = new URL(cmrUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            int status = conn.getResponseCode();
+            if (status == 200) {
+                InputStream is = conn.getInputStream();
+                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+                String response = s.hasNext() ? s.next() : "";
+                JSONObject json = new JSONObject(response);
+                JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
+                if (entries.length() > 0) {
+                    return entries.getJSONObject(0).getString("collection_concept_id");
+                }
+            } else {
+                InputStream es = conn.getErrorStream();
+                String errorResponse = "";
+                if (es != null) {
+                    java.util.Scanner s = new java.util.Scanner(es).useDelimiter("\\A");
+                    errorResponse = s.hasNext() ? s.next() : "";
+                }
+                System.err.println("CMR request failed with status: " + status + ", response: " + errorResponse);
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching collection ID from CMR: " + e.getMessage());
+        }
+        return null;
     }
 
     public static void main(String[] args) {

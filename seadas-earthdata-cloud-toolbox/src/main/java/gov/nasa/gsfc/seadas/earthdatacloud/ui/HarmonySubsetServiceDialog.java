@@ -13,12 +13,12 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.concurrent.ExecutionException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.IOException;
 
 public class HarmonySubsetServiceDialog extends JDialog {
 
@@ -31,7 +31,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
     // UI Components
     private JTextField urlInputField;
     private JTextField latMinField, latMaxField, lonMinField, lonMaxField;
-    private JTextField startDateField, endDateField;
     private JList<String> variableList;
     private JComboBox<String> formatComboBox;
     private JComboBox<String> crsComboBox;
@@ -351,18 +350,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
             lonMaxField.setText(String.valueOf(searchLonMax));
         }
 
-        // Temporal bounds
-        JLabel temporalLabel = new JLabel("Temporal Bounds:");
-        startDateField = new JTextField(20);
-        endDateField = new JTextField(20);
-        
-        // Set default dates (last 30 days)
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date endDate = new Date();
-        Date startDate = new Date(endDate.getTime() - 30L * 24 * 60 * 60 * 1000);
-        startDateField.setText(sdf.format(startDate));
-        endDateField.setText(sdf.format(endDate));
-
         // Variable selection
         JLabel variableLabel = new JLabel("Variables:");
         String[] defaultVariables = {"chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670"};
@@ -402,25 +389,11 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.gridx = 1;
         panel.add(lonMaxField, gbc);
 
-        // Temporal bounds
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
-        panel.add(temporalLabel, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 1;
-        panel.add(new JLabel("Start Date:"), gbc);
-        gbc.gridx = 1;
-        panel.add(startDateField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 7;
-        panel.add(new JLabel("End Date:"), gbc);
-        gbc.gridx = 1;
-        panel.add(endDateField, gbc);
-
         // Variables
-        gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
         panel.add(variableLabel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 9; gbc.gridwidth = 2; gbc.weighty = 1.0;
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2; gbc.weighty = 1.0;
         panel.add(variableScrollPane, gbc);
 
         return panel;
@@ -579,10 +552,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
         if (!lonMinField.getText().isEmpty()) params.put("lonMin", lonMinField.getText());
         if (!lonMaxField.getText().isEmpty()) params.put("lonMax", lonMaxField.getText());
         
-        // Temporal bounds
-        if (!startDateField.getText().isEmpty()) params.put("startDate", startDateField.getText());
-        if (!endDateField.getText().isEmpty()) params.put("endDate", endDateField.getText());
-        
         // Variables - convert List to JSONArray
         if (!variableList.isSelectionEmpty()) {
             List<String> selectedVariables = variableList.getSelectedValuesList();
@@ -645,5 +614,95 @@ public class HarmonySubsetServiceDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Subset request failed: " + message, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+    }
+
+    // Extract collection ID from file URL using regex
+    public static String extractCollectionIdFromUrl(String fileUrl) {
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(C\\d{6,}-[A-Z_]+)");
+        java.util.regex.Matcher matcher = pattern.matcher(fileUrl);
+        if (matcher.find()) {
+            String collectionId = matcher.group(1);
+            // Only accept OB_CLOUD collections, reject OB_DAAC
+            if (collectionId.endsWith("-OB_CLOUD")) {
+                System.out.println("Found valid OB_CLOUD collection: " + collectionId);
+                return collectionId;
+            } else if (collectionId.endsWith("-OB_DAAC")) {
+                System.out.println("Rejecting OB_DAAC collection: " + collectionId + " (should be OB_CLOUD)");
+                return null;
+            } else {
+                System.out.println("Found collection with unknown provider: " + collectionId);
+                return null;
+            }
+        }
+        return null; // or a default/fallback
+    }
+
+    // Get collection concept ID from CMR using short name
+    public static String getConceptId(String shortName) throws IOException {
+        String urlString = "https://cmr.earthdata.nasa.gov/search/collections.json?short_name=" + shortName;
+        java.net.URL url = new java.net.URL(urlString);
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
+        org.json.JSONArray items = jsonResponse.getJSONObject("feed").getJSONArray("entry");
+
+        if (items.length() > 0) {
+            return items.getJSONObject(0).getString("id");
+        }
+        return null;
+    }
+
+    // Fetch collection ID from CMR using the file name (granule name) and concept ID if available
+    public static String fetchCollectionIdFromCMR(String fileName, String conceptId) {
+        String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
+        if (conceptId != null) {
+            cmrUrl += "&concept_id=" + conceptId;
+        }
+        System.out.println("CMR granule lookup URL: " + cmrUrl);
+        try {
+            java.net.URL url = new java.net.URL(cmrUrl);
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            int status = conn.getResponseCode();
+            if (status == 200) {
+                java.io.InputStream is = conn.getInputStream();
+                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+                String response = s.hasNext() ? s.next() : "";
+                org.json.JSONObject json = new org.json.JSONObject(response);
+                org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
+                if (entries.length() > 0) {
+                    return entries.getJSONObject(0).getString("collection_concept_id");
+                }
+            } else {
+                System.err.println("CMR request failed with status: " + status);
+                // Try to read error response
+                try {
+                    java.io.InputStream is = conn.getErrorStream();
+                    if (is != null) {
+                        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+                        String errorResponse = s.hasNext() ? s.next() : "";
+                        System.err.println("CMR error response: " + errorResponse);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Could not read CMR error response: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching collection ID from CMR: " + e.getMessage());
+        }
+        return null;
     }
 } 
