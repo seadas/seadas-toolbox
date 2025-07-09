@@ -32,8 +32,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private JTextField urlInputField;
     private JTextField latMinField, latMaxField, lonMinField, lonMaxField;
     private JList<String> variableList;
-    private JComboBox<String> formatComboBox;
-    private JComboBox<String> crsComboBox;
     private JProgressBar progressBar;
     private JButton subsetButton, cancelButton;
     private JTextArea statusArea;
@@ -273,9 +271,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
         // Subset parameters tab
         tabbedPane.addTab("Subset Parameters", createSubsetPanel());
         
-        // Output options tab
-        tabbedPane.addTab("Output Options", createOutputPanel());
-        
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         
         // Progress and status area
@@ -364,74 +359,49 @@ public class HarmonySubsetServiceDialog extends JDialog {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
 
         // Spatial bounds
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
         panel.add(spatialLabel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 1;
         panel.add(new JLabel("Lat Min:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.gridwidth = 1;
         panel.add(latMinField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1;
         panel.add(new JLabel("Lat Max:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.gridwidth = 1;
         panel.add(latMaxField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1;
         panel.add(new JLabel("Lon Min:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.gridwidth = 1;
         panel.add(lonMinField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 1;
         panel.add(new JLabel("Lon Max:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.gridwidth = 1;
         panel.add(lonMaxField, gbc);
 
-        // Variables
+        // Preview Coverage button
+        JButton previewButton = new JButton("Preview Coverage");
+        previewButton.addActionListener(e -> previewGranuleCoverage());
         gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        panel.add(previewButton, gbc);
+
+        // Variables
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
         panel.add(variableLabel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2; gbc.weighty = 1.0;
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2; gbc.weighty = 1.0;
         panel.add(variableScrollPane, gbc);
 
         return panel;
     }
 
-    private JPanel createOutputPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Output Options"));
 
-        // Format selection
-        JLabel formatLabel = new JLabel("Output Format:");
-        String[] formats = {"application/x-netcdf4", "image/tiff", "application/x-hdf5"};
-        formatComboBox = new JComboBox<>(formats);
-        formatComboBox.setSelectedIndex(0);
-
-        // Coordinate system
-        JLabel crsLabel = new JLabel("Coordinate System:");
-        String[] crsOptions = {"EPSG:4326", "EPSG:3857", "EPSG:32632", "EPSG:32633"};
-        crsComboBox = new JComboBox<>(crsOptions);
-        crsComboBox.setSelectedIndex(0);
-
-        // Layout
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(formatLabel, gbc);
-        gbc.gridx = 1;
-        panel.add(formatComboBox, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(crsLabel, gbc);
-        gbc.gridx = 1;
-        panel.add(crsComboBox, gbc);
-
-        return panel;
-    }
 
     private JPanel createStatusPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -562,11 +532,176 @@ public class HarmonySubsetServiceDialog extends JDialog {
             params.put("variables", variablesArray);
         }
         
-        // Output options
-        params.put("format", formatComboBox.getSelectedItem());
-        params.put("crs", crsComboBox.getSelectedItem());
+
         
         return params;
+    }
+
+    /**
+     * Preview granule coverage and suggest appropriate subset bounds
+     */
+    private void previewGranuleCoverage() {
+        String url = urlInputField.getText().trim();
+        if (url.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a data file URL first", "No URL", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Extract file name from URL
+        String fileName = url.substring(url.lastIndexOf('/') + 1);
+        
+        // Show progress
+        updateStatus("Fetching granule coverage information...");
+        
+        // Run in background thread to avoid blocking UI
+        new Thread(() -> {
+            try {
+                // Query CMR for granule metadata
+                String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
+                System.out.println("Fetching granule coverage: " + cmrUrl);
+                
+                java.net.URL urlObj = new java.net.URL(cmrUrl);
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlObj.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+
+                int status = conn.getResponseCode();
+                if (status == 200) {
+                    java.io.InputStream is = conn.getInputStream();
+                    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+                    String response = s.hasNext() ? s.next() : "";
+                    org.json.JSONObject json = new org.json.JSONObject(response);
+                    org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
+                    
+                    if (entries.length() > 0) {
+                        org.json.JSONObject granule = entries.getJSONObject(0);
+                        
+                        // Extract coverage information
+                        String granuleId = granule.getString("id");
+                        String timeStart = granule.getString("time_start");
+                        String timeEnd = granule.getString("time_end");
+                        
+                        // Parse polygons to get spatial bounds
+                        org.json.JSONArray polygons = granule.getJSONArray("polygons");
+                        if (polygons.length() > 0) {
+                            Object firstPoly = polygons.get(0);
+                            String[] coords;
+                            if (firstPoly instanceof String) {
+                                coords = ((String) firstPoly).split(" ");
+                            } else if (firstPoly instanceof org.json.JSONArray) {
+                                // Flatten the nested array into a single string of coordinates
+                                org.json.JSONArray arr = (org.json.JSONArray) firstPoly;
+                                StringBuilder sb = new StringBuilder();
+                                for (int i = 0; i < arr.length(); i++) {
+                                    if (i > 0) sb.append(" ");
+                                    sb.append(arr.getString(i));
+                                }
+                                coords = sb.toString().split(" ");
+                            } else {
+                                throw new RuntimeException("Unexpected polygon format: " + firstPoly.getClass());
+                            }
+                            // Parse coordinates to find min/max bounds
+                            final double[] bounds = {Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE, Double.MIN_VALUE}; // minLat, maxLat, minLon, maxLon
+                            for (int i = 0; i < coords.length; i += 2) {
+                                double lat = Double.parseDouble(coords[i]);
+                                double lon = Double.parseDouble(coords[i + 1]);
+                                bounds[0] = Math.min(bounds[0], lat); // minLat
+                                bounds[1] = Math.max(bounds[1], lat); // maxLat
+                                bounds[2] = Math.min(bounds[2], lon); // minLon
+                                bounds[3] = Math.max(bounds[3], lon); // maxLon
+                            }
+                            final double minLat = bounds[0];
+                            final double maxLat = bounds[1];
+                            final double minLon = bounds[2];
+                            final double maxLon = bounds[3];
+                            // Calculate suggested subset bounds (slightly smaller than full coverage)
+                            double latMargin = (maxLat - minLat) * 0.1;
+                            double lonMargin = (maxLon - minLon) * 0.1;
+                            final double suggestedLatMin = minLat + latMargin;
+                            final double suggestedLatMax = maxLat - latMargin;
+                            final double suggestedLonMin = minLon + lonMargin;
+                            final double suggestedLonMax = maxLon - lonMargin;
+                            // Show coverage information in dialog
+                            SwingUtilities.invokeLater(() -> {
+                                showCoverageDialog(granuleId, timeStart, timeEnd, 
+                                    minLat, maxLat, minLon, maxLon,
+                                    suggestedLatMin, suggestedLatMax, suggestedLonMin, suggestedLonMax);
+                            });
+                            
+                        } else {
+                            SwingUtilities.invokeLater(() -> {
+                                JOptionPane.showMessageDialog(this, 
+                                    "No spatial coverage information found for this granule.", 
+                                    "No Coverage Data", JOptionPane.WARNING_MESSAGE);
+                            });
+                        }
+                        
+                    } else {
+                        SwingUtilities.invokeLater(() -> {
+                            JOptionPane.showMessageDialog(this, 
+                                "Granule not found in CMR: " + fileName, 
+                                "Granule Not Found", JOptionPane.ERROR_MESSAGE);
+                        });
+                    }
+                    
+                } else {
+                    SwingUtilities.invokeLater(() -> {
+                        JOptionPane.showMessageDialog(this, 
+                            "Failed to fetch granule information. HTTP status: " + status, 
+                            "CMR Error", JOptionPane.ERROR_MESSAGE);
+                    });
+                }
+                
+            } catch (Exception e) {
+                System.err.println("Error previewing granule coverage: " + e.getMessage());
+                e.printStackTrace();
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error fetching granule coverage: " + e.getMessage(), 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Show coverage information dialog with suggested bounds
+     */
+    private void showCoverageDialog(String granuleId, String timeStart, String timeEnd,
+                                   double minLat, double maxLat, double minLon, double maxLon,
+                                   double suggestedLatMin, double suggestedLatMax, 
+                                   double suggestedLonMin, double suggestedLonMax) {
+        
+        String message = String.format(
+            "Granule Coverage Information:\n\n" +
+            "Granule ID: %s\n" +
+            "Time: %s to %s\n\n" +
+            "Full Coverage Bounds:\n" +
+            "Latitude:  %.4f° to %.4f°\n" +
+            "Longitude: %.4f° to %.4f°\n\n" +
+            "Suggested Subset Bounds (90%% of coverage):\n" +
+            "Latitude:  %.4f° to %.4f°\n" +
+            "Longitude: %.4f° to %.4f°\n\n" +
+            "Would you like to apply the suggested bounds to the subset form?",
+            granuleId, timeStart, timeEnd,
+            minLat, maxLat, minLon, maxLon,
+            suggestedLatMin, suggestedLatMax, suggestedLonMin, suggestedLonMax
+        );
+        
+        int choice = JOptionPane.showConfirmDialog(this, message, 
+            "Granule Coverage Preview", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        
+        if (choice == JOptionPane.YES_OPTION) {
+            // Apply suggested bounds to the form
+            latMinField.setText(String.format("%.4f", suggestedLatMin));
+            latMaxField.setText(String.format("%.4f", suggestedLatMax));
+            lonMinField.setText(String.format("%.4f", suggestedLonMin));
+            lonMaxField.setText(String.format("%.4f", suggestedLonMax));
+            
+            updateStatus("Applied suggested bounds from granule coverage.");
+        }
     }
 
     protected AbstractButton getHelpButton() {

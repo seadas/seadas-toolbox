@@ -12,6 +12,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     private JProgressBar progressBar;
@@ -58,38 +63,82 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             System.out.println("Using collection ID: " + collectionId);
             
             // Use GET request for OGC API
-            String response = fetchContent(harmonyUrl, bearerToken);
-            System.out.println("Harmony response: " + response.substring(0, Math.min(200, response.length())) + "...");
-            
-            // For OGC API, the response is typically the data itself or a job status
-            // We'll need to handle this differently than the previous JSON response
-            if (response.contains("jobID") || response.contains("status")) {
-                // This might be a job response
-                JSONObject jsonResponse = new JSONObject(response);
-                if (jsonResponse.has("jobID")) {
-                    String jobId = jsonResponse.getString("jobID");
-                    String jobUrl = "https://harmony.uat.earthdata.nasa.gov/jobs/" + jobId;
-                    
-                    System.out.println("Job ID received: " + jobId);
-                    dialog.updateStatus("Subset job created. Job ID: " + jobId);
-                    
-                    // Poll for job completion
-                    return pollJobCompletion(jobUrl, bearerToken);
+            // --- NEW LOGIC: Check content type and save binary if needed ---
+            java.net.URL url = new java.net.URL(harmonyUrl);
+            java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            if (bearerToken != null) {
+                connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
+            }
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            connection.setRequestProperty("Accept", "*/*");
+            connection.setInstanceFollowRedirects(true);
+            int status = connection.getResponseCode();
+            System.out.println("Response Code: " + status);
+            String contentType = connection.getContentType();
+            System.out.println("Content-Type: " + contentType);
+            if (status >= 400) {
+                // Read error stream as text
+                StringBuilder content = new StringBuilder();
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+                }
+                throw new Exception("HTTP request failed with status: " + status + ". Response: " + content.toString());
+            }
+            if (contentType != null && contentType.toLowerCase().contains("application/json")) {
+                // Read as JSON (text)
+                StringBuilder content = new StringBuilder();
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+                }
+                String response = content.toString();
+                System.out.println("Harmony response: " + response.substring(0, Math.min(200, response.length())) + "...");
+                if (response.contains("jobID") || response.contains("status")) {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    if (jsonResponse.has("jobID")) {
+                        String jobId = jsonResponse.getString("jobID");
+                        String jobUrl = "https://harmony.earthdata.nasa.gov/jobs/" + jobId;
+                        System.out.println("Job ID received: " + jobId);
+                        dialog.updateStatus("Subset job created. Job ID: " + jobId);
+                        return pollJobCompletion(jobUrl, bearerToken);
+                    } else {
+                        System.out.println("Synchronous response received");
+                        dialog.updateStatus("Subset completed synchronously");
+                        return jsonResponse;
+                    }
                 } else {
-                    // Synchronous response
-                    System.out.println("Synchronous response received");
-                    dialog.updateStatus("Subset completed synchronously");
-                    return jsonResponse;
+                    // This might be an error or direct JSON response
+                    JSONObject result = new JSONObject();
+                    result.put("response", response);
+                    result.put("url", harmonyUrl);
+                    return result;
                 }
             } else {
-                // This might be direct data or an error response
-                System.out.println("Direct response received (likely data or error)");
-                dialog.updateStatus("Subset request completed");
-                
-                // Create a simple response object
+                // --- Binary response: Save to file with _subsetted.nc convention ---
+                String inputUrl = subsetParameters.getString("url");
+                String originalFileName = getOriginalFileName(inputUrl);
+                String subsettedFileName = getSubsettedFileName(originalFileName);
+                Path tempFile = Files.createTempFile("harmony_subset_", "_" + subsettedFileName);
+                try (InputStream in = connection.getInputStream();
+                     FileOutputStream out = new FileOutputStream(tempFile.toFile())) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                }
+                System.out.println("Saved Harmony subset to: " + tempFile.toAbsolutePath());
+                dialog.updateStatus("Subset file saved to: " + tempFile.toAbsolutePath());
                 JSONObject result = new JSONObject();
-                result.put("response", response);
+                result.put("savedFile", tempFile.toAbsolutePath().toString());
                 result.put("url", harmonyUrl);
+                result.put("outputFileName", subsettedFileName);
                 return result;
             }
             
@@ -520,6 +569,46 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         return content.toString();
     }
 
+    // Utility to extract a filename from a URL (for saving)
+    private String extractFileNameFromUrl(String url) {
+        try {
+            int lastSlash = url.lastIndexOf('/');
+            String afterSlash = (lastSlash >= 0) ? url.substring(lastSlash + 1) : url;
+            int qIdx = afterSlash.indexOf('?');
+            if (qIdx > 0) afterSlash = afterSlash.substring(0, qIdx);
+            if (afterSlash.isEmpty()) return "subset.nc";
+            if (!afterSlash.endsWith(".nc") && !afterSlash.endsWith(".hdf")) return afterSlash + ".nc";
+            return afterSlash;
+        } catch (Exception e) {
+            return "subset.nc";
+        }
+    }
+
+    // Utility to extract the original file name from the input URL
+    private String getOriginalFileName(String url) {
+        try {
+            int lastSlash = url.lastIndexOf('/');
+            String baseName = (lastSlash >= 0) ? url.substring(lastSlash + 1) : url;
+            int qIdx = baseName.indexOf('?');
+            if (qIdx > 0) baseName = baseName.substring(0, qIdx);
+            return baseName;
+        } catch (Exception e) {
+            return "input_file";
+        }
+    }
+
+    // Utility to generate the subsetted file name with _subsetted.nc convention
+    private String getSubsettedFileName(String originalName) {
+        int dotIdx = originalName.lastIndexOf('.');
+        if (dotIdx > 0) {
+            // Insert _subsetted before extension
+            return originalName.substring(0, dotIdx) + "_subsetted" + originalName.substring(dotIdx);
+        } else {
+            // No extension, just append
+            return originalName + "_subsetted.nc";
+        }
+    }
+
     @Override
     protected void process(java.util.List<Void> chunks) {
         // Not used in this implementation
@@ -537,20 +626,22 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                 JSONObject result = get();
                 progressBar.setValue(100);
                 progressBar.setString("Completed");
-                
                 // Handle successful completion
                 if (result != null && result.has("links")) {
                     JSONArray links = result.getJSONArray("links");
                     dialog.updateStatus("Subset completed! Found " + links.length() + " result files.");
-                    
                     // Download the results
                     downloadResults(links);
-                    
                     dialog.subsetCompleted(true, "Subset completed successfully");
+                } else if (result != null && result.has("savedFile")) {
+                    String filePath = result.getString("savedFile");
+                    String fileName = result.has("outputFileName") ? result.getString("outputFileName") : filePath;
+                    dialog.updateStatus("Subset completed! File saved to: " + filePath);
+                    JOptionPane.showMessageDialog(dialog, "Subset request completed successfully!\nSaved file: " + fileName, "Success", JOptionPane.INFORMATION_MESSAGE);
+                    dialog.subsetCompleted(true, "Subset file saved to: " + filePath);
                 } else {
                     dialog.subsetCompleted(false, "No results found in response");
                 }
-                
             } catch (Exception e) {
                 progressBar.setValue(0);
                 progressBar.setString("Failed");
