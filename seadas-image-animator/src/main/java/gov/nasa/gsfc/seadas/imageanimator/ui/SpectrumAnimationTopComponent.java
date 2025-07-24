@@ -651,7 +651,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
                 ++displayIndex;
                 final BandGroup userBandGroup = userBandGroups[i];
                 final DisplayableSpectrum spectrum = new DisplayableSpectrum(userBandGroup.getName(), symbolIndex);
-//                spectrum.setSelected(false);
+                spectrum.setSelected(false);
                 spectrum.setLineStyle(SpectrumStrokeProvider.getStroke(i));
 
                 String[] bandNames = userBandGroup.getMatchingBandNames(currentProduct);
