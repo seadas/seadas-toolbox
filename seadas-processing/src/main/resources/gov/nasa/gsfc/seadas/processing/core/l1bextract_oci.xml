@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value></value>
+            <default></default>
+            <description>input OCI L1B datafile</description>
+            <source>command line</source>
+            <usedAs>argument</usedAs>
+            <order>0</order>
+        </option>
+        <option type="int">
+            <name>--spixl</name>
+            <value></value>
+            <default></default>
+            <description>start pixel number</description>
+            <usedAs>option</usedAs>
+            <order>1</order>
+        </option>
+        <option type="int">
+            <name>--epixl</name>
+            <value></value>
+            <default></default>
+            <description>end pixel number</description>
+            <usedAs>option</usedAs>
+            <order>2</order>
+        </option>
+        <option type="int">
+            <name>--sline</name>
+            <value></value>
+            <default></default>
+            <description>start scan line</description>
+            <usedAs>option</usedAs>
+            <order>3</order>
+        </option>
+        <option type="int">
+            <name>--eline</name>
+            <value></value>
+            <default></default>
+            <description>end scan line</description>
+            <usedAs>option</usedAs>
+            <order>4</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value></value>
+            <default></default>
+            <description>output file name</description>
+            <usedAs>argument</usedAs>
+            <order>7</order>
+        </option>
+    </options>
+</paramInfo>

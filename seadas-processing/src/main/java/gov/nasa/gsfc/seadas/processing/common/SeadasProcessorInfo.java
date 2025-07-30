@@ -19,6 +19,7 @@ public class SeadasProcessorInfo {
         L1BGEN,
 //        L1MAPGEN,
         L1BRSGEN,
+        L1BEXTRACT_OCI,
         L2EXTRACT,
         L2GEN,
         L2MERGE,
@@ -79,6 +80,9 @@ public class SeadasProcessorInfo {
                     } else {
                         return "l2extract";
                     }
+
+                case L1BEXTRACT_OCI:
+                    return "l1bextract_oci";
 
                 case L1AGEN:
                     if (iFileInfo.isMissionId(MissionInfo.Id.MODISA) ||
@@ -156,6 +160,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isMissionId(MissionInfo.Id.SEAWIFS);
             case L1AEXTRACT:
                 return iFileInfo.isSupportedMission();
+            case L1BEXTRACT_OCI:
+                return iFileInfo.isSupportedMission();
             case L1AGEN:
                 return iFileInfo.isSupportedMission();
             case GEOGEN:
@@ -208,6 +214,8 @@ public class SeadasProcessorInfo {
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L1A);
             case L1AEXTRACT_SEAWIFS:
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L1A);
+            case L1BEXTRACT_OCI:
+                return iFileInfo.isTypeId(FileTypeInfo.Id.L1B);
             case L1AEXTRACT:
                 return iFileInfo.isTypeId(FileTypeInfo.Id.L1A);
             case L1AGEN:

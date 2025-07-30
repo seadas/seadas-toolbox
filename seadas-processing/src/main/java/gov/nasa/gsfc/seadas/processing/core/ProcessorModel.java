@@ -89,6 +89,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
             L1AEXTRACT_VIIRS = "l1aextract_viirs",
             L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
+            L1BEXTRACT_OCI = "l1bextract_oci",
+            L1BEXTRACT_OCI_XML_FILE = "l1bextract_oci.xml",
             L2EXTRACT = "l2extract",
             L2EXTRACT_XML_FILE = "l2extract.xml";
 
@@ -1502,6 +1504,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
                     setProgramName(L1AEXTRACT_SEAWIFS);
                     xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
+                } else if (missionName.indexOf("OCI") != -1 && fileType.indexOf("1B") != -1) {
+                    setProgramName(L1BEXTRACT_OCI);
+                    xmlFileName = L1BEXTRACT_OCI_XML_FILE;
                 } else if ((missionName.indexOf("VIIRS") != -1
                         || missionName.indexOf("VIIRSJ1") != -1
                         || missionName.indexOf("VIIRSJ2") != -1)

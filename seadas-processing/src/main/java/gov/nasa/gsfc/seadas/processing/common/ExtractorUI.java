@@ -25,6 +25,11 @@ public class ExtractorUI extends ProgramUIFactory {
     public static final String START_PIXEL_PARAM_NAME = "spixl";
     public static final String END_PIXEL_PARAM_NAME = "epixl";
 
+    public static  String PROGRAM_START_LINE_PARAM_NAME = "sline";
+    public static  String PROGRAM_END_LINE_PARAM_NAME = "eline";
+    public static  String PROGRAM_START_PIXEL_PARAM_NAME = "spixl";
+    public static  String PROGRAM_END_PIXEL_PARAM_NAME = "epixl";
+
     public static final String GEO_LOCATE_PROGRAM_NAME_VIIRS = "geolocate_viirs";
     public static final String GEO_LOCATE_PROGRAM_NAME_MODIS = "modis_GEO";
 
@@ -43,6 +48,7 @@ public class ExtractorUI extends ProgramUIFactory {
 
     public ExtractorUI(String programName, String xmlFileName, OCSSW ocssw) {
         super(programName, xmlFileName, ocssw);
+
         paramCounter = new HashMap<String, Boolean>();
         initiliazed = true;
         //this.ocssw = ocssw;
@@ -53,15 +59,28 @@ public class ExtractorUI extends ProgramUIFactory {
         lonlat2pixline.addPropertyChangeListener(lonlat2pixline.getAllparamInitializedPropertyName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
+                if (processorModel.getProgramName().equals("l1bextract_oci")) {
+                    PROGRAM_START_LINE_PARAM_NAME = "--sline";
+                    PROGRAM_END_LINE_PARAM_NAME = "--eline";
+                    PROGRAM_START_PIXEL_PARAM_NAME = "--spixl";
+                    PROGRAM_END_PIXEL_PARAM_NAME = "--epixl";
+                }
+                if (processorModel.getProgramName().equals(("l2extract"))) {
+                    PROGRAM_START_PIXEL_PARAM_NAME = "spix";
+                    PROGRAM_END_PIXEL_PARAM_NAME = "epix";
+                }
+
                 if (processorModel.getProgramName().equals(("l2extract"))) {  //"l2extract" takes option "spix" and "epix"
                     processorModel.updateParamInfo("spix", lonlat2pixline.getParamValue(START_PIXEL_PARAM_NAME));
                     processorModel.updateParamInfo("epix", lonlat2pixline.getParamValue(END_PIXEL_PARAM_NAME));
                 } else {
-                    processorModel.updateParamInfo(START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(START_PIXEL_PARAM_NAME));
-                    processorModel.updateParamInfo(END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(END_PIXEL_PARAM_NAME));
+                    processorModel.updateParamInfo(PROGRAM_START_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(START_PIXEL_PARAM_NAME));
+                    processorModel.updateParamInfo(PROGRAM_END_PIXEL_PARAM_NAME, lonlat2pixline.getParamValue(END_PIXEL_PARAM_NAME));
                 }
-                processorModel.updateParamInfo(START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(START_LINE_PARAM_NAME));
-                processorModel.updateParamInfo(END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(END_LINE_PARAM_NAME));
+
+                processorModel.updateParamInfo(PROGRAM_START_LINE_PARAM_NAME, lonlat2pixline.getParamValue(START_LINE_PARAM_NAME));
+                processorModel.updateParamInfo(PROGRAM_END_LINE_PARAM_NAME, lonlat2pixline.getParamValue(END_LINE_PARAM_NAME));
             }
         });
 
