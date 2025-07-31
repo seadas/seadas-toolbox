@@ -142,27 +142,11 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             if (currentView != null) {
                 currentView.addPropertyChangeListener(ProductSceneView.PROPERTY_NAME_SELECTED_PIN, pinSelectionChangeListener);
                 setCurrentProduct(currentView.getProduct());
-//                if (currentProduct.getName().contains("HARP2")) {
-//                    currentProduct.setAutoGrouping("I_*_549:I_*_669:I_*_867:I_*_441:Q_*_549:Q_*_669:Q_*_867:Q_*_441:" +
-//                            "U_*_549:U_*_669:U_*_867:U_*_441:DOLP_*_549:DOLP_*_669:DOLP_*_867:DOLP_*_441:" +
-//                            "I_noise_*_549:I_noise_*_669:I_noise_*_867:I_noise_*_441:Q_noise_*_549:Q_noise_*_669:Q_noise_*_867:Q_noise_*_441:" +
-//                            "U_noise_*_549:U_noise_*_669:U_noise_*_867:U_noise_*_441:DOLP_noise_*_549:DOLP_noise_*_669:DOLP_noise_*_867:DOLP_noise_*_441:" +
-//                            "Sensor_Zenith:Sensor_Azimuth:Solar_Zenith:Solar_Azimuth:obs_per_view:view_time_offsets:" +
-//                            "i:i_*_550:i_*_667:i_*_867:i_*_440:q:q_*_550:q_*_667:q_*_867:q_*_440:" +
-//                            "qc:qc_*_550:qc_*_664:qc_*_867:qc_*_440:u:u_*_550:u_*_664:u_*_867:u_*_440: " +
-//                            "dolp:dolp_*_550:dolp_*_664:dolp_*_867:dolp_*_440:dolp:aolp:aolp_*_550:aolp_*_664:aolp_*_867:aolp_*_440:" +
-//                            "i_variability:i_variability_*_550:i_variability_*_664:i_variability_*_867:i_variability_*_440:" +
-//                            "q_variability:q_variability_*_550:q_variability_*_664:q_variability_*_867:q_variability_*_440:" +
-//                            "u_variability_*_550:u_variability_*_664:u_variability_*_867:u_variability_*_440:" +
-//                            "dolp_variability:dolp_variability_*_550:dolp_variability_*_664:dolp_variability_*_867:dolp_variability_*_440:" +
-//                            "aolp_variability:aolp_variability_*_550:aolp_variability_*_664:aolp_variability_*_867:aolp_variability_*_440:" +
-//                            "sensor_zenith-angle:sensor_azimuth_angle:solar_zenith_angle:solar_azimuth_angle:rotation_angle");
-//                };
                 if (currentProduct.getName().contains("SPEX")) {
-                    String autoGroupingStr = "QC:QC_bitwise:QC_polsample_bitwise:QC_polsample:";
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "I_*_" + wvl + ":";
-                    }
+                    String autoGroupingStr = "";
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "I_*_" + wvl + ":";
+//                    }
                     for (int wvl = 380; wvl < 390; wvl++) {
                         autoGroupingStr += "i_*_" + wvl + ":";
                     }
@@ -187,20 +171,13 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                     for (int wvl = 380; wvl < 390; wvl++) {
                         autoGroupingStr += "u_over_i_*_" + wvl + ":";
                     }
-                    autoGroupingStr += "I:I_noise:I_noisefree:I_polsample:" +
-                            "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
-                            "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
-                            "U_over_I:U_over_I_noise:U_over_I_noisefree:scattering_angle:" +
-                            "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:" +
-                            "obs_per_view:view_time_offsets";
+                    autoGroupingStr += "i_polesample_stdev:i_polesample:i_stdev:i:" +
+                            "aolp_stdev:aolp:dolp_stdev:dolp:" +
+                            "qc_polsample:qc:q_stdev:q:u_stdev:u:" +
+                            "u_over_i_stdev:u_over_i:q_over_i_stdev:q_over_i:" +
+                            "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:scattering_angle:rotation_angle:" +
+                            "number_of_observations:view_time_offsets";
                     currentProduct.setAutoGrouping(autoGroupingStr);
-//                    currentProduct.setAutoGrouping("QC:QC_bitwise:QC_polsample_bitwise:QC_polsample:" +
-//                                                    "I_*_380:I_*_381:I_*_382:I_*_383:I_*_384:I_*_385:I:I_noise:I_noisefree:I_polsample:" +
-//                                                    "I_polsample_noise:I_noisefree_polsample:DOLP:DOLP_noise:DOLP_noisefree:" +
-//                                                    "Q_over_I:Q_over_I_noise:Q_over_I_noisefree:AOLP:AOLP_noisefree:" +
-//                                                    "U_over_I:U_over_I_noise:U_over_I_noisefree:scattering_angle:" +
-//                                                    "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:" +
-//                                                    "obs_per_view:view_time_offsets");
                 }
                 if (!rasterToAngularMap.containsKey(currentView.getRaster())) {
                     setUpAngularViews();
@@ -667,16 +644,16 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                 for (AngularBand availableAngularBand : availableAngularBands) {
                     final String bandName = availableAngularBand.getName();
                     availableAngularBand.setSelected(false);
-                    if (currentProduct.getName().contains("SPEX")) {
-                        if (bandName.contains("385") && availableAngularBand.getOriginalBand().getDescription().equals("I")) {
-                            availableAngularBand.setSelected(true);
-                        }
-                    }
-                    if (currentProduct.getName().contains("HARP2")) {
-                        if (bandName.contains("549") && availableAngularBand.getOriginalBand().getDescription().equals("I")) {
-                            availableAngularBand.setSelected(true);
-                        }
-                    }
+//                    if (currentProduct.getName().contains("SPEX")) {
+//                        if (bandName.contains("385") && availableAngularBand.getOriginalBand().getDescription().equals("I")) {
+//                            availableAngularBand.setSelected(true);
+//                        }
+//                    }
+//                    if (currentProduct.getName().contains("HARP2")) {
+//                        if (bandName.contains("549") && availableAngularBand.getOriginalBand().getDescription().equals("I")) {
+//                            availableAngularBand.setSelected(true);
+//                        }
+//                    }
                     final int angularViewIndex = autoGrouping.indexOf(bandName);
                     if (angularViewIndex != -1) {
                         autoGroupingAngularViews[angularViewIndex].addBand(availableAngularBand);
