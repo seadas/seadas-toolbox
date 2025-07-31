@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.action;
 
-import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySearchServiceDiaglog;
+import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySubsetServiceDialog;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -18,38 +18,38 @@ import java.awt.event.ActionEvent;
 
 
 @ActionID(
-        category = "View", id = "HarmonySearchServiceAction"
+        category = "View", id = "HarmonySubsetServiceAction"
 )
 
 @ActionRegistration(
-        displayName = "#CTL_HarmonySearchServiceActionName",
-        popupText = "#CTL_HarmonySearchServiceActionName"
+        displayName = "#CTL_HarmonySubsetServiceActionName",
+        popupText = "#CTL_HarmonySubsetServiceActionName"
 )
 
 @ActionReferences({
-        @ActionReference(path = "Menu/Earthdata-Cloud", position = 40)
+        @ActionReference(path = "Menu/Earthdata-Cloud", position = 50)
 })
 
 @NbBundle.Messages({
-        "CTL_HarmonySearchServiceActionName=OB_CLOUD Data Browser",
-        "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
+        "CTL_HarmonySubsetServiceActionName=Harmony Subset Service",
+        "CTL_HarmonySubsetServiceActionToolTip=Request custom data subsets and transformations"
 })
 
-public class ShowHarmonySearchServiceAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
+public class ShowHarmonySubsetServiceAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
 
     Product product;
 
     private final Lookup lookup;
 
-    public  ShowHarmonySearchServiceAction() {
+    public  ShowHarmonySubsetServiceAction() {
         this(null);
     }
 
-    public   ShowHarmonySearchServiceAction(Lookup lookup) {
+    public   ShowHarmonySubsetServiceAction(Lookup lookup) {
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
-        putValue(NAME, Bundle.CTL_HarmonySearchServiceActionName());
-        putValue(SHORT_DESCRIPTION, Bundle.CTL_HarmonySearchServiceActionToolTip());
+        putValue(NAME, Bundle.CTL_HarmonySubsetServiceActionName());
+        putValue(SHORT_DESCRIPTION, Bundle.CTL_HarmonySubsetServiceActionToolTip());
         this.lookup = lookup != null ? lookup : Utilities.actionsGlobalContext();
         updateEnabledState();
     }
@@ -59,13 +59,11 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         SnapApp snapApp = SnapApp.getDefault();
         product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.VIEW);
         updateEnabledState();
-        updateEnabledState();
 
-        HarmonySearchServiceDiaglog harmonySearchServiceDiaglog = new HarmonySearchServiceDiaglog();
-        harmonySearchServiceDiaglog.setVisible(true);
-        harmonySearchServiceDiaglog.dispose();
+        HarmonySubsetServiceDialog harmonySubsetServiceDialog = new HarmonySubsetServiceDialog();
+        harmonySubsetServiceDialog.setVisible(true);
+        harmonySubsetServiceDialog.dispose();
         updateEnabledState();
-
     }
 
     protected void updateEnabledState() {
@@ -90,4 +88,4 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         button.setText(null);
         return button;
     }
-}
+} 

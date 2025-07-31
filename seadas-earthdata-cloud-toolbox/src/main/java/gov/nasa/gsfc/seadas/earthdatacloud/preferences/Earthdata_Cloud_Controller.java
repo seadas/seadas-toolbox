@@ -72,7 +72,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String MODE_NIGHT = "Night";
     public static final String MODE_BOTH = "Both";
     
-    // Preferences property prefix
     private static final String PROPERTY_ROOT_KEY = "seadas.toolbox.earthdata_cloud";
 
     public static final String PROPERTY_SATELLITE_NAME_KEY = PROPERTY_ROOT_KEY + ".satellite";
@@ -180,7 +179,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE = 1000;
     
 
-    // Property Setting: Restore Defaults
 
     private static final String PROPERTY_RESTORE_KEY_SUFFIX = PROPERTY_ROOT_KEY + ".restore.defaults";
 
@@ -204,10 +202,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     protected JPanel createPanel(BindingContext context) {
 
 
-        //
-        // Initialize the default value contained within each property descriptor
-        // This is done so subsequently the restoreDefaults actions can be performed
-        //
         initPropertyDefaults(context, PROPERTY_SATELLITE_NAME_KEY, PROPERTY_SATELLITE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DATA_LEVEL_KEY, PROPERTY_DATA_LEVEL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRODUCT_KEY, PROPERTY_PRODUCT_DEFAULT);
@@ -236,9 +230,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
 
 
-        //
-        // Create UI
-        //
 
         TableLayout tableLayout = new TableLayout(2);
         tableLayout.setTableAnchor(TableLayout.Anchor.NORTHWEST);
@@ -318,13 +309,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         });
 
 
-        // Handle resetDefaults events - set all other components to defaults
         restoreDefaults.addPropertyChangeListener(evt -> {
             handleRestoreDefaults(context);
         });
 
 
-        // Add listeners to all components in order to uncheck restoreDefaults checkbox accordingly
 
         PropertySet propertyContainer = context.getPropertySet();
         Property[] properties = propertyContainer.getProperties();
@@ -337,7 +326,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
             }
         }
 
-        // This call is an initialization call which set restoreDefault initial value
         handlePreferencesPropertyValueChange(context);
     }
 
@@ -552,7 +540,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP,
                 interval = "[" + PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE + " ," + PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE + "]")
         int fetchResultsPerPageDefault = PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT;
-        // Restore Defaults Section
 
         @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
                 label = PROPERTY_RESTORE_SECTION_LABEL,

@@ -30,10 +30,6 @@ public class ImagePreviewHelper {
         previewWindow.setAlwaysOnTop(true);
     }
 
-//    public void handleMouseMoved(JTable table, JDialog parentDialog, MouseEvent e) {
-//        int row = table.rowAtPoint(e.getPoint());
-//
-//    }
 
 
     public void attachToTable(JTable table, Map<String, String> fileLinkMap, JDialog parentDialog) {
@@ -79,14 +75,12 @@ public class ImagePreviewHelper {
                                         finishedFileName = null;
 
                                         while (th != null && th.isAlive() && i < 1000) { // stay alive for 100 seconds
-//                                            System.out.println("th alive num iter =" + i);
 
                                             sleepPreviewThread(100);
 
                                             String hoveringFileNameCurrent = hoveringFileName; // lock this as it could become null
                                             Point hoveringLocationCurrent = e.getLocationOnScreen();
 
-                                            // Check to see if mouse has moved to different file
                                             if (!stringCompareEquals(hoveringFileNameStart, hoveringFileNameCurrent)) {
                                                 if (finishedFileName != null) {
                                                     hideImagePreview();
@@ -97,7 +91,6 @@ public class ImagePreviewHelper {
                                                 continue;  // it has moved continue and sleep
                                             }
 
-                                            // Account for mouse having left the table
                                             if (hoveringFileNameCurrent == null) {
                                                 if (finishedFileName != null) {
                                                     hideImagePreview();
@@ -108,8 +101,6 @@ public class ImagePreviewHelper {
                                             }
 
 
-                                            // At this point hovering has maintained over same filename for sleep interval
-                                            // Now try making image
 
                                             if (hoveringFileNameCurrent != null) {
                                                 if (!stringCompareEquals(hoveringFileNameCurrent, finishedFileName)) {
@@ -153,20 +144,15 @@ public class ImagePreviewHelper {
                     hoveringFileName = null;
 
                     if (hoveringFileNameChanged) {
-//                        System.out.println("Hovering fileName=" + hoveringFileName);
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
                         table.setSelectionBackground(Color.WHITE);
                         table.setSelectionForeground(Color.BLACK);
-//                        table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
-//                        table.removeColumnSelectionInterval(0,0);
-//                        table.removeRowSelectionInterval(row, row);
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
                         table.setBorder(BorderFactory.createEmptyBorder());
 
 
-//                        table.removeRowSelectionInterval(0, table.getRowCount()-1);
 
 
                         hideImagePreview();
@@ -190,13 +176,10 @@ public class ImagePreviewHelper {
                 table.setSelectionForeground(Color.BLACK);
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
-//                table.removeColumnSelectionInterval(0,0);
-//                table.removeRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
                 table.setBorder(BorderFactory.createEmptyBorder());
 
-//                table.removeRowSelectionInterval(0, table.getRowCount()-1);
 
                 hideImagePreview();
             }
@@ -228,13 +211,9 @@ public class ImagePreviewHelper {
 
     private void sleepPreviewThread(long milliSeconds) {
         try {
-            // sleep 0.1 second
             Thread.sleep(milliSeconds);
         } catch (InterruptedException e3) {
-            // recommended because catching InterruptedException clears interrupt flag
             Thread.currentThread().interrupt();
-//                                                System.out.println("Being killed by exit");
-            // you probably want to quit if the thread is interrupted
             return;
         }
     }
@@ -242,7 +221,6 @@ public class ImagePreviewHelper {
 
 
     private void killImagePreviewThread() {
-        // Kill thread started
         if (th != null) {
             th.interrupt();
 
@@ -251,12 +229,9 @@ public class ImagePreviewHelper {
 
             while (th != null && th.isAlive() && i < 100) {
                 try {
-                    // sleep 1 second
                     Thread.sleep(100);
                 } catch (InterruptedException e3) {
-                    // recommended because catching InterruptedException clears interrupt flag
                     Thread.currentThread().interrupt();
-                    // you probably want to quit if the thread is interrupted
                     return;
                 }
 
@@ -267,7 +242,6 @@ public class ImagePreviewHelper {
             th = null;
             System.out.println("Killed from exit th alive num iter =" + i);
 
-            // Kill thread completed
         }
     }
 
@@ -284,15 +258,7 @@ public class ImagePreviewHelper {
 
             Image image = ImageIO.read(new URL(imageUrl));
             if (image != null) {
-//
-//               Rectangle bounds = image.getGraphics().getClipBounds();
-//               double crop = 0.5;
-//               int widthRaw = bounds.width - bounds.x;
-//               int clipWidth = (int) Math.round(crop * widthRaw);
-//               int clipX = bounds.x + (int) Math.round(widthRaw * crop/2.0);
-//               image.getGraphics().getClipBounds(new Rectangle(clipX,bounds.y,clipWidth,bounds.height));
 
-                // todo  Danny preferences
                 int browseImageSize = Earthdata_Cloud_Controller.getPreferenceBrowseImageSize();
 
                 Image scaled = null;
@@ -309,7 +275,6 @@ public class ImagePreviewHelper {
                 int windowHeight = previewWindow.getHeight();
 
 
-                // Assess if it is a very tall narrow image and limit to GUI height
                 Image scaled2 = null;
                 if (windowHeight > parentDialog.getHeight()) {
                     scaled2 = image.getScaledInstance(-1, parentDialog.getHeight(), Image.SCALE_SMOOTH);
@@ -335,7 +300,6 @@ public class ImagePreviewHelper {
 
 
 
-                // default to anchor at top of table
                 int locationY = tableLocationTop.y;
                 int offsetY = (int) Math.abs(parentDialogLocation.y - tableLocationTop.y);
                 offsetY = (int) Math.round(0.6 * offsetY);
@@ -344,38 +308,14 @@ public class ImagePreviewHelper {
 
 
 
-//                if (!floating) {
-//                    if (windowHeight > parentDialog.getHeight()) {
-////                        System.out.println("Anchor Main TOP");
-//                        // anchor at top of main GUI
-//                        locationY = parentDialog.getLocationOnScreen().y;
-//                    } else if (windowHeight > (parent.getHeight() +  offsetY)) {
-////                        System.out.println("Anchor Main BOTTOM");
-//                        // anchor at bottom of the main GUI
-//                        locationY = parentDialogLocationBottom.y - windowHeight;
-//                    } else if (windowHeight > offsetY) {
-////                        System.out.println("Anchor Above Table TOP");
-//                        // anchor near top of the main GUI
-//                        locationY = tableLocationTop.y - offsetY;
-//                    } else {
-////                        System.out.println("Anchor Table TOP");
-//                        // use dafault of anchor at top of table but if image is very small then floating
-//                        if (windowHeight < (int) Math.round(0.5 * parent.getHeight())) {
-////                            System.out.println("Anchor FLOATING");
-//                            floating = true;
-//                        }
-//                    }
-//                }
 
 
                 if (windowHeight < (int) Math.round(0.1 * parentDialog.getHeight())) {
-//                            System.out.println("Anchor FLOATING");
                     floating = true;
                 }
 
                 if (!floating) {
                     int offsetYTop = (int) Math.floor((parentDialog.getHeight() - windowHeight) / 2.0);
-//                    int offsetYTop = 100;
                     locationY = parentDialog.getLocationOnScreen().y + offsetYTop;
                 }
 
@@ -389,8 +329,6 @@ public class ImagePreviewHelper {
                 previewWindow.setLocation(parentDialogLocation.x + offsetX, locationY);
 
 
-                // todo
-//                previewWindow.setLocation(screenLocation.x + 75, screenLocation.y + offsetY);
                 previewWindow.setVisible(true);
             } else {
                 hideImagePreview();
@@ -401,7 +339,6 @@ public class ImagePreviewHelper {
     }
 
     private void hideImagePreview() {
-//        th.interrupt();
         previewWindow.setVisible(false);
         currentImageUrl = null;
     }

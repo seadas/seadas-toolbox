@@ -16,10 +16,8 @@ public class PythonScriptRunner {
     Path resourceDir = toolboxRoot.resolve("src/main/resources/json-files");
 
     private static String resolveToolboxScriptRoot() {
-        // Try to find seadas-toolbox root dynamically
         String baseDir = System.getProperty("user.dir");
 
-        // Climb up to find the expected toolbox folder
         File dir = new File(baseDir);
         while (dir != null) {
             File test = new File(dir, "seadas-toolbox" + File.separator + "seadas-earthdata-cloud-toolbox");
@@ -29,7 +27,6 @@ public class PythonScriptRunner {
             dir = dir.getParentFile();
         }
 
-        // Fallback if not found
         System.err.println("❌ Could not locate seadas-toolbox root from: " + baseDir);
         return baseDir;  // default to current dir
     }
@@ -46,20 +43,16 @@ public class PythonScriptRunner {
         throw new RuntimeException("Could not locate seadas-earthdata-cloud-toolbox directory");
     }
     private static File extractScript(String scriptName) throws IOException {
-        // Construct the path to the script within the JAR
         String resourcePath = "scripts/" + scriptName;
 
-        // Load the resource as a stream
         InputStream inputStream = PythonScriptRunner.class.getClassLoader().getResourceAsStream(resourcePath);
         if (inputStream == null) {
             throw new FileNotFoundException("Resource not found: " + resourcePath);
         }
 
-        // Create a temporary file to write the script to
         File tempScript = File.createTempFile(scriptName, null);
         tempScript.deleteOnExit();
 
-        // Copy the contents of the resource to the temporary file
         try (OutputStream outputStream = new FileOutputStream(tempScript)) {
             byte[] buffer = new byte[1024];
             int bytesRead;

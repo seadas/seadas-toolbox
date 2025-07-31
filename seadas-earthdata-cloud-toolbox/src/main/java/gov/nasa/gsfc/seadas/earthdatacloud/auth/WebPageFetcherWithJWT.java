@@ -30,11 +30,9 @@ public class WebPageFetcherWithJWT {
     }
 
 
-    // Method to remove empty rows from the JTable's model
     public static void removeEmptyRows(DefaultTableModel model) {
         for (int row = model.getRowCount() - 1; row >= 0; row--) {
             boolean isEmpty = true;
-            // Check if all cells in the row are empty (null or empty string)
             for (int col = 0; col < model.getColumnCount(); col++) {
                 Object value = model.getValueAt(row, col);
                 if (value != null && !value.toString().trim().isEmpty()) {
@@ -42,7 +40,6 @@ public class WebPageFetcherWithJWT {
                     break;
                 }
             }
-            // If the row is empty, remove it from the model
             if (isEmpty) {
                 model.removeRow(row);
             }
@@ -57,15 +54,12 @@ public class WebPageFetcherWithJWT {
         try (BufferedReader reader = new BufferedReader(new FileReader(netrcFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Split the line by spaces
                 String[] tokens = line.trim().split("\\s+");
 
-                // Check if we are reading the credentials for the specific machine
                 if (tokens.length >= 2 && "machine".equalsIgnoreCase(tokens[0])) {
                     machineFound = machineName.equals(tokens[1]);
                 }
 
-                // If the machine is found, extract the login and password
                 if (machineFound) {
                     if(tokens.length >= 6) { // one-line netrc format: machine <machine-name> login <login> password <password>
                         credentials[0] = tokens[3];
@@ -110,7 +104,6 @@ public class WebPageFetcherWithJWT {
         String username;
         String password;
 
-        // Output the credentials (username and password)
         if (credentials == null) {
             try {
                 throw new Exception("Failed to retrieve user credentials for endpoint: " + endpoint);
@@ -122,19 +115,15 @@ public class WebPageFetcherWithJWT {
         username = credentials[0];
         password = credentials[1];
 
-        // Combine username and password into a single string
         String auth = username + ":" + password;
 
-        // Encode the string into Base64
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
 
-        // Set request method to GET and add Bearer token to the Authorization header
         try {
             connection.setRequestMethod("GET");
         } catch (ProtocolException e) {
             throw new RuntimeException(e);
         }
-        // Set the Authorization header with Basic authentication
         connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
 
         int status = 0;
@@ -144,7 +133,6 @@ public class WebPageFetcherWithJWT {
             throw new RuntimeException(e);
         }
 
-        // Check if the response is OK (200)
         if (status == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String inputLine;
@@ -170,12 +158,9 @@ public class WebPageFetcherWithJWT {
         String access_token = "empty";
         JSONArray tokenJSonArray = new JSONArray(content.toString());
         try {
-            // Loop through the array
             for (int i = 0; i < tokenJSonArray.length(); i++) {
-                // Get each JSONObject (each row of the table)
                 JSONObject jsonObject = tokenJSonArray.getJSONObject(i);
 
-                // Access individual elements (columns) from the JSONObject
                 if (jsonObject.has("access_token")) {
                     access_token = jsonObject.getString("access_token");
                      i = tokenJSonArray.length() + 1;
@@ -186,7 +171,6 @@ public class WebPageFetcherWithJWT {
         } catch (JSONException e) {
             System.out.println("Error: " + e.getMessage());
         }
-        //System.out.print("access_token: " + access_token + "  !!! end of access token!");
 
         if (access_token.contains("empty")) {
             try {
@@ -207,7 +191,6 @@ public class WebPageFetcherWithJWT {
         String username;
         String password;
 
-        // Output the credentials (username and password)
         if (credentials == null) {
             throw new Exception("Failed to retrieve user credentials for endpoint: " + endpoint);
         }
@@ -215,20 +198,15 @@ public class WebPageFetcherWithJWT {
         username = credentials[0];
         password = credentials[1];
 
-        // Combine username and password into a single string
         String auth = username + ":" + password;
 
-        // Encode the string into Base64
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
 
-        // Set request method to GET and add Bearer token to the Authorization header
         connection.setRequestMethod("POST");
-        // Set the Authorization header with Basic authentication
         connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
 
         int status = connection.getResponseCode();
 
-        // Check if the response is OK (200)
         if (status == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String inputLine;
@@ -274,12 +252,10 @@ public class WebPageFetcherWithJWT {
 
     public JTable getJTableNew(JSONArray dataArray) {
 
-        //String[] columnNames = { "Rel", "HREF", "Title", "Temporal", "BBox" };
         String[] columnNames = {"Title", "HREF"};
         Object[][] dataSearchResult = new Object[dataArray.length()][2];
 
 
-        // Iterate over the students array and add each row to the searchResultTable
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject dataURL = dataArray.getJSONObject(i);
             if (dataURL.has("temporal")) {
@@ -292,10 +268,8 @@ public class WebPageFetcherWithJWT {
 
         JTable searchResultTable = new JTable(model);
 
-        // Set a custom renderer for the 'Link' column to display as a clickable link
         searchResultTable.getColumnModel().getColumn(1).setCellRenderer(new LinkCellRenderer());
 
-        // Add a mouse listener to detect clicks on the link
         searchResultTable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 int row = searchResultTable.rowAtPoint(e.getPoint());
@@ -305,7 +279,6 @@ public class WebPageFetcherWithJWT {
                     String url = (String) searchResultTable.getValueAt(row, col);
                     if (url != null && !url.isEmpty()) { // Ensure the URL is not null or empty
                         try {
-                            // Open the link in the default browser
                             Desktop.getDesktop().browse(new URI(url));
                         } catch (Exception ex) {
                             ex.printStackTrace();

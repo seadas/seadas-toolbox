@@ -41,7 +41,6 @@ public class RegionUtils {
             } catch (IOException e) {
                 System.out.println("ERROR");
 
-//                    SnapApp.getDefault().handleError("Unable to install " + AUXDATA + "/" + SENSOR_INFO + "/" + USER_PROJECTIONS_XML, e);
             }
         }
 
@@ -53,7 +52,6 @@ public class RegionUtils {
                     new InputStreamReader(
                             new FileInputStream(regionsAuxDirFile),
                             StandardCharsets.UTF_8))) {
-            //try (BufferedReader br = new BufferedReader(new FileReader(regionsAuxDirFile))) {
                 RegionsInfo selectInfo = new RegionsInfo("Select", RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
                 regionsInfos.add(selectInfo);
 
@@ -99,7 +97,6 @@ public class RegionUtils {
                                         west = lon;
                                         east = lon;
 
-                                        // todo Danny
 
                                         if (validateCoordinates(lat, lon)) {
                                             RegionsInfo regionsInfo = new RegionsInfo(name, latOrig, lonOrig, north, south, west, east);
@@ -206,7 +203,6 @@ public class RegionUtils {
         coord  = coord.trim().replace("′", MINUTES_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
         coord  = coord.trim().replace("″", SECONDS_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
 
-        // some people may enter the single quote and double quote for minutes and seconds so support this as well
         coord  = coord.trim().replace("\'", MINUTES_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
         coord  = coord.trim().replace("\"", SECONDS_SYMBOL_STRING_REPLACEMENT);    // strip degree // = coord.trim();
 
@@ -230,12 +226,10 @@ public class RegionUtils {
                     double degreesDouble = convertStringToDouble(degrees, -9999.0);
                     double minutesDouble = convertStringToDouble(minutes, -9999.0);
                     if (degreesDouble != -9999.0 && minutesDouble != -9999.0) {
-                        // good
                         if (coordMinutesSplitArray.length == 1) {
                             double convertedValue = degreesDouble + minutesDouble/60.0;
                             DecimalFormat df = new DecimalFormat("###.####");
                             return df.format(convertedValue);
-                            // todo combine degrees and minutes
 
                         } else if (coordMinutesSplitArray.length == 2) {
                             String seconds = coordMinutesSplitArray[1];
@@ -246,7 +240,6 @@ public class RegionUtils {
                                     double convertedValue = degreesDouble + minutesDouble/60.0 + secondsDouble/(60*60);
                                     DecimalFormat df = new DecimalFormat("###.####");
                                     return df.format(convertedValue);
-                                    //  todo combine degrees and minutes and seconds
                                 }
                             }
                         }
@@ -258,7 +251,6 @@ public class RegionUtils {
         }
 
 
-        // restore if not converted
         convertedCoord  = convertedCoord.trim().replace(DEGREES_SYMBOL_STRING_REPLACEMENT,"°");    // strip degree // = coord.trim();
         convertedCoord  = convertedCoord.trim().replace(MINUTES_SYMBOL_STRING_REPLACEMENT, "′");    // strip degree // = coord.trim();
         convertedCoord  = convertedCoord.trim().replace(SECONDS_SYMBOL_STRING_REPLACEMENT, "″");    // strip degree // = coord.trim();
