@@ -42,7 +42,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <snap.version>12.0.0</snap.version>
+        <snap.version>12.0.1</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
