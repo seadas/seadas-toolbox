@@ -117,15 +117,15 @@
 <!--            <groupId>org.esa.snap.netbeans</groupId>-->
 <!--            <artifactId>doc-windows</artifactId>-->
 <!--            <version>${doc-windows.version}</version>-->
+<!--&lt;!&ndash;        </dependency>&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.esa.snap</groupId>-->
+<!--            <artifactId>snap-core</artifactId>-->
 <!--        </dependency>-->
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>snap-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-awt</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.netbeans.api</groupId>-->
+<!--            <artifactId>org-openide-awt</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -169,11 +169,11 @@
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.netbeans.utilities</groupId>
-                <artifactId>nbm-maven-plugin</artifactId>
-                <version>4.4</version>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.netbeans.utilities</groupId>-->
+<!--                <artifactId>nbm-maven-plugin</artifactId>-->
+<!--                <version>4.4</version>-->
+<!--            </plugin>-->
 
         </plugins>
     </build>
