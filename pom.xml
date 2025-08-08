@@ -223,13 +223,13 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>4.13.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.google.jimfs</groupId>
                 <artifactId>jimfs</artifactId>
-                <version>1.1</version>
+                <version>1.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -467,7 +467,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>3.4.0</version>
                     <configuration>
                         <!-- to have the jar plugin pickup the nbm generated manifest -->
                         <useDefaultManifestFile>true</useDefaultManifestFile>
@@ -476,11 +476,11 @@
 
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.7.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.3.1</version>
                     <executions>
                         <execution>
                             <phase>verify</phase>
@@ -497,7 +497,7 @@
 
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.5.0</version>
                     <configuration>
                         <enableAssertions>true</enableAssertions>
                         <!--<skip>true</skip>-->
