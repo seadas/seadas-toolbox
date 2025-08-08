@@ -43,18 +43,72 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+<!--                    <useDefaultManifestFile>true</useDefaultManifestFile>-->
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <useDefaultManifestFile>true</useDefaultManifestFile>
-                </configuration>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-jars</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <!-- Ant copy task to collect JARs that are needed to run snap-desktop and copy them into kit module-->
+
+                                <copy todir="${project.build.directory}/netbeans_clusters/seadas/modules/" flatten="true">
+                                    <fileset dir="${project.build.directory}/../../">
+                                        <include name="**/target/nbm/clusters/seadas/modules/*.jar"/>
+                                    </fileset>
+                                </copy>
+
+                                <copy todir="${project.build.directory}/netbeans_clusters/seadas/config/Modules/" flatten="true">
+                                    <fileset dir="${project.build.directory}/../../">
+                                        <include name="**/target/nbm/clusters/seadas/config/Modules/*.xml"/>
+                                    </fileset>
+                                </copy>
+
+                                <copy todir="${project.build.directory}/netbeans_clusters/seadas/update_tracking/" flatten="true">
+                                    <fileset dir="${project.build.directory}/../../">
+                                        <include name="**/target/nbm/clusters/seadas/update_tracking/*.xml"/>
+                                    </fileset>
+                                </copy>
+
+                                <mkdir dir="${project.build.directory}/netbeans_clusters/seadas/modules/docs" />
+                                <copy todir="${project.build.directory}/netbeans_clusters/seadas/modules/docs/" flatten="true">
+                                    <fileset dir="${project.build.directory}/../../">
+                                        <include name="**/target/nbm/clusters/seadas/modules/docs/*.jar"/>
+                                    </fileset>
+                                </copy>
+
+                                <mkdir dir="${project.build.directory}/netbeans_clusters/seadas/modules/ext" />
+                                <copy todir="${project.build.directory}/netbeans_clusters/seadas/modules/ext/">
+                                    <fileset dir="${project.build.directory}/../../">
+                                        <include name="**/target/nbm/clusters/seadas/modules/ext/**"/>
+                                    </fileset>
+                                    <cutdirsmapper dirs="7"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
-
     </build>
 
     <dependencies>
@@ -158,6 +212,10 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
             <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-annotations-common</artifactId>
         </dependency>
     </dependencies>
 

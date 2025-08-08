@@ -85,10 +85,12 @@
         <variable name="installer:maxHeapSize" value="8G"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
-        <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
-        <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
+        <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
+        <variable name="JDKPathPanel.maxVersion" value="21.0.9"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
+        <variable name="symbolicName" value="mac_os_arm64"/>
+        <variable name="arch" value="arm64"/>
     </variables>
 
     <conditions>
@@ -130,7 +132,7 @@
         <!--    </panel>-->
 
 
-<!--        <panel classname="InstallationTypePanel"/>-->
+        <!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
@@ -143,7 +145,7 @@
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home"/>
     </dynamicvariables>
 
     <packs>
@@ -204,17 +206,17 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
+        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">
             <description>JDK11 JRE</description>
-            <file src="packs/jre/OpenJDK11U-jre_x64_mac_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
+            <file src="packs/jre/OpenJDK21U-jre_aarch64_mac_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/bin">
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin">
                     <include name="java"/>
                 </fileset>
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/Contents/Home/lib">
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib">
                     <include name="jspawnhelper"/>
                 </fileset>
             </executable>

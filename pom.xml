@@ -62,6 +62,7 @@
         <jersey.version>2.27</jersey.version>
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
+        <jvm.version>21</jvm.version>
     </properties>
 
     <repositories>
@@ -329,14 +330,14 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${jvm.version}</source>
+                    <target>${jvm.version}</target>
                     <debug>true</debug>
                     <encoding>UTF-8</encoding>
                     <excludes>
                         <exclude>.gitignore</exclude>
                     </excludes>
-                    <release>11</release>
+                    <release>21</release>
 <!--               Some NetBeans modules use reflection, which Java blocks by default.-->
 <!--                add-opens allows NetBeans to access internal Java APIs.-->
                     <compilerArgs>
@@ -419,7 +420,7 @@
                 <plugin>
                     <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.4</version>
+                    <version>14.0</version>
                     <extensions>true</extensions>
                     <dependencies>
                         <dependency>
@@ -445,7 +446,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.5.0</version>
                     <executions>
                         <execution>
                             <id>regex-property</id>
