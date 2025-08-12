@@ -86,15 +86,15 @@
         <variable name="maxHeapSize" value="4096M"/>
         <variable name="installer:maxHeapSize" value="4096M"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
-        <variable name="JDKPathPanel.minVersion" value="11.0.11"/>
-        <variable name="JDKPathPanel.maxVersion" value="11.0.19"/>
+        <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
+        <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
 
     </variables>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-11.0.19+7-jre"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre"/>
         <variable name="dotSeaDASDirStatus" value="$dotSeaDASStatusSelection" />
         <variable name="runSeaDASAfterInstall" value="${checkSelection.1}"/>
     </dynamicvariables>
@@ -203,13 +203,13 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="JDK11 JRE" required="yes" id="pack.jdk11.jre">
-            <description>JDK11 JRE</description>
-            <file src="packs/jre/OpenJDK11U-jre_x64_linux_hotspot_11.0.19_7.tar.gz" targetdir="${INSTALL_PATH}"
+        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">
+            <description>JDK21 JRE</description>
+            <file src="packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/bin" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-11.0.19+7-jre/lib" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/lib" includes="*"/>
             </executable>
         </pack>
     </packs>
