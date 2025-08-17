@@ -10,14 +10,14 @@
 <!--        </executefile>-->
 <!--    </job>-->
 
-    <job name="Archive .seadas9 directory">
+    <job name="Archive as needed any .seadas directories">
         <os family="unix" />
         <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
             <!--                <arg>doit</arg>-->
             <!--                <arg>$variable</arg>-->
         </executefile>
     </job>
-    <job name="Archive .seadas9 directory">
+    <job name="Archive as needed any .seadas directories">
         <os family="mac" />
         <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
             <!--                <arg>doit</arg>-->
@@ -25,7 +25,7 @@
         </executefile>
     </job>
 
-    <job name="Archive .seadas9 directory">
+    <job name="Archive as needed any .seadas directories">
         <os family="windows" />
         <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS_windows.bat" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
             <!--                <arg>doit</arg>-->

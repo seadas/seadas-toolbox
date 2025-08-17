@@ -73,9 +73,9 @@
         <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>
-        <variable name="WELCOME_TEXT" value="SeaDAS 9.2.0 Installer"/>
+        <variable name="WELCOME_TEXT" value="SeaDAS 10.0.0 Installer"/>
         <variable name="WELCOME_VERSION" value="Version: 1.1"/>
-        <variable name="FINISH_TEXT" value="SeaDAS 9.2.0 is successfuly installed. Enjoy!"/>
+        <variable name="FINISH_TEXT" value="SeaDAS 10.0.0 is successfully installed. Enjoy!"/>
         <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
         <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
