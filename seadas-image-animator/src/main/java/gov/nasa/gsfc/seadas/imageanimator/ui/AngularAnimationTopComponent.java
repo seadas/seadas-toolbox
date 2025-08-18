@@ -633,7 +633,9 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                             angularViewNameBuilder.append("_").append(autoGroupingNamePart);
                         }
                     }
-                    final String angularViewName = angularViewNameBuilder.toString();
+
+                    final String angularViewName = StringUtils.cleanUpGroupName(angularViewNameBuilder.toString());
+
                     int symbolIndex = AngularViewShapeProvider.getValidIndex(i, false);
                     DisplayableAngularview angularView = new DisplayableAngularview(angularViewName, symbolIndex);
                     angularView.setSelected(i == selectedAngularViewIndex);

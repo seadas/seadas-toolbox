@@ -684,7 +684,9 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
                         spectrumNameBuilder.append("_").append(autoGroupingNamePart);
                     }
                 }
-                final String spectrumName = spectrumNameBuilder.toString();
+
+                final String spectrumName = StringUtils.cleanUpGroupName(spectrumNameBuilder.toString());
+
                 int symbolIndex = SpectrumShapeProvider.getValidIndex(displayIndex, false);
                 ++displayIndex;
                 DisplayableSpectrum spectrum = new DisplayableSpectrum(spectrumName, symbolIndex);
