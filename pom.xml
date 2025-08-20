@@ -22,7 +22,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>3.0.0</version> <!--    <version>2.2.0-SNAPSHOT</version>-->
+    <version>10.0.0</version> <!--    <version>2.2.0-SNAPSHOT</version>-->
 
     <name>SeaDAS Tool Box</name>
     <description>Tools from SeaDAS</description>
@@ -49,13 +49,13 @@
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <seadas-toolbox.version>3.0.0</seadas-toolbox.version> <!--  <seadas-toolbox.version>2.2.0-SNAPSHOT</seadas-toolbox.version>-->
+        <seadas-toolbox.version>10.0.0</seadas-toolbox.version> <!--  <seadas-toolbox.version>2.2.0-SNAPSHOT</seadas-toolbox.version>-->
         <seadas-contour-operator.version>10.0.0</seadas-contour-operator.version>  <!-- <seadas-contour-operator.version>9.2.0-SNAPSHOT</seadas-contour-operator.version>-->
         <seadas-processing.version>10.0.0</seadas-processing.version>   <!-- <seadas-processing.version>9.2.0-SNAPSHOT</seadas-processing.version>-->
         <seadas-watermask-operator.version>10.0.0</seadas-watermask-operator.version>   <!-- <seadas-watermask-operator.version>9.2.0-SNAPSHOT</seadas-watermask-operator.version>-->
         <seadas-bathymetry-operator.version>10.0.0</seadas-bathymetry-operator.version>  <!-- <seadas-bathymetry-operator.version>9.2.0-SNAPSHOT</seadas-bathymetry-operator.version>-->
-        <seadas-image-animator.version>3.0.0</seadas-image-animator.version>   <!-- <seadas-image-animator.version>2.2.0-SNAPSHOT</seadas-image-animator.version>-->
-        <seadas-earthdata-cloud-toolbox.version>2.0.0</seadas-earthdata-cloud-toolbox.version>
+        <seadas-image-animator.version>10.0.0</seadas-image-animator.version>   <!-- <seadas-image-animator.version>2.2.0-SNAPSHOT</seadas-image-animator.version>-->
+        <seadas-earthdata-cloud-toolbox.version>10.0.0</seadas-earthdata-cloud-toolbox.version>  <!--  <seadas-toolbox.version>2.2.0-SNAPSHOT</seadas-toolbox.version>-->
         <netbeans.version>RELEASE210</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>
