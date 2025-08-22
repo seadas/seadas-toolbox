@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
 import com.bc.ceres.swing.figure.Interactor;
+import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.core.gpf.ui.DefaultSingleTargetProductDialog;
 import com.bc.ceres.multilevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
@@ -219,7 +220,22 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                                     pm.setSubTaskName("Running operator: " + LAND_WATER_MASK_OP_ALIAS);
 
-                                    Product landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
+
+                                    Product landWaterProduct = null;
+
+                                    try {
+                                        landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
+                                        workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
+
+                                        if (landWaterProduct == null) {
+                                            pm.setSubTaskName("Operator Failed: " + LAND_WATER_MASK_OP_ALIAS);
+                                            return null;
+                                        }
+                                    } catch (OperatorException e) {
+                                        pm.setSubTaskName("Operator Failed: " + LAND_WATER_MASK_OP_ALIAS);
+                                        return null;
+                                    }
+
 
                                     workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
 
