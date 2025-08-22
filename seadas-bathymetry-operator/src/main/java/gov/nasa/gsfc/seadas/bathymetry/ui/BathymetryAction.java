@@ -241,7 +241,9 @@ public final class BathymetryAction extends AbstractSnapAction
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                                pm.beginTask(msg[0], 2);
+                                int totalWork = 30;
+                                int workDone = 0;
+                                pm.beginTask(msg[0], totalWork);
 
                                 try {
 
@@ -255,33 +257,50 @@ public final class BathymetryAction extends AbstractSnapAction
                                            Create a new product, which will contain the bathymetry band, then add this band to current product.
                                         */
 
+                                        pm.setSubTaskName("Running operator: " + BATHYMETRY_PRODUCT_NAME);
                                         Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
+
+                                        workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
+
 
 
                                         if (bathymetryData.isCreateTopographyBand()) {
+                                            pm.setSubTaskName("Creating band '" + BathymetryOp.TOPOGRAPHY_BAND_NAME + "'");
                                             Band topographyBand = bathymetryProduct.getBand(BathymetryOp.TOPOGRAPHY_BAND_NAME);
                                             reformatSourceImage(topographyBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                            workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
+
+                                            pm.setSubTaskName("Adding band '" + BathymetryOp.TOPOGRAPHY_BAND_NAME + "'");
                                             topographyBand.setName(BathymetryOp.TOPOGRAPHY_BAND_NAME);
                                             product.addBand(topographyBand);
                                         }
 
 
                                         if (bathymetryData.isCreateElevationBand()) {
+                                            pm.setSubTaskName("Creating band '" + BathymetryOp.ELEVATION_BAND_NAME + "'");
                                             Band elevationBand = bathymetryProduct.getBand(BathymetryOp.ELEVATION_BAND_NAME);
                                             reformatSourceImage(elevationBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                            workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
+
+                                            pm.setSubTaskName("Adding band '" + BathymetryOp.ELEVATION_BAND_NAME + "'");
                                             elevationBand.setName(BathymetryOp.ELEVATION_BAND_NAME);
                                             product.addBand(elevationBand);
                                         }
 
+                                        pm.setSubTaskName("Creating band '" + BathymetryOp.BATHYMETRY_BAND_NAME + "'");
                                         Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
                                         reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                        workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
+
+                                        pm.setSubTaskName("Adding band '" + BathymetryOp.BATHYMETRY_BAND_NAME + "'");
                                         bathymetryBand.setName(BathymetryOp.BATHYMETRY_BAND_NAME);
                                         product.addBand(bathymetryBand);
 
-
                                     }
-                                    pm.worked(1);
 
+                                    workDone += incrementWork(pm, totalWork, workDone);
+
+                                    pm.setSubTaskName("Creating mask '" + bathymetryData.getMaskName() + "'");
 
                                     Mask bathymetryMask = Mask.BandMathsType.create(
                                             bathymetryData.getMaskName(),
@@ -293,18 +312,24 @@ public final class BathymetryAction extends AbstractSnapAction
                                             bathymetryData.getMaskTransparency());
                                     maskGroup.add(bathymetryMask);
 
-                                    pm.worked(1);
+                                    workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
 
-                                    String[] bandNames = product.getBandNames();
-                                    for (String bandName : bandNames) {
-                                        RasterDataNode raster = product.getRasterDataNode(bandName);
-                                        if (bathymetryData.isShowMaskAllBands()) {
+
+                                    if (bathymetryData.isShowMaskAllBands()) {
+                                        pm.setSubTaskName("Enabling masks in all bands");
+
+                                        String[] bandNames = product.getBandNames();
+                                        for (String bandName : bandNames) {
+                                            RasterDataNode raster = product.getRasterDataNode(bandName);
                                             raster.getOverlayMaskGroup().add(bathymetryMask);
                                         }
                                     }
 
 
                                 } finally {
+                                    pm.setSubTaskName("Bathymetry Tool run finished");
+                                    sleepPreviewThread(500);
+
                                     pm.done();
                                 }
                                 return null;
@@ -321,6 +346,46 @@ public final class BathymetryAction extends AbstractSnapAction
                     }
                 }
             }
+        }
+    }
+
+
+
+    private void sleepPreviewThread(long milliSeconds) {
+        try {
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException e3) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private int sleepPreviewThread(long milliSeconds, int numDivisions, com.bc.ceres.core.ProgressMonitor pm, int totalWork, int workDone) {
+
+        int workDoneInitial = workDone;
+
+        if (numDivisions <= 0) {
+            return 0;
+        }
+        double sleepTimeIncrement = milliSeconds / (double) numDivisions;
+        long sleepTimeIncrementLong = (long) sleepTimeIncrement;
+        try {
+            for (int i = 0; i < numDivisions; i++) {
+                Thread.sleep(sleepTimeIncrementLong);
+                workDone += incrementWork(pm, totalWork, workDone);
+            }
+            return  workDone - workDoneInitial;
+        } catch (InterruptedException e3) {
+            Thread.currentThread().interrupt();
+            return 0;
+        }
+    }
+
+    private int incrementWork(com.bc.ceres.core.ProgressMonitor pm, int totalWork, int workDone) {
+        if (workDone < totalWork) {
+            pm.worked(1);
+            return 1;
+        } else {
+            return 0;
         }
     }
 
