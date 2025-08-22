@@ -5,6 +5,7 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.openide.awt.ActionID;
@@ -258,9 +259,20 @@ public final class BathymetryAction extends AbstractSnapAction
                                         */
 
                                         pm.setSubTaskName("Running operator: " + BATHYMETRY_PRODUCT_NAME);
-                                        Product bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
+                                        Product bathymetryProduct = null;
 
-                                        workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
+                                        try {
+                                            bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
+                                            workDone += sleepPreviewThread(1000,4, pm, totalWork, workDone);
+
+                                            if (bathymetryProduct == null) {
+                                                pm.setSubTaskName("Operator Failed: " + BATHYMETRY_PRODUCT_NAME);
+                                                return null;
+                                            }
+                                        } catch (OperatorException e) {
+                                            pm.setSubTaskName("Operator Failed: " + BATHYMETRY_PRODUCT_NAME);
+                                            return null;
+                                        }
 
 
 
