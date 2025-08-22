@@ -1,7 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.ui;
 
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.ocssw.GetSysInfoGUI;
 import org.esa.snap.core.datamodel.ProductNode;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.ui.AppContext;
 import org.openide.awt.ActionID;
@@ -72,8 +74,30 @@ public class GetSysInfoAction extends AbstractSnapAction implements ContextAware
         final AppContext appContext = getAppContext();
 
         final Window parent = appContext.getApplicationWindow();
-        GetSysInfoGUI getSysInfoGUI = new GetSysInfoGUI();
-        getSysInfoGUI.init(parent);
+
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(),
+                "Retrieving SeaDAS processor and system configuration") {
+
+            @Override
+            protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
+
+                int totalWork = 10;
+                int workDone = 0;
+                pm.beginTask("Retrieving SeaDAS processor and system configuration", totalWork);
+
+                try {
+                    GetSysInfoGUI getSysInfoGUI = new GetSysInfoGUI();
+                    getSysInfoGUI.init(parent, pm);
+                } finally {
+                    pm.done();
+                }
+                return null;
+            }
+        };
+
+        pmSwingWorker.executeWithBlocking();
+
     }
 
     @Override
