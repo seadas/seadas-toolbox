@@ -3,22 +3,22 @@
 
 function ARCHIVE_SEADAS9_MSG()
 {
-   echo -e "Previous SeaDAS 9 configuration directory has been archived in ~/.seadas_archive/.seadas9";
+   echo -e "Existing ~/.seadas9 directory has been archived in ~/.seadas_archive/.seadas9";
 }
 
 function ARCHIVE_SEADAS8_MSG()
 {
-   echo -e "Previous SeaDAS 8 configuration directory has been archived in ~/.seadas_archive/.seadas8";
+   echo -e "Existing ~/.seadas8 directory has been archived in ~/.seadas_archive/.seadas8";
 }
 
 function ARCHIVE_SEADAS7_MSG()
 {
-   echo -e "Previous SeaDAS 7 configuration directory has been archived in ~/.seadas_archive/.seadas7";
+   echo -e "Existing ~/.seadas directory has been archived in ~/.seadas_archive/.seadas7";
 }
 
 function TRANSFER_SEADAS9_MSG()
 {
-   echo -e "Moving previous SeaDAS 9 configuration directory ~/.seadas9 to ~/.seadas";
+   echo -e "Existing ~/.seadas9 directory has been moved to ~/.seadas";
 }
 
 function RETAIN_SEADAS_MSG()
@@ -46,8 +46,7 @@ fi
 
 if [ -d ".seadas" ]; then
     if [ -d ".seadas/auxdata" ]; then
-      # SeaDAS 10 or later has been previously run, so leave in tact
-      # archive any other versions
+      # SeaDAS 10 or later has been previously run, so leave in tact and archive any other versions
       echo $(RETAIN_SEADAS_MSG);
 
       if [ -d ".seadas9" ]; then
@@ -60,9 +59,7 @@ if [ -d ".seadas" ]; then
     else
       # This is probably seadas7 so archive it and look for seadas9
       if [ -d ".seadas_archive/.seadas7" ]; then
-        if [ -d ".seadas_archive/.seadas7" ]; then
-          rm -rf .seadas_archive/.seadas7 2> /dev/null
-        fi
+        rm -rf .seadas_archive/.seadas7 2> /dev/null
       fi
       mv .seadas .seadas_archive/.seadas7 2> /dev/null
       echo $(ARCHIVE_SEADAS7_MSG);
