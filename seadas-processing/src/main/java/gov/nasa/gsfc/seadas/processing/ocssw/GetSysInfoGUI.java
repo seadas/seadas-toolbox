@@ -69,10 +69,10 @@ public class GetSysInfoGUI {
         final AppContext appContext = SnapApp.getDefault().getAppContext();
         final Window parent = appContext.getApplicationWindow();
         GetSysInfoGUI getSysInfoGUI = new GetSysInfoGUI();
-        getSysInfoGUI.init(parent);
+        getSysInfoGUI.init(parent, null);
     }
 
-    public void init(Window parent) {
+    public void init(Window parent, com.bc.ceres.core.ProgressMonitor pm) {
         String operatingSystem = System.getProperty("os.name");
         if (operatingSystem.toLowerCase().contains("windows")) {
             windowsOS = true;
@@ -101,7 +101,7 @@ public class GetSysInfoGUI {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
         gbc.weightx = 1;
-        JPanel sysInfoPanel = sysInfoPanel();
+        JPanel sysInfoPanel = sysInfoPanel(pm);
         mainPanel.add(sysInfoPanel, gbc);
 
         // Add filler panel at bottom which expands as needed to force all components within this panel to the top
@@ -146,7 +146,7 @@ public class GetSysInfoGUI {
 
     }
 
-    protected JPanel sysInfoPanel() {
+    protected JPanel sysInfoPanel(com.bc.ceres.core.ProgressMonitor pm) {
 
         JPanel panel = GridBagUtils.createPanel();
         GridBagConstraints gbc = createConstraints();
@@ -175,6 +175,10 @@ public class GetSysInfoGUI {
 
         File appHomeDir = SystemUtils.getApplicationHomeDir();
         File appDataDir = SystemUtils.getApplicationDataDir();
+        if (pm != null) {
+            pm.setSubTaskName("Assessing general system information");
+            pm.worked(1);
+        }
 
         Path appBinDir = appHomeDir.toPath().resolve("bin");
         Path appEtcDir = appHomeDir.toPath().resolve("etc");
@@ -415,6 +419,10 @@ public class GetSysInfoGUI {
         sysInfoText += currentInfoLine;
         appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
 
+        if (pm != null) {
+            pm.setSubTaskName("Assessing python installation");
+            pm.worked(1);
+        }
 
         if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
             currentInfoLine = "OCSSWROOT (Environment Variable): " + ocsswRootEnv + "\n";
@@ -548,8 +556,10 @@ public class GetSysInfoGUI {
 
 
 
-
-
+        if (pm != null) {
+            pm.setSubTaskName("Assessing OCSSW installation");
+            pm.worked(1);
+        }
 
 
 
@@ -687,6 +697,11 @@ public class GetSysInfoGUI {
                     currentInfoLine = "";
                     if (command != null) {
                         try {
+                            if (pm != null) {
+                                pm.setSubTaskName("Running OCSSW seadas_info");
+                                pm.worked(1);
+                            }
+
                             ProcessBuilder processBuilder = new ProcessBuilder(command);
                             Process process = processBuilder.start();
 
