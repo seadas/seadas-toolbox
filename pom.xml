@@ -65,6 +65,7 @@
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
         <jvm.version>21</jvm.version>
+        <maven.compiler.release>17</maven.compiler.release>
         <netcdfJavaVersion>5.9.0</netcdfJavaVersion> <!-- current as of Aug 2025 -->
         <slf4jVersion>2.0.13</slf4jVersion>
     </properties>
@@ -352,7 +353,7 @@
                     <excludes>
                         <exclude>.gitignore</exclude>
                     </excludes>
-                    <release>21</release>
+                    <release>17</release>
 <!--               Some NetBeans modules use reflection, which Java blocks by default.-->
 <!--                add-opens allows NetBeans to access internal Java APIs.-->
                     <compilerArgs>
