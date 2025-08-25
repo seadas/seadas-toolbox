@@ -452,68 +452,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         return jsonResponse;
     }
 
-    public static String createJob(String urlString, String jsonData, String bearerToken) throws Exception {
-        StringBuilder content = new StringBuilder();
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-        connection.setDoOutput(true);
-
-        // Write JSON data
-        try (java.io.OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonData.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-
-        int status = connection.getResponseCode();
-        if (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED) {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine).append("\n");
-                }
-            }
-        } else if (status == HttpURLConnection.HTTP_UNAUTHORIZED || status == HttpURLConnection.HTTP_FORBIDDEN) {
-            throw new Exception("Authentication failed (" + status + "). Please check your Earthdata Login credentials and token.");
-        } else if (status == HttpURLConnection.HTTP_NOT_FOUND) {
-            // Read error response for better debugging
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine).append("\n");
-                }
-            } catch (Exception e) {
-                content.append("Could not read error response: ").append(e.getMessage());
-            }
-            
-            // Extract collection ID from URL for better error message
-            String collectionId = urlString.substring(urlString.lastIndexOf('/') + 1);
-            if (collectionId.contains("?")) {
-                collectionId = collectionId.substring(0, collectionId.indexOf('?'));
-            }
-            
-            throw new Exception("Collection not found (404). The collection ID '" + collectionId + "' may be invalid or the collection may not be available in Harmony. " +
-                              "All collections must be from the OB_CLOUD provider (ending with -OB_CLOUD). " +
-                              "Please verify the collection ID or try a different collection. Response: " + content.toString());
-        } else {
-            // Read error response for better debugging
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine).append("\n");
-                }
-            } catch (Exception e) {
-                content.append("Could not read error response: ").append(e.getMessage());
-            }
-            throw new Exception("Failed to create job. HTTP status code: " + status + ". Response: " + content.toString());
-        }
-        return content.toString();
-    }
-
     /**
      * Fetch content from URL using GET request
      */
