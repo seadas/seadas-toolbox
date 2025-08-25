@@ -36,6 +36,7 @@
         <module>seadas-image-animator</module>
         <module>seadas-bathymetry-operator</module>
         <module>seadas-earthdata-cloud-toolbox</module>
+        <module>seadas-panoply-tools</module>
         <module>seadas-kit</module>
     </modules>
 
@@ -56,6 +57,7 @@
         <seadas-bathymetry-operator.version>10.0.0</seadas-bathymetry-operator.version>  <!-- <seadas-bathymetry-operator.version>9.2.0-SNAPSHOT</seadas-bathymetry-operator.version>-->
         <seadas-image-animator.version>10.0.0</seadas-image-animator.version>   <!-- <seadas-image-animator.version>2.2.0-SNAPSHOT</seadas-image-animator.version>-->
         <seadas-earthdata-cloud-toolbox.version>10.0.0</seadas-earthdata-cloud-toolbox.version>  <!--  <seadas-toolbox.version>2.2.0-SNAPSHOT</seadas-toolbox.version>-->
+        <seadas-panoply-tools>10.0.0</seadas-panoply-tools>
         <netbeans.version>RELEASE210</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>

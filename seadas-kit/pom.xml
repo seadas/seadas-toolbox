@@ -147,6 +147,11 @@
             <artifactId>seadas-watermask-operator</artifactId>
             <version>${seadas-watermask-operator.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
+<!--            <artifactId>seadas-panoply-tools</artifactId>-->
+<!--            <version>${seadas-panoply-tools}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
