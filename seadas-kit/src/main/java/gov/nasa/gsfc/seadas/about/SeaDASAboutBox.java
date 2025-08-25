@@ -131,7 +131,7 @@ public class SeaDASAboutBox extends JPanel {
     private JPanel createVersionPanel() {
         Calendar utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
         int year = utc.get(Calendar.YEAR);
-        JLabel copyRightLabel = new JLabel("<html><b>© 1994-" + year + " NASA Ocean Biology DAAC (OB.DAAC)</b>", SwingConstants.CENTER);
+        JLabel copyRightLabel = new JLabel("<html><b>1994-" + year + " NASA Ocean Biology DAAC (OB.DAAC)</b>", SwingConstants.CENTER);
 
         final ModuleInfo moduleInfo = Modules.getDefault().ownerOf(SeaDASAboutBox.class);
         JLabel versionLabel = new JLabel("<html><b>SeaDAS Toolbox version " + moduleInfo.getSpecificationVersion() + "</b>", SwingConstants.CENTER);
