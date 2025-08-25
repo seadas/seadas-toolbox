@@ -32,7 +32,11 @@
             <version>${snap.version}</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-rcp</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
         <!-- NetBeans API for @OnStart -->
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -46,6 +50,10 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-rcp</artifactId>
         </dependency>
     </dependencies>
 
