@@ -63,6 +63,8 @@
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
         <jvm.version>21</jvm.version>
+        <netcdfJavaVersion>5.9.0</netcdfJavaVersion> <!-- current as of Aug 2025 -->
+        <slf4jVersion>2.0.13</slf4jVersion>
     </properties>
 
     <repositories>
@@ -92,6 +94,11 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>unidata-all</id>
+            <name>Unidata All</name>
+            <url>https://artifacts.unidata.ucar.edu/repository/unidata-all/</url>
         </repository>
     </repositories>
 
@@ -319,7 +326,13 @@
                 <artifactId>jersey-media-multipart</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
-
+            <!-- NetCDF-4/HDF5 support (most L2 ocean-color files) -->
+            <dependency>
+                <groupId>edu.ucar</groupId>
+                <artifactId>netcdf4</artifactId>
+                <version>${netcdfJavaVersion}</version>
+                <scope>runtime</scope>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
