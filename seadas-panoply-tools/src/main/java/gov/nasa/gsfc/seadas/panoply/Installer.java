@@ -23,7 +23,6 @@ public class Installer extends ModuleInstall {
             System.out.println("[Panoply] Found already-open product: " + safeName(p));
             attachIfNeeded(p);
         }
-
         // Listen for new products
         pm.addListener(new ProductManager.Listener() {
             @Override
@@ -36,6 +35,8 @@ public class Installer extends ModuleInstall {
                 System.out.println("[Panoply] productRemoved: " + safeName(event != null ? event.getProduct() : null));
             }
         });
+
+
     }
 
     private static String safeName(Product p) {
@@ -115,5 +116,4 @@ public class Installer extends ModuleInstall {
         // No usable source
         return null;
     }
-
 }
