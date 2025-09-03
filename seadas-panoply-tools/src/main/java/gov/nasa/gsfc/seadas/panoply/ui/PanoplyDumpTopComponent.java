@@ -10,11 +10,12 @@ import org.openide.nodes.Node;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 
@@ -28,115 +29,143 @@ import java.util.List;
         "CTL_PanoplyDumpTopComponent=Panoply Dump",
         "HINT_PanoplyDumpTopComponent=Shows Panoply-style (ncdump) text for the selected variable"
 })
-public final class PanoplyDumpTopComponent extends TopComponent implements LookupListener {
+public final class PanoplyDumpTopComponent extends TopComponent implements LookupListener, PropertyChangeListener {
 
-    private static final String HINT = "Select a variable under Metadata \u2192 Panoply \u2192 Geophysical_Data \u2026";
-    private static final String PANOPLY = "Panoply";
-    private static final String GEO_DATA = "Geophysical_Data";
-    private static final String ZWSP = "\u200B";
+    private static final String HINT = "Select a variable under Metadata \u2192 Panoply \u2192 Geophysical_Data …";
+    private static final String PAN  = "Panoply";
+    private static final String GEO  = "Geophysical_Data";
+    private static final String ZWSP = "\u200B"; // used to store sort-order at the end of attr names
 
     private final JTextArea textArea = new JTextArea();
+    // We keep a node result hook if we want, but registry listener is the workhorse:
     private org.openide.util.Lookup.Result<Node> nodeSel;
 
     public PanoplyDumpTopComponent() {
         setName(Bundle.CTL_PanoplyDumpTopComponent());
         setToolTipText(Bundle.HINT_PanoplyDumpTopComponent());
-
         textArea.setEditable(false);
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         textArea.setLineWrap(false);
-
         setLayout(new BorderLayout());
         add(new JScrollPane(textArea), BorderLayout.CENTER);
         textArea.setText(HINT);
     }
 
     @Override public void componentOpened() {
-        nodeSel = Utilities.actionsGlobalContext().lookupResult(Node.class);
+        // Listen to NetBeans global registry (most reliable across SNAP views)
+        TopComponent.getRegistry().addPropertyChangeListener(this);
+
+        // Optional: also listen to global Node context if available
+        nodeSel = org.openide.util.Utilities.actionsGlobalContext().lookupResult(Node.class);
         nodeSel.addLookupListener(this);
-        resultChanged(null);
+
+        updateFromActivatedNodes();
     }
 
     @Override public void componentClosed() {
-        if (nodeSel != null) {
-            nodeSel.removeLookupListener(this);
-            nodeSel = null;
+        TopComponent.getRegistry().removePropertyChangeListener(this);
+        if (nodeSel != null) nodeSel.removeLookupListener(this);
+        nodeSel = null;
+    }
+
+    // React to activated nodes switches
+    @Override public void propertyChange(PropertyChangeEvent evt) {
+        String p = evt.getPropertyName();
+        if (TopComponent.Registry.PROP_ACTIVATED_NODES.equals(p) ||
+                TopComponent.Registry.PROP_ACTIVATED.equals(p)) {
+            SwingUtilities.invokeLater(this::updateFromActivatedNodes);
         }
     }
 
+    // Fallback listener (not strictly necessary with registry listener, but harmless)
     @Override public void resultChanged(LookupEvent ev) {
-        SwingUtilities.invokeLater(this::updateFromSelection);
+        SwingUtilities.invokeLater(this::updateFromActivatedNodes);
     }
 
-    private void updateFromSelection() {
+    private void updateFromActivatedNodes() {
         String dump = null;
 
-        if (nodeSel != null) {
-            for (Node n : nodeSel.allInstances()) {
-                // 1) Best case: the node exposes the MetadataElement
-                MetadataElement me = n.getLookup().lookup(MetadataElement.class);
+        Node[] act = TopComponent.getRegistry().getActivatedNodes();
+        if (act != null) {
+            for (Node n : act) {
+                // A) Try to get a MetadataElement directly from node or its ancestors
+                MetadataElement me = firstMetadataElementInAncestors(n);
                 if (isPanoplyVar(me)) {
                     dump = buildDumpFrom(me);
-                    break;
+                    if (dump != null) break;
                 }
-
-                // 2) Fallback: derive var name from the node path in the explorer
-                VarPath vp = derivePanoplyVarFromNodePath(n);
-                if (vp != null) {
-                    MetadataElement me2 = resolvePanoplyVarFromCurrentProduct(vp.varName);
-                    if (me2 != null) {
-                        dump = buildDumpFrom(me2);
-                        break;
+                // B) Derive variable name from the node path, then resolve from selected product
+                String varName = deriveVarNameFromPath(n);
+                if (varName != null) {
+                    MetadataElement resolved = resolvePanoplyVarFromCurrentProduct(varName);
+                    if (isPanoplyVar(resolved)) {
+                        dump = buildDumpFrom(resolved);
+                        if (dump != null) break;
                     }
                 }
             }
         }
 
-        // 3) Final fallback: some views put MetadataElement directly in global ctx
+        // C) last fallback: maybe a MetadataElement is directly in global context
         if (dump == null) {
-            MetadataElement me = Utilities.actionsGlobalContext().lookup(MetadataElement.class);
+            MetadataElement me = org.openide.util.Utilities.actionsGlobalContext().lookup(MetadataElement.class);
             if (isPanoplyVar(me)) {
                 dump = buildDumpFrom(me);
             }
         }
 
-        textArea.setText(dump != null && !dump.isEmpty() ? dump : HINT);
+        textArea.setText((dump != null && !dump.isEmpty()) ? dump : HINT);
         textArea.setCaretPosition(0);
     }
 
-    /** Check tree position Panoply → Geophysical_Data → <var> */
+    /** true only for elements Panoply → Geophysical_Data → <var> */
     private static boolean isPanoplyVar(MetadataElement el) {
         if (el == null) return false;
         MetadataElement p = el.getParentElement();
         if (p == null) return false;
         MetadataElement g = p.getParentElement();
-        return g != null && GEO_DATA.equals(p.getName()) && PANOPLY.equals(g.getName());
+        return g != null && GEO.equals(p.getName()) && PAN.equals(g.getName());
     }
 
-    /** Try to recognize a node under Panoply/Geophysical_Data and extract var name. */
-    private static VarPath derivePanoplyVarFromNodePath(Node node) {
-        if (node == null) return null;
-
-        // Walk up parents and collect names
-        String name = safeNodeName(node);
-        String parent = null, grand = null;
-
-        Node p = node.getParentNode();
-        if (p != null) {
-            parent = safeNodeName(p);
-            Node g = p.getParentNode();
-            if (g != null) {
-                grand = safeNodeName(g);
-            }
-        }
-
-        if (GEO_DATA.equals(parent) && PANOPLY.equals(grand) && name != null && !name.isEmpty()) {
-            return new VarPath(name);
+    /** climb node→parents and return the first MetadataElement found in any lookup */
+    private static MetadataElement firstMetadataElementInAncestors(Node node) {
+        for (Node cur = node; cur != null; cur = cur.getParentNode()) {
+            MetadataElement me = cur.getLookup().lookup(MetadataElement.class);
+            if (me != null) return me;
         }
         return null;
     }
 
-    /** Resolve metadata element Panoply/Geophysical_Data/<varName> from the selected product. */
+    /** From a node under Product → Metadata → Panoply → Geophysical_Data → <var>, return "<var>" */
+    private static String deriveVarNameFromPath(Node node) {
+        // Collect names from node up to root
+        List<String> up = new ArrayList<>(16);
+        for (Node cur = node; cur != null; cur = cur.getParentNode()) {
+            String nm = safeNodeName(cur);
+            if (nm != null && !nm.isEmpty()) up.add(nm);
+        }
+        if (up.isEmpty()) return null;
+
+        // now root→leaf
+        Collections.reverse(up);
+
+        // Find "... , Panoply, Geophysical_Data, <var>"
+        int iPan = indexOf(up, PAN);
+        if (iPan < 0 || iPan + 2 >= up.size()) return null;
+        if (!GEO.equals(up.get(iPan + 1))) return null;
+
+        String var = up.get(iPan + 2);
+        return (var != null && !var.isEmpty()) ? var : null;
+    }
+
+    private static int indexOf(List<String> list, String needle) {
+        for (int i = 0; i < list.size(); i++) {
+            if (needle.equals(list.get(i))) return i;
+        }
+        return -1;
+    }
+
+    /** Resolve Panoply/Geophysical_Data/<varName> from the selected product (ProductSceneView) */
     private static MetadataElement resolvePanoplyVarFromCurrentProduct(String varName) {
         SnapApp app = SnapApp.getDefault();
         if (app == null) return null;
@@ -146,16 +175,22 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         MetadataElement root = view.getProduct().getMetadataRoot();
         if (root == null) return null;
 
-        MetadataElement pan = root.getElement(PANOPLY);
+        MetadataElement pan = root.getElement(PAN);
         if (pan == null) return null;
-        MetadataElement geo = pan.getElement(GEO_DATA);
+
+        MetadataElement geo = pan.getElement(GEO);
         if (geo == null) return null;
+
         return geo.getElement(varName);
     }
 
-    /** Rebuild plain ncdump lines from stored attributes (names carry \u200Border suffix). */
+    /** Turn our stored attributes (each line was stored as the attr *name* + \u200Border) back into plain text */
     private static String buildDumpFrom(MetadataElement varElem) {
-        List<MetadataAttribute> attrs = new ArrayList<>(Arrays.asList(varElem.getAttributes()));
+        MetadataAttribute[] arr = varElem.getAttributes();
+        if (arr == null || arr.length == 0) return null;
+
+        List<MetadataAttribute> attrs = new ArrayList<>(Arrays.asList(arr));
+        // sort by the integer suffix after ZWSP
         attrs.sort(Comparator.comparingInt(a -> {
             String n = a.getName();
             int i = n.lastIndexOf(ZWSP);
@@ -174,15 +209,12 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         return sb.toString();
     }
 
-    /** Defensive name extraction (fall back to display name, strip HTML if any). */
+    /** Defensive node name extraction (strip any HTML decorations) */
     private static String safeNodeName(Node n) {
         if (n == null) return null;
         String s = n.getName();
         if (s == null || s.isEmpty()) s = n.getDisplayName();
         if (s == null) return null;
-        // remove trivial HTML wrappers if a renderer added them
         return s.replaceAll("<[^>]+>", "").trim();
     }
-
-    private record VarPath(String varName) {}
 }
