@@ -53,8 +53,18 @@ if [ -d ".seadas" ]; then
         if [ -d ".seadas_archive/.seadas9" ]; then
           rm -rf .seadas_archive/.seadas9 2> /dev/null
         fi
+
+        if [ -d ".seadas9/seadas-bathymetry-operator" ]; then
+          rm -rf .seadas9/seadas-bathymetry-operator 2> /dev/null
+        fi
+
+        if [ -d ".seadas9/seadas-watermask-operator" ]; then
+          rm -rf .seadas9/seadas-watermask-operator 2> /dev/null
+        fi
+
         mv .seadas9 .seadas_archive 2> /dev/null
         echo $(ARCHIVE_SEADAS9_MSG);
+
       fi
     else
       # This is probably seadas7 so archive it and look for seadas9
@@ -88,9 +98,41 @@ if [ -d ".seadas8" ]; then
    if [ -d ".seadas_archive/.seadas8" ]; then
      rm -rf .seadas_archive/.seadas8 2> /dev/null
    fi
+
+   if [ -d ".seadas8/seadas-bathymetry-operator" ]; then
+     rm -rf .seadas8/seadas-bathymetry-operator 2> /dev/null
+   fi
+
+   if [ -d ".seadas8/seadas-watermask-operator" ]; then
+     rm -rf .seadas8/seadas-watermask-operator 2> /dev/null
+   fi
+
    mv .seadas8 .seadas_archive 2> /dev/null
    echo $(ARCHIVE_SEADAS8_MSG);
 fi
+
+
+
+
+if [ -d ".seadas/config/Preferences/org/netbeans" ]; then
+     rm -rf .seadas/config/Preferences/org/netbeans 2> /dev/null
+fi
+
+if [ -d ".seadas/config/Toolbars" ]; then
+     rm -rf .seadas/config/Toolbars 2> /dev/null
+fi
+
+if [ -d ".seadas/config/Windows2Local" ]; then
+     rm -rf .seadas/config/Windows2Local 2> /dev/null
+fi
+
+if [ -d ".seadas/var" ]; then
+     rm -rf .seadas/var 2> /dev/null
+fi
+
+
+
+
 
 
 

@@ -57,7 +57,7 @@ import java.util.Map;
 })
 @NbBundle.Messages({
         "CTL_WaterMaskAction_Text=Land, Water, Coast Masks",
-        "CTL_WaterMaskAction_Description=Add coastline, land and water masks."
+        "CTL_WaterMaskAction_Description=Land, Water, Coast Tool -- adds land band, coast band and associated masks."
 })
 
 public final class WaterMaskAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar {

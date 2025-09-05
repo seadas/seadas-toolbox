@@ -57,8 +57,8 @@ import java.util.Collection;
         @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 30)
 })
 @NbBundle.Messages({
-        "CTL_OverlayContourLayerActionName=Contour Overlay",
-        "CTL_OverlayContourLayerActionToolTip=Show/hide Contour overlay for the selected image"
+        "CTL_OverlayContourLayerActionName=Contour Lines Layer",
+        "CTL_OverlayContourLayerActionToolTip=Contour Lines Tool -- adds contour layer(s) to the selected image"
 })
 public class ShowVectorContourOverlayAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
 

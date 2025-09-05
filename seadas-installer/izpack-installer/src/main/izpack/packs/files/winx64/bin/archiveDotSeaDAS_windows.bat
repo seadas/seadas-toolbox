@@ -11,6 +11,9 @@ set "SEADAS_ARCHIVE_SEADAS7_DIR=%SEADAS_ARCHIVE%\.seadas7"
 set "SEADAS_ARCHIVE_SEADAS8_DIR=%SEADAS_ARCHIVE%\.seadas8"
 set "SEADAS_ARCHIVE_SEADAS9_DIR=%SEADAS_ARCHIVE%\.seadas9"
 
+
+
+
 REM Directly perform the task that was in the GET_RECORDS label
 echo Assessing any previous SeaDAS version configuration directories ...
 
@@ -41,6 +44,15 @@ if exist "%SEADAS_DIR%" (
                 REM Removing existing .seadas9 archive
                 rd /s /q "%SEADAS_ARCHIVE_SEADAS9_DIR%"
             )
+
+            if exist "%SEADAS9_DIR%\seadas-bathymetry-operator" ()
+                rd /s /q "%SEADAS8_DIR%\seadas-bathymetry-operator"
+            )
+
+            if exist "%SEADAS9_DIR%\seadas-watermask-operator" ()
+                rd /s /q "%SEADAS8_DIR%\seadas-watermask-operator"
+            )
+
             move /y "%SEADAS9_DIR%" "%SEADAS_ARCHIVE_SEADAS9_DIR%" >nul 2>&1
             echo Previous %SEADAS9_DIR% has been archived in %SEADAS_ARCHIVE_SEADAS9_DIR%
         )
@@ -75,9 +87,36 @@ if exist "%SEADAS8_DIR%" ()
         REM Removing existing .seadas8 archive
         rd /s /q "%SEADAS_ARCHIVE_SEADAS8_DIR%"
     )
+
+    if exist "%SEADAS8_DIR%\seadas-bathymetry-operator" ()
+        rd /s /q "%SEADAS8_DIR%\seadas-bathymetry-operator"
+    )
+
+    if exist "%SEADAS8_DIR%\seadas-watermask-operator" ()
+        rd /s /q "%SEADAS8_DIR%\seadas-watermask-operator"
+    )
+
     move /y "%SEADAS8_DIR%" "%SEADAS_ARCHIVE_SEADAS8_DIR%" >nul 2>&1
     echo Previous %SEADAS8_DIR% has been archived in %SEADAS_ARCHIVE_SEADAS8_DIR%
 )
+
+
+if exist "%SEADAS_DIR%\config\Preferences\org\netbeans" ()
+    rd /s /q "%SEADAS_DIR%\config\Preferences\org\netbeans"
+)
+
+if exist "%SEADAS_DIR%\config\Toolbars" ()
+    rd /s /q "%SEADAS_DIR%\config\Toolbars"
+)
+
+if exist "%SEADAS_DIR%\config\Windows2Local" ()
+    rd /s /q "%SEADAS_DIR%\config\Windows2Local"
+)
+
+if exist "%SEADAS_DIR%\var" ()
+    rd /s /q "%SEADAS_DIR%\var"
+)
+
 
 
 endlocal

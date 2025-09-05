@@ -30,7 +30,7 @@ import java.util.ArrayList;
 })
 @NbBundle.Messages({
         "CTL_ImageAnimatorActionName=Image Animator",
-        "CTL_ImageAnimatorActionToolTip=Show/hide Image Animator for the selected images"
+        "CTL_ImageAnimatorActionToolTip=Image Animator -- animate images and spectrum/angular plots"
 })
 public class ShowImageAnimatorAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
 

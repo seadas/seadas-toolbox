@@ -45,7 +45,7 @@ import java.util.Map;
 })
 @NbBundle.Messages({
         "CTL_BathymetryAction_Text=Bathymetry",
-        "CTL_BathymetryAction_Description=Add bathymetry-elevation band and mask."
+        "CTL_BathymetryAction_Description=Bathymetry Tool -- adds bathymetry, topography, elevation bands and associated masks."
 })
 
 public final class BathymetryAction extends AbstractSnapAction
