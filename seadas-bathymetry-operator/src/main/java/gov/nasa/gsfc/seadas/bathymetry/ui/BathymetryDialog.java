@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.openide.util.HelpCtx;
@@ -123,7 +124,10 @@ class BathymetryDialog extends JDialog {
 
         setTitle("Create Bathymetry Mask and Elevation Bands");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        Rectangle bounds = SnapApp.getDefault().getMainFrame().getBounds();
+//        setLocationRelativeTo(null);
+        setBounds(bounds.x + 200,bounds.y + 100,100,100);
         pack();
 
 
@@ -417,7 +421,10 @@ class BathymetryDialog extends JDialog {
 
         setTitle("Create Bathymetry Mask & Elevation Bands");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        Rectangle bounds = SnapApp.getDefault().getMainFrame().getBounds();
+//        setLocationRelativeTo(null);
+        setBounds(bounds.x + 200,bounds.y + 100,100,100);
         pack();
 
 

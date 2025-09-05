@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
 
+import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.openide.awt.ColorComboBox;
@@ -112,7 +113,12 @@ class LandMasksDialog extends JDialog {
 
         setTitle("Land Masks");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        Rectangle bounds = SnapApp.getDefault().getMainFrame().getBounds();
+//        setLocationRelativeTo(null);
+        setBounds(bounds.x + 200,bounds.y + 100,100,100);
+
+
         pack();
 
 
@@ -420,8 +426,10 @@ class LandMasksDialog extends JDialog {
 
         setTitle("Create Land, Water & Coast Masks");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-     // setLocationRelativeTo(null);
-        setBounds(300,100,100,100);
+
+        Rectangle bounds = SnapApp.getDefault().getMainFrame().getBounds();
+//        setLocationRelativeTo(null);
+        setBounds(bounds.x + 200,bounds.y + 100,100,100);
         pack();
 
 

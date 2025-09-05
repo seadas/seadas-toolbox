@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
+import org.esa.snap.rcp.SnapApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,13 +106,32 @@ class InstallResolutionFileDialog extends JDialog {
         //        new ExGridBagConstraints(3, 0, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
 
-        jLabel = new JLabel("Do you want to install file " + sourceFileInfo.getFile().getName().toString() + " ?");
+        jLabel = new JLabel("<html>This tool requires source data file '" + sourceFileInfo.getFile().getName().toString() + "'.  <br>Do you wish to install the file now?</html>");
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets = new Insets(10,10,10,5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
 
         JPanel jPanel = new JPanel(new GridBagLayout());
-        jPanel.add(jLabel,
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-        jPanel.add(buttonsJPanel,
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+        jPanel.add(jLabel, gbc);
+        gbc.gridy++;
+        jPanel.add(buttonsJPanel, gbc);
+
+
+
+//        JPanel jPanel = new JPanel(new GridBagLayout());
+//        jPanel.add(jLabel,
+//                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+//        jPanel.add(new JLabel(""),
+//                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+//        jPanel.add(buttonsJPanel,
+//                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
 
 
         add(jPanel);
@@ -121,7 +141,11 @@ class InstallResolutionFileDialog extends JDialog {
 
         setTitle("File Installation");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        Rectangle bounds = SnapApp.getDefault().getMainFrame().getBounds();
+//        setLocationRelativeTo(null);
+        setBounds(bounds.x + 700,bounds.y + 100,100,100);
+
         pack();
 
 
@@ -168,7 +192,11 @@ class InstallResolutionFileDialog extends JDialog {
 
         setTitle("File Installation");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        Rectangle bounds = SnapApp.getDefault().getMainFrame().getBounds();
+//        setLocationRelativeTo(null);
+        setBounds(bounds.x + 700,bounds.y + 100,100,100);
+
         pack();
 
 

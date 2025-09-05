@@ -62,6 +62,10 @@ public final class BathymetryAction extends AbstractSnapAction
     private final Lookup lookup;
     private final Lookup.Result<ProductNode> viewResult;
 
+    private final int sleepShort = 1500;
+    private final int sleepLong = 4000;
+    private final int sleepVeryLong = 7000;
+
     public  BathymetryAction() {
         this(null);
     }
@@ -263,16 +267,16 @@ public final class BathymetryAction extends AbstractSnapAction
 
                                         try {
                                             bathymetryProduct = GPF.createProduct(BATHYMETRY_PRODUCT_NAME, parameters, product);
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                             if (bathymetryProduct == null) {
                                                 pm.setSubTaskName("Operator Failed: " + BATHYMETRY_PRODUCT_NAME);
-                                                sleepPreviewThread(5000);
+                                                sleepPreviewThread(sleepLong);
                                                 return null;
                                             }
                                         } catch (OperatorException e) {
                                             pm.setSubTaskName("Operator Failed: " + BATHYMETRY_PRODUCT_NAME);
-                                            sleepPreviewThread(5000);
+                                            sleepPreviewThread(sleepLong);
                                             return null;
                                         }
 
@@ -282,14 +286,14 @@ public final class BathymetryAction extends AbstractSnapAction
                                             pm.setSubTaskName("Creating band: " + BathymetryOp.TOPOGRAPHY_BAND_NAME);
                                             Band topographyBand = bathymetryProduct.getBand(BathymetryOp.TOPOGRAPHY_BAND_NAME);
                                             reformatSourceImage(topographyBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                             pm.setSubTaskName("Adding band: " + BathymetryOp.TOPOGRAPHY_BAND_NAME);
                                             topographyBand.setName(BathymetryOp.TOPOGRAPHY_BAND_NAME);
                                             product.addBand(topographyBand);
                                             pm.setSubTaskName("Band created: " + BathymetryOp.TOPOGRAPHY_BAND_NAME);
 
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         }
 
 
@@ -297,25 +301,25 @@ public final class BathymetryAction extends AbstractSnapAction
                                             pm.setSubTaskName("Creating band: " + BathymetryOp.ELEVATION_BAND_NAME);
                                             Band elevationBand = bathymetryProduct.getBand(BathymetryOp.ELEVATION_BAND_NAME);
                                             reformatSourceImage(elevationBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                             pm.setSubTaskName("Adding band: " + BathymetryOp.ELEVATION_BAND_NAME);
                                             elevationBand.setName(BathymetryOp.ELEVATION_BAND_NAME);
                                             product.addBand(elevationBand);
                                             pm.setSubTaskName("Band created: " + BathymetryOp.ELEVATION_BAND_NAME);
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         }
 
                                         pm.setSubTaskName("Creating band '" + BathymetryOp.BATHYMETRY_BAND_NAME + "'");
                                         Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
                                         reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                         pm.setSubTaskName("Adding band: " + BathymetryOp.BATHYMETRY_BAND_NAME);
                                         bathymetryBand.setName(BathymetryOp.BATHYMETRY_BAND_NAME);
                                         product.addBand(bathymetryBand);
                                         pm.setSubTaskName("Band created: " + BathymetryOp.BATHYMETRY_BAND_NAME);
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                     }
 
 
@@ -330,7 +334,7 @@ public final class BathymetryAction extends AbstractSnapAction
                                             bathymetryData.getMaskColor(),
                                             bathymetryData.getMaskTransparency());
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                     pm.setSubTaskName("Adding mask: " + bathymetryData.getMaskName());
                                     try {
@@ -338,7 +342,7 @@ public final class BathymetryAction extends AbstractSnapAction
                                         if (bathymetryMaskTmp != null) {
                                             maskGroup.remove(bathymetryMaskTmp);
                                         }
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepVeryLong,4, pm, totalWork, workDone);
                                         maskGroup.add(bathymetryMask);
                                         pm.setSubTaskName("Mask created: " + bathymetryData.getMaskName());
                                     } catch (Exception e) {
@@ -346,7 +350,7 @@ public final class BathymetryAction extends AbstractSnapAction
                                     }
 
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
                                     if (bathymetryData.isShowMaskAllBands()) {
@@ -362,7 +366,7 @@ public final class BathymetryAction extends AbstractSnapAction
 
                                 } finally {
                                     pm.setSubTaskName("Bathymetry Tool run completed");
-                                    sleepPreviewThread(1000);
+                                    sleepPreviewThread(sleepShort);
 
                                     pm.done();
                                 }

@@ -76,6 +76,11 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
     private final Lookup lookup;
     private final Lookup.Result<ProductNode> viewResult;
 
+    private final int sleepShort = 1500;
+    private final int sleepLong = 4000;
+    private final int sleepVeryLong = 7000;
+
+
     public  WaterMaskAction() {
         this(null);
     }
@@ -284,23 +289,23 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                     try {
 //                                        pm.setSubTaskName("Running operator: " + LAND_WATER_MASK_OP_ALIAS);
                                         landWaterProduct = GPF.createProduct(LAND_WATER_MASK_OP_ALIAS, parameters, product);
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                         if (landWaterProduct == null) {
                                             pm.setSubTaskName("Operator Failed!!: " + LAND_WATER_MASK_OP_ALIAS);
-                                            sleepPreviewThread(5000);
+                                            sleepPreviewThread(sleepLong);
                                             return null;
                                         }
                                     } catch (OperatorException e) {
                                         pm.setSubTaskName("Operator Failed!!: " + LAND_WATER_MASK_OP_ALIAS);
-                                        sleepPreviewThread(5000);
+                                        sleepPreviewThread(sleepLong);
                                         return null;
                                     }
 
 
                                     Band waterFractionBand = landWaterProduct.getBand(landMasksData.getWaterFractionBandName());
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                     //    Band coastBand = landWaterProduct.getBand("coast");
 
@@ -313,7 +318,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                     pm.setSubTaskName("Creating band: " + landMasksData.getWaterFractionBandName());
                                     reformatSourceImage(waterFractionBand, new ImageLayout(product.getBandAt(0).getSourceImage()), pm);
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                     waterFractionBand.setName(landMasksData.getWaterFractionBandName());
 
@@ -321,7 +326,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                                     pm.setSubTaskName("Band created: " + landMasksData.getWaterFractionBandName());
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
                                     //todo BEAM folks left this as a placeholder
@@ -359,7 +364,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                                         final FilterBand filteredCoastlineBand = new GeneralFilterBand(landMasksData.getWaterFractionSmoothedName(), waterFractionBand, GeneralFilterBand.OpType.MEAN, meanKernel, count);
 
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
                                         pm.setSubTaskName("Copying properties to: " + landMasksData.getWaterFractionSmoothedName());
@@ -367,14 +372,14 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                             ProductUtils.copySpectralBandProperties((Band) waterFractionBand, filteredCoastlineBand);
                                         }
 
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
                                         pm.setSubTaskName("Adding band: " + landMasksData.getWaterFractionSmoothedName());
                                         product.addBand(filteredCoastlineBand);
                                         pm.setSubTaskName("Band created: " + landMasksData.getWaterFractionSmoothedName());
 
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
                                         pm.setSubTaskName("Creating mask: " + landMasksData.getCoastlineMaskName());
@@ -388,7 +393,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                                 landMasksData.getCoastlineMaskColor(),
                                                 landMasksData.getCoastlineMaskTransparency());
 
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
                                         try {
@@ -396,13 +401,13 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                             if (coastlineMaskTmp != null) {
                                                 pm.setSubTaskName("Deleting existing mask: " + landMasksData.getCoastlineMaskName());
                                                 maskGroup.remove(coastlineMaskTmp);
-                                                workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                                workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                             }
 
                                             pm.setSubTaskName("Adding mask: " + landMasksData.getCoastlineMaskName());
-                                            workDone += sleepPreviewThread(5000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepVeryLong,8, pm, totalWork, workDone);
                                             maskGroup.add(coastlineMask);
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                             pm.setSubTaskName("Mask created: " + landMasksData.getCoastlineMaskName());
 
@@ -413,7 +418,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
 
 
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                     }
 
 
@@ -421,7 +426,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                     Mask savedCoastMask = maskGroup.get(savedCoastMaskName);
                                     if (savedCoastMask != null) {
                                         maskGroup.remove(savedCoastMask);
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                     }
                                     // end cleanup saved coast mask
@@ -441,7 +446,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                             landMasksData.getLandMaskColor(),
                                             landMasksData.getLandMaskTransparency());
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
 
@@ -450,13 +455,13 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                         if (landMaskTmp != null) {
                                             pm.setSubTaskName("Deleting existing mask: " + landMasksData.getLandMaskName());
                                             maskGroup.remove(landMaskTmp);
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         }
 
                                         pm.setSubTaskName("Adding mask: " + landMasksData.getLandMaskName());
-                                        workDone += sleepPreviewThread(5000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepVeryLong,8, pm, totalWork, workDone);
                                         maskGroup.add(landMask);
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         pm.setSubTaskName("Mask created: " + landMasksData.getLandMaskName());
 
 
@@ -465,7 +470,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                         Mask savedMask = maskGroup.get(savedLandMaskName);
                                         if (savedMask != null) {
                                             maskGroup.remove(savedMask);
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                         }
                                         // end cleanup saved land mask
@@ -477,7 +482,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                     }
 
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
 
@@ -496,26 +501,27 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                             landMasksData.getWaterMaskTransparency());
 
 
-                                    workDone += sleepPreviewThread(4000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                     try {
                                         Mask waterMaskTmp = maskGroup.get(waterMask.getName());
                                         if (waterMaskTmp != null) {
                                             pm.setSubTaskName("Deleting existing mask: " + landMasksData.getWaterMaskName());
                                             maskGroup.remove(waterMaskTmp);
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         }
 
                                         pm.setSubTaskName("Adding mask: " + landMasksData.getWaterMaskName());
+                                        workDone += sleepPreviewThread(sleepVeryLong,8, pm, totalWork, workDone);
                                         maskGroup.add(waterMask);
-                                        workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         pm.setSubTaskName("Mask created: " + landMasksData.getWaterMaskName());
 
                                         // Cleanup saved water mask
                                         Mask savedMask = maskGroup.get(savedWaterMaskName);
                                         if (savedMask != null) {
                                             maskGroup.remove(savedMask);
-                                            workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         }
                                         // end cleanup saved water mask
 
@@ -525,7 +531,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                         pm.setSubTaskName("ERROR!! Mask not created: '" + landMasksData.getWaterMaskName());
                                     }
 
-                                    workDone += sleepPreviewThread(2000,4, pm, totalWork, workDone);
+                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
 
@@ -574,7 +580,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                                 } finally {
                                     pm.setSubTaskName("Land Water Coast Mask Tool run completed");
-                                    sleepPreviewThread(1000);
+                                    sleepPreviewThread(sleepShort);
 
                                     pm.done();
                                 }
