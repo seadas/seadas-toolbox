@@ -13,11 +13,14 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 @TopComponent.Description(preferredID = "PanoplyDumpTopComponent", persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "output", openAtStartup = false)
@@ -31,13 +34,20 @@ import java.util.List;
 })
 public final class PanoplyDumpTopComponent extends TopComponent implements LookupListener, PropertyChangeListener {
 
-    private static final String HINT = "Select a variable under Metadata \u2192 Panoply \u2192 Geophysical_Data …";
+    private static final String HINT = "Select a variable under Metadata \u2192 Panoply \u2192 <group> …";
     private static final String PAN  = "Panoply";
-    private static final String GEO  = "Geophysical_Data";
-    private static final String ZWSP = "\u200B"; // used to store sort-order at the end of attr names
+    private static final String ZWSP = "\u200B"; // suffix used for stable sort order
+
+    // Accepted group names (match case-insensitively)
+    private static final String[] GROUPS = new String[]{
+            "Geophysical_Data",
+            "Navigation_Data",
+            "Processing_Control",
+            "Scan_Line_Attributes",
+            "Sensor_Band_Parameters"
+    };
 
     private final JTextArea textArea = new JTextArea();
-    // We keep a node result hook if we want, but registry listener is the workhorse:
     private org.openide.util.Lookup.Result<Node> nodeSel;
 
     public PanoplyDumpTopComponent() {
@@ -52,13 +62,9 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
     }
 
     @Override public void componentOpened() {
-        // Listen to NetBeans global registry (most reliable across SNAP views)
         TopComponent.getRegistry().addPropertyChangeListener(this);
-
-        // Optional: also listen to global Node context if available
         nodeSel = org.openide.util.Utilities.actionsGlobalContext().lookupResult(Node.class);
         nodeSel.addLookupListener(this);
-
         updateFromActivatedNodes();
     }
 
@@ -68,7 +74,6 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         nodeSel = null;
     }
 
-    // React to activated nodes switches
     @Override public void propertyChange(PropertyChangeEvent evt) {
         String p = evt.getPropertyName();
         if (TopComponent.Registry.PROP_ACTIVATED_NODES.equals(p) ||
@@ -77,7 +82,6 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         }
     }
 
-    // Fallback listener (not strictly necessary with registry listener, but harmless)
     @Override public void resultChanged(LookupEvent ev) {
         SwingUtilities.invokeLater(this::updateFromActivatedNodes);
     }
@@ -88,18 +92,25 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         Node[] act = TopComponent.getRegistry().getActivatedNodes();
         if (act != null) {
             for (Node n : act) {
-                System.out.println("[PanoplyDump] Node: " + safeNodeName(n));
+                // A) direct MetadataElement from node/ancestors
                 MetadataElement me = firstMetadataElementInAncestors(n);
-                if (me != null) {
-                    System.out.println("  -> Found MetadataElement: " + me.getName());
-                }
                 if (isPanoplyVar(me)) {
                     dump = buildDumpFrom(me);
-                    break;
+                    if (dump != null) break;
+                }
+                // B) derive var name from path and resolve from current product
+                String varName = deriveVarNameFromPath(n);
+                if (varName != null) {
+                    MetadataElement resolved = resolvePanoplyVarFromCurrentProduct(varName);
+                    if (isPanoplyVar(resolved)) {
+                        dump = buildDumpFrom(resolved);
+                        if (dump != null) break;
+                    }
                 }
             }
         }
 
+        // C) global context fallback
         if (dump == null) {
             MetadataElement me = org.openide.util.Utilities.actionsGlobalContext().lookup(MetadataElement.class);
             if (isPanoplyVar(me)) {
@@ -111,129 +122,16 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         textArea.setCaretPosition(0);
     }
 
-    /** true only for elements Panoply → Geophysical_Data → <var> */
-    /** true only for elements Panoply → Geophysical_Data → <var> (robust + case-insensitive) */
+    /** True only for elements Panoply → (any GROUPS, case-insensitive) → <var> */
     private static boolean isPanoplyVar(MetadataElement el) {
         if (el == null) return false;
-        MetadataElement p = el.getParentElement();
-        if (p == null) return false;
-        MetadataElement g = p.getParentElement();
-        if (g == null) return false;
-
-        String pn = p.getName() != null ? p.getName().trim() : "";
-        String gn = g.getName() != null ? g.getName().trim() : "";
-
-        // Accept case-insensitive exact match
-        if ("geophysical_data".equalsIgnoreCase(pn) && "panoply".equalsIgnoreCase(gn)) {
-            return true;
-        }
-
-        // Be tolerant: if parent isn’t exactly Geophysical_Data, see if grand-grandparent is Panoply
-        MetadataElement gg = g.getParentElement();
-        if (gg != null) {
-            String ggn = gg.getName() != null ? gg.getName().trim() : "";
-            if ("panoply".equalsIgnoreCase(gn) && "geophysical_data".equalsIgnoreCase(pn)) return true;
-            if ("panoply".equalsIgnoreCase(ggn) && "geophysical_data".equalsIgnoreCase(gn)) {
-                // i.e. Panoply → (wrapper) → Geophysical_Data → <var>
-                return true;
-            }
-        }
-        return false;
+        MetadataElement parent = el.getParentElement();
+        if (parent == null) return false;
+        MetadataElement grand = parent.getParentElement();
+        if (grand == null) return false;
+        if (!equalsIc(grand.getName(), PAN)) return false;
+        return isAllowedGroupName(parent.getName());
     }
-
-    /** Build plain ncdump text from various storage layouts */
-    private static String buildDumpFrom(MetadataElement varElem) {
-        if (varElem == null) return null;
-
-        // 1) Preferred: attributes-as-lines (name holds the line, suffixed with \u200B<order>)
-        MetadataAttribute[] arr = varElem.getAttributes();
-        if (arr != null && arr.length > 0) {
-            java.util.List<MetadataAttribute> attrs = new java.util.ArrayList<>(java.util.Arrays.asList(arr));
-
-            // If we find a single "ncdump" attribute, prefer it directly
-            for (MetadataAttribute a : attrs) {
-                if ("ncdump".equalsIgnoreCase(a.getName())) {
-                    String val = a.getData() != null ? a.getData().getElemString() : null;
-                    if (val != null && !val.isEmpty()) {
-                        // System.out.println("[PanoplyDump] using single ncdump attribute");
-                        return val.endsWith("\n") ? val : (val + "\n");
-                    }
-                }
-            }
-
-            // Otherwise: sort by \u200B<order> and strip the suffix from the line
-            final String ZWSP = "\u200B";
-            attrs.sort(java.util.Comparator.comparingInt(a -> {
-                String n = a.getName();
-                int i = n != null ? n.lastIndexOf(ZWSP) : -1;
-                if (i < 0) return Integer.MAX_VALUE;
-                try { return Integer.parseInt(n.substring(i + 1)); }
-                catch (NumberFormatException ex) { return Integer.MAX_VALUE; }
-            }));
-
-            StringBuilder sb = new StringBuilder(Math.max(2048, attrs.size() * 64));
-            int lineCount = 0;
-            for (MetadataAttribute a : attrs) {
-                String n = a.getName();
-                if (n == null) continue;
-
-                // Ignore our book-keeping attribute if present
-                if ("ncdump".equalsIgnoreCase(n)) continue;
-
-                int i = n.lastIndexOf(ZWSP);
-                String line = (i >= 0) ? n.substring(0, i) : n;
-                if (line != null && !line.isBlank()) {
-                    sb.append(line).append('\n');
-                    lineCount++;
-                }
-            }
-            if (lineCount > 0) {
-                // System.out.println("[PanoplyDump] built from attribute names: " + lineCount + " lines");
-                return sb.toString();
-            }
-            // else fall through to child-element forms
-        }
-
-        // 2) Single child element "Dump" with attribute "text"
-        MetadataElement dumpEl = varElem.getElement("Dump");
-        if (dumpEl != null) {
-            MetadataAttribute textAttr = dumpEl.getAttribute("text");
-            if (textAttr != null && textAttr.getData() != null) {
-                String s = textAttr.getData().getElemString();
-                if (s != null && !s.isEmpty()) {
-                    // System.out.println("[PanoplyDump] built from Dump@text");
-                    return s.endsWith("\n") ? s : (s + "\n");
-                }
-            }
-        }
-
-        // 3) Repeated child elements "Line" with attribute "text"
-        MetadataElement[] kids = varElem.getElements();
-        if (kids != null && kids.length > 0) {
-            StringBuilder sb = new StringBuilder(1024);
-            int lineCount = 0;
-            for (MetadataElement k : kids) {
-                if (!"Line".equalsIgnoreCase(k.getName())) continue;
-                MetadataAttribute ta = k.getAttribute("text");
-                if (ta != null && ta.getData() != null) {
-                    String s = ta.getData().getElemString();
-                    if (s != null && !s.isEmpty()) {
-                        sb.append(s).append('\n');
-                        lineCount++;
-                    }
-                }
-            }
-            if (lineCount > 0) {
-                // System.out.println("[PanoplyDump] built from child Line@text: " + lineCount + " lines");
-                return sb.toString();
-            }
-        }
-
-        // Nothing found
-        // System.out.println("[PanoplyDump] no dump content found for " + varElem.getName());
-        return null;
-    }
-
 
     /** climb node→parents and return the first MetadataElement found in any lookup */
     private static MetadataElement firstMetadataElementInAncestors(Node node) {
@@ -244,36 +142,28 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         return null;
     }
 
-    /** From a node under Product → Metadata → Panoply → Geophysical_Data → <var>, return "<var>" */
+    /** From a node under Product → Metadata → Panoply → <group> → <var>, return "<var>" */
     private static String deriveVarNameFromPath(Node node) {
-        // Collect names from node up to root
-        List<String> up = new ArrayList<>(16);
+        java.util.ArrayList<String> up = new java.util.ArrayList<>(16);
         for (Node cur = node; cur != null; cur = cur.getParentNode()) {
             String nm = safeNodeName(cur);
             if (nm != null && !nm.isEmpty()) up.add(nm);
         }
         if (up.isEmpty()) return null;
 
-        // now root→leaf
-        Collections.reverse(up);
+        Collections.reverse(up); // root→leaf
 
-        // Find "... , Panoply, Geophysical_Data, <var>"
-        int iPan = indexOf(up, PAN);
+        int iPan = lastIndexOfIc(up, PAN);
         if (iPan < 0 || iPan + 2 >= up.size()) return null;
-        if (!GEO.equals(up.get(iPan + 1))) return null;
+
+        String groupName = up.get(iPan + 1);
+        if (!isAllowedGroupName(groupName)) return null;
 
         String var = up.get(iPan + 2);
         return (var != null && !var.isEmpty()) ? var : null;
     }
 
-    private static int indexOf(List<String> list, String needle) {
-        for (int i = 0; i < list.size(); i++) {
-            if (needle.equals(list.get(i))) return i;
-        }
-        return -1;
-    }
-
-    /** Resolve Panoply/Geophysical_Data/<varName> from the selected product (ProductSceneView) */
+    /** Resolve Panoply/<group>/<varName> from the selected product (case-insensitive). */
     private static MetadataElement resolvePanoplyVarFromCurrentProduct(String varName) {
         SnapApp app = SnapApp.getDefault();
         if (app == null) return null;
@@ -283,16 +173,110 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         MetadataElement root = view.getProduct().getMetadataRoot();
         if (root == null) return null;
 
-        MetadataElement pan = root.getElement(PAN);
+        MetadataElement pan = getChildIgnoreCase(root, PAN);
         if (pan == null) return null;
 
-        MetadataElement geo = pan.getElement(GEO);
-        if (geo == null) return null;
+        for (String g : GROUPS) {
+            MetadataElement group = getChildIgnoreCase(pan, g);
+            if (group != null) {
+                MetadataElement var = getChildIgnoreCase(group, varName);
+                if (var != null) return var;
+            }
+        }
+        return null;
+    }
+    /** Build plain ncdump text from the Panoply var element.
+     *  Supports two storage styles:
+     *  A) One big attribute named "ncdump" (value holds the whole text)
+     *  B) Many attributes whose *names* are lines suffixed with ZWSP + order
+     */
+    private static String buildDumpFrom(MetadataElement varElem) {
+        MetadataAttribute[] arr = varElem.getAttributes();
+        if (arr == null || arr.length == 0) return null;
 
-        return geo.getElement(varName);
+        // --- Style A: single "ncdump" attribute whose *value* is the full text ---
+        if (arr.length == 1) {
+            MetadataAttribute a = arr[0];
+            String name = a.getName();
+            String val  = a.getData() != null ? a.getData().getElemString() : null;
+            if (name != null && name.equalsIgnoreCase("ncdump") && val != null && !val.isEmpty()) {
+                return ensureTrailingNewline(val);
+            }
+        }
+        // Also handle the case where there are a few attrs, none with ZWSP, but at least
+        // one has a non-empty value — concatenate their values line-by-line.
+        boolean hasZWSP = false;
+        for (MetadataAttribute a : arr) {
+            String n = a.getName();
+            if (n != null && n.indexOf(ZWSP) >= 0) { hasZWSP = true; break; }
+        }
+        if (!hasZWSP) {
+            StringBuilder byValue = new StringBuilder();
+            for (MetadataAttribute a : arr) {
+                String v = a.getData() != null ? a.getData().getElemString() : null;
+                if (v != null && !v.isEmpty()) {
+                    byValue.append(v).append('\n');
+                }
+            }
+            if (byValue.length() > 0) return byValue.toString();
+            // If still nothing useful, fall through to name-based as last resort
+        }
+
+        // --- Style B: many attributes whose *names* are the lines + ZWSP + order ---
+        java.util.List<MetadataAttribute> attrs = new ArrayList<>(Arrays.asList(arr));
+        attrs.sort(Comparator.comparingInt(a -> {
+            String n = a.getName();
+            int i = n != null ? n.lastIndexOf(ZWSP) : -1;
+            if (i < 0) return Integer.MAX_VALUE;
+            try { return Integer.parseInt(n.substring(i + 1)); }
+            catch (NumberFormatException ex) { return Integer.MAX_VALUE; }
+        }));
+
+        StringBuilder sb = new StringBuilder(Math.max(2048, attrs.size() * 64));
+        for (MetadataAttribute a : attrs) {
+            String line = a.getName();
+            if (line == null) continue;
+            int i = line.lastIndexOf(ZWSP);
+            if (i >= 0) line = line.substring(0, i);
+            sb.append(line).append('\n');
+        }
+        String out = sb.toString().trim();
+        return out.isEmpty() ? null : out + '\n';
     }
 
-    /** Defensive node name extraction (strip any HTML decorations) */
+    private static String ensureTrailingNewline(String s) {
+        return (s.endsWith("\n") || s.endsWith("\r")) ? s : (s + "\n");
+    }
+
+    /** Get child MetadataElement by name, case-insensitive. */
+    private static MetadataElement getChildIgnoreCase(MetadataElement parent, String name) {
+        if (parent == null || name == null) return null;
+        for (MetadataElement ch : parent.getElements()) {
+            if (equalsIc(ch.getName(), name)) return ch;
+        }
+        return null;
+    }
+
+    private static boolean isAllowedGroupName(String name) {
+        if (name == null) return false;
+        for (String g : GROUPS) {
+            if (equalsIc(g, name)) return true;
+        }
+        return false;
+    }
+
+    private static boolean equalsIc(String a, String b) {
+        return a != null && b != null && a.equalsIgnoreCase(b);
+    }
+
+    private static int lastIndexOfIc(java.util.List<String> list, String needle) {
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (equalsIc(list.get(i), needle)) return i;
+        }
+        return -1;
+    }
+
+    /** Strip any HTML decorations and trim. */
     private static String safeNodeName(Node n) {
         if (n == null) return null;
         String s = n.getName();
