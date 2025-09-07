@@ -21,10 +21,7 @@ import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @TopComponent.Description(preferredID = "PanoplyDumpTopComponent", persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "output", openAtStartup = false)
@@ -40,10 +37,19 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
 
     private static final String HINT = "Select a variable or group under Metadata \u2192 Panoply …";
     private static final String PAN  = "Panoply";
-    // In your build you renamed nodes to lowercase. Keep both for safety.
-    private static final String GEO_L = "geophysical_data";
-    private static final String GEO_U = "Geophysical_Data";
     private static final String ZWSP = "\u200B"; // suffix storing sort order
+
+    // All top-level groups we want to handle (case-insensitive)
+    private static final Set<String> TOP_GROUPS = new HashSet<>(Arrays.asList(
+            "geophysical_data",
+            "navigation_data",
+            "processing_control",
+            "scan_line_attributes",
+            "sensor_band_parameters",
+            // be tolerant with legacy title-casing just in case:
+            "Geophysical_Data", "Navigation_Data", "Processing_Control",
+            "Scan_Line_Attributes", "Sensor_Band_Parameters"
+    ));
 
     private final JTextArea textArea = new JTextArea();
     private org.openide.util.Lookup.Result<Node> nodeSel;
@@ -92,26 +98,26 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
             for (Node n : act) {
                 MetadataElement me = firstMetadataElementInAncestors(n);
                 if (me != null) {
-                    if (isPanoplyVar(me)) {
+                    if (isPanoplyVariable(me)) {
                         dump = buildVarDump(me);
                         if (dump != null) break;
                     }
-                    if (isGeophysicalGroup(me)) {
-                        dump = buildGroupDump(me, GEO_L /*canonical group name*/);
+                    if (isPanoplyTopGroup(me)) {
+                        dump = buildGroupDump(me, n);
                         if (dump != null) break;
                     }
                 }
             }
         }
 
-        // Fallback on direct context
+        // Fallback: direct context
         if (dump == null) {
             MetadataElement me = org.openide.util.Utilities.actionsGlobalContext()
                     .lookup(MetadataElement.class);
-            if (isPanoplyVar(me)) {
+            if (isPanoplyVariable(me)) {
                 dump = buildVarDump(me);
-            } else if (isGeophysicalGroup(me)) {
-                dump = buildGroupDump(me, GEO_L);
+            } else if (isPanoplyTopGroup(me)) {
+                dump = buildGroupDump(me, null);
             }
         }
 
@@ -128,24 +134,31 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         return null;
     }
 
-    /** true only for elements Panoply → (geophysical_data | Geophysical_Data) → <var> */
-    private static boolean isPanoplyVar(MetadataElement el) {
+    /** true only for elements Panoply → <any top group> → <var> */
+    private static boolean isPanoplyVariable(MetadataElement el) {
         if (el == null) return false;
-        MetadataElement p = el.getParentElement();
-        if (p == null) return false;
-        MetadataElement g = p.getParentElement();
-        if (g == null) return false;
-        boolean isGeo = GEO_L.equalsIgnoreCase(p.getName()) || GEO_U.equalsIgnoreCase(p.getName());
-        return isGeo && PAN.equals(g.getName());
+        MetadataElement parent = el.getParentElement();
+        if (parent == null) return false;
+        MetadataElement grand = parent.getParentElement();
+        if (grand == null) return false;
+        return PAN.equals(grand.getName()) && isTopGroupName(parent.getName());
     }
 
-    /** true for the geophysical_data group node under Panoply */
-    private static boolean isGeophysicalGroup(MetadataElement el) {
+    /** true for any of the Panoply top-level groups directly under Panoply */
+    private static boolean isPanoplyTopGroup(MetadataElement el) {
         if (el == null) return false;
-        MetadataElement g = el.getParentElement();
-        return g != null
-                && PAN.equals(g.getName())
-                && (GEO_L.equalsIgnoreCase(el.getName()) || GEO_U.equalsIgnoreCase(el.getName()));
+        MetadataElement parent = el.getParentElement();
+        return parent != null && PAN.equals(parent.getName()) && isTopGroupName(el.getName());
+    }
+
+    private static boolean isTopGroupName(String name) {
+        if (name == null) return false;
+        if (TOP_GROUPS.contains(name)) return true;
+        // case-insensitive fallback
+        for (String g : TOP_GROUPS) {
+            if (g.equalsIgnoreCase(name)) return true;
+        }
+        return false;
     }
 
     /** Build a dump for a variable element (lines were stored as attributes with ZWSP+order). */
@@ -160,44 +173,40 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         }
         return sb.toString();
     }
-
-    /** Build a dump for the group (header + ‘variables:’ + each child variable’s dump indented). */
-    private String buildGroupDump(MetadataElement groupElem, String canonicalGroupName) {
-        // Determine file label
-        String fileLabel = currentFilePathOrName();
+    private String buildGroupDump(MetadataElement groupElem, Node fromNode) {
+        String groupCanonical = canonicalGroupName(groupElem.getName());
+        String fileLabel      = currentFilePathOrName(fromNode, groupElem);
 
         StringBuilder out = new StringBuilder(8192);
-        out.append("Group \"").append(canonicalGroupName).append("\"\n");
+        out.append("Group \"").append(groupCanonical).append("\"\n");
         out.append("In file \"").append(fileLabel).append("\"\n");
-        out.append("Group full name: ").append(canonicalGroupName).append('\n');
+        out.append("Group full name: ").append(groupCanonical).append('\n');
         out.append("variables:\n");
 
-        // Iterate child elements = variables
-        MetadataElement[] vars = groupElem.getElements();
-        if (vars != null && vars.length > 0) {
-            // Keep UI order (natural by name)
-            Arrays.sort(vars, Comparator.comparing(MetadataElement::getName, String.CASE_INSENSITIVE_ORDER));
-            for (int vi = 0; vi < vars.length; vi++) {
-                MetadataElement v = vars[vi];
-                List<MetadataAttribute> lines = orderedAttrs(v);
+        MetadataElement[] children = groupElem.getElements();
+        if (children != null && children.length > 0) {
+            Arrays.sort(children, Comparator.comparing(MetadataElement::getName, String.CASE_INSENSITIVE_ORDER));
+            for (int i = 0; i < children.length; i++) {
+                MetadataElement child = children[i];
+                List<MetadataAttribute> lines = orderedAttrs(child);
                 if (!lines.isEmpty()) {
-                    // Indent each stored line by two spaces (stored lines already indent attributes by 2)
                     for (MetadataAttribute a : lines) {
                         String line = stripOrder(a.getName());
                         if (!line.isEmpty()) {
                             out.append("  ").append(line).append('\n');
                         }
                     }
-                    if (vi < vars.length - 1) out.append('\n'); // blank line between variables
+                    if (i < children.length - 1) out.append('\n');
                 }
             }
         }
         return out.toString();
     }
 
+
     private static List<MetadataAttribute> orderedAttrs(MetadataElement element) {
         MetadataAttribute[] arr = element.getAttributes();
-        if (arr == null || arr.length == 0) return List.of();
+        if (arr == null || arr.length == 0) return Collections.emptyList();
         List<MetadataAttribute> list = new ArrayList<>(Arrays.asList(arr));
         list.sort(Comparator.comparingInt(a -> {
             String n = a.getName();
@@ -214,22 +223,67 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         return i >= 0 ? s.substring(0, i) : s;
     }
 
-    private static String currentFilePathOrName() {
-        SnapApp app = SnapApp.getDefault();
-        if (app != null) {
-            ProductSceneView v = app.getSelectedProductSceneView();
-            if (v != null) {
-                Product p = v.getProduct();
-                if (p != null) {
-                    try {
-                        // Product#getFileLocation() exists in SNAP 12; fall back if null.
-                        File f = p.getFileLocation();
-                        if (f != null) return f.getAbsolutePath();
-                    } catch (Throwable ignored) { /* older API */ }
-                    return p.getName();
+    private static String canonicalGroupName(String raw) {
+        if (raw == null) return "";
+        // Prefer lowercase with underscores (matches your recent changes & Panoply examples)
+        return raw.toLowerCase(Locale.ROOT);
+    }
+
+    private static String currentFilePathOrName(Node node, MetadataElement contextElem) {
+        // 1) Try the node and its ancestors
+        for (Node cur = node; cur != null; cur = cur.getParentNode()) {
+            // Try Product from lookup
+            Product p = cur.getLookup().lookup(Product.class);
+            String v = fileFromProduct(p);
+            if (v != null) return v;
+
+            // Try a java.io.File in lookup (some nodes expose it)
+            java.io.File f = cur.getLookup().lookup(java.io.File.class);
+            if (f != null) return safeFileName(f);
+        }
+
+        // 2) Try the active scene view
+        try {
+            SnapApp app = SnapApp.getDefault();
+            if (app != null) {
+                ProductSceneView v = app.getSelectedProductSceneView();
+                if (v != null) {
+                    String s = fileFromProduct(v.getProduct());
+                    if (s != null) return s;
                 }
             }
-        }
+        } catch (Throwable ignore) {}
+
+        // 3) Last resort: use the product name if we can reach a product
+        try {
+            SnapApp app = SnapApp.getDefault();
+            if (app != null) {
+                // If you have ProductManager API, you could iterate open products here
+                // and, e.g., pick the first; but using the active product name is usually fine:
+                ProductSceneView v = app.getSelectedProductSceneView();
+                if (v != null && v.getProduct() != null) {
+                    return v.getProduct().getName();
+                }
+            }
+        } catch (Throwable ignore) {}
+
         return "<unknown>";
     }
+
+    private static String fileFromProduct(Product p) {
+        if (p == null) return null;
+        try {
+            java.io.File f = p.getFileLocation(); // SNAP 12 API
+            if (f != null) return safeFileName(f);
+        } catch (Throwable ignore) {}
+        // fallback to product name if no file is associated
+        return p.getName();
+    }
+
+    private static String safeFileName(java.io.File f) {
+        // Show the file name (not full path) to match Panoply’s “In file” line style
+        String name = (f != null) ? f.getName() : null;
+        return (name != null && !name.isEmpty()) ? name : "<unknown>";
+    }
+
 }
