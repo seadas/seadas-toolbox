@@ -173,60 +173,85 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         }
         return sb.toString();
     }
+    // --- replace your buildGroupDump(...) with this one ---
     private String buildGroupDump(MetadataElement groupElem, Node fromNode) {
-        String groupCanonical = canonicalGroupName(groupElem.getName());
-        String fileLabel      = currentFilePathOrName(fromNode, groupElem);
+        final String groupName   = groupElem.getName();
+        final String groupPath   = groupName; // our canonical path is same as name at this level
+        final String fileLabel   = currentFilePathOrName(fromNode, groupElem);
 
         StringBuilder out = new StringBuilder(8192);
-        out.append("Group \"").append(groupCanonical).append("\"\n");
+        out.append("Group \"").append(groupName).append("\"\n");
         out.append("In file \"").append(fileLabel).append("\"\n");
-        out.append("Group full name: ").append(groupCanonical).append('\n');
-        out.append("variables:\n");
+        out.append("Group full name: ").append(groupPath).append('\n');
 
-        MetadataElement[] children = groupElem.getElements();
-        if (children != null && children.length > 0) {
-            Arrays.sort(children, Comparator.comparing(MetadataElement::getName, String.CASE_INSENSITIVE_ORDER));
-            for (int i = 0; i < children.length; i++) {
-                MetadataElement child = children[i];
-                List<MetadataAttribute> lines = orderedAttrs(child);
+        MetadataElement[] kids = groupElem.getElements();
+        if (kids == null || kids.length == 0) {
+            out.append("// group is empty\n");
+            return out.toString();
+        }
+
+        Arrays.sort(kids, Comparator.comparing(MetadataElement::getName, String.CASE_INSENSITIVE_ORDER));
+
+        // processing_control has subgroups; others list variables
+        if ("processing_control".equalsIgnoreCase(groupName)) {
+            for (int i = 0; i < kids.length; i++) {
+                MetadataElement sub = kids[i];
+                dumpSubgroup(sub, groupPath + "/" + sub.getName(), fileLabel, out);
+                if (i < kids.length - 1) out.append('\n');
+            }
+        } else {
+            out.append("variables:\n");
+            for (int i = 0; i < kids.length; i++) {
+                List<MetadataAttribute> lines = orderedAttrs(kids[i]);
                 if (!lines.isEmpty()) {
                     for (MetadataAttribute a : lines) {
-                        String line = stripOrder(a.getName());
-                        if (!line.isEmpty()) {
-                            out.append("  ").append(line).append('\n');
-                        }
+                        out.append("  ").append(stripOrder(a.getName())).append('\n');
                     }
-                    if (i < children.length - 1) out.append('\n');
+                    if (i < kids.length - 1) out.append('\n');
                 }
             }
         }
         return out.toString();
     }
 
-
-    private static List<MetadataAttribute> orderedAttrs(MetadataElement element) {
-        MetadataAttribute[] arr = element.getAttributes();
-        if (arr == null || arr.length == 0) return Collections.emptyList();
-        List<MetadataAttribute> list = new ArrayList<>(Arrays.asList(arr));
+    // --- add these two helpers (or replace existing variants) ---
+    private static List<MetadataAttribute> orderedAttrs(MetadataElement el) {
+        MetadataAttribute[] arr = el.getAttributes();
+        List<MetadataAttribute> list = new ArrayList<>();
+        if (arr != null) Collections.addAll(list, arr);
         list.sort(Comparator.comparingInt(a -> {
             String n = a.getName();
             int i = n.lastIndexOf(ZWSP);
             if (i < 0) return Integer.MAX_VALUE;
             try { return Integer.parseInt(n.substring(i + 1)); }
-            catch (NumberFormatException ex) { return Integer.MAX_VALUE; }
+            catch (NumberFormatException ignore) { return Integer.MAX_VALUE; }
         }));
         return list;
     }
 
     private static String stripOrder(String s) {
         int i = s.lastIndexOf(ZWSP);
-        return i >= 0 ? s.substring(0, i) : s;
+        return (i >= 0) ? s.substring(0, i) : s;
     }
 
-    private static String canonicalGroupName(String raw) {
-        if (raw == null) return "";
-        // Prefer lowercase with underscores (matches your recent changes & Panoply examples)
-        return raw.toLowerCase(Locale.ROOT);
+    // --- new: subgroup dumper used by processing_control ---
+    private static void dumpSubgroup(MetadataElement sub,
+                                     String fullPath,
+                                     String fileLabel,
+                                     StringBuilder out) {
+        out.append("Group \"").append(sub.getName()).append("\"\n");
+        out.append("In file \"").append(fileLabel).append("\"\n");
+        out.append("Group full name: ").append(fullPath).append('\n');
+        out.append("// group attributes:\n");
+
+        List<MetadataAttribute> lines = orderedAttrs(sub);
+        if (lines.isEmpty()) {
+            out.append("// (none)\n");
+            return;
+        }
+        for (MetadataAttribute a : lines) {
+            out.append(stripOrder(a.getName())).append('\n');
+        }
     }
 
     private static String currentFilePathOrName(Node node, MetadataElement contextElem) {
