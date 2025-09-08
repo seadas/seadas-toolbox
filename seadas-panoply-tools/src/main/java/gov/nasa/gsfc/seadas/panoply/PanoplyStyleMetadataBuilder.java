@@ -47,7 +47,7 @@ public final class PanoplyStyleMetadataBuilder {
             // Exactly the five nodes requested (TitleCase to match your dump window logic)
             safeAdd(panoplyRoot, () -> buildGroupSection(root, "geophysical_data",      "Geophysical_Data"),     "Geophysical_Data");
             safeAdd(panoplyRoot, () -> buildGroupSection(root, "navigation_data",       "Navigation_Data"),      "Navigation_Data");
-            safeAdd(panoplyRoot, () -> buildProcessingControl(root),                                               "Processing_Control");
+            safeAdd(panoplyRoot, () -> buildProcessingControl(root.getNetcdfFile()),                                               "Processing_Control");
             safeAdd(panoplyRoot, () -> buildGroupSection(root, "scan_line_attributes",  "Scan_Line_Attributes"), "Scan_Line_Attributes");
             safeAdd(panoplyRoot, () -> buildGroupSection(root, "sensor_band_parameters","Sensor_Band_Parameters"),"Sensor_Band_Parameters");
 
@@ -74,58 +74,208 @@ public final class PanoplyStyleMetadataBuilder {
         return section;
     }
 
-    /** processing_control with flag_percentages and input_parameters sub-nodes. */
-    private static MetadataElement buildProcessingControl(Group root) {
+    // ---------------- Processing_Control ----------------
+
+    private static MetadataElement buildProcessingControl(NetcdfFile nc) {
         MetadataElement pcElem = new MetadataElement("Processing_Control");
-        Group pc = findGroupRecursive(root, "processing_control");
-        if (pc == null) {
-            return pcElem; // empty node still shown
-        }
+        Group root = nc.getRootGroup();
+        Group pc = childGroup(root, "processing_control");
+        if (pc != null) {
+            // flag_percentages
+            MetadataElement fpElem = new MetadataElement("Flag_Percentages");
+            dumpGroupAttributesAsLines(pc, "flag_percentages", fpElem);
+            pcElem.addElement(fpElem);
 
-        // Subgroup: flag_percentages
-        MetadataElement flagsElem = new MetadataElement("Flag_Percentages");
-        Group flags = findGroupRecursive(pc, "flag_percentages");
-        if (flags != null) {
-            // Many files put values as variables or as attributes – support both
-            for (Variable v : flags.getVariables()) {
-                flagsElem.addElement(buildVarDump(v, flags));
-            }
-            if (!flags.getAttributes().isEmpty()) {
-                // Synthesize a simple dump for attributes-only subgroup
-                MetadataElement attDump = new MetadataElement("__attributes__");
-                int k = 0;
-                for (Attribute a : flags.getAttributes()) {
-                    String line = attrDumpLine(a);
-                    attDump.addAttribute(new MetadataAttribute(line + ZWSP + (k++),
-                            ProductData.createInstance(""), true));
-                }
-                flagsElem.addElement(attDump);
-            }
+            // input_parameters
+            MetadataElement ipElem = new MetadataElement("Input_Parameters");
+            dumpGroupAttributesAsLines(pc, "input_parameters", ipElem);
+            pcElem.addElement(ipElem);
         }
-        pcElem.addElement(flagsElem);
-
-        // Subgroup: input_parameters
-        MetadataElement inputElem = new MetadataElement("Input_Parameters");
-        Group input = findGroupRecursive(pc, "input_parameters");
-        if (input != null) {
-            for (Variable v : input.getVariables()) {
-                inputElem.addElement(buildVarDump(v, input));
-            }
-            if (!input.getAttributes().isEmpty()) {
-                MetadataElement attDump = new MetadataElement("__attributes__");
-                int k = 0;
-                for (Attribute a : input.getAttributes()) {
-                    String line = attrDumpLine(a);
-                    attDump.addAttribute(new MetadataAttribute(line + ZWSP + (k++),
-                            ProductData.createInstance(""), true));
-                }
-                inputElem.addElement(attDump);
-            }
-        }
-        pcElem.addElement(inputElem);
-
         return pcElem;
     }
+
+    private static void dumpGroupAttributesAsLines(Group parentGroup, String childSimpleName, MetadataElement targetElem) {
+        Group g = childGroup(parentGroup, childSimpleName);
+        if (g == null) return;
+
+        int order = 0;
+        for (Attribute a : g.getAttributes()) {
+            String line = formatAttributeLine(a, true); // group-level attribute with leading ':'
+            addLine(targetElem, line, order++);
+        }
+    }
+
+    private static Group childGroup(Group parent, String name) {
+        if (parent == null || name == null) return null;
+        for (Group g : parent.getGroups()) {
+            if (name.equalsIgnoreCase(g.getShortName())) return g;
+        }
+        return null;
+    }
+
+    // ---------------- Formatting helpers ----------------
+
+    /** Add a line as a sortable attribute (line in the name, empty payload). */
+    private static void addLine(MetadataElement elem, String line, int order) {
+        elem.addAttribute(new MetadataAttribute(line + ZWSP + order,
+                ProductData.createInstance(""), true));
+    }
+
+    /** Format an attribute as ncdump-style text. When global==true, prefix with ':' immediately. */
+    private static String formatAttributeLine(Attribute a, boolean globalOrGroupLevel) {
+        StringBuilder sb = new StringBuilder(128);
+        // leading spaces for variable attributes are added by caller as needed
+        if (globalOrGroupLevel) sb.append(':');
+        sb.append(a.getShortName()).append(" = ");
+
+        if (a.isString()) {
+            if (a.getLength() <= 1) {
+                sb.append('"').append(a.getStringValue()).append('"');
+            } else {
+                for (int i = 0; i < a.getLength(); i++) {
+                    if (i > 0) sb.append(", ");
+                    sb.append('"').append(a.getStringValue(i)).append('"');
+                }
+            }
+            sb.append(';');
+            return sb.toString();
+        }
+
+        // numeric (or opaque) values
+        for (int i = 0; i < a.getLength(); i++) {
+            if (i > 0) sb.append(", ");
+            String v = String.valueOf(a.getNumericValue(i));
+            sb.append(applyTypeSuffix(v, a)); // e.g., add 'f' for float, 'S' for short
+        }
+        sb.append(';');
+
+        String typeComment = numericTypeComment(a);
+        if (typeComment != null) {
+            sb.append(" // ").append(typeComment);
+        }
+        return sb.toString();
+    }
+
+    private static String applyTypeSuffix(String v, Attribute a) {
+        String dt = (a.getDataType() != null) ? a.getDataType().toString().toLowerCase() : "";
+        switch (dt) {
+            case "float":  return ensureFloatForm(v) + "f";
+            case "double": return ensureFloatForm(v); // no suffix
+            case "short":  return v + "S";
+            case "byte":   return v + "B";
+            // int/long/uint/ulong: leave as-is (no easy signedness info here)
+            default:       return v;
+        }
+    }
+
+    private static String numericTypeComment(Attribute a) {
+        String dt = (a.getDataType() != null) ? a.getDataType().toString().toLowerCase() : null;
+        if (dt == null) return null;
+        switch (dt) {
+            case "float":
+            case "double":
+            case "short":
+            case "byte":
+            case "int":
+            case "long":
+                return dt;
+            default:
+                return null;
+        }
+    }
+
+    private static String ensureFloatForm(String v) {
+        return (v.indexOf('.') >= 0 || v.indexOf('e') >= 0 || v.indexOf('E') >= 0) ? v : (v + ".0");
+    }
+
+    private static String attrValuesString(Attribute a) {
+        if (a.isString()) {
+            if (a.getLength() <= 1) return "\"" + a.getStringValue() + "\"";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < a.getLength(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append('"').append(a.getStringValue(i)).append('"');
+            }
+            return sb.toString();
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < a.getLength(); i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(String.valueOf(a.getNumericValue(i)));
+        }
+        return sb.toString();
+    }
+
+    private static String typeCommentSuffix(Attribute a) {
+        String t = numericTypeComment(a);
+        return (t != null) ? " // " + t : "";
+    }
+
+    private static String shapeString(int[] shape) {
+        if (shape == null || shape.length == 0) return "[]";
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < shape.length; i++) {
+            if (i > 0) sb.append(" x ");
+            sb.append(shape[i]);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    private static String nullSafe(String s) { return s == null ? "" : s; }
+
+//    /** processing_control with flag_percentages and input_parameters sub-nodes. */
+//    private static MetadataElement buildProcessingControl(Group root) {
+//        MetadataElement pcElem = new MetadataElement("Processing_Control");
+//        Group pc = findGroupRecursive(root, "processing_control");
+//        if (pc == null) {
+//            return pcElem; // empty node still shown
+//        }
+//
+//        // Subgroup: flag_percentages
+//        MetadataElement flagsElem = new MetadataElement("Flag_Percentages");
+//        Group flags = findGroupRecursive(pc, "flag_percentages");
+//        if (flags != null) {
+//            // Many files put values as variables or as attributes – support both
+//            for (Variable v : flags.getVariables()) {
+//                flagsElem.addElement(buildVarDump(v, flags));
+//            }
+//            if (!flags.getAttributes().isEmpty()) {
+//                // Synthesize a simple dump for attributes-only subgroup
+//                MetadataElement attDump = new MetadataElement("__attributes__");
+//                int k = 0;
+//                for (Attribute a : flags.getAttributes()) {
+//                    String line = attrDumpLine(a);
+//                    attDump.addAttribute(new MetadataAttribute(line + ZWSP + (k++),
+//                            ProductData.createInstance(""), true));
+//                }
+//                flagsElem.addElement(attDump);
+//            }
+//        }
+//        pcElem.addElement(flagsElem);
+//
+//        // Subgroup: input_parameters
+//        MetadataElement inputElem = new MetadataElement("Input_Parameters");
+//        Group input = findGroupRecursive(pc, "input_parameters");
+//        if (input != null) {
+//            for (Variable v : input.getVariables()) {
+//                inputElem.addElement(buildVarDump(v, input));
+//            }
+//            if (!input.getAttributes().isEmpty()) {
+//                MetadataElement attDump = new MetadataElement("__attributes__");
+//                int k = 0;
+//                for (Attribute a : input.getAttributes()) {
+//                    String line = attrDumpLine(a);
+//                    attDump.addAttribute(new MetadataAttribute(line + ZWSP + (k++),
+//                            ProductData.createInstance(""), true));
+//                }
+//                inputElem.addElement(attDump);
+//            }
+//        }
+//        pcElem.addElement(inputElem);
+//
+//        return pcElem;
+//    }
 
     // ------------------ dump helpers ------------------
 
