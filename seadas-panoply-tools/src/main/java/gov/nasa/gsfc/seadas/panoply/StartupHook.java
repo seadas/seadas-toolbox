@@ -18,7 +18,7 @@ public final class StartupHook {
 
     public static void init() {
         if (listener != null) {
-            System.out.println("[Panoply] StartupHook already initialized");
+            //System.out.println("[Panoply] StartupHook already initialized");
             return;
         }
         pm = resolveProductManager();
@@ -31,17 +31,17 @@ public final class StartupHook {
             @Override
             public void productAdded(ProductManager.Event e) {
                 Product p = e.getProduct();
-                System.out.println("[Panoply] productAdded: " + safeName(p));
+                //System.out.println("[Panoply] productAdded: " + safeName(p));
 
                 File f = p.getFileLocation();
                 String src = (f != null ? f.getAbsolutePath() : null);
-                System.out.println("[Panoply] Source for " + safeName(p) + ": " + src);
+                //System.out.println("[Panoply] Source for " + safeName(p) + ": " + src);
 
                 if (src != null) {
                     try {
-                        System.out.println("[Panoply] Attaching to " + p.getName() + " from " + src);
+                        //System.out.println("[Panoply] Attaching to " + p.getName() + " from " + src);
                         PanoplyStyleMetadataBuilder.attachPanoplyMetadata(p, src);
-                        System.out.println("[Panoply] Attached ✓");
+                        //System.out.println("[Panoply] Attached ✓");
                     } catch (Throwable ex) {
                         System.out.println("[Panoply] attach failed: " +
                                 ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -56,14 +56,14 @@ public final class StartupHook {
         };
 
         pm.addListener(listener);
-        System.out.println("[Panoply] ProductManager listener registered");
+        //System.out.println("[Panoply] ProductManager listener registered");
     }
 
     public static void shutdown() {
         if (pm != null && listener != null) {
             try {
                 pm.removeListener(listener);
-                System.out.println("[Panoply] ProductManager listener removed");
+                //System.out.println("[Panoply] ProductManager listener removed");
             } catch (Throwable t) {
                 System.out.println("[Panoply] Warning removing listener: " + t.getMessage());
             }

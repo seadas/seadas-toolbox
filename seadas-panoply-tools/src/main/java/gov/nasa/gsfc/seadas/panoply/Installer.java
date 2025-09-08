@@ -8,11 +8,11 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
-        System.out.println("[Panoply] ModuleInstall restored()");
+        //System.out.println("[Panoply] ModuleInstall restored()");
         // Start selection watcher (auto-opens dump on selection)
         watcher = new PanoplySelectionWatcher();
         watcher.start();
-        System.out.println("[Panoply] Selection watcher started");
+        //System.out.println("[Panoply] Selection watcher started");
         // Start product manager hook to attach metadata
         StartupHook.init();
     }
@@ -21,6 +21,6 @@ public class Installer extends ModuleInstall {
     public void close() {
         if (watcher != null) watcher.stop();
         StartupHook.shutdown();
-        System.out.println("[Panoply] Module closed");
+        //System.out.println("[Panoply] Module closed");
     }
 }
