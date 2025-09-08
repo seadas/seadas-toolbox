@@ -1,9 +1,6 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
-import com.bc.ceres.swing.figure.Interactor;
-import com.thoughtworks.xstream.io.xml.QNameMap;
 import org.esa.snap.core.gpf.OperatorException;
-import org.esa.snap.core.gpf.ui.DefaultSingleTargetProductDialog;
 import com.bc.ceres.multilevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import org.esa.snap.core.datamodel.*;
@@ -12,8 +9,6 @@ import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.rcp.imgfilter.model.Filter;
-import org.esa.snap.ui.product.ProductSceneView;
-import org.esa.snap.ui.AppContext;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -28,7 +23,6 @@ import javax.media.jai.JAI;
 import javax.media.jai.operator.FormatDescriptor;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.image.RenderedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,8 +50,8 @@ import java.util.Map;
         @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 20)
 })
 @NbBundle.Messages({
-        "CTL_WaterMaskAction_Text=Land, Water, Coast Masks",
-        "CTL_WaterMaskAction_Description=Land, Water, Coast Tool -- adds land band, coast band and associated masks."
+        "CTL_WaterMaskAction_Text=Land Mask Tool",
+        "CTL_WaterMaskAction_Description=Land Mask Tool -- adds land band, coast band and associated masks."
 })
 
 public final class WaterMaskAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar {
@@ -76,9 +70,13 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
     private final Lookup lookup;
     private final Lookup.Result<ProductNode> viewResult;
 
-    private final int sleepShort = 1500;
-    private final int sleepLong = 4000;
-    private final int sleepVeryLong = 7000;
+    private final int SLEEP_SHORT_DURATION = 1500;
+    private final int SLEEP_MEDIUM_DURATION = 4000;
+    private final int SLEEP_LONG_DURATION = 8000;
+
+    private int sleepShort = SLEEP_SHORT_DURATION;
+    private int sleepMedium = SLEEP_MEDIUM_DURATION;
+    private int sleepLong = SLEEP_LONG_DURATION;
 
 
     public  WaterMaskAction() {
@@ -100,8 +98,10 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
     private void showLandWaterCoastMasks(final SnapApp snapApp) {
 
 
+
         final Product product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
         if (product != null) {
+
             final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
             final ProductNodeGroup<Band> bandGroup = product.getBandGroup();
 
@@ -113,6 +113,16 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
             boolean useDialogs = true;
 
             final LandMasksData landMasksData = new LandMasksData();
+
+
+            boolean bandsAreOpenForThisFile = bandsAreOpenForThisFile(product);
+            if (bandsAreOpenForThisFile) {
+                sleepMedium = SLEEP_MEDIUM_DURATION;
+                sleepLong = SLEEP_LONG_DURATION;
+            } else {
+                sleepMedium = SLEEP_SHORT_DURATION;
+                sleepLong = SLEEP_SHORT_DURATION;
+            }
 
 
             if (!useDialogs) {
@@ -242,8 +252,14 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                     if (sourceFileInfo.isEnabled()) {
 
+                        String pmTitle = "<html>Running ...<br>&nbsp;</html>";
+                        if (bandsAreOpenForThisFile) {
+                            pmTitle = "<html>Running ...<br><br>Note: Processing speed can be improved <br>by running this tool with no bands opened.<br><br><hr><br></html>";
+                        }
+                        final String pmTitleFinal = pmTitle;
+
                         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
-                                "Running: Land Water Coast Mask Tool") {
+                                "Land Mask Tool") {
 
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
@@ -258,7 +274,8 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                 }
 
                                 int workDone = 0;
-                                pm.beginTask("Running: Land Water Coast Mask Tool", totalWork);
+                                pm.setSubTaskName("Initializing");
+                                pm.beginTask(pmTitleFinal, totalWork);
 
                                 try {
                                     //  Product landWaterProduct = GPF.createProduct("LandWaterMask", GPF.NO_PARAMS, product);
@@ -293,12 +310,12 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                                         if (landWaterProduct == null) {
                                             pm.setSubTaskName("Operator Failed!!: " + LAND_WATER_MASK_OP_ALIAS);
-                                            sleepPreviewThread(sleepLong);
+                                            sleepPreviewThread(sleepMedium);
                                             return null;
                                         }
                                     } catch (OperatorException e) {
                                         pm.setSubTaskName("Operator Failed!!: " + LAND_WATER_MASK_OP_ALIAS);
-                                        sleepPreviewThread(sleepLong);
+                                        sleepPreviewThread(sleepMedium);
                                         return null;
                                     }
 
@@ -405,7 +422,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                             }
 
                                             pm.setSubTaskName("Adding mask: " + landMasksData.getCoastlineMaskName());
-                                            workDone += sleepPreviewThread(sleepVeryLong,8, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepLong,8, pm, totalWork, workDone);
                                             maskGroup.add(coastlineMask);
                                             workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
@@ -459,7 +476,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                         }
 
                                         pm.setSubTaskName("Adding mask: " + landMasksData.getLandMaskName());
-                                        workDone += sleepPreviewThread(sleepVeryLong,8, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepLong,8, pm, totalWork, workDone);
                                         maskGroup.add(landMask);
                                         workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         pm.setSubTaskName("Mask created: " + landMasksData.getLandMaskName());
@@ -512,7 +529,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                         }
 
                                         pm.setSubTaskName("Adding mask: " + landMasksData.getWaterMaskName());
-                                        workDone += sleepPreviewThread(sleepVeryLong,8, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepLong,8, pm, totalWork, workDone);
                                         maskGroup.add(waterMask);
                                         workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         pm.setSubTaskName("Mask created: " + landMasksData.getWaterMaskName());
@@ -605,6 +622,19 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
         }
 
+    }
+
+
+    private boolean bandsAreOpenForThisFile(Product product) {
+        boolean bandsAreOpenForThisFile = false;
+        Band[] bands = product.getBands();
+        for (Band band : bands) {
+            if (band.getImageInfo() != null) {
+                bandsAreOpenForThisFile = true;
+            }
+        }
+
+        return bandsAreOpenForThisFile;
     }
 
 

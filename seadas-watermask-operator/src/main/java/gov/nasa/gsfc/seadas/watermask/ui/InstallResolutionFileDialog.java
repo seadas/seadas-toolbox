@@ -1,14 +1,24 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Mask;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorException;
 import org.esa.snap.rcp.SnapApp;
 
+import javax.media.jai.ImageLayout;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -55,26 +65,51 @@ class InstallResolutionFileDialog extends JDialog {
 
             public void actionPerformed(ActionEvent event) {
 
+                SnapApp snapApp = SnapApp.getDefault();
 
-                dispose();
+                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
+                        "Land Mask Tool: File Installer") {
 
-                //  acquire in example: "https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
-                try {
-                    landMasksData.fireEvent(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
+                    @Override
+                    protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                    final String filename = sourceFileInfo.getFile().getName().toString();
+                        int totalWork = 10;
+                        int workDone = 0;
 
-                    final URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
+                        final String filename = sourceFileInfo.getFile().getName().toString();
 
-                    File targetFile = ResourceInstallationUtils.getTargetFile(filename);
+                        pm.beginTask("Installing source file: " + filename, totalWork);
 
-                    if (!targetFile.exists()) {
-                        Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, landMasksData));
-                        t.start();
+                        try {
+                            dispose();
+
+                            //  acquire in example: "https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
+                            try {
+                                landMasksData.fireEvent(LandMasksData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
+
+                                final URL sourceUrl = new URL(LandMasksData.LANDMASK_URL + "/" + filename);
+
+                                File targetFile = ResourceInstallationUtils.getTargetFile(filename);
+
+                                if (!targetFile.exists()) {
+                                    FileInstallRunnable fileInstallRunnable = new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, landMasksData);
+                                    Thread t = new Thread(fileInstallRunnable);
+                                    t.start();
+
+                                    while (fileInstallRunnable.isAlive()) {
+                                        sleep(1000);
+                                    }
+                                }
+                            } catch (Exception e) {
+                            }
+                        } finally {
+                            pm.done();
+                        }
+                        return null;
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                };
+
+                pmSwingWorker.executeWithBlocking();
 
             }
         });
@@ -154,6 +189,16 @@ class InstallResolutionFileDialog extends JDialog {
         setMaximumSize(getPreferredSize());
         setSize(getPreferredSize());
 
+    }
+
+
+
+    private void sleep(long milliSeconds) {
+        try {
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException e3) {
+            Thread.currentThread().interrupt();
+        }
     }
 
 

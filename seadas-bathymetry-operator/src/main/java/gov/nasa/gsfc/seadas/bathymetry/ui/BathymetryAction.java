@@ -44,8 +44,8 @@ import java.util.Map;
         @ActionReference(path = "Toolbars/SeaDAS Toolbox", position = 10)
 })
 @NbBundle.Messages({
-        "CTL_BathymetryAction_Text=Bathymetry",
-        "CTL_BathymetryAction_Description=Bathymetry Tool -- adds bathymetry, topography, elevation bands and associated masks."
+        "CTL_BathymetryAction_Text=Bathymetry Mask Tool",
+        "CTL_BathymetryAction_Description=Bathymetry Mask Tool -- adds bathymetry, topography, elevation bands and associated masks."
 })
 
 public final class BathymetryAction extends AbstractSnapAction
@@ -62,9 +62,14 @@ public final class BathymetryAction extends AbstractSnapAction
     private final Lookup lookup;
     private final Lookup.Result<ProductNode> viewResult;
 
-    private final int sleepShort = 1500;
-    private final int sleepLong = 4000;
-    private final int sleepVeryLong = 7000;
+    private final int SLEEP_SHORT_DURATION = 1500;
+    private final int SLEEP_MEDIUM_DURATION = 4000;
+    private final int SLEEP_LONG_DURATION = 8000;
+
+    private int sleepShort = SLEEP_SHORT_DURATION;
+    private int sleepMedium = SLEEP_MEDIUM_DURATION;
+    private int sleepLong = SLEEP_LONG_DURATION;
+
 
     public  BathymetryAction() {
         this(null);
@@ -148,6 +153,16 @@ public final class BathymetryAction extends AbstractSnapAction
             boolean useDialogs = true;
 
             final BathymetryData bathymetryData = new BathymetryData();
+
+            boolean bandsAreOpenForThisFile = bandsAreOpenForThisFile(product);
+            if (bandsAreOpenForThisFile) {
+                sleepMedium = SLEEP_MEDIUM_DURATION;
+                sleepLong = SLEEP_LONG_DURATION;
+            } else {
+                sleepMedium = SLEEP_SHORT_DURATION;
+                sleepLong = SLEEP_SHORT_DURATION;
+            }
+
 
 
             if (!useDialogs) {
@@ -240,15 +255,24 @@ public final class BathymetryAction extends AbstractSnapAction
                         if (bandCreated[0] == true) {
                             msg[0] = "Re-creating bathymetry masks";
                         }
+
+                        String pmTitle = "<html>Running ...<br>&nbsp;</html>";
+                        if (bandsAreOpenForThisFile) {
+                            pmTitle = "<html>Running ...<br><br>Note: Processing speed can be improved <br>by running this tool with no bands opened.<br><br><hr><br></html>";
+                        }
+                        final String pmTitleFinal = pmTitle;
+
                         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
-                                "Running: Bathymetry Tool") {
+                                "Bathymetry Mask Tool") {
 
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
                                 int totalWork = 44;
                                 int workDone = 0;
-                                pm.beginTask("Running: Bathymetry Tool", totalWork);
+
+                                pm.setSubTaskName("Initializing");
+                                pm.beginTask(pmTitleFinal, totalWork);
 
                                 try {
 
@@ -271,12 +295,12 @@ public final class BathymetryAction extends AbstractSnapAction
 
                                             if (bathymetryProduct == null) {
                                                 pm.setSubTaskName("Operator Failed: " + BATHYMETRY_PRODUCT_NAME);
-                                                sleepPreviewThread(sleepLong);
+                                                sleepPreviewThread(sleepMedium);
                                                 return null;
                                             }
                                         } catch (OperatorException e) {
                                             pm.setSubTaskName("Operator Failed: " + BATHYMETRY_PRODUCT_NAME);
-                                            sleepPreviewThread(sleepLong);
+                                            sleepPreviewThread(sleepMedium);
                                             return null;
                                         }
 
@@ -342,7 +366,8 @@ public final class BathymetryAction extends AbstractSnapAction
                                         if (bathymetryMaskTmp != null) {
                                             maskGroup.remove(bathymetryMaskTmp);
                                         }
-                                        workDone += sleepPreviewThread(sleepVeryLong,4, pm, totalWork, workDone);
+
+                                        workDone += sleepPreviewThread(sleepLong,4, pm, totalWork, workDone);
                                         maskGroup.add(bathymetryMask);
                                         pm.setSubTaskName("Mask created: " + bathymetryData.getMaskName());
                                     } catch (Exception e) {
@@ -417,6 +442,20 @@ public final class BathymetryAction extends AbstractSnapAction
             return 0;
         }
     }
+
+
+    private boolean bandsAreOpenForThisFile(Product product) {
+        boolean bandsAreOpenForThisFile = false;
+        Band[] bands = product.getBands();
+        for (Band band : bands) {
+            if (band.getImageInfo() != null) {
+                bandsAreOpenForThisFile = true;
+            }
+        }
+
+        return bandsAreOpenForThisFile;
+    }
+
 
     private int incrementWork(com.bc.ceres.core.ProgressMonitor pm, int totalWork, int workDone) {
         if (workDone < totalWork) {

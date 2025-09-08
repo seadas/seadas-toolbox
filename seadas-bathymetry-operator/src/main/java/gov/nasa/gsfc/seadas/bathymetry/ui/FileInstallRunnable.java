@@ -18,6 +18,7 @@ class FileInstallRunnable implements Runnable {
     SourceFileInfo sourceFileInfo;
     String filename;
     boolean valid = true;
+    boolean isAlive = false;
 
     public FileInstallRunnable(URL sourceUrl, String filename, SourceFileInfo sourceFileInfo, BathymetryData bathymetryData) {
         if (sourceUrl== null || filename == null ||  sourceFileInfo == null  || bathymetryData == null) {
@@ -25,6 +26,7 @@ class FileInstallRunnable implements Runnable {
             return;
         }
 
+        this.isAlive = true;
         this.sourceUrl = sourceUrl;
         this.sourceFileInfo = sourceFileInfo;
         this.bathymetryData = bathymetryData;
@@ -44,7 +46,11 @@ class FileInstallRunnable implements Runnable {
             sourceFileInfo.setStatus(false, e.getMessage());
         }
 
-
+        isAlive = false;
         bathymetryData.fireEvent(BathymetryData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, null, sourceFileInfo);
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 }

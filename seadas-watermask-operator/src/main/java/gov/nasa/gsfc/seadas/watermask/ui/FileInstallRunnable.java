@@ -20,6 +20,7 @@ class FileInstallRunnable implements Runnable {
     SourceFileInfo sourceFileInfo;
     String filename;
     boolean valid = true;
+    boolean isAlive = false;
 
     public FileInstallRunnable(URL sourceUrl, String filename, SourceFileInfo sourceFileInfo, LandMasksData landMasksData) {
         if (sourceUrl== null || filename == null ||  sourceFileInfo == null  || landMasksData == null) {
@@ -27,6 +28,7 @@ class FileInstallRunnable implements Runnable {
             return;
         }
 
+        this.isAlive = true;
         this.sourceUrl = sourceUrl;
         this.sourceFileInfo = sourceFileInfo;
         this.landMasksData = landMasksData;
@@ -57,7 +59,11 @@ class FileInstallRunnable implements Runnable {
             sourceFileInfo.setStatus(false, e.getMessage());
         }
 
-
+        isAlive = false;
         landMasksData.fireEvent(LandMasksData.NOTIFY_USER_FILE_INSTALL_RESULTS_EVENT, null, sourceFileInfo);
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 }

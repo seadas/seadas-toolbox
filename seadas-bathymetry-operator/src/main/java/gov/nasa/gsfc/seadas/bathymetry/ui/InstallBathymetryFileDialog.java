@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 import org.esa.snap.rcp.SnapApp;
 
@@ -53,35 +54,58 @@ class InstallBathymetryFileDialog extends JDialog {
 
         installButton.addActionListener(new ActionListener() {
 
+
             public void actionPerformed(ActionEvent event) {
 
+                SnapApp snapApp = SnapApp.getDefault();
 
-                dispose();
+                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
+                        "Bathymetry Mask Tool: File Installer") {
 
-                //  acquire in example: "https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask/50m.zip"
-                try {
-                    bathymetryData.setInstallingFile(true);
-                    bathymetryData.fireEvent(BathymetryData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
+                    @Override
+                    protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
-                    if (sourceFileInfo.getAltFile() != null) {
+                        int totalWork = 10;
+                        int workDone = 0;
+
                         final String filename = sourceFileInfo.getAltFile().getName().toString();
 
-                        final URL sourceUrl = new URL(BathymetryData.LANDMASK_URL + "/" + filename);
+                        pm.beginTask("Installing source file: " + filename, totalWork);
 
-                        File targetFile = ResourceInstallationUtils.getTargetFile(filename);
+                        try {
+                            dispose();
 
-                        if (!targetFile.exists()) {
-                            Thread t = new Thread(new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, bathymetryData));
-                            t.start();
+                            try {
+                                bathymetryData.setInstallingFile(true);
+                                bathymetryData.fireEvent(BathymetryData.CONFIRMED_REQUEST_TO_INSTALL_FILE_EVENT);
+
+                                if (sourceFileInfo.getAltFile() != null) {
+                                    final URL sourceUrl = new URL(BathymetryData.LANDMASK_URL + "/" + filename);
+
+                                    File targetFile = ResourceInstallationUtils.getTargetFile(filename);
+
+                                    if (!targetFile.exists()) {
+                                        FileInstallRunnable fileInstallRunnable = new FileInstallRunnable(sourceUrl, filename, sourceFileInfo, bathymetryData);
+                                        Thread t = new Thread(fileInstallRunnable);
+                                        t.start();
+
+                                        while (fileInstallRunnable.isAlive()) {
+                                            sleep(1000);
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                            }
+                        } finally {
+                            pm.done();
                         }
+                        return null;
                     }
+                };
 
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                pmSwingWorker.executeWithBlocking();
             }
+
         });
 
 
@@ -158,6 +182,16 @@ class InstallBathymetryFileDialog extends JDialog {
         setSize(getPreferredSize());
 
     }
+
+
+    private void sleep(long milliSeconds) {
+        try {
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException e3) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
 
 
     public final void installationResultsUI() {
