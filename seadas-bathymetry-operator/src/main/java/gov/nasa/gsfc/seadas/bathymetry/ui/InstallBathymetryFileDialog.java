@@ -90,7 +90,7 @@ class InstallBathymetryFileDialog extends JDialog {
                                         t.start();
 
                                         while (fileInstallRunnable.isAlive()) {
-                                            sleep(1000);
+                                            sleep(500);
                                         }
                                     }
                                 }
