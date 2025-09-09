@@ -154,9 +154,9 @@ public class RegionUtils {
 
             return latStrConverted;
             
-        } 
-        
-        return latStr;
+        }  else {
+            return convertFromMinutesSecondsToDecimal(latStr);
+        }
     }
 
 
@@ -185,9 +185,9 @@ public class RegionUtils {
 
             return lonStrConverted;
 
+        } else {
+            return convertFromMinutesSecondsToDecimal(lonStr);
         }
-
-        return lonStr;
 
     }
 

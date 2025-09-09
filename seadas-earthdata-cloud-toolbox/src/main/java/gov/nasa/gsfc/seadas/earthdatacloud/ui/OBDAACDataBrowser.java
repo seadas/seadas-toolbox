@@ -7,10 +7,13 @@ import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.ui.UIUtils;
+import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.jdatepicker.impl.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.openide.util.HelpCtx;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,10 +21,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -69,6 +69,10 @@ public class OBDAACDataBrowser extends JPanel {
     private JDialog parentDialog;
     private ImagePreviewHelper imagePreviewHelper;
     private FileDownloadManager downloadManager;
+
+    private Component helpButton = null;
+    private final static String HELP_ID = "earthdataCloudSearch";
+    private final static String HELP_ICON = "icons/Help24.gif";
 
     Map<String, String[]> missionDateRanges = Map.of(
             "SeaHawk/HawkEye", new String[]{"2018-12-01", "2023-12-31"},
@@ -264,6 +268,12 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTHEAST;
         panel.add(panel2, gbc);
+
+
+        helpButton = getHelpButton(HELP_ID);
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(helpButton, gbc);
 
         return panel;
     }
@@ -604,6 +614,25 @@ public class OBDAACDataBrowser extends JPanel {
 
         return panel;
     }
+
+
+    protected AbstractButton getHelpButton(String helpId) {
+        if (helpId != null) {
+            final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
+                    false);
+            helpButton.setToolTipText("Help for OB_CLOUD Data Browser");
+            helpButton.setName("helpButton");
+            helpButton.addActionListener(e -> getHelpCtx(helpId).display());
+            return helpButton;
+        }
+
+        return null;
+    }
+
+    public HelpCtx getHelpCtx(String helpId) {
+        return new HelpCtx(helpId);
+    }
+
 
 
     private JPanel createRightPanel() {
@@ -1091,7 +1120,7 @@ public class OBDAACDataBrowser extends JPanel {
 
         try {
             String REGIONS_FILE = "regions.txt";
-            String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas9/auxdata/regions/regions.txt</html>";
+            String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt</html>";
             ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
 
             Object[] regionsInfosArray = regionsInfos.toArray();

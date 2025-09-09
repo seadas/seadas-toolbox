@@ -118,7 +118,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_LABEL = "Box Size";
     public static final String PROPERTY_BOX_SIZE_TOOLTIP = "<html>In units of degrees.  Used to set fields north, south, west and east<br>" +
             "Option1: Box Size = 'value' (applies equal width and height)<br>Option2: Box Size = 'width x height'<br></html>";
-    public static final String PROPERTY_BOX_SIZE_DEFAULT = "0.1";
+    public static final String PROPERTY_BOX_SIZE_DEFAULT = "1.0";
 
 
     public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".region.selector";
