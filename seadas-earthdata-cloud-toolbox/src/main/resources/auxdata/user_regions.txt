@@ -3,7 +3,7 @@
 # Label = Coordinates (the text to the left of the = is shown in the selector and the text to the right of the '=' is the actual value
 # Example formats:
 
-Chesapeake Bay  = 37°48′00″N 76°6′00″W
+My Region  = 0°0′00″N 0°0′00″W
 -- BLANK --
 
 -- EXAMPLE FORMATS --
