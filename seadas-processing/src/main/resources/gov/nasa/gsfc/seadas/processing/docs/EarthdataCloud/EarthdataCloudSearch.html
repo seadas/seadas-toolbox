@@ -119,37 +119,87 @@
     <li><b>Coordinates</b> This is a single coordinate point (latitude longitude) to serve as the center of the scene.
         The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.</li>
     <li><b>Box Size</b> This is size of the region (in degrees).
-        The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.  The options are:
+        The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
+        <br><br>The options are:
      <ul>
-         <li><b>number</b> - see figure 2 for example.  Note that West is Coordinates lon minus 0.5 degrees and North is Coordinates lat + 0.5 degrees </li>
-        <li><b>lon x lat</b> - see figure 3 for example.  Note that West is Coordinates lon minus 1 degrees and North is Coordinates lat plus 2 degree</li>
+         <li><b>number</b> - This value defines the width and height (in degrees) of the region which is centered on the
+             value in the 'Coordinates' field.
+
+             <br><br>
+                 <img src="images/earthdata_search_02.png" width="350" border="0"><br><br>
+                 <i>Image 2: Box Size sets region size based on a single dimension number.  <br>
+                     Note in this example that for size '1':<br>
+                     North is set to the lat of 'Coordinates' plus 0.5 degrees<br>
+                     South is set to the lat of 'Coordinates' minus 0.5 degrees<br>
+                     West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
+                     East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
+                 </i>
+             <br><br>
+         </li>
+
+        <li><b>lon x lat</b> The format here is width x height.   - Note that West is Coordinates lon minus 1 degrees and North is Coordinates lat plus 2 degree
+            <br><br>
+                <img src="images/earthdata_search_03.png" width="350" border="0"><br><br>
+            <i>Image 2: Box Size sets region size based on a two dimensional number.  <br>
+                Note in this example that for size '1 x 2':<br>
+                North is set to the lat of 'Coordinates' plus 1 degrees<br>
+                South is set to the lat of 'Coordinates' minus 1 degrees<br>
+                West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
+                East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
+            </i>
+            <br><br>
+        </li>
      </ul>
     </li>
     <li><b>Region</b> These are pre-defined stored locations or regions (see figure 2 or 3). Selecting this will set the "Coordinates" field,
         which in turn will set the North, South, West, East fields. The non-editable file which contains these is ~/.seadas/auxdata/regions/regions.txt
+
     </li>
     <li><b>User Region*</b> These are user defined locations or regions (see figure 4).  Selecting this will set the "Coordinates" field,
         which in turn will set the North, South, West, East fields.  *This option is not available by default, but can easily
         be added by going to the Preferences page (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud) and checking "User Region Selector".
-        The editable file which contains these is ~/.seadas/auxdata/regions/user_regions.txt
+        The editable file which contains these is ~/.seadas/auxdata/regions/user_regions.txt.
+        <br><br>
+        <img src="images/earthdata_search_04.png" width="350" border="0"><br><br>
+        <i>Image 4: Description TBD</i>
+        <br><br>
+
+        Here's a sample of the formatting in the user configuration file:
+        <table><tr><td bgcolor="#e9f0f0">
+          <pre>
+
+        #--------------------------------------------------------------------------------------
+        #  Sample entries for a point location
+        #     These entries will populate the 'Coordinates' field.  Then the 'Coordinates' field in combination
+        #     with the 'Box Size' field will auto-populate the 'North', 'South', 'West', and 'East' fields.
+        #  Format: (coordinates can be space and/or comma delimited)
+        #  Name = Lat  Lon
+        #--------------------------------------------------------------------------------------
+
+        My Sample Location = 37°48?00?N, 76°6?00?W
+        My Sample Location (Decimal) = 37.8°N, 76.1°W
+
+
+
+        #--------------------------------------------------------------------------------------
+        #  Sample entries for a bounded region
+        #     These entries will directly populate the 'North', 'South', 'West', and 'East' fields.
+        #  Format: (coordinates can be space and/or comma delimited)
+        #  Name = North  South  West  East
+        #--------------------------------------------------------------------------------------
+
+        My Sample Region = 39°36?00?N, 35°54?00?N, 77°30?00?E, 74°18?00?E
+        My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E
+
+          </pre>
+        </td></tr></table>
     </li>
 </ul>
 
 
-<p align="center">
-    <img src="images/earthdata_search_02.png" width="350" border="0"><br><br>
-    <i>Image 2: OB_CLOUD Data Browser</i>
-</p>
 
-<p align="center">
-    <img src="images/earthdata_search_03.png" width="350" border="0"><br><br>
-    <i>Image 3: OB_CLOUD Data Browser</i>
-</p>
 
-<p align="center">
-    <img src="images/earthdata_search_04.png" width="350" border="0"><br><br>
-    <i>Image 4: OB_CLOUD Data Browser</i>
-</p>
+
 
 
 <!--The first phase development of a SeaDAS data browser tool that allows users to interactively query, filter, preview, and download ocean color granules from  OB_CLOUD is completed. The tool interfaces with the Harmony Search Service and leverages CMR (Common Metadata Repository) for granule-level metadata retrieval.-->
