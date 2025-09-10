@@ -26,8 +26,8 @@ import java.util.*;
 @TopComponent.Description(preferredID = "PanoplyDumpTopComponent", persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "output", openAtStartup = false)
 //@TopComponent.Registration(mode = "navigator", openAtStartup = false)
-@ActionID(category = "Window", id = "gov.nasa.gsfc.seadas.panoply.ui.PanoplyDumpTopComponent")
-@ActionReference(path = "Menu/Window", position = 19300)
+@ActionID(category = "View", id = "gov.nasa.gsfc.seadas.panoply.ui.PanoplyDumpTopComponent")
+@ActionReference(path = "Menu/View", position = 19300)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PanoplyDumpAction", preferredID = "PanoplyDumpTopComponent")
 @Messages({
         "CTL_PanoplyDumpAction=Panoply Dump",
