@@ -12,6 +12,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -20,10 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.*;
 
 @TopComponent.Description(preferredID = "PanoplyDumpTopComponent", persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "output", openAtStartup = false)
@@ -97,47 +95,51 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
 
     private void updateFromActivatedNodes() {
         String dump = null;
+        boolean underPanoply = false;
 
         Node[] act = TopComponent.getRegistry().getActivatedNodes();
         if (act != null) {
             for (Node n : act) {
-                // A) try a MetadataElement directly from the node chain
                 MetadataElement me = firstMetadataElementInAncestors(n);
-                if (me != null && (isPanoplyVariable(me) || isPanoplyTopGroup(me))) {
-                    dump = buildDumpFrom(me, n);
-                    if (notEmpty(dump)) break;
+                if (isPanoplyVariable(me) || isPanoplyTopGroup(me)) {
+                    underPanoply = true;
+                    dump = buildDumpFrom(me,n);
+                    if (dump != null) break;
                 }
-
-                // B) derive variable name from path and resolve from current product
                 String varName = deriveVarNameFromPath(n);
-                if (notEmpty(varName)) {
+                if (varName != null) {
                     MetadataElement resolved = resolvePanoplyVarFromCurrentProduct(varName);
-                    if (resolved != null && (isPanoplyVariable(resolved) || isPanoplyTopGroup(resolved))) {
+                    if (isPanoplyVariable(resolved) || isPanoplyTopGroup(resolved)) {
+                        underPanoply = true;
                         dump = buildDumpFrom(resolved, n);
-                        if (notEmpty(dump)) break;
+                        if (dump != null) break;
                     }
                 }
             }
         }
 
-        // C) fallback: global context
-        if (!notEmpty(dump)) {
+        if (dump == null) {
             MetadataElement me = org.openide.util.Utilities.actionsGlobalContext().lookup(MetadataElement.class);
-            if (me != null && (isPanoplyVariable(me) || isPanoplyTopGroup(me))) {
-                dump = buildDumpFrom(me, null);
+            if (isPanoplyVariable(me) || isPanoplyTopGroup(me)) {
+                underPanoply = true;
+                dump = buildDumpFrom(me, act[0]);
             }
         }
 
-        final String text = notEmpty(dump) ? dump : HINT;
-
-        // auto-open only when we have real content
-        if (!HINT.equals(text) && !isOpened()) {
-            SwingUtilities.invokeLater(this::open);
-        }
-
+        final String text = (dump != null && !dump.isEmpty()) ? dump : HINT;
         textArea.setText(text);
         textArea.setCaretPosition(0);
+
+        // If user clicked anything under Panoply, show the window (docked in "output") the first time.
+        if (underPanoply && !isOpened()) {
+            SwingUtilities.invokeLater(() -> {
+                dockIntoOutputIfNeeded();
+                open();              // do not requestActive(); we won't steal focus
+            });
+        }
     }
+
+
 
     // ---------------- predicates & lookups ----------------
 
@@ -389,4 +391,76 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         if (s == null) return null;
         return s.replaceAll("<[^>]+>", "").trim();
     }
+
+    /** From a node under Product → Metadata → Panoply → <TopGroup> return "<TopGroup>" (no child). */
+    private static String deriveTopGroupNameFromPath(Node node) {
+        java.util.List<String> up = new ArrayList<>(16);
+        for (Node cur = node; cur != null; cur = cur.getParentNode()) {
+            String nm = safeNodeName(cur);
+            if (nm != null && !nm.isEmpty()) up.add(nm);
+        }
+        if (up.isEmpty()) return null;
+        Collections.reverse(up); // root → leaf
+
+        // Find "... , Panoply, <TopGroup>" and ensure there is NO further child segment
+        int iPan = -1;
+        for (int i = 0; i < up.size(); i++) {
+            if ("Panoply".equals(up.get(i))) { iPan = i; break; }
+        }
+        if (iPan < 0) return null;
+        if (iPan + 1 >= up.size()) return null;
+
+        String maybeGroup = up.get(iPan + 1);
+        if (!isTopGroupName(maybeGroup)) return null;
+
+        // If there is another segment after the group, that's a variable/subgroup selection → not a pure group click
+        if (iPan + 2 < up.size()) return null;
+
+        return maybeGroup;
+    }
+
+    /** Resolve Panoply/<topGroupName> from the selected product. */
+    private static MetadataElement resolvePanoplyGroupFromCurrentProduct(String topGroupName) {
+        SnapApp app = SnapApp.getDefault();
+        if (app == null) return null;
+        ProductSceneView view = app.getSelectedProductSceneView();
+        if (view == null || view.getProduct() == null) return null;
+
+        MetadataElement root = view.getProduct().getMetadataRoot();
+        if (root == null) return null;
+
+        MetadataElement pan = root.getElement(PAN);
+        if (pan == null) return null;
+
+        // Accept either exact or case-insensitive match
+        MetadataElement direct = pan.getElement(topGroupName);
+        if (direct != null) return direct;
+
+        for (MetadataElement child : pan.getElements()) {
+            if (child != null && child.getName() != null &&
+                    child.getName().equalsIgnoreCase(topGroupName)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    // Dock to NetBeans' standard "output" mode once per session
+    private static volatile boolean DOCKED_ONCE = false;
+
+    private void dockIntoOutputIfNeeded() {
+        if (DOCKED_ONCE) return;
+        try {
+            var wm = WindowManager.getDefault();
+            var outputMode = wm.findMode("output");   // the Output window's mode
+            if (outputMode != null) {
+                outputMode.dockInto(this);
+                DOCKED_ONCE = true;
+            }
+        } catch (Throwable ignore) {
+            // Best-effort; open() will still show it somewhere.
+        }
+    }
+
+
 }
