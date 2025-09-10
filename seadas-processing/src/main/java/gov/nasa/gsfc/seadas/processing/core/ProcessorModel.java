@@ -387,14 +387,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         if (currentOption.getName().equals("suite")) {
             suiteChanged = !doTheyEqualAfterTrimming(currentOption.getValue(), newValue);
-            System.out.println("suite" + "|" + currentOption.getValue() + "|" + newValue + "|" + suiteChanged);
+//            System.out.println("suite" + "|" + currentOption.getValue() + "|" + newValue + "|" + suiteChanged);
             if (!suiteChanged) {
                 ignore = true;
             }
         }
         if (currentOption.getName().equals("ifile")) {
             ifileChanged = !doTheyEqualAfterTrimming(currentOption.getValue(), newValue);
-            System.out.println("ifile" + "|" + currentOption.getValue() + "|" + newValue + "|" + ifileChanged);
+//            System.out.println("ifile" + "|" + currentOption.getValue() + "|" + newValue + "|" + ifileChanged);
             if (!ifileChanged) {
                 ignore = true;
             }
@@ -409,9 +409,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                    updateParamsWithProgressMonitor("Re-Initializing with input file '" + getPrimaryInputFileOptionName() + "'");
                 } else if (suiteChanged) {
                     setWorkingUpdateOfile(true);
-                    System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 1    qweioyrtrt");
+//                    System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 1    qweioyrtrt");
                     updateL2BinParams(false);
-                    System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 2    qweioyrtrt");
+//                    System.out.println("SPOT SUITE SELECTED: updateL2BinParams() 2    qweioyrtrt");
                     setWorkingUpdateOfile(false);
                     l2BinPropertyChangeHandler();
 
@@ -440,9 +440,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                    updateParamsWithProgressMonitor("Re-initializing with input file '" + getPrimaryInputFileOptionName() + "'");
                 } else if (suiteChanged) {
                     setWorkingUpdateOfile(true);
-                    System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 1   thhhtv");
+//                    System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 1   thhhtv");
                     updateL3MapgenParams(false);
-                    System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 2   thhhtv");
+//                    System.out.println("SPOT SUITE SELECTED: updateL3MapgenParams() 2   thhhtv");
                     setWorkingUpdateOfile(false);
                     l3mapgenPropertyChangeHandler();
 

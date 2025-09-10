@@ -78,6 +78,7 @@ public class RegionUtils {
                             if (name != null || name.length() > 0) {
                                 String coordinates = trimString(lineSplitOnEqualsSignArray[1]);
 
+                                coordinates = coordinates.replace(",", " ");
                                 String[] coordinatesSplitArray = coordinates.split("\\s+");
 
                                 if (coordinatesSplitArray != null) {

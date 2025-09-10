@@ -295,7 +295,7 @@ public class ParamUtils {
                     }
                 } catch (Exception e) {
                     paramInfo.setColSpan(defaultColSpan);
-                    System.out.println("ERROR: colSpan not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+//                    System.out.println("ERROR: colSpan not an integer for param: " + name + "in xml file: " + paramXmlFileName);
                 }
             } else {
                 paramInfo.setColSpan(defaultColSpan);
@@ -313,7 +313,7 @@ public class ParamUtils {
                     }
                 } catch (Exception e) {
                     paramInfo.setSubPanelIndex(defaultSubPanelIndex);
-                    System.out.println("ERROR: subPanelInt not an integer for param: " + name + "in xml file: " + paramXmlFileName);
+//                    System.out.println("ERROR: subPanelInt not an integer for param: " + name + "in xml file: " + paramXmlFileName);
                 }
             } else {
                 paramInfo.setSubPanelIndex(defaultSubPanelIndex);

@@ -99,7 +99,7 @@ public class OBDAACDataBrowser extends JPanel {
                 "src", "main", "resources", "json-files", "mission_date_ranges.json");
 
         if (Files.exists(externalFile)) {
-            System.out.println("Loading mission_date_ranges.json from external path: " + externalFile.toAbsolutePath());
+//            System.out.println("Loading mission_date_ranges.json from external path: " + externalFile.toAbsolutePath());
             try (BufferedReader reader = Files.newBufferedReader(externalFile, StandardCharsets.UTF_8)) {
                 loadDateRangesFromReader(reader);
                 return;
@@ -108,16 +108,16 @@ public class OBDAACDataBrowser extends JPanel {
             }
         }
 
-        System.out.println("Loading mission_date_ranges.json from classpath");
+//        System.out.println("Loading mission_date_ranges.json from classpath");
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("json-files/mission_date_ranges.json")) {
             if (input != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 loadDateRangesFromReader(reader);
             } else {
-                System.err.println("Resource not found: json-files/mission_date_ranges.json");
+//                System.err.println("Resource not found: json-files/mission_date_ranges.json");
             }
         } catch (IOException e) {
-            System.err.println("Failed to read mission date ranges from classpath: " + e.getMessage());
+//            System.err.println("Failed to read mission date ranges from classpath: " + e.getMessage());
         }
     }
 
@@ -152,7 +152,7 @@ public class OBDAACDataBrowser extends JPanel {
                     InputStream input = getClass().getClassLoader()
                             .getResourceAsStream("json-files/" + fileName);
                     if (input == null) {
-                        System.err.println("⚠ Missing embedded resource: " + fileName);
+//                        System.err.println("⚠ Missing embedded resource: " + fileName);
                         continue;
                     }
 
@@ -772,7 +772,7 @@ public class OBDAACDataBrowser extends JPanel {
 
 
     private JPanel createSatelliteProductsPanel() {
-        System.out.println("Creating Satellite Products Panel");
+//        System.out.println("Creating Satellite Products Panel");
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -896,7 +896,7 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private JPanel createClassicBoundingBoxPanel() {
-        System.out.println("Creating Classic BoundingBox Panel");
+//        System.out.println("Creating Classic BoundingBox Panel");
 
 
         JTextField tmpTextField = new JTextField(" 124°00′10″W ");
@@ -1050,7 +1050,7 @@ public class OBDAACDataBrowser extends JPanel {
 
 
     private JPanel createSpatialPanel() {
-        System.out.println("Creating createSpatialPanel");
+//        System.out.println("Creating createSpatialPanel");
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Spatial Filter"));
 
@@ -1148,7 +1148,7 @@ public class OBDAACDataBrowser extends JPanel {
                 if (!working) {
                     working = true;
                     RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
-                    System.out.println("regions change" + selectedRegionInfo.getName());
+//                    System.out.println("regions change" + selectedRegionInfo.getName());
 
                     if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
                         maxLatField.setText(selectedRegionInfo.getNorth());
@@ -1216,7 +1216,7 @@ public class OBDAACDataBrowser extends JPanel {
                     if (!working) {
                         working = true;
                         RegionsInfo selectedRegionInfo = (RegionsInfo) regions2.getSelectedItem();
-                        System.out.println("regions change" + selectedRegionInfo.getName());
+//                        System.out.println("regions change" + selectedRegionInfo.getName());
 
                         if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
                             maxLatField.setText(selectedRegionInfo.getNorth());
@@ -1575,6 +1575,9 @@ public class OBDAACDataBrowser extends JPanel {
         if (coordinatesValue == null || coordinatesValue.trim().length() == 0) {
             return;
         }
+
+        coordinatesValue = coordinatesValue.replace(",", " ");
+
         String[] coordinatesSplitArray = coordinatesValue.split("\\s+");
 
 
@@ -1650,9 +1653,9 @@ public class OBDAACDataBrowser extends JPanel {
                             double cosineMidLat = Math.cos(midLatRadiansAbs);
                             double circumferenceAtMidLat = 2.0 * Math.PI * EARTH_RADIUS_EQUATOR * Math.cos(midLatRadiansAbs);
                             double circumferenceAtEquator = 2.0 * Math.PI * EARTH_RADIUS_EQUATOR;
-                            System.out.println("cosineMidLat=" + cosineMidLat);
-                            System.out.println("circumferenceAtMidLat=" + circumferenceAtMidLat);
-                            System.out.println("circumferenceAtEquator=" + circumferenceAtEquator);
+//                            System.out.println("cosineMidLat=" + cosineMidLat);
+//                            System.out.println("circumferenceAtMidLat=" + circumferenceAtMidLat);
+//                            System.out.println("circumferenceAtEquator=" + circumferenceAtEquator);
 
                             minLat = latDouble - 0.5 * boxHeight * degreesPerKmAlongLat;
                             maxLat = latDouble + 0.5 * boxHeight * degreesPerKmAlongLat;
@@ -1770,7 +1773,7 @@ public class OBDAACDataBrowser extends JPanel {
         String shortName = productNameTooltips.getOrDefault(productName, productName);
         int maxApiResults = (Integer) maxApiResultsSpinner.getValue();
         double workInAnIncrement = (int) Math.floor(maxApiResults / totalWork);
-        System.out.println("workInAnIncrement=" + workInAnIncrement);
+//        System.out.println("workInAnIncrement=" + workInAnIncrement);
 
         String startDate = null, endDate = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

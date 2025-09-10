@@ -37,8 +37,8 @@ public class L2genIfileSelector {
 
         fileSelector.getFileNameComboBox().addActionListener(e -> {
             if (fileSelector != null) {
-                System.out.println("ComboBox action: selected="
-                        + fileSelector.getSelectedFile());
+//                System.out.println("ComboBox action: selected="
+//                        + fileSelector.getSelectedFile());
             }
         });
 
@@ -50,15 +50,15 @@ public class L2genIfileSelector {
         fileSelector.addSelectionChangeListener(new AbstractSelectionChangeListener() {
             @Override
             public void selectionChanged(SelectionChangeEvent event) {
-                System.out.println("▶ selectionChanged control-listener fired; controlHandlerEnabled="
-                                + controlHandlerEnabled + ", selected=" + getSelectedIFileName());
+//                System.out.println("▶ selectionChanged control-listener fired; controlHandlerEnabled="
+//                                + controlHandlerEnabled + ", selected=" + getSelectedIFileName());
                 File iFile = getSelectedIFile();
                 if (isControlHandlerEnabled() && iFile != null) {
                     disableEventHandler();
 //                    disableControlHandler();
                     seaDASProcessorModel.setParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName(), getSelectedIFileName());
-                    System.out.println("▶ model.param now = "
-                            + seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName()));
+//                    System.out.println("▶ model.param now = "
+//                            + seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName()));
                     enableEventHandler();
                 }
             }
@@ -70,8 +70,8 @@ public class L2genIfileSelector {
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         String ifileName = seaDASProcessorModel.getParamValue(seaDASProcessorModel.getPrimaryInputFileOptionName());
-                        System.out.println("▶ propertyChange listener fired; eventHandlerEnabled="
-                                + eventHandlerEnabled + ", newValue=" + ifileName);
+//                        System.out.println("▶ propertyChange listener fired; eventHandlerEnabled="
+//                                + eventHandlerEnabled + ", newValue=" + ifileName);
                         File iFile = new File(ifileName);
                         if (isEventHandlerEnabled() && ! ifileName.isEmpty()) {
                             //disableEventHandler();
