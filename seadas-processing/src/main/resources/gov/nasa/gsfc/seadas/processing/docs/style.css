@@ -99,6 +99,30 @@ p {
 }
 
 
+p.main_contents_header {
+    font-size: 13;
+    color: #003366;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    margin-left: 6;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 6;
+}
+
+
+p.main_contents_image {
+    text-align: center;
+    margin-left: 6;
+    margin-top: 6;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 12;
+}
+
+
 
 .indent_bullet_1_title {
     font-weight: bold;

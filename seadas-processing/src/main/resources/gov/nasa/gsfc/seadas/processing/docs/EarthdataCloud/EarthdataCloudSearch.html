@@ -178,7 +178,9 @@
 <p class="indent_bullet_1_contents">
     This is size of the region (in degrees).
     The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
-    <br class="br_plus_6">
+</p>
+
+<p class="indent_bullet_1_contents">
     The options are:
 </p>
 
@@ -197,25 +199,19 @@
 <div class="div_indent_2">
 
     <table class="outline" width="450">
+        <tr>
+            <td class="blank_paragraph">
 
-        <tr>
-            <th class="center_title">
-                Example: Setting 'Box Size' with a single number<br>
-            </th>
-        </tr>
-        <tr>
-            <td class="blank_paragraph">
+                <p class="main_contents_header">
+                Example: Setting 'Box Size' with a single number<br></p>
+
+                <p class="main_contents">
                 In this example the user sets the 'Box Size' and the 'Coordinates'.
-                The 'North', 'South', 'West' and 'East' fields then get auto-filled.
-            </td>
-        </tr>
-        <tr>
-            <td class="blank_center">
-                <img src="images/earthdata_search_02.png" width="350" border="0"><br><br>
-            </td>
-        </tr>
-        <tr>
-            <td class="blank_paragraph">
+                The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
+
+                <p class="main_contents_image">
+                <img src="images/earthdata_search_02.png" width="350" border="0"><br></p>
+
                 <p class="main_contents">
                     Here the 'Box Size' is set to a number ('1') and the 'Coordinates' are also set.
                     Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
@@ -230,117 +226,66 @@
                     &#x25E6; 'South' is set to the lat of 'Coordinates' minus 0.5 degrees<br>
                     &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
                     &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
+
             </td>
         </tr>
-
     </table>
 
-
-    <table class="outline" width="450">
-
-        <tr>
-            <th class="center_title">
-                Example: Setting 'Box Size' with a single number<br>
-            </th>
-        </tr>
-        <tr>
-            <td class="blank_paragraph">
-                In this example the user sets the 'Box Size' and the 'Coordinates'.
-                The 'North', 'South', 'West' and 'East' fields then get auto-filled.
-            </td>
-        </tr>
-        <tr>
-            <td class="blank_center">
-                <img src="images/earthdata_search_02.png" width="350" border="0"><br><br>
-            </td>
-        </tr>
-
-        <tr><td class="blank_paragraph">
-                Here the 'Box Size' is set to a number ('1') and
-                the 'Coordinates' are also set.   Then the 'North', 'South', 'West' and 'East' fields get auto-filled.
-        </td></tr>
-
-        <tr><td class="blank_paragraph">
-                A 'Box Size' of '1' means that the box will span west-east by 1 degree and span
-                north-south by 1 degree centered about the 'Coordinates'.
-        </td></tr>
-
-        <tr><td class="blank_paragraph">
-                Hence:<br>
-                &#x25E6; 'North' is set to the lat of 'Coordinates' plus 0.5 degrees<br>
-                &#x25E6; 'South' is set to the lat of 'Coordinates' minus 0.5 degrees<br>
-                &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br>
-        </td></tr>
-    </table>
 
 </div>
 <br>
 
 
 <p class="indent_bullet_2_title">&#x25E6;
-    Dimension (lon x lat)
+    Box Size = [Dimension] (lon x lat)
 </p>
 <p class="indent_bullet_2_contents">
-    This value defines the width and height (in degrees) of the region which is centered on the
-    value in the 'Coordinates' field.   The format here is width x height.
+    This two-dimension value (format lon x lat) defines the width and height (in degrees) of the region which is centered on the
+    value in the 'Coordinates' field.
+</p>
+
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Region
+</p>
+<p class="indent_bullet_1_contents">
+    These are pre-defined stored locations or regions (see images 2 and 3). Selecting this will set the "Coordinates" field,
+    which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these is
+    ~/.seadas/auxdata/regions/regions.txt
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    User Region
+</p>
+<p class="indent_bullet_1_contents">
+    These are user-defined locations or regions (see figure 4).  Selecting this will set the "Coordinates" field,
+    which in turn will set the North, South, West, East fields.
+    <br><br>
+    *The 'User Region' field is not available by default,
+    but can easily be added by going to the Preferences page
+    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud) and checking "User Region Selector".
+    <br><br>
+    The editable file which contains these is ~/.seadas/auxdata/regions/user_regions.txt.
 </p>
 
 
 
 
+<hr>
 
-<ul class="li1">
-    <li class="li1"><b>Coordinates</b> <p class="li1" >This is a single coordinate point (latitude longitude) to serve as the center of the scene.
-        The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.</p>
-    </li>
-    <li class="li1"><b>Box Size</b> This is size of the region (in degrees).
-        The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
-        <br><br>The options are:
-     <ul>
-         <li><b>number</b> - This value defines the width and height (in degrees) of the region which is centered on the
-             value in the 'Coordinates' field.
+<br><br>
+<img src="images/earthdata_search_03.png" width="350" border="0"><br><br>
+Image 2: Box Size sets region size based on a two dimensional number.  <br>
+    Note in this example that for size '1 x 2':<br>
+    North is set to the lat of 'Coordinates' plus 1 degrees<br>
+    South is set to the lat of 'Coordinates' minus 1 degrees<br>
+    West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
+    East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
 
-             <br><br>
-                 <img src="images/earthdata_search_02.png" width="350" border="0"><br><br>
-                 <i>Image 2: Box Size sets region size based on a single dimension number.  <br>
-                     Note in this example that for size '1':<br>
-                     North is set to the lat of 'Coordinates' plus 0.5 degrees<br>
-                     South is set to the lat of 'Coordinates' minus 0.5 degrees<br>
-                     West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                     East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
-                 </i>
-             <br><br>
-         </li>
 
-        <li><b>lon x lat</b> The format here is width x height.   - Note that West is Coordinates lon minus 1 degrees and North is Coordinates lat plus 2 degree
-            <br><br>
-                <img src="images/earthdata_search_03.png" width="350" border="0"><br><br>
-            <i>Image 2: Box Size sets region size based on a two dimensional number.  <br>
-                Note in this example that for size '1 x 2':<br>
-                North is set to the lat of 'Coordinates' plus 1 degrees<br>
-                South is set to the lat of 'Coordinates' minus 1 degrees<br>
-                West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
-            </i>
-            <br><br>
-        </li>
-     </ul>
-    </li>
-    <li><b>Region</b> These are pre-defined stored locations or regions (see images 2 and 3). Selecting this will set the "Coordinates" field,
-        which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these is
-        ~/.seadas/auxdata/regions/regions.txt
 
-    </li>
-    <li><b>User Region*</b> These are user-defined locations or regions (see figure 4).  Selecting this will set the "Coordinates" field,
-        which in turn will set the North, South, West, East fields.
-        <br><br>
-        *The 'User Region' field is not available by default,
-        but can easily be added by going to the Preferences page
-        (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud) and checking "User Region Selector".
-        <br><br>
-        The editable file which contains these is ~/.seadas/auxdata/regions/user_regions.txt.
-        <br><br>
         <img src="images/earthdata_search_04.png" width="350" border="0"><br><br>
         <i>Image 4: This shows the use of a user custom region.</i>
         <br><br>
@@ -357,7 +302,7 @@
         #  Name = Lat  Lon
         #--------------------------------------------------------------------------------------
 
-        My Sample Location = 37°48?00?N, 76°6?00?W
+        My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W
         My Sample Location (Decimal) = 37.8°N, 76.1°W
 
 
@@ -369,9 +314,11 @@
         #  Name = North  South  West  East
         #--------------------------------------------------------------------------------------
 
-        My Sample Region = 39°36?00?N, 35°54?00?N, 77°30?00?E, 74°18?00?E
+        My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E
         My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E
 
+              &prime;
+              &Prime;
           </pre>
         </td></tr></table>
     </li>
