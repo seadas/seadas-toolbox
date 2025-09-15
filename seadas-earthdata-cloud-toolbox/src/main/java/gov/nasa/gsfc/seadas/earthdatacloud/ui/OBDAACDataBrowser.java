@@ -1073,17 +1073,18 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         Insets insetsOrig = gbc.insets;
         gbc.gridwidth = 2;
+        gbc.insets = new Insets(2, 2, 0, 2);
         panel.add(new JSeparator(), gbc);
         gbc.insets = insetsOrig;
 
-        gbc.gridy++;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridwidth = 2;
-        JLabel fill = new JLabel("");
-        panel.add(fill, gbc);
-        gbc.weighty = 0;
-        gbc.gridwidth = 1;
+//        gbc.gridy++;
+//        gbc.weighty = 1;
+//        gbc.fill = GridBagConstraints.BOTH;
+//        gbc.gridwidth = 2;
+//        JLabel fill = new JLabel("");
+//        panel.add(fill, gbc);
+//        gbc.weighty = 0;
+//        gbc.gridwidth = 1;
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -1118,6 +1119,15 @@ public class OBDAACDataBrowser extends JPanel {
 
         createSpatialPanelHandlers();
 
+        gbc.gridy += 1;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        insetsOrig = gbc.insets;
+        gbc.gridwidth = 2;
+        panel.add(new JSeparator(), gbc);
+        gbc.insets = insetsOrig;
+        gbc.gridwidth = 1;
+
         try {
             String REGIONS_FILE = "regions.txt";
             String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt</html>";
@@ -1129,7 +1139,7 @@ public class OBDAACDataBrowser extends JPanel {
             gbc.gridx = 0;
             gbc.fill = GridBagConstraints.NONE;
             gbc.weightx = 0;
-            JLabel regionLabel = new JLabel("Region:");
+            JLabel regionLabel = new JLabel("Preset Locations:");
             regionLabel.setToolTipText(TOOLTIP);
             panel.add(regionLabel, gbc);
 
@@ -1187,7 +1197,7 @@ public class OBDAACDataBrowser extends JPanel {
 
             try {
                 String REGIONS_FILE = "user_regions.txt";
-                String TOOLTIP = "<html>User-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas9/auxdata/regions/user_regions.txt</html>";
+                String TOOLTIP = "<html>User-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/user_regions.txt</html>";
 
                 ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false);
 
@@ -1197,7 +1207,7 @@ public class OBDAACDataBrowser extends JPanel {
                 gbc.gridx = 0;
                 gbc.fill = GridBagConstraints.NONE;
                 gbc.weightx = 0;
-                JLabel regionLabel = new JLabel("User Region:");
+                JLabel regionLabel = new JLabel("User Locations:");
                 regionLabel.setToolTipText(TOOLTIP);
                 panel.add(regionLabel, gbc);
 

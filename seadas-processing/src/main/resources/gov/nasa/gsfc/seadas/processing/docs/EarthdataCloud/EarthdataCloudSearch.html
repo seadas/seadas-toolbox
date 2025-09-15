@@ -10,16 +10,16 @@
 </head>
 
 <style>
-<!--    table {-->
-<!--      border: 1px solid;-->
-<!--      border-collapse: collapse;-->
-<!--    }-->
+    <!--    table {-->
+    <!--      border: 1px solid;-->
+    <!--      border-collapse: collapse;-->
+    <!--    }-->
 
-<!--    td, th {-->
-<!--      border-width: 0;-->
-<!--      padding: 10px;-->
-<!--      text-align: left;-->
-<!--    }-->
+    <!--    td, th {-->
+    <!--      border-width: 0;-->
+    <!--      padding: 10px;-->
+    <!--      text-align: left;-->
+    <!--    }-->
 
 </style>
 
@@ -39,8 +39,6 @@
 <br>
 
 
-
-
 <p>
     The OB_CLOUD Data Browser is a tool for browsing the NASA Earthdata cloud for the Ocean Biology DAAC satellite data.
 </p>
@@ -50,22 +48,21 @@
 
 
 <p align="center">
-    <img src="images/earthdata_search_01.png" width="550" border="0"><br><br>
+    <img src="images/earthdata_search_01.png" width="650" border="0"><br><br>
     <i>Image 1: OB_CLOUD Data Browser</i>
 </p>
 <br>
 
 
-
 <p class="section_title">Spatial Filter</p>
 
 <p class="main_contents">
-    The search for satellite data can be restricted to a user specific geographic region of interest.  This is done
+    The search for satellite data can be restricted to a user specific geographic region of interest. This is done
     through parameters known geographic 'bounding_box', which is defined by the fields:
-    North, South, West and East.  The search will only return satellite data files which match in part or in full the
-    user requested bounding_box.  Keep in mind that satellite data (such as unprojected level-2 data) is oriented to
+    North, South, West and East. The search will only return satellite data files which match in part or in full the
+    user requested bounding_box. Keep in mind that satellite data (such as unprojected level-2 data) is oriented to
     the actual observation of the earth made by the satellite, and is not precisely represented by a North, South, West,
-    East bounding box.  So this can result in some extra files returned by the search which do not actually have data in
+    East bounding box. So this can result in some extra files returned by the search which do not actually have data in
     the user requested bounding box.
 </p>
 
@@ -102,8 +99,8 @@
 <p class="sub_section_title">Spatial Filter: Formatting</p>
 
 <p class="main_contents">
-    The internal format which is ultimately used for the spatial fields is the decimal format.   However, the browser
-    tool will accept and  convert most any format.
+    The internal format which is ultimately used for the spatial fields is the decimal format. However, the browser
+    tool will accept and convert most any format.
 </p>
 
 <p class="main_contents">
@@ -112,44 +109,63 @@
 </p>
 
 
-    <br>
+<br>
 <div class="div_main">
 
-<table class="outline">
-    <tr>
-        <th class="blank">Format</th> <th class="blank">Lat</th>  <th class="blank">Lon</th>
-    </tr>
-    <tr>
-        <td class="blank">Decimal_Degrees (Numeric)</td> <td class="blank">37.85</td>  <td class="blank">-76.15</td>
-    </tr>
-    <tr>
-        <td class="blank">Decimal_Degrees (Compass)</td> <td class="blank">37.8°N</td>  <td class="blank">76.15°W</td>
-    </tr>
-    <tr>
-        <td class="blank">Degrees (Numeric)</td> <td class="blank">37°</td>  <td class="blank">-76°</td>
-    </tr>
-    <tr>
-        <td class="blank">Degrees (Compass)</td> <td class="blank">37°N</td>  <td class="blank">76°W</td>
-    </tr>
-    <tr>
-        <td class="blank">Degrees_Minutes (Numeric)</td> <td class="blank">37°48&prime;</td>  <td class="blank">-76°6&prime;</td>
-    </tr>
-    <tr>
-        <td class="blank">Degrees_Minutes (Compass)</td> <td class="blank">37°48&prime;N</td>  <td class="blank">76°6&prime;W</td>
-    </tr>
-    <tr>
-        <td class="blank">Degrees_Minutes_Seconds (Numeric)</td> <td class="blank">37°48&prime;00&Prime;</td>  <td class="blank">-76°6&prime;00&Prime;</td>
-    </tr>
-    <tr>
-        <td class="blank">Degrees_Minutes_Seconds (Compass)</td> <td class="blank">37°48&prime;00&Prime;N</td>  <td class="blank">76°6&prime;00&Prime;W</td>
-    </tr>
-</table>
+    <table class="outline">
+        <tr>
+            <th class="blank">Format</th>
+            <th class="blank">Lat</th>
+            <th class="blank">Lon</th>
+        </tr>
+        <tr>
+            <td class="blank">Decimal_Degrees (Numeric)</td>
+            <td class="blank">37.85</td>
+            <td class="blank">-76.15</td>
+        </tr>
+        <tr>
+            <td class="blank">Decimal_Degrees (Compass)</td>
+            <td class="blank">37.8°N</td>
+            <td class="blank">76.15°W</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees (Numeric)</td>
+            <td class="blank">37°</td>
+            <td class="blank">-76°</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees (Compass)</td>
+            <td class="blank">37°N</td>
+            <td class="blank">76°W</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes (Numeric)</td>
+            <td class="blank">37°48&prime;</td>
+            <td class="blank">-76°6&prime;</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes (Compass)</td>
+            <td class="blank">37°48&prime;N</td>
+            <td class="blank">76°6&prime;W</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes_Seconds (Numeric)</td>
+            <td class="blank">37°48&prime;00&Prime;</td>
+            <td class="blank">-76°6&prime;00&Prime;</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes_Seconds (Compass)</td>
+            <td class="blank">37°48&prime;00&Prime;N</td>
+            <td class="blank">76°6&prime;00&Prime;W</td>
+        </tr>
+    </table>
 </div>
 
 <br>
 
 <p class="main_contents">
-    Note: for the format of minutes and seconds: the single quote and double quote characters can optionally be used instead of the
+    Note: for the format of minutes and seconds: the single quote and double quote characters can optionally be used
+    instead of the
     alphanumeric prime characters.
 </p>
 
@@ -157,11 +173,9 @@
 <p class="sub_section_title">Spatial Filter: Accessory Tools</p>
 
 <p class="main_contents">
-    There are several accessory fields which can aid in populating the North, South, West and East fields.  These fields
+    There are several accessory fields which can aid in populating the North, South, West and East fields. These fields
     themselves are not actually used in the search.
 </p>
-
-
 
 
 <p class="indent_bullet_1_title">&#x2022;
@@ -203,14 +217,14 @@
             <td class="blank_paragraph">
 
                 <p class="main_contents_header">
-                Example: Setting 'Box Size' with a single number<br></p>
+                    Example: Setting 'Box Size' with a single number<br></p>
 
                 <p class="main_contents">
-                In this example the user sets the 'Box Size' and the 'Coordinates'.
-                The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
+                    In this example the user sets the 'Box Size' and the 'Coordinates'.
+                    The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
 
                 <p class="main_contents_image">
-                <img src="images/earthdata_search_02.png" width="350" border="0"><br></p>
+                    <img src="images/earthdata_search_02.png" width="350" border="0"><br></p>
 
                 <p class="main_contents">
                     Here the 'Box Size' is set to a number ('1') and the 'Coordinates' are also set.
@@ -231,7 +245,6 @@
         </tr>
     </table>
 
-
 </div>
 <br>
 
@@ -240,18 +253,59 @@
     Box Size = [Dimension] (lon x lat)
 </p>
 <p class="indent_bullet_2_contents">
-    This two-dimension value (format lon x lat) defines the width and height (in degrees) of the region which is centered on the
+    This two-dimension value (format lon x lat) defines the width and height (in degrees) of the region which is
+    centered on the
     value in the 'Coordinates' field.
 </p>
 
+<br>
+<div class="div_indent_2">
+
+    <table class="outline" width="450">
+        <tr>
+            <td class="blank_paragraph">
+
+                <p class="main_contents_header">
+                    Example: Setting 'Box Size' with a two-dimension number<br></p>
+
+                <p class="main_contents">
+                    In this example the user sets the 'Box Size' and the 'Coordinates'.
+                    The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
+
+                <p class="main_contents_image">
+                    <img src="images/earthdata_search_03.png" width="350" border="0"><br></p>
+
+                <p class="main_contents">
+                    Here the 'Box Size' is set to a number ('1x2') and the 'Coordinates' are also set.
+                    Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
+
+                <p class="main_contents">
+                    A 'Box Size' of '1x2' means that the box will span west-east by 1 degree and span
+                    north-south by 2 degrees centered about the 'Coordinates'.</p>
+
+                <p class="main_contents">
+                    Hence: <br>
+                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 1 degrees<br>
+                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 1 degrees<br>
+                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
+                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
+
+            </td>
+        </tr>
+    </table>
+
+</div>
+<br>
 
 
 <p class="indent_bullet_1_title">&#x2022;
     Region
 </p>
 <p class="indent_bullet_1_contents">
-    These are pre-defined stored locations or regions (see images 2 and 3). Selecting this will set the "Coordinates" field,
-    which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these is
+    These are pre-defined stored locations or regions (see images 2 and 3). Selecting this will set the "Coordinates"
+    field,
+    which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these
+    is
     ~/.seadas/auxdata/regions/regions.txt
 </p>
 
@@ -260,7 +314,7 @@
     User Region
 </p>
 <p class="indent_bullet_1_contents">
-    These are user-defined locations or regions (see figure 4).  Selecting this will set the "Coordinates" field,
+    These are user-defined locations or regions (see figure 4). Selecting this will set the "Coordinates" field,
     which in turn will set the North, South, West, East fields.
     <br><br>
     *The 'User Region' field is not available by default,
@@ -273,60 +327,50 @@
 
 
 
-<hr>
+<br>
+<div class="div_indent_1">
 
-<br><br>
-<img src="images/earthdata_search_03.png" width="350" border="0"><br><br>
-Image 2: Box Size sets region size based on a two dimensional number.  <br>
-    Note in this example that for size '1 x 2':<br>
-    North is set to the lat of 'Coordinates' plus 1 degrees<br>
-    South is set to the lat of 'Coordinates' minus 1 degrees<br>
-    West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-    East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
+<table class="outline">
+    <tr>
+        <td class="blank_paragraph">
+        <p class="main_contents_header">
+            Example: Defining the user configuration region file<br></p>
+
+        <p class="main_contents">
+            Here's a sample of the formatting in the user configuration file:</p>
 
 
-
-        <img src="images/earthdata_search_04.png" width="350" border="0"><br><br>
-        <i>Image 4: This shows the use of a user custom region.</i>
-        <br><br>
-
-        Here's a sample of the formatting in the user configuration file:
-        <table><tr><td bgcolor="#e9f0f0">
           <pre>
+#----------------------------------------------------------------------
+#  Sample entries for a point location
+#     These entries will populate the 'Coordinates' field.  Then the
+#     'Coordinates' field in combination with the 'Box Size' field will
+#     auto-populate the 'North', 'South', 'West', and 'East' fields.
+#  Format: (coordinates can be space and/or comma delimited)
+#  Name = Lat  Lon
+#----------------------------------------------------------------------
 
-        #--------------------------------------------------------------------------------------
-        #  Sample entries for a point location
-        #     These entries will populate the 'Coordinates' field.  Then the 'Coordinates' field in combination
-        #     with the 'Box Size' field will auto-populate the 'North', 'South', 'West', and 'East' fields.
-        #  Format: (coordinates can be space and/or comma delimited)
-        #  Name = Lat  Lon
-        #--------------------------------------------------------------------------------------
-
-        My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W
-        My Sample Location (Decimal) = 37.8°N, 76.1°W
-
-
-
-        #--------------------------------------------------------------------------------------
-        #  Sample entries for a bounded region
-        #     These entries will directly populate the 'North', 'South', 'West', and 'East' fields.
-        #  Format: (coordinates can be space and/or comma delimited)
-        #  Name = North  South  West  East
-        #--------------------------------------------------------------------------------------
-
-        My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E
-        My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E
-
-              &prime;
-              &Prime;
-          </pre>
-        </td></tr></table>
-    </li>
-</ul>
+My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W
+My Sample Location (Decimal) = 37.8°N, 76.1°W
 
 
 
+#----------------------------------------------------------------------
+#  Sample entries for a bounded region
+#     These entries will directly populate the 'North', 'South',
+#     'West', and 'East' fields.
+#  Format: (coordinates can be space and/or comma delimited)
+#  Name = North  South  West  East
+#----------------------------------------------------------------------
 
+My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E
+My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
+        </td>
+    </tr>
+</table>
+
+</div>
+<br>
 
 
 
@@ -342,16 +386,11 @@ Image 2: Box Size sets region size based on a two dimensional number.  <br>
 <!--Secure file downloads with Earthdata login support and progress monitoring.-->
 
 
-
-
 <!--CMR API doc:-->
 <!--https://cmr.earthdata.nasa.gov/ingest/site/docs/ingest/api.html#latest-umm-versions-->
 
 <!--This points to the Client Partners Users Guide at the top of the page:-->
 <!--https://wiki.earthdata.nasa.gov/display/CMR/CMR+Client+Partner+User+Guide-->
-
-
-
 
 
 <br>
