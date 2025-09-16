@@ -48,10 +48,10 @@ if [ -f "${userdir}/etc/$APPNAME".conf ] ; then
     . "${userdir}/etc/$APPNAME".conf
 fi
 
-if [ -n "$jdkhome" -a \! -d "$jdkhome" -a -d "$progdir/../$jdkhome" ]; then
-    # #74333: permit jdkhome to be defined as relative to app dir
-    jdkhome="$progdir/../$jdkhome"
-fi
+#if [ -n "$jdkhome" -a \! -d "$jdkhome" -a -d "$progdir/../$jdkhome" ]; then
+#    # #74333: permit jdkhome to be defined as relative to app dir
+#    jdkhome="$progdir/../$jdkhome"
+#fi
 
 readClusters() {
   if [ -x /usr/ucb/echo ]; then
@@ -82,16 +82,16 @@ if [ ! -z "$extra_clusters" ] ; then
     clusters="$clusters:$extra_clusters"
 fi
 
-if [ ! -x "${jdkhome}/bin/java" ] ; then
-    echo "jdkhome= "
-    echo "${jdkhome}"
-    chmod go-rwx,u+rwx "${jdkhome}/bin/java"
-    chmod go-rwx,u+rwx "${jdkhome}/lib/jspawnhelper"
-    if [ ! -x "${jdkhome}/bin/java" ] ; then
-      echo "Cannot find java. Please use the --jdkhome switch." >&2
-      exit 2
-    fi
-fi
+#if [ ! -x "${jdkhome}/bin/java" ] ; then
+#    echo "jdkhome= "
+#    echo "${jdkhome}"
+#    chmod go-rwx,u+rwx "${jdkhome}/bin/java"
+#    chmod go-rwx,u+rwx "${jdkhome}/lib/jspawnhelper"
+#    if [ ! -x "${jdkhome}/bin/java" ] ; then
+#      echo "Cannot find java. Please use the --jdkhome switch." >&2
+#      exit 2
+#    fi
+#fi
 
 nbexec=`echo "$progdir"/../platform*/lib/nbexec`
 

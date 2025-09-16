@@ -488,10 +488,11 @@ fi
 
 return_code=0
 if [ "$has_space_options" = "true" ]; then
-$INSTALL4J_JAVA_PREFIX exec "$app_java_home/bin/java" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
+#$INSTALL4J_JAVA_PREFIX exec "$app_java_home/bin/java" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
+$INSTALL4J_JAVA_PREFIX exec "$JAVA_HOME/bin/java" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
 return_code=$?
 else
-$INSTALL4J_JAVA_PREFIX exec "$app_java_home/bin/java" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
+$INSTALL4J_JAVA_PREFIX exec "$JAVA_HOME/bin/java" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
 return_code=$?
 fi
 

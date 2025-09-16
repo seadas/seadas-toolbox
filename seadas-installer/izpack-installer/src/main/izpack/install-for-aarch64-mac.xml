@@ -144,9 +144,9 @@
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
-    <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home"/>
-    </dynamicvariables>
+<!--    <dynamicvariables>-->
+<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home"/>-->
+<!--    </dynamicvariables>-->
 
     <packs>
         <pack name="snap" preselected="yes" required="yes">
@@ -206,21 +206,21 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">
-            <description>JDK21 JRE</description>
-            <file src="packs/jre/OpenJDK21U-jre_aarch64_mac_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"
-                  unpack="true" override="true"></file>
-            <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin">
-                    <include name="java"/>
-                </fileset>
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib">
-                    <include name="jspawnhelper"/>
-                </fileset>
-            </executable>
-        </pack>
+<!--        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">-->
+<!--            <description>JDK21 JRE</description>-->
+<!--            <file src="packs/jre/OpenJDK21U-jre_aarch64_mac_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"-->
+<!--                  unpack="true" override="true"></file>-->
+<!--            <executable type="bin" stage="never" failure="warn" keep="true">-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin" includes="*"/>-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin">-->
+<!--                    <include name="java"/>-->
+<!--                </fileset>-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib" includes="*"/>-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib">-->
+<!--                    <include name="jspawnhelper"/>-->
+<!--                </fileset>-->
+<!--            </executable>-->
+<!--        </pack>-->
     </packs>
 
     <natives>
