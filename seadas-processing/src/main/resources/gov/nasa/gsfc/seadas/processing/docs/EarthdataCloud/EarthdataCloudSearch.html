@@ -9,19 +9,7 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 
-<style>
-    <!--    table {-->
-    <!--      border: 1px solid;-->
-    <!--      border-collapse: collapse;-->
-    <!--    }-->
 
-    <!--    td, th {-->
-    <!--      border-width: 0;-->
-    <!--      padding: 10px;-->
-    <!--      text-align: left;-->
-    <!--    }-->
-
-</style>
 
 
 <body>
@@ -39,19 +27,198 @@
 <br>
 
 
-<p>
-    The OB_CLOUD Data Browser is a tool for browsing the NASA Earthdata cloud for the Ocean Biology DAAC satellite data.
+
+<p class="main_contents">
+    The OB_CLOUD Data Browser is a tool for browsing the Ocean Biology OB.DAAC satellite data which resides
+    in the NASA Earthdata cloud. This tool interfaces with the Harmony Search Service and leverages
+    CMR (Common Metadata Repository) for granule-level metadata retrieval.
 </p>
 
 
 <br>
+<p class="main_contents_image">
+    <img src="images/earthdata_search_main.png" width="550" border="0"><br><br>
+</p>
 
 
-<p align="center">
-    <img src="images/earthdata_search_01.png" width="650" border="0"><br><br>
-    <i>Image 1: OB_CLOUD Data Browser</i>
+<p class="indent_bullet_0_title">
+    Location:
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Menu > Earthdata-Cloud > OB_CLOUD Data Browser
+</p>
+
+
+<p class="indent_bullet_0_title">
+    Features:
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Mission-aware metadata filtering using satellite/instrument, data level, and product names.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Mission-aware metadata filtering using satellite/instrument, data level, and product names.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Integrated spatial and temporal filters, with automatic date validation based on mission-specific coverage.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Day/Night granule selection, supporting all CMR day_night_flag values.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Granule preview support, with hover-based thumbnail loading from browse_images, and full-resolution image viewing.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Granule pagination and result management, decoupling total fetch limit from per-page display.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Secure file downloads with Earthdata login support and progress monitoring.
+</p>
+
+<br>
+
+
+
+<p class="section_title">Product-Mission Criteria</p>
+
+<p class="main_contents">
+    The search for satellite data can be restricted to a specific satellite mission, data level and product.
 </p>
 <br>
+
+<p class="main_contents_image">
+    <img src="images/earthdata_search_product_criteria.png" width="400" border="0"><br><br>
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Satellite/Instrument
+</p>
+<p class="indent_bullet_1_contents">
+    This is the satellite mission (also referred to as a specific instrument or sensor
+    which is mounted on a specific orbiting satellite platform).
+
+</p>
+
+<p class="indent_bullet_1_contents">
+    Note that for certain sensor designs, (for instance VIIRS, MODIS, OLI, OLCI) there can be multiple of these
+    which are operational or have been operational.  This is usually delineated and contained in short form in the
+    satellite mission name.  So:
+</p>
+
+<p class="indent_bullet_2_title">-
+    'MODISA'
+</p>
+<p class="indent_bullet_2_contents">
+    Refers to the 'MODIS' sensor that is mounted on the 'Aqua' platform.
+</p>
+
+<p class="indent_bullet_2_title">-
+    'MODIST'
+</p>
+<p class="indent_bullet_2_contents">
+    Refers to the 'MODIS' sensor that is mounted on the 'Terra' platform.
+</p>
+
+<p class="indent_bullet_2_title">-
+    'PACE_OCI'
+</p>
+<p class="indent_bullet_2_contents">
+    Refers to the 'OCI' sensor that is mounted on the 'PACE' platform.
+</p>
+
+<p class="indent_bullet_2">-
+    etc.
+</p>
+<br>
+
+<p class="indent_bullet_1_contents">
+    Note: you can only select one mission ('Satellite/Instrument') per search.  This is because the data levels
+    a especially the products can be specific to each mission, and those selector are dynamically configured based on the mission
+    you choose.
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Data Level
+</p>
+<p class="indent_bullet_1_contents">
+    This is the science processing level of the data.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Product
+</p>
+<p class="indent_bullet_1_contents">
+    This is the specific product of the data.
+</p>
+<br>
+
+
+<p class="section_title">Temporal Filter</p>
+
+<p class="main_contents">
+    The search for satellite data can be restricted based on a time period.  Included within this are options
+    to restrict based on whether the data was imaged in the daytime or nighttime.
+</p>
+<br>
+
+<p class="main_contents_image">
+    <img src="images/earthdata_search_temporal_filter.png" width="400" border="0"><br><br>
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Start Date
+</p>
+<p class="indent_bullet_1_contents">
+    This is the start date of the data.  If this is left blank then start of the mission is assumed.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Stop Date
+</p>
+<p class="indent_bullet_1_contents">
+    This is the stop date of the data.  If this is left blank then start of the mission is assumed.
+</p>
+
+
+<p class="sub_section_title">Temporal Filter: Day/Night</p>
+
+<p class="main_contents">
+    These are the options to restrict based on whether the data was imaged in the daytime or nighttime.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Day
+</p>
+<p class="indent_bullet_1_contents">
+    Search only retrieve data which was imaged in the daytime.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Night
+</p>
+<p class="indent_bullet_1_contents">
+    Search only retrieve data which was imaged in the nighttime.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Both
+</p>
+<p class="indent_bullet_1_contents">
+    Search is not restricted to daytime or nighttime data.
+</p>
+<br>
+
+
 
 
 <p class="section_title">Spatial Filter</p>
@@ -65,6 +232,13 @@
     East bounding box. So this can result in some extra files returned by the search which do not actually have data in
     the user requested bounding box.
 </p>
+<br>
+
+<p class="main_contents_image">
+    <img src="images/earthdata_search_spatial_filter.png" width="400" border="0"><br><br>
+</p>
+
+
 
 
 <p class="indent_bullet_1_title">&#x2022;
@@ -178,6 +352,7 @@
 </p>
 
 
+
 <p class="indent_bullet_1_title">&#x2022;
     Coordinates
 </p>
@@ -209,6 +384,27 @@
     value in the 'Coordinates' field.
 </p>
 
+<p class="indent_bullet_2_title">- Box Size = [Dimension] (lon x lat)
+</p>
+<p class="indent_bullet_2_contents">
+    This two-dimension value (format lon x lat) defines the width and height (in degrees) of the region which is
+    centered on the
+    value in the 'Coordinates' field.
+</p>
+
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Preset Locations
+</p>
+<p class="indent_bullet_1_contents">
+    These are pre-defined stored locations or regions (see images 2 and 3). Selecting this will set the "Coordinates"
+    field,
+    which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these
+    is
+    ~/.seadas/auxdata/regions/regions.txt
+</p>
+
 <br>
 <div class="div_indent_2">
 
@@ -224,7 +420,7 @@
                     The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
 
                 <p class="main_contents_image">
-                    <img src="images/earthdata_search_02.png" width="350" border="0"><br></p>
+                    <img src="images/earthdata_search_example1.png" width="350" border="0"><br></p>
 
                 <p class="main_contents">
                     Here the 'Box Size' is set to a number ('1') and the 'Coordinates' are also set.
@@ -249,14 +445,7 @@
 <br>
 
 
-<p class="indent_bullet_2_title">&#x25E6;
-    Box Size = [Dimension] (lon x lat)
-</p>
-<p class="indent_bullet_2_contents">
-    This two-dimension value (format lon x lat) defines the width and height (in degrees) of the region which is
-    centered on the
-    value in the 'Coordinates' field.
-</p>
+
 
 <br>
 <div class="div_indent_2">
@@ -273,7 +462,7 @@
                     The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
 
                 <p class="main_contents_image">
-                    <img src="images/earthdata_search_03.png" width="350" border="0"><br></p>
+                    <img src="images/earthdata_search_example2.png" width="350" border="0"><br></p>
 
                 <p class="main_contents">
                     Here the 'Box Size' is set to a number ('1x2') and the 'Coordinates' are also set.
@@ -298,20 +487,17 @@
 <br>
 
 
-<p class="indent_bullet_1_title">&#x2022;
-    Region
-</p>
-<p class="indent_bullet_1_contents">
-    These are pre-defined stored locations or regions (see images 2 and 3). Selecting this will set the "Coordinates"
-    field,
-    which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these
-    is
-    ~/.seadas/auxdata/regions/regions.txt
+
+<p class="sub_section_title">Spatial Filter: Custom User Locations</p>
+
+<p class="main_contents">
+    Text TBD
 </p>
 
 
+
 <p class="indent_bullet_1_title">&#x2022;
-    User Region
+    User Locations
 </p>
 <p class="indent_bullet_1_contents">
     These are user-defined locations or regions (see figure 4). Selecting this will set the "Coordinates" field,
