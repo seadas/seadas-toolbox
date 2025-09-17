@@ -402,11 +402,25 @@
     Preset Locations
 </p>
 <p class="indent_bullet_1_contents">
-    These are pre-defined stored locations or regions (see images 2 and 3). Selecting this will set the "Coordinates"
-    field,
-    which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these
-    is
+    This selector contains pre-defined stored geographic locations.  Each entry is a single point location, defined by a location
+    name and it's associated coordinates.  Selecting a location will then load the value into the "Coordinates"
+    field.  The loaded 'Coordinates' field, in combination with the 'Box Size', will then automatically update the
+    'North', 'South', 'West' and 'East' fields.
+</p>
+
+<p class="indent_bullet_1_contents">
+    For reference: the non-editable configuration file which contains the 'Preset Locations' is:
+</p>
+
+<p class="indent_bullet_2_title_no_gap">
     ~/.seadas/auxdata/regions/locations.txt
+</p>
+<br>
+<p class="sub_section_title">Spatial Filter: Examples</p>
+
+<p class="main_contents">
+    A few examples illustrating the how the 'Preset Locations', 'Coordinates', and 'Box Size' fields combine to auto-populate
+    the 'North', 'South', 'West' and 'East' fields.
 </p>
 
 <br>
@@ -521,10 +535,10 @@
 
 
 <p class="indent_bullet_2_title">-
-    To enable the 'User Locations' selecter
+    To enable the 'User Locations' selector
 </p>
 
-<p class="indent_bullet_2_contents">-
+<p class="indent_bullet_2_contents">
     The 'User Locations' field is not available by default,
     but can easily be added by going to the Preferences page:<br>
     (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
@@ -535,12 +549,12 @@
     To edit the 'User Locations' selector
 </p>
 
-<p class="indent_bullet_2_contents">-
+<p class="indent_bullet_2_contents">
     Entries can be added to the 'User Locations' selector by manually editing the following file:<br>
     ~/.seadas/auxdata/regions/user_locations.txt.
 </p>
 
-<p class="indent_bullet_2_contents">-
+<p class="indent_bullet_2_contents">
     Here's a sample of the formatting in the 'User Locations' configuration file:
 </p>
 
@@ -549,13 +563,10 @@
     <tr>
         <td class="blank_paragraph">
             <pre>
-#-----------------------------------------------------------
-#  Format: (coordinates can be space and/or comma delimited)
-#  Name = Lat  Lon
-#-----------------------------------------------------------
+#  Name = Lat Lon
+#  (coordinates can be space and/or comma delimited)
 
-My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W
-My Sample Location (Decimal) = 37.8°N, 76.1°W</pre>
+My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W</pre>
         </td>
     </tr>
 </table>
@@ -583,7 +594,7 @@ My Sample Location (Decimal) = 37.8°N, 76.1°W</pre>
     To enable the 'User Regions' selector
 </p>
 
-<p class="indent_bullet_2_contents">-
+<p class="indent_bullet_2_contents">
     The 'User Regions' field is not available by default,
     but can easily be added by going to the Preferences page:<br>
     (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
@@ -594,12 +605,12 @@ My Sample Location (Decimal) = 37.8°N, 76.1°W</pre>
     To edit the 'User Regions' selector
 </p>
 
-<p class="indent_bullet_2_contents">-
+<p class="indent_bullet_2_contents">
     Entries can be added to the 'User Regions' selector by manually editing the following file:<br>
     ~/.seadas/auxdata/regions/user_regions.txt.
 </p>
 
-<p class="indent_bullet_2_contents">-
+<p class="indent_bullet_2_contents">
     Here's a sample of the formatting in the 'User Regions' configuration file:
 </p>
 
@@ -610,13 +621,10 @@ My Sample Location (Decimal) = 37.8°N, 76.1°W</pre>
         <tr>
             <td class="blank_paragraph">
                 <pre>
-#-----------------------------------------------------------
-#  Format: (coordinates can be space and/or comma delimited)
 #  Name = North  South  West  East
-#-----------------------------------------------------------
+#  (coordinates can be space and/or comma delimited)
 
-My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E
-My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
+My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E</pre>
             </td>
         </tr>
     </table>
