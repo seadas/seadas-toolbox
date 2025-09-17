@@ -72,7 +72,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
     private final int SLEEP_SHORT_DURATION = 1500;
     private final int SLEEP_MEDIUM_DURATION = 4000;
-    private final int SLEEP_LONG_DURATION = 8000;
+    private final int SLEEP_LONG_DURATION = 16000;
 
     private int sleepShort = SLEEP_SHORT_DURATION;
     private int sleepMedium = SLEEP_MEDIUM_DURATION;
