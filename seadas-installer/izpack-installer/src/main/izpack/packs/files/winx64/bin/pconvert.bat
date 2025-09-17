@@ -16,7 +16,8 @@ set LOCAL_CLASSPATH=%LOCAL_CLASSPATH%;%SEADAS_HOME%\snap\modules\ext\ncsa.hdf.li
 set LIBRARY_PATH=%SEADAS_HOME%\snap\modules\lib\amd64
 
 
-"%SEADAS_HOME%\jdk-21.0.8+9-jre\bin\java.exe" ^
+@REM "%SEADAS_HOME%\jdk-21.0.8+9-jre\bin\java.exe" ^
+"%JAVA_HOME%\bin\java.exe" ^
 	-cp "%CLASSPATH%;%LOCAL_CLASSPATH%" ^
 	-Djava.library.path="%LIBRARY_PATH%" ^
     -Xmx1024M ^
