@@ -121,12 +121,30 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_DEFAULT = "1.0";
 
 
-    public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".region.selector";
-    public static final String PROPERTY_USER_REGION_INCLUDE_LABEL = "User Region Selector";
-    public static final String PROPERTY_USER_REGION_INCLUDE_TOOLTIP = "Include 'user_region' selector in GUI";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_regions.selector";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_LABEL = "Include 'Preset Regions' Selector";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP = "Include 'Preset Regions' selector in GUI";
+    public static final boolean PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT = false;
+
+    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_locations.selector";
+    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL = "Include 'Preset Locations' Selector";
+    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP = "Include 'Preset Locations' selector in GUI";
+    public static final boolean PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT = true;
+
+
+    public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".user_regions.selector";
+    public static final String PROPERTY_USER_REGION_INCLUDE_LABEL = "Include 'User Regions' Selector";
+    public static final String PROPERTY_USER_REGION_INCLUDE_TOOLTIP = "Include 'User Regions' selector in GUI";
     public static final boolean PROPERTY_USER_REGION_INCLUDE_DEFAULT = false;
-    
-    
+
+
+    public static final String PROPERTY_USER_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".user_locations.selector";
+    public static final String PROPERTY_USER_LOCATIONS_INCLUDE_LABEL = "Include 'User Locations' Selector";
+    public static final String PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP = "Include 'User Locations' selector in GUI";
+    public static final boolean PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT = false;
+
+
+
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
     public static final String PROPERTY_DAYNIGHT_MODE_LABEL = "Day/Night";
     public static final String PROPERTY_DAYNIGHT_MODE_TOOLTIP = "Retrieve files with data acquired during daytime, nighttime, or both";
@@ -210,7 +228,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
         maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
+//        initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
@@ -481,10 +502,28 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_REGION_TOOLTIP)
         String regionDefault = PROPERTY_REGION_DEFAULT;
 
-        @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
-                label = PROPERTY_USER_REGION_INCLUDE_LABEL,
-                description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
-        boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
+
+        @Preference(key = PROPERTY_PRESET_REGIONS_INCLUDE_KEY,
+                label = PROPERTY_PRESET_REGIONS_INCLUDE_LABEL,
+                description = PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP)
+        boolean presetRegionsIncludeDefault = PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT;
+
+        @Preference(key = PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY,
+                label = PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL,
+                description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
+        boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
+
+
+//        @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
+//                label = PROPERTY_USER_REGION_INCLUDE_LABEL,
+//                description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
+//        boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
+
+        @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
+                label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
+                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
+        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
+
         
         @Preference(key = PROPERTY_BOX_SIZE_KEY,
                 label = PROPERTY_BOX_SIZE_LABEL,
@@ -600,9 +639,24 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         return preferences.getPropertyString(PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
     }
 
+    public static boolean getPreferencePresetRegionsSelectorInclude() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
+    }
+
+    public static boolean getPreferencePresetLocationsSelectorInclude() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
+    }
+
     public static boolean getPreferenceUserRegionSelectorInclude() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyBool(PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
+    }
+
+    public static boolean getPreferenceUserLocationsSelectorInclude() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
     }
 
     

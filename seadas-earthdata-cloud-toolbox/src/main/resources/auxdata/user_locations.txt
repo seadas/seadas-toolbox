@@ -1,0 +1,15 @@
+# This is a user custom configuration file for the SeaDAS OB_CLOUD Data Browser.
+# Please feel free to edit this file.
+
+
+#--------------------------------------------------------------------------------------
+#  Sample entries for a point location
+#     These entries will populate the 'Coordinates' field.  Then the 'Coordinates' field in combination
+#     with the 'Box Size' field will auto-populate the 'North', 'South', 'West', and 'East' fields.
+#  Format: (coordinates can be space and/or comma delimited)
+#  Name = Lat  Lon
+#--------------------------------------------------------------------------------------
+
+My Sample Location = 37°48′00″N, 76°6′00″W
+My Sample Location (Decimal) = 37.8°N, 76.1°W
+

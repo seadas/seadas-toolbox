@@ -6,7 +6,7 @@
 <head>
     <title>OB_Cloud Data Browser</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style_new.css">
 </head>
 
 
@@ -99,8 +99,8 @@
 </p>
 <br>
 
-<p class="main_contents_image">
-    <img src="images/earthdata_search_product_criteria.png" width="400" border="0"><br><br>
+<p class="main_contents_image_1">
+    <img src="images/earthdata_search_product_criteria.png" width="350" border="0"><br><br>
 </p>
 
 
@@ -175,8 +175,8 @@
 </p>
 <br>
 
-<p class="main_contents_image">
-    <img src="images/earthdata_search_temporal_filter.png" width="400" border="0"><br><br>
+<p class="main_contents_image_1">
+    <img src="images/earthdata_search_temporal_filter.png" width="350" border="0"><br><br>
 </p>
 
 
@@ -239,8 +239,8 @@
 </p>
 <br>
 
-<p class="main_contents_image">
-    <img src="images/earthdata_search_spatial_filter.png" width="400" border="0"><br><br>
+<p class="main_contents_image_1">
+    <img src="images/earthdata_search_spatial_filter.png" width="350" border="0"><br><br>
 </p>
 
 
@@ -289,8 +289,7 @@
 
 
 <br>
-<div class="div_main">
-
+<div class="div_indent_1">
     <table class="outline">
         <tr>
             <th class="blank">Format</th>
@@ -407,11 +406,11 @@
     field,
     which in turn will set the North, South, West, East fields. The non-editable configuration file which contains these
     is
-    ~/.seadas/auxdata/regions/regions.txt
+    ~/.seadas/auxdata/regions/locations.txt
 </p>
 
 <br>
-<div class="div_indent_2">
+<div class="div_indent_1">
 
     <table class="outline" width="450">
         <tr>
@@ -453,7 +452,7 @@
 
 
 <br>
-<div class="div_indent_2">
+<div class="div_indent_1">
 
     <table class="outline" width="450">
         <tr>
@@ -493,69 +492,70 @@
 
 
 
-<p class="sub_section_title">Spatial Filter: Custom User Locations</p>
+<p class="sub_section_title">Spatial Filter: Custom User Locations and Regions</p>
 
 <p class="main_contents">
-    Text TBD
+    The user can define their own locations and regions with two optional selectors
+    ('User Locations' and 'User Regions') which are available in the preferences.
+    Locations are defined as single point coordinates whereas 'Regions' are defined
+    as geographic areas with 'North', 'South', 'West' and 'East' bounds.
 </p>
+
 
 
 
 <p class="indent_bullet_1_title">&#x2022;
     User Locations
 </p>
+
+
 <p class="indent_bullet_1_contents">
-    These are user-defined locations or regions (see figure 4). Selecting this will set the "Coordinates" field,
-    which in turn will set the North, South, West, East fields.
-    <br><br>
-    *The 'User Region' field is not available by default,
-    but can easily be added by going to the Preferences page
-    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud) and checking "User Region Selector".
-    <br><br>
-    The editable file which contains these is ~/.seadas/auxdata/regions/user_regions.txt.
+    Selecting the user-defined 'User Locations' will set the "Coordinates" field,
+    which in turn will set the North, South, West and East fields.
+</p>
+
+<p class="main_contents_image_2">
+    <img src="images/earthdata_search_user_location.png" width="350" border="0"><br><br>
 </p>
 
 
 
+<p class="indent_bullet_2_title">-
+    To enable the 'User Locations' selecter
+</p>
 
-<br>
-<div class="div_indent_1">
+<p class="indent_bullet_2_contents">-
+    The 'User Locations' field is not available by default,
+    but can easily be added by going to the Preferences page:<br>
+    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
+    and checking "Include 'User Locations' Selector".
+</p>
 
+<p class="indent_bullet_2_title">-
+    To edit the 'User Locations' selector
+</p>
+
+<p class="indent_bullet_2_contents">-
+    Entries can be added to the 'User Locations' selector by manually editing the following file:<br>
+    ~/.seadas/auxdata/regions/user_locations.txt.
+</p>
+
+<p class="indent_bullet_2_contents">-
+    Here's a sample of the formatting in the 'User Locations' configuration file:
+</p>
+
+<div class="div_indent_2">
 <table class="outline">
     <tr>
         <td class="blank_paragraph">
-        <p class="main_contents_header">
-            User Location Figuration File<br>Defining the user configuration region file<br></p>
-
-        <p class="main_contents">
-            Here's a sample of the formatting in the user configuration file:</p>
-
-
-          <pre>
-#----------------------------------------------------------------------
-#  Sample entries for a point location
-#     These entries will populate the 'Coordinates' field.  Then the
-#     'Coordinates' field in combination with the 'Box Size' field will
-#     auto-populate the 'North', 'South', 'West', and 'East' fields.
+            <pre>
+#-----------------------------------------------------------
 #  Format: (coordinates can be space and/or comma delimited)
 #  Name = Lat  Lon
-#----------------------------------------------------------------------
+#-----------------------------------------------------------
 
 My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W
-My Sample Location (Decimal) = 37.8°N, 76.1°W
-
-
-
-#----------------------------------------------------------------------
-#  Sample entries for a bounded region
-#     These entries will directly populate the 'North', 'South',
-#     'West', and 'East' fields.
-#  Format: (coordinates can be space and/or comma delimited)
-#  Name = North  South  West  East
-#----------------------------------------------------------------------
-
-My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E
-My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
+My Sample Location (Decimal) = 37.8°N, 76.1°W</pre>
         </td>
     </tr>
 </table>
@@ -564,38 +564,59 @@ My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
 <br>
 
 
-<br>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    User Regions
+</p>
+
+<p class="indent_bullet_1_contents">
+    Selecting the user-defined 'User Regions' will directly populate
+    the North, South, West and East fields.
+</p>
+
+<p class="main_contents_image_2">
+    <img src="images/earthdata_search_user_region.png" width="350" border="0"><br><br>
+</p>
+
+<p class="indent_bullet_2_title">-
+    To enable the 'User Regions' selector
+</p>
+
+<p class="indent_bullet_2_contents">-
+    The 'User Regions' field is not available by default,
+    but can easily be added by going to the Preferences page:<br>
+    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
+    and checking "Include 'User Regions' Selector".
+</p>
+
+<p class="indent_bullet_2_title">-
+    To edit the 'User Regions' selector
+</p>
+
+<p class="indent_bullet_2_contents">-
+    Entries can be added to the 'User Regions' selector by manually editing the following file:<br>
+    ~/.seadas/auxdata/regions/user_regions.txt.
+</p>
+
+<p class="indent_bullet_2_contents">-
+    Here's a sample of the formatting in the 'User Regions' configuration file:
+</p>
+
+
 <div class="div_indent_2">
 
-    <table class="outline" width="450">
+    <table class="outline">
         <tr>
             <td class="blank_paragraph">
+                <pre>
+#-----------------------------------------------------------
+#  Format: (coordinates can be space and/or comma delimited)
+#  Name = North  South  West  East
+#-----------------------------------------------------------
 
-                <p class="main_contents_header">
-                    Example 4<br>Setting with User Location<br></p>
-
-                <p class="main_contents">
-                    In this example the user sets the 'Box Size' and the 'Coordinates'.
-                    The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
-
-                <p class="main_contents_image">
-                    <img src="images/earthdata_search_user_location.png" width="350" border="0"><br></p>
-
-                <p class="main_contents">
-                    Here the 'Box Size' is set to a number ('1x2') and the 'Coordinates' are also set.
-                    Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
-
-                <p class="main_contents">
-                    A 'Box Size' of '1x2' means that the box will span west-east by 1 degree and span
-                    north-south by 2 degrees centered about the 'Coordinates'.</p>
-
-                <p class="main_contents">
-                    Hence: <br>
-                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 1 degrees<br>
-                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 1 degrees<br>
-                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
-
+My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E
+My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
             </td>
         </tr>
     </table>
@@ -604,51 +625,18 @@ My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
 <br>
 
 
-<br>
-<div class="div_indent_2">
 
-    <table class="outline" width="450">
-        <tr>
-            <td class="blank_paragraph">
 
-                <p class="main_contents_header">
-                    Example 5<br>Setting with User Region<br></p>
 
-                <p class="main_contents">
-                    In this example the user sets the 'Box Size' and the 'Coordinates'.
-                    The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
 
-                <p class="main_contents_image">
-                    <img src="images/earthdata_search_user_region.png" width="350" border="0"><br></p>
 
-                <p class="main_contents">
-                    Here the 'Box Size' is set to a number ('1x2') and the 'Coordinates' are also set.
-                    Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
-
-                <p class="main_contents">
-                    A 'Box Size' of '1x2' means that the box will span west-east by 1 degree and span
-                    north-south by 2 degrees centered about the 'Coordinates'.</p>
-
-                <p class="main_contents">
-                    Hence: <br>
-                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 1 degrees<br>
-                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 1 degrees<br>
-                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
-
-            </td>
-        </tr>
-    </table>
-
-</div>
-<br>
 
 
 
 <p class="section_title">Search</p>
 
 <p class="main_contents">
-    The search for satellite data can be restricted to a specific satellite mission, data level and product.
+    The bottom row of buttons controls the execution of the search and how the results are displayed.
 </p>
 <br>
 
@@ -661,35 +649,35 @@ My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
     Max Results
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This field limits the maximum number of returned files by the search.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Results Per Page
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This field set the maximum number of returned files per page.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Search
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This button executes the file search.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Cancel
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This button cancels and closes the OB_CLOUD Browser form.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Help
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This button links to the OB_CLOUD Browser help page.
 </p>
 
 
@@ -697,7 +685,8 @@ My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
 <p class="section_title">Results</p>
 
 <p class="main_contents">
-    The search for satellite data can be restricted to a specific satellite mission, data level and product.
+    The search is displayed in table form.  Hovering over each filename in the results
+    table, a preview image of the file is displayed if an image preview is available for the file.
 </p>
 <br>
 
@@ -710,42 +699,42 @@ My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E</pre>
     Filename
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This is the name of the file.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Download File Checkbox
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    Selecting this adds it to the files to be downloaded.  Multiple files can be downloaded at once.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Files Found
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    The is the total number of files found.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Previous - Next
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This advances to the previous and next pages.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Subset
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This tool is under-construction.  It makes a subset of the selected files.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Download
 </p>
 <p class="indent_bullet_1_contents">
-    TBD
+    This opens a file finder windows for saving the downloads directory.  All files will be downloaded into a single directory.
 </p>
 
 
