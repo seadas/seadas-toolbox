@@ -253,7 +253,7 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
 
         StringBuilder sb = new StringBuilder(Math.max(2048, attrs.size() * 64));
         for (MetadataAttribute a : attrs) {
-            String line = stripOrder(a.getName());
+            String line = lineFromAttr(a);
             sb.append(line).append('\n');
         }
         return sb.toString();
@@ -291,7 +291,7 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
                 java.util.List<MetadataAttribute> lines = orderedAttrs(kids[i]);
                 if (!lines.isEmpty()) {
                     for (MetadataAttribute a : lines) {
-                        out.append("  ").append(stripOrder(a.getName())).append('\n');
+                        out.append("  ").append(lineFromAttr(a)).append('\n');
                     }
                     if (i < kids.length - 1) out.append('\n');
                 }
@@ -316,11 +316,22 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
             return;
         }
         for (MetadataAttribute a : lines) {
-            out.append(stripOrder(a.getName())).append('\n');
+            out.append(lineFromAttr(a)).append('\n');
         }
     }
 
     // ---------------- attribute helpers ----------------
+
+    private static String lineFromAttr(MetadataAttribute a) {
+        try {
+            if (a != null && a.getData() != null) {
+                String v = a.getData().getElemString();
+                if (v != null && !v.isEmpty()) return v;
+            }
+        } catch (Throwable ignore) {}
+        // legacy fallback: old builds stored the whole line in the attribute name
+        return lineFromAttr(a);
+    }
 
     private static java.util.List<MetadataAttribute> orderedAttrs(MetadataElement el) {
         MetadataAttribute[] arr = el.getAttributes();
@@ -329,16 +340,18 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         list.sort(Comparator.comparingInt(a -> {
             String n = a.getName();
             int i = n.lastIndexOf(ZWSP);
-            if (i < 0) return Integer.MAX_VALUE;
-            try { return Integer.parseInt(n.substring(i + 1)); }
-            catch (NumberFormatException ignore) { return Integer.MAX_VALUE; }
+            if (i >= 0) {
+                try { return Integer.parseInt(n.substring(i + 1)); } catch (Exception ignore) {}
+            }
+            // new scheme: line_00042
+            int us = n.lastIndexOf('_');
+            if (us >= 0 && us + 1 < n.length()) {
+                try { return Integer.parseInt(n.substring(us + 1)); } catch (Exception ignore) {}
+            }
+            return Integer.MAX_VALUE;
         }));
-        return list;
-    }
 
-    private static String stripOrder(String s) {
-        int i = s.lastIndexOf(ZWSP);
-        return (i >= 0) ? s.substring(0, i) : s;
+        return list;
     }
 
     // ---------------- file label helpers ----------------
@@ -380,69 +393,12 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
 
     // ---------------- utils ----------------
 
-    private static boolean notEmpty(String s) {
-        return s != null && !s.isEmpty();
-    }
-
     private static String safeNodeName(Node n) {
         if (n == null) return null;
         String s = n.getName();
         if (s == null || s.isEmpty()) s = n.getDisplayName();
         if (s == null) return null;
         return s.replaceAll("<[^>]+>", "").trim();
-    }
-
-    /** From a node under Product → Metadata → Panoply → <TopGroup> return "<TopGroup>" (no child). */
-    private static String deriveTopGroupNameFromPath(Node node) {
-        java.util.List<String> up = new ArrayList<>(16);
-        for (Node cur = node; cur != null; cur = cur.getParentNode()) {
-            String nm = safeNodeName(cur);
-            if (nm != null && !nm.isEmpty()) up.add(nm);
-        }
-        if (up.isEmpty()) return null;
-        Collections.reverse(up); // root → leaf
-
-        // Find "... , Panoply, <TopGroup>" and ensure there is NO further child segment
-        int iPan = -1;
-        for (int i = 0; i < up.size(); i++) {
-            if ("Panoply".equals(up.get(i))) { iPan = i; break; }
-        }
-        if (iPan < 0) return null;
-        if (iPan + 1 >= up.size()) return null;
-
-        String maybeGroup = up.get(iPan + 1);
-        if (!isTopGroupName(maybeGroup)) return null;
-
-        // If there is another segment after the group, that's a variable/subgroup selection → not a pure group click
-        if (iPan + 2 < up.size()) return null;
-
-        return maybeGroup;
-    }
-
-    /** Resolve Panoply/<topGroupName> from the selected product. */
-    private static MetadataElement resolvePanoplyGroupFromCurrentProduct(String topGroupName) {
-        SnapApp app = SnapApp.getDefault();
-        if (app == null) return null;
-        ProductSceneView view = app.getSelectedProductSceneView();
-        if (view == null || view.getProduct() == null) return null;
-
-        MetadataElement root = view.getProduct().getMetadataRoot();
-        if (root == null) return null;
-
-        MetadataElement pan = root.getElement(PAN);
-        if (pan == null) return null;
-
-        // Accept either exact or case-insensitive match
-        MetadataElement direct = pan.getElement(topGroupName);
-        if (direct != null) return direct;
-
-        for (MetadataElement child : pan.getElements()) {
-            if (child != null && child.getName() != null &&
-                    child.getName().equalsIgnoreCase(topGroupName)) {
-                return child;
-            }
-        }
-        return null;
     }
 
     // Dock to NetBeans' standard "output" mode once per session

@@ -115,11 +115,13 @@ public final class PanoplyStyleMetadataBuilder {
 
     // ---------------- Formatting helpers ----------------
 
-    /** Add a line as a sortable attribute (line in the name, empty payload). */
+    // Use XML-safe attribute names; store text in the value.
+// Example names: line_0000, line_0001, ...
     private static void addLine(MetadataElement elem, String line, int order) {
-        elem.addAttribute(new MetadataAttribute(line + ZWSP + order,
-                ProductData.createInstance(""), true));
+        String key = "line_" + String.format("%05d", order);
+        elem.addAttribute(new MetadataAttribute(key, ProductData.createInstance(line), true));
     }
+
 
     /** Format an attribute as ncdump-style text. When global==true, prefix with ':' immediately. */
     private static String formatAttributeLine(Attribute a, boolean globalOrGroupLevel) {
@@ -188,94 +190,6 @@ public final class PanoplyStyleMetadataBuilder {
         return (v.indexOf('.') >= 0 || v.indexOf('e') >= 0 || v.indexOf('E') >= 0) ? v : (v + ".0");
     }
 
-    private static String attrValuesString(Attribute a) {
-        if (a.isString()) {
-            if (a.getLength() <= 1) return "\"" + a.getStringValue() + "\"";
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < a.getLength(); i++) {
-                if (i > 0) sb.append(", ");
-                sb.append('"').append(a.getStringValue(i)).append('"');
-            }
-            return sb.toString();
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < a.getLength(); i++) {
-            if (i > 0) sb.append(", ");
-            sb.append(String.valueOf(a.getNumericValue(i)));
-        }
-        return sb.toString();
-    }
-
-    private static String typeCommentSuffix(Attribute a) {
-        String t = numericTypeComment(a);
-        return (t != null) ? " // " + t : "";
-    }
-
-    private static String shapeString(int[] shape) {
-        if (shape == null || shape.length == 0) return "[]";
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < shape.length; i++) {
-            if (i > 0) sb.append(" x ");
-            sb.append(shape[i]);
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
-    private static String nullSafe(String s) { return s == null ? "" : s; }
-
-//    /** processing_control with flag_percentages and input_parameters sub-nodes. */
-//    private static MetadataElement buildProcessingControl(Group root) {
-//        MetadataElement pcElem = new MetadataElement("Processing_Control");
-//        Group pc = findGroupRecursive(root, "processing_control");
-//        if (pc == null) {
-//            return pcElem; // empty node still shown
-//        }
-//
-//        // Subgroup: flag_percentages
-//        MetadataElement flagsElem = new MetadataElement("Flag_Percentages");
-//        Group flags = findGroupRecursive(pc, "flag_percentages");
-//        if (flags != null) {
-//            // Many files put values as variables or as attributes – support both
-//            for (Variable v : flags.getVariables()) {
-//                flagsElem.addElement(buildVarDump(v, flags));
-//            }
-//            if (!flags.getAttributes().isEmpty()) {
-//                // Synthesize a simple dump for attributes-only subgroup
-//                MetadataElement attDump = new MetadataElement("__attributes__");
-//                int k = 0;
-//                for (Attribute a : flags.getAttributes()) {
-//                    String line = attrDumpLine(a);
-//                    attDump.addAttribute(new MetadataAttribute(line + ZWSP + (k++),
-//                            ProductData.createInstance(""), true));
-//                }
-//                flagsElem.addElement(attDump);
-//            }
-//        }
-//        pcElem.addElement(flagsElem);
-//
-//        // Subgroup: input_parameters
-//        MetadataElement inputElem = new MetadataElement("Input_Parameters");
-//        Group input = findGroupRecursive(pc, "input_parameters");
-//        if (input != null) {
-//            for (Variable v : input.getVariables()) {
-//                inputElem.addElement(buildVarDump(v, input));
-//            }
-//            if (!input.getAttributes().isEmpty()) {
-//                MetadataElement attDump = new MetadataElement("__attributes__");
-//                int k = 0;
-//                for (Attribute a : input.getAttributes()) {
-//                    String line = attrDumpLine(a);
-//                    attDump.addAttribute(new MetadataAttribute(line + ZWSP + (k++),
-//                            ProductData.createInstance(""), true));
-//                }
-//                inputElem.addElement(attDump);
-//            }
-//        }
-//        pcElem.addElement(inputElem);
-//
-//        return pcElem;
-//    }
 
     // ------------------ dump helpers ------------------
 
@@ -286,20 +200,16 @@ public final class PanoplyStyleMetadataBuilder {
 
         List<String> lines = new ArrayList<>(16);
         // Header: <type> <name>(dim=...);
-        lines.add(varHeaderLine(v));
+        lines.add("  " + varHeaderLine(v));
 
         // Attributes
         for (Attribute a : v.attributes()) {
             lines.add("  " + attrDumpLine(a));
         }
 
-        // Optional: chunk info, compression, etc. (best-effort and version-safe)
-        // (If unavailable in your NetCDF-Java version this will simply be skipped.)
-
         // Persist the lines as attributes with \u200B<order> suffix in the name
         for (int i = 0; i < lines.size(); i++) {
-            String key = lines.get(i) + ZWSP + i;
-            varElem.addAttribute(new MetadataAttribute(key, ProductData.createInstance(""), true));
+            addLine(varElem, lines.get(i), i);
         }
         return varElem;
     }
