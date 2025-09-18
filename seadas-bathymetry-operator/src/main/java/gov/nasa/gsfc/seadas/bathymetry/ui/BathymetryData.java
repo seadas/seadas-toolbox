@@ -35,6 +35,8 @@ public class BathymetryData {
 
     public static String LANDMASK_URL = "https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/landmask";
 
+    private boolean createWaterMask = true;
+
     private boolean createMasks = false;
     private boolean deleteMasks = false;
 
@@ -55,6 +57,7 @@ public class BathymetryData {
 
 
     private int superSampling = 1;
+    private boolean createBathymetryBand = true;
     private boolean createTopographyBand = false;
     private boolean createElevationBand = false;
 
@@ -112,6 +115,14 @@ public class BathymetryData {
 
 
 
+    public boolean isCreateBathymetryBand() {
+        return createBathymetryBand;
+    }
+
+    public void setCreateBathymetryBand(boolean createBathymetryBand) {
+        this.createBathymetryBand = createBathymetryBand;
+    }
+
 
     public boolean isCreateTopographyBand() {
         return createTopographyBand;
@@ -120,6 +131,8 @@ public class BathymetryData {
     public void setCreateTopographyBand(boolean createTopographyBand) {
         this.createTopographyBand = createTopographyBand;
     }
+
+
 
     public boolean isCreateElevationBand() {
         return createElevationBand;
@@ -136,6 +149,15 @@ public class BathymetryData {
 
     public void setCreateMasks(boolean closeClicked) {
         this.createMasks = closeClicked;
+    }
+
+
+    public boolean isCreateWaterMask() {
+        return createWaterMask;
+    }
+
+    public void setCreateWaterMask(boolean createWaterMask) {
+        this.createWaterMask = createWaterMask;
     }
 
 

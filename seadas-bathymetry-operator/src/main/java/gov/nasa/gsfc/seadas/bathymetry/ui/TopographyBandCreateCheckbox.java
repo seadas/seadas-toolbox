@@ -17,7 +17,7 @@ public class TopographyBandCreateCheckbox {
     private JLabel jLabel;
     private JCheckBox jCheckBox = new JCheckBox();
 
-    private static String DEFAULT_NAME = "Create topography band";
+    private static String DEFAULT_NAME = "Create Topography Band";
     private static String DEFAULT_TOOLTIPS = "Note: this can take longer to run";
 
     public TopographyBandCreateCheckbox(BathymetryData bathymetryData) {

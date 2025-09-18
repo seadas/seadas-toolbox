@@ -265,6 +265,14 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
+                                for (String name : bandGroup.getNodeNames()) {
+                                    if (name.equals(landMasksData.getWaterFractionBandName())
+                                            || (landMasksData.isCreateCoastline() && name.equals(landMasksData.getWaterFractionSmoothedName()))
+                                    ) {
+                                        bandGroup.remove(bandGroup.get(name));
+                                    }
+                                }
+
                                 boolean createCoastBand = landMasksData.isCreateCoastline();
                                 boolean createWaterMask = landMasksData.isCreateWatermask();
                                 boolean createLandMask = landMasksData.isCreateLandmask();
