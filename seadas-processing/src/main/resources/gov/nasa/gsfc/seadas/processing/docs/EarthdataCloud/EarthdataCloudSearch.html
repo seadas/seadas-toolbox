@@ -6,8 +6,11 @@
 <head>
     <title>OB_Cloud Data Browser</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style_new.css">
 </head>
+
+
+
 
 <body>
 
@@ -25,178 +28,722 @@
 
 
 
-
-<p>
-    The OB_CLOUD Data Browser is a tool for browsing the NASA Earthdata cloud for the Ocean Biology DAAC satellite data.
+<p class="main_contents">
+    The OB_CLOUD Data Browser is a tool for browsing the Ocean Biology OB.DAAC satellite data which resides
+    in the NASA Earthdata cloud. This tool interfaces with the Harmony Search Service and leverages
+    CMR (Common Metadata Repository) for granule-level metadata retrieval.
 </p>
 
 
 <br>
+<p class="main_contents_image">
+    <img src="images/earthdata_search_main.png" width="550" border="0"><br><br>
+</p>
 
 
-<p align="center">
-    <img src="images/earthdata_search_01.png" width="550" border="0"><br><br>
-    <i>Image 1: OB_CLOUD Data Browser</i>
+<p class="indent_bullet_0_title">
+    Location:
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Menu > Earthdata-Cloud > OB_CLOUD Data Browser
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    (Preferences): Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud
+</p>
+
+
+
+
+<p class="indent_bullet_0_title">
+    Features:
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Mission-aware metadata filtering using satellite/instrument, data level, and product names.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Mission-aware metadata filtering using satellite/instrument, data level, and product names.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Integrated spatial and temporal filters, with automatic date validation based on mission-specific coverage.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Day/Night granule selection, supporting all CMR day_night_flag values.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Granule preview support, with hover-based thumbnail loading from browse_images, and full-resolution image viewing.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Granule pagination and result management, decoupling total fetch limit from per-page display.
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    Secure file downloads with Earthdata login support and progress monitoring.
+</p>
+
+<br>
+
+
+
+<p class="section_title">Product-Mission Criteria</p>
+
+<p class="main_contents">
+    The search for satellite data can be restricted to a specific satellite mission, data level and product.
+</p>
+<br>
+
+<p class="main_contents_image_1">
+    <img src="images/earthdata_search_product_criteria.png" width="350" border="0"><br><br>
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Satellite/Instrument
+</p>
+<p class="indent_bullet_1_contents">
+    This is the satellite mission (also referred to as a specific instrument or sensor
+    which is mounted on a specific orbiting satellite platform).
+</p>
+
+<p class="indent_bullet_1_contents">
+    Note that for certain sensor designs, (for instance VIIRS, MODIS, OLI, OLCI) there can be multiple of these
+    which are operational or have been operational.  This is usually delineated and contained in short form in the
+    satellite mission name.  So:
+</p>
+
+<p class="indent_bullet_2_title">-
+    'MODISA'
+</p>
+<p class="indent_bullet_2_contents">
+    Refers to the 'MODIS' sensor that is mounted on the 'Aqua' platform.
+</p>
+
+<p class="indent_bullet_2_title">-
+    'MODIST'
+</p>
+<p class="indent_bullet_2_contents">
+    Refers to the 'MODIS' sensor that is mounted on the 'Terra' platform.
+</p>
+
+<p class="indent_bullet_2_title">-
+    'PACE_OCI'
+</p>
+<p class="indent_bullet_2_contents">
+    Refers to the 'OCI' sensor that is mounted on the 'PACE' platform.
+</p>
+
+<p class="indent_bullet_2">-
+    etc.
+</p>
+<br>
+
+<p class="indent_bullet_1_contents">
+    Note: you can only select one mission ('Satellite/Instrument') per search.  This is because the data levels
+    a especially the products can be specific to each mission, and those selector are dynamically configured based on the mission
+    you choose.
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Data Level
+</p>
+<p class="indent_bullet_1_contents">
+    This is the science processing level of the data.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Product
+</p>
+<p class="indent_bullet_1_contents">
+    This is the specific product of the data.
+</p>
+<br>
+
+
+<p class="section_title">Temporal Filter</p>
+
+<p class="main_contents">
+    The search for satellite data can be restricted based on a time period.  Included within this are options
+    to restrict based on whether the data was imaged in the daytime or nighttime.
+</p>
+<br>
+
+<p class="main_contents_image_1">
+    <img src="images/earthdata_search_temporal_filter.png" width="350" border="0"><br><br>
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Start Date
+</p>
+<p class="indent_bullet_1_contents">
+    This is the start date of the data.  If this is left blank then start of the mission is assumed.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Stop Date
+</p>
+<p class="indent_bullet_1_contents">
+    This is the stop date of the data.  If this is left blank then start of the mission is assumed.
+</p>
+
+
+<p class="sub_section_title">Temporal Filter: Day/Night</p>
+
+<p class="main_contents">
+    These are the options to restrict based on whether the data was imaged in the daytime or nighttime.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Day
+</p>
+<p class="indent_bullet_1_contents">
+    Search only retrieve data which was imaged in the daytime.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Night
+</p>
+<p class="indent_bullet_1_contents">
+    Search only retrieve data which was imaged in the nighttime.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Both
+</p>
+<p class="indent_bullet_1_contents">
+    Search is not restricted to daytime or nighttime data.
 </p>
 <br>
 
 
 
-<h3>Spatial Filter</h3></a>
 
-<p>
-    The search for satellite data can be restricted to a user specific geographic region of interest.  This is done
+<p class="section_title">Spatial Filter</p>
+
+<p class="main_contents">
+    The search for satellite data can be restricted to a user specific geographic region of interest. This is done
     through parameters known geographic 'bounding_box', which is defined by the fields:
-    North, South, West and East.  The search will only return satellite data files which match in part or in full the
-    user requested bounding_box.  Keep in mind that satellite data (such as unprojected level-2 data) is oriented to
+    North, South, West and East. The search will only return satellite data files which match in part or in full the
+    user requested bounding_box. Keep in mind that satellite data (such as unprojected level-2 data) is oriented to
     the actual observation of the earth made by the satellite, and is not precisely represented by a North, South, West,
-    East bounding box.  So this can result in some extra files returned by the search which do not actually have data in
+    East bounding box. So this can result in some extra files returned by the search which do not actually have data in
     the user requested bounding box.
 </p>
+<br>
+
+<p class="main_contents_image_1">
+    <img src="images/earthdata_search_spatial_filter.png" width="350" border="0"><br><br>
+</p>
 
 
-<ul>
-    <li><b>North</b> - Northernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=90.0</li>
-    <li><b>South</b> - Southernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=-90.0</li>
-    <li><b>West</b> - Westernmost longitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=-180.0</li>
-    <li><b>East</b> - Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=180.0</li>
-</ul>
 
 
-<p>
-    The internal format which is ultimately used for the spatial fields is the decimal format.   However, the browser
-    tool will accept and  convert most any format.  The following table illustrates the full list of optional formats
+<p class="indent_bullet_1_title">&#x2022;
+    North
+</p>
+<p class="indent_bullet_1_contents">
+    Northernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=90.0
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    South
+</p>
+<p class="indent_bullet_1_contents">
+    Southernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=90.0
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    West
+</p>
+<p class="indent_bullet_1_contents">
+    Westernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=-180.0
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    East
+</p>
+<p class="indent_bullet_1_contents">
+    Easternmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=180.0
+</p>
+
+
+<p class="sub_section_title">Spatial Filter: Formatting</p>
+
+<p class="main_contents">
+    The internal format which is ultimately used for the spatial fields is the decimal format. However, the browser
+    tool will accept and convert most any format.
+</p>
+
+<p class="main_contents">
+    The following table illustrates the full list of optional formats
     (shown in example for a sample point in the Chesapeake Bay).
 </p>
 
 
-<table>
-    <tr>
-        <td>Format</td> <td>Lat</td>  <td>Lon</td>
-    </tr>
-    <tr>
-        <td>Decimal_Degrees (Numeric)</td> <td>37.85</td>  <td>-76.15</td>
-    </tr>
-    <tr>
-        <td>Decimal_Degrees (Compass)</td> <td>37.8°N</td>  <td>76.15°W</td>
-    </tr>
-    <tr>
-        <td>Degrees (Numeric)</td> <td>37°</td>  <td>-76°</td>
-    </tr>
-    <tr>
-        <td>Degrees (Compass)</td> <td>37°N</td>  <td>76°W</td>
-    </tr>
-    <tr>
-        <td>Degrees_Minutes (Numeric)</td> <td>37°48&prime;</td>  <td>-76°6&prime;</td>
-    </tr>
-    <tr>
-        <td>Degrees_Minutes (Compass)</td> <td>37°48&prime;N</td>  <td>76°6&prime;W</td>
-    </tr>
-    <tr>
-        <td>Degrees_Minutes_Seconds (Numeric)</td> <td>37°48&prime;00&Prime;</td>  <td>-76°6&prime;00&Prime;</td>
-    </tr>
-    <tr>
-        <td>Degrees_Minutes_Seconds (Compass)</td> <td>37°48&prime;00&Prime;N</td>  <td>76°6&prime;00&Prime;W</td>
-    </tr>
-</table>
+<br>
+<div class="div_indent_1">
+    <table class="outline">
+        <tr>
+            <th class="blank">Format</th>
+            <th class="blank">Lat</th>
+            <th class="blank">Lon</th>
+        </tr>
+        <tr>
+            <td class="blank">Decimal_Degrees (Numeric)</td>
+            <td class="blank">37.85</td>
+            <td class="blank">-76.15</td>
+        </tr>
+        <tr>
+            <td class="blank">Decimal_Degrees (Compass)</td>
+            <td class="blank">37.8°N</td>
+            <td class="blank">76.15°W</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees (Numeric)</td>
+            <td class="blank">37°</td>
+            <td class="blank">-76°</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees (Compass)</td>
+            <td class="blank">37°N</td>
+            <td class="blank">76°W</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes (Numeric)</td>
+            <td class="blank">37°48&prime;</td>
+            <td class="blank">-76°6&prime;</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes (Compass)</td>
+            <td class="blank">37°48&prime;N</td>
+            <td class="blank">76°6&prime;W</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes_Seconds (Numeric)</td>
+            <td class="blank">37°48&prime;00&Prime;</td>
+            <td class="blank">-76°6&prime;00&Prime;</td>
+        </tr>
+        <tr>
+            <td class="blank">Degrees_Minutes_Seconds (Compass)</td>
+            <td class="blank">37°48&prime;00&Prime;N</td>
+            <td class="blank">76°6&prime;00&Prime;W</td>
+        </tr>
+    </table>
+</div>
 
+<br>
 
-
-<p>
-    Note: for minutes and seconds: the single quote and double quote characters can optionally be used instead of the
+<p class="main_contents">
+    Note: for the format of minutes and seconds: the single quote and double quote characters can optionally be used
+    instead of the
     alphanumeric prime characters.
 </p>
 
-<h4>Spatial Filter: Accessory Tools</h4></a>
 
+<p class="sub_section_title">Spatial Filter: Accessory Tools</p>
 
-<p>
-    There are several accessory fields which can aid in populating the North, South, West and East fields.  These fields
+<p class="main_contents">
+    There are several accessory fields which can aid in populating the North, South, West and East fields. These fields
     themselves are not actually used in the search.
 </p>
 
-<ul>
-    <li><b>Coordinates</b> This is a single coordinate point (latitude longitude) to serve as the center of the scene.
-        The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.</li>
-    <li><b>Box Size</b> This is size of the region (in degrees).
-        The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
-        <br><br>The options are:
-     <ul>
-         <li><b>number</b> - This value defines the width and height (in degrees) of the region which is centered on the
-             value in the 'Coordinates' field.
 
-             <br><br>
-                 <img src="images/earthdata_search_02.png" width="350" border="0"><br><br>
-                 <i>Image 2: Box Size sets region size based on a single dimension number.  <br>
-                     Note in this example that for size '1':<br>
-                     North is set to the lat of 'Coordinates' plus 0.5 degrees<br>
-                     South is set to the lat of 'Coordinates' minus 0.5 degrees<br>
-                     West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                     East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
-                 </i>
-             <br><br>
-         </li>
 
-        <li><b>lon x lat</b> The format here is width x height.   - Note that West is Coordinates lon minus 1 degrees and North is Coordinates lat plus 2 degree
-            <br><br>
-                <img src="images/earthdata_search_03.png" width="350" border="0"><br><br>
-            <i>Image 2: Box Size sets region size based on a two dimensional number.  <br>
-                Note in this example that for size '1 x 2':<br>
-                North is set to the lat of 'Coordinates' plus 1 degrees<br>
-                South is set to the lat of 'Coordinates' minus 1 degrees<br>
-                West is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                East is set to the lon of 'Coordinates' plus 0.5 degrees<br>
-            </i>
-            <br><br>
-        </li>
-     </ul>
-    </li>
-    <li><b>Region</b> These are pre-defined stored locations or regions (see figure 2 or 3). Selecting this will set the "Coordinates" field,
-        which in turn will set the North, South, West, East fields. The non-editable file which contains these is ~/.seadas/auxdata/regions/regions.txt
+<p class="indent_bullet_1_title">&#x2022;
+    Coordinates
+</p>
+<p class="indent_bullet_1_contents">
+    This is a single coordinate point (latitude longitude) to serve as the center of the scene.
+    The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
+</p>
 
-    </li>
-    <li><b>User Region*</b> These are user defined locations or regions (see figure 4).  Selecting this will set the "Coordinates" field,
-        which in turn will set the North, South, West, East fields.  *This option is not available by default, but can easily
-        be added by going to the Preferences page (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud) and checking "User Region Selector".
-        The editable file which contains these is ~/.seadas/auxdata/regions/user_regions.txt.
-        <br><br>
-        <img src="images/earthdata_search_04.png" width="350" border="0"><br><br>
-        <i>Image 4: Description TBD</i>
-        <br><br>
+<p class="indent_bullet_1_title">&#x2022;
+    Box Size
+</p>
+<p class="indent_bullet_1_contents">
+    This is size of the region (in degrees).
+    The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
+</p>
 
-        Here's a sample of the formatting in the user configuration file:
-        <table><tr><td bgcolor="#e9f0f0">
-          <pre>
+<p class="indent_bullet_1_contents">
+    The options are:
+</p>
 
-        #--------------------------------------------------------------------------------------
-        #  Sample entries for a point location
-        #     These entries will populate the 'Coordinates' field.  Then the 'Coordinates' field in combination
-        #     with the 'Box Size' field will auto-populate the 'North', 'South', 'West', and 'East' fields.
-        #  Format: (coordinates can be space and/or comma delimited)
-        #  Name = Lat  Lon
-        #--------------------------------------------------------------------------------------
 
-        My Sample Location = 37°48?00?N, 76°6?00?W
-        My Sample Location (Decimal) = 37.8°N, 76.1°W
+<!--<p class="indent_bullet_2_title">&#x25E6; Box Size = {Number}-->
+<!--</p>-->
+
+<p class="indent_bullet_2_title">- Box Size = [Number]
+</p>
+<p class="indent_bullet_2_contents">
+    This value defines the width and height (in degrees) of the region which is centered on the
+    value in the 'Coordinates' field.
+</p>
+
+<p class="indent_bullet_2_title">- Box Size = [Dimension] (lon x lat)
+</p>
+<p class="indent_bullet_2_contents">
+    This two-dimension value (format lon x lat) defines the width and height (in degrees) of the region which is
+    centered on the
+    value in the 'Coordinates' field.
+</p>
 
 
 
-        #--------------------------------------------------------------------------------------
-        #  Sample entries for a bounded region
-        #     These entries will directly populate the 'North', 'South', 'West', and 'East' fields.
-        #  Format: (coordinates can be space and/or comma delimited)
-        #  Name = North  South  West  East
-        #--------------------------------------------------------------------------------------
+<p class="indent_bullet_1_title">&#x2022;
+    Preset Locations
+</p>
+<p class="indent_bullet_1_contents">
+    This selector contains pre-defined stored geographic locations.  Each entry is a single point location, defined by a location
+    name and it's associated coordinates.  Selecting a location will then load the value into the "Coordinates"
+    field.  The loaded 'Coordinates' field, in combination with the 'Box Size', will then automatically update the
+    'North', 'South', 'West' and 'East' fields.
+</p>
 
-        My Sample Region = 39°36?00?N, 35°54?00?N, 77°30?00?E, 74°18?00?E
-        My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E
+<p class="indent_bullet_1_contents">
+    For reference: the non-editable configuration file which contains the 'Preset Locations' is:
+</p>
 
-          </pre>
-        </td></tr></table>
-    </li>
-</ul>
+<p class="indent_bullet_2_title_no_gap">
+    ~/.seadas/auxdata/regions/locations.txt
+</p>
+<br>
+<p class="sub_section_title">Spatial Filter: Examples</p>
+
+<p class="main_contents">
+    A few examples illustrating the how the 'Preset Locations', 'Coordinates', and 'Box Size' fields combine to auto-populate
+    the 'North', 'South', 'West' and 'East' fields.
+</p>
+
+<br>
+<div class="div_indent_1">
+
+    <table class="outline" width="450">
+        <tr>
+            <td class="blank_paragraph">
+
+                <p class="main_contents_header">
+                    Example 1<br>Setting 'Box Size' with a single number<br></p>
+
+                <p class="main_contents">
+                    In this example the user sets the 'Box Size' and the 'Coordinates'.
+                    The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
+
+                <p class="main_contents_image">
+                    <img src="images/earthdata_search_example1.png" width="350" border="0"><br></p>
+
+                <p class="main_contents">
+                    Here the 'Box Size' is set to a number ('1') and the 'Coordinates' are also set.
+                    Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
+
+                <p class="main_contents">
+                    A 'Box Size' of '1' means that the box will span west-east by 1 degree and span
+                    north-south by 1 degree centered about the 'Coordinates'.</p>
+
+                <p class="main_contents">
+                    Hence: <br>
+                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 0.5 degrees<br>
+                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 0.5 degrees<br>
+                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
+                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
+
+            </td>
+        </tr>
+    </table>
+
+</div>
+<br>
 
 
+
+
+<br>
+<div class="div_indent_1">
+
+    <table class="outline" width="450">
+        <tr>
+            <td class="blank_paragraph">
+
+                <p class="main_contents_header">
+                    Example 2<br>Setting 'Box Size' with a two-dimension number<br></p>
+
+                <p class="main_contents">
+                    In this example the user sets the 'Box Size' and the 'Coordinates'.
+                    The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
+
+                <p class="main_contents_image">
+                    <img src="images/earthdata_search_example2.png" width="350" border="0"><br></p>
+
+                <p class="main_contents">
+                    Here the 'Box Size' is set to a number ('1x2') and the 'Coordinates' are also set.
+                    Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
+
+                <p class="main_contents">
+                    A 'Box Size' of '1x2' means that the box will span west-east by 1 degree and span
+                    north-south by 2 degrees centered about the 'Coordinates'.</p>
+
+                <p class="main_contents">
+                    Hence: <br>
+                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 1 degrees<br>
+                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 1 degrees<br>
+                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
+                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
+
+            </td>
+        </tr>
+    </table>
+
+</div>
+<br>
+
+
+
+<p class="sub_section_title">Spatial Filter: Custom User Locations and Regions</p>
+
+<p class="main_contents">
+    The user can define their own locations and regions with two optional selectors
+    ('User Locations' and 'User Regions') which are available in the preferences.
+    Locations are defined as single point coordinates whereas 'Regions' are defined
+    as geographic areas with 'North', 'South', 'West' and 'East' bounds.
+</p>
+
+
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    User Locations
+</p>
+
+
+<p class="indent_bullet_1_contents">
+    Selecting the user-defined 'User Locations' will set the "Coordinates" field,
+    which in turn will set the North, South, West and East fields.
+</p>
+
+<p class="main_contents_image_2">
+    <img src="images/earthdata_search_user_location.png" width="350" border="0"><br><br>
+</p>
+
+
+
+<p class="indent_bullet_2_title">-
+    To enable the 'User Locations' selector
+</p>
+
+<p class="indent_bullet_2_contents">
+    The 'User Locations' field is not available by default,
+    but can easily be added by going to the Preferences page:<br>
+    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
+    and checking "Include 'User Locations' Selector".
+</p>
+
+<p class="indent_bullet_2_title">-
+    To edit the 'User Locations' selector
+</p>
+
+<p class="indent_bullet_2_contents">
+    Entries can be added to the 'User Locations' selector by manually editing the following file:<br>
+    ~/.seadas/auxdata/regions/user_locations.txt.
+</p>
+
+<p class="indent_bullet_2_contents">
+    Here's a sample of the formatting in the 'User Locations' configuration file:
+</p>
+
+<div class="div_indent_2">
+<table class="outline">
+    <tr>
+        <td class="blank_paragraph">
+            <pre>
+#  Name = Lat Lon
+#  (coordinates can be space and/or comma delimited)
+
+My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W</pre>
+        </td>
+    </tr>
+</table>
+
+</div>
+<br>
+
+
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    User Regions
+</p>
+
+<p class="indent_bullet_1_contents">
+    Selecting the user-defined 'User Regions' will directly populate
+    the North, South, West and East fields.
+</p>
+
+<p class="main_contents_image_2">
+    <img src="images/earthdata_search_user_region.png" width="350" border="0"><br><br>
+</p>
+
+<p class="indent_bullet_2_title">-
+    To enable the 'User Regions' selector
+</p>
+
+<p class="indent_bullet_2_contents">
+    The 'User Regions' field is not available by default,
+    but can easily be added by going to the Preferences page:<br>
+    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
+    and checking "Include 'User Regions' Selector".
+</p>
+
+<p class="indent_bullet_2_title">-
+    To edit the 'User Regions' selector
+</p>
+
+<p class="indent_bullet_2_contents">
+    Entries can be added to the 'User Regions' selector by manually editing the following file:<br>
+    ~/.seadas/auxdata/regions/user_regions.txt.
+</p>
+
+<p class="indent_bullet_2_contents">
+    Here's a sample of the formatting in the 'User Regions' configuration file:
+</p>
+
+
+<div class="div_indent_2">
+
+    <table class="outline">
+        <tr>
+            <td class="blank_paragraph">
+                <pre>
+#  Name = North  South  West  East
+#  (coordinates can be space and/or comma delimited)
+
+My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E</pre>
+            </td>
+        </tr>
+    </table>
+
+</div>
+<br>
+
+
+
+
+
+
+
+
+
+
+<p class="section_title">Search</p>
+
+<p class="main_contents">
+    The bottom row of buttons controls the execution of the search and how the results are displayed.
+</p>
+<br>
+
+<p class="main_contents_image">
+    <img src="images/earthdata_search_search.png" width="550" border="0"><br><br>
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Max Results
+</p>
+<p class="indent_bullet_1_contents">
+    This field limits the maximum number of returned files by the search.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Results Per Page
+</p>
+<p class="indent_bullet_1_contents">
+    This field set the maximum number of returned files per page.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Search
+</p>
+<p class="indent_bullet_1_contents">
+    This button executes the file search.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Cancel
+</p>
+<p class="indent_bullet_1_contents">
+    This button cancels and closes the OB_CLOUD Browser form.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Help
+</p>
+<p class="indent_bullet_1_contents">
+    This button links to the OB_CLOUD Browser help page.
+</p>
+
+
+
+<p class="section_title">Results</p>
+
+<p class="main_contents">
+    The search is displayed in table form.  Hovering over each filename in the results
+    table, a preview image of the file is displayed if an image preview is available for the file.
+</p>
+<br>
+
+<p class="main_contents_image">
+    <img src="images/earthdata_search_results.png" width="550" border="0"><br><br>
+</p>
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    Filename
+</p>
+<p class="indent_bullet_1_contents">
+    This is the name of the file.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Download File Checkbox
+</p>
+<p class="indent_bullet_1_contents">
+    Selecting this adds it to the files to be downloaded.  Multiple files can be downloaded at once.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Files Found
+</p>
+<p class="indent_bullet_1_contents">
+    The is the total number of files found.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Previous - Next
+</p>
+<p class="indent_bullet_1_contents">
+    This advances to the previous and next pages.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Subset
+</p>
+<p class="indent_bullet_1_contents">
+    This tool is under-construction.  It makes a subset of the selected files.
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    Download
+</p>
+<p class="indent_bullet_1_contents">
+    This opens a file finder windows for saving the downloads directory.  All files will be downloaded into a single directory.
+</p>
 
 
 
@@ -214,16 +761,11 @@
 <!--Secure file downloads with Earthdata login support and progress monitoring.-->
 
 
-
-
 <!--CMR API doc:-->
 <!--https://cmr.earthdata.nasa.gov/ingest/site/docs/ingest/api.html#latest-umm-versions-->
 
 <!--This points to the Client Partners Users Guide at the top of the page:-->
 <!--https://wiki.earthdata.nasa.gov/display/CMR/CMR+Client+Partner+User+Guide-->
-
-
-
 
 
 <br>

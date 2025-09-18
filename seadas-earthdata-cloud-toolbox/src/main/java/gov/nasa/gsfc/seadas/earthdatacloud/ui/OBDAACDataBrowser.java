@@ -1,12 +1,10 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
-import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
 import org.jdatepicker.impl.*;
@@ -15,7 +13,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.openide.util.HelpCtx;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -33,15 +30,15 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
     private JDatePickerImpl startDatePicker, endDatePicker;
     private JTextField minLatField, maxLatField, minLonField, maxLonField, coordinates, boxSize;
     private JComboBox regions;
-    private JComboBox regions2;
+    private JComboBox locations;
+    private JComboBox user_regions;
+    private JComboBox user_locations;
     private boolean working = false;
     private JTable resultsTable;
     private DefaultTableModel tableModel;
@@ -1073,17 +1070,18 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         Insets insetsOrig = gbc.insets;
         gbc.gridwidth = 2;
+        gbc.insets = new Insets(2, 2, 0, 2);
         panel.add(new JSeparator(), gbc);
         gbc.insets = insetsOrig;
 
-        gbc.gridy++;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridwidth = 2;
-        JLabel fill = new JLabel("");
-        panel.add(fill, gbc);
-        gbc.weighty = 0;
-        gbc.gridwidth = 1;
+//        gbc.gridy++;
+//        gbc.weighty = 1;
+//        gbc.fill = GridBagConstraints.BOTH;
+//        gbc.gridwidth = 2;
+//        JLabel fill = new JLabel("");
+//        panel.add(fill, gbc);
+//        gbc.weighty = 0;
+//        gbc.gridwidth = 1;
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -1091,6 +1089,8 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.weightx = 0;
         JLabel coordinatesLabel = new JLabel("Coordinates:");
         coordinatesLabel.setToolTipText("Used to set fields north, south, west and east");
+        coordinatesLabel.setMinimumSize(coordinatesLabel.getPreferredSize());
+        coordinatesLabel.setPreferredSize(coordinatesLabel.getPreferredSize());
         panel.add(coordinatesLabel, gbc);
 
 
@@ -1118,68 +1118,172 @@ public class OBDAACDataBrowser extends JPanel {
 
         createSpatialPanelHandlers();
 
-        try {
-            String REGIONS_FILE = "regions.txt";
-            String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt</html>";
-            ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
+        gbc.gridy += 1;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        insetsOrig = gbc.insets;
+        gbc.gridwidth = 2;
+        panel.add(new JSeparator(), gbc);
+        gbc.insets = insetsOrig;
+        gbc.gridwidth = 1;
 
-            Object[] regionsInfosArray = regionsInfos.toArray();
+        JTextField tmpTextField = new JTextField("123456789012345678901234567890");
+        Dimension regionEntryPreferredSize = tmpTextField.getPreferredSize();
 
-            gbc.gridy++;
-            gbc.gridx = 0;
-            gbc.fill = GridBagConstraints.NONE;
-            gbc.weightx = 0;
-            JLabel regionLabel = new JLabel("Region:");
-            regionLabel.setToolTipText(TOOLTIP);
-            panel.add(regionLabel, gbc);
+        JLabel tmpLabel = new JLabel("123456789012345678901234567890");
+        Dimension regionLabelPreferredSize = tmpLabel.getPreferredSize();
 
-            gbc.gridx = 1;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.weightx = 1.0;
-            regions = new JComboBox(regionsInfosArray);
-            regions.setMaximumRowCount(20);
-            regions.setToolTipText(TOOLTIP);
 
-            panel.add(regions, gbc);
-            JTextField tmp2 = new JTextField("1234567890123456789012");
-            regions.setMinimumSize(tmp2.getPreferredSize());
+        if (Earthdata_Cloud_Controller.getPreferencePresetRegionsSelectorInclude()) {
 
-            regions.addActionListener(evt -> {
-                if (!working) {
-                    working = true;
-                    RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
+            try {
+                String REGIONS_FILE = "regions.txt";
+                String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt</html>";
+                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
+
+                Object[] regionsInfosArray = regionsInfos.toArray();
+
+                gbc.gridy++;
+                gbc.gridx = 0;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.weightx = 0;
+                JLabel regionLabel = new JLabel("Preset Regions:");
+                regionLabel.setToolTipText(TOOLTIP);
+                regionLabel.setMinimumSize(regionLabelPreferredSize);
+                panel.add(regionLabel, gbc);
+
+                gbc.gridx = 1;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1.0;
+                regions = new JComboBox(regionsInfosArray);
+                regions.setMaximumRowCount(20);
+                regions.setToolTipText(TOOLTIP);
+
+                panel.add(regions, gbc);
+                regions.setMinimumSize(regionEntryPreferredSize);
+
+                regions.addActionListener(evt -> {
+                    if (!working) {
+                        working = true;
+                        RegionsInfo selectedRegionInfo = (RegionsInfo) regions.getSelectedItem();
 //                    System.out.println("regions change" + selectedRegionInfo.getName());
 
-                    if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
-                        maxLatField.setText(selectedRegionInfo.getNorth());
-                        minLatField.setText(selectedRegionInfo.getSouth());
-                        minLonField.setText(selectedRegionInfo.getWest());
-                        maxLonField.setText(selectedRegionInfo.getEast());
-                        coordinates.setText(selectedRegionInfo.getCoordinates());
-                    } else {
-                        maxLatField.setText("");
-                        minLatField.setText("");
-                        minLonField.setText("");
-                        maxLonField.setText("");
-                        coordinates.setText("");
+                        if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
+                            maxLatField.setText(selectedRegionInfo.getNorth());
+                            minLatField.setText(selectedRegionInfo.getSouth());
+                            minLonField.setText(selectedRegionInfo.getWest());
+                            maxLonField.setText(selectedRegionInfo.getEast());
+                            coordinates.setText(selectedRegionInfo.getCoordinates());
+                        } else {
+                            maxLatField.setText("");
+                            minLatField.setText("");
+                            minLonField.setText("");
+                            maxLonField.setText("");
+                            coordinates.setText("");
+                        }
+
+
+                        if (locations != null) {
+                            locations.setSelectedIndex(0);
+                        }
+
+                        if (user_regions != null) {
+                            user_regions.setSelectedIndex(0);
+                        }
+
+                        if (user_locations != null) {
+                            user_locations.setSelectedIndex(0);
+                        }
+
+                        handleUpdateFromCoordinates();
+
+                        panel.repaint();
+                        panel.updateUI();
+                        parentDialog.repaint();
+
+                        working = false;
                     }
+                });
 
-                    if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
-                        regions2.setSelectedIndex(0);
+
+            } catch (Exception e) {
+            }
+        }
+
+
+        if (Earthdata_Cloud_Controller.getPreferencePresetLocationsSelectorInclude()) {
+
+            try {
+                String REGIONS_FILE = "locations.txt";
+                String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/locations.txt</html>";
+                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
+
+                Object[] regionsInfosArray = regionsInfos.toArray();
+
+                gbc.gridy++;
+                gbc.gridx = 0;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.weightx = 0;
+                JLabel regionLabel = new JLabel("Preset Locations:");
+                regionLabel.setToolTipText(TOOLTIP);
+                regionLabel.setMinimumSize(regionLabelPreferredSize);
+                panel.add(regionLabel, gbc);
+
+                gbc.gridx = 1;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1.0;
+                locations = new JComboBox(regionsInfosArray);
+                locations.setMaximumRowCount(20);
+                locations.setToolTipText(TOOLTIP);
+
+                panel.add(locations, gbc);
+                locations.setMinimumSize(regionEntryPreferredSize);
+
+                locations.addActionListener(evt -> {
+                    if (!working) {
+                        working = true;
+                        RegionsInfo selectedRegionInfo = (RegionsInfo) locations.getSelectedItem();
+//                    System.out.println("regions change" + selectedRegionInfo.getName());
+
+                        if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
+                            maxLatField.setText(selectedRegionInfo.getNorth());
+                            minLatField.setText(selectedRegionInfo.getSouth());
+                            minLonField.setText(selectedRegionInfo.getWest());
+                            maxLonField.setText(selectedRegionInfo.getEast());
+                            coordinates.setText(selectedRegionInfo.getCoordinates());
+                        } else {
+                            maxLatField.setText("");
+                            minLatField.setText("");
+                            minLonField.setText("");
+                            maxLonField.setText("");
+                            coordinates.setText("");
+                        }
+
+                        if (regions != null) {
+                            regions.setSelectedIndex(0);
+                        }
+
+                        if (user_regions != null) {
+                            user_regions.setSelectedIndex(0);
+                        }
+
+                        if (user_locations != null) {
+                            user_locations.setSelectedIndex(0);
+                        }
+
+                        handleUpdateFromCoordinates();
+
+                        panel.repaint();
+                        panel.updateUI();
+                        parentDialog.repaint();
+
+                        working = false;
                     }
-
-                    handleUpdateFromCoordinates();
-
-                    panel.repaint();
-                    panel.updateUI();
-                    parentDialog.repaint();
-
-                    working = false;
-                }
-            });
+                });
 
 
-        } catch (Exception e) {
+            } catch (Exception e) {
+            }
         }
 
 
@@ -1187,7 +1291,7 @@ public class OBDAACDataBrowser extends JPanel {
 
             try {
                 String REGIONS_FILE = "user_regions.txt";
-                String TOOLTIP = "<html>User-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas9/auxdata/regions/user_regions.txt</html>";
+                String TOOLTIP = "<html>User-Defined Regions<br>Sets coordinates based on contents of ~/.seadas/auxdata/regions/user_regions.txt</html>";
 
                 ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false);
 
@@ -1197,25 +1301,25 @@ public class OBDAACDataBrowser extends JPanel {
                 gbc.gridx = 0;
                 gbc.fill = GridBagConstraints.NONE;
                 gbc.weightx = 0;
-                JLabel regionLabel = new JLabel("User Region:");
+                JLabel regionLabel = new JLabel("User Regions:");
                 regionLabel.setToolTipText(TOOLTIP);
+                regionLabel.setMinimumSize(regionLabelPreferredSize);
                 panel.add(regionLabel, gbc);
 
                 gbc.gridx = 1;
                 gbc.fill = GridBagConstraints.HORIZONTAL;
                 gbc.weightx = 1.0;
-                regions2 = new JComboBox(regionsInfosArray);
-                regions2.setMaximumRowCount(20);
-                regions2.setToolTipText(TOOLTIP);
+                user_regions = new JComboBox(regionsInfosArray);
+                user_regions.setMaximumRowCount(20);
+                user_regions.setToolTipText(TOOLTIP);
 
-                panel.add(regions2, gbc);
-                JTextField tmp2 = new JTextField("1234567890123456789012");
-                regions2.setMinimumSize(tmp2.getPreferredSize());
+                panel.add(user_regions, gbc);
+                user_regions.setMinimumSize(regionEntryPreferredSize);
 
-                regions2.addActionListener(evt -> {
+                user_regions.addActionListener(evt -> {
                     if (!working) {
                         working = true;
-                        RegionsInfo selectedRegionInfo = (RegionsInfo) regions2.getSelectedItem();
+                        RegionsInfo selectedRegionInfo = (RegionsInfo) user_regions.getSelectedItem();
 //                        System.out.println("regions change" + selectedRegionInfo.getName());
 
                         if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
@@ -1232,7 +1336,17 @@ public class OBDAACDataBrowser extends JPanel {
                             coordinates.setText("");
                         }
 
-                        regions.setSelectedIndex(0);
+                        if (regions != null) {
+                            regions.setSelectedIndex(0);
+                        }
+
+                        if (locations != null) {
+                            locations.setSelectedIndex(0);
+                        }
+
+                        if (user_locations != null) {
+                            user_locations.setSelectedIndex(0);
+                        }
 
                         handleUpdateFromCoordinates();
 
@@ -1248,9 +1362,84 @@ public class OBDAACDataBrowser extends JPanel {
 
             } catch (Exception e) {
             }
-
-
         }
+
+
+        if (Earthdata_Cloud_Controller.getPreferenceUserLocationsSelectorInclude()) {
+
+            try {
+                String REGIONS_FILE = "user_locations.txt";
+                String TOOLTIP = "<html>User-Defined Locations<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/user_locations.txt</html>";
+
+                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false);
+
+                Object[] regionsInfosArray = regionsInfos.toArray();
+
+                gbc.gridy++;
+                gbc.gridx = 0;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.weightx = 0;
+                JLabel regionLabel = new JLabel("User Locations:");
+                regionLabel.setToolTipText(TOOLTIP);
+                regionLabel.setMinimumSize(regionLabelPreferredSize);
+                panel.add(regionLabel, gbc);
+
+                gbc.gridx = 1;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1.0;
+                user_locations = new JComboBox(regionsInfosArray);
+                user_locations.setMaximumRowCount(20);
+                user_locations.setToolTipText(TOOLTIP);
+
+                panel.add(user_locations, gbc);
+                user_locations.setMinimumSize(regionEntryPreferredSize);
+
+                user_locations.addActionListener(evt -> {
+                    if (!working) {
+                        working = true;
+                        RegionsInfo selectedRegionInfo = (RegionsInfo) user_locations.getSelectedItem();
+//                        System.out.println("regions change" + selectedRegionInfo.getName());
+
+                        if (!RegionsInfo.SPECIAL_ENTRY.equals(selectedRegionInfo.getNorth())) {
+                            maxLatField.setText(selectedRegionInfo.getNorth());
+                            minLatField.setText(selectedRegionInfo.getSouth());
+                            minLonField.setText(selectedRegionInfo.getWest());
+                            maxLonField.setText(selectedRegionInfo.getEast());
+                            coordinates.setText(selectedRegionInfo.getCoordinates());
+                        } else {
+                            maxLatField.setText("");
+                            minLatField.setText("");
+                            minLonField.setText("");
+                            maxLonField.setText("");
+                            coordinates.setText("");
+                        }
+
+                        if (regions != null) {
+                            regions.setSelectedIndex(0);
+                        }
+
+                        if (locations != null) {
+                            locations.setSelectedIndex(0);
+                        }
+
+                        if (user_regions != null) {
+                            user_regions.setSelectedIndex(0);
+                        }
+
+                        handleUpdateFromCoordinates();
+
+                        panel.repaint();
+                        panel.updateUI();
+                        parentDialog.repaint();
+
+                        working = false;
+                    }
+                });
+
+            } catch (Exception e) {
+            }
+        }
+
 
 
         if (Earthdata_Cloud_Controller.getPreferenceRegion() != null && Earthdata_Cloud_Controller.getPreferenceRegion().length() > 0) {
@@ -1265,12 +1454,23 @@ public class OBDAACDataBrowser extends JPanel {
                 }
             }
 
-            if (regions2 != null) {
-                for (int i = 0; i < regions2.getItemCount(); i++) {
-                    if (regions2.getItemAt(i) != null) {
-                        RegionsInfo regionsInfo = (RegionsInfo) regions2.getItemAt(i);
+            if (user_regions != null) {
+                for (int i = 0; i < user_regions.getItemCount(); i++) {
+                    if (user_regions.getItemAt(i) != null) {
+                        RegionsInfo regionsInfo = (RegionsInfo) user_regions.getItemAt(i);
                         if (Earthdata_Cloud_Controller.getPreferenceRegion().trim().equalsIgnoreCase(regionsInfo.getName())) {
-                            regions2.setSelectedIndex(i);
+                            user_regions.setSelectedIndex(i);
+                        }
+                    }
+                }
+            }
+
+            if (user_locations != null) {
+                for (int i = 0; i < user_locations.getItemCount(); i++) {
+                    if (user_locations.getItemAt(i) != null) {
+                        RegionsInfo regionsInfo = (RegionsInfo) user_locations.getItemAt(i);
+                        if (Earthdata_Cloud_Controller.getPreferenceRegion().trim().equalsIgnoreCase(regionsInfo.getName())) {
+                            user_locations.setSelectedIndex(i);
                         }
                     }
                 }
@@ -1278,8 +1478,8 @@ public class OBDAACDataBrowser extends JPanel {
         }
 
 
-        JTextField tmp = new JTextField("1234567890123");
-        minLonField.setMinimumSize(tmp.getPreferredSize());
+        JTextField tmpLon = new JTextField("1234567890123");
+        minLonField.setMinimumSize(tmpLon.getPreferredSize());
 
 
         panel.setMinimumSize(panel.getPreferredSize());
@@ -1375,9 +1575,20 @@ public class OBDAACDataBrowser extends JPanel {
                 } catch (Exception ex) {
                 }
 
-                regions.setSelectedIndex(0);
-                if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
-                    regions2.setSelectedIndex(0);
+                if (regions != null) {
+                    regions.setSelectedIndex(0);
+                }
+
+                if (locations != null) {
+                    locations.setSelectedIndex(0);
+                }
+
+                if (user_regions != null) {
+                    user_regions.setSelectedIndex(0);
+                }
+
+                if (user_locations != null) {
+                    user_locations.setSelectedIndex(0);
                 }
 
                 working = false;
@@ -1393,9 +1604,20 @@ public class OBDAACDataBrowser extends JPanel {
                 } catch (Exception ex) {
                 }
 
-                regions.setSelectedIndex(0);
-                if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
-                    regions2.setSelectedIndex(0);
+                if (regions != null) {
+                    regions.setSelectedIndex(0);
+                }
+
+                if (locations != null) {
+                    locations.setSelectedIndex(0);
+                }
+
+                if (user_regions != null) {
+                    user_regions.setSelectedIndex(0);
+                }
+
+                if (user_locations != null) {
+                    user_locations.setSelectedIndex(0);
                 }
 
                 working = false;
@@ -1454,9 +1676,20 @@ public class OBDAACDataBrowser extends JPanel {
 
             if (sourceControl == minLatField || sourceControl == maxLatField) {
                 coordinates.setText("");
-                regions.setSelectedIndex(0);
-                if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
-                    regions2.setSelectedIndex(0);
+                if (regions != null) {
+                    regions.setSelectedIndex(0);
+                }
+
+                if (locations != null) {
+                    locations.setSelectedIndex(0);
+                }
+
+                if (user_regions != null) {
+                    user_regions.setSelectedIndex(0);
+                }
+
+                if (user_locations != null) {
+                    user_locations.setSelectedIndex(0);
                 }
             }
 
@@ -1522,9 +1755,20 @@ public class OBDAACDataBrowser extends JPanel {
 
             if (sourceControl == minLonField || sourceControl == maxLonField) {
                 coordinates.setText("");
-                regions.setSelectedIndex(0);
-                if (Earthdata_Cloud_Controller.getPreferenceUserRegionSelectorInclude()) {
-                    regions2.setSelectedIndex(0);
+                if (regions != null) {
+                    regions.setSelectedIndex(0);
+                }
+
+                if (locations != null) {
+                    locations.setSelectedIndex(0);
+                }
+
+                if (user_regions != null) {
+                    user_regions.setSelectedIndex(0);
+                }
+
+                if (user_locations != null) {
+                    user_locations.setSelectedIndex(0);
                 }
             }
 
