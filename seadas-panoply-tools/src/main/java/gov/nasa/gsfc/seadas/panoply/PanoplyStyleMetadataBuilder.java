@@ -35,27 +35,49 @@ public final class PanoplyStyleMetadataBuilder {
     private PanoplyStyleMetadataBuilder() {}
 
     public static void attachPanoplyMetadata(Product product, String fileUrlOrPath) {
-        final MetadataElement panoplyRoot = new MetadataElement(PAN);
-        // Attach root immediately so it always appears
-        product.getMetadataRoot().addElement(panoplyRoot);
+        if (product == null) return;
 
-        NetcdfFile nc = null;
-        try {
-            nc = NetcdfFiles.open(fileUrlOrPath);
-            final Group root = nc.getRootGroup();
+        final MetadataElement metaRoot = product.getMetadataRoot();
+        if (metaRoot == null) return;
 
-            // Exactly the five nodes requested (TitleCase to match your dump window logic)
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "geophysical_data",      "Geophysical_Data"),     "Geophysical_Data");
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "navigation_data",       "Navigation_Data"),      "Navigation_Data");
-            safeAdd(panoplyRoot, () -> buildProcessingControl(root.getNetcdfFile()),                                               "Processing_Control");
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "scan_line_attributes",  "Scan_Line_Attributes"), "Scan_Line_Attributes");
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "sensor_band_parameters","Sensor_Band_Parameters"),"Sensor_Band_Parameters");
+        // Reuse if it already exists (e.g., loaded from DIMAP)
+        MetadataElement panoplyRoot = metaRoot.getElement(PAN); // PAN == "panoply"
+        if (panoplyRoot != null) {
+            // already present → do nothing (avoid duplicate roots)
+            return;
+        }
+
+        // Otherwise build a fresh tree and attach once
+        panoplyRoot = new MetadataElement(PAN);
+
+        // Open NetCDF safely (and tolerate null/invalid path)
+        try (NetcdfFile nc = (fileUrlOrPath != null && !fileUrlOrPath.isEmpty())
+                ? NetcdfFiles.open(fileUrlOrPath) : null) {
+
+            final Group root = (nc != null) ? nc.getRootGroup() : null;
+
+            // Exactly the five nodes requested (TitleCase to match dump window logic)
+            safeAdd(panoplyRoot, () -> buildGroupSection(root, "geophysical_data",       "Geophysical_Data"),      "Geophysical_Data");
+            safeAdd(panoplyRoot, () -> buildGroupSection(root, "navigation_data",        "Navigation_Data"),       "Navigation_Data");
+            safeAdd(panoplyRoot, () -> buildProcessingControl((nc != null) ? nc : null),                               "Processing_Control");
+            safeAdd(panoplyRoot, () -> buildGroupSection(root, "scan_line_attributes",   "Scan_Line_Attributes"),  "Scan_Line_Attributes");
+            safeAdd(panoplyRoot, () -> buildGroupSection(root, "sensor_band_parameters", "Sensor_Band_Parameters"),"Sensor_Band_Parameters");
 
         } catch (Throwable t) {
             System.out.println("[Panoply] attach: open/build failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
-        } finally {
-            try { if (nc != null) nc.close(); } catch (Exception ignore) {}
+            // Even if build fails, we still attach a single (empty) panoply root so the UI shows it once.
         }
+
+        // Attach one time only
+        metaRoot.addElement(panoplyRoot);
+    }
+
+    public static void rebuildPanoplyMetadata(Product product, String fileUrlOrPath) {
+        if (product == null || product.getMetadataRoot() == null) return;
+        final MetadataElement metaRoot = product.getMetadataRoot();
+        MetadataElement existing = metaRoot.getElement(PAN);
+        if (existing != null) metaRoot.removeElement(existing);
+        attachPanoplyMetadata(product, fileUrlOrPath);
     }
 
     // ------------------ section builders ------------------
