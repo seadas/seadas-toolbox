@@ -103,6 +103,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
         if (product != null) {
 
             final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
+            ProductNodeGroup<Mask> maskGroup2 = product.getMaskGroup();
             final ProductNodeGroup<Band> bandGroup = product.getBandGroup();
 
             /*
@@ -265,7 +266,11 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
                                 boolean createCoastBand = landMasksData.isCreateCoastline();
+                                boolean createWaterMask = landMasksData.isCreateWatermask();
+                                boolean createLandMask = landMasksData.isCreateLandmask();
                                 Mask coastlineMask = null;
+                                Mask waterMask = null;
+                                Mask landMask = null;
                                 int boxSize = landMasksData.getCoastalGridSize();
 
                                 int totalWork = (4 + 11) * 4 ;
@@ -352,6 +357,7 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                     //todo replace with JAI operator "GeneralFilter" which uses a GeneralFilterFunction
 
 
+                                    // create Coastline Band and Mask
                                     if (createCoastBand && boxSize > 1) {
 
                                         pm.setSubTaskName("Creating band: " + landMasksData.getWaterFractionSmoothedName());
@@ -423,7 +429,8 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
 
                                             pm.setSubTaskName("Adding mask: " + landMasksData.getCoastlineMaskName());
                                             workDone += sleepPreviewThread(sleepLong,8, pm, totalWork, workDone);
-                                            maskGroup.add(coastlineMask);
+                                            ProductNodeGroup<Mask> maskGroup2 = product.getMaskGroup();
+                                            maskGroup2.add(coastlineMask);
                                             workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
                                             pm.setSubTaskName("Mask created: " + landMasksData.getCoastlineMaskName());
@@ -433,128 +440,144 @@ public final class WaterMaskAction extends AbstractSnapAction implements LookupL
                                         }
 
 
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
+                                        try {
+                                            // Cleanup saved coast mask
+                                            Mask savedCoastMask = maskGroup.get(savedCoastMaskName);
+                                            if (savedCoastMask != null) {
+                                                maskGroup.remove(savedCoastMask);
+                                                workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
-                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                            }
+                                            // end cleanup saved coast mask
+                                        } catch (Exception e) {
+                                            pm.setSubTaskName("ERROR!! Mask not removed: '" + savedCoastMaskName);
+                                        }
+
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+
                                     }
 
-
-                                    // Cleanup saved coast mask
-                                    Mask savedCoastMask = maskGroup.get(savedCoastMaskName);
-                                    if (savedCoastMask != null) {
-                                        maskGroup.remove(savedCoastMask);
-                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
-
-                                    }
-                                    // end cleanup saved coast mask
 
 
 
                                     // Create land mask
 
-                                    pm.setSubTaskName("Creating mask: " + landMasksData.getLandMaskName());
+                                    if (createLandMask) {
 
-                                    Mask landMask = Mask.BandMathsType.create(
-                                            landMasksData.getLandMaskName(),
-                                            landMasksData.getLandMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            landMasksData.getLandMaskMath(),
-                                            landMasksData.getLandMaskColor(),
-                                            landMasksData.getLandMaskTransparency());
+                                        pm.setSubTaskName("Creating mask: " + landMasksData.getLandMaskName());
 
-                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                        landMask = Mask.BandMathsType.create(
+                                                landMasksData.getLandMaskName(),
+                                                landMasksData.getLandMaskDescription(),
+                                                product.getSceneRasterWidth(),
+                                                product.getSceneRasterHeight(),
+                                                landMasksData.getLandMaskMath(),
+                                                landMasksData.getLandMaskColor(),
+                                                landMasksData.getLandMaskTransparency());
+
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
 
+                                        try {
+                                            ProductNodeGroup<Mask> maskGroup2 = product.getMaskGroup();
+                                            Mask landMaskTmp = maskGroup2.get(landMask.getName());
+                                            if (landMaskTmp != null) {
+                                                pm.setSubTaskName("Deleting existing mask: " + landMasksData.getLandMaskName());
+                                                maskGroup2.remove(landMaskTmp);
+                                                workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+                                            }
 
-                                    try {
-                                        Mask landMaskTmp = maskGroup.get(landMask.getName());
-                                        if (landMaskTmp != null) {
-                                            pm.setSubTaskName("Deleting existing mask: " + landMasksData.getLandMaskName());
-                                            maskGroup.remove(landMaskTmp);
-                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                            pm.setSubTaskName("Adding mask: " + landMasksData.getLandMaskName());
+                                            workDone += sleepPreviewThread(sleepLong, 8, pm, totalWork, workDone);
+                                            ProductNodeGroup<Mask> maskGroup3 = product.getMaskGroup();
+                                            maskGroup3.add(landMask);
+                                            workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+                                            pm.setSubTaskName("Mask created: " + landMasksData.getLandMaskName());
+
+                                        } catch (Exception e) {
+                                            pm.setSubTaskName("ERROR!! Mask not created: '" + landMasksData.getLandMaskName());
                                         }
 
-                                        pm.setSubTaskName("Adding mask: " + landMasksData.getLandMaskName());
-                                        workDone += sleepPreviewThread(sleepLong,8, pm, totalWork, workDone);
-                                        maskGroup.add(landMask);
-                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
-                                        pm.setSubTaskName("Mask created: " + landMasksData.getLandMaskName());
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
-
-
+                                        try {
                                         // Cleanup saved land mask
                                         Mask savedMask = maskGroup.get(savedLandMaskName);
                                         if (savedMask != null) {
                                             maskGroup.remove(savedMask);
-                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                            workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
                                         }
                                         // end cleanup saved land mask
+                                        } catch (Exception e) {
+                                            pm.setSubTaskName("ERROR!! Mask not removed: '" + savedLandMaskName);
+                                        }
 
-
-
-                                    } catch (Exception e) {
-                                        pm.setSubTaskName("ERROR!! Mask not created: '" + landMasksData.getLandMaskName());
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
                                     }
-
-
-                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
 
 
 
 
                                     // Create water mask
 
-                                    pm.setSubTaskName("Creating mask: " + landMasksData.getWaterMaskName());
+                                    if (createWaterMask) {
+                                        pm.setSubTaskName("Creating mask: " + landMasksData.getWaterMaskName());
 
-                                    Mask waterMask = Mask.BandMathsType.create(
-                                            landMasksData.getWaterMaskName(),
-                                            landMasksData.getWaterMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            landMasksData.getWaterMaskMath(),
-                                            landMasksData.getWaterMaskColor(),
-                                            landMasksData.getWaterMaskTransparency());
+                                        waterMask = Mask.BandMathsType.create(
+                                                landMasksData.getWaterMaskName(),
+                                                landMasksData.getWaterMaskDescription(),
+                                                product.getSceneRasterWidth(),
+                                                product.getSceneRasterHeight(),
+                                                landMasksData.getWaterMaskMath(),
+                                                landMasksData.getWaterMaskColor(),
+                                                landMasksData.getWaterMaskTransparency());
 
 
-                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
-                                    try {
-                                        Mask waterMaskTmp = maskGroup.get(waterMask.getName());
-                                        if (waterMaskTmp != null) {
-                                            pm.setSubTaskName("Deleting existing mask: " + landMasksData.getWaterMaskName());
-                                            maskGroup.remove(waterMaskTmp);
-                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                        try {
+                                            ProductNodeGroup<Mask> maskGroup2 = product.getMaskGroup();
+                                            Mask waterMaskTmp = maskGroup2.get(waterMask.getName());
+                                            if (waterMaskTmp != null) {
+                                                pm.setSubTaskName("Deleting existing mask: " + landMasksData.getWaterMaskName());
+                                                maskGroup2.remove(waterMaskTmp);
+                                                workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+                                            }
+
+                                            pm.setSubTaskName("Adding mask: " + landMasksData.getWaterMaskName());
+                                            workDone += sleepPreviewThread(sleepLong, 8, pm, totalWork, workDone);
+                                            ProductNodeGroup<Mask> maskGroup3 = product.getMaskGroup();
+                                            maskGroup3.add(waterMask);
+                                            workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+                                            pm.setSubTaskName("Mask created: " + landMasksData.getWaterMaskName());
+                                        } catch (Exception e) {
+                                            pm.setSubTaskName("ERROR!! Mask not created: '" + landMasksData.getWaterMaskName());
                                         }
 
-                                        pm.setSubTaskName("Adding mask: " + landMasksData.getWaterMaskName());
-                                        workDone += sleepPreviewThread(sleepLong,8, pm, totalWork, workDone);
-                                        maskGroup.add(waterMask);
-                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
-                                        pm.setSubTaskName("Mask created: " + landMasksData.getWaterMaskName());
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
-                                        // Cleanup saved water mask
-                                        Mask savedMask = maskGroup.get(savedWaterMaskName);
-                                        if (savedMask != null) {
-                                            maskGroup.remove(savedMask);
-                                            workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                        try {
+                                            // Cleanup saved water mask
+                                            Mask savedMask = maskGroup.get(savedWaterMaskName);
+                                            if (savedMask != null) {
+                                                maskGroup.remove(savedMask);
+                                                workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+                                            }
+                                            // end cleanup saved water mask
+                                        } catch (Exception e) {
+                                            pm.setSubTaskName("ERROR!! Mask not removed: '" + savedWaterMaskName);
                                         }
-                                        // end cleanup saved water mask
 
-
-
-                                    } catch (Exception e) {
-                                        pm.setSubTaskName("ERROR!! Mask not created: '" + landMasksData.getWaterMaskName());
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
                                     }
-
-                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
-
 
 
                                     if (landMasksData.isShowLandMaskAllBands()
-                                    || landMasksData.isShowWaterMaskAllBands()
-                                    || landMasksData.isShowCoastlineMaskAllBands()) {
+                                    || (createWaterMask && landMasksData.isShowWaterMaskAllBands() )
+                                    || (createCoastBand && landMasksData.isShowCoastlineMaskAllBands() )) {
                                         pm.setSubTaskName("Selecting masks in all bands");
 
                                         String[] bandNames = product.getBandNames();

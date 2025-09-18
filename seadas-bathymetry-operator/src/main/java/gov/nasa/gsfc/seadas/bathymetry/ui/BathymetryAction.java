@@ -362,13 +362,17 @@ public final class BathymetryAction extends AbstractSnapAction
 
                                     pm.setSubTaskName("Adding mask: " + bathymetryData.getMaskName());
                                     try {
+                                        ProductNodeGroup<Mask> maskGroup2 = product.getMaskGroup();
+
                                         Mask bathymetryMaskTmp = maskGroup.get(bathymetryMask.getName());
                                         if (bathymetryMaskTmp != null) {
-                                            maskGroup.remove(bathymetryMaskTmp);
+                                            maskGroup2.remove(bathymetryMaskTmp);
                                         }
 
                                         workDone += sleepPreviewThread(sleepLong,4, pm, totalWork, workDone);
-                                        maskGroup.add(bathymetryMask);
+
+                                        ProductNodeGroup<Mask> maskGroup3 = product.getMaskGroup();
+                                        maskGroup3.add(bathymetryMask);
                                         pm.setSubTaskName("Mask created: " + bathymetryData.getMaskName());
                                     } catch (Exception e) {
                                         pm.setSubTaskName("ERROR!! Mask not created: '" + bathymetryData.getMaskName());

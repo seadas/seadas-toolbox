@@ -135,6 +135,8 @@ class LandMasksDialog extends JDialog {
         final int rightInset = 5;
 
         final CoastlineCreateCheckbox coastlineCreateCheckbox = new CoastlineCreateCheckbox(landMasksData);
+        final WatermaskCreateCheckbox watermaskCreateCheckbox = new WatermaskCreateCheckbox(landMasksData);
+        final LandmaskCreateCheckbox landmaskCreateCheckbox = new LandmaskCreateCheckbox(landMasksData);
 
         final CoastlineEnabledAllBandsCheckbox coastlineEnabledAllBandsCheckbox = new CoastlineEnabledAllBandsCheckbox(landMasksData);
         final WaterEnabledAllBandsCheckbox waterEnabledAllBandsCheckbox = new WaterEnabledAllBandsCheckbox(landMasksData);
@@ -305,29 +307,66 @@ class LandMasksDialog extends JDialog {
         waterNameTextfield.setEditable(false);
         waterNameTextfield.setToolTipText("Name of the mask (this field is not editable)");
 
-        waterJPanel.add(new JLabel("Mask Name"),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        JLabel waterNameLabel = new JLabel("Mask Name");
 
-        waterJPanel.add(waterNameTextfield,
+
+        waterJPanel.add(watermaskCreateCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        waterJPanel.add(watermaskCreateCheckbox.getjCheckBox(),
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        waterJPanel.add(waterColorComboBox.getjLabel(),
+        waterJPanel.add(waterNameLabel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        waterJPanel.add(waterColorComboBox.getColorExComboBox(),
+        waterJPanel.add(waterNameTextfield,
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        waterJPanel.add(waterTransparencySpinner.getjLabel(),
+        waterJPanel.add(waterColorComboBox.getjLabel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        waterJPanel.add(waterTransparencySpinner.getjSpinner(),
+        waterJPanel.add(waterColorComboBox.getColorExComboBox(),
                 new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        waterJPanel.add(waterEnabledAllBandsCheckbox.getjLabel(),
+        waterJPanel.add(waterTransparencySpinner.getjLabel(),
                 new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        waterJPanel.add(waterEnabledAllBandsCheckbox.getjCheckBox(),
+        waterJPanel.add(waterTransparencySpinner.getjSpinner(),
                 new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        waterJPanel.add(waterEnabledAllBandsCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 4, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        waterJPanel.add(waterEnabledAllBandsCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, 4, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        waterNameLabel.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        waterNameTextfield.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        waterColorComboBox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        waterColorComboBox.getColorExComboBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        waterTransparencySpinner.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        waterTransparencySpinner.getjSpinner().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        waterEnabledAllBandsCheckbox.getjCheckBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        waterEnabledAllBandsCheckbox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+
+
+        watermaskCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                waterNameLabel.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                waterNameTextfield.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                waterColorComboBox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                waterColorComboBox.getColorExComboBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                waterTransparencySpinner.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                waterTransparencySpinner.getjSpinner().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                waterEnabledAllBandsCheckbox.getjCheckBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                waterEnabledAllBandsCheckbox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+            }
+        });
+
+
+
 
 
         JPanel landJPanel = new JPanel(new GridBagLayout());
@@ -337,31 +376,65 @@ class LandMasksDialog extends JDialog {
         landNameTextfield.setEditable(false);
         landNameTextfield.setToolTipText("Name of the mask (this field is not editable)");
 
-        landJPanel.add(new JLabel("Mask Name"),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+        JLabel landNameLabel = new JLabel("Mask Name");
 
-        landJPanel.add(landNameTextfield,
+        landJPanel.add(landmaskCreateCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        landJPanel.add(landmaskCreateCheckbox.getjCheckBox(),
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        landJPanel.add(landColorComboBox.getjLabel(),
+        
+        landJPanel.add(landNameLabel,
                 new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        landJPanel.add(landColorComboBox.getColorExComboBox(),
+        landJPanel.add(landNameTextfield,
                 new ExGridBagConstraints(1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        landJPanel.add(landTransparencySpinner.getjLabel(),
+        landJPanel.add(landColorComboBox.getjLabel(),
                 new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        landJPanel.add(landTransparencySpinner.getjSpinner(),
+        landJPanel.add(landColorComboBox.getColorExComboBox(),
                 new ExGridBagConstraints(1, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-        landJPanel.add(landEnabledAllBandsCheckbox.getjLabel(),
+        landJPanel.add(landTransparencySpinner.getjLabel(),
                 new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
-        landJPanel.add(landEnabledAllBandsCheckbox.getjCheckBox(),
+        landJPanel.add(landTransparencySpinner.getjSpinner(),
                 new ExGridBagConstraints(1, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
+        landJPanel.add(landEnabledAllBandsCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 4, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
+        landJPanel.add(landEnabledAllBandsCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, 4, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        landNameLabel.setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+        landNameTextfield.setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+        landColorComboBox.getjLabel().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+        landColorComboBox.getColorExComboBox().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+        landTransparencySpinner.getjLabel().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+        landTransparencySpinner.getjSpinner().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+        landEnabledAllBandsCheckbox.getjCheckBox().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+        landEnabledAllBandsCheckbox.getjLabel().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+
+
+        landmaskCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                landNameLabel.setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+                landNameTextfield.setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+                landColorComboBox.getjLabel().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+                landColorComboBox.getColorExComboBox().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+                landTransparencySpinner.getjLabel().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+                landTransparencySpinner.getjSpinner().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+                landEnabledAllBandsCheckbox.getjCheckBox().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+                landEnabledAllBandsCheckbox.getjLabel().setEnabled(landmaskCreateCheckbox.getjCheckBox().isSelected());
+            }
+        });
+        
+        
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.add(resolutionSamplingPanel,
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
@@ -373,7 +446,7 @@ class LandMasksDialog extends JDialog {
                 new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
 
-        JButton createMasks = new JButton("Create Masks");
+        JButton createMasks = new JButton("Create Bands/Masks");
         createMasks.setPreferredSize(createMasks.getPreferredSize());
         createMasks.setMinimumSize(createMasks.getPreferredSize());
         createMasks.setMaximumSize(createMasks.getPreferredSize());
