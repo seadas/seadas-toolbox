@@ -14,7 +14,9 @@ import ucar.nc2.Variable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 /**
  * Builds the Panoply-style metadata subtree containing exactly:
@@ -68,8 +70,83 @@ public final class PanoplyStyleMetadataBuilder {
             // Even if build fails, we still attach a single (empty) panoply root so the UI shows it once.
         }
 
+        clearMetadataRoot(metaRoot);
         // Attach one time only
         metaRoot.addElement(panoplyRoot);
+        //hoistPanoplyChildrenToMetaRoot(panoplyRoot, metaRoot);
+    }
+
+    /** Remove ALL attributes and child elements from a MetadataElement (root-safe). */
+    private static void clearMetadataRoot(MetadataElement elem) {
+        // remove attributes (from end to start)
+        for (int i = elem.getNumAttributes() - 1; i >= 0; i--) {
+            MetadataAttribute a = elem.getAttributeAt(i);
+            if (a != null) elem.removeAttribute(a);
+        }
+        // remove child elements (from end to start)
+        for (int i = elem.getNumElements() - 1; i >= 0; i--) {
+            MetadataElement child = elem.getElementAt(i);
+            if (child != null) elem.removeElement(child);
+        }
+    }
+
+    /**
+     * Moves all child elements of the given panoply root node directly under the metadata root.
+     * - Preserves the original child order.
+     * - Removes any existing root-level elements with the same names to avoid duplicates.
+     * - Removes the panoply wrapper itself at the end.
+     *
+     * @return true if a flatten/hoist happened, false if nothing to do or inputs invalid.
+     */
+    public static boolean hoistPanoplyChildrenToMetaRoot(MetadataElement panoplyRootNode, MetadataElement metaRoot) {
+        if (panoplyRootNode == null || metaRoot == null) return false;
+        if (panoplyRootNode == metaRoot) return false; // nothing to hoist
+
+        // Snapshot children (order matters)
+        List<MetadataElement> children = new ArrayList<>();
+        for (int i = 0; i < panoplyRootNode.getNumElements(); i++) {
+            MetadataElement kid = panoplyRootNode.getElementAt(i);
+            if (kid != null) children.add(kid);
+        }
+
+        // If no children, just remove the empty wrapper (if it *is* under metaRoot)
+        if (children.isEmpty()) {
+            if (panoplyRootNode.getParentElement() == metaRoot) {
+                metaRoot.removeElement(panoplyRootNode);
+                return true;
+            }
+            return false;
+        }
+
+        // Avoid duplicates at the root: remove any root-level elements with the same names
+        Set<String> names = children.stream().map(MetadataElement::getName).collect(Collectors.toSet());
+        for (int i = metaRoot.getNumElements() - 1; i >= 0; i--) {
+            MetadataElement existing = metaRoot.getElementAt(i);
+            if (existing != null && names.contains(existing.getName())) {
+                metaRoot.removeElement(existing);
+            }
+        }
+
+        // Detach children from wrapper before reparenting
+        for (MetadataElement kid : children) {
+            panoplyRootNode.removeElement(kid);
+        }
+
+        // If the wrapper is already under metaRoot, remove it now
+        if (panoplyRootNode.getParentElement() == metaRoot) {
+            metaRoot.removeElement(panoplyRootNode);
+        } else {
+            // Otherwise just ensure we don't leave it orphaned in some other branch
+            MetadataElement parent = panoplyRootNode.getParentElement();
+            if (parent != null) parent.removeElement(panoplyRootNode);
+        }
+
+        // Reattach hoisted children at the root in original order
+        for (MetadataElement kid : children) {
+            metaRoot.addElement(kid);
+        }
+
+        return true;
     }
 
     public static void rebuildPanoplyMetadata(Product product, String fileUrlOrPath) {
