@@ -230,7 +230,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
-//        initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
@@ -513,11 +513,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
         boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
 
-
-//        @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
-//                label = PROPERTY_USER_REGION_INCLUDE_LABEL,
-//                description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
-//        boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
+        @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
+                label = PROPERTY_USER_REGION_INCLUDE_LABEL,
+                description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
+        boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
 
         @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
                 label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
