@@ -1,8 +1,43 @@
 #! CAUTION - DO NOT EDIT - THIS FILE GETS OVERWRITTEN - TO ADD CUSTOM USER REGIONS USE THE FILE: user_regions.txt
 
 -- BLANK --
--- (BETA) NOT YET IMPLEMENTED --
-My Sample Region = 39°36′00″N, 35°54′00″N, 77°30′00″E, 74°18′00″E
+-- (BETA) Under Construction --
+Black Sea = 46.68 40.85 27.40 41.83
+Mediterranean Sea = 44.55 30.11 -5.49 36.37
+
+IHO_01 = -33.05 -36.34 -58.55 -54.93
+Flores Sea IHO_02 = -5.55 -8.76 117.12 122.98
+IHO_03 = 44.45 42.86 7.55 9.85
+IHO_04 = 6.68 -0.84 -7.67 9.96
+Solomon Sea IHO_05 = -4.83 -11.91 146.94 162.34
+Arafura Sea IHO_06 = -3.38 -17.75 130.73 142.16
+Teluk Bone IHO_07 = -2.59 -5.62 120.17 121.87
+Java Sea IHO_08 = -2.57 -7.82 104.50 119.50
+Laut Seram IHO_09 = -1.2 -5.30 125.89 133.92
+Bismarck Sea IHO_10 = -1.08 -6.00 141.96 152.86
+Banda Sea IHO_11 =
+
+
+Celebes Sea IHO_45
+
+Philippine Sea IHO_52
+
+Savu Sea IHO_58
+
+Tomini Teluk IHO_64
+Makassar Strait IHO_65
+Halmahera Sea IHO_66
+Molucca Sea IHO_67
+
+Timor Sea IHO_69
+
+
+IHO_76 = 68.43 -0.88 -83.27 10.02
+
+Bali Sea IHO_80
+
+Celebes
+
 
 
 
