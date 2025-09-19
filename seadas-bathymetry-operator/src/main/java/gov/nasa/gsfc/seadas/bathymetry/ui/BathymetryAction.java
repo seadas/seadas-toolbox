@@ -170,6 +170,37 @@ public final class BathymetryAction extends AbstractSnapAction
             }
 
 
+            for (String name : bandGroup.getNodeNames()) {
+                if ((bathymetryData.isCreateBathymetryBand() && name.equals(BathymetryOp.BATHYMETRY_BAND_NAME))
+                      || (bathymetryData.isCreateTopographyBand() && name.equals(BathymetryOp.TOPOGRAPHY_BAND_NAME))
+                       || (bathymetryData.isCreateElevationBand() && name.equals(BathymetryOp.ELEVATION_BAND_NAME))
+                ) {
+                    bandGroup.remove(bandGroup.get(name));
+                }
+            }
+
+            for (String name : maskGroup.getNodeNames()) {
+                if (name.equalsIgnoreCase(bathymetryData.getMaskName())) {
+                    Mask bathymetryMask = maskGroup.get(name);
+                    if (bathymetryMask != null) {
+                        String[] bandNames = product.getBandNames();
+                        for (String bandName : bandNames) {
+                            RasterDataNode raster = product.getRasterDataNode(bandName);
+                            if (raster != null) {
+                                ProductNodeGroup<Mask> overlayMaskGroup = raster.getOverlayMaskGroup();
+                                if (overlayMaskGroup != null && overlayMaskGroup.contains(bathymetryMask)) {
+                                    overlayMaskGroup.remove(bathymetryMask);
+                                }
+                            }
+                        }
+                        maskGroup.remove(bathymetryMask);
+                    }
+                }
+            }
+
+
+
+
             /*
                 Determine whether these auxilliary masks and associated products have already be created.
                 This would be the case when run a second time on the same product.
@@ -268,6 +299,16 @@ public final class BathymetryAction extends AbstractSnapAction
                             @Override
                             protected Void doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
+                                for (String name : bandGroup.getNodeNames()) {
+                                    if ((bathymetryData.isCreateBathymetryBand() && name.equals(BathymetryOp.BATHYMETRY_BAND_NAME))
+                                            || (bathymetryData.isCreateTopographyBand() && name.equals(BathymetryOp.TOPOGRAPHY_BAND_NAME))
+                                            || (bathymetryData.isCreateElevationBand() && name.equals(BathymetryOp.ELEVATION_BAND_NAME))
+                                    ) {
+                                        bandGroup.remove(bandGroup.get(name));
+                                    }
+                                }
+
+                                System.out.println("TEST !!!");
                                 int totalWork = 44;
                                 int workDone = 0;
 
@@ -334,57 +375,66 @@ public final class BathymetryAction extends AbstractSnapAction
                                             workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
                                         }
 
-                                        pm.setSubTaskName("Creating band '" + BathymetryOp.BATHYMETRY_BAND_NAME + "'");
-                                        Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
-                                        reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
-                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                        if (bathymetryData.isCreateBathymetryBand()) {
+                                            pm.setSubTaskName("Creating band '" + BathymetryOp.BATHYMETRY_BAND_NAME + "'");
+                                            Band bathymetryBand = bathymetryProduct.getBand(BathymetryOp.BATHYMETRY_BAND_NAME);
+                                            reformatSourceImage(bathymetryBand, new ImageLayout(product.getBandAt(0).getSourceImage()));
+                                            workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
-                                        pm.setSubTaskName("Adding band: " + BathymetryOp.BATHYMETRY_BAND_NAME);
-                                        bathymetryBand.setName(BathymetryOp.BATHYMETRY_BAND_NAME);
-                                        product.addBand(bathymetryBand);
-                                        pm.setSubTaskName("Band created: " + BathymetryOp.BATHYMETRY_BAND_NAME);
-                                        workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                            pm.setSubTaskName("Adding band: " + BathymetryOp.BATHYMETRY_BAND_NAME);
+                                            bathymetryBand.setName(BathymetryOp.BATHYMETRY_BAND_NAME);
+                                            product.addBand(bathymetryBand);
+                                            pm.setSubTaskName("Band created: " + BathymetryOp.BATHYMETRY_BAND_NAME);
+                                            workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+                                        }
                                     }
 
 
-                                    pm.setSubTaskName("Creating mask: " + bathymetryData.getMaskName());
 
-                                    Mask bathymetryMask = Mask.BandMathsType.create(
-                                            bathymetryData.getMaskName(),
-                                            bathymetryData.getMaskDescription(),
-                                            product.getSceneRasterWidth(),
-                                            product.getSceneRasterHeight(),
-                                            bathymetryData.getMaskMath(),
-                                            bathymetryData.getMaskColor(),
-                                            bathymetryData.getMaskTransparency());
+                                    if (bathymetryData.isCreateWaterMask() && bathymetryData.isCreateBathymetryBand()) {
+                                        pm.setSubTaskName("Creating mask: " + bathymetryData.getMaskName());
 
-                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                        Mask bathymetryMask = Mask.BandMathsType.create(
+                                                bathymetryData.getMaskName(),
+                                                bathymetryData.getMaskDescription(),
+                                                product.getSceneRasterWidth(),
+                                                product.getSceneRasterHeight(),
+                                                bathymetryData.getMaskMath(),
+                                                bathymetryData.getMaskColor(),
+                                                bathymetryData.getMaskTransparency());
 
-                                    pm.setSubTaskName("Adding mask: " + bathymetryData.getMaskName());
-                                    try {
-                                        Mask bathymetryMaskTmp = maskGroup.get(bathymetryMask.getName());
-                                        if (bathymetryMaskTmp != null) {
-                                            maskGroup.remove(bathymetryMaskTmp);
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
+
+                                        pm.setSubTaskName("Adding mask: " + bathymetryData.getMaskName());
+                                        try {
+                                            ProductNodeGroup<Mask> maskGroup2 = product.getMaskGroup();
+
+                                            Mask bathymetryMaskTmp = maskGroup.get(bathymetryMask.getName());
+                                            if (bathymetryMaskTmp != null) {
+                                                maskGroup2.remove(bathymetryMaskTmp);
+                                            }
+
+                                            workDone += sleepPreviewThread(sleepLong, 4, pm, totalWork, workDone);
+
+                                            ProductNodeGroup<Mask> maskGroup3 = product.getMaskGroup();
+                                            maskGroup3.add(bathymetryMask);
+                                            pm.setSubTaskName("Mask created: " + bathymetryData.getMaskName());
+                                        } catch (Exception e) {
+                                            pm.setSubTaskName("ERROR!! Mask not created: '" + bathymetryData.getMaskName());
                                         }
 
-                                        workDone += sleepPreviewThread(sleepLong,4, pm, totalWork, workDone);
-                                        maskGroup.add(bathymetryMask);
-                                        pm.setSubTaskName("Mask created: " + bathymetryData.getMaskName());
-                                    } catch (Exception e) {
-                                        pm.setSubTaskName("ERROR!! Mask not created: '" + bathymetryData.getMaskName());
-                                    }
+
+                                        workDone += sleepPreviewThread(sleepShort, 4, pm, totalWork, workDone);
 
 
-                                    workDone += sleepPreviewThread(sleepShort,4, pm, totalWork, workDone);
+                                        if (bathymetryData.isShowMaskAllBands()) {
+                                            pm.setSubTaskName("Selecting masks in all bands");
 
-
-                                    if (bathymetryData.isShowMaskAllBands()) {
-                                        pm.setSubTaskName("Selecting masks in all bands");
-
-                                        String[] bandNames = product.getBandNames();
-                                        for (String bandName : bandNames) {
-                                            RasterDataNode raster = product.getRasterDataNode(bandName);
-                                            raster.getOverlayMaskGroup().add(bathymetryMask);
+                                            String[] bandNames = product.getBandNames();
+                                            for (String bandName : bandNames) {
+                                                RasterDataNode raster = product.getRasterDataNode(bandName);
+                                                raster.getOverlayMaskGroup().add(bathymetryMask);
+                                            }
                                         }
                                     }
 

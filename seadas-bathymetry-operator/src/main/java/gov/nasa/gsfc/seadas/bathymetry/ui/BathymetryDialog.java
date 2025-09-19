@@ -144,8 +144,11 @@ class BathymetryDialog extends JDialog {
 
         final int rightInset = 5;
 
+        final BathymetryBandCreateCheckbox bathymeteryBandCreateCheckbox = new BathymetryBandCreateCheckbox(bathymetryData);
         final TopographyBandCreateCheckbox topographyBandCreateCheckbox = new TopographyBandCreateCheckbox(bathymetryData);
         final ElevationBandCreateCheckbox elevationBandCreateCheckbox = new ElevationBandCreateCheckbox(bathymetryData);
+
+        final WatermaskCreateCheckbox watermaskCreateCheckbox = new WatermaskCreateCheckbox(bathymetryData);
 
         final MaskEnabledAllBandsCheckbox maskEnabledAllBandsCheckbox = new MaskEnabledAllBandsCheckbox(bathymetryData);
         final MaskTransparencySpinner maskTransparencySpinner = new MaskTransparencySpinner(bathymetryData);
@@ -225,7 +228,16 @@ class BathymetryDialog extends JDialog {
         int gridy = 0;
 
 
-        maskJPanel.add(new JLabel("Mask Name"),
+        JLabel maskLabel = new JLabel("Mask Name");
+
+        maskJPanel.add(watermaskCreateCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        maskJPanel.add(watermaskCreateCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        gridy++;
+
+        maskJPanel.add(maskLabel,
                 new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         maskJPanel.add(maskNameTextfield,
@@ -268,15 +280,61 @@ class BathymetryDialog extends JDialog {
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
 
+        maskLabel.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskNameTextfield.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskColorComboBox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskColorComboBox.getColorExComboBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskTransparencySpinner.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskTransparencySpinner.getjSpinner().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskMinDepthTextfield.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskMinDepthTextfield.getjTextField().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskMaxDepthTextfield.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskMaxDepthTextfield.getjTextField().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskEnabledAllBandsCheckbox.getjCheckBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+        maskEnabledAllBandsCheckbox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+
+
+        watermaskCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                maskLabel.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskNameTextfield.setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskColorComboBox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskColorComboBox.getColorExComboBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskTransparencySpinner.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskTransparencySpinner.getjSpinner().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskMinDepthTextfield.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskMinDepthTextfield.getjTextField().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskMaxDepthTextfield.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskMaxDepthTextfield.getjTextField().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskEnabledAllBandsCheckbox.getjCheckBox().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+                maskEnabledAllBandsCheckbox.getjLabel().setEnabled(watermaskCreateCheckbox.getjCheckBox().isSelected());
+            }
+        });
+
+
         JPanel bandsJPanel = new JPanel(new GridBagLayout());
         bandsJPanel.setBorder(BorderFactory.createTitledBorder("Bands"));
 
         gridy = 0;
-        bandsJPanel.add(new JLabel("Bathymetry Band"),
+
+        JLabel bathymetryBandLabel = new  JLabel("Bathymetry Band Name");
+
+        bandsJPanel.add(bathymeteryBandCreateCheckbox.getjLabel(),
+                new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
+
+        bandsJPanel.add(bathymeteryBandCreateCheckbox.getjCheckBox(),
+                new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+        gridy++;
+        bandsJPanel.add(bathymetryBandLabel,
                 new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         bandsJPanel.add(bathymetryBandNameTextfield,
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        JLabel topographyBandLabel = new  JLabel("Topography Band Name");
 
         gridy++;
         bandsJPanel.add(topographyBandCreateCheckbox.getjLabel(),
@@ -285,16 +343,15 @@ class BathymetryDialog extends JDialog {
         bandsJPanel.add(topographyBandCreateCheckbox.getjCheckBox(),
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
 
-
-        JLabel topographyBandLabel = new  JLabel("Topography Band");
-        JLabel elevationBandLabel = new  JLabel("Elevation Band");
-
         gridy++;
         bandsJPanel.add(topographyBandLabel,
                 new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
 
         bandsJPanel.add(topographyBandNameTextfield,
                 new ExGridBagConstraints(1, gridy, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        JLabel elevationBandLabel = new  JLabel("Elevation Band Name");
 
         gridy++;
         bandsJPanel.add(elevationBandCreateCheckbox.getjLabel(),
@@ -313,11 +370,33 @@ class BathymetryDialog extends JDialog {
 
 
 
+        bathymetryBandLabel.setEnabled(bathymeteryBandCreateCheckbox.getjCheckBox().isSelected());
+        bathymetryBandNameTextfield.setEnabled(bathymeteryBandCreateCheckbox.getjCheckBox().isSelected());
+        if (watermaskCreateCheckbox.getjCheckBox().isSelected()) {
+            if (!bathymeteryBandCreateCheckbox.getjCheckBox().isSelected()) {
+                watermaskCreateCheckbox.getjCheckBox().setSelected(false);
+            }
+        }
+
         topographyBandLabel.setEnabled(topographyBandCreateCheckbox.getjCheckBox().isSelected());
         topographyBandNameTextfield.setEnabled(topographyBandCreateCheckbox.getjCheckBox().isSelected());
+
         elevationBandLabel.setEnabled(elevationBandCreateCheckbox.getjCheckBox().isSelected());
         elevationBandNameTextfield.setEnabled(elevationBandCreateCheckbox.getjCheckBox().isSelected());
 
+
+        bathymeteryBandCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                bathymetryBandLabel.setEnabled(bathymeteryBandCreateCheckbox.getjCheckBox().isSelected());
+                bathymetryBandNameTextfield.setEnabled(bathymeteryBandCreateCheckbox.getjCheckBox().isSelected());
+                if (watermaskCreateCheckbox.getjCheckBox().isSelected()) {
+                    if (!bathymeteryBandCreateCheckbox.getjCheckBox().isSelected()) {
+                        watermaskCreateCheckbox.getjCheckBox().setSelected(false);
+                    }
+                }
+            }
+        });
 
         topographyBandCreateCheckbox.getjCheckBox().addItemListener(new ItemListener() {
             @Override
