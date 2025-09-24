@@ -268,6 +268,72 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
+Usage: 
+    multilevel_processor [options] parameter_file
+
+    The parameter_file is similar to, but not exactly like, parameter
+    files for OCSSW processing programs:
+     - It has sections separated by headers which are denoted by "["
+        and "]".
+    The section named "main" is required.  Its allowed options are:
+        ifile - Required entry naming the input file(s) to be processed.
+        use_ancillary - use near real time ancillary data
+        deletefiles - delete all the intermediate data files genereated
+        overwrite - overwrite any data files which already exist
+        use_existing  - use any data files which already exist
+        combine_files - l2bin bin all the L2 files together instead of bin each L2 file separately
+
+        Simultaneous use of both the overwrite and use_existing options
+        is not permitted.
+
+    The names for other sections are the programs for which that section's
+    entries are to be applied.  Intermediate sections which are required for the
+    final level of processing do not need to be defined if their default options
+    are acceptable.  A section can be empty.  The final level of processing
+    must have a section header, even if no entries appear within that section.
+     - Entries within a section appear as key=value.  Comma separated lists of
+    values can be used when appropriate.
+     - Comments are marked by "#"; anything appearing on a line after that
+    character is ignored.  A line beginning with a "#" is completely ignored.
+
+    In addition to the main section, the following sections are allowed:
+        Section name:           Applicable Instrument(s):
+        -------------           -------------------------
+        level 1a:               modis
+        geo:                    hawkeye, modis, viirs
+        l1aextract:             modis, seawifs, viirs
+        l1brsgen:               general, goci, hawkeye, meris, modis, seawifs, viirs
+        level 1b:               general, goci, meris, modis, seawifs, viirs
+        l2gen:                  general, goci, hawkeye, meris, modis, seawifs, viirs
+        l2extract:              general, goci, hawkeye, meris, modis, seawifs, viirs
+        l2brsgen:               general, goci, hawkeye, meris, modis, seawifs, viirs
+        l2bin:                  general, goci, hawkeye, meris, modis, seawifs, viirs
+        l3mapgen:               general, goci, hawkeye, meris, modis, seawifs, viirs
+
+    Example:
+
+    # Sample par file for multilevel_processor.
+    [main]
+    ifile=2010345034027.L1A_LAC
+    [l2gen]
+    l2prod=chlor_a
+    # final processing level
+    
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -d, --deletefiles     delete files created during processing
+  --ifile=IFILE         input file
+  --output_dir=ODIR, --odir=ODIR
+                        user specified directory for output
+  --overwrite           overwrite files which already exist (default = stop
+                        processing if file already exists)
+  --use_existing        use files which already exist (default = stop
+                        processing if file already exists)
+  --combine_files       combine files for l2bin instead of binning each file
+                        separately
+  -v, --verbose         print status messages to stdout
 
 </pre>
 <!--AUTOMATED CODE HELP END-->

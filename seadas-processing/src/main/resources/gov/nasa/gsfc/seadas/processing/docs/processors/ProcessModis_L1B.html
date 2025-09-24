@@ -235,6 +235,34 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
+usage: modis_L1B [-h] [--version] [-p PARFILE] [-o 1KMFILE] [-k HKMFILE]
+                 [-q QKMFILE] [-c OBCFILE] [-l LUTVER] [-d LUTDIR] [-x] [-y]
+                 [-z] [--keep-obc] [-v] [--log]
+                 [L1AFILE] [GEOFILE]
+
+positional arguments:
+  L1AFILE               Input L1A file
+  GEOFILE               INPUT GEOFILE filename - defaults to basename of
+                        L1AFILE +'.GEO'
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -p, --parfile PARFILE
+                        Parameter file containing program inputs
+  -o, --okm 1KMFILE     Output L1B 1KM filename - defaults to
+                        '(A|T)YYYYDDDHHMMSS.L1B_LAC'
+  -k, --hkm HKMFILE     Output MODIS L1B HKM HDF filename
+  -q, --qkm QKMFILE     Output MODIS L1B QKM HDF filename
+  -c, --obc OBCFILE     Output MODIS L1B OBC HDF filename
+  -l, --lutver LUTVER   L1B LUT version number
+  -d, --lutdir LUTDIR   Path of directory containing LUT files
+  -x, --del-okm         Delete 1km resolution L1B file
+  -y, --del-hkm         Delete 500m resolution L1B file
+  -z, --del-qkm         Delete 250m resolution L1B file
+  --keep-obc            Save onboard calibration file
+  -v, --verbose         print status messages
+  --log                 Save processing log file(s)
 
 </pre>
 <!--AUTOMATED CODE HELP END-->

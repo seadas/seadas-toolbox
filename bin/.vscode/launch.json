@@ -9,7 +9,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
-            "args":"/Users/byang8/snap-11/seadas-toolbox/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/docs/processors",
+            "args":["/Users/byang8/snap-12/seadas-toolbox/seadas-processing/src/main/resources/gov/nasa/gsfc/seadas/processing/docs/processors"],
             "console": "integratedTerminal"
         }
     ]

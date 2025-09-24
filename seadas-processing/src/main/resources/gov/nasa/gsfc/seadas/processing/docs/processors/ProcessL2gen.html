@@ -458,7 +458,7 @@
 <h3>l2gen Help (Command Line Version)</h3>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l2gen 9.11.0-V2025.1 (Jan 30 2025 18:48:08)
+l2gen 9.11.0-V2025.5 (Aug 21 2025 23:38:09)
 Usage: l2gen argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
@@ -537,11 +537,9 @@ The list of valid keywords follows:
       &gt;0: Multi-scattering with fixed model (provide model number, 1-N,
            relative to aermodels list)
         0: White aerosol extrapolation.
-       -1: Multi-scattering with 2-band model selection
+       -1: Multi-scattering with 2-band, RH-based model selection
        -2: Multi-scattering with 2-band, RH-based model selection and
            iterative NIR correction
-       -3: Multi-scattering with 2-band model selection
-           and iterative NIR correction
        -4: Multi-scattering with fixed model pair
            (requires aermodmin, aermodmax, aermodrat specification)
        -5: Multi-scattering with fixed model pair
@@ -557,14 +555,13 @@ The list of valid keywords follows:
        -9: Multi-scattering with 2-band model selection using Wang et al. 2009
            to switch between SWIR and NIR. (MODIS only, requires aer_swir_short,
            aer_swir_long, aer_wave_short, aer_wave_long)
-      -10: Multi-scattering with MUMM correction
+      -16: Multi-scattering with MUMM correction
            and MUMM NIR calculation
       -17: Multi-scattering epsilon, RH-based model selection
            and iterative NIR correction
       -18: Spectral Matching of aerosols reflectance
            and iterative NIR correction
-      -19: Multi-scattering epsilon (linear), RH-based model selection
-           and iterative NIR correction
+
    aer_wave_short (int) (default=765) = shortest sensor wavelength for aerosol
         model selection
    aer_wave_long (int) (default=865) = longest sensor wavelength for aerosol
@@ -602,7 +599,7 @@ The list of valid keywords follows:
    glint_opt (int) (default=1) = glint correction:
         0: glint correction off
         1: standard glint correction
-        2: simple glint correction
+        2: simple glint correction        3: glint correction using spectral dependent nw
    oxaband_opt (int) (default=0) = oxygen A-band correction
         0: no correction
         1: Apply Ding and Gordon (1995) correction
@@ -631,7 +628,7 @@ The list of valid keywords follows:
        64: CO
       128: CH4
       256: N2O
-   gas_transmittance_file (ifile) = gaseous transmittance file
+   gas_transmittance_file (ifile) (default=none) = gaseous transmittance file
    atrem_opt (int) (default=0) = ATREM gaseous transmittance bitmask selector
         0: H2O only
         1: Ozone
@@ -857,12 +854,15 @@ The list of valid keywords follows:
    ice_threshold (float) (default=0.1) = sea ice fraction above which will be
         flagged as sea ice
    sstcoeffile (ifile) = IR sst algorithm coefficients file
+   sstjsonfile (ifile) = IR sst algorithm decision tree file
    dsdicoeffile (ifile) = SST dust correction algorithm coefficients file
    sstssesfile (ifile) = IR sst algorithm error statistics file
    sst4coeffile (ifile) = SWIR sst algorithm coefficients file
    sst4ssesfile (ifile) = SWIR sst algorithm error statistics file
+   sst4jsonfile (ifile) = SWIR sst algorithm decision tree file
    sst3coeffile (ifile) = Triple window sst algorithm coefficients file
    sst3ssesfile (ifile) = Triple window sst algorithm error statistics file
+   sst3jsonfile (ifile) = Triple window sst algorithm decision tree file
    sstfile (ifile) (default=$OCDATAROOT/common/sst_climatology.hdf) = input
         SST reference file
    sstreftype (int) (default=0) = Reference SST field source
