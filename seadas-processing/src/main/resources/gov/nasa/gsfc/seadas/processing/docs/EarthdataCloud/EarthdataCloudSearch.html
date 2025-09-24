@@ -108,14 +108,14 @@
     Satellite/Instrument
 </p>
 <p class="indent_bullet_1_contents">
-    This is the satellite mission (also referred to as a specific instrument or sensor
-    which is mounted on a specific orbiting satellite platform).
+    This is what is commonly referred to as the satellite mission.  Note that for certain sensor designs,
+    (for instance VIIRS, MODIS, OLI, OLCI, etc.) there can be multiple missions.
+    This is usually delineated and contained in short form in the
+    satellite mission name.
 </p>
 
 <p class="indent_bullet_1_contents">
-    Note that for certain sensor designs, (for instance VIIRS, MODIS, OLI, OLCI) there can be multiple of these
-    which are operational or have been operational.  This is usually delineated and contained in short form in the
-    satellite mission name.  So:
+      For example:
 </p>
 
 <p class="indent_bullet_2_title">-
@@ -146,7 +146,7 @@
 
 <p class="indent_bullet_1_contents">
     Note: you can only select one mission ('Satellite/Instrument') per search.  This is because the data levels
-    a especially the products can be specific to each mission, and those selector are dynamically configured based on the mission
+    (and especially the products) are specific to each mission, and those selectors are dynamically configured based on the mission
     you choose.
 </p>
 
@@ -184,14 +184,17 @@
     Start Date
 </p>
 <p class="indent_bullet_1_contents">
-    This is the start date of the data.  If this is left blank then start of the mission is assumed.
+    This is the start date of the data.  If this is field is left blank then no start date restriction is applied
+    (effectively meaning the start of the mission).
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Stop Date
 </p>
 <p class="indent_bullet_1_contents">
-    This is the stop date of the data.  If this is left blank then start of the mission is assumed.
+    This is the stop date of the data.  If this is field is left blank then no stop date restriction is applied
+    (effectively
+    meaning the current date).
 </p>
 
 
@@ -205,21 +208,21 @@
     Day
 </p>
 <p class="indent_bullet_1_contents">
-    Search only retrieve data which was imaged in the daytime.
+    Search only retrieves data which was imaged in the daytime.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Night
 </p>
 <p class="indent_bullet_1_contents">
-    Search only retrieve data which was imaged in the nighttime.
+    Search only retrieves data which was imaged in the nighttime.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Both
 </p>
 <p class="indent_bullet_1_contents">
-    Search is not restricted to daytime or nighttime data.
+    Search is not restricted to daytime or nighttime data and allows both.
 </p>
 <br>
 
@@ -229,14 +232,19 @@
 <p class="section_title">Spatial Filter</p>
 
 <p class="main_contents">
-    The search for satellite data can be restricted to a user specific geographic region of interest. This is done
-    through parameters known geographic 'bounding_box', which is defined by the fields:
-    North, South, West and East. The search will only return satellite data files which match in part or in full the
-    user requested bounding_box. Keep in mind that satellite data (such as unprojected level-2 data) is oriented to
-    the actual observation of the earth made by the satellite, and is not precisely represented by a North, South, West,
-    East bounding box. So this can result in some extra files returned by the search which do not actually have data in
-    the user requested bounding box.
+    The search for satellite data can be restricted to a user specified geographic region of interest. This is done
+    through parameters known as a geographic 'bounding_box', which is defined by the fields:
+    'North', 'South', 'West' and 'East'. The search will only return satellite data files which match in part or in full the
+    user requested bounding_box.
 </p>
+
+<p class="main_contents">
+    Keep in mind that satellite data (such as unprojected level-2 data) is oriented to
+    the actual observation of the earth made by the satellite, and is not generally precisely represented by a
+    North, South, West, East bounding box. So this can result in extra files being returned by the search which
+    do not actually have data in the user requested bounding box.
+</p>
+
 <br>
 
 <p class="main_contents_image_1">
@@ -250,35 +258,35 @@
     North
 </p>
 <p class="indent_bullet_1_contents">
-    Northernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=90.0
+    Northernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default is effectively 90.0
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     South
 </p>
 <p class="indent_bullet_1_contents">
-    Southernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=90.0
+    Southernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default is effectively 90.0
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     West
 </p>
 <p class="indent_bullet_1_contents">
-    Westernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=-180.0
+    Westernmost longitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default is effectively -180.0
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     East
 </p>
 <p class="indent_bullet_1_contents">
-    Easternmost latitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default=180.0
+    Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)<br>Default is effectively 180.0
 </p>
 
 
 <p class="sub_section_title">Spatial Filter: Formatting</p>
 
 <p class="main_contents">
-    The internal format which is ultimately used for the spatial fields is the decimal format. However, the browser
+    The internal format which is ultimately used for the spatial fields is the numeric decimal format. However, the browser
     tool will accept and convert most any format.
 </p>
 
@@ -351,8 +359,8 @@
 <p class="sub_section_title">Spatial Filter: Accessory Tools</p>
 
 <p class="main_contents">
-    There are several accessory fields which can aid in populating the North, South, West and East fields. These fields
-    themselves are not actually used in the search.
+    There are several accessory fields which can aid in populating the 'North', 'South', 'West' and 'East' fields.
+    These fields themselves are not actually used in the search, but only to populate the mentioned bounding box fields.
 </p>
 
 
@@ -362,7 +370,7 @@
 </p>
 <p class="indent_bullet_1_contents">
     This is a single coordinate point (latitude longitude) to serve as the center of the scene.
-    The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
+    The 'Box Size' is used in combination with the 'Coordinates' to populate the 'North', 'South', 'West' and 'East' fields.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
@@ -370,7 +378,7 @@
 </p>
 <p class="indent_bullet_1_contents">
     This is size of the region (in degrees).
-    The 'Box Size' is used in combination with the 'Coordinates' to populate the North, South, West, East fields.
+    The 'Box Size' is used in combination with the 'Coordinates' to populate the 'North', 'South', 'West' and 'East' fields.
 </p>
 
 <p class="indent_bullet_1_contents">
@@ -385,7 +393,7 @@
 </p>
 <p class="indent_bullet_2_contents">
     This value defines the width and height (in degrees) of the region which is centered on the
-    value in the 'Coordinates' field.
+    value in the 'Coordinates' field.  (See Example 1 below).
 </p>
 
 <p class="indent_bullet_2_title">- Box Size = [Dimension] (lon x lat)
@@ -393,7 +401,7 @@
 <p class="indent_bullet_2_contents">
     This two-dimension value (format lon x lat) defines the width and height (in degrees) of the region which is
     centered on the
-    value in the 'Coordinates' field.
+    value in the 'Coordinates' field.  (See Example 2 below).
 </p>
 
 
@@ -657,21 +665,21 @@ My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;0
     Max Results
 </p>
 <p class="indent_bullet_1_contents">
-    This field limits the maximum number of returned files by the search.
+    This field limits the maximum number of file names returned by the search.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Results Per Page
 </p>
 <p class="indent_bullet_1_contents">
-    This field set the maximum number of returned files per page.
+    This field set the maximum number of returned file names per page.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Search
 </p>
 <p class="indent_bullet_1_contents">
-    This button executes the file search.
+    This button executes the data search.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
@@ -735,14 +743,14 @@ My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;0
     Subset
 </p>
 <p class="indent_bullet_1_contents">
-    This tool is under-construction.  It makes a subset of the selected files.
+    This tool is under-construction for a future SeaDAS release.  It will make a subset of the selected files.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Download
 </p>
 <p class="indent_bullet_1_contents">
-    This opens a file finder windows for saving the downloads directory.  All files will be downloaded into a single directory.
+    This opens a file finder window for saving the downloads directory.  All files will be downloaded into a single directory.
 </p>
 
 

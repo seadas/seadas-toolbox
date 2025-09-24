@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.bathymetry.ui;
+package gov.nasa.gsfc.seadas.watermask.ui;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
@@ -11,23 +11,22 @@ import java.awt.event.ItemListener;
  * Time: 10:27 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ElevationBandCreateCheckbox {
-    private BathymetryData bathymetryData;
+public class WatermaskCreateCheckbox {
+    private LandMasksData landMasksData;
 
     private JLabel jLabel;
     private JCheckBox jCheckBox = new JCheckBox();
 
-    private static String DEFAULT_NAME = "Create Elevation Band";
+    private static String DEFAULT_NAME = "Create Water Mask";
     private static String DEFAULT_TOOLTIPS = "Note: this can take longer to run";
 
-    public ElevationBandCreateCheckbox(BathymetryData bathymetryData) {
+    public WatermaskCreateCheckbox(LandMasksData landMasksData) {
 
-
-        this.bathymetryData = bathymetryData;
+        this.landMasksData = landMasksData;
 
         jLabel = new JLabel(DEFAULT_NAME);
         jLabel.setToolTipText(DEFAULT_TOOLTIPS);
-        jCheckBox.setSelected(bathymetryData.isCreateElevationBand());
+        jCheckBox.setSelected(landMasksData.isCreateWatermask());
 
         addControlListeners();
     }
@@ -36,7 +35,7 @@ public class ElevationBandCreateCheckbox {
         jCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                bathymetryData.setCreateElevationBand(jCheckBox.isSelected());
+                landMasksData.setCreateWatermask(jCheckBox.isSelected());
             }
         });
     }

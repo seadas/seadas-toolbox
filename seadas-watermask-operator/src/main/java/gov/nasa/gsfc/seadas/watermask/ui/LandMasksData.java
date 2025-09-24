@@ -43,6 +43,8 @@ class LandMasksData {
     private boolean showWaterMaskAllBands = false;
     private boolean showCoastlineMaskAllBands = false;
     private boolean createCoastline = false;
+    private boolean createWatermask = false;
+    private boolean createLandmask = true;
 
     private Color landMaskColor = new Color(51, 51, 51);
     private Color waterMaskColor = new Color(0, 125, 255);
@@ -226,6 +228,22 @@ class LandMasksData {
 
     public void setCreateCoastline(boolean createCoastline) {
         this.createCoastline = createCoastline;
+    }
+
+    public boolean isCreateWatermask() {
+        return createWatermask;
+    }
+
+    public void setCreateWatermask(boolean createWatermask) {
+        this.createWatermask = createWatermask;
+    }
+
+    public boolean isCreateLandmask() {
+        return createLandmask;
+    }
+
+    public void setCreateLandmask(boolean createLandmask) {
+        this.createLandmask = createLandmask;
     }
 
 

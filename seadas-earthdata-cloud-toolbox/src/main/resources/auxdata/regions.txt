@@ -1,9 +1,9 @@
 #! CAUTION - DO NOT EDIT - THIS FILE GETS OVERWRITTEN - TO ADD CUSTOM USER REGIONS USE THE FILE: user_regions.txt
 
 -- BLANK --
--- (BETA) NOT YET IMPLEMENTED --
-My Sample Region = 39°36′00″N, 35°54′00″N, 77°30′00″E, 74°18′00″E
-
+-- (BETA) Under Construction --
+Black Sea = 46.68 40.85 27.40 41.83
+Mediterranean Sea = 44.55 30.11 -5.49 36.37
 
 
 
