@@ -769,22 +769,22 @@
             <validValues>
                 <validValue>
                     <value>-1</value>
-                    <description>standard ocean 1km processing</description>
+                    <description>[Options are MODIS Only]: default processing resolution</description>
                 </validValue>
                 <validValue>
                     <value>1000</value>
-                    <description>1km resolution including aggregated 250 and 500m land bands</description>
+                    <description>[Options are MODIS Only]: 1km resolution including aggregated 250 and 500m land bands</description>
                 </validValue>
                 <validValue>
                     <value>500</value>
-                    <description>500m resolution including aggregated 250 land bands and replication for lower resolution bands</description>
+                    <description>[Options are MODIS Only]: 500m resolution including aggregated 250 land bands and replication for lower resolution bands</description>
                 </validValue>
                 <validValue>
                     <value>250</value>
-                    <description>250m resolution with replication for lower resolution bands</description>
+                    <description>[Options are MODIS Only]: 250m resolution with replication for lower resolution bands</description>
                 </validValue>
             </validValues>
-            <description>processing resolution (MODIS only)</description>
+            <description>processing resolution (option is for MODIS only)</description>
         </option>
         <option type="int">
             <name>giop_aph_opt</name>
