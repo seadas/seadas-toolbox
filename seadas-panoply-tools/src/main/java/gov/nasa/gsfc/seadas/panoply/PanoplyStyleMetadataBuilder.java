@@ -70,7 +70,7 @@ public final class PanoplyStyleMetadataBuilder {
             // Even if build fails, we still attach a single (empty) panoply root so the UI shows it once.
         }
 
-        clearMetadataRoot(metaRoot);
+        //clearMetadataRoot(metaRoot);
         // Attach one time only
         metaRoot.addElement(panoplyRoot);
         //hoistPanoplyChildrenToMetaRoot(panoplyRoot, metaRoot);
