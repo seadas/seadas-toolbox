@@ -37,7 +37,7 @@ import java.util.*;
 public final class PanoplyDumpTopComponent extends TopComponent implements LookupListener, PropertyChangeListener {
 
     private static final String HINT = "Select a variable or group under Metadata \u2192 MetadataDump …";
-    private static final String PAN  = "MetadataDump";
+    private static final String PAN  = "Metadata_Dump";
     private static final String ZWSP = "\u200B"; // suffix storing sort order
 
     // All top-level groups (case-insensitive)
