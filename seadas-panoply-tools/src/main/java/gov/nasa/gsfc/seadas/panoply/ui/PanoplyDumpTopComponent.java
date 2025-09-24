@@ -30,14 +30,14 @@ import java.util.*;
 @ActionReference(path = "Menu/View", position = 19300)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PanoplyDumpAction", preferredID = "PanoplyDumpTopComponent")
 @Messages({
-        "CTL_PanoplyDumpAction=Panoply Dump",
-        "CTL_PanoplyDumpTopComponent=Panoply Dump",
+        "CTL_PanoplyDumpAction=Metadata Dump",
+        "CTL_PanoplyDumpTopComponent=Metadata Dump",
         "HINT_PanoplyDumpTopComponent=Shows Panoply-style (ncdump) text for the selected variable or group"
 })
 public final class PanoplyDumpTopComponent extends TopComponent implements LookupListener, PropertyChangeListener {
 
-    private static final String HINT = "Select a variable or group under Metadata \u2192 Panoply …";
-    private static final String PAN  = "Panoply";
+    private static final String HINT = "Select a variable or group under Metadata \u2192 MetadataDump …";
+    private static final String PAN  = "MetadataDump";
     private static final String ZWSP = "\u200B"; // suffix storing sort order
 
     // All top-level groups (case-insensitive)
@@ -51,6 +51,10 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
             "Geophysical_Data", "Navigation_Data", "Processing_Control",
             "Scan_Line_Attributes", "Sensor_Band_Parameters"
     ));
+
+    private static final java.util.Set<String> SECTION_NAMES = new java.util.HashSet<>(
+            java.util.Arrays.asList("Geophysical_Data","Navigation_Data","Processing_Control",
+                    "Scan_Line_Attributes","Sensor_Band_Parameters"));
 
     private final JTextArea textArea = new JTextArea();
     private org.openide.util.Lookup.Result<Node> nodeSel;
@@ -152,21 +156,14 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         return null;
     }
 
-    /** true only for elements Panoply → <top group> → <var> */
-    private static boolean isPanoplyVariable(MetadataElement el) {
-        if (el == null) return false;
-        MetadataElement p = el.getParentElement();
-        if (p == null) return false;
-        MetadataElement g = p.getParentElement();
-        if (g == null) return false;
-        return PAN.equalsIgnoreCase(g.getName()) && isTopGroupName(p.getName());
+    private static boolean isPanoplyVariable(org.esa.snap.core.datamodel.MetadataElement e) {
+        if (e == null) return false;
+        org.esa.snap.core.datamodel.MetadataElement parent = e.getParentElement();
+        return parent != null && SECTION_NAMES.contains(parent.getName());
     }
 
-    /** true for top-level groups directly under Panoply */
-    private static boolean isPanoplyTopGroup(MetadataElement el) {
-        if (el == null) return false;
-        MetadataElement parent = el.getParentElement();
-        return parent != null && PAN.equalsIgnoreCase(parent.getName()) && isTopGroupName(el.getName());
+    private static boolean isPanoplyTopGroup(org.esa.snap.core.datamodel.MetadataElement e) {
+        return e != null && SECTION_NAMES.contains(e.getName());
     }
 
     private static boolean isTopGroupName(String name) {
@@ -208,25 +205,40 @@ public final class PanoplyDumpTopComponent extends TopComponent implements Looku
         return -1;
     }
 
-    /** Resolve Panoply/<top-group>/<varName> from the selected product */
-    private static MetadataElement resolvePanoplyVarFromCurrentProduct(String varName) {
+    /** Resolve <section>/<varName> from the current product, flat-first, wrapper-fallback. */
+    private static org.esa.snap.core.datamodel.MetadataElement resolvePanoplyVarFromCurrentProduct(String varName) {
         try {
             SnapApp app = SnapApp.getDefault();
             if (app == null) return null;
             ProductSceneView view = app.getSelectedProductSceneView();
-            if (view == null || view.getProduct() == null) return null;
+            if (view == null) return null;
+            Product p = view.getProduct();
+            if (p == null || p.getMetadataRoot() == null) return null;
 
-            MetadataElement root = view.getProduct().getMetadataRoot();
-            if (root == null) return null;
+            org.esa.snap.core.datamodel.MetadataElement root = p.getMetadataRoot();
 
-            MetadataElement pan = root.getElement(PAN);
-            if (pan == null) return null;
-
-            // scan groups for the var
-            for (MetadataElement group : pan.getElements()) {
-                if (group != null && isTopGroupName(group.getName())) {
-                    MetadataElement var = group.getElement(varName);
+            // 1) Flat layout: sections are direct children of Metadata
+            for (int i = 0; i < root.getNumElements(); i++) {
+                org.esa.snap.core.datamodel.MetadataElement sec = root.getElementAt(i);
+                if (sec != null && SECTION_NAMES.contains(sec.getName())) {
+                    org.esa.snap.core.datamodel.MetadataElement var = sec.getElement(varName);
                     if (var != null) return var;
+                }
+            }
+
+            // 2) Wrapper fallback: "Panoply" or "MetadataDump"
+            org.esa.snap.core.datamodel.MetadataElement wrap =
+                    root.getElement("Panoply");
+            if (wrap == null) {
+                wrap = root.getElement("MetadataDump");
+            }
+            if (wrap != null) {
+                for (int i = 0; i < wrap.getNumElements(); i++) {
+                    org.esa.snap.core.datamodel.MetadataElement sec = wrap.getElementAt(i);
+                    if (sec != null && SECTION_NAMES.contains(sec.getName())) {
+                        org.esa.snap.core.datamodel.MetadataElement var = sec.getElement(varName);
+                        if (var != null) return var;
+                    }
                 }
             }
         } catch (Throwable ignore) {}

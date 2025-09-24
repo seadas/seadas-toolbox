@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public final class PanoplyStyleMetadataBuilder {
 
-    private static final String PAN = "Panoply";
+    private static final String PAN = "MetadataDump";
     private static final String ZWSP = "\u200B"; // suffix to preserve dump-line order
 
     private PanoplyStyleMetadataBuilder() {}

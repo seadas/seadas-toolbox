@@ -9,6 +9,11 @@ import org.openide.windows.WindowManager;
 public final class PanoplySelectionWatcher implements LookupListener {
     private org.openide.util.Lookup.Result<MetadataElement> result;
 
+    // Recognize the five sections (flat) and any descendants.
+// Also tolerates a wrapper named "Panoply" or "MetadataView" if present.
+    private static final java.util.Set<String> SECTION_NAMES = java.util.Set.of(
+            "Geophysical_Data","Navigation_Data","Processing_Control",
+            "Scan_Line_Attributes","Sensor_Band_Parameters");
     public void start() {
         result = Utilities.actionsGlobalContext().lookupResult(MetadataElement.class);
         result.addLookupListener(this);
@@ -24,13 +29,15 @@ public final class PanoplySelectionWatcher implements LookupListener {
         var tc = (PanoplyDumpTopComponent) WindowManager.getDefault().findTopComponent("PanoplyDumpTopComponent");
         if (tc != null) { tc.open(); tc.requestActive(); }
     }
-
-    private static boolean isPanoplyVar(MetadataElement el) {
+    private static boolean isPanoplyVar(org.esa.snap.core.datamodel.MetadataElement el) {
         if (el == null) return false;
-        var parent = el.getParentElement();
-        var grand  = (parent != null) ? parent.getParentElement() : null;
-        return parent != null && grand != null &&
-                "Geophysical_Data".equals(parent.getName()) &&
-                "Panoply".equals(grand.getName());
+        for (org.esa.snap.core.datamodel.MetadataElement cur = el;
+             cur != null; cur = cur.getParentElement()) {
+            String name = cur.getName();
+            if (SECTION_NAMES.contains(name)) return true;                 // flat layout
+            if ("Panoply".equalsIgnoreCase(name)) return true;             // old wrapper
+            if ("MetadataView".equalsIgnoreCase(name)) return true;        // new wrapper
+        }
+        return false;
     }
 }
