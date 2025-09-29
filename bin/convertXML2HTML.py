@@ -328,7 +328,7 @@ for root, dirs, files in os.walk(dir_desktop):
                     src = path[0:-8]
                     print(src)
                     copy_resources()
-                    dest = os.path.join("/Users/byang8/seadas9.2.0Help/snap-desktop", path[35:place])
+                    dest = os.path.join("/Users/byang8/seadas10.0Help/snap-desktop", path[35:place])
                     # dest = os.path.join(dir_target, "snap-desktop", path[34:place])
                     print(dest)
 
@@ -361,7 +361,7 @@ for root, dirs, files in os.walk(dir_seadas):
                     src = path[0:-8]
                     print(src)
                     copy_resources()
-                    dest = "/Users/byang8/seadas9.2.0Help/seadas-toolbox/seadas-processing"
+                    dest = "/Users/byang8/seadas10.0Help/seadas-toolbox/seadas-processing"
                     # dest = os.path.join(dir_target, 'seadas-toolbox', 'seadas-processing')
                     print(dest)
 
@@ -390,7 +390,7 @@ for root, dirs, files in os.walk(dir_seadas):
                     src = path[0:-8]
                     print(src)
                     copy_resources()           
-                    dest = os.path.join("/Users/byang8/seadas9.2.0Help/seadas-toolbox", path[37:place])
+                    dest = os.path.join("/Users/byang8/seadas10.0Help/seadas-toolbox", path[37:place])
                     # dest = os.path.join(dir_target, 'seadas-toolbox', path[37:place])
                     print(dest)
                     if(not os.path.exists(dest)):
