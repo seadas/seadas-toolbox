@@ -30,17 +30,19 @@ public final class StartupHook {
         listener = new ProductManager.Listener() {
             @Override
             public void productAdded(ProductManager.Event e) {
-                Product p = e.getProduct();
-                //System.out.println("[Panoply] productAdded: " + safeName(p));
+                Product product = e.getProduct();
+                //System.out.println("[Panoply] productAdded: " + safeName(product));
 
-                File f = p.getFileLocation();
-                String src = (f != null ? f.getAbsolutePath() : null);
-                //System.out.println("[Panoply] Source for " + safeName(p) + ": " + src);
+                File f = product.getFileLocation();
+                String filePath = (f != null ? f.getAbsolutePath() : null);
+                //System.out.println("[Panoply] Source for " + safeName(product) + ": " + filePath);
 
-                if (src != null) {
+                if (filePath != null) {
                     try {
-                        //System.out.println("[Panoply] Attaching to " + p.getName() + " from " + src);
-                        PanoplyStyleMetadataBuilder.attachPanoplyMetadata(p, src);
+                        //System.out.println("[Panoply] Attaching to " + product.getName() + " from " + filePath);
+                        //PanoplyStyleMetadataBuilder.attachPanoplyMetadata(product, filePath);
+                        PanoplyStyleMetadataBuilder.addAllGroupsUnderDumpRoot(product, filePath);
+
                         //System.out.println("[Panoply] Attached ✓");
                     } catch (Throwable ex) {
                         System.out.println("[Panoply] attach failed: " +

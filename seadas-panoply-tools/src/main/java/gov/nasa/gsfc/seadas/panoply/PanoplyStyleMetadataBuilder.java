@@ -5,392 +5,464 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import ucar.nc2.Attribute;
-import ucar.nc2.Dimension;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFiles;
 import ucar.nc2.Variable;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 /**
- * Builds the Panoply-style metadata subtree containing exactly:
- *  - Geophysical_Data
- *  - Navigation_Data
- *  - Processing_Control   (with Flag_Percentages, Input_Parameters)
- *  - Scan_Line_Attributes
- *  - Sensor_Band_Parameters
- *
- * Each variable is represented as a MetadataElement whose attributes are
- * the ncdump-style text lines, stored in name order using a \u200B<index> suffix.
+ * Builds a groups-only metadata dump under a single wrapper node "Metadata_Dump".
+ * - Recursively mirrors NetCDF root.getGroups() (and sub-groups)
+ * - Each group node gets ncdump-like lines (variable declarations + group attrs)
+ * - Each variable gets its own child node with declaration + its attributes
+ * - All generated nodes are tagged (MARKER_ATTR) so we can safely refresh
+ * - "Global attributes" / "gattributes" are intentionally ignored per requirement
  */
 public final class PanoplyStyleMetadataBuilder {
 
-    private static final String PAN = "Metadata_Dump";
-    private static final String ZWSP = "\u200B"; // suffix to preserve dump-line order
-
     private PanoplyStyleMetadataBuilder() {}
 
-    public static void attachPanoplyMetadata(Product product, String fileUrlOrPath) {
-        if (product == null) return;
+    // ---- Public entry point -------------------------------------------------
 
-        final MetadataElement metaRoot = product.getMetadataRoot();
-        if (metaRoot == null) return;
+    /** Wrapper node under SNAP "Metadata" where we place our dump. */
+    private static final String DUMP_ROOT_NAME = "Metadata_Dump";
 
-        // Reuse if it already exists (e.g., loaded from DIMAP)
-        MetadataElement panoplyRoot = metaRoot.getElement(PAN); // PAN == "panoply"
-        if (panoplyRoot != null) {
-            // already present → do nothing (avoid duplicate roots)
-            return;
-        }
+    /** Marker to identify nodes we generated (so we can refresh them safely). */
+    private static final String MARKER_ATTR = "_panoply_section";
+    private static final String MARKER_VAL  = "v2";
+    private static String CURRENT_FILE_BASENAME = null;
 
-        // Otherwise build a fresh tree and attach once
-        panoplyRoot = new MetadataElement(PAN);
-
-        // Open NetCDF safely (and tolerate null/invalid path)
-        try (NetcdfFile nc = (fileUrlOrPath != null && !fileUrlOrPath.isEmpty())
-                ? NetcdfFiles.open(fileUrlOrPath) : null) {
-
-            final Group root = (nc != null) ? nc.getRootGroup() : null;
-
-            // Exactly the five nodes requested (TitleCase to match dump window logic)
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "geophysical_data",       "Geophysical_Data"),      "Geophysical_Data");
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "navigation_data",        "Navigation_Data"),       "Navigation_Data");
-            safeAdd(panoplyRoot, () -> buildProcessingControl((nc != null) ? nc : null),                               "Processing_Control");
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "scan_line_attributes",   "Scan_Line_Attributes"),  "Scan_Line_Attributes");
-            safeAdd(panoplyRoot, () -> buildGroupSection(root, "sensor_band_parameters", "Sensor_Band_Parameters"),"Sensor_Band_Parameters");
-
-        } catch (Throwable t) {
-            System.out.println("[Panoply] attach: open/build failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
-            // Even if build fails, we still attach a single (empty) panoply root so the UI shows it once.
-        }
-
-        //clearMetadataRoot(metaRoot);
-        // Attach one time only
-        metaRoot.addElement(panoplyRoot);
-        //hoistPanoplyChildrenToMetaRoot(panoplyRoot, metaRoot);
-    }
-
-    /** Remove ALL attributes and child elements from a MetadataElement (root-safe). */
-    private static void clearMetadataRoot(MetadataElement elem) {
-        // remove attributes (from end to start)
-        for (int i = elem.getNumAttributes() - 1; i >= 0; i--) {
-            MetadataAttribute a = elem.getAttributeAt(i);
-            if (a != null) elem.removeAttribute(a);
-        }
-        // remove child elements (from end to start)
-        for (int i = elem.getNumElements() - 1; i >= 0; i--) {
-            MetadataElement child = elem.getElementAt(i);
-            if (child != null) elem.removeElement(child);
-        }
-    }
+    /** Toggle extra stdout logging if you need it. */
+    private static final boolean DEBUG = false;
 
     /**
-     * Moves all child elements of the given panoply root node directly under the metadata root.
-     * - Preserves the original child order.
-     * - Removes any existing root-level elements with the same names to avoid duplicates.
-     * - Removes the panoply wrapper itself at the end.
-     *
-     * @return true if a flatten/hoist happened, false if nothing to do or inputs invalid.
+     * Build (or rebuild) the groups-only dump under "Metadata_Dump".
+     * Does nothing if a usable NetCDF source cannot be opened.
      */
-    public static boolean hoistPanoplyChildrenToMetaRoot(MetadataElement panoplyRootNode, MetadataElement metaRoot) {
-        if (panoplyRootNode == null || metaRoot == null) return false;
-        if (panoplyRootNode == metaRoot) return false; // nothing to hoist
-
-        // Snapshot children (order matters)
-        List<MetadataElement> children = new ArrayList<>();
-        for (int i = 0; i < panoplyRootNode.getNumElements(); i++) {
-            MetadataElement kid = panoplyRootNode.getElementAt(i);
-            if (kid != null) children.add(kid);
-        }
-
-        // If no children, just remove the empty wrapper (if it *is* under metaRoot)
-        if (children.isEmpty()) {
-            if (panoplyRootNode.getParentElement() == metaRoot) {
-                metaRoot.removeElement(panoplyRootNode);
-                return true;
-            }
-            return false;
-        }
-
-        // Avoid duplicates at the root: remove any root-level elements with the same names
-        Set<String> names = children.stream().map(MetadataElement::getName).collect(Collectors.toSet());
-        for (int i = metaRoot.getNumElements() - 1; i >= 0; i--) {
-            MetadataElement existing = metaRoot.getElementAt(i);
-            if (existing != null && names.contains(existing.getName())) {
-                metaRoot.removeElement(existing);
-            }
-        }
-
-        // Detach children from wrapper before reparenting
-        for (MetadataElement kid : children) {
-            panoplyRootNode.removeElement(kid);
-        }
-
-        // If the wrapper is already under metaRoot, remove it now
-        if (panoplyRootNode.getParentElement() == metaRoot) {
-            metaRoot.removeElement(panoplyRootNode);
-        } else {
-            // Otherwise just ensure we don't leave it orphaned in some other branch
-            MetadataElement parent = panoplyRootNode.getParentElement();
-            if (parent != null) parent.removeElement(panoplyRootNode);
-        }
-
-        // Reattach hoisted children at the root in original order
-        for (MetadataElement kid : children) {
-            metaRoot.addElement(kid);
-        }
-
-        return true;
-    }
-
-    public static void rebuildPanoplyMetadata(Product product, String fileUrlOrPath) {
+    public static void addAllGroupsUnderDumpRoot(Product product, String fileUrlOrPath) {
         if (product == null || product.getMetadataRoot() == null) return;
-        final MetadataElement metaRoot = product.getMetadataRoot();
-        MetadataElement existing = metaRoot.getElement(PAN);
-        if (existing != null) metaRoot.removeElement(existing);
-        attachPanoplyMetadata(product, fileUrlOrPath);
+
+        try (NetcdfFile nc = openNetcdfIfPossible(product, fileUrlOrPath)) {
+            if (nc == null) return;
+
+            try {
+                String loc = nc.getLocation();
+                if (loc != null) {
+                    java.io.File f = new java.io.File(loc);
+                    CURRENT_FILE_BASENAME = f.getName();
+                } else {
+                    CURRENT_FILE_BASENAME = null;
+                }
+            } catch (Throwable ignore) { CURRENT_FILE_BASENAME = null; }
+
+            // Optional probe
+            if (DEBUG) debugProbe(nc, product, fileUrlOrPath);
+
+            MetadataElement metaRoot = product.getMetadataRoot();
+            MetadataElement dumpRoot = getOrCreateDumpRoot(metaRoot);
+
+            // Remove only nodes we previously generated (by marker)
+            removeGeneratedChildren(dumpRoot);
+
+            // Build every group under the NetCDF root (ignore "gattributes" etc.)
+            for (Group child : nc.getRootGroup().getGroups()) {
+                MetadataElement section = buildGroupTree(child);
+                if (isPopulated(section)) dumpRoot.addElement(section);
+            }
+
+            if (DEBUG) debugDumpRootChildren(dumpRoot);
+        } catch (Throwable t) {
+            System.out.println("[Panoply] groups-only build failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+        }
     }
 
-    // ------------------ section builders ------------------
+    // ---- NetCDF open helpers ------------------------------------------------
 
-    /** Generic “dump the variables in this group” section. */
-    private static MetadataElement buildGroupSection(Group root, String groupShortName, String sectionTitle) {
-        MetadataElement section = new MetadataElement(sectionTitle);
-        Group g = findGroupRecursive(root, groupShortName);
-        if (g == null) {
-            // Create the node anyway so users see the expected structure
-            return section;
+    /** Try to obtain a usable NetCDF handle for the given product / path. */
+    private static NetcdfFile openNetcdfIfPossible(Product product, String fileUrlOrPath) {
+        // 1) Caller-supplied path
+        NetcdfFile nc = tryOpenNetcdf(fileUrlOrPath);
+        if (nc != null) return nc;
+
+        // 2) Product file location
+        if (product != null) {
+            File loc = product.getFileLocation();
+            if (loc != null) {
+                nc = tryOpenNetcdf(loc.getAbsolutePath());
+                if (nc != null) return nc;
+            }
+
+            // 3) Reader input
+            try {
+                if (product.getProductReader() != null) {
+                    Object in = product.getProductReader().getInput();
+                    if (in instanceof File) {
+                        nc = tryOpenNetcdf(((File) in).getAbsolutePath());
+                        if (nc != null) return nc;
+                    } else if (in != null) {
+                        nc = tryOpenNetcdf(String.valueOf(in));
+                        if (nc != null) return nc;
+                    }
+                }
+            } catch (Throwable ignore) {}
         }
-        for (Variable v : g.getVariables()) {
-            section.addElement(buildVarDump(v, g)); // ncdump text lines stored as attributes
+
+        return null;
+    }
+
+    /** Try to open a NetCDF file/URL, skipping known non-NetCDF sidecars. */
+    private static NetcdfFile tryOpenNetcdf(String pathOrUrl) {
+        if (pathOrUrl == null || pathOrUrl.isEmpty()) return null;
+        String low = pathOrUrl.toLowerCase();
+        if (low.endsWith(".dim") || low.endsWith(".dimap") || low.endsWith(".xml")) return null;
+        try {
+            return NetcdfFiles.open(pathOrUrl);
+        } catch (Throwable t1) {
+            try {
+                return NetcdfFile.open(pathOrUrl);
+            } catch (Throwable t2) {
+                return null;
+            }
+        }
+    }
+
+    private static MetadataElement buildGroupTree(ucar.nc2.Group g) {
+        MetadataElement section = new MetadataElement(safeTitle(g.getShortName()));
+        tag(section);
+
+        java.util.List<String> lines = new java.util.ArrayList<>();
+
+        // Header
+        lines.add("Group \"" + g.getShortName() + "\"");
+        if (CURRENT_FILE_BASENAME != null) {
+            lines.add("In file \"" + CURRENT_FILE_BASENAME + "\"");
+        }
+
+        // VARIABLES (only if present)
+        if (!g.getVariables().isEmpty()) {
+            lines.add("variables:");
+            for (ucar.nc2.Variable v : g.getVariables()) {
+                lines.add("  " + varDeclLineWithSizes(v));
+                for (ucar.nc2.Attribute a : v.getAttributes()) {
+                    lines.add("    " + varAttrLineTyped(a));
+                }
+                lines.add(""); // blank line between variables
+            }
+            // spacer between variables and sub-groups (if any)
+            if (!g.getGroups().isEmpty() || !g.getAttributes().isEmpty()) {
+                lines.add("");
+            }
+        }
+
+        // SUB-GROUP SUMMARIES (inline, before parent group attributes)
+        // Format:
+        // group: <name> {
+        //   // group attributes:
+        //   :attr = ... ;
+        // }
+        for (ucar.nc2.Group sub : g.getGroups()) {
+            lines.add("group: " + sub.getShortName() + " {");
+            // if the subgroup has attributes, show them
+            if (!sub.getAttributes().isEmpty()) {
+                lines.add("  // group attributes:");
+                for (ucar.nc2.Attribute a : sub.getAttributes()) {
+                    lines.add("  " + varAttrLineTyped(a));
+                }
+            } else {
+                lines.add("  // (no group attributes)");
+            }
+            lines.add("}");
+            lines.add(""); // blank line after each subgroup summary
+        }
+
+        // PARENT GROUP ATTRIBUTES (as comment header, per your expected output)
+        if (!g.getAttributes().isEmpty()) {
+            lines.add("// group attributes:");
+            for (ucar.nc2.Attribute a : g.getAttributes()) {
+                lines.add(varAttrLineTyped(a));
+            }
+        }
+
+        // If nothing at all was added (no vars, no subgroups, no attrs), leave a placeholder
+        if (g.getVariables().isEmpty() && g.getGroups().isEmpty() && g.getAttributes().isEmpty()) {
+            lines.add("// (empty group)");
+        }
+
+        addLines(section, lines);
+
+        // Still add real child nodes so clicking sub-groups shows their full content
+        for (ucar.nc2.Group sub : g.getGroups()) {
+            MetadataElement child = buildGroupTree(sub);
+            if (isPopulated(child)) section.addElement(child);
         }
         return section;
     }
 
-    // ---------------- Processing_Control ----------------
-
-    private static MetadataElement buildProcessingControl(NetcdfFile nc) {
-        MetadataElement pcElem = new MetadataElement("Processing_Control");
-        Group root = nc.getRootGroup();
-        Group pc = childGroup(root, "processing_control");
-        if (pc != null) {
-            // flag_percentages
-            MetadataElement fpElem = new MetadataElement("Flag_Percentages");
-            dumpGroupAttributesAsLines(pc, "flag_percentages", fpElem);
-            pcElem.addElement(fpElem);
-
-            // input_parameters
-            MetadataElement ipElem = new MetadataElement("Input_Parameters");
-            dumpGroupAttributesAsLines(pc, "input_parameters", ipElem);
-            pcElem.addElement(ipElem);
-        }
-        return pcElem;
-    }
-
-    private static void dumpGroupAttributesAsLines(Group parentGroup, String childSimpleName, MetadataElement targetElem) {
-        Group g = childGroup(parentGroup, childSimpleName);
-        if (g == null) return;
-
-        int order = 0;
-        for (Attribute a : g.getAttributes()) {
-            String line = formatAttributeLine(a, true); // group-level attribute with leading ':'
-            addLine(targetElem, line, order++);
-        }
-    }
-
-    private static Group childGroup(Group parent, String name) {
-        if (parent == null || name == null) return null;
-        for (Group g : parent.getGroups()) {
-            if (name.equalsIgnoreCase(g.getShortName())) return g;
-        }
-        return null;
-    }
-
-    // ---------------- Formatting helpers ----------------
-
-    // Use XML-safe attribute names; store text in the value.
-// Example names: line_0000, line_0001, ...
-    private static void addLine(MetadataElement elem, String line, int order) {
-        String key = "line_" + String.format("%05d", order);
-        elem.addAttribute(new MetadataAttribute(key, ProductData.createInstance(line), true));
-    }
 
 
-    /** Format an attribute as ncdump-style text. When global==true, prefix with ':' immediately. */
-    private static String formatAttributeLine(Attribute a, boolean globalOrGroupLevel) {
-        StringBuilder sb = new StringBuilder(128);
-        // leading spaces for variable attributes are added by caller as needed
-        if (globalOrGroupLevel) sb.append(':');
-        sb.append(a.getShortName()).append(" = ");
-
-        if (a.isString()) {
-            if (a.getLength() <= 1) {
-                sb.append('"').append(a.getStringValue()).append('"');
-            } else {
-                for (int i = 0; i < a.getLength(); i++) {
-                    if (i > 0) sb.append(", ");
-                    sb.append('"').append(a.getStringValue(i)).append('"');
-                }
-            }
-            sb.append(';');
-            return sb.toString();
-        }
-
-        // numeric (or opaque) values
-        for (int i = 0; i < a.getLength(); i++) {
-            if (i > 0) sb.append(", ");
-            String v = String.valueOf(a.getNumericValue(i));
-            sb.append(applyTypeSuffix(v, a)); // e.g., add 'f' for float, 'S' for short
-        }
-        sb.append(';');
-
-        String typeComment = numericTypeComment(a);
-        if (typeComment != null) {
-            sb.append(" // ").append(typeComment);
-        }
-        return sb.toString();
-    }
-
-    private static String applyTypeSuffix(String v, Attribute a) {
-        String dt = (a.getDataType() != null) ? a.getDataType().toString().toLowerCase() : "";
-        switch (dt) {
-            case "float":  return ensureFloatForm(v) + "f";
-            case "double": return ensureFloatForm(v); // no suffix
-            case "short":  return v + "S";
-            case "byte":   return v + "B";
-            // int/long/uint/ulong: leave as-is (no easy signedness info here)
-            default:       return v;
-        }
-    }
-
-    private static String numericTypeComment(Attribute a) {
-        String dt = (a.getDataType() != null) ? a.getDataType().toString().toLowerCase() : null;
-        if (dt == null) return null;
-        switch (dt) {
-            case "float":
-            case "double":
-            case "short":
-            case "byte":
-            case "int":
-            case "long":
-                return dt;
-            default:
-                return null;
-        }
-    }
-
-    private static String ensureFloatForm(String v) {
-        return (v.indexOf('.') >= 0 || v.indexOf('e') >= 0 || v.indexOf('E') >= 0) ? v : (v + ".0");
-    }
-
-
-    // ------------------ dump helpers ------------------
-
-    /** Create a child element named after the variable and store ncdump-like lines as ordered attributes. */
-    private static MetadataElement buildVarDump(Variable v, Group contextGroup) {
-        String varName = v.getShortName();
-        MetadataElement varElem = new MetadataElement(varName);
-
-        List<String> lines = new ArrayList<>(16);
-        // Header: <type> <name>(dim=...);
-        lines.add("  " + varHeaderLine(v));
-
-        // Attributes
-        for (Attribute a : v.attributes()) {
-            lines.add("  " + attrDumpLine(a));
-        }
-
-        // Persist the lines as attributes with \u200B<order> suffix in the name
-        for (int i = 0; i < lines.size(); i++) {
-            addLine(varElem, lines.get(i), i);
-        }
-        return varElem;
-    }
-
-    private static String varHeaderLine(Variable v) {
+    private static String varDeclLineWithSizes(ucar.nc2.Variable v) {
         StringBuilder sb = new StringBuilder();
         sb.append(v.getDataType().toString().toLowerCase()).append(' ')
                 .append(v.getShortName()).append('(');
-        int[] shape = v.getShape();
-        List<Dimension> dims = v.getDimensions();
+
+        java.util.List<ucar.nc2.Dimension> dims = v.getDimensions();
         for (int i = 0; i < dims.size(); i++) {
             if (i > 0) sb.append(", ");
-            Dimension d = dims.get(i);
-            // name=size format to mirror your example
-            sb.append(d.getShortName()).append('=').append(d.getLength());
+            ucar.nc2.Dimension d = dims.get(i);
+            sb.append(d.getShortName());
+            long len = d.getLength();
+            if (len >= 0) {
+                sb.append('=').append(len);
+            }
         }
-        sb.append(");");
+        sb.append(") ;");
         return sb.toString();
     }
 
-    private static String attrDumpLine(Attribute a) {
-        String name = a.getShortName();
-        if ("_FillValue".equalsIgnoreCase(name) || "_FillValue".equals(name)) {
-            // Keep the explicit example style with type comment, when possible
-            String val = a.isString() ? quoted(a.getStringValue()) : valuesString(a);
-            String type = a.getDataType() != null ? a.getDataType().toString().toLowerCase() : "";
-            if (a.getDataType() != null && a.getDataType().isFloatingPoint()) {
-                // add 'f' for floats where it makes sense
-                if ("float".equalsIgnoreCase(a.getDataType().toString()) && !val.endsWith("f")) {
-                    val = val + "f";
+    private static String varAttrLineTyped(ucar.nc2.Attribute a) {
+        StringBuilder sb = new StringBuilder();
+        boolean isString = a.isString();
+
+        // name and equals
+        sb.append(':').append(a.getShortName()).append(" = ");
+
+        if (isString) {
+            // single string
+            sb.append('"').append(a.getStringValue()).append('"');
+        } else {
+            // numeric (scalar or array)
+            int n = a.getLength();
+            if (n <= 0) {
+                sb.append("\"\"");
+            } else if (n == 1) {
+                sb.append(formatNumericValue(a, 0));
+            } else {
+                for (int i = 0; i < n; i++) {
+                    if (i > 0) sb.append(", ");
+                    sb.append(formatNumericValue(a, i));
                 }
             }
-            return ":" + name + " = " + val + "; // " + (type.isEmpty() ? "value" : type);
         }
-        String val = a.isString() ? quoted(a.getStringValue()) : valuesString(a);
-        return ":" + name + " = " + val + ";";
-    }
 
-    private static String valuesString(Attribute a) {
-        if (a.isString()) {
-            return quoted(a.getStringValue());
-        }
-        if (a.getLength() == 1) {
-            Object num = a.getNumericValue();
-            return num == null ? "" : num.toString();
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < a.getLength(); i++) {
-            if (i > 0) sb.append(", ");
-            Object num = a.getNumericValue(i);
-            sb.append(num == null ? "" : num.toString());
+        sb.append(" ;");
+
+        // trailing type comment like: // float
+        String typeLabel = dataTypeLabel(a);
+        if (typeLabel != null) {
+            sb.append(" // ").append(typeLabel);
         }
         return sb.toString();
     }
 
-    private static String quoted(String s) {
-        if (s == null) return "\"\"";
-        return "\"" + s.replace("\"", "\\\"") + "\"";
+    private static String formatNumericValue(ucar.nc2.Attribute a, int idx) {
+        ucar.ma2.DataType t = a.getDataType();
+        Number num = a.getNumericValue(idx);
+        if (num == null) return "NaN";
+
+        switch (t) {
+            case FLOAT: {
+                float f = num.floatValue();
+                String s = java.lang.Float.toString(f);
+                if (!s.contains(".")) s = s + ".0";
+                return s + "f";
+            }
+            case DOUBLE: {
+                // keep reasonably compact, no suffix
+                double d = num.doubleValue();
+                String s = java.lang.Double.toString(d);
+                if (s.indexOf('E') < 0 && s.indexOf('e') < 0 && s.indexOf('.') < 0) s += ".0";
+                return s;
+            }
+            case UBYTE:
+            case USHORT:
+            case UINT: {
+                // append U to indicate unsigned like ncdump often does for chunk sizes etc.
+                long v = num.longValue();
+                return Long.toString(v) + "U";
+            }
+            case BYTE:
+            case SHORT:
+            case INT:
+            case LONG:
+                return String.valueOf(num.longValue());
+            default:
+                return num.toString();
+        }
     }
 
-    // ------------------ utils ------------------
-
-    /** Find a (nested) group by its short name, case-insensitive. */
-    private static Group findGroupRecursive(Group start, String shortName) {
-        if (start == null || shortName == null) return null;
-        if (shortName.equalsIgnoreCase(start.getShortName())) {
-            return start;
+    private static String dataTypeLabel(ucar.nc2.Attribute a) {
+        ucar.ma2.DataType t = a.getDataType();
+        if (t == null) return null;
+        // Map to the human labels you expect to see
+        switch (t) {
+            case FLOAT:  return "float";
+            case DOUBLE: return "double";
+            case BYTE:   return "byte";
+            case UBYTE:  return "uint8";
+            case SHORT:  return "short";
+            case USHORT: return "uint16";
+            case INT:    return "int";
+            case UINT:   return "uint";
+            case LONG:   return "long";
+            default:     return t.toString().toLowerCase();
         }
-        for (Group g : start.getGroups()) {
-            Group hit = findGroupRecursive(g, shortName);
-            if (hit != null) return hit;
-        }
-        return null;
     }
 
-    /** Add child from supplier, logging but not failing if it throws. */
-    private static void safeAdd(MetadataElement parent, Callable<MetadataElement> supplier, String label) {
-        try {
-            MetadataElement child = supplier.call();
-            if (child != null) parent.addElement(child);
-        } catch (Throwable t) {
-            System.out.println("[Panoply] " + label + " failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+    /** Build a variable node containing its declaration + attributes as lines. */
+    private static MetadataElement buildVariableElement(Variable v) {
+        MetadataElement varElem = new MetadataElement(v.getShortName());
+        tag(varElem);
+
+        List<String> lines = new ArrayList<>();
+        lines.add(varDeclLine(v));
+        for (Attribute a : v.getAttributes()) {
+            lines.add("    " + attrLine(a)); // 4-space indent like ncdump
+        }
+        addLines(varElem, lines);
+        return varElem;
+    }
+
+    // ---- Formatting & persistence helpers ----------------------------------
+
+    /** Add a generator marker so we can replace these safely on refresh. */
+    private static void tag(MetadataElement e) {
+        e.addAttribute(new MetadataAttribute(MARKER_ATTR, ProductData.createInstance(MARKER_VAL), true));
+    }
+
+    /** True if element has any attributes (lines) or child elements. */
+    private static boolean isPopulated(MetadataElement e) {
+        return e != null && (e.getNumAttributes() > 0 || e.getNumElements() > 0);
+    }
+
+    /** Persist ncdump lines as line_00000, line_00001, ... (values hold the text). */
+    private static void addLines(MetadataElement elem, List<String> lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            String key = "line_" + String.format("%05d", i);
+            elem.addAttribute(new MetadataAttribute(key, ProductData.createInstance(lines.get(i)), true));
+        }
+    }
+
+    /** e.g., "float Rrs_443(time, y, x) ;" */
+    private static String varDeclLine(Variable v) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(v.getDataType().toString().toLowerCase()).append(' ')
+                .append(v.getShortName()).append('(');
+        for (int i = 0; i < v.getDimensions().size(); i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(v.getDimensions().get(i).getShortName());
+        }
+        sb.append(") ;");
+        return sb.toString();
+    }
+
+    /** ncdump-like attribute line (numbers raw, strings quoted). */
+    private static String attrLine(Attribute a) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(a.getShortName()).append(" = ");
+        if (a.isString()) {
+            sb.append('"').append(a.getStringValue()).append('"');
+        } else if (a.getLength() > 1) {
+            for (int i = 0; i < a.getLength(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(a.getNumericValue(i));
+            }
+        } else if (a.getLength() == 1) {
+            sb.append(a.getNumericValue());
+        } else {
+            sb.append("\"\"");
+        }
+        sb.append(" ;");
+        return sb.toString();
+    }
+
+    /** TitleCase-ish & XML-safe group name for SNAP nodes. */
+    private static String safeTitle(String raw) {
+        if (raw == null || raw.isEmpty()) return "Group";
+        String s = raw.replaceAll("[^A-Za-z0-9_]+", "_");
+        if (Character.isDigit(s.charAt(0))) s = "_" + s;
+        String[] parts = s.split("_");
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+            String p = parts[i];
+            if (p.isEmpty()) continue;
+            out.append(Character.toUpperCase(p.charAt(0)));
+            if (p.length() > 1) out.append(p.substring(1));
+            if (i < parts.length - 1) out.append("_");
+        }
+        return out.toString();
+    }
+
+    // ---- SNAP Metadata_Dump root + refresh helpers -------------------------
+
+    /** Get or create the "Metadata_Dump" wrapper under the product metadata root. */
+    private static MetadataElement getOrCreateDumpRoot(MetadataElement metaRoot) {
+        MetadataElement dump = metaRoot.getElement(DUMP_ROOT_NAME);
+        if (dump == null) {
+            dump = new MetadataElement(DUMP_ROOT_NAME);
+            metaRoot.addElement(dump);
+        }
+        return dump;
+    }
+
+    /** Remove only children previously generated by this builder (identified by marker). */
+    private static void removeGeneratedChildren(MetadataElement dumpRoot) {
+        // Collect names first to avoid concurrent modification pitfalls
+        Set<Integer> toRemove = new HashSet<>();
+        for (int i = 0; i < dumpRoot.getNumElements(); i++) {
+            MetadataElement child = dumpRoot.getElementAt(i);
+            if (child == null) continue;
+            MetadataAttribute tag = child.getAttribute(MARKER_ATTR);
+            String v = null;
+            if (tag != null) {
+                try { v = tag.getData() != null ? tag.getData().getElemString() : null; } catch (Throwable ignore) {}
+            }
+            if (MARKER_VAL.equals(v)) {
+                toRemove.add(i);
+            }
+        }
+        // Remove from end to start
+        List<Integer> idx = new ArrayList<>(toRemove);
+        idx.sort((a, b) -> Integer.compare(b, a));
+        for (int i : idx) {
+            dumpRoot.removeElement(dumpRoot.getElementAt(i));
+        }
+    }
+
+    // ---- Debug helpers ------------------------------------------------------
+
+    private static void debugProbe(NetcdfFile nc, Product product, String fileUrlOrPath) {
+        System.out.println("=== Panoply DEBUG PROBE ===");
+        System.out.println("product.fileLocation = " + (product != null && product.getFileLocation() != null ? product.getFileLocation().getAbsolutePath() : "null"));
+        System.out.println("explicit path arg     = " + fileUrlOrPath);
+        System.out.println("nc.isNull?            = " + (nc == null));
+        if (nc != null) {
+            Group root = nc.getRootGroup();
+            System.out.println("root name             = " + (root != null ? root.getShortName() : "null"));
+            System.out.println("root groups (#)       = " + (root != null ? root.getGroups().size() : -1));
+            System.out.println("root vars (#)         = " + (root != null ? root.getVariables().size() : -1));
+            System.out.println("root attrs (#)        = " + (root != null ? root.getAttributes().size() : -1));
+            if (root != null) {
+                for (Group g : root.getGroups()) {
+                    System.out.printf("   - group '%s': vars=%d attrs=%d subgroups=%d%n",
+                            g.getShortName(), g.getVariables().size(), g.getAttributes().size(), g.getGroups().size());
+                }
+            }
+        }
+        System.out.println("===========================");
+    }
+
+    private static void debugDumpRootChildren(MetadataElement dumpRoot) {
+        System.out.println("[Panoply] Metadata_Dump children:");
+        for (int i = 0; i < dumpRoot.getNumElements(); i++) {
+            MetadataElement c = dumpRoot.getElementAt(i);
+            System.out.printf("  - %s (attrs=%d, elements=%d)%n",
+                    c.getName(), c.getNumAttributes(), c.getNumElements());
         }
     }
 }
