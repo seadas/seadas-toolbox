@@ -138,11 +138,12 @@ public final class PanoplyStyleMetadataBuilder {
 
         java.util.List<String> lines = new java.util.ArrayList<>();
 
-        // Header
-        lines.add("Group \"" + g.getShortName() + "\"");
+// Header (ncdump-like)
+        lines.add("group: " + g.getShortName() + " {");
         if (CURRENT_FILE_BASENAME != null) {
-            lines.add("In file \"" + CURRENT_FILE_BASENAME + "\"");
+            lines.add("  // In file \"" + CURRENT_FILE_BASENAME + "\"");
         }
+
 
         // VARIABLES (only if present)
         if (!g.getVariables().isEmpty()) {
@@ -194,6 +195,7 @@ public final class PanoplyStyleMetadataBuilder {
             lines.add("// (empty group)");
         }
 
+        lines.add("}");
         addLines(section, lines);
 
         // Still add real child nodes so clicking sub-groups shows their full content

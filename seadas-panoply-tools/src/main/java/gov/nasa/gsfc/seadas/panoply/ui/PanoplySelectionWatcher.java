@@ -32,7 +32,18 @@ public final class PanoplySelectionWatcher implements LookupListener {
         if (pn instanceof MetadataAttribute) {
             target = nearestDumpElement(((MetadataAttribute) pn).getParentElement());
         } else if (pn instanceof MetadataElement) {
-            target = nearestDumpElement((MetadataElement) pn);
+            //target = nearestDumpElement((MetadataElement) pn);
+            MetadataElement me = (MetadataElement) pn;
+            // NEW: if it's the wrapper, show it (aggregated view will handle children)
+            if ("Metadata_Dump".equals(me.getName())) {
+                target = me;
+            } else {
+                if (hasDumpLines(me)) {
+                    target = me;
+                } else {
+                    target = nearestDumpElement(me);
+                }
+            }
         }
         if (target == null) return;
 
