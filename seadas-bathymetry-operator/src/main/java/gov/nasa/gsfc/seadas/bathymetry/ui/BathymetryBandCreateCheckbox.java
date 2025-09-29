@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
+import gov.nasa.gsfc.seadas.bathymetry.preferences.Bathymetry_Controller;
+
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -17,16 +19,12 @@ public class BathymetryBandCreateCheckbox {
     private JLabel jLabel;
     private JCheckBox jCheckBox = new JCheckBox();
 
-    private static String DEFAULT_NAME = "Create Bathymetry Band";
-    private static String DEFAULT_TOOLTIPS = "Note: this can take longer to run";
-
     public BathymetryBandCreateCheckbox(BathymetryData bathymetryData) {
-
 
         this.bathymetryData = bathymetryData;
 
-        jLabel = new JLabel(DEFAULT_NAME);
-        jLabel.setToolTipText(DEFAULT_TOOLTIPS);
+        jLabel = new JLabel(Bathymetry_Controller.PROPERTY_BATHYMETRY_BAND_CREATE_LABEL);
+        jLabel.setToolTipText(Bathymetry_Controller.PROPERTY_BATHYMETRY_BAND_CREATE_TOOLTIP);
         jCheckBox.setSelected(bathymetryData.isCreateBathymetryBand());
 
         addControlListeners();

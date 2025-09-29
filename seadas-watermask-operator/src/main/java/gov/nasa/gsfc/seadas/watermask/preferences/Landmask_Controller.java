@@ -49,7 +49,7 @@ import java.awt.*;
         position = 6)
 
 @org.openide.util.NbBundle.Messages({
-        "Options_DisplayName_LandCoastMask=Land & Coast Mask",
+        "Options_DisplayName_LandCoastMask=Land",
         "Options_Keywords_LandCoastMask=seadas, Land Water Coast Mask"
 })
 public final class Landmask_Controller extends DefaultConfigController {
@@ -65,7 +65,7 @@ public final class Landmask_Controller extends DefaultConfigController {
     public static final String RESOLUTION_10km = "10 km (GSHHS)";
 
     // Preferences property prefix
-    private static final String PROPERTY_LANDMASK_ROOT_KEY = "seadas.toolbox.landcoast";
+    private static final String PROPERTY_LANDMASK_ROOT_KEY = "seadas.toolbox.land";
 
 
     public static final String PROPERTY_LANDMASK_RESOLUTION_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.resolution";
@@ -78,6 +78,12 @@ public final class Landmask_Controller extends DefaultConfigController {
     public static final String PROPERTY_LANDMASK_SECTION_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.section";
     public static final String PROPERTY_LANDMASK_SECTION_LABEL = "Land Mask Options";
     public static final String PROPERTY_LANDMASK_SECTION_TOOLTIP = "Land mask options";
+
+    public static final String PROPERTY_LANDMASK_CREATE_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.create";
+    public static final String PROPERTY_LANDMASK_CREATE_LABEL = "Create Land Mask";
+    public static final String PROPERTY_LANDMASK_CREATE_TOOLTIP = "Create land mask";
+    public static final boolean PROPERTY_LANDMASK_CREATE_DEFAULT = true;
+
 
     public static final String PROPERTY_LANDMASK_NAME_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.name";
     public static final String PROPERTY_LANDMASK_NAME_LABEL = "Land Mask Name";
@@ -94,10 +100,58 @@ public final class Landmask_Controller extends DefaultConfigController {
     public static final String PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP = "Land mask transparency ";
     public static final double PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT = 0.0;
 
-    public static final String PROPERTY_LANDMASK_SHOW_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.show";
-    public static final String PROPERTY_LANDMASK_SHOW_LABEL = "Land Mask Show";
-    public static final String PROPERTY_LANDMASK_SHOW_TOOLTIP = "Land mask will be displayed in all bands ";
-    public static final boolean PROPERTY_LANDMASK_SHOW_DEFAULT = false;
+
+
+    public static final String PROPERTY_WATER_MASK_SECTION_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".water_mask.section";
+    public static final String PROPERTY_WATER_MASK_SECTION_LABEL = "Water Mask Options";
+    public static final String PROPERTY_WATER_MASK_SECTION_TOOLTIP = "Water mask options";
+
+    public static final String PROPERTY_WATER_MASK_CREATE_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".water_mask.show";
+    public static final String PROPERTY_WATER_MASK_CREATE_LABEL = "Create Water Mask";
+    public static final String PROPERTY_WATER_MASK_CREATE_TOOLTIP = "Create water mask";
+    public static final boolean PROPERTY_WATER_MASK_CREATE_DEFAULT = false;
+
+    public static final String PROPERTY_WATER_MASK_NAME_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".water_mask.name";
+    public static final String PROPERTY_WATER_MASK_NAME_LABEL = "Water Mask Name";
+    public static final String PROPERTY_WATER_MASK_NAME_TOOLTIP = "Water mask name";
+    public static final String PROPERTY_WATER_MASK_NAME_DEFAULT = "WaterMask";
+
+    public static final String PROPERTY_WATER_MASK_COLOR_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".water_mask.color";
+    public static final String PROPERTY_WATER_MASK_COLOR_LABEL = "Water Mask Color";
+    public static final String PROPERTY_WATER_MASK_COLOR_TOOLTIP = "Water mask color";
+    public static final Color PROPERTY_WATER_MASK_COLOR_DEFAULT = new Color(0,0,255);
+
+    public static final String PROPERTY_WATER_MASK_TRANSPARENCY_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".water_mask.transparency";
+    public static final String PROPERTY_WATER_MASK_TRANSPARENCY_LABEL = "Water Mask Transparency";
+    public static final String PROPERTY_WATER_MASK_TRANSPARENCY_TOOLTIP = "Water mask transparency ";
+    public static final double PROPERTY_WATER_MASK_TRANSPARENCY_DEFAULT = 0.0;
+
+
+
+
+    public static final String PROPERTY_COAST_MASK_SECTION_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".coast_mask.section";
+    public static final String PROPERTY_COAST_MASK_SECTION_LABEL = "Coast Mask Options";
+    public static final String PROPERTY_COAST_MASK_SECTION_TOOLTIP = "Coast mask options";
+
+    public static final String PROPERTY_COAST_MASK_CREATE_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".coast_mask.show";
+    public static final String PROPERTY_COAST_MASK_CREATE_LABEL = "Create Coast Mask";
+    public static final String PROPERTY_COAST_MASK_CREATE_TOOLTIP = "Create water mask";
+    public static final boolean PROPERTY_COAST_MASK_CREATE_DEFAULT = false;
+
+    public static final String PROPERTY_COAST_MASK_NAME_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".coast_mask.name";
+    public static final String PROPERTY_COAST_MASK_NAME_LABEL = "Coast Mask Name";
+    public static final String PROPERTY_COAST_MASK_NAME_TOOLTIP = "Coast mask name";
+    public static final String PROPERTY_COAST_MASK_NAME_DEFAULT = "CoastMask";
+
+    public static final String PROPERTY_COAST_MASK_COLOR_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".coast_mask.color";
+    public static final String PROPERTY_COAST_MASK_COLOR_LABEL = "Coast Mask Color";
+    public static final String PROPERTY_COAST_MASK_COLOR_TOOLTIP = "Coast mask color";
+    public static final Color PROPERTY_COAST_MASK_COLOR_DEFAULT = new Color(0,0,0);
+
+    public static final String PROPERTY_COAST_MASK_TRANSPARENCY_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".coast_mask.transparency";
+    public static final String PROPERTY_COAST_MASK_TRANSPARENCY_LABEL = "Coast Mask Transparency";
+    public static final String PROPERTY_COAST_MASK_TRANSPARENCY_TOOLTIP = "Coast mask transparency ";
+    public static final double PROPERTY_COAST_MASK_TRANSPARENCY_DEFAULT = 0.0;
 
 
 
@@ -132,10 +186,25 @@ public final class Landmask_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_LANDMASK_RESOLUTION_KEY, PROPERTY_LANDMASK_RESOLUTION_DEFAULT);
 
         initPropertyDefaults(context, PROPERTY_LANDMASK_SECTION_KEY, true);
-        initPropertyDefaults(context, PROPERTY_LANDMASK_COLOR_KEY, PROPERTY_LANDMASK_COLOR_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_LANDMASK_CREATE_KEY, PROPERTY_LANDMASK_CREATE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_LANDMASK_NAME_KEY, PROPERTY_LANDMASK_NAME_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_LANDMASK_COLOR_KEY, PROPERTY_LANDMASK_COLOR_DEFAULT);
         initPropertyDefaults(context, PROPERTY_LANDMASK_TRANSPARENCY_KEY, PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_LANDMASK_SHOW_KEY, PROPERTY_LANDMASK_SHOW_DEFAULT);
+
+
+        initPropertyDefaults(context, PROPERTY_WATER_MASK_SECTION_KEY, true);
+        initPropertyDefaults(context, PROPERTY_WATER_MASK_CREATE_KEY, PROPERTY_WATER_MASK_CREATE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_WATER_MASK_NAME_KEY, PROPERTY_WATER_MASK_NAME_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_WATER_MASK_COLOR_KEY, PROPERTY_WATER_MASK_COLOR_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_WATER_MASK_TRANSPARENCY_KEY, PROPERTY_WATER_MASK_TRANSPARENCY_DEFAULT);
+
+
+        initPropertyDefaults(context, PROPERTY_COAST_MASK_SECTION_KEY, true);
+        initPropertyDefaults(context, PROPERTY_COAST_MASK_CREATE_KEY, PROPERTY_COAST_MASK_CREATE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_COAST_MASK_NAME_KEY, PROPERTY_COAST_MASK_NAME_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_COAST_MASK_COLOR_KEY, PROPERTY_COAST_MASK_COLOR_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_COAST_MASK_TRANSPARENCY_KEY, PROPERTY_COAST_MASK_TRANSPARENCY_DEFAULT);
+
 
 
 
@@ -338,6 +407,11 @@ public final class Landmask_Controller extends DefaultConfigController {
                 description = PROPERTY_LANDMASK_SECTION_TOOLTIP)
         boolean landmaskSectionDefault = true;
 
+        @Preference(key = PROPERTY_LANDMASK_CREATE_KEY,
+                label = PROPERTY_LANDMASK_CREATE_LABEL,
+                description = PROPERTY_LANDMASK_CREATE_TOOLTIP)
+        boolean landmaskShowDefault = PROPERTY_LANDMASK_CREATE_DEFAULT;
+
         @Preference(key = PROPERTY_LANDMASK_NAME_KEY,
                 label = PROPERTY_LANDMASK_NAME_LABEL,
                 description = PROPERTY_LANDMASK_NAME_TOOLTIP)
@@ -350,13 +424,75 @@ public final class Landmask_Controller extends DefaultConfigController {
 
         @Preference(key = PROPERTY_LANDMASK_TRANSPARENCY_KEY,
                 label = PROPERTY_LANDMASK_TRANSPARENCY_LABEL,
+                interval = "[0,1]",
                 description = PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP)
         double landmaskTransparencyDefault = PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT;
 
-        @Preference(key = PROPERTY_LANDMASK_SHOW_KEY,
-                label = PROPERTY_LANDMASK_SHOW_LABEL,
-                description = PROPERTY_LANDMASK_SHOW_TOOLTIP)
-        boolean landmaskShowDefault = PROPERTY_LANDMASK_SHOW_DEFAULT;
+
+
+
+
+        @Preference(key = PROPERTY_WATER_MASK_SECTION_KEY,
+                label = PROPERTY_WATER_MASK_SECTION_LABEL,
+                description = PROPERTY_WATER_MASK_SECTION_TOOLTIP)
+        boolean waterMaskSectionDefault = true;
+
+        @Preference(key = PROPERTY_WATER_MASK_CREATE_KEY,
+                label = PROPERTY_WATER_MASK_CREATE_LABEL,
+                description = PROPERTY_WATER_MASK_CREATE_TOOLTIP)
+        boolean waterMaskCreateDefault = PROPERTY_WATER_MASK_CREATE_DEFAULT;
+
+        @Preference(key = PROPERTY_WATER_MASK_NAME_KEY,
+                label = PROPERTY_WATER_MASK_NAME_LABEL,
+                description = PROPERTY_WATER_MASK_NAME_TOOLTIP)
+        String waterMaskNameDefault = PROPERTY_WATER_MASK_NAME_DEFAULT;
+
+        @Preference(key = PROPERTY_WATER_MASK_COLOR_KEY,
+                label = PROPERTY_WATER_MASK_COLOR_LABEL,
+                description = PROPERTY_WATER_MASK_COLOR_TOOLTIP)
+        Color waterMaskColorDefault = PROPERTY_WATER_MASK_COLOR_DEFAULT;
+
+        @Preference(key = PROPERTY_WATER_MASK_TRANSPARENCY_KEY,
+                label = PROPERTY_WATER_MASK_TRANSPARENCY_LABEL,
+                interval = "[0,1]",
+                description = PROPERTY_WATER_MASK_TRANSPARENCY_TOOLTIP)
+        double waterMaskTransparencyDefault = PROPERTY_WATER_MASK_TRANSPARENCY_DEFAULT;
+
+
+
+
+
+
+
+        @Preference(key = PROPERTY_COAST_MASK_SECTION_KEY,
+                label = PROPERTY_COAST_MASK_SECTION_LABEL,
+                description = PROPERTY_COAST_MASK_SECTION_TOOLTIP)
+        boolean coastMaskSectionDefault = true;
+
+        @Preference(key = PROPERTY_COAST_MASK_CREATE_KEY,
+                label = PROPERTY_COAST_MASK_CREATE_LABEL,
+                description = PROPERTY_COAST_MASK_CREATE_TOOLTIP)
+        boolean coastMaskCreateDefault = PROPERTY_COAST_MASK_CREATE_DEFAULT;
+
+        @Preference(key = PROPERTY_COAST_MASK_NAME_KEY,
+                label = PROPERTY_COAST_MASK_NAME_LABEL,
+                description = PROPERTY_COAST_MASK_NAME_TOOLTIP)
+        String coastMaskNameDefault = PROPERTY_COAST_MASK_NAME_DEFAULT;
+
+        @Preference(key = PROPERTY_COAST_MASK_COLOR_KEY,
+                label = PROPERTY_COAST_MASK_COLOR_LABEL,
+                description = PROPERTY_COAST_MASK_COLOR_TOOLTIP)
+        Color coastMaskColorDefault = PROPERTY_COAST_MASK_COLOR_DEFAULT;
+
+        @Preference(key = PROPERTY_COAST_MASK_TRANSPARENCY_KEY,
+                label = PROPERTY_COAST_MASK_TRANSPARENCY_LABEL,
+                interval = "[0,1]",
+                description = PROPERTY_COAST_MASK_TRANSPARENCY_TOOLTIP)
+        double coastMaskTransparencyDefault = PROPERTY_COAST_MASK_TRANSPARENCY_DEFAULT;
+
+
+
+
 
 
 
@@ -381,6 +517,11 @@ public final class Landmask_Controller extends DefaultConfigController {
     }
 
 
+    public static boolean getPreferenceLandMaskCreate() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_LANDMASK_CREATE_KEY, PROPERTY_LANDMASK_CREATE_DEFAULT);
+    }
+
     public static String getPreferenceLandMaskName() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         String landMaskName = preferences.getPropertyString(PROPERTY_LANDMASK_NAME_KEY, PROPERTY_LANDMASK_NAME_DEFAULT);
@@ -403,11 +544,63 @@ public final class Landmask_Controller extends DefaultConfigController {
         return preferences.getPropertyDouble(PROPERTY_LANDMASK_TRANSPARENCY_KEY, PROPERTY_LANDMASK_TRANSPARENCY_DEFAULT);
     }
 
-    public static boolean getPreferenceLandMaskShow() {
+
+
+    public static boolean getPreferenceWaterMaskCreate() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyBool(PROPERTY_LANDMASK_SHOW_KEY, PROPERTY_LANDMASK_SHOW_DEFAULT);
+        return preferences.getPropertyBool(PROPERTY_WATER_MASK_CREATE_KEY, PROPERTY_WATER_MASK_CREATE_DEFAULT);
     }
 
-    
+    public static String getPreferenceWaterMaskName() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        String waterMaskName = preferences.getPropertyString(PROPERTY_WATER_MASK_NAME_KEY, PROPERTY_WATER_MASK_NAME_DEFAULT);
+
+        if (waterMaskName != null && waterMaskName.length() > 2) {
+            return waterMaskName;
+        } else {
+            return PROPERTY_WATER_MASK_NAME_DEFAULT;
+        }
+    }
+
+    public static Color getPreferenceWaterMaskColor() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyColor(PROPERTY_WATER_MASK_COLOR_KEY, PROPERTY_WATER_MASK_COLOR_DEFAULT);
+    }
+
+    public static double getPreferenceWaterMaskTransparency() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyDouble(PROPERTY_WATER_MASK_TRANSPARENCY_KEY, PROPERTY_WATER_MASK_TRANSPARENCY_DEFAULT);
+    }
+
+
+
+    public static boolean getPreferenceCoastMaskCreate() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_COAST_MASK_CREATE_KEY, PROPERTY_COAST_MASK_CREATE_DEFAULT);
+    }
+
+    public static String getPreferenceCoastMaskName() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        String waterMaskName = preferences.getPropertyString(PROPERTY_COAST_MASK_NAME_KEY, PROPERTY_COAST_MASK_NAME_DEFAULT);
+
+        if (waterMaskName != null && waterMaskName.length() > 2) {
+            return waterMaskName;
+        } else {
+            return PROPERTY_COAST_MASK_NAME_DEFAULT;
+        }
+    }
+
+    public static Color getPreferenceCoastMaskColor() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyColor(PROPERTY_COAST_MASK_COLOR_KEY, PROPERTY_COAST_MASK_COLOR_DEFAULT);
+    }
+
+    public static double getPreferenceCoastMaskTransparency() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyDouble(PROPERTY_COAST_MASK_TRANSPARENCY_KEY, PROPERTY_COAST_MASK_TRANSPARENCY_DEFAULT);
+    }
+
+
+
 
 }

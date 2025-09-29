@@ -39,7 +39,7 @@ class LandMasksData {
     private double waterMaskTransparency = 0.5;
     private double coastlineMaskTransparency = 0.0;
 
-    private boolean showLandMaskAllBands = true;
+    private boolean showLandMaskAllBands = false;
     private boolean showWaterMaskAllBands = false;
     private boolean showCoastlineMaskAllBands = false;
     private boolean createCoastline = false;
@@ -77,11 +77,21 @@ class LandMasksData {
 
     public LandMasksData() {
 
+        createLandmask = Landmask_Controller.getPreferenceLandMaskCreate();
         landMaskName = Landmask_Controller.getPreferenceLandMaskName();
         landMaskColor = Landmask_Controller.getPreferenceLandMaskColor();
-        showLandMaskAllBands = Landmask_Controller.getPreferenceLandMaskShow();
         landMaskTransparency = Landmask_Controller.getPreferenceLandMaskTransparency();
 
+        createWatermask = Landmask_Controller.getPreferenceWaterMaskCreate();
+        waterMaskName = Landmask_Controller.getPreferenceWaterMaskName();
+        waterMaskColor = Landmask_Controller.getPreferenceWaterMaskColor();
+        waterMaskTransparency = Landmask_Controller.getPreferenceWaterMaskTransparency();
+
+        createCoastline = Landmask_Controller.getPreferenceCoastMaskCreate();
+        coastlineMaskName = Landmask_Controller.getPreferenceCoastMaskName();
+        coastlineMaskColor = Landmask_Controller.getPreferenceCoastMaskColor();
+        coastlineMaskTransparency = Landmask_Controller.getPreferenceCoastMaskTransparency();
+        
         String landMaskResolution = Landmask_Controller.getPreferenceLandMaskResolution();
 
         SourceFileInfo sourceFileInfo;

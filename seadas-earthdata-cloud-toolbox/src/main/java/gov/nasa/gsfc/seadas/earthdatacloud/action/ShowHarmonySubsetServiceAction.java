@@ -26,9 +26,9 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_HarmonySubsetServiceActionName"
 )
 
-@ActionReferences({
-        @ActionReference(path = "Menu/Earthdata-Cloud", position = 50)
-})
+//@ActionReferences({
+//        @ActionReference(path = "Menu/Earthdata-Cloud", position = 50)
+//})
 
 @NbBundle.Messages({
         "CTL_HarmonySubsetServiceActionName=Harmony Subset Service",

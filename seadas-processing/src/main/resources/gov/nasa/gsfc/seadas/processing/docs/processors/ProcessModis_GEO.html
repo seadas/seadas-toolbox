@@ -244,6 +244,50 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
+usage: modis_GEO [-h] [--version] [-p PARFILE] [-o GEOFILE] [--att1 ATT1]
+                 [--att2 ATT2] [--att3 ATT3] [--eph1 EPH1] [--eph2 EPH2]
+                 [--eph3 EPH3] [--ancdb ANCDB] [--ancdir ANCDIR] [-c] [-r]
+                 [-f] [--disable-download] [--timeout TIMEOUT]
+                 [--threshold THRESHOLD] [-d] [-v] [--log]
+                 [L1AFILE]
+
+positional arguments:
+  L1AFILE               Input L1A file
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -p, --parfile PARFILE
+                        Parameter file containing program inputs
+  -o, --output GEOFILE  Output GEO filename - defaults to
+                        '(A|T)YYYYDDDHHMMSS.GEO'
+  --att1 ATT1           Input attitude filename 1 (chronological)
+  --att2 ATT2           Input attitude filename 2 (chronological)
+  --att3 ATT3           Input attitude filename 3 (chronological)
+  --eph1 EPH1           Input ephemeris filename 1 (chronological)
+  --eph2 EPH2           Input ephemeris filename 2 (chronological)
+  --eph3 EPH3           Input ephemeris filename 3 (chronological)
+  --ancdb ANCDB         Use a custom filename for ancillary database. If full
+                        path not given, ANCDB is assumed to exist (or will be
+                        created) under $OCVARROOT/log/. If $OCVARROOT/log/
+                        does not exist, ANCDB is assumed (or will be created)
+                        under the current working directory
+  --ancdir ANCDIR       Use a custom directory tree for ancillary files
+  -c, --curdir          Download ancillary files directly into current working
+                        directory
+  -r, --refreshDB       Remove existing database records and re-query for
+                        ancillary files
+  -f, --force-download  Force download of ancillary files, even if found on
+                        hard disk
+  --disable-download    Disable download of ancillary files not found on hard
+                        disk
+  --timeout TIMEOUT     set the network timeout in seconds
+  --threshold THRESHOLD
+                        percentage of geo-populated pixels required to pass
+                        geocheck validation test
+  -d, --enable-dem      Enable MODIS terrain elevation correction
+  -v, --verbose         print status messages
+  --log                 Save processing log file(s)
 
 </pre>
 <!--AUTOMATED CODE HELP END-->

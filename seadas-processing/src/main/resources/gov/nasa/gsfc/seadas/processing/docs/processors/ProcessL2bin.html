@@ -356,8 +356,8 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-l2bin 7.1.1 (Jan 30 2025 18:48:02)
-7.1.1
+l2bin 8.0.3 (Aug 21 2025 23:38:01)
+8.0.3
 Usage: l2bin argument-list
 
   The argument-list is a set of keyword=value pairs. The arguments can
@@ -421,19 +421,20 @@ The list of valid keywords follows:
    flaguse (string) (default=ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,CHLWARN,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER) = flags masked [see /SENSOR/l2bin_defaults.par]
    l3bprod (string) (default=ALL) = l3bprod = bin products [default=all products]
         Set to "ALL" or "all" for all L2 products in 1st input file.
-        Use ':' or ',' or ' ' as delimiters.
-        Use ';' or '=' to delineate minimum values.
+        Use ',' or ' ' as delimiters between products.
+        Use '=' and ':' to delineate min/max values. i.e. prod=min:max
    area_weighting (int) (default=0) = Enable area weighting
         0: off
         1: pixel box
         2: pixel bounding box
         3: pixel polygon
    output_wavelengths (string) (default=ALL) = comma separated list of
-        wavelengths for multi-wavelength products
+        wavelengths for multi-wavelength products.
+        Usage - 'output_wavelengths=wave1=354:2200;wave2=870,1640'
    doi (string) = Digital Object Identifier (DOI) string
    oprodname (string) = comma separated list of output L3 product names.
         This option allows the user to specify the output product names which differ from the original l2 product names.
-        Usage: original_l2_name:output_l3_name, i.e. oprodname=cloud_flag:cloud_fraction
+        Usage - 'original_l2_name:output_l3_name', i.e. 'oprodname=cloud_flag:cloud_fraction'
 
 </pre>
 <!--AUTOMATED CODE HELP END-->

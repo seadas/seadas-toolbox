@@ -223,19 +223,21 @@ class BathymetryDialog extends JDialog {
 
 
         JPanel maskJPanel = new JPanel(new GridBagLayout());
-        maskJPanel.setBorder(BorderFactory.createTitledBorder("Bathymetry Mask Parameters"));
+        maskJPanel.setBorder(BorderFactory.createTitledBorder("Bathymetry Mask Options"));
 
         int gridy = 0;
 
 
-        JLabel maskLabel = new JLabel("Mask Name");
 
         maskJPanel.add(watermaskCreateCheckbox.getjLabel(),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         maskJPanel.add(watermaskCreateCheckbox.getjCheckBox(),
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
         gridy++;
+
+
+        JLabel maskLabel = new JLabel("Bathymetry Mask Name");
 
         maskJPanel.add(maskLabel,
                 new ExGridBagConstraints(0, gridy, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
@@ -314,7 +316,7 @@ class BathymetryDialog extends JDialog {
 
 
         JPanel bandsJPanel = new JPanel(new GridBagLayout());
-        bandsJPanel.setBorder(BorderFactory.createTitledBorder("Bands"));
+        bandsJPanel.setBorder(BorderFactory.createTitledBorder("Band Options"));
 
         gridy = 0;
 

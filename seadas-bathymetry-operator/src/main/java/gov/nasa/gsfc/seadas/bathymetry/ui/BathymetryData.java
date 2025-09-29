@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.bathymetry.ui;
 import com.bc.ceres.core.runtime.RuntimeContext;
 //import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
+import gov.nasa.gsfc.seadas.bathymetry.preferences.Bathymetry_Controller;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 //import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 
@@ -45,11 +46,11 @@ public class BathymetryData {
     private double maskTransparency = 0.7;
     private boolean showMaskAllBands = false;
     private Color maskColor = new Color(0, 0, 255);
-    private String maskName = "BATHYMETRY_MASK";
+    private String maskName = "BathymetryMask";
     private String maskDescription = "Bathymetry pixels";
 
-    private double maskMinDepth = 0;
-    private double maskMaxDepth = 10923;
+    private double maskMinDepth;
+    private double maskMaxDepth;
 
 
     public static final String OCSSWROOT_ENVVAR = "OCSSWROOT";
@@ -72,6 +73,18 @@ public class BathymetryData {
 
 
     public BathymetryData() {
+
+        maskName = Bathymetry_Controller.getPreferenceBathymetryMaskName();
+        maskColor = Bathymetry_Controller.getPreferenceBathymetryMaskColor();
+        maskTransparency = Bathymetry_Controller.getPreferenceBathymetryMaskTransparency();
+        createWaterMask = Bathymetry_Controller.getPreferenceBathymetryMaskCreate();
+        createBathymetryBand = Bathymetry_Controller.getPreferenceBathymetryBandCreate();
+        createTopographyBand = Bathymetry_Controller.getPreferenceTopographyBandCreate();
+        createElevationBand = Bathymetry_Controller.getPreferenceElevationBandCreate();
+        maskMinDepth = Bathymetry_Controller.getPreferenceBathymetryMaskMinDepth();
+        maskMaxDepth = Bathymetry_Controller.getPreferenceBathymetryMaskMaxDepth();
+
+
 
         SourceFileInfo sourceFileInfo;
 
@@ -235,11 +248,11 @@ public class BathymetryData {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(BathymetryOp.BATHYMETRY_BAND_NAME);
         stringBuilder.append(" >= ");
-        stringBuilder.append(new Double(getMaskMinDepth()).toString());
+        stringBuilder.append(getMaskMinDepth());
         stringBuilder.append(" and ");
         stringBuilder.append(BathymetryOp.BATHYMETRY_BAND_NAME);
         stringBuilder.append(" <= ");
-        stringBuilder.append(new Double(getMaskMaxDepth()).toString());
+        stringBuilder.append(getMaskMaxDepth());
 
         return stringBuilder.toString();
     }
@@ -292,7 +305,7 @@ public class BathymetryData {
     }
 
     public String getMaskMinDepthString() {
-        return new Double(maskMinDepth).toString();
+        return Double.toString(maskMinDepth);
     }
 
     public void setMaskMinDepth(double maskMinDepth) {
@@ -310,7 +323,7 @@ public class BathymetryData {
 
 
     public String getMaskMaxDepthString() {
-        return new Double(maskMaxDepth).toString();
+        return Double.toString(maskMaxDepth);
     }
 
     public void setMaskMaxDepth(double maskMaxDepth) {

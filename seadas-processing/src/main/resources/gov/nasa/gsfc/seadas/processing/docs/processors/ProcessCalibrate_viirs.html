@@ -256,7 +256,7 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 <!--AUTOMATED CODE HELP START-->
 <pre>
-calibrate_viirs 3.2.2 (Jan 30 2025 18:46:35)
+calibrate_viirs 3.2.2 (Aug 21 2025 23:36:53)
 Usage: calibrate_viirs argument-list
 
   This program takes a VIIRS L1A file and outputs an L1B file.
@@ -288,12 +288,12 @@ The list of valid keywords follows:
         filename
    straylight_lut_file (string) = stray light calibration LUT filename
    cmn_lut_file (string) = common calibration LUT filename
-   polar_wander_file (string) (default=$OCVARROOT/viirsn/polar_wander.ascii) = 
+   polar_wander_file (string) (default=/Users/byang8/ocssw/var/common/polar_wander.ascii) = 
         polar wander filename
-   leapsec_file (string) (default=$OCVARROOT/viirsn/IETTime.dat) = leap second
+   leapsec_file (string) (default=/Users/byang8/ocssw/var/common/tai-utc.dat) = leap second
         file
    geo_lut_file (string) = geolocation LUT filename
-   terrain_path (string) (default=$OCDATAROOT/viirsn/dem) = path to the terrain
+   terrain_path (string) (default=/Users/byang8/ocssw/share/viirs/dem/) = path to the terrain
         height files directory
    verbose (boolean) (alias=v) (default=false) = turn on verbose output
    pversion (string) (default=Unspecified) = processing version string

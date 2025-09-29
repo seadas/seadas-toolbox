@@ -458,7 +458,7 @@ public class OBDAACDataBrowser extends JPanel {
         subsetButton.addActionListener(e -> subsetSelectedFiles());
         
         JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        downloadPanel.add(subsetButton);
+//        downloadPanel.add(subsetButton);
         downloadPanel.add(downloadButton);
 
         panel.add(fetchedPanel, BorderLayout.WEST);
