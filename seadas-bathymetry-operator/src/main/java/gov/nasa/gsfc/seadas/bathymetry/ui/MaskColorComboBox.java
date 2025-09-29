@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
+import gov.nasa.gsfc.seadas.bathymetry.preferences.Bathymetry_Controller;
 import org.openide.awt.ColorComboBox;
 
 import javax.swing.*;
@@ -25,8 +26,8 @@ public class MaskColorComboBox {
 
         this.bathymetryData = bathymetryData;
 
-        jLabel = new JLabel("Mask Color");
-        jLabel.setToolTipText("set mask color");
+        jLabel = new JLabel(Bathymetry_Controller.PROPERTY_BATHYMETRY_MASK_COLOR_LABEL);
+        jLabel.setToolTipText(Bathymetry_Controller.PROPERTY_BATHYMETRY_MASK_COLOR_TOOLTIP);
 
         colorExComboBox.setSelectedColor(new Color(225,225,225));
         colorExComboBox.setPreferredSize(colorExComboBox.getPreferredSize());

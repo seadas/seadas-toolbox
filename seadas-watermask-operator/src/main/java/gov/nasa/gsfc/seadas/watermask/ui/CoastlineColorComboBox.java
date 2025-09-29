@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import gov.nasa.gsfc.seadas.watermask.preferences.Landmask_Controller;
 import org.openide.awt.ColorComboBox;
 
 import javax.swing.*;
@@ -25,8 +26,8 @@ public class CoastlineColorComboBox {
 
         this.landMasksData = landMasksData;
 
-        jLabel = new JLabel("Color");
-        jLabel.setToolTipText("Coastline mask color");
+        jLabel = new JLabel(Landmask_Controller.PROPERTY_COAST_MASK_COLOR_LABEL);
+        jLabel.setToolTipText(Landmask_Controller.PROPERTY_COAST_MASK_COLOR_TOOLTIP);
 
         colorExComboBox.setSelectedColor(new Color(225,225,225));
         colorExComboBox.setPreferredSize(colorExComboBox.getPreferredSize());

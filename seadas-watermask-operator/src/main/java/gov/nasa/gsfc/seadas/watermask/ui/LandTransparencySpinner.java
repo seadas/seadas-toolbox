@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import gov.nasa.gsfc.seadas.watermask.preferences.Landmask_Controller;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,10 +25,10 @@ public class LandTransparencySpinner {
 
         this.landMasksData = landMasksData;
 
-        jLabel = new JLabel("Transparency");
+        jLabel = new JLabel(Landmask_Controller.PROPERTY_LANDMASK_TRANSPARENCY_LABEL);
 
-        jLabel.setToolTipText("Land mask transparency");
-        jSpinner.setToolTipText("Land mask transparency");
+        jLabel.setToolTipText(Landmask_Controller.PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP);
+        jSpinner.setToolTipText(Landmask_Controller.PROPERTY_LANDMASK_TRANSPARENCY_TOOLTIP);
 
         jSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 100));
 

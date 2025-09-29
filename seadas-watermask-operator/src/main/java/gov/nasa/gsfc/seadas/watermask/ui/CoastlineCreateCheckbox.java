@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
+import gov.nasa.gsfc.seadas.watermask.preferences.Landmask_Controller;
+
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -17,16 +19,13 @@ public class CoastlineCreateCheckbox {
     private JLabel jLabel;
     private JCheckBox jCheckBox = new JCheckBox();
 
-    private static String DEFAULT_NAME = "Create Coastline Mask/Bands";
-    private static String DEFAULT_TOOLTIPS = "Note: this can take longer to run";
-
     public CoastlineCreateCheckbox(LandMasksData landMasksData) {
 
 
         this.landMasksData = landMasksData;
 
-        jLabel = new JLabel(DEFAULT_NAME);
-        jLabel.setToolTipText(DEFAULT_TOOLTIPS);
+        jLabel = new JLabel(Landmask_Controller.PROPERTY_COAST_MASK_CREATE_LABEL);
+        jLabel.setToolTipText(Landmask_Controller.PROPERTY_COAST_MASK_CREATE_TOOLTIP);
         jCheckBox.setSelected(landMasksData.isCreateCoastline());
 
         addControlListeners();

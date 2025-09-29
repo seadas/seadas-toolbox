@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
+import gov.nasa.gsfc.seadas.bathymetry.preferences.Bathymetry_Controller;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,8 +25,8 @@ public class MaskTransparencySpinner {
 
         this.bathymetryData = bathymetryData;
 
-        jLabel = new JLabel("Mask Transparency");
-        jLabel.setToolTipText("set mask transparency");
+        jLabel = new JLabel(Bathymetry_Controller.PROPERTY_BATHYMETRY_MASK_TRANSPARENCY_LABEL);
+        jLabel.setToolTipText(Bathymetry_Controller.PROPERTY_BATHYMETRY_MASK_TRANSPARENCY_TOOLTIP);
 
         jSpinner.setModel(new SpinnerNumberModel(100, 0, 100, 100));
 

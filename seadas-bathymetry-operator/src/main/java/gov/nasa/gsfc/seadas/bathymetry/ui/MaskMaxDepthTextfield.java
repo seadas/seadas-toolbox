@@ -1,5 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.ui;
 
+import gov.nasa.gsfc.seadas.bathymetry.preferences.Bathymetry_Controller;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +25,8 @@ public class MaskMaxDepthTextfield {
 
         this.bathymetryData = bathymetryData;
 
-        jLabel = new JLabel("Max Depth");
-        jLabel.setToolTipText("set maximum depth");
+        jLabel = new JLabel(Bathymetry_Controller.PROPERTY_BATHYMETRY_MASK_MAX_DEPTH_LABEL);
+        jLabel.setToolTipText(Bathymetry_Controller.PROPERTY_BATHYMETRY_MASK_MAX_DEPTH_TOOLTIP);
 
         getjTextField().setText(bathymetryData.getMaskMaxDepthString());
         getjTextField().setPreferredSize(getjTextField().getPreferredSize());

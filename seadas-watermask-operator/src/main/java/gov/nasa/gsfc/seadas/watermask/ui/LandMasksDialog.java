@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
 
+import gov.nasa.gsfc.seadas.watermask.preferences.Landmask_Controller;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -158,7 +159,7 @@ class LandMasksDialog extends JDialog {
 
 
         JPanel resolutionSamplingPanel = new JPanel(new GridBagLayout());
-        resolutionSamplingPanel.setBorder(BorderFactory.createTitledBorder(""));
+        resolutionSamplingPanel.setBorder(BorderFactory.createTitledBorder("Land Band Options"));
 
         resolutionSamplingPanel.add(resolutionComboBox.getjLabel(),
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, rightInset)));
@@ -191,17 +192,17 @@ class LandMasksDialog extends JDialog {
 
 
         JPanel coastlineJPanel = new JPanel(new GridBagLayout());
-        coastlineJPanel.setBorder(BorderFactory.createTitledBorder(""));
+        coastlineJPanel.setBorder(BorderFactory.createTitledBorder("Coast Mask Options"));
 
 
         JTextField coastlineNameTextfield = new JTextField(landMasksData.getCoastlineMaskName());
         coastlineNameTextfield.setEditable(false);
         coastlineNameTextfield.setToolTipText("Name of the mask (this field is not editable)");
 
-        JLabel coastlineNameLabel = new JLabel("Mask Name");
+        JLabel coastlineNameLabel = new JLabel("Coast Mask Name");
 
         coastlineJPanel.add(coastlineCreateCheckbox.getjLabel(),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         coastlineJPanel.add(coastlineCreateCheckbox.getjCheckBox(),
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
@@ -301,17 +302,17 @@ class LandMasksDialog extends JDialog {
 
 
         JPanel waterJPanel = new JPanel(new GridBagLayout());
-        waterJPanel.setBorder(BorderFactory.createTitledBorder(""));
+        waterJPanel.setBorder(BorderFactory.createTitledBorder(Landmask_Controller.PROPERTY_WATER_MASK_SECTION_LABEL));
 
         JTextField waterNameTextfield = new JTextField(landMasksData.getWaterMaskName());
         waterNameTextfield.setEditable(false);
         waterNameTextfield.setToolTipText("Name of the mask (this field is not editable)");
 
-        JLabel waterNameLabel = new JLabel("Mask Name");
+        JLabel waterNameLabel = new JLabel(Landmask_Controller.PROPERTY_WATER_MASK_NAME_LABEL);
 
 
         waterJPanel.add(watermaskCreateCheckbox.getjLabel(),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         waterJPanel.add(watermaskCreateCheckbox.getjCheckBox(),
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
@@ -370,16 +371,16 @@ class LandMasksDialog extends JDialog {
 
 
         JPanel landJPanel = new JPanel(new GridBagLayout());
-        landJPanel.setBorder(BorderFactory.createTitledBorder(""));
+        landJPanel.setBorder(BorderFactory.createTitledBorder(Landmask_Controller.PROPERTY_LANDMASK_SECTION_LABEL));
 
         JTextField landNameTextfield = new JTextField(landMasksData.getLandMaskName());
         landNameTextfield.setEditable(false);
         landNameTextfield.setToolTipText("Name of the mask (this field is not editable)");
 
-        JLabel landNameLabel = new JLabel("Mask Name");
+        JLabel landNameLabel = new JLabel(Landmask_Controller.PROPERTY_LANDMASK_NAME_LABEL);
 
         landJPanel.add(landmaskCreateCheckbox.getjLabel(),
-                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+                new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
         landJPanel.add(landmaskCreateCheckbox.getjCheckBox(),
                 new ExGridBagConstraints(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
@@ -438,12 +439,13 @@ class LandMasksDialog extends JDialog {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.add(resolutionSamplingPanel,
                 new ExGridBagConstraints(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
-        mainPanel.add(coastlineJPanel,
-                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         mainPanel.add(landJPanel,
-                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                new ExGridBagConstraints(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         mainPanel.add(waterJPanel,
+                new ExGridBagConstraints(0, 2, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+        mainPanel.add(coastlineJPanel,
                 new ExGridBagConstraints(0, 3, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+
 
 
         JButton createMasks = new JButton("Create Bands/Masks");
