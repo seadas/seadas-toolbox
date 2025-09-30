@@ -467,12 +467,20 @@ public final class PanoplyStyleMetadataBuilder {
     private static void addNcdumpNode(MetadataElement wrapper, Product product, String fallbackText) {
         final MetadataElement ncd = new MetadataElement("ncdump");
 
-        String text = null;
+        String ncdText = null;
         java.io.File pf = product != null ? product.getFileLocation() : null;
-        text = runRealNcdump(pf);
-        if (text == null) text = fallbackText;
+        ncdText = runRealNcdump(pf);
+        if (ncdText == null) ncdText = fallbackText;
 
-        String[] lines = (text != null ? text : "(ncdump not available)")
+//        if (ncdText != null && !ncdText.isEmpty()) {
+//            String[] lines = ncdText.replace("\r\n","\n").replace('\r','\n').split("\n", -1);
+//            final int width = 6;
+//            for (int i = 0; i < lines.length; i++) {
+//                String key = String.format("ncdump_line_%0" + width + "d", i + 1);
+//                wrapper.addAttribute(makeAsciiAttr(key, lines[i]));
+//            }
+//        }
+        String[] lines = (ncdText != null ? ncdText : "(ncdump not available)")
                 .replace("\r\n","\n").replace('\r','\n').split("\n", -1);
 
         final int width = 6;
@@ -481,6 +489,12 @@ public final class PanoplyStyleMetadataBuilder {
             ncd.addAttribute(lineAttr(key, lines[i]));
         }
         wrapper.addElement(ncd);
+    }
+
+    private static MetadataAttribute makeAsciiAttr(String key, String value) {
+        MetadataAttribute a = new MetadataAttribute(key, ProductData.TYPE_ASCII);
+        a.getData().setElemString(value != null ? value : "");
+        return a;
     }
 
     private static MetadataAttribute lineAttr(String key, String value) {
