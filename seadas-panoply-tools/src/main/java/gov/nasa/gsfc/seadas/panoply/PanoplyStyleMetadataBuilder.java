@@ -4,17 +4,12 @@ import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
-import ucar.nc2.Attribute;
-import ucar.nc2.Group;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFiles;
-import ucar.nc2.Variable;
+import ucar.nc2.*;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.*;
 
 /**
  * Builds a groups-only metadata dump under a single wrapper node "Metadata_Dump".
@@ -75,6 +70,7 @@ public final class PanoplyStyleMetadataBuilder {
                 MetadataElement section = buildGroupTree(child);
                 if (isPopulated(section)) dumpRoot.addElement(section);
             }
+            addNcdumpNode(dumpRoot, product, "No metadata found.") ;
 
             if (DEBUG) debugDumpRootChildren(dumpRoot);
         } catch (Throwable t) {
@@ -467,4 +463,89 @@ public final class PanoplyStyleMetadataBuilder {
                     c.getName(), c.getNumAttributes(), c.getNumElements());
         }
     }
+
+    private static void addNcdumpNode(MetadataElement wrapper, Product product, String fallbackText) {
+        final MetadataElement ncd = new MetadataElement("ncdump");
+
+        String text = null;
+        java.io.File pf = product != null ? product.getFileLocation() : null;
+        text = runRealNcdump(pf);
+        if (text == null) text = fallbackText;
+
+        String[] lines = (text != null ? text : "(ncdump not available)")
+                .replace("\r\n","\n").replace('\r','\n').split("\n", -1);
+
+        final int width = 6;
+        for (int i = 0; i < lines.length; i++) {
+            String key = String.format("line_%0" + width + "d", i + 1);
+            ncd.addAttribute(lineAttr(key, lines[i]));
+        }
+        wrapper.addElement(ncd);
+    }
+
+    private static MetadataAttribute lineAttr(String key, String value) {
+        ProductData pd = ProductData.createInstance(value); // ASCII payload
+        return new MetadataAttribute(key, pd, true);
+    }
+    private static String runRealNcdump(java.io.File file) {
+        if (file == null || !file.exists()) return null;
+
+        try (NetcdfFile nc = NetcdfFiles.open(file.getAbsolutePath())) {
+            StringWriter sw = new StringWriter(1 << 20);
+            PrintWriter pw = new PrintWriter(sw);
+
+            // NCdumpW.print(NetcdfFile nc, Writer out,
+            //               boolean showAll, boolean showCoords,
+            //               boolean ncml, boolean strict,
+            //               String varNames, CancelTask ct)
+            // Header only: showAll=false
+            boolean showAll = false, showCoords = false, ncml = false, strict = false;
+            String varNames = null;
+            ucar.nc2.util.CancelTask ct = null;
+
+            NCdumpW.print(nc, pw, showAll, showCoords, ncml, strict, varNames, ct);
+            pw.flush();
+            return sw.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String synthesizeHeader(java.io.File productFile) {
+        if (productFile == null || !productFile.exists()) return null;
+        try (ucar.nc2.NetcdfFile nc = ucar.nc2.NetcdfFiles.open(productFile.getAbsolutePath())) {
+            StringBuilder sb = new StringBuilder(1<<20);
+            sb.append("netcdf ").append(productFile.getAbsolutePath()).append(" {\n");
+
+            sb.append("dimensions:\n");
+            for (ucar.nc2.Dimension d : nc.getDimensions()) {
+                sb.append("  ").append(d.getShortName())
+                        .append(" = ").append(d.getLength());
+                if (d.isUnlimited()) sb.append(" // (unlimited)");
+                sb.append(";\n");
+            }
+
+            sb.append("\nvariables:\n");
+            for (ucar.nc2.Variable v : nc.getVariables()) {
+                sb.append("  ").append(v.getDataType().toString().toLowerCase()).append(" ")
+                        .append(v.getShortName()).append("(")
+                        .append(v.getDimensions().stream()
+                                .map(ucar.nc2.Dimension::getShortName)
+                                .collect(java.util.stream.Collectors.joining(", ")))
+                        .append(") ;\n");
+                for (ucar.nc2.Attribute a : v.attributes()) {
+                    sb.append("    :").append(a.getShortName()).append(" = ")
+                            .append(a.getStringValue()).append(" ;\n");
+                }
+                sb.append("\n");
+            }
+
+            sb.append("}\n");
+            return sb.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
 }

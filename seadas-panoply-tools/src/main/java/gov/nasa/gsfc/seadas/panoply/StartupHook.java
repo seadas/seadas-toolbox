@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.panoply;
 
+import gov.nasa.gsfc.seadas.panoply.ui.MetadataDumpTopComponent;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductManager;
 import org.esa.snap.core.util.ProductUtils;
@@ -53,7 +54,7 @@ public final class StartupHook {
 
             @Override
             public void productRemoved(ProductManager.Event e) {
-                // no-op (you could remove Panoply subtree if desired)
+                MetadataDumpTopComponent.findInstance().clearView();
             }
         };
 
