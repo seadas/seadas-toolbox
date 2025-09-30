@@ -8,6 +8,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFiles;
 import ucar.nc2.Dimension;
@@ -24,7 +25,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-@TopComponent.Description(preferredID = "MetadataDumpTopComponent", persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+@TopComponent.Description(
+        preferredID = "MetadataDumpTopComponent",
+        persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED
+)
 @TopComponent.Registration(mode = "output", openAtStartup = false)
 @ActionID(category = "View", id = "gov.nasa.gsfc.seadas.panoply.ui.MetadataDumpTopComponent")
 @ActionReference(path = "Menu/View", position = 19300)
@@ -37,17 +41,6 @@ import java.util.regex.Pattern;
         "HINT_MetadataDumpTopComponent=Shows Panoply-style (ncdump) text for the selected variable or group"
 })
 
-//@TopComponent.Description(
-//        preferredID = "MetadataDumpTopComponent",      // <-- use this exact ID in the watcher
-//        persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED
-//)
-//@TopComponent.Registration(mode = "output", openAtStartup = false)
-//@ActionID(category = "Window", id = "gov.nasa.gsfc.seadas.panoply.MetadataDumpTopComponent")
-//@ActionRegistration(displayName = "Metadata_Dump")
-//@TopComponent.OpenActionRegistration(
-//        displayName = "Metadata Dump",
-//        preferredID = "MetadataDumpTopComponent"
-//)
 public final class MetadataDumpTopComponent extends TopComponent implements LookupListener, PropertyChangeListener {
 
     private static final String HINT = "Select a variable or group under Metadata \u2192 MetadataDump …";
@@ -58,6 +51,7 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
     private volatile org.esa.snap.core.datamodel.MetadataElement lastShown; // what we last showed
     private volatile boolean selfActive = false;
 
+    private static final String PREFERRED_ID = "MetadataDumpTopComponent";
     public MetadataDumpTopComponent() {
         setName(Bundle.CTL_MetadataDumpTopComponent());
         setToolTipText(Bundle.HINT_MetadataDumpTopComponent());
@@ -69,16 +63,47 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
         textArea.setText(HINT);
     }
 
-    @Override public void componentOpened() {
+    public static MetadataDumpTopComponent findInstance() {
+        TopComponent tc = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
+        return (tc instanceof MetadataDumpTopComponent)
+                ? (MetadataDumpTopComponent) tc
+                : null;
+    }
+
+    public static MetadataDumpTopComponent openSingleton() {
+        MetadataDumpTopComponent tc = findInstance();
+        if (tc == null) {
+            tc = new MetadataDumpTopComponent();
+        }
+        tc.openSingleton();
+        tc.requestActive();
+        return tc;
+    }
+
+    /** Call this when product/selection changes away from our nodes */
+    public void clearView() {
+        textArea.setText("");     // your JTextArea reference
+        lastShown = null;         // ensure we don't think we’re showing stale section
+    }
+    @Override
+    public void componentOpened() {
         TopComponent.getRegistry().addPropertyChangeListener(this);
         nodeSel = org.openide.util.Utilities.actionsGlobalContext().lookupResult(Node.class);
         nodeSel.addLookupListener(this);
+        USER_CLOSED = false;                  // user opened / window available
         updateFromActivatedNodes();
     }
 
     @Override
     protected void componentClosed() {
+        USER_CLOSED = true;                   // user explicitly closed
+        if (nodeSel != null) {
+            nodeSel.removeLookupListener(this);
+            nodeSel = null;
+        }
+        TopComponent.getRegistry().removePropertyChangeListener(this);
         lastShown = null;
+        textArea.setText("");                 // clear UI too
         super.componentClosed();
     }
 
@@ -184,7 +209,10 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
 
     private void updateFromActivatedNodes() {
         org.openide.nodes.Node[] sel = org.openide.windows.TopComponent.getRegistry().getActivatedNodes();
-        if (sel == null || sel.length == 0) return; // keep showing what we had
+        if (sel == null || sel.length == 0) {
+            clearView();             // <- clear stale dump
+            return;
+        }
 
         org.esa.snap.core.datamodel.ProductNode pn = sel[0].getLookup().lookup(org.esa.snap.core.datamodel.ProductNode.class);
         if (pn == null) return;
@@ -233,11 +261,12 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
         showSection(target);  // renders lines; showSection should *not* clear if target is null
     }
 
-    private org.esa.snap.core.datamodel.MetadataElement nearestDumpElement(
-            org.esa.snap.core.datamodel.MetadataElement start) {
-        for (org.esa.snap.core.datamodel.MetadataElement cur = start; cur != null; cur = cur.getParentElement()) {
+    private MetadataElement nearestDumpElement(MetadataElement start) {
+        for (MetadataElement cur = start; cur != null; cur = cur.getParentElement()) {
             if (hasDumpLines(cur)) return cur;
-            if ("Metadata_Dump".equals(cur.getName())) break;
+            if ("Metadata_Dump".equals(cur.getName())) {
+                return cur;            // <- allow wrapper to be shown/aggregated
+            }
         }
         return null;
     }
