@@ -1,19 +1,34 @@
 package gov.nasa.gsfc.seadas.panoply;
 
 import gov.nasa.gsfc.seadas.panoply.ui.MetadataDumpTopComponent;
+import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductManager;
 import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.rcp.SnapApp;
+import org.openide.nodes.Node;
+import org.openide.util.WeakListeners;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
+import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Timer;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class StartupHook {
 
     private static ProductManager.Listener listener;
     private static ProductManager pm;
+    private static final AtomicBoolean CLOSING_SNAP_METADATA = new AtomicBoolean(false);
+
 
     private StartupHook() {}
 
@@ -59,6 +74,7 @@ public final class StartupHook {
         };
 
         pm.addListener(listener);
+        installMetadataWindowGuard();
         //System.out.println("[Panoply] ProductManager listener registered");
     }
 
@@ -115,8 +131,47 @@ public final class StartupHook {
         return null;
     }
 
-    private static String safeName(Product p) {
-        try { return p != null ? p.getName() : "<null>"; }
-        catch (Throwable t) { return "<unknown>"; }
+    static void installMetadataWindowGuard() {
+        // Listen only to OPENED changes (most reliable for our purpose)
+        TopComponent.getRegistry().addPropertyChangeListener(evt -> {
+            if (!TopComponent.Registry.PROP_OPENED.equals(evt.getPropertyName())) return;
+            closeDefaultMetadataWindowsOnce();
+        });
     }
+
+    /** Close SNAP's default "Metadata" TopComponent if open. Never opens/focuses our TC here. */
+    private static void closeDefaultMetadataWindowsOnce() {
+        if (!CLOSING_SNAP_METADATA.compareAndSet(false, true)) return; // already running
+
+        try {
+            WindowManager wm = WindowManager.getDefault();
+            for (TopComponent tc : wm.getRegistry().getOpened()) {
+                // Skip our own panel
+                if (tc instanceof gov.nasa.gsfc.seadas.panoply.ui.MetadataDumpTopComponent) continue;
+
+                String id = null;
+                try { id = wm.findTopComponentID(tc); } catch (Throwable ignore) {}
+
+                String cls = tc.getClass().getName();
+                String name = tc.getName();
+                String display = tc.getDisplayName();
+
+                boolean looksLikeSnapMetadata =
+                        (id != null && (
+                                id.equals("MetadataTopComponent") ||
+                                        id.equals("org.esa.snap.ui.MetadataTopComponent") ||
+                                        id.equals("org.esa.snap.ui.metadata.MetadataTopComponent")))
+                                || (cls != null && cls.toLowerCase().contains("metadatatopcomponent"))
+                                || (name != null && name.equalsIgnoreCase("Metadata"))
+                                || (display != null && display.equalsIgnoreCase("Metadata"));
+
+                if (looksLikeSnapMetadata) {
+                    try { tc.close(); } catch (Throwable ignore) {}
+                }
+            }
+        } finally {
+            CLOSING_SNAP_METADATA.set(false);
+        }
+    }
+
 }

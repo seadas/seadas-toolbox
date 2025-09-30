@@ -52,7 +52,7 @@ public final class PanoplySelectionWatcher implements LookupListener {
         MetadataDumpTopComponent tc = (MetadataDumpTopComponent) tcRaw;
 
         if (!MetadataDumpTopComponent.isUserClosed()) {
-            if (!tc.isOpened()) tc.open();
+            if (!tc.isOpened()) tc.openSingleton();
             tc.requestActive();
         }
         tc.showSection(target);

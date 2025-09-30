@@ -65,20 +65,27 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
 
     public static MetadataDumpTopComponent findInstance() {
         TopComponent tc = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
-        return (tc instanceof MetadataDumpTopComponent)
-                ? (MetadataDumpTopComponent) tc
-                : null;
+        return (tc instanceof MetadataDumpTopComponent) ? (MetadataDumpTopComponent) tc : null;
     }
 
     public static MetadataDumpTopComponent openSingleton() {
+        // Find existing instance by preferred ID
         MetadataDumpTopComponent tc = findInstance();
         if (tc == null) {
+            // Construct once
             tc = new MetadataDumpTopComponent();
         }
-        tc.openSingleton();
+
+        // Open only if needed
+        if (!tc.isOpened()) {
+            tc.open();
+        }
+
+        // Request focus (no further window opens)
         tc.requestActive();
         return tc;
     }
+
 
     /** Call this when product/selection changes away from our nodes */
     public void clearView() {
@@ -136,8 +143,6 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
         return USER_CLOSED;
     }
 
-    private boolean lastShownHadContent = false;
-
     public void showSection(org.esa.snap.core.datamodel.MetadataElement section) {
         if (section == null) return;
 
@@ -148,29 +153,71 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
         boolean isWrapper = "Metadata_Dump".equals(section.getName());
         final StringBuilder sb = new StringBuilder();
 
+//        if (isWrapper) {
+//            // Resolve something we can open & something we can display
+//            String resolvedPath = resolveNetcdfPath(section);          // open this if possible
+//            String displayName  = (resolvedPath != null && !resolvedPath.isEmpty())
+//                    ? resolvedPath
+//                    : inferNameFromChildren(section);
+//
+//            if (displayName != null && !displayName.isEmpty()) {
+//                sb.append("netcdf ").append(displayName).append(" {\n");
+//            } else {
+//                sb.append("netcdf (unknown) {\n");
+//            }
+//
+//            // Dimensions: try real file first, else heuristic
+//            String dimBlock = buildDimensionsBlockFromNetcdf(resolvedPath);
+//            if (dimBlock == null) {
+//                dimBlock = buildDimensionsBlockHeuristic(section);
+//            }
+//            if (dimBlock != null && !dimBlock.isEmpty()) {
+//                sb.append(dimBlock);
+//            }
+//
+//            // Rest of the aggregated dump
+//            java.util.List<String> all = new java.util.ArrayList<>();
+//            collectDescendantLines(section, all);
+//            for (String line : all) sb.append(line).append('\n');
+//
+//            sb.append("}\n");
+//            textArea.setText(sb.toString());
+//            textArea.setCaretPosition(0);
+//            return;
+//        }
+
         if (isWrapper) {
-            // Resolve something we can open & something we can display
-            String resolvedPath = resolveNetcdfPath(section);          // open this if possible
+            // 1) If a 'ncdump' child exists and has line_* -> show it verbatim
+            org.esa.snap.core.datamodel.MetadataElement ncd = childByName(section, "ncdump");
+            if (ncd != null && hasDumpLines(ncd)) {
+                // Render exactly the ncdump text (it already includes "netcdf ... { ... }")
+                java.util.List<String> lines = ownLines(ncd);
+                StringBuilder sbN = new StringBuilder(lines.size() * 64);
+                for (String ln : lines) sbN.append(ln).append('\n');
+                textArea.setText(sbN.toString());
+                textArea.setCaretPosition(0);
+                lastShown = section;
+                return;
+            }
+
+            // 2) Fallback: your existing aggregated/root rendering (dimensions + groups)
+            // (keep your previous code here unchanged)
+            String resolvedPath = resolveNetcdfPath(section);
             String displayName  = (resolvedPath != null && !resolvedPath.isEmpty())
                     ? resolvedPath
                     : inferNameFromChildren(section);
 
+            //StringBuilder sb = new StringBuilder();
             if (displayName != null && !displayName.isEmpty()) {
                 sb.append("netcdf ").append(displayName).append(" {\n");
             } else {
                 sb.append("netcdf (unknown) {\n");
             }
 
-            // Dimensions: try real file first, else heuristic
             String dimBlock = buildDimensionsBlockFromNetcdf(resolvedPath);
-            if (dimBlock == null) {
-                dimBlock = buildDimensionsBlockHeuristic(section);
-            }
-            if (dimBlock != null && !dimBlock.isEmpty()) {
-                sb.append(dimBlock);
-            }
+            if (dimBlock == null) dimBlock = buildDimensionsBlockHeuristic(section);
+            if (dimBlock != null && !dimBlock.isEmpty()) sb.append(dimBlock);
 
-            // Rest of the aggregated dump
             java.util.List<String> all = new java.util.ArrayList<>();
             collectDescendantLines(section, all);
             for (String line : all) sb.append(line).append('\n');
@@ -178,8 +225,20 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
             sb.append("}\n");
             textArea.setText(sb.toString());
             textArea.setCaretPosition(0);
+            lastShown = section;
             return;
+
+//            java.util.List<String> ncdLines = linesWithPrefix(section, "ncdump_line_");
+//            if (!ncdLines.isEmpty()) {
+//                StringBuilder sbN = new StringBuilder(ncdLines.size() * 64);
+//                for (String ln : ncdLines) sbN.append(ln).append('\n');
+//                textArea.setText(sbN.toString());
+//                textArea.setCaretPosition(0);
+//                lastShown = section;
+//                return;
+//            }
         }
+
 
         // Otherwise: aggregate this group with all its descendants
         final List<String> aggregated = new ArrayList<>();
@@ -194,13 +253,25 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
     }
 
 
-    private static int orderOf(org.esa.snap.core.datamodel.MetadataAttribute a) {
-        String n = a.getName(); // e.g., line_00012
-        int us = (n != null) ? n.lastIndexOf('_') : -1;
-        if (us >= 0 && us + 1 < n.length()) {
-            try { return Integer.parseInt(n.substring(us + 1)); } catch (Exception ignore) {}
+    private static java.util.List<String> linesWithPrefix(org.esa.snap.core.datamodel.MetadataElement e, String prefix) {
+        java.util.List<org.esa.snap.core.datamodel.MetadataAttribute> attrs = new java.util.ArrayList<>();
+        for (int i = 0; i < e.getNumAttributes(); i++) {
+            org.esa.snap.core.datamodel.MetadataAttribute a = e.getAttributeAt(i);
+            if (a != null && a.getName() != null && a.getName().startsWith(prefix)) {
+                attrs.add(a);
+            }
         }
-        return Integer.MAX_VALUE;
+        attrs.sort(java.util.Comparator.comparingInt(a -> {
+            String n = a.getName();
+            int us = n.lastIndexOf('_');
+            try { return Integer.parseInt(n.substring(us + 1)); } catch (Exception ignore) { return Integer.MAX_VALUE; }
+        }));
+        java.util.List<String> out = new java.util.ArrayList<>(attrs.size());
+        for (org.esa.snap.core.datamodel.MetadataAttribute a : attrs) {
+            Object v = a.getData() != null ? a.getData().getElemString() : null;
+            if (v != null) out.add(v.toString());
+        }
+        return out;
     }
 
     // Debounce rapid selection changes
@@ -283,6 +354,16 @@ public final class MetadataDumpTopComponent extends TopComponent implements Look
         return false;
     }
 
+    // Get direct child by name (returns null if not found)
+    private static org.esa.snap.core.datamodel.MetadataElement childByName(
+            org.esa.snap.core.datamodel.MetadataElement parent, String name) {
+        if (parent == null || name == null) return null;
+        for (int i = 0; i < parent.getNumElements(); i++) {
+            org.esa.snap.core.datamodel.MetadataElement c = parent.getElementAt(i);
+            if (c != null && name.equals(c.getName())) return c;
+        }
+        return null;
+    }
     // NEW: helper – return this element's own "line_*" text in order
     private static java.util.List<String> ownLines(org.esa.snap.core.datamodel.MetadataElement section) {
         final java.util.List<org.esa.snap.core.datamodel.MetadataAttribute> attrs = new java.util.ArrayList<>();
