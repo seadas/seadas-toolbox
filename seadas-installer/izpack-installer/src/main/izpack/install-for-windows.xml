@@ -60,7 +60,6 @@
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
-        <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
         <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
@@ -69,8 +68,6 @@
         <variable name="WELCOME_TEXT" value="SeaDAS 10.0.0 Installer"/>
         <variable name="WELCOME_VERSION" value="Version: 1.1"/>
         <variable name="FINISH_TEXT" value="SeaDAS 10.0.0 is successfully installed. Enjoy!"/>
-        <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
-        <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>

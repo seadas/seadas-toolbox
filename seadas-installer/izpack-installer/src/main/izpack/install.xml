@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <izpack:installation version="5.0"
-                     xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
-    <info>
+                     xsi:schemaLocation="http://izpack.org/schema/installation
+                        http://izpack.org/schema/5.2/izpack-installation-5.0.xsd">
+
+<info>
         <appname>SeaDAS IzPack Installer</appname>
-        <appversion>1.1.0</appversion>
-        <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
-        <!--        <requiresjdk>no</requiresjdk>-->
+        <appversion>1.2</appversion>
         <url>https://seadas.gsfc.nasa.gov</url>
         <authors>
             <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
@@ -17,18 +17,18 @@
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
-        <!--        <laf name="looks">-->
-        <!--            <os family="unix"/>-->
-        <!--            <param name="variant" value="mist-aqua"/>-->
-        <!--        </laf>-->
-        <!--        <laf name="looks">-->
-        <!--            <os family="windows"/>-->
-        <!--            <param name="variant" value="extwin"/>-->
-        <!--        </laf>-->
-        <!--        <laf name="substance">-->
-        <!--            <os family="mac" />-->
-        <!--            <param name="variant" value="mist-aqua" />-->
-        <!--        </laf>-->
+        <laf name="looks">
+            <os family="unix"/>
+            <param name="variant" value="mist-aqua"/>
+        </laf>
+        <laf name="looks">
+            <os family="windows"/>
+            <param name="variant" value="extwin"/>
+        </laf>
+        <laf name="substance">
+            <os family="mac"/>
+            <param name="variant" value="nebula-brick-wall"/>
+        </laf>
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
@@ -50,7 +50,8 @@
     <resources>
         <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
         <res id="HTMLInfoPanel.info" src="about/readme.html"/>
-        <res id="JDKPathPanel.info" src="about/readme.html"/>
+<!--        <res id="JDKPathPanel.info" src="about/java_warning.html"/>-->
+<!--        <res id="info" src="about/java_warning.html"/>-->
         <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
         <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
         <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -60,9 +61,12 @@
         <res id="Installer.image" src="images/seadas-installer.png"/>
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
-        <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
+        <res id="userInputSpec.xml" src="resources/userInputSpec.xml" parse="yes" type="xml"/>
+        <res id="processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
+        <!--        <res id="processPanelForDotSeaDAS.xml" src="resources/processPanelForDotSeaDAS.xml"/>-->
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
-        <res id="finish" src="about/finish.html"/>
+        <res id="finish.xml" src="about/finish.html"/>
+<!--        <res id="JavaCheckPanel" src="about/java_warning.html"/>-->
     </resources>
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
@@ -74,79 +78,100 @@
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>
         <variable name="WELCOME_TEXT" value="SeaDAS 10.0.0 Installer"/>
-        <variable name="WELCOME_VERSION" value="Version: 1.1"/>
+        <variable name="WELCOME_VERSION" value="Version: 1.2"/>
         <variable name="FINISH_TEXT" value="SeaDAS 10.0.0 is successfully installed. Enjoy!"/>
         <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
         <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>
-        <variable name="maxHeapSize" value="8G"/>
-        <variable name="installer:maxHeapSize" value="8G"/>
+        <variable name="maxHeapSize" value="4096M"/>
+        <variable name="installer:maxHeapSize" value="4096M"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
-        <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
         <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
-        <variable name="JDKPathPanel.maxVersion" value="21.0.9"/>
+        <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
-        <variable name="symbolicName" value="mac_os_arm64"/>
-        <variable name="arch" value="arm64"/>
+        <variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/installinfo/InstallSummary.html"/>
     </variables>
 
+    <dynamicvariables>
+<!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre"/>-->
+        <variable name="jdkhome" value="$JDKPath"/>
+        <variable name="dotSeaDASDirStatus" value="$dotSeaDASStatusSelection" />
+        <variable name="runSeaDASAfterInstall" value="${checkSelection.1}"/>
+    </dynamicvariables>
+
     <conditions>
+
+        <!-- Require Java 21 or newer -->
+        <condition id="java21OrHigher" type="java">
+            <java>
+                <class>java.lang.Boolean</class>
+                <field>TRUE</field>
+            </java>
+            <returnvalue type="boolean">true</returnvalue>
+        </condition>
+
+
         <condition type="variable" id="standardinstallation">
             <name>setup.type</name>
             <value>standard</value>
         </condition>
+
         <condition type="variable" id="expertinstallation">
             <name>setup.type</name>
             <value>expert</value>
         </condition>
+
         <condition id="start-after-install" type="variable">
             <name>start.after.install</name>
             <value>true</value>
         </condition>
+
         <condition id="install-as-service" type="variable">
             <name>install.as.service</name>
             <value>true</value>
         </condition>
+
         <condition type="variable" id="runSeaDAS">
             <name>runSeaDASAfterInstall</name>
-            <value>${runSeaDASAfterInstall}</value>
+            <value>true</value>
         </condition>
-        >
+
+        <condition type="contains" id="deleteDotSeaDAS">
+            <variable>dotSeaDASDirStatus</variable>
+            <value>delete</value>
+        </condition>
+
+        <condition type="contains" id="archiveDotSeaDAS">
+            <variable>dotSeaDASDirStatus</variable>
+            <value>archive</value>
+        </condition>
+
     </conditions>
+
 
 
     <panels>
 
         <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
         <panel classname="HTMLInfoPanel" id="welcome"/>
-
-        <!-- this is our custom panel, loaded from the panels.jar file -->
-        <!--    <panel classname="com.izforge.izpack.panels.mypanels.MyHelloPanel" id="myHello">-->
-        <!--      <configuration>-->
-        <!--        <param name="welcome1" value="Welcome to SeaDAS Installation."/>-->
-        <!--        <param name="welcome2" value="Enjoy!"/>-->
-        <!--      </configuration>-->
-        <!--    </panel>-->
-
-
-        <!--        <panel classname="InstallationTypePanel"/>-->
+<!--        <panel classname="HTMLInfoPanel" id="JavaCheckPanel" condition="!java21OrHigher">-->
+<!--            <configuration>-->
+<!--                <file>java_warning.html</file>-->
+<!--            </configuration>-->
+<!--        </panel>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
-        <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
+        <panel classname="JDKPathPanel" id="info"/>
         <panel classname="TargetPanel" id="install_dir"/>
+        <!--        <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
         <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-        <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <panel classname="ProcessPanel" id="processPanelSpec.xml" />
+        <panel classname="ProcessPanel" id="processPanel" />
         <panel classname="FinishPanel" id="finish"/>
     </panels>
-
-    <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home"/>
-    </dynamicvariables>
 
     <packs>
         <pack name="snap" preselected="yes" required="yes">
@@ -159,39 +184,37 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" unpack="true"
-                     override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
-                <os family="mac"/>
+            <fileset dir="packs/snap" override="true" casesensitive="true" os="unix"
+                     condition="izpack.linuxinstall">
+                <os family="unix"/>
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac"
-                     condition="izpack.macinstall"/>
+            <fileset dir="packs/files/unix"  override="true" casesensitive="true" os="unix"
+                     condition="izpack.linuxinstall"/>
+            <parsable type="plain">
+                <fileset targetdir="${INSTALL_PATH}/bin">
+                    <include name="*.sh"/>
+                    <include name="seadas"/>
+                    <include name="seadas.desktop"/>
+                    <exclude name="*.exe"/>
+                </fileset>
+                <os family="unix"/>
+            </parsable>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
-                    <include name="*.sh"/>
                     <include name="seadas.clusters"/>
                     <include name="seadas.conf"/>
-                    <include name="seadas"/>
+                    <include name="seadas.properties"/>
                     <include name="snap.clusters"/>
                     <include name="snap.conf"/>
                     <include name="snap.properties"/>
                 </fileset>
-                <!--                <os family="unix"/>-->
-            </parsable>
-            <parsable encoding="UTF-8">
-                <fileset targetdir="${INSTALL_PATH}/bin">
-                    <include name="seadas"/>
-                    <include name="*.sh"/>
-                </fileset>
-                <os family="mac"/>
+                <os family="unix"/>
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <os family="mac"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="archiveDotSeaDAS.sh"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="*.sh"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas"/>
-                <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh"/>
+                <os family="unix"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>
             </executable>
@@ -206,21 +229,15 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">
-            <description>JDK21 JRE</description>
-            <file src="packs/jre/OpenJDK21U-jre_aarch64_mac_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"
-                  unpack="true" override="true"></file>
-            <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/bin">
-                    <include name="java"/>
-                </fileset>
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/Contents/Home/lib">
-                    <include name="jspawnhelper"/>
-                </fileset>
-            </executable>
-        </pack>
+<!--        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">-->
+<!--            <description>JDK21 JRE</description>-->
+<!--            <file src="packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"-->
+<!--                  unpack="true" override="true"></file>-->
+<!--            <executable type="bin" stage="never" failure="warn" keep="true">-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/bin" includes="*"/>-->
+<!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/lib" includes="*"/>-->
+<!--            </executable>-->
+<!--        </pack>-->
     </packs>
 
     <natives>

@@ -1,21 +1,18 @@
-<izpack:userinput xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:izpack="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0"
-                  version="5.0"
-                  xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
+<izpack:userinput version="5.0"
+                  xmlns:izpack="http://izpack.org/schema/userinput"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.0/izpack-userinput-5.0.xsd">
 
-      <panel id="userInputPanel4Run">
-
-<!--          <field type="check" variable="checkSelection.1">-->
-<!--                <spec txt="Run SeaDAS after Install" id="runSeaDASAfterInstall" true="on" false="off" set="true"/>-->
-<!--          </field>-->
-
-          <field type="radio" variable="dotSeaDASStatusSelection">
-              <description txt="You can either delete or archive the .seadas9 directory" id="description.radio"/>
-              <spec>
-                  <choice txt="Delete .seadas9" id="deleteDotSeaDAS.radio.label" value="delete" />
-                  <choice txt="Archive .seadas9" id="archiveDotSeaDAS.radio.label" value="archive" set="true" />
+    <panel id="userInputPanel4Run">
+        <!-- Example: a radio field -->
+        <field type="radio" variable="dotSeaDASStatusSelection">
+            <description txt="You can either delete or archive the .seadas directory" id="description.radio"/>
+            <spec>
+                <choice txt="Delete .seadas"  id="deleteDotSeaDAS.radio.label"  value="delete"/>
+                <choice txt="Archive .seadas" id="archiveDotSeaDAS.radio.label" value="archive" set="true"/>
             </spec>
-          </field>
-
-      </panel>
+        </field>
+    </panel>
 
 </izpack:userinput>
+

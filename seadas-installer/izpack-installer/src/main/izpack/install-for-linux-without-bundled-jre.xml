@@ -50,7 +50,6 @@
     <resources>
         <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
         <res id="HTMLInfoPanel.info" src="about/readme.html"/>
-        <res id="JDKPathPanel.info" src="about/readme.html"/>
         <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
         <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
         <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -62,39 +61,36 @@
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml" parse="yes" type="xml"/>
         <res id="processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
-        <!--        <res id="processPanelForDotSeaDAS.xml" src="resources/processPanelForDotSeaDAS.xml"/>-->
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
         <res id="finish.xml" src="about/finish.html"/>
     </resources>
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
-        <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
         <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
-        <variable name="InstallerFrame.logfilePath" value="Default"/>
+        <variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/installinfo/InstallSummary.html"/>
         <variable name="WELCOME_TEXT" value="SeaDAS 10.0.0 Installer"/>
         <variable name="WELCOME_VERSION" value="Version: 1.2"/>
         <variable name="FINISH_TEXT" value="SeaDAS 10.0.0 is successfully installed. Enjoy!"/>
-        <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
-        <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>
-        <variable name="maxHeapSize" value="4096M"/>
-        <variable name="installer:maxHeapSize" value="4096M"/>
+        <variable name="maxHeapSize" value="8G"/>
+        <variable name="installer:maxHeapSize" value="8G"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
         <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
-
+        <variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/installinfo/InstallSummary.html"/>
     </variables>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre"/>
+        <!--        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre"/>-->
+        <variable name="jdkhome" value="$JDKPath"/>
         <variable name="dotSeaDASDirStatus" value="$dotSeaDASStatusSelection" />
         <variable name="runSeaDASAfterInstall" value="${checkSelection.1}"/>
     </dynamicvariables>
@@ -105,7 +101,7 @@
         <condition id="java21OrHigher" type="java">
             <java>
                 <class>java.lang.Boolean</class>
-                <field>False</field>
+                <field>TRUE</field>
             </java>
             <returnvalue type="boolean">true</returnvalue>
         </condition>
@@ -154,16 +150,9 @@
 
         <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
         <panel classname="HTMLInfoPanel" id="welcome"/>
-        <panel classname="HTMLInfoPanel" id="JavaCheckPanel">
-            <configuration>
-                <file>java_warning.html</file>
-            </configuration>
-        </panel>
         <panel classname="HTMLLicencePanel" id="licence"/>
-        <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
+        <panel classname="JDKPathPanel" id="info"/>
         <panel classname="TargetPanel" id="install_dir"/>
-        <!--        <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
         <panel classname="ProcessPanel" id="processPanel" />

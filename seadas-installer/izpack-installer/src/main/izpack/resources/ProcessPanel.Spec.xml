@@ -1,53 +1,35 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <izpack:processing version="5.0"
-                   xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
+                   xmlns:izpack="http://izpack.org/schema/processing"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
+                   xsi:schemaLocation="http://izpack.org/schema/processing http://izpack.org/schema/5.0/izpack-processing-5.0.xsd">
 
-<!--    <job name="Detect Architecture">-->
-<!--        <executefile name="$INSTALL_PATH/detect_arch.sh" stage="postinstall" keep="true">-->
-<!--            <os family="mac"/>-->
-<!--        </executefile>-->
-<!--    </job>-->
+    <!-- optional: duplicate console output to a logfile -->
+    <!-- <logfiledir>$INSTALL_PATH</logfiledir> -->
 
-    <job name="Archive as needed any .seadas directories">
-        <os family="unix" />
-        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
-            <!--                <arg>doit</arg>-->
-            <!--                <arg>$variable</arg>-->
-        </executefile>
-    </job>
-    <job name="Archive as needed any .seadas directories">
-        <os family="mac" />
-        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
-            <!--                <arg>doit</arg>-->
-            <!--                <arg>$variable</arg>-->
-        </executefile>
+    <job name="Archive .seadas (unix)" condition="archiveDotSeaDAS">
+        <os family="unix"/>
+        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin"/>
     </job>
 
-    <job name="Archive as needed any .seadas directories">
-        <os family="windows" />
-        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS_windows.bat" workingDir="$INSTALL_PATH/bin" condition="archiveDotSeaDAS">
-            <!--                <arg>doit</arg>-->
-            <!--                <arg>$variable</arg>-->
-        </executefile>
-    </job>
-
-    <onFail previous="true" next="false" />
-    <onSuccess previous="true" next="true" condition="mycondition" />
-    <onSuccess previous="false" next="true" condition="!mycondition" />
-
-<!--    <job name="Run SeaDAS" >-->
-<!--        <os family="unix"/>-->
-<!--        <executefile name="$INSTALL_PATH/bin/seadas" workingDir="$INSTALL_PATH/bin" condition="false">-->
-<!--        </executefile>-->
-<!--    </job>-->
-
-    <job name="Create Symbolic Link" final="true">
+    <job name="Archive .seadas (mac)" condition="archiveDotSeaDAS">
         <os family="mac"/>
-        <executefile name="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/createSymLink.sh"
-                     workingDir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/">
-        </executefile>
+        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin"/>
+    </job>
+
+    <job name="Archive .seadas (windows)" condition="archiveDotSeaDAS">
+        <os family="windows"/>
+        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS_windows.bat" workingDir="$INSTALL_PATH/bin"/>
+    </job>
+
+    <onFail    previous="true"  next="false"/>
+    <onSuccess previous="true"  next="true"  condition="mycondition"/>
+    <onSuccess previous="false" next="true"  condition="!mycondition"/>
+
+    <job name="Create Symbolic Link (mac)" final="true">
+        <os family="mac"/>
+        <executefile
+                name="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/createSymLink.sh"
+                workingDir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/"/>
     </job>
 </izpack:processing>
-

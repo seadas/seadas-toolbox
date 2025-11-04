@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<izpack:installation version="5.0"
-                     xmlns:izpack="http://izpack.org/schema/installation"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="http://izpack.org/schema/installation
-                        http://izpack.org/schema/5.2/izpack-installation-5.0.xsd">
-
+<installation xmlns:izpack="http://izpack.org/schema/installation"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              version="5.0"
+              xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+    >
     <info>
         <appname>SeaDAS IzPack Installer</appname>
-        <appversion>1.2</appversion>
+        <appversion>1.1.0</appversion>
+        <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
+        <!--        <requiresjdk>no</requiresjdk>-->
         <url>https://seadas.gsfc.nasa.gov</url>
         <authors>
             <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
@@ -18,16 +19,8 @@
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
         <laf name="looks">
-            <os family="unix"/>
-            <param name="variant" value="mist-aqua"/>
-        </laf>
-        <laf name="looks">
             <os family="windows"/>
             <param name="variant" value="extwin"/>
-        </laf>
-        <laf name="substance">
-            <os family="mac"/>
-            <param name="variant" value="nebula-brick-wall"/>
         </laf>
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
@@ -60,115 +53,75 @@
         <res id="Installer.image" src="images/seadas-installer.png"/>
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
-        <res id="userInputSpec.xml" src="resources/userInputSpec.xml" parse="yes" type="xml"/>
-        <res id="processPanelSpec.xml" src="resources/processPanelSpec.xml"/>
-        <!--        <res id="processPanelForDotSeaDAS.xml" src="resources/processPanelForDotSeaDAS.xml"/>-->
+        <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
-        <res id="finish.xml" src="about/finish.html"/>
+        <res id="FinishPanel.finish" src="about/finish.html"/>
     </resources>
     <variables>
-        <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
+        <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
-        <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
         <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
-        <variable name="InstallerFrame.logfilePath" value="Default"/>
+        <variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/installinfo/InstallSummary.html"/>
         <variable name="WELCOME_TEXT" value="SeaDAS 10.0.0 Installer"/>
-        <variable name="WELCOME_VERSION" value="Version: 1.2"/>
+        <variable name="WELCOME_VERSION" value="Version: 1.1"/>
         <variable name="FINISH_TEXT" value="SeaDAS 10.0.0 is successfully installed. Enjoy!"/>
-        <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
-        <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>
         <variable name="maxHeapSize" value="4096M"/>
         <variable name="installer:maxHeapSize" value="4096M"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+        <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
+
         <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
         <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
-
     </variables>
 
-    <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre"/>
-        <variable name="dotSeaDASDirStatus" value="$dotSeaDASStatusSelection" />
-        <variable name="runSeaDASAfterInstall" value="${checkSelection.1}"/>
-    </dynamicvariables>
-
     <conditions>
-
-        <!-- Require Java 21 or newer -->
-        <condition id="java21OrHigher" type="java">
-            <java>
-                <class>java.lang.Boolean</class>
-                <field>False</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
-
-
         <condition type="variable" id="standardinstallation">
             <name>setup.type</name>
             <value>standard</value>
         </condition>
-
         <condition type="variable" id="expertinstallation">
             <name>setup.type</name>
             <value>expert</value>
         </condition>
-
         <condition id="start-after-install" type="variable">
             <name>start.after.install</name>
             <value>true</value>
         </condition>
-
         <condition id="install-as-service" type="variable">
             <name>install.as.service</name>
             <value>true</value>
         </condition>
-
         <condition type="variable" id="runSeaDAS">
             <name>runSeaDASAfterInstall</name>
-            <value>true</value>
+            <value>${runSeaDASAfterInstall}</value>
         </condition>
-
-        <condition type="contains" id="deleteDotSeaDAS">
-            <variable>dotSeaDASDirStatus</variable>
-            <value>delete</value>
-        </condition>
-
-        <condition type="contains" id="archiveDotSeaDAS">
-            <variable>dotSeaDASDirStatus</variable>
-            <value>archive</value>
-        </condition>
-
+        >
     </conditions>
 
 
-
     <panels>
-
-        <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
         <panel classname="HTMLInfoPanel" id="welcome"/>
-        <panel classname="HTMLInfoPanel" id="JavaCheckPanel">
-            <configuration>
-                <file>java_warning.html</file>
-            </configuration>
-        </panel>
+        <panel classname="InstallationTypePanel"/>
         <panel classname="HTMLLicencePanel" id="licence"/>
-        <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
+        <panel classname="JDKPathPanel" id="info"/>
         <panel classname="TargetPanel" id="install_dir"/>
-        <!--        <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-        <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-        <panel classname="ProcessPanel" id="processPanel" />
+        <panel classname="ProcessPanel" id="processPanelSpec.xml" />-->
         <panel classname="FinishPanel" id="finish"/>
     </panels>
+
+    <dynamicvariables>
+        <variable name="jdkhome" value="$JDKPath"/>
+    </dynamicvariables>
 
     <packs>
         <pack name="snap" preselected="yes" required="yes">
@@ -181,23 +134,13 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" override="true" casesensitive="true" os="unix"
-                     condition="izpack.linuxinstall">
-                <os family="unix"/>
+            <fileset dir="packs/snap" unpack="true"
+                     override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/unix"  override="true" casesensitive="true" os="unix"
-                     condition="izpack.linuxinstall"/>
-            <parsable type="plain">
-                <fileset targetdir="${INSTALL_PATH}/bin">
-                    <include name="*.sh"/>
-                    <include name="seadas"/>
-                    <include name="seadas.desktop"/>
-                    <exclude name="*.exe"/>
-                </fileset>
-                <os family="unix"/>
-            </parsable>
+            <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows"
+                     condition="izpack.windowsinstall"/>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
                     <include name="seadas.clusters"/>
@@ -207,42 +150,38 @@
                     <include name="snap.conf"/>
                     <include name="snap.properties"/>
                 </fileset>
-                <os family="unix"/>
+            </parsable>
+            <parsable type="shell">
+                <fileset targetdir="${INSTALL_PATH}/bin">
+                    <include name="gpt.bat"/>
+                    <include name="pconvert.bat"/>
+                </fileset>
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <os family="unix"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas, seadas.desktop, snap, *.sh"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
-                <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>
+                <os family="windows"/>
+                <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe"/>
+                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt"/>
+                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert"/>
             </executable>
         </pack>
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
             <description>Optical Toolbox</description>
-            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH/optical-toolbox">
+            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH\optical-toolbox">
             </fileset>
         </pack>
         <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
             <description>NASA SeaDAS Toolbox</description>
-            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
+            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH\seadas-toolbox">
             </fileset>
         </pack>
-        <!--        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">-->
-        <!--            <description>JDK21 JRE</description>-->
-        <!--            <file src="packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"-->
-        <!--                  unpack="true" override="true"></file>-->
-        <!--            <executable type="bin" stage="never" failure="warn" keep="true">-->
-        <!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/bin" includes="*"/>-->
-        <!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/lib" includes="*"/>-->
-        <!--            </executable>-->
-        <!--        </pack>-->
     </packs>
 
     <natives>
         <native type="izpack" name="ShellLink.dll"/>
         <native type="izpack" name="ShellLink_x64.dll"/>
-        <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+        <native type="3rdparty" name="COIOSHelper.dll">
             <os family="windows"/>
         </native>
     </natives>
 
-</izpack:installation>
+</installation>
