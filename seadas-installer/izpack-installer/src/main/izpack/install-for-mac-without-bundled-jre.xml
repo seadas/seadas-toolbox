@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<izpack:installation version="5.0"
-                     xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
+<izpack:installation
+        xmlns:izpack="http://izpack.org/schema/installation"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        version="5.0"
+        xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+
     <info>
         <appname>SeaDAS IzPack Installer</appname>
-        <appversion>1.1.0</appversion>
+        <appversion>1.2.0</appversion>
+        <requiresjdk>yes</requiresjdk>
         <url>https://seadas.gsfc.nasa.gov</url>
-        <authors>
-            <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
-        </authors>
         <summarylogfilepath>$INSTALL_PATH/installinfo/InstallSummary.html</summarylogfilepath>
     </info>
 
     <guiprefs width="800" height="600" resizable="yes">
         <modifier key="useSplashScreen" value="1000"/>
+        <laf name="looks">
+            <os family="windows"/>
+            <param name="variant" value="extwin"/>
+        </laf>
         <modifier key="useHeadingPanel" value="yes"/>
         <modifier key="useButtonIcons" value="yes"/>
         <modifier key="useLabelIcons" value="no"/>
@@ -32,11 +36,10 @@
         <langpack iso3="eng"/>
     </locale>
 
-
     <resources>
         <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
         <res id="HTMLInfoPanel.info" src="about/readme.html"/>
-        <res id="JDKPathPanel.info" src="about/readme.html"/>
+        <res id="JDKPathPanel.info" src="about/java_warning.html"/>
         <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
         <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
         <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -47,11 +50,12 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
-        <res id="finish" src="about/finish.html"/>
+        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml"/>
+        <res id="FinishPanel.finish" src="about/finish.html"/>
     </resources>
+
     <variables>
-        <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
+        <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
@@ -64,13 +68,15 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>
-        <variable name="maxHeapSize" value="8G"/>
-        <variable name="installer:maxHeapSize" value="8G"/>
+        <variable name="maxHeapSize" value="4096M"/>
+        <variable name="installer:maxHeapSize" value="4096M"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
+
         <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
-        <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>
+        <!-- no maxVersion: let any Java 21+ pass -->
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
+
         <variable name="extra_clusters" value="seadas-toolbox"/>
     </variables>
 
@@ -95,24 +101,22 @@
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
         </condition>
-        >
     </conditions>
-
-
 
     <panels>
         <panel classname="HTMLInfoPanel" id="welcome"/>
+        <panel classname="InstallationTypePanel"/>
         <panel classname="HTMLLicencePanel" id="licence"/>
         <panel classname="JDKPathPanel" id="info"/>
         <panel classname="TargetPanel" id="install_dir"/>
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-        <panel classname="ProcessPanel" id="processPanel" />
+        <panel classname="ProcessPanel" id="processPanelSpec.xml"/>
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$JDKPath"/>
+        <variable name="jdkhome" value="${jdkPath}"/>
     </dynamicvariables>
 
     <packs>
@@ -144,7 +148,6 @@
                     <include name="snap.conf"/>
                     <include name="snap.properties"/>
                 </fileset>
-                <!--                <os family="unix"/>-->
             </parsable>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/bin">
