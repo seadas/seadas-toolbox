@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<installation xmlns:izpack="http://izpack.org/schema/installation"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              version="5.0"
-              xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
-    >
+<izpack:installation
+        xmlns:izpack="http://izpack.org/schema/installation"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        version="5.0"
+        xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+
     <info>
         <appname>SeaDAS IzPack Installer</appname>
-        <appversion>1.1.0</appversion>
-        <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
-        <!--        <requiresjdk>no</requiresjdk>-->
+        <appversion>1.2.0</appversion>
+        <requiresjdk>yes</requiresjdk>
         <url>https://seadas.gsfc.nasa.gov</url>
-        <authors>
-            <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
-        </authors>
         <summarylogfilepath>$INSTALL_PATH/installinfo/InstallSummary.html</summarylogfilepath>
     </info>
 
@@ -39,11 +36,10 @@
         <langpack iso3="eng"/>
     </locale>
 
-
     <resources>
         <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
         <res id="HTMLInfoPanel.info" src="about/readme.html"/>
-        <res id="JDKPathPanel.info" src="about/readme.html"/>
+        <res id="JDKPathPanel.info" src="about/java_warning.html"/>
         <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
         <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
         <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -54,9 +50,10 @@
         <res id="Splash.image" src="images/seadas-installer.png"/>
         <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
-        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
+        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml"/>
         <res id="FinishPanel.finish" src="about/finish.html"/>
     </resources>
+
     <variables>
         <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
@@ -77,8 +74,9 @@
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
         <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
-<!--        <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>-->
+        <!-- no maxVersion: let any Java 21+ pass -->
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
+
         <variable name="extra_clusters" value="seadas-toolbox"/>
     </variables>
 
@@ -103,9 +101,7 @@
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
         </condition>
-        >
     </conditions>
-
 
     <panels>
         <panel classname="HTMLInfoPanel" id="welcome"/>
@@ -115,12 +111,12 @@
         <panel classname="TargetPanel" id="install_dir"/>
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-        <panel classname="ProcessPanel" id="processPanelSpec.xml" />-->
+        <panel classname="ProcessPanel" id="processPanelSpec.xml"/>
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="${JDKPath}"/>
+        <variable name="jdkHome" value="${jdkPath}"/>
     </dynamicvariables>
 
     <packs>
@@ -134,7 +130,7 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" unpack="true"
+            <fileset dir="packs/snap"
                      override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
@@ -164,15 +160,15 @@
                 <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert"/>
             </executable>
         </pack>
+
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
             <description>Optical Toolbox</description>
-            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH\optical-toolbox">
-            </fileset>
+            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH\optical-toolbox"/>
         </pack>
+
         <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
             <description>NASA SeaDAS Toolbox</description>
-            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH\seadas-toolbox">
-            </fileset>
+            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH\seadas-toolbox"/>
         </pack>
     </packs>
 
@@ -184,4 +180,4 @@
         </native>
     </natives>
 
-</installation>
+</izpack:installation>

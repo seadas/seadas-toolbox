@@ -39,7 +39,7 @@
     <resources>
         <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
         <res id="HTMLInfoPanel.info" src="about/readme.html"/>
-        <res id="JDKPathPanel.info" src="about/java_warning.html"/>
+        <res id="JDKPathPanel.jdkpanel" src="about/java_warning.html"/>
         <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
         <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
         <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -55,7 +55,7 @@
     </resources>
 
     <variables>
-        <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
+        <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
@@ -73,10 +73,11 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
-        <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
+        <variable name="JDKPathPanel.minVersion" value="21"/>
         <!-- no maxVersion: let any Java 21+ pass -->
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
-
+        <variable name="JDKPathPanel.versionRegex" value=".*&quot;([0-9.]+)&quot;.*"/>
+        <variable name="JDKPathPanel.error.invalid" value="The selected folder does not contain a valid Java 21+ installation."/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
     </variables>
 
@@ -107,7 +108,7 @@
         <panel classname="HTMLInfoPanel" id="welcome"/>
         <panel classname="InstallationTypePanel"/>
         <panel classname="HTMLLicencePanel" id="licence"/>
-        <panel classname="JDKPathPanel" id="info"/>
+        <panel classname="JDKPathPanel" id="jdkpanel"/>
         <panel classname="TargetPanel" id="install_dir"/>
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
