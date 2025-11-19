@@ -39,7 +39,7 @@
     <resources>
         <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
         <res id="HTMLInfoPanel.info" src="about/readme.html"/>
-        <res id="JDKPathPanel.info" src="about/java_warning.html"/>
+        <res id="JDKPathPanel.jdkpanel" src="about/java_warning.html"/>
         <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
         <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
         <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
@@ -55,7 +55,7 @@
     </resources>
 
     <variables>
-        <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
+        <variable name="INSTALL_PATH" value="$USER_HOME/SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
         <variable name="SNAPDESKTOPROOT" value="$USER_HOME/seadas/snap-desktop"/>
         <variable name="SNAPENGINEROOT" value="$USER_HOME/seadas/snap-engine"/>
@@ -73,10 +73,11 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="runSeaDASAfterInstall" value="${runSeaDASAfterInstall}"/>
 
-        <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
+        <variable name="JDKPathPanel.minVersion" value="21"/>
         <!-- no maxVersion: let any Java 21+ pass -->
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
-
+        <variable name="JDKPathPanel.versionRegex" value=".*&quot;([0-9.]+)&quot;.*"/>
+        <variable name="JDKPathPanel.error.invalid" value="The selected folder does not contain a valid Java 21+ installation."/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
     </variables>
 
@@ -107,7 +108,7 @@
         <panel classname="HTMLInfoPanel" id="welcome"/>
         <panel classname="InstallationTypePanel"/>
         <panel classname="HTMLLicencePanel" id="licence"/>
-        <panel classname="JDKPathPanel" id="info"/>
+        <panel classname="JDKPathPanel" id="jdkpanel"/>
         <panel classname="TargetPanel" id="install_dir"/>
         <panel classname="InstallPanel" id="install"/>
         <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
@@ -116,7 +117,7 @@
     </panels>
 
     <dynamicvariables>
-        <variable name="jdkHome" value="${jdkPath}"/>
+        <variable name="jdkhome" value="${jdkPath}"/>
     </dynamicvariables>
 
     <packs>
@@ -131,51 +132,57 @@
                 Graph Processing Framework.
             </description>
             <fileset dir="packs/snap"
-                     override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
+                     override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
+                <os family="mac"/>
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/winx64" override="true" casesensitive="true" os="windows"
-                     condition="izpack.windowsinstall"/>
+            <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac"
+                     condition="izpack.macinstall"/>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
+                    <include name="*.sh"/>
                     <include name="seadas.clusters"/>
                     <include name="seadas.conf"/>
-                    <include name="seadas.properties"/>
+                    <include name="seadas"/>
                     <include name="snap.clusters"/>
                     <include name="snap.conf"/>
                     <include name="snap.properties"/>
                 </fileset>
             </parsable>
-            <parsable type="shell">
+            <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/bin">
-                    <include name="gpt.bat"/>
-                    <include name="pconvert.bat"/>
+                    <include name="seadas"/>
+                    <include name="*.sh"/>
                 </fileset>
+                <os family="mac"/>
             </parsable>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <os family="windows"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="*.bat, *.exe"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="gpt"/>
-                <fileset targetdir="$INSTALL_PATH\bin" includes="pconvert"/>
+                <os family="mac"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="archiveDotSeaDAS.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="*.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="seadas"/>
+                <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>
             </executable>
         </pack>
-
         <pack name="opttbx" required="yes" preselected="true" id="pack.opttbx">
             <description>Optical Toolbox</description>
-            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH\optical-toolbox"/>
+            <fileset dir="packs/opttbx" casesensitive="true" targetdir="$INSTALL_PATH/optical-toolbox">
+            </fileset>
         </pack>
-
         <pack name="seadas-toolbox" required="yes" preselected="true" id="pack.seadas-toolbox">
             <description>NASA SeaDAS Toolbox</description>
-            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH\seadas-toolbox"/>
+            <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
+            </fileset>
         </pack>
     </packs>
 
     <natives>
         <native type="izpack" name="ShellLink.dll"/>
         <native type="izpack" name="ShellLink_x64.dll"/>
-        <native type="3rdparty" name="COIOSHelper.dll">
+        <native type="3rdparty" name="COIOSHelper.dll" stage="both">
             <os family="windows"/>
         </native>
     </natives>
