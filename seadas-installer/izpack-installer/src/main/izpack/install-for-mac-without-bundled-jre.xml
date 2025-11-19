@@ -131,7 +131,7 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" unpack="true"
+            <fileset dir="packs/snap" 
                      override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
                 <os family="mac"/>
                 <exclude name="bin/*"/>
