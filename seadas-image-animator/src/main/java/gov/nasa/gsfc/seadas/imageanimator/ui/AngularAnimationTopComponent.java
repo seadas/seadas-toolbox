@@ -634,7 +634,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
                         }
                     }
 
-                    final String angularViewName = StringUtils.cleanUpGroupName(angularViewNameBuilder.toString());
+                    final String angularViewName = StringUtilsTmp.cleanUpGroupName(angularViewNameBuilder.toString());
 
                     int symbolIndex = AngularViewShapeProvider.getValidIndex(i, false);
                     DisplayableAngularview angularView = new DisplayableAngularview(angularViewName, symbolIndex);
@@ -1537,5 +1537,7 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         }
 
     }
+
+
 
 }
