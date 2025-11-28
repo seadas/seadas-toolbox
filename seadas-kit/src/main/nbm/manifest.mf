@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 OpenIDE-Module-Display-Category: SeaDAS Toolbox
 OpenIDE-Module-Specification-Version: ${seadas.nbmSpecVersion}
 OpenIDE-Module-Implementation-Version: ${seadas.nbmImplVersion}
-OpenIDE-Module-Layer: gov/nasa/gsfc/seadas/layer.xml
+OpenIDE-Module-Layer: gov/nasa/gsfc/seadas/layer_snap.xml
 AutoUpdate-Show-In-Client: true
 AutoUpdate-Essential-Module: false
 OpenIDE-Module-Long-Description: The SeaDAS about description
