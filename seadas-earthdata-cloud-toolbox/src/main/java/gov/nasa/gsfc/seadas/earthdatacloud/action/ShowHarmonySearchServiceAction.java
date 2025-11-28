@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.action;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySearchServiceDiaglog;
+import gov.nasa.gsfc.seadas.earthdatacloud.util.MenuLocationUtils;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
@@ -27,7 +28,8 @@ import java.awt.event.ActionEvent;
 )
 
 @ActionReferences({
-        @ActionReference(path = "Menu/Earthdata-Cloud", position = 40)
+        @ActionReference(path = MenuLocationUtils.EARTHDATA_CLOUD_MENU_LOCATION,
+                position = 40)
 })
 
 @NbBundle.Messages({
@@ -35,17 +37,17 @@ import java.awt.event.ActionEvent;
         "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
 })
 
-public class ShowHarmonySearchServiceAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar  {
+public class ShowHarmonySearchServiceAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar {
 
     Product product;
 
     private final Lookup lookup;
 
-    public  ShowHarmonySearchServiceAction() {
+    public ShowHarmonySearchServiceAction() {
         this(null);
     }
 
-    public   ShowHarmonySearchServiceAction(Lookup lookup) {
+    public ShowHarmonySearchServiceAction(Lookup lookup) {
         putValue(ACTION_COMMAND_KEY, getClass().getName());
         putValue(SELECTED_KEY, false);
         putValue(NAME, Bundle.CTL_HarmonySearchServiceActionName());

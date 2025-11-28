@@ -16,6 +16,7 @@
 package gov.nasa.gsfc.seadas.processing.help.videoTutorials;
 
 import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
+import gov.nasa.gsfc.seadas.processing.help.MenuLocationUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
@@ -35,7 +36,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowVideo04Action_DisplayName",
         popupText = "#CTL_ShowVideo04Action_ShortDescription")
 @ActionReference(
-        path = "Menu/Video-Tutorials/Science Processors (Installation)",
+        path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION +  "/Science Processors (Installation)",
         position = 20)
 @NbBundle.Messages({
         "CTL_ShowVideo04Action_DisplayName=Set up Python for the Science Processors (Mac, Linux)",
