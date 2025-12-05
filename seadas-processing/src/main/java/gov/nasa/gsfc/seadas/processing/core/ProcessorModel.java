@@ -1501,7 +1501,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
                     setProgramName(L1AEXTRACT_MODIS);
                     xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
-                } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
+//                } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
+                } else if ((missionName.indexOf("SeaWiFS") != -1 || missionName.indexOf("CZCS") != -1 ) && fileType.indexOf("1A") != -1) {
                     setProgramName(L1AEXTRACT_SEAWIFS);
                     xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
                 } else if (missionName.indexOf("OCI") != -1 && fileType.indexOf("1B") != -1) {
