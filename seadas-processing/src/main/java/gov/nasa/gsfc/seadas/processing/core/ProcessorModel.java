@@ -85,8 +85,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     final public String L1AEXTRACT_MODIS = "l1aextract_modis",
             L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
-            L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
-            L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
+//            L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
+//            L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
+            L1AEXTRACT_NETCDF = "l1aextract_netcdf",
+            L1AEXTRACT_NETCDF_XML_FILE = "l1aextract_netcdf.xml",
             L1AEXTRACT_VIIRS = "l1aextract_viirs",
             L1AEXTRACT_VIIRS_XML_FILE = "l1aextract_viirs.xml",
             L1BEXTRACT_OCI = "l1bextract_oci",
@@ -1501,10 +1503,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
                     setProgramName(L1AEXTRACT_MODIS);
                     xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
-//                } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
-                } else if ((missionName.indexOf("SeaWiFS") != -1 || missionName.indexOf("CZCS") != -1 ) && fileType.indexOf("1A") != -1) {
-                    setProgramName(L1AEXTRACT_SEAWIFS);
-                    xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
+                } else if ((missionName.indexOf("SeaWiFS") != -1
+                        || missionName.indexOf("OCTS") != -1
+                        || missionName.indexOf("CZCS") != -1 )
+                        && fileType.indexOf("1A") != -1) {
+                    setProgramName(L1AEXTRACT_NETCDF);
+                    xmlFileName = L1AEXTRACT_NETCDF_XML_FILE;
                 } else if (missionName.indexOf("OCI") != -1 && fileType.indexOf("1B") != -1) {
                     setProgramName(L1BEXTRACT_OCI);
                     xmlFileName = L1BEXTRACT_OCI_XML_FILE;
