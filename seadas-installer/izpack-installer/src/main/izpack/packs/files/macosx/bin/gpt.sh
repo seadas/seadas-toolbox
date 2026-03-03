@@ -509,6 +509,19 @@ if [ -z "$java_exec" ]; then
   exit 1
 fi
 
+echo "----------------------------------------"
+echo "GPT Launcher Debug Info"
+echo "app_home: $app_home"
+echo "app_java_home (detected): $app_java_home"
+echo "java_exec (chosen): $java_exec"
+if [ -x "$java_exec" ]; then
+  "$java_exec" -version 2>&1
+else
+  echo "WARNING: java_exec is not executable!"
+fi
+echo "local_classpath: $local_classpath"
+echo "----------------------------------------"
+
 return_code=0
 if [ "$has_space_options" = "true" ]; then
 $INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
