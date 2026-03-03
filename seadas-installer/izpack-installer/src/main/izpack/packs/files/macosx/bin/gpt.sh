@@ -442,30 +442,6 @@ if [ -z "$app_java_home" ]; then
   exit 83
 fi
 
-# Choose Java executable (prefer bundled JRE if present)
-
-# 1) Bundled JRE - Linux-style layout
-if [ -x "$app_home/jdk-21.0.8+9-jre/bin/java" ]; then
-  java_app_home="$app_home/jdk-21.0.8+9-jre/bin/java"
-fi
-
-# 2) Bundled JRE - macOS-style layout (common for .jdk bundles)
-if [ -z "$java_app_home" ] && [ -x "$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java" ]; then
-  java_app_home="$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java"
-fi
-
-# 3) Fallback: the JVM you already discovered earlier (app_java_home)
-if [ -z "$java_app_home" ] && [ -n "$app_java_home" ] && [ -x "$app_java_home/bin/java" ]; then
-  java_app_home="$app_java_home/bin/java"
-fi
-
-if [ -z "$java_app_home" ]; then
-  echo "ERROR: No suitable Java found. app_java_home='$app_java_home' app_home='$app_home'" 1>&2
-  exit 1
-fi
-
-
-
 local_classpath=""
 i4j_classpath="$app_home/.install4j/i4jruntime.jar:$app_home/.install4j/launcher4522bb12.jar"
 add_class_path "$i4j_classpath"
@@ -509,12 +485,36 @@ else
   has_space_options=true
 fi
 
+
+# Choose Java executable (prefer bundled JRE if present)
+java_exec=""
+
+# 1) Bundled JRE - Linux-style layout
+if [ -x "$app_home/jdk-21.0.8+9-jre/bin/java" ]; then
+  java_exec="$app_home/jdk-21.0.8+9-jre/bin/java"
+fi
+
+# 2) Bundled JRE - macOS-style layout (common for .jdk bundles)
+if [ -z "$java_exec" ] && [ -x "$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java" ]; then
+  java_exec="$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java"
+fi
+
+# 3) Fallback: the JVM you already discovered earlier (app_java_home)
+if [ -z "$java_exec" ] && [ -n "$app_java_home" ] && [ -x "$app_java_home/bin/java" ]; then
+  java_exec="$app_java_home/bin/java"
+fi
+
+if [ -z "$java_exec" ]; then
+  echo "ERROR: No suitable Java found. app_java_home='$app_java_home' app_home='$app_home'" 1>&2
+  exit 1
+fi
+
 return_code=0
 if [ "$has_space_options" = "true" ]; then
-$INSTALL4J_JAVA_PREFIX exec "$app_java_home/bin/java" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
+$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
 return_code=$?
 else
-$INSTALL4J_JAVA_PREFIX exec "$app_java_home/bin/java" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
+$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
 return_code=$?
 fi
 
