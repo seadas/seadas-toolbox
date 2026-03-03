@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.util;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -8,6 +10,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
@@ -15,11 +19,9 @@ public class ImagePreviewHelper {
     private JWindow previewWindow;
     private JLabel previewLabel;
     private String currentImageUrl = null;
-
     private String hoveringFileName = null;
     private String finishedFileName = null;
     boolean startingUp = true;
-    private boolean previewIsDisplayed = false;
     Thread th = null;
 
     public ImagePreviewHelper() {
@@ -29,8 +31,6 @@ public class ImagePreviewHelper {
         previewWindow.setSize(300, 300);
         previewWindow.setAlwaysOnTop(true);
     }
-
-
 
     public void attachToTable(JTable table, Map<String, String> fileLinkMap, JDialog parentDialog) {
 
@@ -151,20 +151,12 @@ public class ImagePreviewHelper {
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
                         table.setBorder(BorderFactory.createEmptyBorder());
-
-
-
-
                         hideImagePreview();
                         finishedFileName = null;
                     }
                 }
-
-
             }
         });
-
-
 
 
         table.addMouseListener(new MouseAdapter() {
@@ -185,7 +177,6 @@ public class ImagePreviewHelper {
             }
         });
     }
-
 
     private boolean stringCompareEquals(String string1, String string2) {
 
@@ -218,8 +209,6 @@ public class ImagePreviewHelper {
         }
     }
 
-
-
     private void killImagePreviewThread() {
         if (th != null) {
             th.interrupt();
@@ -245,11 +234,48 @@ public class ImagePreviewHelper {
         }
     }
 
-
-
+//    private String getPreviewUrl(String fileName) {
+//        return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
+//    }
 
     private String getPreviewUrl(String fileName) {
-        return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
+        try {
+            String encoded = java.net.URLEncoder.encode(fileName, java.nio.charset.StandardCharsets.UTF_8);
+            String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.umm_json" +
+                    "?readable_granule_name=" + encoded +
+                    "&provider=OB_CLOUD";
+
+            URL url = new URL(cmrUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            try (InputStream is = conn.getInputStream()) {
+                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+                String response = s.hasNext() ? s.next() : "";
+                JSONObject json = new JSONObject(response);
+                JSONArray items = json.getJSONArray("items");
+
+                if (items.length() > 0) {
+                    JSONObject umm = items.getJSONObject(0).getJSONObject("umm");
+                    JSONArray related = umm.getJSONArray("RelatedUrls");
+
+                    for (int i = 0; i < related.length(); i++) {
+                        JSONObject entry = related.getJSONObject(i);
+                        String type = entry.optString("Type");
+                        String urlStr = entry.optString("URL");
+
+                        if (type.toUpperCase().contains("VISUALIZATION") ||
+                                type.toUpperCase().contains("BROWSE")) {
+                            return urlStr;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to fetch preview URL: " + e.getMessage());
+        }
+        return null;
     }
 
     private void showImagePreview(String imageUrl, Component parent, Point screenLocation, JDialog parentDialog) {
@@ -282,33 +308,18 @@ public class ImagePreviewHelper {
                     previewWindow.pack();
 
                 }
-
                 windowHeight = previewWindow.getHeight();
-
-
-
-
 
                 Point parentDialogLocation = parentDialog.getLocationOnScreen();
                 Point parentDialogLocationBottom = new Point(parentDialogLocation.x, parentDialogLocation.y + parentDialog.getHeight());
                 Point tableLocationTop = parent.getLocationOnScreen();
-
-
                 int offsetX = parentDialog.getWidth() + 5;
-
-
-
-
 
                 int locationY = tableLocationTop.y;
                 int offsetY = (int) Math.abs(parentDialogLocation.y - tableLocationTop.y);
                 offsetY = (int) Math.round(0.6 * offsetY);
 
                 boolean floating = false;
-
-
-
-
 
                 if (windowHeight < (int) Math.round(0.1 * parentDialog.getHeight())) {
                     floating = true;
@@ -324,11 +335,7 @@ public class ImagePreviewHelper {
                     locationY = screenLocation.y - (int) Math.round(0.5 * windowHeight);
                 }
 
-
-
                 previewWindow.setLocation(parentDialogLocation.x + offsetX, locationY);
-
-
                 previewWindow.setVisible(true);
             } else {
                 hideImagePreview();
@@ -343,21 +350,4 @@ public class ImagePreviewHelper {
         currentImageUrl = null;
     }
 
-    public void showFullImageDialog(String fileName, Component parent) {
-        try {
-            String imageUrl = getPreviewUrl(fileName);
-            Image image = ImageIO.read(new URL(imageUrl));
-            if (image != null) {
-                ImageIcon icon = new ImageIcon(image);
-                JLabel label = new JLabel(icon);
-                JScrollPane scrollPane = new JScrollPane(label);
-                scrollPane.setPreferredSize(new Dimension(700, 700));
-                JOptionPane.showMessageDialog(parent, scrollPane, "Full Image Preview", JOptionPane.PLAIN_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(parent, "Image not available.");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(parent, "Failed to load image.");
-        }
-    }
 }
