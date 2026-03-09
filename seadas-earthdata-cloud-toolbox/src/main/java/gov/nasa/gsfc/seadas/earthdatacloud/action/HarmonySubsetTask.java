@@ -1,33 +1,46 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.action;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySubsetServiceDialog;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.time.Duration;
+import java.util.Locale;
+import java.util.Scanner;
 
+/**
+ * Clean Harmony subset task:
+ *  - builds OGC Coverages URL correctly (granuleid lowercase)
+ *  - detects OPS vs UAT consistently
+ *  - uses dialog meta first, only calls CMR when needed
+ *  - token is optional; only required if server demands it
+ *  - supports async Harmony jobs + downloads NetCDF link
+ */
 public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
-    private JProgressBar progressBar;
-    private JButton subsetButton;
-    private JButton cancelButton;
-    private HarmonySubsetServiceDialog dialog;
-    private JSONObject subsetParameters;
 
-    public HarmonySubsetTask(JSONObject subsetParameters, JProgressBar progressBar, 
-                           JButton subsetButton, JButton cancelButton, 
-                           HarmonySubsetServiceDialog dialog) {
+    private final JSONObject subsetParameters;
+    private final JProgressBar progressBar;
+    private final JButton subsetButton;
+    private final JButton cancelButton;
+    private final HarmonySubsetServiceDialog dialog;
+
+    private static final int CONNECT_TIMEOUT_MS = 30_000;
+    private static final int READ_TIMEOUT_MS    = 5 * 60_000;
+
+    public HarmonySubsetTask(JSONObject subsetParameters,
+                             JProgressBar progressBar,
+                             JButton subsetButton,
+                             JButton cancelButton,
+                             HarmonySubsetServiceDialog dialog) {
         this.subsetParameters = subsetParameters;
         this.progressBar = progressBar;
         this.subsetButton = subsetButton;
@@ -35,644 +48,532 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         this.dialog = dialog;
     }
 
-    @Override
-    public JSONObject doInBackground() throws Exception {
-        try {
-            System.out.println("=== HarmonySubsetTask.doInBackground() started ===");
-            dialog.updateStatus("Starting subset request...");
-            
-            // Get authentication token from production endpoint
-            System.out.println("Getting authentication token...");
-            String bearerToken = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
-            if (bearerToken != null && bearerToken.length() > 12) {
-                System.out.println("Bearer token (start/end): " + bearerToken.substring(0, 6) + "..." + bearerToken.substring(bearerToken.length() - 6));
-            } else {
-                System.out.println("Bearer token is null or too short to display.");
-            }
-            
-            // Build Harmony URL using OGC API format
-            System.out.println("Building Harmony OGC API URL...");
-            String harmonyUrl = buildHarmonySubsetUrl();
-            System.out.println("Harmony URL: " + harmonyUrl);
-            
-            // Log the collection ID being used
-            String collectionId = harmonyUrl.substring(harmonyUrl.indexOf("harmony.earthdata.nasa.gov/") + 30);
-            if (collectionId.contains("/")) {
-                collectionId = collectionId.substring(0, collectionId.indexOf('/'));
-            }
-            System.out.println("Using collection ID: " + collectionId);
-            
-            // Use GET request for OGC API
-            // --- NEW LOGIC: Check content type and save binary if needed ---
-            java.net.URL url = new java.net.URL(harmonyUrl);
-            java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            if (bearerToken != null) {
-                connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
-            }
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-            connection.setRequestProperty("Accept", "*/*");
-            connection.setInstanceFollowRedirects(true);
-            int status = connection.getResponseCode();
-            System.out.println("Response Code: " + status);
-            String contentType = connection.getContentType();
-            System.out.println("Content-Type: " + contentType);
-            if (status >= 400) {
-                // Read error stream as text
-                StringBuilder content = new StringBuilder();
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null) {
-                        content.append(inputLine);
-                    }
-                }
-                throw new Exception("HTTP request failed with status: " + status + ". Response: " + content.toString());
-            }
-            if (contentType != null && contentType.toLowerCase().contains("application/json")) {
-                // Read as JSON (text)
-                StringBuilder content = new StringBuilder();
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null) {
-                        content.append(inputLine);
-                    }
-                }
-                String response = content.toString();
-                System.out.println("Harmony response: " + response.substring(0, Math.min(200, response.length())) + "...");
-                if (response.contains("jobID") || response.contains("status")) {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    if (jsonResponse.has("jobID")) {
-                        String jobId = jsonResponse.getString("jobID");
-                        String jobUrl = "https://harmony.earthdata.nasa.gov/jobs/" + jobId;
-                        System.out.println("Job ID received: " + jobId);
-                        dialog.updateStatus("Subset job created. Job ID: " + jobId);
-                        return pollJobCompletion(jobUrl, bearerToken);
-                    } else {
-                        System.out.println("Synchronous response received");
-                        dialog.updateStatus("Subset completed synchronously");
-                        return jsonResponse;
-                    }
-                } else {
-                    // This might be an error or direct JSON response
-                    JSONObject result = new JSONObject();
-                    result.put("response", response);
-                    result.put("url", harmonyUrl);
-                    return result;
-                }
-            } else {
-                // --- Binary response: Save to file with _subsetted.nc convention ---
-                String inputUrl = subsetParameters.getString("url");
-                String originalFileName = getOriginalFileName(inputUrl);
-                String subsettedFileName = getSubsettedFileName(originalFileName);
-                Path tempFile = Files.createTempFile("harmony_subset_", "_" + subsettedFileName);
-                try (InputStream in = connection.getInputStream();
-                     FileOutputStream out = new FileOutputStream(tempFile.toFile())) {
-                    byte[] buffer = new byte[8192];
-                    int bytesRead;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, bytesRead);
-                    }
-                }
-                System.out.println("Saved Harmony subset to: " + tempFile.toAbsolutePath());
-                dialog.updateStatus("Subset file saved to: " + tempFile.toAbsolutePath());
-                JSONObject result = new JSONObject();
-                result.put("savedFile", tempFile.toAbsolutePath().toString());
-                result.put("url", harmonyUrl);
-                result.put("outputFileName", subsettedFileName);
-                return result;
-            }
-            
-        } catch (Exception e) {
-            System.err.println("Exception in HarmonySubsetTask.doInBackground(): " + e.getMessage());
-            e.printStackTrace();
-            dialog.updateStatus("Error during subset request: " + e.getMessage());
-            throw e;
+    // ------------------------ Environment ------------------------
+
+    private static final class Env {
+        final String harmonyBase;
+        final String cmrBase;
+        Env(String harmonyBase, String cmrBase) {
+            this.harmonyBase = harmonyBase;
+            this.cmrBase = cmrBase;
         }
     }
 
-    private String buildHarmonySubsetUrl() {
-        // Extract collection ID from the file URL
-        String inputUrl = subsetParameters.getString("url");
-        
-        // Try to determine collection ID based on file content/name patterns (this now includes CMR lookup)
-        String collectionId = determineCollectionIdFromFileName(inputUrl);
-        
-        if (collectionId == null) {
-            // Prompt user for manual entry if all else fails
-            String userInput = javax.swing.JOptionPane.showInputDialog(null, 
-                "Could not determine collection ID for file:\n" + inputUrl + 
-                "\n\nPlease enter the collection concept ID (must end with -OB_CLOUD):" +
-                "\n• PACE OCI L2: C3385050043-OB_CLOUD" +
-                "\n• PACE OCI L3 CHL: C3300834690-OB_CLOUD" +
-                "\n• MODIS: C3020920290-OB_CLOUD" +
-                "\n• VIIRS: C1940468264-OB_CLOUD", 
-                "Enter Collection ID", 
-                javax.swing.JOptionPane.QUESTION_MESSAGE);
-            if (userInput != null && !userInput.trim().isEmpty()) {
-                collectionId = userInput.trim();
-                // Validate that it ends with OB_CLOUD
-                if (!collectionId.endsWith("-OB_CLOUD")) {
-                    throw new RuntimeException("Invalid collection ID. All collections must end with '-OB_CLOUD'. Got: " + collectionId);
-                }
-            } else {
-                throw new RuntimeException("Could not determine collection ID for file URL: " + inputUrl);
-            }
-        }
-
-        System.out.println("Using collection ID: " + collectionId);
-
-        // Extract granule ID from the file URL if possible
-        String granuleId = extractGranuleIdFromUrl(inputUrl);
-        
-        // Build the OGC API Coverages URL
-        StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append("https://harmony.earthdata.nasa.gov/")
-                  .append(collectionId)
-                  .append("/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset");
-        
-        // Add query parameters
-        boolean firstParam = true;
-
-        // Add granule ID if available
-        if (granuleId != null) {
-            urlBuilder.append(firstParam ? "?" : "&").append("granuleId=").append(granuleId);
-            firstParam = false;
-        }
-
-        // Add spatial subset using OGC API format
-        if (subsetParameters.has("lonMin") && subsetParameters.has("latMin") &&
-            subsetParameters.has("lonMax") && subsetParameters.has("latMax")) {
-            String latSubset = String.format("subset=lat(%s:%s)",
-                subsetParameters.getString("latMin"),
-                subsetParameters.getString("latMax"));
-            String lonSubset = String.format("subset=lon(%s:%s)",
-                subsetParameters.getString("lonMin"),
-                subsetParameters.getString("lonMax"));
-            urlBuilder.append(firstParam ? "?" : "&").append(latSubset);
-            urlBuilder.append("&").append(lonSubset);
-            firstParam = false;
-        }
-
-        // Add temporal subset if explicitly requested (optional - many collections don't support it)
-        if (subsetParameters.has("includeTemporal") && subsetParameters.getBoolean("includeTemporal") && 
-            subsetParameters.has("startDate") && subsetParameters.has("endDate")) {
-            try {
-                String startDate = subsetParameters.getString("startDate") + "T00:00:00.000Z";
-                String endDate = subsetParameters.getString("endDate") + "T23:59:59.999Z";
-                urlBuilder.append(firstParam ? "?" : "&").append("subset=time(\"").append(startDate).append("\":\"").append(endDate).append("\")");
-                firstParam = false;
-                System.out.println("Added temporal subset: " + startDate + " to " + endDate);
-            } catch (Exception e) {
-                System.out.println("Warning: Could not add temporal subset: " + e.getMessage());
-                // Continue without temporal subset
-            }
-        } else {
-            System.out.println("Skipping temporal subset (not requested or not supported by this collection)");
-        }
-
-        // Note: Removed variables, format, and crs parameters to match working example
-        // The working example only uses: granuleId, subset, skipPreview, pixelSubset
-
-        // Add standard parameters for better performance
-        urlBuilder.append(firstParam ? "?" : "&").append("skipPreview=true&pixelSubset=True");
-
-        return urlBuilder.toString();
-    }
-    
-
-    
-    /**
-     * Determine collection ID based on file name patterns
-     */
-    private String determineCollectionIdFromFileName(String fileUrl) {
-        String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-        System.out.println("Analyzing file name: " + fileName);
-        
-        // PACE OCI patterns - use production collection IDs
-        if (fileName.contains("PACE_OCI") || fileName.contains("OCI")) {
-            // For production, use available PACE collections
-            if (fileName.contains("L2")) {
-                // First try to get the actual collection ID from CMR for this specific granule
-                String actualCollectionId = getCollectionIdForGranule(fileName);
-                if (actualCollectionId != null) {
-                    System.out.println("Found actual collection ID for granule: " + actualCollectionId);
-                    return actualCollectionId;
-                }
-                System.out.println("Detected PACE OCI L2 file, using production collection: C3385050043-OB_CLOUD");
-                return "C3385050043-OB_CLOUD"; // From working example
-            } else if (fileName.contains("L3") && fileName.contains("CHL")) {
-                System.out.println("Detected PACE OCI L3 CHL file, using production collection: C3300834690-OB_CLOUD");
-                return "C3300834690-OB_CLOUD"; // From working example
-            } else {
-                System.out.println("Detected PACE OCI file, using default production collection: C3385050043-OB_CLOUD");
-                return "C3385050043-OB_CLOUD";
-            }
-        }
-        
-        // MODIS patterns - use production collection IDs
-        if (fileName.contains("MODIS") || fileName.contains("AQUA") || fileName.contains("TERRA")) {
-            System.out.println("Detected MODIS file, using production collection: C3020920290-OB_CLOUD");
-            return "C3020920290-OB_CLOUD";
-        }
-        
-        // VIIRS patterns - use production collection IDs
-        if (fileName.contains("VIIRS") || fileName.contains("SNPP") || fileName.contains("JPSS")) {
-            System.out.println("Detected VIIRS file, using production collection: C1940468264-OB_CLOUD");
-            return "C1940468264-OB_CLOUD";
-        }
-        
-        // Default to a working production collection
-        System.out.println("Using default production collection: C3385050043-OB_CLOUD");
-        return "C3385050043-OB_CLOUD";
+    private Env detectEnv(String sourceUrl) {
+        return new Env(
+                "https://harmony.earthdata.nasa.gov",
+                "https://cmr.earthdata.nasa.gov"
+        );
     }
 
-    /**
-     * Get the actual collection ID for a specific granule from CMR
-     */
-    private String getCollectionIdForGranule(String fileName) {
-        try {
-            String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
-            System.out.println("Looking up collection ID for granule: " + cmrUrl);
-            
-            java.net.URL url = new java.net.URL(cmrUrl);
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-
-            int status = conn.getResponseCode();
-            if (status == 200) {
-                java.io.InputStream is = conn.getInputStream();
-                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                String response = s.hasNext() ? s.next() : "";
-                org.json.JSONObject json = new org.json.JSONObject(response);
-                org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
-                
-                if (entries.length() > 0) {
-                    String collectionId = entries.getJSONObject(0).getString("collection_concept_id");
-                    System.out.println("Found collection ID for granule: " + collectionId);
-                    return collectionId;
-                } else {
-                    System.out.println("No granule found in CMR for file: " + fileName);
-                }
-            } else {
-                System.err.println("CMR request failed with status: " + status);
-            }
-        } catch (Exception e) {
-            System.err.println("Error getting collection ID for granule: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private String buildHarmonyJobRequest() {
-        JSONObject jobRequest = new JSONObject();
-        
-        // Extract collection ID from input URL
-        String inputUrl = subsetParameters.getString("url");
-        String collectionId = extractCollectionId(inputUrl);
-        
-        // Build the job request
-        jobRequest.put("collection", collectionId);
-        
-        // Add subset parameters
-        JSONObject subset = new JSONObject();
-        
-        // Spatial subset
-        if (subsetParameters.has("latMin") && subsetParameters.has("latMax") && 
-            subsetParameters.has("lonMin") && subsetParameters.has("lonMax")) {
-            JSONObject spatial = new JSONObject();
-            spatial.put("lat", new JSONArray().put(subsetParameters.getDouble("latMin")).put(subsetParameters.getDouble("latMax")));
-            spatial.put("lon", new JSONArray().put(subsetParameters.getDouble("lonMin")).put(subsetParameters.getDouble("lonMax")));
-            subset.put("spatial", spatial);
-        }
-        
-        // Temporal subset
-        if (subsetParameters.has("startDate") && subsetParameters.has("endDate")) {
-            String startDate = subsetParameters.getString("startDate") + "T00:00:00Z";
-            String endDate = subsetParameters.getString("endDate") + "T23:59:59Z";
-            subset.put("temporal", new JSONArray().put(startDate).put(endDate));
-        }
-        
-        // Variables
-        if (subsetParameters.has("variables")) {
-            subset.put("variables", subsetParameters.getJSONArray("variables"));
-        }
-        
-        if (subset.length() > 0) {
-            jobRequest.put("subset", subset);
-        }
-        
-        // Output options
-        if (subsetParameters.has("format")) {
-            jobRequest.put("format", subsetParameters.getString("format"));
-        }
-        
-        if (subsetParameters.has("crs")) {
-            jobRequest.put("crs", subsetParameters.getString("crs"));
-        }
-        
-        return jobRequest.toString();
-    }
-
-    private String extractCollectionId(String inputUrl) {
-        System.out.println("Extracting collection ID from URL: " + inputUrl);
-        
-        // First try to extract from URL using regex
-        String collectionId = gov.nasa.gsfc.seadas.earthdatacloud.ui.HarmonySubsetServiceDialog.extractCollectionIdFromUrl(inputUrl);
-        
-        // Use the extracted collection ID if available
-        if (collectionId != null) {
-            System.out.println("Extracted collection ID from URL: " + collectionId);
-            return collectionId;
-        }
-        
-        // Try to determine based on file name patterns
-        collectionId = determineCollectionIdFromFileName(inputUrl);
-        if (collectionId != null) {
-            System.out.println("Determined collection ID from file name: " + collectionId);
-            return collectionId;
-        }
-        
-        // If all else fails, use a reasonable default
-        System.out.println("Using default production collection: C3385050043-OB_CLOUD");
-        return "C3385050043-OB_CLOUD";
-    }
-
-    private JSONObject pollJobCompletion(String jobUrl, String bearerToken) throws Exception {
-        System.out.println("Polling job completion at: " + jobUrl);
-        dialog.updateStatus("Polling job status...");
-        
-        int attempts = 0;
-        final int MAX_ITERATIONS = 60; // 5 minutes with 5-second intervals
-        boolean done = false;
-        JSONObject jsonResponse = null;
-        
-        while (attempts < MAX_ITERATIONS && !done) {
-            attempts++;
-            System.out.println("Polling attempt " + attempts + "/" + MAX_ITERATIONS);
-            
-            try {
-                Thread.sleep(5000); // Wait 5 seconds between polls
-                
-                String response = fetchContent(jobUrl, bearerToken);
-                jsonResponse = new JSONObject(response);
-                
-                String status = jsonResponse.getString("status");
-                System.out.println("Job status: " + status);
-                dialog.updateStatus("Job status: " + status);
-                
-                if ("successful".equals(status)) {
-                    done = true;
-                    System.out.println("Job completed successfully");
-                } else if ("failed".equals(status)) {
-                    done = true;
-                    String message = jsonResponse.has("message") ? jsonResponse.getString("message") : "Job failed";
-                    throw new Exception("Job failed: " + message);
-                } else if ("running".equals(status) || "accepted".equals(status)) {
-                    // Continue polling
-                    progressBar.setValue((attempts * 100) / MAX_ITERATIONS);
-                } else {
-                    // Unknown status, continue polling
-                    System.out.println("Unknown status: " + status + ", continuing to poll");
-                }
-                
-            } catch (Exception e) {
-                System.err.println("Error during polling: " + e.getMessage());
-                if (attempts >= MAX_ITERATIONS) {
-                    throw e;
-                }
-            }
-        }
-        
-        if (!done) {
-            throw new Exception("Job polling timed out after " + MAX_ITERATIONS + " attempts");
-        }
-        
-        return jsonResponse;
-    }
-
-    /**
-     * Fetch content from URL using GET request
-     */
-    public static String fetchContent(String urlString, String bearerToken) throws Exception {
-        StringBuilder content = new StringBuilder();
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        connection.setRequestMethod("GET");
-        if (bearerToken != null) {
-            connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
-        }
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-        connection.setRequestProperty("Accept", "*/*");
-        connection.setInstanceFollowRedirects(true);
-
-        int status = connection.getResponseCode();
-        if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER) {
-            String newUrl = connection.getHeaderField("Location");
-            connection = (HttpURLConnection) new URL(newUrl).openConnection();
-            connection.setRequestMethod("GET");
-            if (bearerToken != null) {
-                connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
-            }
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-            connection.setRequestProperty("Accept", "*/*");
-            status = connection.getResponseCode();
-        }
-
-        System.out.println("Response Code: " + status);
-
-        if (status >= 400) {
-            // Read error stream
-            try (java.io.BufferedReader in = new java.io.BufferedReader(
-                    new java.io.InputStreamReader(connection.getErrorStream()))) {
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine);
-                }
-            }
-            throw new Exception("HTTP request failed with status: " + status + ". Response: " + content.toString());
-        }
-
-        // Read response
-        try (java.io.BufferedReader in = new java.io.BufferedReader(
-                new java.io.InputStreamReader(connection.getInputStream()))) {
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-        }
-
-        return content.toString();
-    }
-
-    // Utility to extract a filename from a URL (for saving)
-    private String extractFileNameFromUrl(String url) {
-        try {
-            int lastSlash = url.lastIndexOf('/');
-            String afterSlash = (lastSlash >= 0) ? url.substring(lastSlash + 1) : url;
-            int qIdx = afterSlash.indexOf('?');
-            if (qIdx > 0) afterSlash = afterSlash.substring(0, qIdx);
-            if (afterSlash.isEmpty()) return "subset.nc";
-            if (!afterSlash.endsWith(".nc") && !afterSlash.endsWith(".hdf")) return afterSlash + ".nc";
-            return afterSlash;
-        } catch (Exception e) {
-            return "subset.nc";
-        }
-    }
-
-    // Utility to extract the original file name from the input URL
-    private String getOriginalFileName(String url) {
-        try {
-            int lastSlash = url.lastIndexOf('/');
-            String baseName = (lastSlash >= 0) ? url.substring(lastSlash + 1) : url;
-            int qIdx = baseName.indexOf('?');
-            if (qIdx > 0) baseName = baseName.substring(0, qIdx);
-            return baseName;
-        } catch (Exception e) {
-            return "input_file";
-        }
-    }
-
-    // Utility to generate the subsetted file name with _subsetted.nc convention
-    private String getSubsettedFileName(String originalName) {
-        int dotIdx = originalName.lastIndexOf('.');
-        if (dotIdx > 0) {
-            // Insert _subsetted before extension
-            return originalName.substring(0, dotIdx) + "_subsetted" + originalName.substring(dotIdx);
-        } else {
-            // No extension, just append
-            return originalName + "_subsetted.nc";
-        }
-    }
+    // ------------------------ Main worker ------------------------
 
     @Override
-    protected void process(java.util.List<Void> chunks) {
-        // Not used in this implementation
+    protected JSONObject doInBackground() throws Exception {
+        updateUiStart();
+
+        String sourceUrl = subsetParameters.optString("url", null);
+        if (sourceUrl == null || sourceUrl.isBlank()) {
+            throw new IllegalArgumentException("Missing 'url' in subset parameters");
+        }
+
+        Env env = detectEnv(sourceUrl);
+        status("Env: Harmony=" + env.harmonyBase + " | CMR=" + env.cmrBase);
+
+        // Token is OPTIONAL. We'll attach it if we have it.
+        String token = tryGetToken();
+
+        // Resolve granuleId + collectionId (concept ids)
+        ResolvedIds ids = resolveIds(env, sourceUrl, token);
+
+        // Build OGC URL
+        String ogcUrl = buildOgcUrl(env, ids.collectionConceptId, ids.granuleConceptId);
+        status("Harmony URL: " + ogcUrl);
+
+        // Execute OGC request (sync or async job JSON)
+        JSONObject result = executeOgc(env, ogcUrl, token);
+
+        // If async job: poll then download final NetCDF link(s) to temp folder
+        if (result.has("jobID")) {
+            String jobId = result.getString("jobID");
+            status("Job created: " + jobId + " — polling...");
+            JSONObject finalJob = pollJob(env, jobId, token, Duration.ofMinutes(10));
+            String status = finalJob.optString("status", "");
+            status("Job status: " + status);
+
+            if ("failed".equalsIgnoreCase(status)) {
+                throw new IOException("Harmony job failed: " + truncate(finalJob.toString(), 400));
+            }
+
+            // Download NetCDF links (best effort)
+            int downloaded = downloadJobNetcdfAssets(finalJob, token);
+            finalJob.put("downloadedCount", downloaded);
+            return finalJob;
+        }
+
+        // If sync binary: executeOgc already saved and returns {"savedFile": "..."}
+        return result;
     }
 
     @Override
     protected void done() {
-        if (isCancelled()) {
-            progressBar.setValue(0);
-            progressBar.setString("Cancelled");
-            dialog.updateStatus("Subset request was cancelled");
-            dialog.subsetCompleted(false, "Request was cancelled");
-        } else {
-            try {
-                JSONObject result = get();
-                progressBar.setValue(100);
-                progressBar.setString("Completed");
-                // Handle successful completion
-                if (result != null && result.has("links")) {
-                    JSONArray links = result.getJSONArray("links");
-                    dialog.updateStatus("Subset completed! Found " + links.length() + " result files.");
-                    // Download the results
-                    downloadResults(links);
-                    dialog.subsetCompleted(true, "Subset completed successfully");
-                } else if (result != null && result.has("savedFile")) {
-                    String filePath = result.getString("savedFile");
-                    String fileName = result.has("outputFileName") ? result.getString("outputFileName") : filePath;
-                    dialog.updateStatus("Subset completed! File saved to: " + filePath);
-                    JOptionPane.showMessageDialog(dialog, "Subset request completed successfully!\nSaved file: " + fileName, "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dialog.subsetCompleted(true, "Subset file saved to: " + filePath);
-                } else {
-                    dialog.subsetCompleted(false, "No results found in response");
-                }
-            } catch (Exception e) {
-                progressBar.setValue(0);
-                progressBar.setString("Failed");
-                dialog.updateStatus("Subset failed: " + e.getMessage());
-                dialog.subsetCompleted(false, e.getMessage());
-            }
-        }
-    }
-
-    private void downloadResults(JSONArray links) {
         try {
-            dialog.updateStatus("Preparing to download " + links.length() + " files...");
-            
-            // Extract download URLs and create a map
-            java.util.Map<String, String> fileLinkMap = new java.util.HashMap<>();
-            java.util.List<String> filesToDownload = new java.util.ArrayList<>();
-            
-            for (int i = 0; i < links.length(); i++) {
-                JSONObject link = links.getJSONObject(i);
-                if (link.has("href") && link.has("title")) {
-                    String downloadUrl = link.getString("href");
-                    String fileName = link.getString("title");
-                    
-                    fileLinkMap.put(fileName, downloadUrl);
-                    filesToDownload.add(fileName);
-                }
-            }
-            
-            // Use the existing FileDownloadManager to download the files
-            FileDownloadManager downloadManager = new FileDownloadManager();
-            downloadManager.downloadSelectedFiles(filesToDownload, fileLinkMap, dialog, 
-                (downloadedCount, downloadDir) -> {
-                    dialog.updateStatus("Downloaded " + downloadedCount + " files to: " + downloadDir);
-                });
-            
-        } catch (Exception e) {
-            dialog.updateStatus("Error during download: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Extract granule ID from file URL by querying CMR
-     */
-    private String extractGranuleIdFromUrl(String fileUrl) {
-        try {
-            String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-            System.out.println("Extracting granule ID for file: " + fileName);
-            
-            // Query CMR to get the granule ID
-            String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
-            System.out.println("CMR granule lookup URL: " + cmrUrl);
-            
-            java.net.URL url = new java.net.URL(cmrUrl);
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-
-            int status = conn.getResponseCode();
-            if (status == 200) {
-                java.io.InputStream is = conn.getInputStream();
-                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                String response = s.hasNext() ? s.next() : "";
-                org.json.JSONObject json = new org.json.JSONObject(response);
-                org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
-                
-                if (entries.length() > 0) {
-                    String granuleId = entries.getJSONObject(0).getString("id");
-                    System.out.println("Found granule ID: " + granuleId);
-                    return granuleId;
+            JSONObject result = get();
+            if (result != null) {
+                if (result.has("savedFile")) {
+                    status("Saved subset: " + result.getString("savedFile"));
+                } else if (result.has("downloadedCount")) {
+                    status("Downloaded " + result.getInt("downloadedCount") + " NetCDF file(s).");
                 } else {
-                    System.out.println("No granule found in CMR for file: " + fileName);
+                    status("Subset complete.");
                 }
             } else {
-                System.err.println("CMR request failed with status: " + status);
-                // Try to read error response
-                try {
-                    java.io.InputStream is = conn.getErrorStream();
-                    if (is != null) {
-                        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                        String errorResponse = s.hasNext() ? s.next() : "";
-                        System.err.println("CMR error response: " + errorResponse);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Could not read CMR error response: " + e.getMessage());
-                }
+                status("Subset finished (no result).");
             }
         } catch (Exception e) {
-            System.err.println("Error extracting granule ID: " + e.getMessage());
+            status("ERROR: " + e.getMessage());
+            JOptionPane.showMessageDialog(dialog, e.getMessage(), "Subset Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            updateUiEnd();
         }
-        
-        System.out.println("Could not extract granule ID, will proceed without it");
+    }
+
+    // ------------------------ ID resolution ------------------------
+
+    private static final class ResolvedIds {
+        final String granuleConceptId;     // G...-OB_CLOUD
+        final String collectionConceptId;  // C...-OB_CLOUD
+        ResolvedIds(String g, String c) { this.granuleConceptId = g; this.collectionConceptId = c; }
+    }
+
+    private ResolvedIds resolveIds(Env env, String sourceUrl, String token) throws Exception {
+        // 1) Prefer dialog meta / setter (you already set it from OBDAACDataBrowser)
+        String granuleId = subsetParameters.optString("granuleId", null);
+        if ((granuleId == null || granuleId.isBlank()) && dialog != null) {
+            CmrGranuleMetadataFetcher.GranuleMeta meta = dialog.getMeta();
+            if (meta != null && meta.granuleId != null && !meta.granuleId.isBlank()) {
+                granuleId = meta.granuleId;
+            }
+        }
+
+        // 2) If still missing, resolve via CMR by readable granule name (filename)
+        if (granuleId == null || granuleId.isBlank()) {
+            String fileName = fileNameFromUrl(sourceUrl);
+            status("Resolving granuleId from CMR using filename: " + fileName);
+            // Use your existing fetcher to get concept-id; it uses OPS CMR base though.
+            // So we do a small env-aware lookup here to be consistent.
+            granuleId = cmrResolveGranuleConceptId(env, fileName, token);
+            if (granuleId == null) {
+                throw new IOException("Could not resolve granuleId for filename: " + fileName);
+            }
+        }
+
+        // 3) Resolve collection concept-id from CMR using granule concept-id
+        String collectionId = subsetParameters.optString("collectionId", null);
+        if (collectionId == null || collectionId.isBlank()) {
+            status("Resolving collection concept-id from CMR for granule: " + granuleId);
+            collectionId = cmrResolveCollectionConceptId(env, granuleId, token);
+            if (collectionId == null) {
+                throw new IOException("Could not resolve collectionId for granuleId: " + granuleId);
+            }
+        }
+
+        status("Resolved: granuleId=" + granuleId + " | collectionId=" + collectionId);
+        return new ResolvedIds(granuleId, collectionId);
+    }
+
+    private String cmrResolveGranuleConceptId(Env env, String readableGranuleName, String token) throws Exception {
+        // Try OB_CLOUD then POCLOUD like you’ve been doing elsewhere
+        for (String provider : new String[]{"OB_CLOUD", "POCLOUD"}) {
+            String url = env.cmrBase + "/search/granules.json?readable_granule_name="
+                    + urlEncode(readableGranuleName) + "&provider=" + provider;
+            JSONObject json = httpGetJson(url, token);
+            JSONArray entry = json.optJSONObject("feed") != null ? json.optJSONObject("feed").optJSONArray("entry") : null;
+            if (entry != null && entry.length() > 0) {
+                return entry.getJSONObject(0).optString("id", null); // concept-id
+            }
+        }
         return null;
     }
-} 
+
+    private String cmrResolveCollectionConceptId(Env env, String granuleConceptId, String token) throws Exception {
+        String url = env.cmrBase + "/search/granules/" + urlEncode(granuleConceptId) + ".json";
+        JSONObject json = httpGetJson(url, token);
+        JSONObject entry = json.optJSONObject("feed") != null
+                ? (json.optJSONObject("feed").optJSONArray("entry") != null && json.optJSONObject("feed").optJSONArray("entry").length() > 0
+                ? json.optJSONObject("feed").optJSONArray("entry").getJSONObject(0)
+                : null)
+                : null;
+        if (entry == null) return null;
+        return entry.optString("collection_concept_id", null);
+    }
+
+    // ------------------------ Harmony OGC ------------------------
+
+    private String buildOgcUrl(Env env, String collectionConceptId, String granuleConceptId) {
+        JSONArray vars = subsetParameters.optJSONArray("variables");
+        boolean allVariablesSelected = subsetParameters.optBoolean("allVariablesSelected", false);
+
+        boolean variableSubsetRequested =
+                !allVariablesSelected && vars != null && vars.length() > 0;
+
+        // Harmony wants parameter_vars + variable=... for variable subsetting
+        String varSegment = variableSubsetRequested ? "parameter_vars" : "all";
+
+        StringBuilder url = new StringBuilder();
+        url.append(env.harmonyBase)
+                .append("/")
+                .append(collectionConceptId)
+                .append("/ogc-api-coverages/1.0.0/collections/")
+                .append(varSegment)
+                .append("/coverage/rangeset");
+
+        boolean first = true;
+
+        // Keep granuleid lowercase to match the working behavior you observed
+        url.append(first ? "?" : "&")
+                .append("granuleid=")
+                .append(urlEncode(granuleConceptId));
+        first = false;
+
+        // Variable subset: use full Harmony variable paths from file metadata, e.g.
+        // geophysical_data/chlor_a
+        if (variableSubsetRequested) {
+            StringBuilder variableCsv = new StringBuilder();
+            for (int i = 0; i < vars.length(); i++) {
+                String var = vars.optString(i, "").trim();
+                if (var.isEmpty()) {
+                    continue;
+                }
+                if (variableCsv.length() > 0) {
+                    variableCsv.append(",");
+                }
+                variableCsv.append(var);
+            }
+
+            if (variableCsv.length() > 0) {
+                url.append("&variable=").append(urlEncode(variableCsv.toString()));
+            }
+        }
+
+        // Spatial subset
+        String latMin = subsetParameters.optString("latMin", null);
+        String latMax = subsetParameters.optString("latMax", null);
+        String lonMin = subsetParameters.optString("lonMin", null);
+        String lonMax = subsetParameters.optString("lonMax", null);
+
+        if (latMin != null && latMax != null && !latMin.isBlank() && !latMax.isBlank()) {
+            url.append("&subset=lat(")
+                    .append(latMin)
+                    .append(":")
+                    .append(latMax)
+                    .append(")");
+        }
+
+        if (lonMin != null && lonMax != null && !lonMin.isBlank() && !lonMax.isBlank()) {
+            url.append("&subset=lon(")
+                    .append(lonMin)
+                    .append(":")
+                    .append(lonMax)
+                    .append(")");
+        }
+
+        // Only request NetCDF reformat when NOT doing variable subsetting,
+        // because Harmony reported that variable subsetting + NetCDF reformat
+        // is unsupported for this collection.
+        if (!variableSubsetRequested) {
+            url.append("&format=").append(urlEncode("application/x-netcdf"));
+        }
+
+        url.append("&skipPreview=true");
+
+        return url.toString();
+    }
+
+    private JSONObject executeOgc(Env env, String ogcUrl, String token) throws Exception {
+        setProgress(5);
+        HttpURLConnection conn = (HttpURLConnection) new URL(ogcUrl).openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        conn.setReadTimeout(READ_TIMEOUT_MS);
+        conn.setInstanceFollowRedirects(true);
+        if (token != null) conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setRequestProperty("Accept", "*/*");
+
+        int code = conn.getResponseCode();
+        String ctype = conn.getContentType();
+        status("OGC GET status=" + code + " contentType=" + ctype);
+
+        if (code == 401 || code == 403) {
+            String body = slurp(conn.getErrorStream());
+            throw new IllegalStateException(
+                    "Harmony request failed in environment " + env.harmonyBase +
+                            " with HTTP " + code + ". Response body: " + truncate(body, 600)
+            );
+        }
+
+        if (code >= 400) {
+            String err = slurp(conn.getErrorStream());
+            throw new IOException("Harmony request failed: HTTP " + code + " — " + truncate(err, 500));
+        }
+
+        // Determine JSON vs binary by content-type and stream peek
+        InputStream raw = conn.getInputStream();
+        BufferedInputStream bis = new BufferedInputStream(raw);
+        bis.mark(1);
+        int first = bis.read();
+        bis.reset();
+
+        boolean isJson = (ctype != null && ctype.toLowerCase(Locale.ROOT).contains("application/json")) || first == '{';
+
+        if (isJson) {
+            String body = slurp(bis);
+            setProgress(20);
+            return new JSONObject(body);
+        }
+
+        // Binary NetCDF response
+        setProgress(25);
+        Path out = saveBinaryResponse(bis, "harmony_subset_", ".nc");
+        setProgress(95);
+
+        JSONObject result = new JSONObject();
+        result.put("savedFile", out.toAbsolutePath().toString());
+        result.put("contentType", ctype);
+        return result;
+    }
+
+    private String getUserTokenFallback() {
+        String prop = System.getProperty("earthdata.userToken");
+        if (isLikelyUserToken(prop)) return prop.trim();
+
+        String env = System.getenv("EARTHDATA_USER_TOKEN");
+        if (isLikelyUserToken(env)) return env.trim();
+
+        try {
+            if (!java.awt.GraphicsEnvironment.isHeadless()) {
+                String pasted = JOptionPane.showInputDialog(
+                        dialog,
+                        "Harmony returned 401.\n" +
+                                "Paste an Earthdata Login *User Token* (URS → Profile → User Tokens).\n" +
+                                "Tip: set EARTHDATA_USER_TOKEN or -Dearthdata.userToken to avoid this prompt."
+                );
+                if (isLikelyUserToken(pasted)) return pasted.trim();
+            }
+        } catch (Throwable ignored) {}
+
+        return null;
+    }
+    private static boolean isLikelyUserToken(String s) {
+        // User Tokens are typically long and NOT JWT-like (not starting with eyJ)
+        return s != null && s.trim().length() >= 20 && !s.trim().startsWith("eyJ");
+    }
+
+    private JSONObject pollJob(Env env, String jobId, String token, Duration timeout) throws Exception {
+        long deadline = System.currentTimeMillis() + timeout.toMillis();
+        int step = 25;
+
+        while (System.currentTimeMillis() < deadline) {
+            if (isCancelled()) throw new InterruptedException("Cancelled");
+            Thread.sleep(5_000);
+
+            String jobUrl = env.harmonyBase + "/jobs/" + urlEncode(jobId);
+            JSONObject json = httpGetJson(jobUrl, token);
+            String st = json.optString("status", "");
+            status("Job " + jobId + " status: " + st);
+
+            step = Math.min(85, step + 2);
+            setProgress(step);
+
+            if ("successful".equalsIgnoreCase(st) ||
+                    "partial_success".equalsIgnoreCase(st) ||
+                    "failed".equalsIgnoreCase(st)) {
+                return json;
+            }
+        }
+
+        throw new IOException("Timed out waiting for Harmony job: " + jobId);
+    }
+
+    private int downloadJobNetcdfAssets(JSONObject jobJson, String token) throws Exception {
+        JSONArray links = jobJson.optJSONArray("links");
+        if (links == null || links.length() == 0) {
+            status("No links found in Harmony job result.");
+            return 0;
+        }
+
+        int downloaded = 0;
+        for (int i = 0; i < links.length(); i++) {
+            if (isCancelled()) throw new InterruptedException("Cancelled");
+            JSONObject link = links.getJSONObject(i);
+            String href = link.optString("href", null);
+            if (href == null) continue;
+
+            // Prefer NetCDF outputs
+            if (!href.toLowerCase(Locale.ROOT).contains(".nc")) continue;
+
+            Path out = saveRemoteFile(href, token);
+            downloaded++;
+            status("Downloaded: " + out.toAbsolutePath());
+            setProgress(Math.min(95, 85 + downloaded * 2));
+        }
+
+        return downloaded;
+    }
+
+    // ------------------------ HTTP helpers ------------------------
+
+    private JSONObject httpGetJson(String url, String token) throws Exception {
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        conn.setReadTimeout(READ_TIMEOUT_MS);
+        conn.setInstanceFollowRedirects(true);
+        if (token != null) conn.setRequestProperty("Authorization", "Bearer " + token);
+        conn.setRequestProperty("Accept", "application/json");
+
+        int code = conn.getResponseCode();
+        if (code == 401 || code == 403) {
+            // CMR is usually public; Harmony jobs may require auth. Report cleanly.
+            throw new IllegalStateException("HTTP " + code + " from " + url + " (auth required).");
+        }
+        if (code >= 400) {
+            String err = slurp(conn.getErrorStream());
+            throw new IOException("HTTP " + code + " from " + url + " — " + truncate(err, 400));
+        }
+
+        String body = slurp(conn.getInputStream());
+        return new JSONObject(body);
+    }
+
+    private Path saveRemoteFile(String href, String token) throws Exception {
+        // Follow redirects up to 6 hops
+        String current = href;
+        for (int hop = 0; hop < 6; hop++) {
+            HttpURLConnection conn = (HttpURLConnection) new URL(current).openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(CONNECT_TIMEOUT_MS);
+            conn.setReadTimeout(READ_TIMEOUT_MS);
+            conn.setInstanceFollowRedirects(false);
+            if (token != null) conn.setRequestProperty("Authorization", "Bearer " + token);
+
+            int code = conn.getResponseCode();
+            if (code == HttpURLConnection.HTTP_MOVED_PERM ||
+                    code == HttpURLConnection.HTTP_MOVED_TEMP ||
+                    code == 303) {
+                String loc = conn.getHeaderField("Location");
+                if (loc == null) throw new IOException("Redirect without Location header: " + current);
+                current = loc;
+                continue;
+            }
+
+            if (code == 401 || code == 403) {
+                throw new IllegalStateException("Download unauthorized (HTTP " + code + "). Token missing/invalid.");
+            }
+            if (code >= 400) {
+                String err = slurp(conn.getErrorStream());
+                throw new IOException("Download failed HTTP " + code + " — " + truncate(err, 400));
+            }
+
+            // success
+            String name = extractFileName(current);
+            try (InputStream is = conn.getInputStream()) {
+                return saveBinaryResponse(is, stripExt(name) + "_", ".nc");
+            }
+        }
+
+        throw new IOException("Too many redirects: " + href);
+    }
+
+    // ------------------------ Token handling ------------------------
+
+    private String tryGetToken() {
+        try {
+            String tok = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
+            if (tok != null && tok.trim().length() >= 20) {
+                status("Using Earthdata token (masked): " + tok.substring(0, 6) + "..." + tok.substring(tok.length() - 6));
+                return tok.trim();
+            }
+        } catch (Exception e) {
+            // token is optional; do not fail here
+            status("No Earthdata token found (will try unauthenticated).");
+        }
+        return null;
+    }
+
+    // ------------------------ UI helpers ------------------------
+
+    private void updateUiStart() {
+        if (progressBar != null) {
+            progressBar.setIndeterminate(true);
+            progressBar.setString("Starting...");
+        }
+        if (subsetButton != null) subsetButton.setEnabled(false);
+        if (cancelButton != null) cancelButton.setEnabled(true);
+        setProgress(1);
+        status("=== HarmonySubsetTask started ===");
+    }
+
+    private void updateUiEnd() {
+        if (progressBar != null) {
+            progressBar.setIndeterminate(false);
+            progressBar.setValue(100);
+            progressBar.setString("Done");
+        }
+        if (subsetButton != null) subsetButton.setEnabled(true);
+        if (cancelButton != null) cancelButton.setEnabled(true);
+        setProgress(100);
+    }
+
+    private void status(String msg) {
+        System.out.println(msg);
+        if (dialog != null) {
+            SwingUtilities.invokeLater(() -> dialog.updateStatus(msg));
+        }
+    }
+
+    // ------------------------ File helpers ------------------------
+
+    private Path saveBinaryResponse(InputStream is, String prefix, String suffix) throws IOException {
+        Path out = Files.createTempFile(prefix, suffix);
+        Files.copy(is, out, StandardCopyOption.REPLACE_EXISTING);
+        return out;
+    }
+
+    private static String fileNameFromUrl(String url) {
+        int idx = url.lastIndexOf('/');
+        return (idx >= 0) ? url.substring(idx + 1) : url;
+    }
+
+    private static String urlEncode(String s) {
+        return URLEncoder.encode(s, StandardCharsets.UTF_8);
+    }
+
+    private static String slurp(InputStream is) throws IOException {
+        if (is == null) return "";
+        try (Scanner sc = new Scanner(is, StandardCharsets.UTF_8)) {
+            sc.useDelimiter("\\A");
+            return sc.hasNext() ? sc.next() : "";
+        }
+    }
+
+    private static String truncate(String s, int max) {
+        if (s == null) return "";
+        return s.length() <= max ? s : s.substring(0, max) + "...";
+    }
+
+    private static String extractFileName(String url) {
+        // best-effort: endswith .nc or use last path segment
+        int q = url.indexOf('?');
+        String base = (q >= 0) ? url.substring(0, q) : url;
+        int slash = base.lastIndexOf('/');
+        String name = (slash >= 0) ? base.substring(slash + 1) : base;
+        if (!name.toLowerCase(Locale.ROOT).endsWith(".nc")) name = name + ".nc";
+        return name;
+    }
+
+    private static String stripExt(String name) {
+        int dot = name.lastIndexOf('.');
+        return dot > 0 ? name.substring(0, dot) : name;
+    }
+}

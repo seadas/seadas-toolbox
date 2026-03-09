@@ -128,7 +128,8 @@ public class ImagePreviewHelper {
 
 
                                         hideImagePreview(); // just in case
-                                        killImagePreviewThread();
+                                       // killImagePreviewThread();
+                                        th = null;
 
                                     }
                                 };
@@ -343,6 +344,17 @@ public class ImagePreviewHelper {
         } catch (Exception e) {
             hideImagePreview();
         }
+    }
+
+    public void dismissPreview() {
+        hoveringFileName = null;
+        finishedFileName = null;
+        currentImageUrl = null;
+
+        SwingUtilities.invokeLater(() -> previewWindow.setVisible(false));
+
+        // Let the worker thread fall out naturally on its next pass.
+        th = null;
     }
 
     private void hideImagePreview() {

@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
 import org.esa.snap.rcp.SnapApp;
@@ -455,12 +456,22 @@ public class OBDAACDataBrowser extends JPanel {
         downloadButton.addActionListener(e -> downloadSelectedFiles());
         
         JButton subsetButton = new JButton("Subset");
-        subsetButton.addActionListener(e -> subsetSelectedFiles());
+        subsetButton.addActionListener(e -> {
+            if (imagePreviewHelper != null) {
+                imagePreviewHelper.dismissPreview();
+            }
+            subsetSelectedFiles();
+        });
         
         JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         downloadPanel.add(subsetButton);
         downloadPanel.add(downloadButton);
-
+        downloadButton.addActionListener(e -> {
+            if (imagePreviewHelper != null) {
+                imagePreviewHelper.dismissPreview();
+            }
+            downloadSelectedFiles();
+        });
         panel.add(fetchedPanel, BorderLayout.WEST);
         panel.add(navPanel, BorderLayout.CENTER);
         panel.add(downloadPanel, BorderLayout.EAST);
@@ -469,7 +480,8 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void runFetchWrapper() {
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(SnapApp.getDefault().getMainFrame(),
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(
+                parentDialog != null ? parentDialog : SnapApp.getDefault().getMainFrame(),
                 "Earthdata Cloud Browser") {
 
             @Override
@@ -526,7 +538,7 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void subsetSelectedFiles() {
-        // Get the first selected file (for now, we'll subset one file at a time)
+
         String selectedFile = null;
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
@@ -536,40 +548,77 @@ public class OBDAACDataBrowser extends JPanel {
         }
 
         if (selectedFile == null) {
-            JOptionPane.showMessageDialog(this, "Please select a file to subset.", "No File Selected", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select a file to subset.", "No File Selected",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Get the URL for the selected file
         String fileUrl = fileLinkMap.get(selectedFile);
         if (fileUrl == null) {
-            JOptionPane.showMessageDialog(this, "Could not find URL for selected file: " + selectedFile, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Could not find URL for selected file: " + selectedFile,
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Get current spatial bounds from the search dialog
-        Double latMin = null, latMax = null, lonMin = null, lonMax = null;
-        try {
-            if (!minLatField.getText().trim().isEmpty()) {
-                latMin = Double.parseDouble(minLatField.getText().trim());
-            }
-            if (!maxLatField.getText().trim().isEmpty()) {
-                latMax = Double.parseDouble(maxLatField.getText().trim());
-            }
-            if (!minLonField.getText().trim().isEmpty()) {
-                lonMin = Double.parseDouble(minLonField.getText().trim());
-            }
-            if (!maxLonField.getText().trim().isEmpty()) {
-                lonMax = Double.parseDouble(maxLonField.getText().trim());
-            }
-        } catch (NumberFormatException e) {
-            // If any of the spatial bounds are invalid, just pass null values
-            // The subset dialog will handle this gracefully
+        // Search bounds (defaults only)
+        Double latMin = parseDoubleOrNull(minLatField.getText());
+        Double latMax = parseDoubleOrNull(maxLatField.getText());
+        Double lonMin = parseDoubleOrNull(minLonField.getText());
+        Double lonMax = parseDoubleOrNull(maxLonField.getText());
+
+        String fileName = selectedFile.trim();
+        if (fileName.contains("/")) {
+            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
         }
 
-        // Open the Harmony subset service dialog with spatial bounds
-        HarmonySubsetServiceDialog subsetDialog = new HarmonySubsetServiceDialog(fileUrl, latMin, latMax, lonMin, lonMax);
-        subsetDialog.setVisible(true);
+        final Double finalLatMin = latMin, finalLatMax = latMax, finalLonMin = lonMin, finalLonMax = lonMax;
+        final String finalFileName = fileName;
+        final String finalFileUrl = fileUrl;
+
+        new SwingWorker<CmrGranuleMetadataFetcher.GranuleMeta, Void>() {
+            @Override
+            protected CmrGranuleMetadataFetcher.GranuleMeta doInBackground() throws Exception {
+                return CmrGranuleMetadataFetcher.fetchByFileName(finalFileName);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    var meta = get();
+
+                    HarmonySubsetServiceDialog subsetDialog =
+                            new HarmonySubsetServiceDialog(finalFileUrl, finalLatMin, finalLatMax, finalLonMin, finalLonMax);
+
+                    subsetDialog.setMeta(meta);
+                    subsetDialog.setGranuleId(meta.granuleId);
+
+                    if (meta.minLat != null && meta.maxLat != null && meta.minLon != null && meta.maxLon != null) {
+                        subsetDialog.setGranuleBounds(meta.minLat, meta.maxLat, meta.minLon, meta.maxLon);
+                    }
+
+                    subsetDialog.setVisible(true);
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(
+                            /* parent */ parentDialog, // replace with your dialog class
+                            "CMR lookup failed:\n" + (e.getMessage() != null ? e.getMessage() : e.toString()),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }.execute();
+    }
+
+    private Double parseDoubleOrNull(String s) {
+        if (s == null) return null;
+        s = s.trim();
+        if (s.isEmpty()) return null;
+        try {
+            return Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private void lockFileCheckbox(String fileName) {
@@ -2179,6 +2228,9 @@ public class OBDAACDataBrowser extends JPanel {
             }
 
             if (!allGranules.isEmpty()) {
+                if (parentDialog != null) {
+                    pulseToFront(parentDialog);
+                }
                 resultsContainer.setVisible(true);
                 resultsContainer.revalidate();
                 resultsContainer.repaint();
@@ -2190,7 +2242,7 @@ public class OBDAACDataBrowser extends JPanel {
                 if (topLevelWindow != null) {
                     topLevelWindow.revalidate();
                     topLevelWindow.repaint();
-                    topLevelWindow.pack(); // optional: resizes the window to fit content
+                    topLevelWindow.pack();
                 }
             }
 
@@ -2203,7 +2255,28 @@ public class OBDAACDataBrowser extends JPanel {
         }
     }
 
+    private void pulseToFront(Window w) {
+        if (w == null) return;
 
+        SwingUtilities.invokeLater(() -> {
+            boolean old = false;
+            try {
+                old = w.isAlwaysOnTop();
+                w.setAlwaysOnTop(true);
+                w.toFront();
+                w.requestFocus();
+            } catch (Exception ignored) {}
+
+            final boolean restore = old;
+            new javax.swing.Timer(800, e -> {
+                try {
+                    w.setAlwaysOnTop(restore);
+                    w.toFront();
+                } catch (Exception ignored2) {}
+                ((javax.swing.Timer) e.getSource()).stop();
+            }).start();
+        });
+    }
 
     private void updateResultsTable(int page) {
         int resultsPerPage = getResultsPerPage();

@@ -1,7 +1,10 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.action.HarmonySubsetTask;
-import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.VariableMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.util.GeoMapper;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -9,11 +12,14 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.openide.util.HelpCtx;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.List;
 import java.util.ArrayList;
@@ -38,17 +44,22 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
     // Data
     private String selectedFileUrl;
-    private JSONObject fileMetadata;
     private Double searchLatMin, searchLatMax, searchLonMin, searchLonMax;
+    private String cmrGranuleId;                 // optional, may be null
+    private Double granuleLatMin, granuleLatMax; // optional
+    private Double granuleLonMin, granuleLonMax; // optional
+
+    private CmrGranuleMetadataFetcher.GranuleMeta meta;
+    private String variablesLoadedForUrl;
 
     public HarmonySubsetServiceDialog() {
         this(null, null, null, null, null);
     }
 
-    public HarmonySubsetServiceDialog(String fileUrl) {
-        this(fileUrl, null, null, null, null);
+    public HarmonySubsetServiceDialog(Window owner) {
+        this(null, null, null, null, null);
+        setLocationRelativeTo(owner);
     }
-
     public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax) {
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.selectedFileUrl = fileUrl;
@@ -87,134 +98,60 @@ public class HarmonySubsetServiceDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private void fetchFileMetadata() {
-        // Start metadata fetching in background
+    public void setGranuleId(String granuleId) {
+        this.cmrGranuleId = granuleId;
+    }
+
+    public void setGranuleBounds(double latMin, double latMax, double lonMin, double lonMax) {
+        this.granuleLatMin = Math.min(latMin, latMax);
+        this.granuleLatMax = Math.max(latMin, latMax);
+        this.granuleLonMin = Math.min(lonMin, lonMax);
+        this.granuleLonMax = Math.max(lonMin, lonMax);
+    }
+
+    private synchronized void fetchFileMetadata() {
+        if (selectedFileUrl == null || selectedFileUrl.isBlank()) {
+            return;
+        }
+        if (selectedFileUrl.equals(variablesLoadedForUrl)) {
+            return;
+        }
+        variablesLoadedForUrl = selectedFileUrl;
+
         new Thread(() -> {
             try {
                 System.out.println("=== Starting variable detection for: " + selectedFileUrl);
-                updateStatus("Detecting available variables...");
-                
-                // Use filename-based variable detection (most reliable for NetCDF files)
-                final List<String> variables = extractVariablesFromFileName(selectedFileUrl);
-                System.out.println("Detected variables from filename: " + variables);
-                
-                // Update UI immediately with filename-based variables
+                updateStatus("Detecting available variables from file metadata...");
+
+                List<String> variables = null;
+
+                try {
+                    variables = FileVariableMetadataFetcher.fetchVariablesFromFile(selectedFileUrl);
+                    System.out.println("Detected variables from actual file metadata: " + variables);
+                } catch (Exception fileEx) {
+                    System.out.println("File metadata variable lookup failed: " + fileEx.getMessage());
+                }
+
+                if (variables == null || variables.isEmpty()) {
+                    variables = extractVariablesFromFileName(selectedFileUrl);
+                    System.out.println("Detected variables from filename fallback: " + variables);
+                }
+
+                final List<String> finalVariables = variables;
                 SwingUtilities.invokeLater(() -> {
-                    updateVariableList(variables);
-                    updateStatus("Variables detected from file type. Found " + variables.size() + " variables.");
+                    updateVariableList(finalVariables);
+                    updateStatus("Variable detection complete. Found " + finalVariables.size() + " variables.");
                 });
-                
-                // Note: Metadata extraction from NetCDF files requires specialized libraries
-                // For now, we rely on filename-based detection which is reliable for ocean color data
-                
+
             } catch (Exception e) {
                 System.out.println("Exception in variable detection: " + e.getMessage());
                 e.printStackTrace();
                 SwingUtilities.invokeLater(() -> {
                     updateStatus("Error detecting variables: " + e.getMessage());
-                    // Fall back to default variables
                     updateVariableList(getDefaultVariables());
                 });
             }
         }).start();
-    }
-
-    private String buildMetadataUrl(String fileUrl) {
-        // For NetCDF files, we need to read just the header to get metadata
-        // Let's try to get the file header by adding a range request
-        
-        // Try to get just the first 1KB of the file to read the header
-        if (fileUrl.contains("?")) {
-            return fileUrl + "&range=bytes=0-1024";
-        } else {
-            return fileUrl + "?range=bytes=0-1024";
-        }
-    }
-
-    private String extractCollectionId(String fileUrl) {
-        // Extract collection ID from input URL
-        if (fileUrl.contains("C3020920290-OB_CLOUD")) {
-            return "C3020920290-OB_CLOUD";
-        } else if (fileUrl.contains("C1265136924-OB_CLOUD")) {
-            return "C1265136924-OB_CLOUD";
-        } else if (fileUrl.contains("C1940468264-OB_CLOUD")) {
-            return "C1940468264-OB_CLOUD"; // VIIRS collection
-        } else {
-            // Default collection for ocean color data
-            return "C3020920290-OB_CLOUD";
-        }
-    }
-
-    private List<String> extractVariablesFromMetadata(JSONObject metadata) {
-        List<String> variables = new ArrayList<>();
-        
-        try {
-            System.out.println("Metadata keys: " + metadata.keySet());
-            
-            // Look for Band_attributes which is the standard structure for ocean color data
-            if (metadata.has("Band_attributes")) {
-                JSONObject bandAttributes = metadata.getJSONObject("Band_attributes");
-                System.out.println("Found Band_attributes with keys: " + bandAttributes.keySet());
-                for (String varName : bandAttributes.keySet()) {
-                    variables.add(varName);
-                }
-                System.out.println("Extracted " + variables.size() + " variables from Band_attributes");
-            } else if (metadata.has("band_attributes")) {
-                // Try lowercase version
-                JSONObject bandAttributes = metadata.getJSONObject("band_attributes");
-                System.out.println("Found band_attributes with keys: " + bandAttributes.keySet());
-                for (String varName : bandAttributes.keySet()) {
-                    variables.add(varName);
-                }
-                System.out.println("Extracted " + variables.size() + " variables from band_attributes");
-            } else if (metadata.has("variables")) {
-                // Fallback to variables structure
-                JSONObject varsObj = metadata.getJSONObject("variables");
-                System.out.println("Found variables with keys: " + varsObj.keySet());
-                for (String varName : varsObj.keySet()) {
-                    variables.add(varName);
-                }
-                System.out.println("Extracted " + variables.size() + " variables from variables");
-            } else if (metadata.has("dimensions")) {
-                // Sometimes variables are in dimensions
-                JSONObject dimsObj = metadata.getJSONObject("dimensions");
-                System.out.println("Found dimensions with keys: " + dimsObj.keySet());
-                for (String dimName : dimsObj.keySet()) {
-                    if (!dimName.equals("time") && !dimName.equals("lat") && !dimName.equals("lon")) {
-                        variables.add(dimName);
-                    }
-                }
-                System.out.println("Extracted " + variables.size() + " variables from dimensions");
-            } else if (metadata.has("coverage")) {
-                // Try coverage structure
-                JSONObject coverage = metadata.getJSONObject("coverage");
-                System.out.println("Found coverage with keys: " + coverage.keySet());
-                if (coverage.has("ranges")) {
-                    JSONObject ranges = coverage.getJSONObject("ranges");
-                    if (ranges.has("variables")) {
-                        JSONObject varsObj = ranges.getJSONObject("variables");
-                        for (String varName : varsObj.keySet()) {
-                            variables.add(varName);
-                        }
-                        System.out.println("Extracted " + variables.size() + " variables from coverage.ranges.variables");
-                    }
-                }
-            } else {
-                System.out.println("No known metadata structure found. Available keys: " + metadata.keySet());
-            }
-            
-            // If no variables found, try to extract from file URL or use defaults
-            if (variables.isEmpty()) {
-                System.out.println("No variables extracted from metadata, using filename-based detection");
-                variables = extractVariablesFromFileName(selectedFileUrl);
-            }
-            
-        } catch (Exception e) {
-            System.err.println("Error extracting variables from metadata: " + e.getMessage());
-            e.printStackTrace();
-        }
-        
-        return variables;
     }
 
     private List<String> extractVariablesFromFileName(String fileUrl) {
@@ -337,6 +274,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         lonMinField = new JTextField(10);
         lonMaxField = new JTextField(10);
 
+
         // Pre-fill spatial fields with search bounds if available
         if (searchLatMin != null && searchLatMax != null && searchLonMin != null && searchLonMax != null) {
             latMinField.setText(String.valueOf(searchLatMin));
@@ -385,10 +323,16 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.gridx = 1; gbc.gridwidth = 1;
         panel.add(lonMaxField, gbc);
 
+
+        JButton drawBoxButton = new JButton("Draw Bounding Box...");
+        drawBoxButton.addActionListener(e -> openBBoxDialog());
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        panel.add(drawBoxButton, gbc);
+
         // Preview Coverage button
         JButton previewButton = new JButton("Preview Coverage");
         previewButton.addActionListener(e -> previewGranuleCoverage());
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        gbc.gridx = 1; gbc.gridy = 5; gbc.gridwidth = 2;
         panel.add(previewButton, gbc);
 
         // Variables
@@ -401,8 +345,196 @@ public class HarmonySubsetServiceDialog extends JDialog {
         return panel;
     }
 
+    private void openBBoxDialog() {
+        // Prefer granule bounds for extent/clamp
+        if (granuleLatMin == null || granuleLatMax == null || granuleLonMin == null || granuleLonMax == null) {
+            Double[] bb = CmrGranuleMetadataFetcher.computeBBoxFromPolygons(meta.polygons);
+            if (bb != null) {
+                granuleLatMin = bb[0];
+                granuleLatMax = bb[1];
+                granuleLonMin = bb[2];
+                granuleLonMax = bb[3];
+            }
+        }
 
+        if (granuleLatMin == null || granuleLatMax == null || granuleLonMin == null || granuleLonMax == null) {
+            JOptionPane.showMessageDialog(this, "Granule bounds not available.", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        try {
+            String fileUrl = urlInputField.getText().trim();
+            if (fileUrl.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a data file URL first",
+                        "No URL", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (searchLatMin == null || searchLatMax == null || searchLonMin == null || searchLonMax == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Bounds are not available yet.\nClick 'Preview Coverage' first (or enter bounds manually).",
+                        "No Bounds", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+
+            // Your CMR-based method that returns a browse image URL (png/jpg)
+            String previewUrl = getPreviewUrlFromCmr(fileName, null);
+
+            if (previewUrl == null || previewUrl.isBlank()) {
+                JOptionPane.showMessageDialog(this,
+                        "No preview image URL found for:\n" + fileName,
+                        "No Preview", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Load the preview image here (dialog expects BufferedImage)
+            BufferedImage previewImage = ImageIO.read(new URL(previewUrl));
+            if (previewImage == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Preview image could not be decoded:\n" + previewUrl,
+                        "Preview Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            BBoxSelectionDialog dialog = new BBoxSelectionDialog(
+                    SnapApp.getDefault().getMainFrame(),
+                    previewImage,
+                    granuleLatMin, granuleLatMax,
+                    granuleLonMin, granuleLonMax
+            );
+
+            dialog.setClampToExtent(true);
+            dialog.setVisible(true);
+            dialog.setFootprintPolygons(meta.polygons);
+
+            if (dialog.isConfirmed()) {
+                latMinField.setText(String.format("%.4f", dialog.getLatMin()));
+                latMaxField.setText(String.format("%.4f", dialog.getLatMax()));
+                lonMinField.setText(String.format("%.4f", dialog.getLonMin()));
+                lonMaxField.setText(String.format("%.4f", dialog.getLonMax()));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Failed to open bounding box dialog:\n" + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private String getPreviewUrlFromCmr(String fileName, String collectionConceptId) throws IOException {
+        // fileName should be just the granule filename (no path)
+        String encodedName = java.net.URLEncoder.encode(fileName, java.nio.charset.StandardCharsets.UTF_8);
+
+        StringBuilder cmr = new StringBuilder("https://cmr.earthdata.nasa.gov/search/granules.umm_json")
+                .append("?provider=OB_CLOUD")
+                .append("&page_size=10")
+                .append("&readable_granule_name=").append(encodedName);
+
+        // Strongly recommended to disambiguate (avoid wrong entry[0])
+        if (collectionConceptId != null && !collectionConceptId.isBlank()) {
+            cmr.append("&collection_concept_id=")
+                    .append(java.net.URLEncoder.encode(collectionConceptId, java.nio.charset.StandardCharsets.UTF_8));
+        }
+
+        java.net.URL urlObj = new java.net.URL(cmr.toString());
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlObj.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setConnectTimeout(15_000);
+        conn.setReadTimeout(30_000);
+
+        int status = conn.getResponseCode();
+        if (status >= 400) {
+            throw new IOException("CMR preview lookup failed: HTTP " + status + " for " + cmr);
+        }
+
+        String response;
+        try (java.io.InputStream is = conn.getInputStream()) {
+            java.util.Scanner s = new java.util.Scanner(is, java.nio.charset.StandardCharsets.UTF_8).useDelimiter("\\A");
+            response = s.hasNext() ? s.next() : "";
+        }
+
+        org.json.JSONObject json = new org.json.JSONObject(response);
+        org.json.JSONArray items = json.optJSONArray("items");
+        if (items == null || items.isEmpty()) {
+            return null;
+        }
+
+        // Prefer exact filename match if possible
+        org.json.JSONObject best = null;
+        for (int i = 0; i < items.length(); i++) {
+            org.json.JSONObject item = items.getJSONObject(i);
+            org.json.JSONObject umm = item.optJSONObject("umm");
+            if (umm == null) continue;
+
+            // CMR UMM sometimes uses GranuleUR, sometimes additional fields; try a few
+            String granuleUr = umm.optString("GranuleUR", "");
+            if (fileName.equals(granuleUr)) {
+                best = item;
+                break;
+            }
+            // Some collections don't populate GranuleUR; fall back later
+            if (best == null) best = item;
+        }
+
+        if (best == null) return null;
+
+        org.json.JSONObject umm = best.optJSONObject("umm");
+        if (umm == null) return null;
+
+        org.json.JSONArray related = umm.optJSONArray("RelatedUrls");
+        if (related == null) return null;
+
+        // Heuristic ranking: prefer true image links and visualization/browse types
+        String candidate = null;
+        for (int i = 0; i < related.length(); i++) {
+            org.json.JSONObject r = related.getJSONObject(i);
+
+            String type = r.optString("Type", "").trim();
+            String subtype = r.optString("Subtype", "").trim();
+            String url = r.optString("URL", "").trim();
+
+            if (url.isEmpty()) continue;
+
+            // Normalize (remove whitespace/newlines)
+            url = url.replace(" ", "%20");
+
+            // Must be absolute, otherwise Java URL() will fail in your bbox dialog
+            if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+                // If you *know* some URLs are relative, you can resolve them here:
+                // url = new java.net.URL(new java.net.URL("https://oceandata.sci.gsfc.nasa.gov/"), url).toString();
+                continue;
+            }
+
+            String urlLower = url.toLowerCase();
+            boolean looksLikeImage = urlLower.endsWith(".png") || urlLower.endsWith(".jpg") || urlLower.endsWith(".jpeg");
+            boolean isVisualization =
+                    type.equalsIgnoreCase("GET RELATED VISUALIZATION") ||
+                            type.toUpperCase().contains("VISUALIZATION") ||
+                            type.toUpperCase().contains("BROWSE") ||
+                            subtype.toUpperCase().contains("BROWSE") ||
+                            subtype.toUpperCase().contains("THUMBNAIL");
+
+            // Strong preference: visualization + actual image extension
+            if (isVisualization && looksLikeImage) {
+                return url;
+            }
+
+            // Next best: any image-looking URL
+            if (candidate == null && looksLikeImage) {
+                candidate = url;
+            }
+
+            // Last resort: visualization link even if extension unknown
+            if (candidate == null && isVisualization) {
+                candidate = url;
+            }
+        }
+
+        return candidate;
+    }
     private JPanel createStatusPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Status"));
@@ -473,6 +605,14 @@ public class HarmonySubsetServiceDialog extends JDialog {
             );
 
             System.out.println("Starting HarmonySubsetTask...");
+            subsetTask.addPropertyChangeListener(evt -> {
+                if ("progress".equals(evt.getPropertyName())) {
+                    int p = (Integer) evt.getNewValue();
+                    progressBar.setIndeterminate(false);
+                    progressBar.setValue(p);
+                    progressBar.setString(p + "%");
+                }
+            });
             subsetTask.execute();
             
         } catch (Exception e) {
@@ -512,28 +652,35 @@ public class HarmonySubsetServiceDialog extends JDialog {
     }
 
     private JSONObject getSubsetParameters() {
-        JSONObject params = new JSONObject();
-        
-        params.put("url", urlInputField.getText().trim());
-        
-        // Spatial bounds
-        if (!latMinField.getText().isEmpty()) params.put("latMin", latMinField.getText());
-        if (!latMaxField.getText().isEmpty()) params.put("latMax", latMaxField.getText());
-        if (!lonMinField.getText().isEmpty()) params.put("lonMin", lonMinField.getText());
-        if (!lonMaxField.getText().isEmpty()) params.put("lonMax", lonMaxField.getText());
-        
-        // Variables - convert List to JSONArray
-        if (!variableList.isSelectionEmpty()) {
-            List<String> selectedVariables = variableList.getSelectedValuesList();
-            JSONArray variablesArray = new JSONArray();
-            for (String variable : selectedVariables) {
-                variablesArray.put(variable);
-            }
-            params.put("variables", variablesArray);
-        }
-        
 
-        
+        JSONObject params = new JSONObject();
+
+        params.put("url", urlInputField.getText().trim());
+
+        if (meta != null) {
+            params.put("granuleId", meta.granuleId);
+            params.put("collectionId", meta.collectionConceptId);
+        }
+
+        if (!latMinField.getText().isEmpty())
+            params.put("latMin", latMinField.getText());
+
+        if (!latMaxField.getText().isEmpty())
+            params.put("latMax", latMaxField.getText());
+
+        if (!lonMinField.getText().isEmpty())
+            params.put("lonMin", lonMinField.getText());
+
+        if (!lonMaxField.getText().isEmpty())
+            params.put("lonMax", lonMaxField.getText());
+
+        if (!variableList.isSelectionEmpty()) {
+            JSONArray variables = new JSONArray(variableList.getSelectedValuesList());
+            params.put("variables", variables);
+        }
+        params.put("allVariablesSelected",
+                variableList.getSelectedIndices().length == variableList.getModel().getSize());
+
         return params;
     }
 
@@ -750,94 +897,28 @@ public class HarmonySubsetServiceDialog extends JDialog {
             }
         });
     }
+    private GeoMapper createSnapMapper(BufferedImage image, double minLat, double maxLat, double minLon, double maxLon) {
+        return (x, y, w, h) -> {
+            // Map panel pixel to image percentage
+            double fX = (double) x / w;
+            double fY = (double) y / h;
 
-    // Extract collection ID from file URL using regex
-    public static String extractCollectionIdFromUrl(String fileUrl) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(C\\d{6,}-[A-Z_]+)");
-        java.util.regex.Matcher matcher = pattern.matcher(fileUrl);
-        if (matcher.find()) {
-            String collectionId = matcher.group(1);
-            // Only accept OB_CLOUD collections, reject OB_DAAC
-            if (collectionId.endsWith("-OB_CLOUD")) {
-                System.out.println("Found valid OB_CLOUD collection: " + collectionId);
-                return collectionId;
-            } else if (collectionId.endsWith("-OB_DAAC")) {
-                System.out.println("Rejecting OB_DAAC collection: " + collectionId + " (should be OB_CLOUD)");
-                return null;
-            } else {
-                System.out.println("Found collection with unknown provider: " + collectionId);
-                return null;
-            }
-        }
-        return null; // or a default/fallback
+            // Map percentage to the GEOGRAPHIC extent provided by CMR
+            double lon = minLon + (fX * (maxLon - minLon));
+            double lat = maxLat - (fY * (maxLat - minLat)); // Inverted Y
+
+            return new double[]{lat, lon};
+        };
     }
 
-    // Get collection concept ID from CMR using short name
-    public static String getConceptId(String shortName) throws IOException {
-        String urlString = "https://cmr.earthdata.nasa.gov/search/collections.json?short_name=" + shortName;
-        java.net.URL url = new java.net.URL(urlString);
-        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-
-        java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-        org.json.JSONArray items = jsonResponse.getJSONObject("feed").getJSONArray("entry");
-
-        if (items.length() > 0) {
-            return items.getJSONObject(0).getString("id");
-        }
-        return null;
+    public CmrGranuleMetadataFetcher.GranuleMeta getMeta() {
+        return meta;
     }
 
-    // Fetch collection ID from CMR using the file name (granule name) and concept ID if available
-    public static String fetchCollectionIdFromCMR(String fileName, String conceptId) {
-        String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
-        if (conceptId != null) {
-            cmrUrl += "&concept_id=" + conceptId;
+    public void setMeta(CmrGranuleMetadataFetcher.GranuleMeta meta) {
+        this.meta = meta;
+        if (selectedFileUrl != null) {
+            fetchFileMetadata();
         }
-        System.out.println("CMR granule lookup URL: " + cmrUrl);
-        try {
-            java.net.URL url = new java.net.URL(cmrUrl);
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-
-            int status = conn.getResponseCode();
-            if (status == 200) {
-                java.io.InputStream is = conn.getInputStream();
-                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                String response = s.hasNext() ? s.next() : "";
-                org.json.JSONObject json = new org.json.JSONObject(response);
-                org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
-                if (entries.length() > 0) {
-                    return entries.getJSONObject(0).getString("collection_concept_id");
-                }
-            } else {
-                System.err.println("CMR request failed with status: " + status);
-                // Try to read error response
-                try {
-                    java.io.InputStream is = conn.getErrorStream();
-                    if (is != null) {
-                        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                        String errorResponse = s.hasNext() ? s.next() : "";
-                        System.err.println("CMR error response: " + errorResponse);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Could not read CMR error response: " + e.getMessage());
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Error fetching collection ID from CMR: " + e.getMessage());
-        }
-        return null;
     }
-} 
+}
