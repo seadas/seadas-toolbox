@@ -406,8 +406,8 @@ public class HarmonySubsetServiceDialog extends JDialog {
             );
 
             dialog.setClampToExtent(true);
-            dialog.setVisible(true);
             dialog.setFootprintPolygons(meta.polygons);
+            dialog.setVisible(true);
 
             if (dialog.isConfirmed()) {
                 latMinField.setText(String.format("%.4f", dialog.getLatMin()));
@@ -680,6 +680,14 @@ public class HarmonySubsetServiceDialog extends JDialog {
         }
         params.put("allVariablesSelected",
                 variableList.getSelectedIndices().length == variableList.getModel().getSize());
+
+//        System.out.println("UL lat/lon: " + ulLat + ", " + ulLon);
+//        System.out.println("UR lat/lon: " + urLat + ", " + urLon);
+//        System.out.println("LR lat/lon: " + lrLat + ", " + lrLon);
+//        System.out.println("LL lat/lon: " + llLat + ", " + llLon);
+//        System.out.println("bbox minLon,minLat,maxLon,maxLat: "
+//                + lonMinField.getText() + "," + latMinField.getText() + "," + lonMaxField.getText() + "," + latMaxField.getText());
+//        System.out.println("polygon: " + polygonWkt);
 
         return params;
     }
