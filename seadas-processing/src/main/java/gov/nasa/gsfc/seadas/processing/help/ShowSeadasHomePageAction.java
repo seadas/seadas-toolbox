@@ -52,7 +52,8 @@ import java.awt.event.ActionEvent;
 })
 public class ShowSeadasHomePageAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/";
+//    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/";
+    private static final String DEFAULT_PAGE_URL = "https://www.earthdata.nasa.gov/data/tools/seadas";
 
     /**
      * Launches the default browser to display the web site.

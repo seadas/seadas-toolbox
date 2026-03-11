@@ -38,12 +38,12 @@ import java.awt.event.ActionEvent;
         path = "Menu/Help/SeaDAS/Data Access",
         position = 20)
 @NbBundle.Messages({
-        "CTL_ShowDateAccessFileSearchAction_MenuText=File Search",
-        "CTL_ShowDateAccessFileSearchAction_ShortDescription=Browse the NASA ocean color file search web page"
+        "CTL_ShowDateAccessFileSearchAction_MenuText=Earthdata Search",
+        "CTL_ShowDateAccessFileSearchAction_ShortDescription=Go to the Earthdata Search web page"
 })
 public class ShowDataAccessFileSearchAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://oceandata.sci.gsfc.nasa.gov/api/file_search";
+    private static final String DEFAULT_PAGE_URL = "https://search.earthdata.nasa.gov/search";
 
     /**
      * Launches the default browser to display the web site.

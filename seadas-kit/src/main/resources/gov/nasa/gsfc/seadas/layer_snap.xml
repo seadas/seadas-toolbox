@@ -10,13 +10,13 @@
 
             <folder name="SeaDAS">
                 <attr name="position" intvalue="1500"/>
-                <folder name="Configuration">
-                    <attr name="position" intvalue="20"/>
-                    <!--<file name="org-openide-actions-CutAction-separatorAfter.instance">-->
-                    <!--<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>-->
-                    <!--<attr name="position" intvalue="27"/>-->
-                    <!--</file>-->
-                </folder>
+<!--                <folder name="Configuration">-->
+<!--                    <attr name="position" intvalue="20"/>-->
+<!--                    &lt;!&ndash;<file name="org-openide-actions-CutAction-separatorAfter.instance">&ndash;&gt;-->
+<!--                    &lt;!&ndash;<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<attr name="position" intvalue="27"/>&ndash;&gt;-->
+<!--                    &lt;!&ndash;</file>&ndash;&gt;-->
+<!--                </folder>-->
                 <folder name="Data Access">
                     <attr name="position" intvalue="100"/>
                 </folder>

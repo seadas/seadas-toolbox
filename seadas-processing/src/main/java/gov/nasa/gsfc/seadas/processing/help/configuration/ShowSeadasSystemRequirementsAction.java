@@ -28,18 +28,18 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeadasSystemRequirementsAction")
-@ActionRegistration(
-        displayName = "#CTL_ShowSeadasSystemRequirementsAction_MenuText",
-        popupText = "#CTL_ShowSeadasSystemRequirementsAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS/Configuration",
-        position = 10
-)
-@NbBundle.Messages({
-        "CTL_ShowSeadasSystemRequirementsAction_MenuText=System Requirements",
-        "CTL_ShowSeadasSystemRequirementsAction_ShortDescription=Browse the SeaDAS system requirements web page"
-})
+//@ActionID(category = "Help", id = "ShowSeadasSystemRequirementsAction")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowSeadasSystemRequirementsAction_MenuText",
+//        popupText = "#CTL_ShowSeadasSystemRequirementsAction_MenuText")
+//@ActionReference(
+//        path = "Menu/Help/SeaDAS/Configuration",
+//        position = 10
+//)
+//@NbBundle.Messages({
+//        "CTL_ShowSeadasSystemRequirementsAction_MenuText=System Requirements",
+//        "CTL_ShowSeadasSystemRequirementsAction_ShortDescription=Browse the SeaDAS system requirements web page"
+//})
 public class ShowSeadasSystemRequirementsAction extends AbstractAction {
 
     private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/requirements/";

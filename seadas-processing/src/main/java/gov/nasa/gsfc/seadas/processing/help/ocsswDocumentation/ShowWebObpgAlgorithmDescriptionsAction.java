@@ -30,17 +30,17 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowWebObpgAlgorithmDescriptionsAction")
-@ActionRegistration(
-        displayName = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText",
-        popupText = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS",
-        position = 100)
-@NbBundle.Messages({
-        "CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText=OBPG Algorithm Descriptions",
-        "CTL_ShowWebObpgAlgorithmDescriptionsAction_ShortDescription=Open the NASA Ocean Color Algorithm Descriptions web page"
-})
+//@ActionID(category = "Help", id = "ShowWebObpgAlgorithmDescriptionsAction")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText",
+//        popupText = "#CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText")
+//@ActionReference(
+//        path = "Menu/Help/SeaDAS",
+//        position = 100)
+//@NbBundle.Messages({
+//        "CTL_ShowWebObpgAlgorithmDescriptionsAction_MenuText=OBPG Algorithm Descriptions",
+//        "CTL_ShowWebObpgAlgorithmDescriptionsAction_ShortDescription=Open the NASA Ocean Color Algorithm Descriptions web page"
+//})
 public class ShowWebObpgAlgorithmDescriptionsAction extends AbstractAction {
 
     private static final String DEFAULT_PAGE_URL = "https://oceancolor.gsfc.nasa.gov/resources/atbd/";
