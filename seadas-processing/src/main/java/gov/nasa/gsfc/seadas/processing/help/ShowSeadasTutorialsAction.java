@@ -29,20 +29,20 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-//@ActionID(category = "Help", id = "ShowSeaDASTutorialsAction")
-//@ActionRegistration(
-//        displayName = "#CTL_ShowSeaDASTutorialsAction_MenuText",
-//        popupText = "#CTL_ShowSeaDASTutorialsAction_MenuText")
-//@ActionReference(
-//        path = "Menu/Help/SeaDAS",
-//        position = 50)
-//@NbBundle.Messages({
-//        "CTL_ShowSeaDASTutorialsAction_MenuText=Tutorials",
-//        "CTL_ShowSeaDASTutorialsAction_ShortDescription=Browse the SeaDAS tutorials web page"
-//})
+@ActionID(category = "Help", id = "ShowSeaDASTutorialsAction")
+@ActionRegistration(
+        displayName = "#CTL_ShowSeaDASTutorialsAction_MenuText",
+        popupText = "#CTL_ShowSeaDASTutorialsAction_MenuText")
+@ActionReference(
+        path = "Menu/Help/SeaDAS",
+        position = 50)
+@NbBundle.Messages({
+        "CTL_ShowSeaDASTutorialsAction_MenuText=Help Hub",
+        "CTL_ShowSeaDASTutorialsAction_ShortDescription=Browse the SeaDAS tutorials on the NASA Help Hub web page"
+})
 public class ShowSeadasTutorialsAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/tutorials/";
+    private static final String DEFAULT_PAGE_URL = "https://nasa.github.io/oceandata-notebooks/sections/seadas-toolbox.html";
 
     /**
      * Launches the default browser to display the web site.
