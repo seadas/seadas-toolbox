@@ -4,6 +4,7 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
+import gov.nasa.gsfc.seadas.earthdatacloud.worldview.WorldviewSyncPanel;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.ui.UIUtils;
@@ -206,6 +207,13 @@ public class OBDAACDataBrowser extends JPanel {
 
         gbc.gridy++;
         gbc.gridx = 0;
+
+        WorldviewSyncPanel wvPanel = new WorldviewSyncPanel();
+        add(wvPanel, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+
         setupResultsTable();
         setupResultsContainer(gbc);
     }

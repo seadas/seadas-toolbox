@@ -332,8 +332,20 @@ public class HarmonySubsetServiceDialog extends JDialog {
         // Preview Coverage button
         JButton previewButton = new JButton("Preview Coverage");
         previewButton.addActionListener(e -> previewGranuleCoverage());
-        gbc.gridx = 1; gbc.gridy = 5; gbc.gridwidth = 2;
+        gbc.gridx = 2; gbc.gridy = 5; gbc.gridwidth = 2;
         panel.add(previewButton, gbc);
+
+        JButton openWorldviewBtn = new JButton("Pick on Map...");
+        openWorldviewBtn.addActionListener(e -> {
+            try {
+                java.awt.Desktop.getDesktop().browse(new java.net.URI("https://worldview.earthdata.nasa.gov/?p=geographic"));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        gbc.gridx = 5; gbc.gridy = 5; gbc.gridwidth = 2;
+        panel.add(openWorldviewBtn, gbc);
 
         // Variables
         gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
