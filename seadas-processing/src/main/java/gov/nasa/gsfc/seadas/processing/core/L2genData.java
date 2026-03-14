@@ -109,6 +109,7 @@ public class L2genData implements SeaDASProcessorModel {
             IFILE = "ifile",
             OFILE = "ofile",
             L2PROD = "l2prod",
+            WAVELENGTH_3D = "wavelength_3d",
             SUITE = "suite";
 
     public static final String INVALID_IFILE = "INVALID_IFILE_EVENT",
