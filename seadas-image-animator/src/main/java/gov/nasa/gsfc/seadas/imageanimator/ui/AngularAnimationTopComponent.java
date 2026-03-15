@@ -25,7 +25,8 @@ import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.help.HelpAction;
 import org.esa.snap.rcp.placemark.PlacemarkUtils;
-import org.esa.snap.rcp.preferences.general.AngularViewController;
+// todo This is used instead due to incompatibility with SNAP 13.  Later if they take our code, then this could be removed
+//import org.esa.snap.rcp.preferences.general.AngularViewController;
 import org.esa.snap.rcp.statistics.XYPlotMarker;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.windows.ToolTopComponent;
@@ -551,51 +552,54 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         final DisplayableAngularview[] allAngularViews = rasterToAngularMap.get(currentRaster);
 
 
-        int lineIndex = AngularViewController.getPreferenceLineIndex();
-        int symbolIndex = AngularViewController.getPreferenceSymbolIndex();
-        int symbolSize = AngularViewController.getPreferenceSymbolSize();
-        Color plotColor = AngularViewController.getPreferencePlotColor();
-
-        double group1Wavelength = AngularViewController.getPreferenceGroup1Wavelength();
-        double group1Tolerance = AngularViewController.getPreferenceGroup1Tolerance();
-        int group1LineIndex = AngularViewController.getPreferenceGroup1LineIndex();
-        int group1SymbolIndex = AngularViewController.getPreferenceGroup1SymbolIndex();
-        int group1SymbolSize = AngularViewController.getPreferenceGroup1SymbolSize();
-        Color group1Color = AngularViewController.getPreferenceGroup1Color();
-
-
-        double group2Wavelength = AngularViewController.getPreferenceGroup2Wavelength();
-        double group2Tolerance = AngularViewController.getPreferenceGroup2Tolerance();
-        int group2LineIndex = AngularViewController.getPreferenceGroup2LineIndex();
-        int group2SymbolIndex = AngularViewController.getPreferenceGroup2SymbolIndex();
-        int group2SymbolSize = AngularViewController.getPreferenceGroup2SymbolSize();
-        Color group2Color = AngularViewController.getPreferenceGroup2Color();
-
-
-        double group3Wavelength = AngularViewController.getPreferenceGroup3Wavelength();
-        double group3Tolerance = AngularViewController.getPreferenceGroup3Tolerance();
-        int group3LineIndex = AngularViewController.getPreferenceGroup3LineIndex();
-        int group3SymbolIndex = AngularViewController.getPreferenceGroup3SymbolIndex();
-        int group3SymbolSize = AngularViewController.getPreferenceGroup3SymbolSize();
-        Color group3Color = AngularViewController.getPreferenceGroup3Color();
-
-
-        double group4Wavelength = AngularViewController.getPreferenceGroup4Wavelength();
-        double group4Tolerance = AngularViewController.getPreferenceGroup4Tolerance();
-        int group4LineIndex = AngularViewController.getPreferenceGroup4LineIndex();
-        int group4SymbolIndex = AngularViewController.getPreferenceGroup4SymbolIndex();
-        int group4SymbolSize = AngularViewController.getPreferenceGroup4SymbolSize();
-        Color group4Color = AngularViewController.getPreferenceGroup4Color();
-
-
-        double group5Wavelength = AngularViewController.getPreferenceGroup5Wavelength();
-        double group5Tolerance = AngularViewController.getPreferenceGroup5Tolerance();
-        int group5LineIndex = AngularViewController.getPreferenceGroup5LineIndex();
-        int group5SymbolIndex = AngularViewController.getPreferenceGroup5SymbolIndex();
-        int group5SymbolSize = AngularViewController.getPreferenceGroup5SymbolSize();
-        Color group5Color = AngularViewController.getPreferenceGroup5Color();
-
         // todo This is commented out due to incompatibility with SNAP 13.  Later if they take our code, then this could be used
+
+        // todo START
+//
+//        int lineIndex = AngularViewController.getPreferenceLineIndex();
+//        int symbolIndex = AngularViewController.getPreferenceSymbolIndex();
+//        int symbolSize = AngularViewController.getPreferenceSymbolSize();
+//        Color plotColor = AngularViewController.getPreferencePlotColor();
+//
+//        double group1Wavelength = AngularViewController.getPreferenceGroup1Wavelength();
+//        double group1Tolerance = AngularViewController.getPreferenceGroup1Tolerance();
+//        int group1LineIndex = AngularViewController.getPreferenceGroup1LineIndex();
+//        int group1SymbolIndex = AngularViewController.getPreferenceGroup1SymbolIndex();
+//        int group1SymbolSize = AngularViewController.getPreferenceGroup1SymbolSize();
+//        Color group1Color = AngularViewController.getPreferenceGroup1Color();
+//
+//
+//        double group2Wavelength = AngularViewController.getPreferenceGroup2Wavelength();
+//        double group2Tolerance = AngularViewController.getPreferenceGroup2Tolerance();
+//        int group2LineIndex = AngularViewController.getPreferenceGroup2LineIndex();
+//        int group2SymbolIndex = AngularViewController.getPreferenceGroup2SymbolIndex();
+//        int group2SymbolSize = AngularViewController.getPreferenceGroup2SymbolSize();
+//        Color group2Color = AngularViewController.getPreferenceGroup2Color();
+//
+//
+//        double group3Wavelength = AngularViewController.getPreferenceGroup3Wavelength();
+//        double group3Tolerance = AngularViewController.getPreferenceGroup3Tolerance();
+//        int group3LineIndex = AngularViewController.getPreferenceGroup3LineIndex();
+//        int group3SymbolIndex = AngularViewController.getPreferenceGroup3SymbolIndex();
+//        int group3SymbolSize = AngularViewController.getPreferenceGroup3SymbolSize();
+//        Color group3Color = AngularViewController.getPreferenceGroup3Color();
+//
+//
+//        double group4Wavelength = AngularViewController.getPreferenceGroup4Wavelength();
+//        double group4Tolerance = AngularViewController.getPreferenceGroup4Tolerance();
+//        int group4LineIndex = AngularViewController.getPreferenceGroup4LineIndex();
+//        int group4SymbolIndex = AngularViewController.getPreferenceGroup4SymbolIndex();
+//        int group4SymbolSize = AngularViewController.getPreferenceGroup4SymbolSize();
+//        Color group4Color = AngularViewController.getPreferenceGroup4Color();
+//
+//
+//        double group5Wavelength = AngularViewController.getPreferenceGroup5Wavelength();
+//        double group5Tolerance = AngularViewController.getPreferenceGroup5Tolerance();
+//        int group5LineIndex = AngularViewController.getPreferenceGroup5LineIndex();
+//        int group5SymbolIndex = AngularViewController.getPreferenceGroup5SymbolIndex();
+//        int group5SymbolSize = AngularViewController.getPreferenceGroup5SymbolSize();
+//        Color group5Color = AngularViewController.getPreferenceGroup5Color();
+//
 //        final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(this), allAngularViews,
 //                lineIndex, symbolIndex, symbolSize, plotColor,
 //                group1Wavelength, group1Tolerance, group1LineIndex, group1SymbolIndex, group1SymbolSize, group1Color,
@@ -607,6 +611,9 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
 
         // todo This is used instead due to incompatibility with SNAP 13.  Later if they take our code, then this could be removed
         final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(this), allAngularViews);
+
+
+        // todo END
 
         if (angularViewChooser.show() == ModalDialog.ID_OK) {
             final DisplayableAngularview[] angularViews = angularViewChooser.getAngularViews();
