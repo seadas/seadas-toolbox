@@ -595,14 +595,18 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
         int group5SymbolSize = AngularViewController.getPreferenceGroup5SymbolSize();
         Color group5Color = AngularViewController.getPreferenceGroup5Color();
 
-        final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(this), allAngularViews,
-                lineIndex, symbolIndex, symbolSize, plotColor,
-                group1Wavelength, group1Tolerance, group1LineIndex, group1SymbolIndex, group1SymbolSize, group1Color,
-                group2Wavelength, group2Tolerance, group2LineIndex, group2SymbolIndex, group2SymbolSize, group2Color,
-                group3Wavelength, group3Tolerance, group3LineIndex, group3SymbolIndex, group3SymbolSize, group3Color,
-                group4Wavelength, group4Tolerance, group4LineIndex, group4SymbolIndex, group4SymbolSize, group4Color,
-                group5Wavelength, group5Tolerance, group5LineIndex, group5SymbolIndex, group5SymbolSize, group5Color
-        );
+        // todo This is commented out due to incompatibility with SNAP 13.  Later if they take our code, then this could be used
+//        final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(this), allAngularViews,
+//                lineIndex, symbolIndex, symbolSize, plotColor,
+//                group1Wavelength, group1Tolerance, group1LineIndex, group1SymbolIndex, group1SymbolSize, group1Color,
+//                group2Wavelength, group2Tolerance, group2LineIndex, group2SymbolIndex, group2SymbolSize, group2Color,
+//                group3Wavelength, group3Tolerance, group3LineIndex, group3SymbolIndex, group3SymbolSize, group3Color,
+//                group4Wavelength, group4Tolerance, group4LineIndex, group4SymbolIndex, group4SymbolSize, group4Color,
+//                group5Wavelength, group5Tolerance, group5LineIndex, group5SymbolIndex, group5SymbolSize, group5Color
+//        );
+
+        // todo This is used instead due to incompatibility with SNAP 13.  Later if they take our code, then this could be removed
+        final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(this), allAngularViews);
 
         if (angularViewChooser.show() == ModalDialog.ID_OK) {
             final DisplayableAngularview[] angularViews = angularViewChooser.getAngularViews();
