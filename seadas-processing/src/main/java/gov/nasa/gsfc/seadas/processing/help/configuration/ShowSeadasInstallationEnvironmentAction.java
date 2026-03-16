@@ -28,18 +28,18 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeaDASInstallationEnvironmentAction")
-@ActionRegistration(
-        displayName = "#CTL_ShowSeaDASInstallationEnvironmentAction_MenuText",
-        popupText = "#CTL_ShowSeaDASInstallationEnvironmentAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS/Configuration",
-        position = 30
-)
-@NbBundle.Messages({
-        "CTL_ShowSeaDASInstallationEnvironmentAction_MenuText=Environment Setup",
-        "CTL_ShowSeaDASInstallationEnvironmentAction_ShortDescription=Browse the SeaDAS environment installation details web page"
-})
+//@ActionID(category = "Help", id = "ShowSeaDASInstallationEnvironmentAction")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowSeaDASInstallationEnvironmentAction_MenuText",
+//        popupText = "#CTL_ShowSeaDASInstallationEnvironmentAction_MenuText")
+//@ActionReference(
+//        path = "Menu/Help/SeaDAS/Configuration",
+//        position = 30
+//)
+//@NbBundle.Messages({
+//        "CTL_ShowSeaDASInstallationEnvironmentAction_MenuText=Environment Setup",
+//        "CTL_ShowSeaDASInstallationEnvironmentAction_ShortDescription=Browse the SeaDAS environment installation details web page"
+//})
 public class ShowSeadasInstallationEnvironmentAction extends AbstractAction {
 
     private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/tutorials/installation_tutorial/";

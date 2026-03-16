@@ -28,18 +28,18 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeadasClientServerAction")
-@ActionRegistration(
-        displayName = "#CTL_ShowSeadasClientServerAction_MenuText",
-        popupText = "#CTL_ShowSeadasClientServerAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS/Configuration",
-        position = 40
-)
-@NbBundle.Messages({
-        "CTL_ShowSeadasClientServerAction_MenuText=Client Server Setup",
-        "CTL_ShowSeadasClientServerAction_ShortDescription=Browse the SeaDAS client server configuration web page"
-})
+//@ActionID(category = "Help", id = "ShowSeadasClientServerAction")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowSeadasClientServerAction_MenuText",
+//        popupText = "#CTL_ShowSeadasClientServerAction_MenuText")
+//@ActionReference(
+//        path = "Menu/Help/SeaDAS/Configuration",
+//        position = 40
+//)
+//@NbBundle.Messages({
+//        "CTL_ShowSeadasClientServerAction_MenuText=Client Server Setup",
+//        "CTL_ShowSeadasClientServerAction_ShortDescription=Browse the SeaDAS client server configuration web page"
+//})
 public class ShowSeadasClientServerAction extends AbstractAction {
 
     private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/client_server/";
