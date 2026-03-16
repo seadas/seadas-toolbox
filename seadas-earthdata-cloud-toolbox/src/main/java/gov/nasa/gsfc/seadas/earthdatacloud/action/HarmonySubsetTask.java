@@ -286,6 +286,11 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         }
 
         url.append("&skipPreview=true");
+        System.out.println("Submitting bbox:");
+        System.out.println("latMin=" + latMin);
+        System.out.println("latMax=" + latMax);
+        System.out.println("lonMin=" + lonMin);
+        System.out.println("lonMax=" + lonMax);
 
         return url.toString();
     }
