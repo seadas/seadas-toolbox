@@ -19,7 +19,12 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.List;
 import java.util.ArrayList;
@@ -324,10 +329,10 @@ public class HarmonySubsetServiceDialog extends JDialog {
         panel.add(lonMaxField, gbc);
 
 
-        JButton drawBoxButton = new JButton("Draw Bounding Box...");
-        drawBoxButton.addActionListener(e -> openBBoxDialog());
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
-        panel.add(drawBoxButton, gbc);
+//        JButton drawBoxButton = new JButton("Draw Bounding Box...");
+//        drawBoxButton.addActionListener(e -> openBBoxDialog());
+//        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+//        panel.add(drawBoxButton, gbc);
 
         // Preview Coverage button
         JButton previewButton = new JButton("Preview Coverage");
@@ -685,132 +690,233 @@ public class HarmonySubsetServiceDialog extends JDialog {
     }
 
     /**
-     * Preview granule coverage and suggest appropriate subset bounds
+     * Preview approximate granule coverage from CMR metadata.
+     * This is not the exact file navigation boundary.
      */
     private void previewGranuleCoverage() {
-        String url = urlInputField.getText().trim();
-        if (url.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a data file URL first", "No URL", JOptionPane.WARNING_MESSAGE);
+        String dataUrl = urlInputField.getText().trim();
+        if (dataUrl.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a data file URL first",
+                    "No URL",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Extract file name from URL
-        String fileName = url.substring(url.lastIndexOf('/') + 1);
-        
-        // Show progress
-        updateStatus("Fetching granule coverage information...");
-        
-        // Run in background thread to avoid blocking UI
+        String fileName = dataUrl.substring(dataUrl.lastIndexOf('/') + 1);
+        updateStatus("Fetching approximate granule coverage from CMR...");
+
         new Thread(() -> {
+            HttpURLConnection conn = null;
+
             try {
-                // Query CMR for granule metadata
-                String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
+                String encodedFileName = java.net.URLEncoder.encode(
+                        fileName, java.nio.charset.StandardCharsets.UTF_8.toString());
+
+                String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json"
+                        + "?readable_granule_name=" + encodedFileName
+                        + "&provider=OB_CLOUD"
+                        + "&page_size=10";
+
                 System.out.println("Fetching granule coverage: " + cmrUrl);
-                
+
                 java.net.URL urlObj = new java.net.URL(cmrUrl);
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlObj.openConnection();
+                conn = (java.net.HttpURLConnection) urlObj.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setConnectTimeout(10000);
                 conn.setReadTimeout(10000);
 
                 int status = conn.getResponseCode();
-                if (status == 200) {
-                    java.io.InputStream is = conn.getInputStream();
-                    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                    String response = s.hasNext() ? s.next() : "";
-                    org.json.JSONObject json = new org.json.JSONObject(response);
-                    org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
-                    
-                    if (entries.length() > 0) {
-                        org.json.JSONObject granule = entries.getJSONObject(0);
-                        
-                        // Extract coverage information
-                        String granuleId = granule.getString("id");
-                        String timeStart = granule.getString("time_start");
-                        String timeEnd = granule.getString("time_end");
-                        
-                        // Parse polygons to get spatial bounds
-                        org.json.JSONArray polygons = granule.getJSONArray("polygons");
-                        if (polygons.length() > 0) {
-                            Object firstPoly = polygons.get(0);
-                            String[] coords;
-                            if (firstPoly instanceof String) {
-                                coords = ((String) firstPoly).split(" ");
-                            } else if (firstPoly instanceof org.json.JSONArray) {
-                                // Flatten the nested array into a single string of coordinates
-                                org.json.JSONArray arr = (org.json.JSONArray) firstPoly;
-                                StringBuilder sb = new StringBuilder();
-                                for (int i = 0; i < arr.length(); i++) {
-                                    if (i > 0) sb.append(" ");
-                                    sb.append(arr.getString(i));
-                                }
-                                coords = sb.toString().split(" ");
-                            } else {
-                                throw new RuntimeException("Unexpected polygon format: " + firstPoly.getClass());
-                            }
-                            // Parse coordinates to find min/max bounds
-                            final double[] bounds = {Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE, Double.MIN_VALUE}; // minLat, maxLat, minLon, maxLon
-                            for (int i = 0; i < coords.length; i += 2) {
-                                double lat = Double.parseDouble(coords[i]);
-                                double lon = Double.parseDouble(coords[i + 1]);
-                                bounds[0] = Math.min(bounds[0], lat); // minLat
-                                bounds[1] = Math.max(bounds[1], lat); // maxLat
-                                bounds[2] = Math.min(bounds[2], lon); // minLon
-                                bounds[3] = Math.max(bounds[3], lon); // maxLon
-                            }
-                            final double minLat = bounds[0];
-                            final double maxLat = bounds[1];
-                            final double minLon = bounds[2];
-                            final double maxLon = bounds[3];
-                            // Calculate suggested subset bounds (slightly smaller than full coverage)
-                            double latMargin = (maxLat - minLat) * 0.1;
-                            double lonMargin = (maxLon - minLon) * 0.1;
-                            final double suggestedLatMin = minLat + latMargin;
-                            final double suggestedLatMax = maxLat - latMargin;
-                            final double suggestedLonMin = minLon + lonMargin;
-                            final double suggestedLonMax = maxLon - lonMargin;
-                            // Show coverage information in dialog
-                            SwingUtilities.invokeLater(() -> {
-                                showCoverageDialog(granuleId, timeStart, timeEnd, 
-                                    minLat, maxLat, minLon, maxLon,
-                                    suggestedLatMin, suggestedLatMax, suggestedLonMin, suggestedLonMax);
-                            });
-                            
-                        } else {
-                            SwingUtilities.invokeLater(() -> {
-                                JOptionPane.showMessageDialog(this, 
-                                    "No spatial coverage information found for this granule.", 
-                                    "No Coverage Data", JOptionPane.WARNING_MESSAGE);
-                            });
-                        }
-                        
-                    } else {
-                        SwingUtilities.invokeLater(() -> {
-                            JOptionPane.showMessageDialog(this, 
-                                "Granule not found in CMR: " + fileName, 
-                                "Granule Not Found", JOptionPane.ERROR_MESSAGE);
-                        });
-                    }
-                    
-                } else {
-                    SwingUtilities.invokeLater(() -> {
-                        JOptionPane.showMessageDialog(this, 
-                            "Failed to fetch granule information. HTTP status: " + status, 
-                            "CMR Error", JOptionPane.ERROR_MESSAGE);
-                    });
+                if (status != 200) {
+                    final int finalStatus = status;
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "Failed to fetch granule information. HTTP status: " + finalStatus,
+                            "CMR Error",
+                            JOptionPane.ERROR_MESSAGE));
+                    return;
                 }
-                
+
+                String response;
+                try (java.io.InputStream is = conn.getInputStream();
+                     java.util.Scanner s = new java.util.Scanner(is, java.nio.charset.StandardCharsets.UTF_8.name()).useDelimiter("\\A")) {
+                    response = s.hasNext() ? s.next() : "";
+                }
+
+                org.json.JSONObject json = new org.json.JSONObject(response);
+                org.json.JSONArray entries = json.getJSONObject("feed").optJSONArray("entry");
+
+                if (entries == null || entries.length() == 0) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "Granule not found in CMR: " + fileName,
+                            "Granule Not Found",
+                            JOptionPane.ERROR_MESSAGE));
+                    return;
+                }
+
+                // Try to find the best matching granule
+                org.json.JSONObject granule = entries.getJSONObject(0);
+                for (int i = 0; i < entries.length(); i++) {
+                    org.json.JSONObject g = entries.getJSONObject(i);
+
+                    String producerGranuleId = g.optString("producer_granule_id", "");
+                    String title = g.optString("title", "");
+
+                    System.out.println("CMR match " + i
+                            + ": id=" + g.optString("id", "")
+                            + ", title=" + title
+                            + ", producer_granule_id=" + producerGranuleId);
+
+                    if (fileName.equals(producerGranuleId) || fileName.equals(title)) {
+                        granule = g;
+                        break;
+                    }
+                }
+
+                String granuleId = granule.optString("id", "");
+                String timeStart = granule.optString("time_start", "");
+                String timeEnd = granule.optString("time_end", "");
+                String title = granule.optString("title", "");
+                String producerGranuleId = granule.optString("producer_granule_id", "");
+
+                double minLat = Double.POSITIVE_INFINITY;
+                double maxLat = Double.NEGATIVE_INFINITY;
+                double minLon = Double.POSITIVE_INFINITY;
+                double maxLon = Double.NEGATIVE_INFINITY;
+
+                boolean boundsFound = false;
+
+                // First try CMR boxes (preferred)
+                org.json.JSONArray boxes = granule.optJSONArray("boxes");
+                if (boxes != null && boxes.length() > 0) {
+                    String box = boxes.get(0).toString();
+                    String[] parts = box.trim().split("[,\\s]+");
+
+                    if (parts.length >= 4) {
+                        // CMR box format: south west north east
+                        double south = Double.parseDouble(parts[0]);
+                        double west = Double.parseDouble(parts[1]);
+                        double north = Double.parseDouble(parts[2]);
+                        double east = Double.parseDouble(parts[3]);
+
+                        minLat = south;
+                        maxLat = north;
+                        minLon = west;
+                        maxLon = east;
+                        boundsFound = true;
+
+                        System.out.println("Using CMR box for bounds: " + box);
+                    }
+                }
+
+                // Fallback to polygons
+                if (!boundsFound) {
+                    org.json.JSONArray polygons = granule.optJSONArray("polygons");
+                    if (polygons != null && polygons.length() > 0) {
+                        for (int p = 0; p < polygons.length(); p++) {
+                            Object polyObj = polygons.get(p);
+                            String text;
+
+                            if (polyObj instanceof String) {
+                                text = (String) polyObj;
+                            } else if (polyObj instanceof org.json.JSONArray) {
+                                StringBuilder sb = new StringBuilder();
+                                flattenJsonArray((org.json.JSONArray) polyObj, sb);
+                                text = sb.toString();
+                            } else {
+                                text = polyObj.toString();
+                            }
+
+                            String[] coords = text.trim().split("[,\\s]+");
+                            if (coords.length < 4 || coords.length % 2 != 0) {
+                                continue;
+                            }
+
+                            for (int i = 0; i < coords.length; i += 2) {
+                                // Important: CMR polygon order is lon, lat
+                                double lon = Double.parseDouble(coords[i]);
+                                double lat = Double.parseDouble(coords[i + 1]);
+
+                                minLat = Math.min(minLat, lat);
+                                maxLat = Math.max(maxLat, lat);
+                                minLon = Math.min(minLon, lon);
+                                maxLon = Math.max(maxLon, lon);
+                            }
+
+                            boundsFound = true;
+                        }
+
+                        System.out.println("Using CMR polygons for bounds.");
+                    }
+                }
+
+                if (!boundsFound
+                        || Double.isInfinite(minLat) || Double.isInfinite(maxLat)
+                        || Double.isInfinite(minLon) || Double.isInfinite(maxLon)) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "No spatial coverage information found for this granule.",
+                            "No Coverage Data",
+                            JOptionPane.WARNING_MESSAGE));
+                    return;
+                }
+
+                final double fMinLat = minLat;
+                final double fMaxLat = maxLat;
+                final double fMinLon = minLon;
+                final double fMaxLon = maxLon;
+
+                SwingUtilities.invokeLater(() -> {
+                    String message =
+                            "Approximate granule coverage from CMR metadata\n\n" +
+                                    "Granule ID: " + granuleId + "\n" +
+                                    "Title: " + title + "\n" +
+                                    "Producer Granule ID: " + producerGranuleId + "\n" +
+                                    "Time Start: " + timeStart + "\n" +
+                                    "Time End: " + timeEnd + "\n\n" +
+                                    String.format("Latitude range: %.6f to %.6f%n", fMinLat, fMaxLat) +
+                                    String.format("Longitude range: %.6f to %.6f%n%n", fMinLon, fMaxLon) +
+                                    "Note: These bounds come from CMR metadata and may differ from the actual file navigation.";
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            message,
+                            "Granule Coverage",
+                            JOptionPane.INFORMATION_MESSAGE);
+                });
+
             } catch (Exception e) {
                 System.err.println("Error previewing granule coverage: " + e.getMessage());
                 e.printStackTrace();
-                SwingUtilities.invokeLater(() -> {
-                    JOptionPane.showMessageDialog(this, 
-                        "Error fetching granule coverage: " + e.getMessage(), 
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                });
+
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                        this,
+                        "Error fetching granule coverage: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE));
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
         }).start();
+    }
+
+    private void flattenJsonArray(org.json.JSONArray array, StringBuilder sb) {
+        for (int i = 0; i < array.length(); i++) {
+            Object item = array.get(i);
+            if (item instanceof org.json.JSONArray) {
+                flattenJsonArray((org.json.JSONArray) item, sb);
+            } else {
+                if (sb.length() > 0) {
+                    sb.append(' ');
+                }
+                sb.append(item.toString());
+            }
+        }
     }
 
     /**

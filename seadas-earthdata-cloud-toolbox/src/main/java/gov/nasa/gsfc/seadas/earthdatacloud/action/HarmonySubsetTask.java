@@ -228,13 +228,9 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                 .append(varSegment)
                 .append("/coverage/rangeset");
 
-        boolean first = true;
-
         // Keep granuleid lowercase to match the working behavior you observed
-        url.append(first ? "?" : "&")
-                .append("granuleid=")
+        url.append("?granuleid=")
                 .append(urlEncode(granuleConceptId));
-        first = false;
 
         // Variable subset: use full Harmony variable paths from file metadata, e.g.
         // geophysical_data/chlor_a
@@ -276,13 +272,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                     .append(":")
                     .append(lonMax)
                     .append(")");
-        }
-
-        // Only request NetCDF reformat when NOT doing variable subsetting,
-        // because Harmony reported that variable subsetting + NetCDF reformat
-        // is unsupported for this collection.
-        if (!variableSubsetRequested) {
-            url.append("&format=").append(urlEncode("application/x-netcdf"));
         }
 
         url.append("&skipPreview=true");
