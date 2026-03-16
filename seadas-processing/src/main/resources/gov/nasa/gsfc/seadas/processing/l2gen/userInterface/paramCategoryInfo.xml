@@ -105,6 +105,7 @@
         <param>sunzen</param>
         <param>tauamax</param>
         <param>threshold</param>
+        <param>shallow_water_depth</param>
         <param>wsmax</param>
     </category>
 
