@@ -15,6 +15,7 @@
     <category name="Products">
         <autoTab>0</autoTab>
         <param>l2prod</param>
+        <param>wavelength_3d</param>
     </category>
 
     <category name="Processing Options">
@@ -114,6 +115,14 @@
     <category name="Ancillary Inputs">
         <autoTab>1</autoTab>
         <param>alphafile</param>
+
+        <param>anc_aerosol1</param>
+        <param>anc_aerosol2</param>
+        <param>anc_aerosol3</param>
+        <param>anc_profile1</param>
+        <param>anc_profile2</param>
+        <param>anc_profile3</param>
+
         <param>btfile</param>
         <param>cldfile</param>
         <param>degc</param>
@@ -150,6 +159,9 @@
         <param>watervapor</param>
         <param>windangle</param>
         <param>windspeed</param>
+
+
+
     </category>
 
     <category name="IOP Options">
@@ -183,6 +195,30 @@
         <param>seawater_opt</param>
     </category>
 
+
+    <category name="Calibration Options">
+        <autoTab>1</autoTab>
+        <param>aerfile</param>
+        <param>calfile</param>
+        <param>eval</param>
+        <param>mode</param>
+        <param>owmcfile</param>
+        <param>tgtfile</param>
+        <param>vcal_chl</param>
+        <param>vcal_lw</param>
+        <param>vcal_nlw</param>
+        <param>vcal_opt</param>
+        <param>vcal_solz</param>
+        <param>xcalboxcenter</param>
+        <param>xcalbox</param>
+        <param>xcalfile</param>
+        <param>xcal_opt</param>
+        <param>xcalpervalid</param>
+        <param>xcalsubsmpl</param>
+        <param>xcal_wave</param>
+    </category>
+
+
     <category name="Miscellaneous">
         <autoTab>1</autoTab>
         <defaultBucket>1</defaultBucket>
@@ -214,27 +250,6 @@
     </category>
 
 
-    <category name="Calibration Options">
-        <autoTab>1</autoTab>
-        <param>aerfile</param>
-        <param>calfile</param>
-        <param>eval</param>
-        <param>mode</param>
-        <param>owmcfile</param>
-        <param>tgtfile</param>
-        <param>vcal_chl</param>
-        <param>vcal_lw</param>
-        <param>vcal_nlw</param>
-        <param>vcal_opt</param>
-        <param>vcal_solz</param>
-        <param>xcalboxcenter</param>
-        <param>xcalbox</param>
-        <param>xcalfile</param>
-        <param>xcal_opt</param>
-        <param>xcalpervalid</param>
-        <param>xcalsubsmpl</param>
-        <param>xcal_wave</param>
-    </category>
 
 
     <category name="Params Not Supported in GUI">
