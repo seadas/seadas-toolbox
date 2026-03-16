@@ -1,10 +1,8 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.action.HarmonySubsetTask;
-import gov.nasa.gsfc.seadas.earthdatacloud.data.VariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
-import gov.nasa.gsfc.seadas.earthdatacloud.util.GeoMapper;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -19,13 +17,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,10 +54,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
         this(null, null, null, null, null);
     }
 
-    public HarmonySubsetServiceDialog(Window owner) {
-        this(null, null, null, null, null);
-        setLocationRelativeTo(owner);
-    }
     public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax) {
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.selectedFileUrl = fileUrl;
@@ -79,12 +68,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
         helpButton = getHelpButton();
-        
-        // Fetch file metadata to get available variables
-        if (selectedFileUrl != null) {
-            fetchFileMetadata();
-        }
-        
+
         // Create main content
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
@@ -92,6 +76,11 @@ public class HarmonySubsetServiceDialog extends JDialog {
         // Create button panel
         JPanel buttonPanel = createButtonPanel();
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Fetch file metadata to get available variables
+        if (selectedFileUrl != null) {
+            fetchFileMetadata();
+        }
 
         pack();
         setLocationRelativeTo(null);
@@ -574,9 +563,10 @@ public class HarmonySubsetServiceDialog extends JDialog {
             return;
         }
 
-        statusArea.setText("Validating URL...");
-        // TODO: Implement URL validation logic
-        // This would check if the URL is accessible and contains valid data
+        selectedFileUrl = url;
+        variablesLoadedForUrl = null;
+        fetchFileMetadata();
+
         statusArea.setText("URL validation completed. Ready for subsetting.");
     }
 
@@ -636,28 +626,114 @@ public class HarmonySubsetServiceDialog extends JDialog {
     }
 
     private boolean validateInputs() {
-        // Basic validation
-        if (urlInputField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a data file URL", "Validation Error", JOptionPane.ERROR_MESSAGE);
+        String url = urlInputField.getText().trim();
+        if (url.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a data file URL.",
+                    "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // Validate spatial bounds
-        try {
-            if (!latMinField.getText().isEmpty()) Double.parseDouble(latMinField.getText());
-            if (!latMaxField.getText().isEmpty()) Double.parseDouble(latMaxField.getText());
-            if (!lonMinField.getText().isEmpty()) Double.parseDouble(lonMinField.getText());
-            if (!lonMaxField.getText().isEmpty()) Double.parseDouble(lonMaxField.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid spatial bounds. Please enter valid numbers.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+        String latMin = latMinField.getText().trim();
+        String latMax = latMaxField.getText().trim();
+        String lonMin = lonMinField.getText().trim();
+        String lonMax = lonMaxField.getText().trim();
+
+        boolean anyBbox =
+                !latMin.isEmpty() || !latMax.isEmpty() || !lonMin.isEmpty() || !lonMax.isEmpty();
+
+        boolean fullBbox =
+                !latMin.isEmpty() && !latMax.isEmpty() && !lonMin.isEmpty() && !lonMax.isEmpty();
+
+        int total = variableList.getModel().getSize();
+        int selected = variableList.getSelectedIndices().length;
+        boolean allVariablesSelected = total > 0 && selected == total;
+
+        // Reject partial bbox entry
+        if (anyBbox && !fullBbox) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please provide all four subset boundary values, or leave all of them blank.",
+                    "Incomplete Subset Boundary",
+                    JOptionPane.ERROR_MESSAGE);
             return false;
+        }
+
+        // Block full-granule/all-variables requests through the subset service
+        if (!fullBbox && allVariablesSelected) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter subset boundaries or select specific variables.\n\n" +
+                            "Requesting the full granule with all variables is not allowed through the subset operation.",
+                    "Subset Required",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Validate numeric bbox values only when a full bbox is provided
+        if (fullBbox) {
+            final double latMinVal;
+            final double latMaxVal;
+            final double lonMinVal;
+            final double lonMaxVal;
+
+            try {
+                latMinVal = Double.parseDouble(latMin);
+                latMaxVal = Double.parseDouble(latMax);
+                lonMinVal = Double.parseDouble(lonMin);
+                lonMaxVal = Double.parseDouble(lonMax);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Invalid spatial bounds. Please enter valid numbers.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (latMinVal < -90.0 || latMaxVal > 90.0) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Latitude values must be between -90 and 90.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (lonMinVal < -180.0 || lonMaxVal > 180.0) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Longitude values must be between -180 and 180.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (latMinVal >= latMaxVal) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Latitude minimum must be less than latitude maximum.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (lonMinVal >= lonMaxVal) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Longitude minimum must be less than longitude maximum.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
         }
 
         return true;
     }
 
     private JSONObject getSubsetParameters() {
-
         JSONObject params = new JSONObject();
 
         params.put("url", urlInputField.getText().trim());
@@ -667,24 +743,34 @@ public class HarmonySubsetServiceDialog extends JDialog {
             params.put("collectionId", meta.collectionConceptId);
         }
 
-        if (!latMinField.getText().isEmpty())
-            params.put("latMin", latMinField.getText());
+        String latMin = latMinField.getText().trim();
+        String latMax = latMaxField.getText().trim();
+        String lonMin = lonMinField.getText().trim();
+        String lonMax = lonMaxField.getText().trim();
 
-        if (!latMaxField.getText().isEmpty())
-            params.put("latMax", latMaxField.getText());
+        if (!latMin.isEmpty()) {
+            params.put("latMin", latMin);
+        }
+        if (!latMax.isEmpty()) {
+            params.put("latMax", latMax);
+        }
+        if (!lonMin.isEmpty()) {
+            params.put("lonMin", lonMin);
+        }
+        if (!lonMax.isEmpty()) {
+            params.put("lonMax", lonMax);
+        }
 
-        if (!lonMinField.getText().isEmpty())
-            params.put("lonMin", lonMinField.getText());
+        int total = variableList.getModel().getSize();
+        int selected = variableList.getSelectedIndices().length;
+        boolean allVariablesSelected = total > 0 && selected == total;
 
-        if (!lonMaxField.getText().isEmpty())
-            params.put("lonMax", lonMaxField.getText());
+        params.put("allVariablesSelected", allVariablesSelected);
 
-        if (!variableList.isSelectionEmpty()) {
+        if (!allVariablesSelected && !variableList.isSelectionEmpty()) {
             JSONArray variables = new JSONArray(variableList.getSelectedValuesList());
             params.put("variables", variables);
         }
-        params.put("allVariablesSelected",
-                variableList.getSelectedIndices().length == variableList.getModel().getSize());
 
         return params;
     }
@@ -919,43 +1005,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
         }
     }
 
-    /**
-     * Show coverage information dialog with suggested bounds
-     */
-    private void showCoverageDialog(String granuleId, String timeStart, String timeEnd,
-                                   double minLat, double maxLat, double minLon, double maxLon,
-                                   double suggestedLatMin, double suggestedLatMax, 
-                                   double suggestedLonMin, double suggestedLonMax) {
-        
-        String message = String.format(
-            "Granule Coverage Information:\n\n" +
-            "Granule ID: %s\n" +
-            "Time: %s to %s\n\n" +
-            "Full Coverage Bounds:\n" +
-            "Latitude:  %.4f° to %.4f°\n" +
-            "Longitude: %.4f° to %.4f°\n\n" +
-            "Suggested Subset Bounds (90%% of coverage):\n" +
-            "Latitude:  %.4f° to %.4f°\n" +
-            "Longitude: %.4f° to %.4f°\n\n" +
-            "Would you like to apply the suggested bounds to the subset form?",
-            granuleId, timeStart, timeEnd,
-            minLat, maxLat, minLon, maxLon,
-            suggestedLatMin, suggestedLatMax, suggestedLonMin, suggestedLonMax
-        );
-        
-        int choice = JOptionPane.showConfirmDialog(this, message, 
-            "Granule Coverage Preview", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-        
-        if (choice == JOptionPane.YES_OPTION) {
-            // Apply suggested bounds to the form
-            latMinField.setText(String.format("%.4f", suggestedLatMin));
-            latMaxField.setText(String.format("%.4f", suggestedLatMax));
-            lonMinField.setText(String.format("%.4f", suggestedLonMin));
-            lonMaxField.setText(String.format("%.4f", suggestedLonMax));
-            
-            updateStatus("Applied suggested bounds from granule coverage.");
-        }
-    }
 
     protected AbstractButton getHelpButton() {
         if (helpId != null) {
@@ -984,37 +1033,11 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
     public void updateStatus(String message) {
         SwingUtilities.invokeLater(() -> {
-            statusArea.setText(message);
-            statusArea.setCaretPosition(0);
-        });
-    }
-
-    public void subsetCompleted(boolean success, String message) {
-        SwingUtilities.invokeLater(() -> {
-            subsetButton.setEnabled(true);
-            cancelButton.setEnabled(true);
-            
-            if (success) {
-                progressBar.setString("Subset completed successfully");
-                JOptionPane.showMessageDialog(this, "Subset request completed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                progressBar.setString("Subset failed");
-                JOptionPane.showMessageDialog(this, "Subset request failed: " + message, "Error", JOptionPane.ERROR_MESSAGE);
+            if (statusArea != null) {
+                statusArea.setText(message);
+                statusArea.setCaretPosition(0);
             }
         });
-    }
-    private GeoMapper createSnapMapper(BufferedImage image, double minLat, double maxLat, double minLon, double maxLon) {
-        return (x, y, w, h) -> {
-            // Map panel pixel to image percentage
-            double fX = (double) x / w;
-            double fY = (double) y / h;
-
-            // Map percentage to the GEOGRAPHIC extent provided by CMR
-            double lon = minLon + (fX * (maxLon - minLon));
-            double lat = maxLat - (fY * (maxLat - minLat)); // Inverted Y
-
-            return new double[]{lat, lon};
-        };
     }
 
     public CmrGranuleMetadataFetcher.GranuleMeta getMeta() {
