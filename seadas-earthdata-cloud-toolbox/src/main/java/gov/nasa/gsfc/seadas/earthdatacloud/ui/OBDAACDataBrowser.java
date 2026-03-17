@@ -453,7 +453,12 @@ public class OBDAACDataBrowser extends JPanel {
         navPanel.add(nextButton);
 
         JButton downloadButton = new JButton("Download");
-        downloadButton.addActionListener(e -> downloadSelectedFiles());
+        downloadButton.addActionListener(e -> {
+            if (imagePreviewHelper != null) {
+                imagePreviewHelper.dismissPreview();
+            }
+            downloadSelectedFiles();
+        });
         
         JButton subsetButton = new JButton("Subset");
         subsetButton.addActionListener(e -> {
@@ -466,12 +471,7 @@ public class OBDAACDataBrowser extends JPanel {
         JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         downloadPanel.add(subsetButton);
         downloadPanel.add(downloadButton);
-        downloadButton.addActionListener(e -> {
-            if (imagePreviewHelper != null) {
-                imagePreviewHelper.dismissPreview();
-            }
-            downloadSelectedFiles();
-        });
+
         panel.add(fetchedPanel, BorderLayout.WEST);
         panel.add(navPanel, BorderLayout.CENTER);
         panel.add(downloadPanel, BorderLayout.EAST);
