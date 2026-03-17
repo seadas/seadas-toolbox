@@ -100,11 +100,12 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         // If async job: poll then download final NetCDF link(s) to temp folder
         if (result.has("jobID")) {
             String jobId = result.getString("jobID");
-            status("Job created: " + jobId + " — polling...");
+            status("Harmony job created: " + jobId + " — polling...");
+            setProgress(30);
             JSONObject finalJob = pollJob(env, jobId, token, Duration.ofMinutes(10));
             String status = finalJob.optString("status", "");
             status("Job status: " + status);
-
+            setProgress(85);
             if ("failed".equalsIgnoreCase(status)) {
                 throw new IOException("Harmony job failed: " + truncate(finalJob.toString(), 400));
             }
@@ -168,7 +169,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     }
 
     private ResolvedIds resolveIds(Env env, String sourceUrl, String token) throws Exception {
-        // 1) Prefer dialog meta / setter (you already set it from OBDAACDataBrowser)
+        // 1) Prefer dialog meta / setter
         String granuleId = subsetParameters.optString("granuleId", null);
         if ((granuleId == null || granuleId.isBlank()) && dialog != null) {
             CmrGranuleMetadataFetcher.GranuleMeta meta = dialog.getMeta();
@@ -181,8 +182,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         if (granuleId == null || granuleId.isBlank()) {
             String fileName = fileNameFromUrl(sourceUrl);
             status("Resolving granuleId from CMR using filename: " + fileName);
-            // Use your existing fetcher to get concept-id; it uses OPS CMR base though.
-            // So we do a small env-aware lookup here to be consistent.
             granuleId = cmrResolveGranuleConceptId(env, fileName, token);
             if (granuleId == null) {
                 throw new IOException("Could not resolve granuleId for filename: " + fileName);
@@ -200,6 +199,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         }
 
         status("Resolved: granuleId=" + granuleId + " | collectionId=" + collectionId);
+        setProgress(10);
         return new ResolvedIds(granuleId, collectionId);
     }
 
@@ -342,9 +342,10 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             return new JSONObject(body);
         }
 
-        // Binary NetCDF response
-        setProgress(25);
-        Path out = saveBinaryResponse(bis, "harmony_subset_", ".nc");
+        long contentLength = conn.getContentLengthLong();
+        status("Downloading subset result...");
+        setProgress(70);
+        Path out = saveBinaryResponse(bis, "harmony_subset_", ".nc", contentLength);
         setProgress(95);
 
         JSONObject result = new JSONObject();
@@ -545,9 +546,9 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     private void updateUiStart() {
         if (progressBar != null) {
             progressBar.setIndeterminate(true);
-            progressBar.setString("Starting...");
+            progressBar.setString("Working...");
         }
-        setProgress(1);
+        //setProgress(1);
         status("=== HarmonySubsetTask started ===");
     }
 
@@ -569,23 +570,39 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
 
     // ------------------------ File helpers ------------------------
 
-    private Path saveBinaryResponse(InputStream is, String defaultPrefix, String suffix) throws IOException {
-        Path out = chooseOutputPathForWrite(defaultPrefix, suffix);
-        Files.copy(is, out, StandardCopyOption.REPLACE_EXISTING);
+    private Path saveBinaryResponse(InputStream is, String prefix, String suffix, long contentLength) throws IOException {
+        Path out = Files.createTempFile(prefix, suffix);
+
+        try (OutputStream os = Files.newOutputStream(out)) {
+            byte[] buffer = new byte[8192];
+            long totalRead = 0;
+            int read;
+
+            while ((read = is.read(buffer)) != -1) {
+                os.write(buffer, 0, read);
+                totalRead += read;
+
+                if (contentLength > 0) {
+                    int p = 70 + (int) ((25.0 * totalRead) / contentLength); // map into 70..95
+                    setProgress(Math.min(95, p));
+                }
+            }
+        }
+
         return out;
     }
 
-    private Path chooseOutputPathForWrite(String defaultPrefix, String suffix) throws IOException {
-        if (requestedOutputPath != null) {
-            Path parent = requestedOutputPath.getParent();
-            if (parent != null) {
-                Files.createDirectories(parent);
-            }
-            return requestedOutputPath;
-        }
-
-        return Files.createTempFile(defaultPrefix, suffix);
-    }
+//    private Path chooseOutputPathForWrite(String defaultPrefix, String suffix) throws IOException {
+//        if (requestedOutputPath != null) {
+//            Path parent = requestedOutputPath.getParent();
+//            if (parent != null) {
+//                Files.createDirectories(parent);
+//            }
+//            return requestedOutputPath;
+//        }
+//
+//        return Files.createTempFile(defaultPrefix, suffix);
+//    }
 
     private static String fileNameFromUrl(String url) {
         int idx = url.lastIndexOf('/');

@@ -172,8 +172,7 @@ public class ImagePreviewHelper {
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
                 table.setBorder(BorderFactory.createEmptyBorder());
-
-                killImagePreviewThread();
+                //killImagePreviewBThread();
                 hideImagePreview();
             }
         });
