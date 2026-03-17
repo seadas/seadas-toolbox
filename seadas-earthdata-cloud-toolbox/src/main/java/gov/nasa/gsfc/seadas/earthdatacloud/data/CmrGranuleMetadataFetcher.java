@@ -32,16 +32,20 @@ public class CmrGranuleMetadataFetcher {
     public static class GranuleMeta {
         public final String granuleId;
         public final String collectionConceptId;
+        public final String title;
+        public final String producerGranuleId;
         public final Double minLat, maxLat, minLon, maxLon;
         public final JSONArray polygons; // may be null
 
         public GranuleMeta(String granuleId,
-                           String collectionConceptId,
+                           String collectionConceptId, String title, String producerGranuleId,
                            Double minLat, Double maxLat,
                            Double minLon, Double maxLon,
                            JSONArray polygons) {
             this.granuleId = granuleId;
             this.collectionConceptId = collectionConceptId;
+            this.title = title;
+            this.producerGranuleId = producerGranuleId;
             this.minLat = minLat;
             this.maxLat = maxLat;
             this.minLon = minLon;
@@ -131,6 +135,8 @@ public class CmrGranuleMetadataFetcher {
 
         String granuleId = (String) g.get("id");
         String collectionConceptId = (String) g.get("collection_concept_id");
+        String title = (String) g.get("title");
+        String producerGranuleId = (String) g.get("producer_granule_id");
 
         System.out.println("granule id: " + granuleId);
         System.out.println("collection concept id: " + collectionConceptId);
@@ -162,6 +168,8 @@ public class CmrGranuleMetadataFetcher {
         GranuleMeta meta = new GranuleMeta(
                 granuleId,
                 collectionConceptId,
+                title,
+                producerGranuleId,
                 minLat, maxLat,
                 minLon, maxLon,
                 polygons

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.IOException;
+import java.io.File;
+import java.util.prefs.Preferences;
 
 public class HarmonySubsetServiceDialog extends JDialog {
 
@@ -37,7 +39,8 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private JTextField latMinField, latMaxField, lonMinField, lonMaxField;
     private JList<String> variableList;
     private JProgressBar progressBar;
-    private JButton subsetButton, cancelButton;
+    private JButton subsetButton, cancelButton, doneButton;
+    private HarmonySubsetTask currentSubsetTask;
     private JTextArea statusArea;
 
     // Data
@@ -49,7 +52,9 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
     private CmrGranuleMetadataFetcher.GranuleMeta meta;
     private String variablesLoadedForUrl;
-
+    private File selectedOutputFile;
+    private static final String PREF_LAST_DOWNLOAD_DIR = "harmonySubsetLastDownloadDir";
+    private final Preferences prefs = Preferences.userNodeForPackage(HarmonySubsetServiceDialog.class);
     public HarmonySubsetServiceDialog() {
         this(null, null, null, null, null);
     }
@@ -548,12 +553,56 @@ public class HarmonySubsetServiceDialog extends JDialog {
         subsetButton.addActionListener(e -> requestSubset());
 
         cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> dispose());
+        cancelButton.addActionListener(e -> {
+            if (currentSubsetTask != null && !currentSubsetTask.isDone()) {
+                currentSubsetTask.cancel(true);
+                updateStatus("Subset request cancelled.");
+                subsetButton.setEnabled(true);
+                cancelButton.setEnabled(false);
+                doneButton.setEnabled(true);
+                progressBar.setIndeterminate(false);
+                progressBar.setString("Cancelled");
+            } else {
+                dispose();
+            }
+        });
+
+        doneButton = new JButton("Done");
+        doneButton.setEnabled(false);
+        doneButton.addActionListener(e -> dispose());
 
         panel.add(subsetButton);
         panel.add(cancelButton);
+        panel.add(doneButton);
 
         return panel;
+    }
+
+    public void onSubsetStarted() {
+        subsetButton.setEnabled(false);
+        cancelButton.setEnabled(true);
+        doneButton.setEnabled(false);
+    }
+
+    public void onSubsetSucceeded() {
+        subsetButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        doneButton.setEnabled(true);
+        getRootPane().setDefaultButton(doneButton);
+    }
+
+    public void onSubsetFailed() {
+        subsetButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        doneButton.setEnabled(true);
+        getRootPane().setDefaultButton(doneButton);
+    }
+
+    public void onSubsetCancelled() {
+        subsetButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        doneButton.setEnabled(true);
+        getRootPane().setDefaultButton(doneButton);
     }
 
     private void validateInputUrl() {
@@ -573,8 +622,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private void requestSubset() {
         try {
             System.out.println("=== Starting subset request ===");
-            
-            // Validate inputs
+
             if (!validateInputs()) {
                 System.out.println("Input validation failed");
                 return;
@@ -582,25 +630,39 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
             System.out.println("Input validation passed");
 
+            // Ask user where to save result
+            File outputFile = promptForOutputFile();
+            if (outputFile == null) {
+                System.out.println("Subset request cancelled by user at file save prompt.");
+                updateStatus("Subset request cancelled.");
+                return;
+            }
+
+            selectedOutputFile = outputFile;
+            System.out.println("Selected output file: " + outputFile.getAbsolutePath());
+
             // Disable buttons during processing
             subsetButton.setEnabled(false);
             cancelButton.setEnabled(false);
 
             // Get subset parameters
             JSONObject subsetParams = getSubsetParameters();
+            subsetParams.put("outputFile", outputFile.getAbsolutePath());
+
             System.out.println("Subset parameters: " + subsetParams.toString());
 
-            // Create subset task
-            HarmonySubsetTask subsetTask = new HarmonySubsetTask(
-                subsetParams,
-                progressBar,
-                subsetButton,
-                cancelButton,
-                this
+            currentSubsetTask = new HarmonySubsetTask(
+                    subsetParams,
+                    progressBar,
+                    subsetButton,
+                    cancelButton,
+                    this
             );
 
+            onSubsetStarted();
+
             System.out.println("Starting HarmonySubsetTask...");
-            subsetTask.addPropertyChangeListener(evt -> {
+            currentSubsetTask.addPropertyChangeListener(evt -> {
                 if ("progress".equals(evt.getPropertyName())) {
                     int p = (Integer) evt.getNewValue();
                     progressBar.setIndeterminate(false);
@@ -608,21 +670,105 @@ public class HarmonySubsetServiceDialog extends JDialog {
                     progressBar.setString(p + "%");
                 }
             });
-            subsetTask.execute();
-            
+            currentSubsetTask.execute();
+
         } catch (Exception e) {
             System.err.println("Error in requestSubset: " + e.getMessage());
             e.printStackTrace();
-            
-            // Re-enable buttons on error
-            subsetButton.setEnabled(true);
-            cancelButton.setEnabled(true);
-            
-            JOptionPane.showMessageDialog(this, 
-                "Error starting subset request: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
+
+            onSubsetFailed();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error starting subset request: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private File promptForOutputFile() {
+        String suggestedName = buildSuggestedSubsetFilename();
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save Subset Result");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setSelectedFile(new File(suggestedName));
+
+        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
+        if (lastDir != null && !lastDir.isBlank()) {
+            File dir = new File(lastDir);
+            if (dir.exists() && dir.isDirectory()) {
+                chooser.setCurrentDirectory(dir);
+            }
+        }
+
+        int result = chooser.showSaveDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+
+        File file = chooser.getSelectedFile();
+        if (file == null) {
+            return null;
+        }
+
+        if (!file.getName().toLowerCase().endsWith(".nc")) {
+            file = new File(file.getParentFile(), file.getName() + ".nc");
+        }
+
+        if (file.exists()) {
+            int overwrite = JOptionPane.showConfirmDialog(
+                    this,
+                    "The selected file already exists.\nDo you want to overwrite it?",
+                    "Confirm Overwrite",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (overwrite != JOptionPane.YES_OPTION) {
+                return null;
+            }
+        }
+
+        File parent = file.getParentFile();
+        if (parent != null) {
+            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+        }
+
+        return file;
+    }
+
+    private String buildSuggestedSubsetFilename() {
+        String baseName = null;
+
+        // 1. Prefer producer granule id
+        if (meta != null) {
+            if (meta.producerGranuleId != null && !meta.producerGranuleId.isBlank()) {
+                baseName = meta.producerGranuleId;
+            } else if (meta.granuleId != null && !meta.granuleId.isBlank()) {
+                baseName = meta.granuleId;
+            }
+        }
+
+        // 2. Fallback: derive from URL
+        if (baseName == null || baseName.isBlank()) {
+            String url = urlInputField.getText().trim();
+            if (!url.isEmpty()) {
+                int idx = url.lastIndexOf('/');
+                baseName = (idx >= 0) ? url.substring(idx + 1) : url;
+            }
+        }
+
+        // 3. Final fallback
+        if (baseName == null || baseName.isBlank()) {
+            baseName = "harmony_subset";
+        }
+
+        // Remove .nc if already present
+        if (baseName.toLowerCase().endsWith(".nc")) {
+            baseName = baseName.substring(0, baseName.length() - 3);
+        }
+
+        return baseName + "_subset.nc";
     }
 
     private boolean validateInputs() {

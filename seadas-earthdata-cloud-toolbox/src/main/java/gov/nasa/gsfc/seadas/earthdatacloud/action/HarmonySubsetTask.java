@@ -35,7 +35,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
 
     private static final int CONNECT_TIMEOUT_MS = 30_000;
     private static final int READ_TIMEOUT_MS    = 5 * 60_000;
-
+    private final Path requestedOutputPath;
     public HarmonySubsetTask(JSONObject subsetParameters,
                              JProgressBar progressBar,
                              JButton subsetButton,
@@ -46,8 +46,12 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         this.subsetButton = subsetButton;
         this.cancelButton = cancelButton;
         this.dialog = dialog;
-    }
 
+        String outputFile = subsetParameters.optString("outputFile", null);
+        this.requestedOutputPath = (outputFile == null || outputFile.isBlank())
+                ? null
+                : Paths.get(outputFile);
+    }
     // ------------------------ Environment ------------------------
 
     private static final class Env {
@@ -118,6 +122,14 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     @Override
     protected void done() {
         try {
+            if (isCancelled()) {
+                status("Subset request cancelled.");
+                if (dialog != null) {
+                    SwingUtilities.invokeLater(dialog::onSubsetCancelled);
+                }
+                return;
+            }
+
             JSONObject result = get();
             if (result != null) {
                 if (result.has("savedFile")) {
@@ -130,9 +142,18 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             } else {
                 status("Subset finished (no result).");
             }
+
+            if (dialog != null) {
+                SwingUtilities.invokeLater(dialog::onSubsetSucceeded);
+            }
+
         } catch (Exception e) {
             status("ERROR: " + e.getMessage());
             JOptionPane.showMessageDialog(dialog, e.getMessage(), "Subset Error", JOptionPane.ERROR_MESSAGE);
+
+            if (dialog != null) {
+                SwingUtilities.invokeLater(dialog::onSubsetFailed);
+            }
         } finally {
             updateUiEnd();
         }
@@ -391,18 +412,26 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             return 0;
         }
 
+        int netcdfCount = 0;
+        for (int i = 0; i < links.length(); i++) {
+            JSONObject link = links.getJSONObject(i);
+            String href = link.optString("href", null);
+            if (href != null && href.toLowerCase(Locale.ROOT).contains(".nc")) {
+                netcdfCount++;
+            }
+        }
+
         int downloaded = 0;
         for (int i = 0; i < links.length(); i++) {
             if (isCancelled()) throw new InterruptedException("Cancelled");
+
             JSONObject link = links.getJSONObject(i);
             String href = link.optString("href", null);
             if (href == null) continue;
-
-            // Prefer NetCDF outputs
             if (!href.toLowerCase(Locale.ROOT).contains(".nc")) continue;
 
-            Path out = saveRemoteFile(href, token);
             downloaded++;
+            Path out = saveRemoteFile(href, token, downloaded, netcdfCount);
             status("Downloaded: " + out.toAbsolutePath());
             setProgress(Math.min(95, 85 + downloaded * 2));
         }
@@ -435,8 +464,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         return new JSONObject(body);
     }
 
-    private Path saveRemoteFile(String href, String token) throws Exception {
-        // Follow redirects up to 6 hops
+    private Path saveRemoteFile(String href, String token, int downloadIndex, int totalDownloads) throws Exception {
         String current = href;
         for (int hop = 0; hop < 6; hop++) {
             HttpURLConnection conn = (HttpURLConnection) new URL(current).openConnection();
@@ -464,16 +492,38 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                 throw new IOException("Download failed HTTP " + code + " — " + truncate(err, 400));
             }
 
-            // success
             String name = extractFileName(current);
             try (InputStream is = conn.getInputStream()) {
-                return saveBinaryResponse(is, stripExt(name) + "_", ".nc");
+                Path out = resolveDownloadPath(name, downloadIndex, totalDownloads);
+                Files.copy(is, out, StandardCopyOption.REPLACE_EXISTING);
+                return out;
             }
         }
 
         throw new IOException("Too many redirects: " + href);
     }
 
+    private Path resolveDownloadPath(String suggestedRemoteName, int downloadIndex, int totalDownloads) throws IOException {
+        if (requestedOutputPath == null) {
+            return Files.createTempFile(stripExt(suggestedRemoteName) + "_", ".nc");
+        }
+
+        Path parent = requestedOutputPath.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+
+        if (totalDownloads <= 1) {
+            return requestedOutputPath;
+        }
+
+        String fileName = requestedOutputPath.getFileName().toString();
+        String stem = stripExt(fileName);
+        String suffix = fileName.toLowerCase(Locale.ROOT).endsWith(".nc") ? ".nc" : "";
+        String numbered = stem + "_" + downloadIndex + suffix;
+
+        return (parent != null) ? parent.resolve(numbered) : Paths.get(numbered);
+    }
     // ------------------------ Token handling ------------------------
 
     private String tryGetToken() {
@@ -497,8 +547,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             progressBar.setIndeterminate(true);
             progressBar.setString("Starting...");
         }
-        if (subsetButton != null) subsetButton.setEnabled(false);
-        if (cancelButton != null) cancelButton.setEnabled(true);
         setProgress(1);
         status("=== HarmonySubsetTask started ===");
     }
@@ -509,8 +557,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             progressBar.setValue(100);
             progressBar.setString("Done");
         }
-        if (subsetButton != null) subsetButton.setEnabled(true);
-        if (cancelButton != null) cancelButton.setEnabled(true);
         setProgress(100);
     }
 
@@ -523,10 +569,22 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
 
     // ------------------------ File helpers ------------------------
 
-    private Path saveBinaryResponse(InputStream is, String prefix, String suffix) throws IOException {
-        Path out = Files.createTempFile(prefix, suffix);
+    private Path saveBinaryResponse(InputStream is, String defaultPrefix, String suffix) throws IOException {
+        Path out = chooseOutputPathForWrite(defaultPrefix, suffix);
         Files.copy(is, out, StandardCopyOption.REPLACE_EXISTING);
         return out;
+    }
+
+    private Path chooseOutputPathForWrite(String defaultPrefix, String suffix) throws IOException {
+        if (requestedOutputPath != null) {
+            Path parent = requestedOutputPath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            return requestedOutputPath;
+        }
+
+        return Files.createTempFile(defaultPrefix, suffix);
     }
 
     private static String fileNameFromUrl(String url) {
