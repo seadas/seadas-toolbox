@@ -131,51 +131,24 @@ public class HarmonySubsetServiceDialog extends JDialog {
                     System.out.println("File metadata variable lookup failed: " + fileEx.getMessage());
                 }
 
-                if (variables == null || variables.isEmpty()) {
-                    variables = extractVariablesFromFileName(selectedFileUrl);
-                    System.out.println("Detected variables from filename fallback: " + variables);
-                }
-
                 final List<String> finalVariables = variables;
                 SwingUtilities.invokeLater(() -> {
                     updateVariableList(finalVariables);
-                    updateStatus("Variable detection complete. Found " + finalVariables.size() + " variables.");
-                });
+                    if (finalVariables.isEmpty()) {
+                        updateStatus("No variables detected. Subsetting will use geographic bounds only.");
+                    } else {
+                        updateStatus("Variable detection complete. Found " + finalVariables.size() + " variables.");
+                    }                });
 
             } catch (Exception e) {
                 System.out.println("Exception in variable detection: " + e.getMessage());
                 e.printStackTrace();
                 SwingUtilities.invokeLater(() -> {
-                    updateStatus("Error detecting variables: " + e.getMessage());
-                    updateVariableList(getDefaultVariables());
+                    updateVariableList(new ArrayList<>());
+                    updateStatus("Error detecting variables. Subsetting will use geographic bounds only.");
                 });
             }
         }).start();
-    }
-
-    private List<String> extractVariablesFromFileName(String fileUrl) {
-        List<String> variables = new ArrayList<>();
-        
-        // Extract variables based on file name patterns
-        if (fileUrl.contains("PACE_OCI")) {
-            // PACE OCI variables
-            variables.addAll(Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670", "Rrs_490", "Rrs_510"));
-        } else if (fileUrl.contains("MODISA") || fileUrl.contains("MODIST")) {
-            // MODIS variables
-            variables.addAll(Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670", "Rrs_488", "Rrs_531"));
-        } else if (fileUrl.contains("VIIRS")) {
-            // VIIRS variables
-            variables.addAll(Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670", "Rrs_486", "Rrs_551"));
-        } else {
-            // Default variables
-            variables.addAll(getDefaultVariables());
-        }
-        
-        return variables;
-    }
-
-    private List<String> getDefaultVariables() {
-        return Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670");
     }
 
     private void updateVariableList(List<String> variables) {

@@ -55,11 +55,11 @@ public class ImagePreviewHelper {
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
 
-                        if (row >= 0 && row < table.getRowCount()) {
-                            table.setRowSelectionInterval(row, row);
-                            table.setSelectionBackground(new Color(0, 100, 200));
-                            table.setSelectionForeground(Color.WHITE);
-                        }
+//                        if (row >= 0 && row < table.getRowCount()) {
+//                            table.setRowSelectionInterval(row, row);
+//                            table.setSelectionBackground(new Color(0, 100, 200));
+//                            table.setSelectionForeground(Color.WHITE);
+//                        }
 
 
                         String imageUrl = getPreviewUrl(fileName);
@@ -163,17 +163,17 @@ public class ImagePreviewHelper {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-
                 hoveringFileName = null;
+                finishedFileName = null;
+                currentImageUrl = null;
+
                 table.setSelectionBackground(Color.WHITE);
                 table.setSelectionForeground(Color.BLACK);
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
-                table.setBackground(Color.WHITE);
-                table.setForeground(Color.BLACK);
                 table.setBorder(BorderFactory.createEmptyBorder());
 
-
+                killImagePreviewThread();
                 hideImagePreview();
             }
         });
@@ -352,7 +352,6 @@ public class ImagePreviewHelper {
         currentImageUrl = null;
 
         SwingUtilities.invokeLater(() -> previewWindow.setVisible(false));
-
         // Let the worker thread fall out naturally on its next pass.
         th = null;
     }
