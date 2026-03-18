@@ -1185,9 +1185,11 @@ public class OBDAACDataBrowser extends JPanel {
 
         if (Earthdata_Cloud_Controller.getPreferencePresetRegionsSelectorInclude()) {
 
+
             try {
                 String REGIONS_FILE = "regions.txt";
-                String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt</html>";
+                String TOOLTIP = Earthdata_Cloud_Controller.PROPERTY_REGION_FILE_TOOLTIP;
+//                String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt</html>";
                 ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
 
                 Object[] regionsInfosArray = regionsInfos.toArray();
