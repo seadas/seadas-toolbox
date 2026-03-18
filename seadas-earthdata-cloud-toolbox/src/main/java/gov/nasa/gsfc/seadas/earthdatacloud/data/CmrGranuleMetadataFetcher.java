@@ -100,7 +100,7 @@ public class CmrGranuleMetadataFetcher {
         return new Double[]{minLat, maxLat, minLon, maxLon};
     }
     /** Fetch granuleId + bbox (+ optional polygons) by readable granule name (file name). */
-    public static GranuleMeta fetchByFileName(String fileName) throws Exception {
+    public static GranuleMeta fetchGranuleMetadataByFileName(String fileName) throws Exception {
         if (fileName == null || fileName.isBlank()) {
             throw new IllegalArgumentException("fileName is blank");
         }
