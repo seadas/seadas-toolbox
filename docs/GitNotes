@@ -70,6 +70,13 @@ git tag -a SEADAS-11.0.0-RC2 -m "SeaDAS 11.0.0-RC2 release candidate based on SN
 git tag -a SEADAS-11.0.0 -m "SeaDAS 11.0.0 release based on SNAP 13.0"
 
 
+// List latest remote branches
+git branch -r --sort=-committerdate | head
+
+// List latest local branches
+git branch -r --sort=-committerdate | head
+
+
 
 // List tags
 git tag -l
