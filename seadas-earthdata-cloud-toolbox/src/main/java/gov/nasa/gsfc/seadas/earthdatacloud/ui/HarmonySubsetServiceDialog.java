@@ -1,8 +1,10 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.action.HarmonySubsetTask;
-import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrVariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.VariableItem;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -21,9 +23,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.File;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.Preferences;
 
 public class HarmonySubsetServiceDialog extends JDialog {
@@ -37,7 +40,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     // UI Components
     private JTextField urlInputField;
     private JTextField latMinField, latMaxField, lonMinField, lonMaxField;
-    private JList<String> variableList;
+    private JList<VariableItem> variableList;
     private JProgressBar progressBar;
     private JButton subsetButton, cancelButton, doneButton;
     private HarmonySubsetTask currentSubsetTask;
@@ -55,6 +58,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private File selectedOutputFile;
     private static final String PREF_LAST_DOWNLOAD_DIR = "harmonySubsetLastDownloadDir";
     private final Preferences prefs = Preferences.userNodeForPackage(HarmonySubsetServiceDialog.class);
+    private final Map<String, List<VariableItem>> variableCache = new ConcurrentHashMap<>();
     public HarmonySubsetServiceDialog() {
         this(null, null, null, null, null);
     }
@@ -84,7 +88,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         // Fetch file metadata to get available variables
         if (selectedFileUrl != null) {
-            fetchFileMetadata();
+            loadVariablesForSelectedGranule();
         }
 
         pack();
@@ -108,66 +112,131 @@ public class HarmonySubsetServiceDialog extends JDialog {
         this.granuleLonMax = Math.max(lonMin, lonMax);
     }
 
-    private synchronized void fetchFileMetadata() {
-        if (selectedFileUrl == null || selectedFileUrl.isBlank()) {
+    private String variablesLoadedForCollectionId;
+
+    private synchronized void loadVariablesForSelectedGranule() {
+        if (meta == null || meta.collectionConceptId == null || meta.collectionConceptId.isBlank()) {
+            SwingUtilities.invokeLater(() -> {
+                updateVariableList(new ArrayList<>());
+                updateStatus("No collection metadata available for variable detection.");
+                variableList.setEnabled(true);
+            });
             return;
         }
-        if (selectedFileUrl.equals(variablesLoadedForUrl)) {
+
+        String collectionId = meta.collectionConceptId;
+
+        // If already loaded for this collection in the current UI state, do nothing.
+        if (collectionId.equals(variablesLoadedForCollectionId)) {
             return;
         }
-        variablesLoadedForUrl = selectedFileUrl;
+
+        // Try in-memory cache first.
+        List<VariableItem> cachedVariables = variableCache.get(collectionId);
+        if (cachedVariables != null && !cachedVariables.isEmpty()) {
+            List<VariableItem> cachedCopy = new ArrayList<>(cachedVariables);
+            variablesLoadedForCollectionId = collectionId;
+
+            SwingUtilities.invokeLater(() -> {
+                updateVariableList(cachedCopy);
+                variableList.setEnabled(true);
+                updateStatus("Loaded " + cachedCopy.size() + " variables from cache.");
+            });
+            return;
+        }
+
+        updateStatus("Detecting available variables from file metadata...");
+        variableList.setEnabled(false);
 
         new Thread(() -> {
+            List<VariableItem> variables = new ArrayList<>();
+
             try {
-                System.out.println("=== Starting variable detection for: " + selectedFileUrl);
-                updateStatus("Detecting available variables from file metadata...");
+                System.out.println("=== Starting variable detection for collection: " + collectionId);
 
-                List<String> variables = null;
+                variables = FileVariableMetadataFetcher.fetchVariablesFromFile(selectedFileUrl);
 
-                try {
-                    variables = FileVariableMetadataFetcher.fetchVariablesFromFile(selectedFileUrl);
-                    System.out.println("Detected variables from actual file metadata: " + variables);
-                } catch (Exception fileEx) {
-                    System.out.println("File metadata variable lookup failed: " + fileEx.getMessage());
+                if (variables == null) {
+                    variables = new ArrayList<>();
                 }
 
-                final List<String> finalVariables = variables;
-                SwingUtilities.invokeLater(() -> {
-                    updateVariableList(finalVariables);
-                    if (finalVariables.isEmpty()) {
-                        updateStatus("No variables detected. Subsetting will use geographic bounds only.");
-                    } else {
-                        updateStatus("Variable detection complete. Found " + finalVariables.size() + " variables.");
-                    }                });
+                System.out.println("Detected variables from file metadata: " + variables);
 
-            } catch (Exception e) {
-                System.out.println("Exception in variable detection: " + e.getMessage());
-                e.printStackTrace();
-                SwingUtilities.invokeLater(() -> {
-                    updateVariableList(new ArrayList<>());
-                    updateStatus("Error detecting variables. Subsetting will use geographic bounds only.");
-                });
+                // Cache result for this session.
+                variableCache.put(collectionId, new ArrayList<>(variables));
+
+                // Mark as loaded only after fetch completes successfully.
+                variablesLoadedForCollectionId = collectionId;
+
+            } catch (Exception ex) {
+                System.out.println("Variable detection failed: " + ex.getMessage());
+                ex.printStackTrace();
             }
-        }).start();
+
+            final List<VariableItem> finalVariables = new ArrayList<>(variables);
+            SwingUtilities.invokeLater(() -> {
+                updateVariableList(finalVariables);
+                variableList.setEnabled(true);
+
+                if (finalVariables.isEmpty()) {
+                    updateStatus("No variables detected. Subsetting will use geographic bounds only.");
+                } else {
+                    updateStatus("Variable detection complete. Found " + finalVariables.size() + " variables.");
+                }
+            });
+        }, "variable-loader").start();
     }
 
-    private void updateVariableList(List<String> variables) {
-        if (variableList != null) {
-            DefaultListModel<String> model = new DefaultListModel<>();
-            for (String variable : variables) {
-                model.addElement(variable);
+    private String getVariableCacheKey(CmrGranuleMetadataFetcher.GranuleMeta granuleMeta, String fileName) {
+        if (granuleMeta != null && granuleMeta.collectionConceptId != null
+                && !granuleMeta.collectionConceptId.isBlank()) {
+            return granuleMeta.collectionConceptId;
+        }
+        return fileName != null ? fileName : "unknown";
+    }
+    private void loadVariablesForGranule() {
+        DefaultListModel<VariableItem> model = (DefaultListModel<VariableItem>) variableList.getModel();
+        model.clear();
+        variableList.setEnabled(false);
+
+        SwingWorker<List<VariableItem>, Void> worker = new SwingWorker<>() {
+            @Override
+            protected List<VariableItem> doInBackground() throws Exception {
+                return CmrVariableMetadataFetcher.fetchVariablesFromCollection(
+                        meta.collectionConceptId);
             }
-            variableList.setModel(model);
-            
-            // Select all variables by default
-            int[] indices = new int[variables.size()];
-            for (int i = 0; i < variables.size(); i++) {
-                indices[i] = i;
+
+            @Override
+            protected void done() {
+                try {
+                    List<VariableItem> vars = get();
+                    updateVariableList(vars);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    model.clear();
+                } finally {
+                    variableList.setEnabled(true);
+                }
             }
-            variableList.setSelectedIndices(indices);
+        };
+
+        worker.execute();
+    }
+
+    private void updateVariableList(List<VariableItem> variables) {
+        DefaultListModel<VariableItem> model = (DefaultListModel<VariableItem>) variableList.getModel();
+        model.clear();
+
+        for (VariableItem v : variables) {
+            model.addElement(v);
+        }
+
+        if (!variables.isEmpty()) {
+            variableList.setSelectionInterval(0, variables.size() - 1);
+        } else {
+            variableList.clearSelection();
         }
     }
-
     private JPanel createMainPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         
@@ -257,13 +326,16 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         // Variable selection
         JLabel variableLabel = new JLabel("Variables:");
-        String[] defaultVariables = {"chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670"};
-        variableList = new JList<>(defaultVariables);
+
+        DefaultListModel<VariableItem> variableModel = new DefaultListModel<>();
+        variableList = new JList<VariableItem>(variableModel);
         variableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        variableList.setEnabled(false);
+        updateStatus("Loading variables...");
+        updateVariableList(new ArrayList<>());
+
         JScrollPane variableScrollPane = new JScrollPane(variableList);
-        
-        // Initialize with default variables (will be updated when metadata loads)
-        updateVariableList(Arrays.asList(defaultVariables));
 
         // Layout
         GridBagConstraints gbc = new GridBagConstraints();
@@ -587,7 +659,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         selectedFileUrl = url;
         variablesLoadedForUrl = null;
-        fetchFileMetadata();
+        loadVariablesForSelectedGranule();
 
         statusArea.setText("URL validation completed. Ready for subsetting.");
     }
@@ -686,7 +758,10 @@ public class HarmonySubsetServiceDialog extends JDialog {
         }
 
         if (!file.getName().toLowerCase().endsWith(".nc")) {
-            file = new File(file.getParentFile(), file.getName() + ".nc");
+            File parent = file.getParentFile();
+            file = (parent != null)
+                    ? new File(parent, file.getName() + ".nc")
+                    : new File(file.getPath() + ".nc");
         }
 
         if (file.exists()) {
@@ -880,14 +955,18 @@ public class HarmonySubsetServiceDialog extends JDialog {
             params.put("lonMax", lonMax);
         }
 
-        int total = variableList.getModel().getSize();
+        ListModel<VariableItem> model = variableList.getModel();
+        int total = model.getSize();
         int selected = variableList.getSelectedIndices().length;
         boolean allVariablesSelected = total > 0 && selected == total;
 
         params.put("allVariablesSelected", allVariablesSelected);
 
         if (!allVariablesSelected && !variableList.isSelectionEmpty()) {
-            JSONArray variables = new JSONArray(variableList.getSelectedValuesList());
+            JSONArray variables = new JSONArray();
+            for (VariableItem item : variableList.getSelectedValuesList()) {
+                variables.put(item.shortName);
+            }
             params.put("variables", variables);
         }
 
@@ -1166,7 +1245,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     public void setMeta(CmrGranuleMetadataFetcher.GranuleMeta meta) {
         this.meta = meta;
         if (selectedFileUrl != null) {
-            fetchFileMetadata();
+            loadVariablesForSelectedGranule();
         }
     }
 }

@@ -578,7 +578,7 @@ public class OBDAACDataBrowser extends JPanel {
         new SwingWorker<CmrGranuleMetadataFetcher.GranuleMeta, Void>() {
             @Override
             protected CmrGranuleMetadataFetcher.GranuleMeta doInBackground() throws Exception {
-                return CmrGranuleMetadataFetcher.fetchByFileName(finalFileName);
+                return CmrGranuleMetadataFetcher.fetchGranuleMetadataByFileName(finalFileName);
             }
 
             @Override
