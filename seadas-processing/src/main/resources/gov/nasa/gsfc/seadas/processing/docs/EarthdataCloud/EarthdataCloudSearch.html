@@ -407,27 +407,25 @@
 
 
 <p class="indent_bullet_1_title">&#x2022;
-    Preset Locations
+    Regions
 </p>
 <p class="indent_bullet_1_contents">
-    This selector contains pre-defined stored geographic locations.  Each entry is a single point location, defined by a location
-    name and it's associated coordinates.  Selecting a location will then load the value into the "Coordinates"
-    field.  The loaded 'Coordinates' field, in combination with the 'Box Size', will then automatically update the
+    This selector contains pre-defined stored geographic region boundaries.  Selecting a region will update the
     'North', 'South', 'West' and 'East' fields.
 </p>
 
 <p class="indent_bullet_1_contents">
-    For reference: the non-editable configuration file which contains the 'Preset Locations' is:
+    For reference: the non-editable configuration file which contains the 'Preset Regions' is:
 </p>
 
 <p class="indent_bullet_2_title_no_gap">
-    ~/.seadas/auxdata/regions/locations.txt
+    ~/.seadas/auxdata/regions/regions.txt
 </p>
 <br>
-<p class="sub_section_title">Spatial Filter: Examples</p>
+<p class="sub_section_title">Spatial Filter: Examples using Coordinates and Box Size</p>
 
 <p class="main_contents">
-    A few examples illustrating the how the 'Preset Locations', 'Coordinates', and 'Box Size' fields combine to auto-populate
+    A few examples illustrating the how the 'Coordinates' and 'Box Size' fields combine to auto-populate
     the 'North', 'South', 'West' and 'East' fields.
 </p>
 
@@ -442,26 +440,23 @@
                     Example 1<br>Setting 'Box Size' with a single number<br></p>
 
                 <p class="main_contents">
-                    In this example the user sets the 'Box Size' and the 'Coordinates'.
-                    The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
+                    In this example the user specifies the 'Coordinates' and sets the 'Box Size'
+                    and sets the 'Box Size' to a single number.  Then the
+                    'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
 
                 <p class="main_contents_image">
                     <img src="images/earthdata_search_example1.png" width="350" border="0"><br></p>
 
                 <p class="main_contents">
-                    Here the 'Box Size' is set to a number ('1') and the 'Coordinates' are also set.
-                    Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
-
-                <p class="main_contents">
-                    A 'Box Size' of '1' means that the box will span west-east by 1 degree and span
-                    north-south by 1 degree centered about the 'Coordinates'.</p>
+                    In this example, a 'Box Size' of '2' means that the box will span west-east
+                    by 2 degree and span north-south by 2 degree centered about the 'Coordinates'.</p>
 
                 <p class="main_contents">
                     Hence: <br>
-                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 0.5 degrees<br>
-                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 0.5 degrees<br>
-                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
+                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 1 degrees<br>
+                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 1 degrees<br>
+                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 1 degrees<br>
+                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 1 degrees<br></p>
 
             </td>
         </tr>
@@ -487,23 +482,28 @@
                     In this example the user sets the 'Box Size' and the 'Coordinates'.
                     The 'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
 
+                <p class="main_contents">
+                    In this example the user specifies the 'Coordinates' and sets the 'Box Size'
+                    and sets the 'Box Size' to a two-dimension number.  Then the
+                    'North', 'South', 'West' and 'East' fields then get auto-filled.</p>
+
                 <p class="main_contents_image">
                     <img src="images/earthdata_search_example2.png" width="350" border="0"><br></p>
 
                 <p class="main_contents">
-                    Here the 'Box Size' is set to a number ('1x2') and the 'Coordinates' are also set.
+                    Here the 'Box Size' is set to a number ('2x4') and the 'Coordinates' are also set.
                     Then the 'North', 'South', 'West' and 'East' fields get auto-filled.</p>
 
                 <p class="main_contents">
-                    A 'Box Size' of '1x2' means that the box will span west-east by 1 degree and span
-                    north-south by 2 degrees centered about the 'Coordinates'.</p>
+                    A 'Box Size' of '2x4' means that the box will span west-east by 2 degree and span
+                    north-south by 4 degrees centered about the 'Coordinates'.</p>
 
                 <p class="main_contents">
                     Hence: <br>
-                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 1 degrees<br>
-                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 1 degrees<br>
-                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 0.5 degrees<br>
-                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 0.5 degrees<br></p>
+                    &#x25E6; 'North' is set to the lat of 'Coordinates' plus 2 degrees<br>
+                    &#x25E6; 'South' is set to the lat of 'Coordinates' minus 2 degrees<br>
+                    &#x25E6; 'West' is set to the lon of 'Coordinates' minus 1 degrees<br>
+                    &#x25E6; 'East' is set to the lon of 'Coordinates' plus 1 degrees<br></p>
 
             </td>
         </tr>
@@ -526,61 +526,61 @@
 
 
 
-<p class="indent_bullet_1_title">&#x2022;
-    User Locations
-</p>
+<!--<p class="indent_bullet_1_title">&#x2022;-->
+<!--    User Locations-->
+<!--</p>-->
 
 
-<p class="indent_bullet_1_contents">
-    Selecting the user-defined 'User Locations' will set the "Coordinates" field,
-    which in turn will set the North, South, West and East fields.
-</p>
+<!--<p class="indent_bullet_1_contents">-->
+<!--    Selecting the user-defined 'User Locations' will set the "Coordinates" field,-->
+<!--    which in turn will set the North, South, West and East fields.-->
+<!--</p>-->
 
-<p class="main_contents_image_2">
-    <img src="images/earthdata_search_user_location.png" width="350" border="0"><br><br>
-</p>
+<!--<p class="main_contents_image_2">-->
+<!--    <img src="images/earthdata_search_user_location.png" width="350" border="0"><br><br>-->
+<!--</p>-->
 
 
 
-<p class="indent_bullet_2_title">-
-    To enable the 'User Locations' selector
-</p>
+<!--<p class="indent_bullet_2_title">- -->
+<!--    To enable the 'User Locations' selector-->
+<!--</p>-->
 
-<p class="indent_bullet_2_contents">
-    The 'User Locations' field is not available by default,
-    but can easily be added by going to the Preferences page:<br>
-    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
-    and checking "Include 'User Locations' Selector".
-</p>
+<!--<p class="indent_bullet_2_contents">-->
+<!--    The 'User Locations' field is not available by default,-->
+<!--    but can easily be added by going to the Preferences page:<br>-->
+<!--    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>-->
+<!--    and checking "Include 'User Locations' Selector".-->
+<!--</p>-->
 
-<p class="indent_bullet_2_title">-
-    To edit the 'User Locations' selector
-</p>
+<!--<p class="indent_bullet_2_title">- -->
+<!--    To edit the 'User Locations' selector-->
+<!--</p>-->
 
-<p class="indent_bullet_2_contents">
-    Entries can be added to the 'User Locations' selector by manually editing the following file:<br>
-    ~/.seadas/auxdata/regions/user_locations.txt.
-</p>
+<!--<p class="indent_bullet_2_contents">-->
+<!--    Entries can be added to the 'User Locations' selector by manually editing the following file:<br>-->
+<!--    ~/.seadas/auxdata/regions/user_locations.txt.-->
+<!--</p>-->
 
-<p class="indent_bullet_2_contents">
-    Here's a sample of the formatting in the 'User Locations' configuration file:
-</p>
+<!--<p class="indent_bullet_2_contents">-->
+<!--    Here's a sample of the formatting in the 'User Locations' configuration file:-->
+<!--</p>-->
 
-<div class="div_indent_2">
-<table class="outline">
-    <tr>
-        <td class="blank_paragraph">
-            <pre>
-#  Name = Lat Lon
-#  (coordinates can be space and/or comma delimited)
+<!--<div class="div_indent_2">-->
+<!--<table class="outline">-->
+<!--    <tr>-->
+<!--        <td class="blank_paragraph">-->
+<!--            <pre>-->
+<!--#  Name = Lat Lon-->
+<!--#  (coordinates can be space and/or comma delimited)-->
 
-My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W</pre>
-        </td>
-    </tr>
-</table>
+<!--My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W</pre>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--</table>-->
 
-</div>
-<br>
+<!--</div>-->
+<!--<br>-->
 
 
 
