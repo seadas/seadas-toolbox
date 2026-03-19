@@ -127,15 +127,15 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_DEFAULT = "1.0";
 
 
-    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_regions.selector";
-    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_LABEL = "Include 'Preset Regions' Selector";
-    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP = "Include 'Preset Regions' selector in GUI";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.selector";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_LABEL = "Include 'Regions' Selector";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP = "Include 'Regions' selector in GUI";
     public static final boolean PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT = true;
 
-    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_locations.selector";
+    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_locations.selector";
     public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL = "Include 'Preset Locations' Selector";
     public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP = "Include 'Preset Locations' selector in GUI";
-    public static final boolean PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT = true;
+    public static final boolean PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT = false;
 
 
     public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".user_regions.selector";
@@ -235,7 +235,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
+//        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
@@ -514,10 +514,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP)
         boolean presetRegionsIncludeDefault = PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT;
 
-        @Preference(key = PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY,
-                label = PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL,
-                description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
-        boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
+//        @Preference(key = PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY,
+//                label = PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL,
+//                description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
+//        boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
 
         @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
                 label = PROPERTY_USER_REGION_INCLUDE_LABEL,
