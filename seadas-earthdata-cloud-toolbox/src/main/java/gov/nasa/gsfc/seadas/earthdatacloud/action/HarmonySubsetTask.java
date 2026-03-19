@@ -149,8 +149,11 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             }
 
         } catch (Exception e) {
-            status("ERROR: " + e.getMessage());
-            JOptionPane.showMessageDialog(dialog, e.getMessage(), "Subset Error", JOptionPane.ERROR_MESSAGE);
+            Throwable cause = e.getCause() != null ? e.getCause() : e;
+            String msg = cause.getMessage() != null ? cause.getMessage() : cause.toString();
+
+            status("ERROR: " + msg);
+            JOptionPane.showMessageDialog(dialog, msg, "Subset Error", JOptionPane.ERROR_MESSAGE);
 
             if (dialog != null) {
                 SwingUtilities.invokeLater(dialog::onSubsetFailed);
@@ -509,22 +512,42 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             return Files.createTempFile(stripExt(suggestedRemoteName) + "_", ".nc");
         }
 
-        Path parent = requestedOutputPath.getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
+        Path fileNamePath = requestedOutputPath.getFileName();
+        String requestedName = fileNamePath != null ? fileNamePath.toString() : "";
+
+        // Better: determine this from UI/state, not filesystem existence
+        boolean treatAsDirectory = requestedName.isEmpty() || !requestedName.contains(".");
+
+        Path directory;
+        String baseFileName;
+
+        if (treatAsDirectory) {
+            directory = requestedOutputPath;
+            baseFileName = suggestedRemoteName;
+        } else {
+            directory = requestedOutputPath.getParent();
+            baseFileName = requestedName;
+        }
+
+        if (directory != null) {
+            Files.createDirectories(directory);
         }
 
         if (totalDownloads <= 1) {
-            return requestedOutputPath;
+            return (directory != null) ? directory.resolve(baseFileName) : Paths.get(baseFileName);
         }
 
-        String fileName = requestedOutputPath.getFileName().toString();
-        String stem = stripExt(fileName);
-        String suffix = fileName.toLowerCase(Locale.ROOT).endsWith(".nc") ? ".nc" : "";
-        String numbered = stem + "_" + downloadIndex + suffix;
+        String stem = stripExt(baseFileName);
+        String suffix = baseFileName.toLowerCase(Locale.ROOT).endsWith(".nc") ? ".nc" : "";
+        if (suffix.isEmpty() && suggestedRemoteName.toLowerCase(Locale.ROOT).endsWith(".nc")) {
+            suffix = ".nc";
+        }
 
-        return (parent != null) ? parent.resolve(numbered) : Paths.get(numbered);
+        return (directory != null)
+                ? directory.resolve(stem + "_" + downloadIndex + suffix)
+                : Paths.get(stem + "_" + downloadIndex + suffix);
     }
+
     // ------------------------ Token handling ------------------------
 
     private String tryGetToken() {
@@ -568,10 +591,8 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         }
     }
 
-    // ------------------------ File helpers ------------------------
-
     private Path saveBinaryResponse(InputStream is, String prefix, String suffix, long contentLength) throws IOException {
-        Path out = Files.createTempFile(prefix, suffix);
+        Path out = chooseOutputPathForWrite(prefix, suffix);
 
         try (OutputStream os = Files.newOutputStream(out)) {
             byte[] buffer = new byte[8192];
@@ -583,7 +604,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                 totalRead += read;
 
                 if (contentLength > 0) {
-                    int p = 70 + (int) ((25.0 * totalRead) / contentLength); // map into 70..95
+                    int p = 70 + (int) ((25.0 * totalRead) / contentLength);
                     setProgress(Math.min(95, p));
                 }
             }
@@ -592,17 +613,17 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         return out;
     }
 
-//    private Path chooseOutputPathForWrite(String defaultPrefix, String suffix) throws IOException {
-//        if (requestedOutputPath != null) {
-//            Path parent = requestedOutputPath.getParent();
-//            if (parent != null) {
-//                Files.createDirectories(parent);
-//            }
-//            return requestedOutputPath;
-//        }
-//
-//        return Files.createTempFile(defaultPrefix, suffix);
-//    }
+    private Path chooseOutputPathForWrite(String defaultPrefix, String suffix) throws IOException {
+        if (requestedOutputPath != null) {
+            Path parent = requestedOutputPath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            return requestedOutputPath;
+        }
+
+        return Files.createTempFile(defaultPrefix, suffix);
+    }
 
     private static String fileNameFromUrl(String url) {
         int idx = url.lastIndexOf('/');
