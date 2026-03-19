@@ -1198,7 +1198,7 @@ public class OBDAACDataBrowser extends JPanel {
                 gbc.gridx = 0;
                 gbc.fill = GridBagConstraints.NONE;
                 gbc.weightx = 0;
-                JLabel regionLabel = new JLabel("Regions:");
+                JLabel regionLabel = new JLabel("Preset Regions:");
                 regionLabel.setToolTipText(TOOLTIP);
                 regionLabel.setMinimumSize(regionLabelPreferredSize);
                 panel.add(regionLabel, gbc);

@@ -128,8 +128,8 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
 
     public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.selector";
-    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_LABEL = "Include 'Regions' Selector";
-    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP = "Include 'Regions' selector in GUI";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_LABEL = "Include 'Preset Regions' Selector";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP = "Include 'Preset Regions' selector in GUI";
     public static final boolean PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT = true;
 
     public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_locations.selector";
@@ -237,7 +237,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
 //        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
+//        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
@@ -524,10 +524,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
         boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
 
-        @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
-                label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
-                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
-        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
+//        @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
+//                label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
+//                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
+//        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
 
         
         @Preference(key = PROPERTY_BOX_SIZE_KEY,

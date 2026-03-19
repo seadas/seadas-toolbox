@@ -82,7 +82,7 @@ Baffin Bay = 82.83 69.07 -81.23 -49.11
 Bay of Bengal = 23.0 4.0 78.0 97.0
 Bay of Biscay = 48.99 42.60 -9.51 -0.17
 Bay of Fundy = 46.23 43.07 -68.71 -63.22
-Chesapeake Bay = 39.78 36.50 -77.50 -75.37
+Chesapeake Bay = 39.6 35.9 -77.5 -74.3
 Delaware Bay = 40.0 38.55 -75.76 -74.55
 Hudson Bay = 67.13 50.36 -95.37 -75.97
 Korea Bay = 41.0 37.0 120.0 127.0
@@ -119,7 +119,7 @@ Persian Gulf = 33.0 23.0 51.0 60.0
 
 
 -- BLANK --
--- Lakes / Inland Water Bodies --
+-- Lakes --
 Caspian Sea = 47.43 36.10 46.46 55.38
 Great Lakes = 49.22 41.05 -92.56 -75.79
 Lake Erie = 43.04 41.28 -83.68 -78.73
