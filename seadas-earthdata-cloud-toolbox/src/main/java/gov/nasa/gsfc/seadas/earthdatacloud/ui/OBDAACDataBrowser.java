@@ -455,7 +455,8 @@ public class OBDAACDataBrowser extends JPanel {
         JButton downloadButton = new JButton("Download");
         downloadButton.addActionListener(e -> {
             if (imagePreviewHelper != null) {
-                imagePreviewHelper.dismissPreview();
+                // todo Danny check this
+                imagePreviewHelper.hideImagePreview();
             }
             downloadSelectedFiles();
         });
@@ -463,7 +464,8 @@ public class OBDAACDataBrowser extends JPanel {
         JButton subsetButton = new JButton("Subset");
         subsetButton.addActionListener(e -> {
             if (imagePreviewHelper != null) {
-                imagePreviewHelper.dismissPreview();
+                // todo Danny check this
+                imagePreviewHelper.hideImagePreview();
             }
             subsetSelectedFiles();
         });
