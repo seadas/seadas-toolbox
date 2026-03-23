@@ -299,6 +299,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         }
 
         url.append("&skipPreview=true");
+        url.append("&pixelSubset=true");
 
         return url.toString();
     }
