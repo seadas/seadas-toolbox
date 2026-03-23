@@ -173,6 +173,25 @@ Great Barrier Reef = -10.0 -25.0 142.0 154.0
 
 
 
+-- BLANK --
+-- Southern Seas around Antarctica --
+Weddell Sea       = -62.0 -80.0 -70.0 -8.0
+Lazarev Sea       = -65.0 -73.0 0.0 14.0
+Riiser-Larsen Sea = -65.0 -73.0 14.0 33.75
+Cosmonauts Sea    = -65.0 -73.0 33.75 53.8
+Cooperation Sea   = -65.0 -73.0 53.8 81.75
+Davis Sea         = -65.0 -73.0 88.0 95.58
+Tryoshnikova Gulf = -65.0 -73.0 88.0 95.58
+Mawson Sea        = -65.0 -73.0 95.58 113.2
+Dumont d'Urville Sea = -64.0 -73.0 113.2 146.84
+Somov Sea         = -65.0 -73.0 146.84 172.0
+Ross Sea          = -71.0 -80.0 160.0 -157.0
+Amundsen Sea      = -72.0 -76.0 -126.25 -100.0
+Bellingshausen Sea = -65.0 -74.0 -104.0 -65.0
+Drake Passage = -54.0 -65.0 -72.0 -53.0
+
+
+
 
 
 
