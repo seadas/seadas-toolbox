@@ -519,16 +519,80 @@ if [ -x "$java_exec" ]; then
 else
   echo "WARNING: java_exec is not executable!"
 fi
-echo "local_classpath: $local_classpath"
+echo "Classpath entries:"
+printf '%s\n' "$local_classpath" | tr ':' '\n'
 echo "----------------------------------------"
 
 return_code=0
-if [ "$has_space_options" = "true" ]; then
-$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
-return_code=$?
-else
-$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
-return_code=$?
-fi
+#if [ "$has_space_options" = "true" ]; then
+#$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
+#return_code=$?
+#else
+#$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
+#return_code=$?
+#fi
+
+EXCLUDED1="org-esa-snap-snap-worldwind.jar"
+EXCLUDED2="org-esa-snap-snap-python.jar"
+
+build_jar_classpath() {
+  search_dir=$1
+  exclude1=$2
+  exclude2=$3
+
+  if [ ! -d "$search_dir" ]; then
+    return
+  fi
+
+  find "$search_dir" -type f -name '*.jar' ! -name "$exclude1" ! -name "$exclude2" -print \
+    | while IFS= read -r jar; do
+        printf '%s:' "$jar"
+      done
+}
+
+build_native_lib_path() {
+  search_dir=$1
+
+  if [ ! -d "$search_dir" ]; then
+    return
+  fi
+
+  find "$search_dir" -type f \( -name '*.dylib' -o -name '*.jnilib' \) -print \
+    | while IFS= read -r lib; do
+        dirname "$lib"
+      done \
+    | awk '!seen[$0]++' \
+    | while IFS= read -r dir; do
+        printf '%s:' "$dir"
+      done
+}
+
+SNAP_MODULE_PATH="$app_home/snap/modules"
+OPTTBX_MODULE_PATH="$app_home/optical-toolbox/modules"
+SEADAS_TOOLBOX_MODULE_PATH="$app_home/seadas-toolbox/modules"
+
+SNAP_MODULE_JARS=$(build_jar_classpath "$SNAP_MODULE_PATH" "$EXCLUDED1" "$EXCLUDED2")
+SNAP_MODULE_JARS=${SNAP_MODULE_JARS%:}
+
+OPTTBX_MODULE_JARS=$(build_jar_classpath "$OPTTBX_MODULE_PATH" "$EXCLUDED1" "$EXCLUDED2")
+OPTTBX_MODULE_JARS=${OPTTBX_MODULE_JARS%:}
+
+SEADAS_TOOLBOX_MODULE_JARS=$(build_jar_classpath "$SEADAS_TOOLBOX_MODULE_PATH" "$EXCLUDED1" "$EXCLUDED2")
+SEADAS_TOOLBOX_MODULE_JARS=${SEADAS_TOOLBOX_MODULE_JARS%:}
+
+JAVA_LIBRARY_PATH=$(build_native_lib_path "$app_home")
+JAVA_LIBRARY_PATH=${JAVA_LIBRARY_PATH%:}
+
+local_classpath="$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
+
+exec "$java_exec" \
+  -Dexe4j.moduleName="$prg_dir/$progname" \
+  -Djava.library.path="$JAVA_LIBRARY_PATH" \
+  "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" \
+  "-Dsnap.home=$app_home" \
+  "-Djava.awt.headless=true" \
+  -classpath "$local_classpath" \
+  org.esa.snap.runtime.Launcher \
+  "$@"
 
 exit $return_code
