@@ -570,6 +570,9 @@ build_native_lib_path() {
 SNAP_MODULE_PATH="$app_home/snap/modules"
 OPTTBX_MODULE_PATH="$app_home/optical-toolbox/modules"
 SEADAS_TOOLBOX_MODULE_PATH="$app_home/seadas-toolbox/modules"
+PLATFORM_LIB_PATH="$app_home/platform/lib"
+PLATFORM_MODULE_PATH="$app_home/platform/modules"
+IDE_MODULE_PATH="$app_home/ide/modules"
 
 SNAP_MODULE_JARS=$(build_jar_classpath "$SNAP_MODULE_PATH" "$EXCLUDED1" "$EXCLUDED2")
 SNAP_MODULE_JARS=${SNAP_MODULE_JARS%:}
@@ -583,7 +586,16 @@ SEADAS_TOOLBOX_MODULE_JARS=${SEADAS_TOOLBOX_MODULE_JARS%:}
 JAVA_LIBRARY_PATH=$(build_native_lib_path "$app_home")
 JAVA_LIBRARY_PATH=${JAVA_LIBRARY_PATH%:}
 
-local_classpath="$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
+PLATFORM_LIB_JARS=$(build_jar_classpath "$PLATFORM_LIB_PATH" "" "")
+PLATFORM_LIB_JARS=${PLATFORM_LIB_JARS%:}
+
+PLATFORM_MODULE_JARS=$(build_jar_classpath "$PLATFORM_MODULE_PATH" "" "")
+PLATFORM_MODULE_JARS=${PLATFORM_MODULE_JARS%:}
+
+IDE_MODULE_JARS=$(build_jar_classpath "$IDE_MODULE_PATH" "" "")
+IDE_MODULE_JARS=${IDE_MODULE_JARS%:}
+
+local_classpath="$PLATFORM_LIB_JARS:$PLATFORM_MODULE_JARS:$IDE_MODULE_JARS:$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
 
 exec "$java_exec" \
   -Dexe4j.moduleName="$prg_dir/$progname" \
