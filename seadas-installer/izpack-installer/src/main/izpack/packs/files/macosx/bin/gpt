@@ -561,8 +561,10 @@ PLATFORM_MODULE_JARS=${PLATFORM_MODULE_JARS%:}
 IDE_MODULE_JARS=$(build_jar_classpath "$IDE_MODULE_PATH" "" "")
 IDE_MODULE_JARS=${IDE_MODULE_JARS%:}
 
-local_classpath="$PLATFORM_LIB_JARS:$PLATFORM_MODULE_JARS:$IDE_MODULE_JARS:$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
+SLF4J_API_JAR="$app_home/snap/modules/ext/org.esa.snap.ceres-core/org-slf4j/slf4j-api.jar"
+SLF4J_SIMPLE_JAR="$app_home/snap/modules/ext/org.esa.snap.snap-netcdf/org-slf4j/slf4j-simple.jar"
 
+local_classpath="$SLF4J_API_JAR:$SLF4J_SIMPLE_JAR:$PLATFORM_LIB_JARS:$PLATFORM_MODULE_JARS:$IDE_MODULE_JARS:$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
 echo "----------------------------------------"
 echo "GPT Launcher Debug Info"
 echo "app_home: $app_home"
@@ -579,9 +581,13 @@ echo "Native library path entries:"
 printf '%s\n' "$JAVA_LIBRARY_PATH" | tr ':' '\n'
 echo "----------------------------------------"
 
+NETBEANS_USER_DIR="$app_home/var/netbeans-user"
+mkdir -p "$NETBEANS_USER_DIR" >/dev/null 2>&1
+
 exec "$java_exec" \
   -Dexe4j.moduleName="$prg_dir/$progname" \
   -Djava.library.path="$JAVA_LIBRARY_PATH" \
+  "-Dnetbeans.user=$NETBEANS_USER_DIR" \
   "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" \
   "-Dsnap.home=$app_home" \
   "-Djava.awt.headless=true" \
