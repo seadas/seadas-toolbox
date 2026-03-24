@@ -564,7 +564,13 @@ IDE_MODULE_JARS=${IDE_MODULE_JARS%:}
 SLF4J_API_JAR="$app_home/snap/modules/ext/org.esa.snap.ceres-core/org-slf4j/slf4j-api.jar"
 SLF4J_SIMPLE_JAR="$app_home/snap/modules/ext/org.esa.snap.snap-netcdf/org-slf4j/slf4j-simple.jar"
 
-local_classpath="$SLF4J_API_JAR:$SLF4J_SIMPLE_JAR:$PLATFORM_LIB_JARS:$PLATFORM_MODULE_JARS:$IDE_MODULE_JARS:$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
+SLF4J_PREFIX=""
+if [ -f "$SLF4J_API_JAR" ] && [ -f "$SLF4J_SIMPLE_JAR" ]; then
+  SLF4J_PREFIX="$SLF4J_API_JAR:$SLF4J_SIMPLE_JAR:"
+fi
+
+local_classpath="${SLF4J_PREFIX}$PLATFORM_LIB_JARS:$PLATFORM_MODULE_JARS:$IDE_MODULE_JARS:$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
+
 echo "----------------------------------------"
 echo "GPT Launcher Debug Info"
 echo "app_home: $app_home"
