@@ -594,6 +594,8 @@ exec "$java_exec" \
   -Dexe4j.moduleName="$prg_dir/$progname" \
   -Djava.library.path="$JAVA_LIBRARY_PATH" \
   "-Dnetbeans.user=$NETBEANS_USER_DIR" \
+  "-Dnetbeans.home=$app_home/platform" \
+  "-Dnetbeans.dirs=$app_home/snap:$app_home/optical-toolbox:$app_home/seadas-toolbox:$app_home/ide"
   "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" \
   "-Dsnap.home=$app_home" \
   "-Djava.awt.headless=true" \
