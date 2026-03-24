@@ -581,10 +581,10 @@ if [ -x "$java_exec" ]; then
 else
   echo "WARNING: java_exec is not executable!"
 fi
-echo "Classpath entries:"
-printf '%s\n' "$local_classpath" | tr ':' '\n'
-echo "Native library path entries:"
-printf '%s\n' "$JAVA_LIBRARY_PATH" | tr ':' '\n'
+#echo "Classpath entries:"
+#printf '%s\n' "$local_classpath" | tr ':' '\n'
+#echo "Native library path entries:"
+#printf '%s\n' "$JAVA_LIBRARY_PATH" | tr ':' '\n'
 echo "----------------------------------------"
 
 NETBEANS_USER_DIR="$app_home/var/netbeans-user"
