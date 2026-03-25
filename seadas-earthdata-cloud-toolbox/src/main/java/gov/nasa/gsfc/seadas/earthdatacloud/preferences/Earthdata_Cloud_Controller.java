@@ -149,6 +149,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP = "Include 'User Locations' selector in GUI";
     public static final boolean PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT = false;
 
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.categorize";
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL = "Categorize 'Preset Regions' Selector";
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_TOOLTIP = "Categorizes 'Preset Regions' selector in GUI (otherwise uses a sorted region list)";
+    public static final boolean PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT = true;
+
 
 
     public static final String PROPERTY_DAYNIGHT_MODE_KEY = PROPERTY_ROOT_KEY + ".daynight_mode";
@@ -237,6 +242,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
 //        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY, PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT);
 //        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
@@ -529,6 +535,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 //                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
 //        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
 
+        @Preference(key = PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY,
+                label = PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL,
+                description = PROPERTY_PRESET_REGIONS_CATEGORIZE_TOOLTIP)
+        boolean presetRegionsCategorizeDefault = PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT;
+
         
         @Preference(key = PROPERTY_BOX_SIZE_KEY,
                 label = PROPERTY_BOX_SIZE_LABEL,
@@ -664,7 +675,13 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         return preferences.getPropertyBool(PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
     }
 
-    
+
+    public static boolean getPreferencePresetRegionsCategorize() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY, PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT);
+    }
+
+
     public static String getPreferenceBoxSize() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);

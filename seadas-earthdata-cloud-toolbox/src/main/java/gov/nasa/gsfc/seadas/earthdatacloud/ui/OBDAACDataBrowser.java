@@ -1185,14 +1185,17 @@ public class OBDAACDataBrowser extends JPanel {
         Dimension regionLabelPreferredSize = tmpLabel.getPreferredSize();
 
 
+        boolean categorize = Earthdata_Cloud_Controller.getPreferencePresetRegionsCategorize();
+
         if (Earthdata_Cloud_Controller.getPreferencePresetRegionsSelectorInclude()) {
 
 
             try {
                 String REGIONS_FILE = "regions.txt";
                 String TOOLTIP = Earthdata_Cloud_Controller.PROPERTY_REGION_FILE_TOOLTIP;
+
 //                String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt</html>";
-                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
+                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true, categorize);
 
                 Object[] regionsInfosArray = regionsInfos.toArray();
 
@@ -1269,7 +1272,7 @@ public class OBDAACDataBrowser extends JPanel {
             try {
                 String REGIONS_FILE = "locations.txt";
                 String TOOLTIP = "<html>Pre-Defined Locations/Regions<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/locations.txt</html>";
-                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true);
+                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, true, categorize);
 
                 Object[] regionsInfosArray = regionsInfos.toArray();
 
@@ -1346,7 +1349,7 @@ public class OBDAACDataBrowser extends JPanel {
                 String REGIONS_FILE = "user_regions.txt";
                 String TOOLTIP = "<html>User-Defined Regions<br>Sets coordinates based on contents of ~/.seadas/auxdata/regions/user_regions.txt</html>";
 
-                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false);
+                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false, true);
 
                 Object[] regionsInfosArray = regionsInfos.toArray();
 
@@ -1424,7 +1427,7 @@ public class OBDAACDataBrowser extends JPanel {
                 String REGIONS_FILE = "user_locations.txt";
                 String TOOLTIP = "<html>User-Defined Locations<br>Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/user_locations.txt</html>";
 
-                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false);
+                ArrayList<RegionsInfo> regionsInfos = RegionUtils.getAuxDataRegions(REGIONS_FILE, false, true);
 
                 Object[] regionsInfosArray = regionsInfos.toArray();
 
