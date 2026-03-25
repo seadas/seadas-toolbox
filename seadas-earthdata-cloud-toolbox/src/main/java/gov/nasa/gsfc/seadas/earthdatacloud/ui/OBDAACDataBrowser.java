@@ -598,11 +598,13 @@ public class OBDAACDataBrowser extends JPanel {
                         subsetDialog.setGranuleBounds(meta.minLat, meta.maxLat, meta.minLon, meta.maxLon);
                     }
 
+                    subsetDialog.pack();
+                    subsetDialog.setLocationRelativeTo(parentDialog);
                     subsetDialog.setVisible(true);
 
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(
-                            /* parent */ parentDialog, // replace with your dialog class
+                            parentDialog,
                             "CMR lookup failed:\n" + (e.getMessage() != null ? e.getMessage() : e.toString()),
                             "Error",
                             JOptionPane.ERROR_MESSAGE

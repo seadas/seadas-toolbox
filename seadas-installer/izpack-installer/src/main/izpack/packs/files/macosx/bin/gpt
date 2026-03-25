@@ -35,7 +35,7 @@ read_db_entry() {
     return 1
   fi
   found=1
-  exec 7< $db_file
+  exec 7< "$db_file"
   while read r_type r_dir r_ver_major r_ver_minor r_ver_micro r_ver_patch r_ver_vendor<&7; do
     if [ "$r_type" = "JRE_VERSION" ]; then
       if [ "$r_dir" = "$test_dir" ]; then
@@ -79,14 +79,14 @@ create_db_entry() {
   fi
   db_new_file=${db_file}_new
   if [ -f "$db_file" ]; then
-    awk '$2 != "'"$test_dir"'" {print $0}' $db_file > $db_new_file
+    awk '$2 != "'"$test_dir"'" {print $0}' $db_file > "$db_new_file"
     cp "$db_new_file" "$db_file"
     rm "$db_new_file" 2> /dev/null
   fi
   dir_escaped=`echo "$test_dir" | sed -e 's/ /\\\\ /g'`
-  echo "JRE_VERSION	$dir_escaped	$ver_major	$ver_minor	$ver_micro	$ver_patch" >> $db_file
-  echo "JRE_INFO	$dir_escaped	1	$modification_date	$is_64bit" >> $db_file
-  chmod g+w $db_file
+  echo "JRE_VERSION	$dir_escaped	$ver_major	$ver_minor	$ver_micro	$ver_patch" >> "$db_file"
+  echo "JRE_INFO	$dir_escaped	1	$modification_date	$is_64bit" >> "$db_file"
+  chmod g+w "$db_file"
 }
 
 check_date_output() {
@@ -442,17 +442,12 @@ if [ -z "$app_java_home" ]; then
   exit 83
 fi
 
-local_classpath=""
-i4j_classpath="$app_home/.install4j/i4jruntime.jar:$app_home/.install4j/launcher4522bb12.jar"
-add_class_path "$i4j_classpath"
-add_class_path "$app_home/snap/modules/ext/org.esa.snap.snap-core/org-esa-snap/snap-runtime.jar"
-
 vmoptions_val=""
 read_vmoptions "$prg_dir/$progname.vmoptions"
 INSTALL4J_ADD_VM_PARAMS="$INSTALL4J_ADD_VM_PARAMS $vmoptions_val"
 
-for param in $@; do
-  if [ `echo "W$param" | cut -c -3` = "W-J" ]; then
+for param in "$@"; do
+  if [ "`echo "W$param" | cut -c -3`" = "W-J" ]; then
     INSTALL4J_ADD_VM_PARAMS="$INSTALL4J_ADD_VM_PARAMS `echo "$param" | cut -c 3-`"
   fi
 done
@@ -486,21 +481,13 @@ else
 fi
 
 
-# Choose Java executable (prefer bundled JRE if present)
+# Prefer bundled macOS JRE first
 java_exec=""
-
-# 1) Bundled JRE - Linux-style layout
-if [ -x "$app_home/jdk-21.0.8+9-jre/bin/java" ]; then
-  java_exec="$app_home/jdk-21.0.8+9-jre/bin/java"
-fi
-
-# 2) Bundled JRE - macOS-style layout (common for .jdk bundles)
-if [ -z "$java_exec" ] && [ -x "$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java" ]; then
+if [ -x "$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java" ]; then
   java_exec="$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java"
-fi
-
-# 3) Fallback: the JVM you already discovered earlier (app_java_home)
-if [ -z "$java_exec" ] && [ -n "$app_java_home" ] && [ -x "$app_java_home/bin/java" ]; then
+elif [ -x "$app_home/jdk-21.0.8+9-jre/bin/java" ]; then
+  java_exec="$app_home/jdk-21.0.8+9-jre/bin/java"
+elif [ -n "$app_java_home" ] && [ -x "$app_java_home/bin/java" ]; then
   java_exec="$app_java_home/bin/java"
 fi
 
@@ -509,28 +496,7 @@ if [ -z "$java_exec" ]; then
   exit 1
 fi
 
-echo "----------------------------------------"
-echo "GPT Launcher Debug Info"
-echo "app_home: $app_home"
-echo "app_java_home (detected): $app_java_home"
-echo "java_exec (chosen): $java_exec"
-if [ -x "$java_exec" ]; then
-  "$java_exec" -version 2>&1
-else
-  echo "WARNING: java_exec is not executable!"
-fi
-echo "Classpath entries:"
-printf '%s\n' "$local_classpath" | tr ':' '\n'
-echo "----------------------------------------"
-
 return_code=0
-#if [ "$has_space_options" = "true" ]; then
-#$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" "$vmov_1" "$vmov_2" "$vmov_3" "$vmov_4" "$vmov_5" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
-#return_code=$?
-#else
-#$INSTALL4J_JAVA_PREFIX exec "$java_exec" "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" "-Dsnap.home=$prg_dir/.." "-Djava.awt.headless=true" "-Dinstall4j.noLoggingFix=true" $INSTALL4J_ADD_VM_PARAMS -classpath "$local_classpath" install4j.org.esa.snap.runtime.Launcher_gpt  "$@"
-#return_code=$?
-#fi
 
 EXCLUDED1="org-esa-snap-snap-worldwind.jar"
 EXCLUDED2="org-esa-snap-snap-python.jar"
@@ -570,6 +536,9 @@ build_native_lib_path() {
 SNAP_MODULE_PATH="$app_home/snap/modules"
 OPTTBX_MODULE_PATH="$app_home/optical-toolbox/modules"
 SEADAS_TOOLBOX_MODULE_PATH="$app_home/seadas-toolbox/modules"
+PLATFORM_LIB_PATH="$app_home/platform/lib"
+PLATFORM_MODULE_PATH="$app_home/platform/modules"
+IDE_MODULE_PATH="$app_home/ide/modules"
 
 SNAP_MODULE_JARS=$(build_jar_classpath "$SNAP_MODULE_PATH" "$EXCLUDED1" "$EXCLUDED2")
 SNAP_MODULE_JARS=${SNAP_MODULE_JARS%:}
@@ -583,11 +552,48 @@ SEADAS_TOOLBOX_MODULE_JARS=${SEADAS_TOOLBOX_MODULE_JARS%:}
 JAVA_LIBRARY_PATH=$(build_native_lib_path "$app_home")
 JAVA_LIBRARY_PATH=${JAVA_LIBRARY_PATH%:}
 
-local_classpath="$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
+PLATFORM_LIB_JARS=$(build_jar_classpath "$PLATFORM_LIB_PATH" "" "")
+PLATFORM_LIB_JARS=${PLATFORM_LIB_JARS%:}
+
+PLATFORM_MODULE_JARS=$(build_jar_classpath "$PLATFORM_MODULE_PATH" "" "")
+PLATFORM_MODULE_JARS=${PLATFORM_MODULE_JARS%:}
+
+IDE_MODULE_JARS=$(build_jar_classpath "$IDE_MODULE_PATH" "" "")
+IDE_MODULE_JARS=${IDE_MODULE_JARS%:}
+
+SLF4J_API_JAR="$app_home/snap/modules/ext/org.esa.snap.ceres-core/org-slf4j/slf4j-api.jar"
+SLF4J_SIMPLE_JAR="$app_home/snap/modules/ext/org.esa.snap.snap-netcdf/org-slf4j/slf4j-simple.jar"
+
+SLF4J_PREFIX=""
+if [ -f "$SLF4J_API_JAR" ] && [ -f "$SLF4J_SIMPLE_JAR" ]; then
+  SLF4J_PREFIX="$SLF4J_API_JAR:$SLF4J_SIMPLE_JAR:"
+fi
+
+local_classpath="${SLF4J_PREFIX}$PLATFORM_LIB_JARS:$PLATFORM_MODULE_JARS:$IDE_MODULE_JARS:$SNAP_MODULE_JARS:$OPTTBX_MODULE_JARS:$SEADAS_TOOLBOX_MODULE_JARS"
+
+echo "----------------------------------------"
+echo "GPT Launcher Debug Info"
+echo "app_home: $app_home"
+echo "app_java_home (detected): $app_java_home"
+echo "java_exec (chosen): $java_exec"
+if [ -x "$java_exec" ]; then
+  "$java_exec" -version 2>&1
+else
+  echo "WARNING: java_exec is not executable!"
+fi
+#echo "Classpath entries:"
+#printf '%s\n' "$local_classpath" | tr ':' '\n'
+#echo "Native library path entries:"
+#printf '%s\n' "$JAVA_LIBRARY_PATH" | tr ':' '\n'
+echo "----------------------------------------"
+
+NETBEANS_USER_DIR="$app_home/var/netbeans-user"
+mkdir -p "$NETBEANS_USER_DIR" >/dev/null 2>&1
 
 exec "$java_exec" \
   -Dexe4j.moduleName="$prg_dir/$progname" \
   -Djava.library.path="$JAVA_LIBRARY_PATH" \
+  "-Dnetbeans.user=$NETBEANS_USER_DIR" \
   "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT" \
   "-Dsnap.home=$app_home" \
   "-Djava.awt.headless=true" \

@@ -68,9 +68,8 @@ public class HarmonySubsetServiceDialog extends JDialog {
         this.searchLatMax = latMax;
         this.searchLonMin = lonMin;
         this.searchLonMax = lonMax;
-        
+
         setLayout(new BorderLayout());
-        setSize(800, 700);
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
@@ -79,7 +78,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         // Create main content
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
-        
+
         // Create button panel
         JPanel buttonPanel = createButtonPanel();
         add(buttonPanel, BorderLayout.SOUTH);
@@ -90,12 +89,16 @@ public class HarmonySubsetServiceDialog extends JDialog {
         }
 
         pack();
-        setLocationRelativeTo(null);
+
+        // Optional: prevent the dialog from becoming too small
+        setMinimumSize(getSize());
+
         Window parent = SnapApp.getDefault().getMainFrame();
         setLocationRelativeTo(parent);
+
         Point location = getLocation();
         setLocation(location.x - 100, Math.max(0, location.y - 100));
-        
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
@@ -287,8 +290,11 @@ public class HarmonySubsetServiceDialog extends JDialog {
     }
 
     private JPanel createSubsetPanel() {
+        JPanel outerPanel = new JPanel(new GridBagLayout());
+        outerPanel.setBorder(BorderFactory.createTitledBorder("Subset Parameters"));
+
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Subset Parameters"));
+        panel.setOpaque(false);
 
         // Spatial bounds
         JLabel spatialLabel = new JLabel("Spatial Bounds:");
@@ -296,7 +302,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
         latMaxField = new JTextField(10);
         lonMinField = new JTextField(10);
         lonMaxField = new JTextField(10);
-
 
         // Pre-fill spatial fields with search bounds if available
         if (searchLatMin != null && searchLatMax != null && searchLonMin != null && searchLonMax != null) {
@@ -310,67 +315,114 @@ public class HarmonySubsetServiceDialog extends JDialog {
         JLabel variableLabel = new JLabel("Variables:");
 
         DefaultListModel<VariableItem> variableModel = new DefaultListModel<>();
-        variableList = new JList<VariableItem>(variableModel);
+        variableList = new JList<>(variableModel);
         variableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         variableList.setEnabled(false);
         updateStatus("Loading variables...");
         updateVariableList(new ArrayList<>());
 
         JScrollPane variableScrollPane = new JScrollPane(variableList);
+        variableScrollPane.setPreferredSize(new Dimension(520, 180));
 
         // Start empty; real values will be loaded from file metadata.
         updateVariableList(new ArrayList<>());
 
-        // Layout
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-
-        // Spatial bounds
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
-        panel.add(spatialLabel, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lat Min:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(latMinField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lat Max:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(latMaxField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lon Min:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(lonMinField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lon Max:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(lonMaxField, gbc);
-
-
-//        JButton drawBoxButton = new JButton("Draw Bounding Box...");
-//        drawBoxButton.addActionListener(e -> openBBoxDialog());
-//        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
-//        panel.add(drawBoxButton, gbc);
-
-        // Preview Coverage button
         JButton previewButton = new JButton("Preview Coverage");
         previewButton.addActionListener(e -> previewGranuleCoverage());
-        gbc.gridx = 1; gbc.gridy = 5; gbc.gridwidth = 2;
-        panel.add(previewButton, gbc);
 
-        // Variables
-        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(previewButton);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        int row = 0;
+
+        // Spatial label
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(spatialLabel, gbc);
+
+        // Lat Min
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(new JLabel("Lat Min:"), gbc);
+
+        gbc.gridx = 1;
+        panel.add(latMinField, gbc);
+        row++;
+
+        // Lat Max
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        panel.add(new JLabel("Lat Max:"), gbc);
+
+        gbc.gridx = 1;
+        panel.add(latMaxField, gbc);
+        row++;
+
+        // Lon Min
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        panel.add(new JLabel("Lon Min:"), gbc);
+
+        gbc.gridx = 1;
+        panel.add(lonMinField, gbc);
+        row++;
+
+        // Lon Max
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        panel.add(new JLabel("Lon Max:"), gbc);
+
+        gbc.gridx = 1;
+        panel.add(lonMaxField, gbc);
+        row++;
+
+        // Preview button
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(buttonPanel, gbc);
+
+        // Variables label
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 8, 6, 8);
         panel.add(variableLabel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2; gbc.weighty = 1.0;
+        // Variable list
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         panel.add(variableScrollPane, gbc);
 
-        return panel;
+        // Center the compact content panel inside the full tab area
+        GridBagConstraints outerGbc = new GridBagConstraints();
+        outerGbc.gridx = 0;
+        outerGbc.gridy = 0;
+        outerGbc.weightx = 1.0;
+        outerGbc.weighty = 1.0;
+        outerGbc.anchor = GridBagConstraints.CENTER;
+        outerGbc.fill = GridBagConstraints.NONE;
+
+        outerPanel.add(panel, outerGbc);
+
+        return outerPanel;
     }
 
     private void openBBoxDialog() {
