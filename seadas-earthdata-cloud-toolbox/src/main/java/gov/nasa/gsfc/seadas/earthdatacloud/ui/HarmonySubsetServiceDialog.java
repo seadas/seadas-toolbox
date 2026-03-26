@@ -5,6 +5,7 @@ import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrVariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.VariableItem;
+import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -294,45 +295,16 @@ public class HarmonySubsetServiceDialog extends JDialog {
         outerPanel.setBorder(BorderFactory.createTitledBorder("Subset Parameters"));
 
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEtchedBorder());
+
         panel.setOpaque(false);
 
-        // Spatial bounds
-        JLabel spatialLabel = new JLabel("Spatial Bounds:");
-        latMinField = new JTextField(10);
-        latMaxField = new JTextField(10);
-        lonMinField = new JTextField(10);
-        lonMaxField = new JTextField(10);
+        JPanel spatialBoundsPanel = createSpatialBoundsPanel();
 
-        // Pre-fill spatial fields with search bounds if available
-        if (searchLatMin != null && searchLatMax != null && searchLonMin != null && searchLonMax != null) {
-            latMinField.setText(String.valueOf(searchLatMin));
-            latMaxField.setText(String.valueOf(searchLatMax));
-            lonMinField.setText(String.valueOf(searchLonMin));
-            lonMaxField.setText(String.valueOf(searchLonMax));
-        }
+        JPanel variablesPanel = createVariablesPanel();
 
-        // Variable selection
-        JLabel variableLabel = new JLabel("Variables:");
 
-        DefaultListModel<VariableItem> variableModel = new DefaultListModel<>();
-        variableList = new JList<>(variableModel);
-        variableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        variableList.setEnabled(false);
-        updateStatus("Loading variables...");
-        updateVariableList(new ArrayList<>());
 
-        JScrollPane variableScrollPane = new JScrollPane(variableList);
-        variableScrollPane.setPreferredSize(new Dimension(520, 180));
-
-        // Start empty; real values will be loaded from file metadata.
-        updateVariableList(new ArrayList<>());
-
-        JButton previewButton = new JButton("Preview Coverage");
-        previewButton.addActionListener(e -> previewGranuleCoverage());
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        buttonPanel.setOpaque(false);
-        buttonPanel.add(previewButton);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 8, 6, 8);
@@ -340,76 +312,23 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         int row = 0;
 
-        // Spatial label
         gbc.gridx = 0;
         gbc.gridy = row++;
-        gbc.gridwidth = 2;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(spatialLabel, gbc);
-
-        // Lat Min
-        gbc.gridx = 0;
-        gbc.gridy = row;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
-        panel.add(new JLabel("Lat Min:"), gbc);
-
-        gbc.gridx = 1;
-        panel.add(latMinField, gbc);
+        gbc.gridx = 0;
+        panel.add(spatialBoundsPanel, gbc);
         row++;
 
-        // Lat Max
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(new JLabel("Lat Max:"), gbc);
-
-        gbc.gridx = 1;
-        panel.add(latMaxField, gbc);
-        row++;
-
-        // Lon Min
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(new JLabel("Lon Min:"), gbc);
-
-        gbc.gridx = 1;
-        panel.add(lonMinField, gbc);
-        row++;
-
-        // Lon Max
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(new JLabel("Lon Max:"), gbc);
-
-        gbc.gridx = 1;
-        panel.add(lonMaxField, gbc);
-        row++;
-
-        // Preview button
-        gbc.gridx = 0;
-        gbc.gridy = row++;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(buttonPanel, gbc);
-
-        // Variables label
-        gbc.gridx = 0;
-        gbc.gridy = row++;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 8, 6, 8);
-        panel.add(variableLabel, gbc);
 
         // Variable list
         gbc.gridx = 0;
         gbc.gridy = row;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel.add(variableScrollPane, gbc);
+        panel.add(variablesPanel, gbc);
 
         // Center the compact content panel inside the full tab area
         GridBagConstraints outerGbc = new GridBagConstraints();
@@ -422,8 +341,260 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         outerPanel.add(panel, outerGbc);
 
-        return outerPanel;
+        return panel;
     }
+
+
+
+    private JPanel createVariablesPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Variables"));
+
+
+        DefaultListModel<VariableItem> variableModel = new DefaultListModel<>();
+        variableList = new JList<>(variableModel);
+        variableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        variableList.setEnabled(false);
+        updateStatus("Loading variables...");
+        updateVariableList(new ArrayList<>());
+
+        JScrollPane variableScrollPane = new JScrollPane(variableList);
+//        variableScrollPane.setPreferredSize(new Dimension(520, 180));
+//        variableScrollPane.setPreferredSize(new Dimension(520, 180));
+
+        // Start empty; real values will be loaded from file metadata.
+        updateVariableList(new ArrayList<>());
+
+
+
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        int row = 0;
+
+        // Spatial label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(variableScrollPane, gbc);
+        row++;
+
+        return panel;
+    }
+
+    private JPanel createSpatialBoundsPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Spatial Bounds"));
+
+        JPanel classicPanel = createClassicBoundingBoxPanel();
+
+
+        // Pre-fill spatial fields with search bounds if available
+        if (searchLatMin != null && searchLatMax != null && searchLonMin != null && searchLonMax != null) {
+            latMinField.setText(String.valueOf(searchLatMin));
+            latMaxField.setText(String.valueOf(searchLatMax));
+            lonMinField.setText(String.valueOf(searchLonMin));
+            lonMaxField.setText(String.valueOf(searchLonMax));
+        }
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        int row = 0;
+
+        // Spatial label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(classicPanel, gbc);
+        row++;
+
+
+        JButton previewButton = new JButton("Preview Coverage");
+        previewButton.addActionListener(e -> previewGranuleCoverage());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(previewButton);
+
+
+        gbc.gridy = row;
+        panel.add(buttonPanel, gbc);
+
+
+
+
+        return panel;
+    }
+
+
+    private JPanel createClassicBoundingBoxPanel() {
+//        System.out.println("Creating Classic BoundingBox Panel");
+
+
+        JTextField tmpTextField = new JTextField(" 124°00′10″W ");
+        Dimension preferredTextFieldSize = tmpTextField.getPreferredSize();
+        int preferredColWidth = (int) Math.ceil(preferredTextFieldSize.getWidth() / 2.0);
+        Dimension preferredLabelSize = new Dimension(preferredColWidth, 1);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets.top = 0;
+        gbc.insets.bottom = 0;
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+        gbc.fill = GridBagConstraints.NONE;
+
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel0 = new JLabel("");
+        tmpLabel0.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel0, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel1 = new JLabel("");
+        tmpLabel1.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel1, gbc);
+
+        gbc.gridx = 2;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel2 = new JLabel("");
+        tmpLabel2.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel2, gbc);
+
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel3 = new JLabel("");
+        tmpLabel3.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel3, gbc);
+
+        gbc.gridx = 4;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel4 = new JLabel("");
+        tmpLabel4.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel4, gbc);
+
+        gbc.gridx = 5;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel5 = new JLabel("");
+        tmpLabel5.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel5, gbc);
+
+
+
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
+        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        panel.add(maxLatLabel, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        latMaxField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
+        latMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        panel.add(latMaxField, gbc);
+        gbc.gridwidth = 1;
+
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
+        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        panel.add(minLonLabel, gbc);
+
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets.left = 0;
+        gbc.insets.right = 2;
+        lonMinField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
+        lonMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        panel.add(lonMinField, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.gridx = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets.left = 2;
+        gbc.insets.right = 0;
+        lonMaxField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
+        lonMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        panel.add(lonMaxField, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel maxLonLabel = new JLabel(":" + Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL);
+        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        panel.add(maxLonLabel, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        JLabel minLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLAT_LABEL + ":");
+        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(minLatLabel, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        latMinField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
+        latMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        panel.add(latMinField, gbc);
+        gbc.gridwidth = 1;
+
+        latMinField.setMinimumSize(preferredTextFieldSize);
+        latMinField.setPreferredSize(preferredTextFieldSize);
+        latMaxField.setMinimumSize(preferredTextFieldSize);
+        latMaxField.setPreferredSize(preferredTextFieldSize);
+        lonMinField.setMinimumSize(preferredTextFieldSize);
+        lonMinField.setPreferredSize(preferredTextFieldSize);
+        lonMaxField.setMinimumSize(preferredTextFieldSize);
+        lonMaxField.setPreferredSize(preferredTextFieldSize);
+
+        panel.setMinimumSize(panel.getPreferredSize());
+        panel.setPreferredSize(panel.getPreferredSize());
+
+        return panel;
+
+    }
+
+
+
 
     private void openBBoxDialog() {
         // Prefer granule bounds for extent/clamp
