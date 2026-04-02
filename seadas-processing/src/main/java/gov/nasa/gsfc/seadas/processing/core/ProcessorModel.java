@@ -627,8 +627,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     public boolean updateIFileInfo(String ifileName) {
-        System.out.println("Enter  updateIFileInfo(String ifileName)  - ifileName=" + ifileName);
-        System.out.println("Time elapsed=" + timeElapsed());
+//        System.out.println("Enter  updateIFileInfo(String ifileName)  - ifileName=" + ifileName);
+//        System.out.println("Time elapsed=" + timeElapsed());
 
 
 
@@ -669,14 +669,14 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String west = getParamValue("west");
                     String east = getParamValue("east");
 
-                    System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 1 uuuiiiii");
-                    System.out.println("Time elapsed=" + timeElapsed());
+//                    System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 1 uuuiiiii");
+//                    System.out.println("Time elapsed=" + timeElapsed());
                     String ofileName = OFileUtils.getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
-                    System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 2");
-                    System.out.println("Time elapsed=" + timeElapsed());
+//                    System.out.println("SPOT IFILE SELECTED: getOfileForL3MapGenWrapper() 2");
+//                    System.out.println("Time elapsed=" + timeElapsed());
 
                     updateOFileInfo(ofileName);
-                    System.out.println("Time elapsed=" + timeElapsed());
+//                    System.out.println("Time elapsed=" + timeElapsed());
 
                 } else {
                     badIfileClearAndWarn(ifileName);
@@ -703,9 +703,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     String west = getParamValue("lonwest");
                     String east = getParamValue("loneast");
 
-                    System.out.println("SPOT IFILE SELECTED: getOfileForL3BinWrapper() 1   reererrre");
+//                    System.out.println("SPOT IFILE SELECTED: getOfileForL3BinWrapper() 1   reererrre");
                     String ofileName = OFileUtils.getOfileForL2BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, l3bprod, suite, prodtype, north, south, west, east);
-                    System.out.println("SPOT IFILE SELECTED: getOfileForL3BinWrapper() 2 ");
+//                    System.out.println("SPOT IFILE SELECTED: getOfileForL3BinWrapper() 2 ");
 
                     updateOFileInfo(ofileName);
 
@@ -847,8 +847,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         if (startTime == 0) {
             startTime = System.nanoTime();
         }
-        System.out.println("Enter: setParamValue(String name, String value)  - " + name + " - " + value);
-        System.out.println("Time elapsed=" + timeElapsed());
+//        System.out.println("Enter: setParamValue(String name, String value)  - " + name + " - " + value);
+//        System.out.println("Time elapsed=" + timeElapsed());
         SeadasFileUtils.debug("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
         SeadasFileUtils.debug("set param value: " + name + " " + value);
         SeadasFileUtils.debug(name + " " + value);
@@ -861,8 +861,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             } else {
 
                 if ("l2bin".equalsIgnoreCase(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName())) {
-                    System.out.println("current ifile =" + getParamInfo("ifile").getValue());
-                    System.out.println("new ifile =" + value);
+//                    System.out.println("current ifile =" + getParamInfo("ifile").getValue());
+//                    System.out.println("new ifile =" + value);
                     String currentIfile = getParamInfo("ifile").getValue();
                     if (currentIfile == null) {currentIfile = "";}
                     String newIfile = value;
@@ -890,7 +890,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             updateParamInfo(name, value);
         }
 
-        System.out.println("Time elapsed=" + timeElapsed());
+//        System.out.println("Time elapsed=" + timeElapsed());
     }
 
     public String[] getCmdArrayPrefix() {
@@ -1142,8 +1142,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     public void updateParamValues(File selectedFile) {
-        System.out.println("Enter: updateParamValues(File selectedFile)");
-        System.out.println("Time elapsed=" + timeElapsed());
+//        System.out.println("Enter: updateParamValues(File selectedFile)");
+//        System.out.println("Time elapsed=" + timeElapsed());
 
         if (selectedFile != null && getProgramName() != null && (l2prodProcessors.contains(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName()))) {
             //   stay
@@ -1214,11 +1214,11 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
                 if ("l3mapgen".equalsIgnoreCase(getProgramName())) {
                     setWorkingUpdateOfile(true);
-                    System.out.println("Time elapsed=" + timeElapsed());
-                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 1   tyuuuii");
+//                    System.out.println("Time elapsed=" + timeElapsed());
+//                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 1   tyuuuii");
                     updateL3MapgenParams(true);
-                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2   tyuuuii");
-                    System.out.println("Time elapsed=" + timeElapsed());
+//                    System.out.println("SPOT IFILE SELECTED: updateL3MapgenParams() 2   tyuuuii");
+//                    System.out.println("Time elapsed=" + timeElapsed());
                     setWorkingUpdateOfile(false);
 
                 }
@@ -1316,9 +1316,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         if ("l2bin".equalsIgnoreCase(getProgramName())) {
             setWorkingUpdateOfile(true);
-            System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 1    eeeeeeee");
+//            System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 1    eeeeeeee");
             updateL2BinParams(true);
-            System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 2    eeeeeeee");
+//            System.out.println("SPOT IFILE SELECTED: updateL2BinParams() 2    eeeeeeee");
             setWorkingUpdateOfile(false);
 //            l2BinPropertyChangeHandler();
 
@@ -1697,7 +1697,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
 
     private void updateL3MapgenParams(boolean ifileChanged) {
-        System.out.println("Enter: updateL3MapgenParams()");
+//        System.out.println("Enter: updateL3MapgenParams()");
         if (!runProcessorToAutoPopulateL3mapgen) {
             return;
         }
@@ -2328,9 +2328,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String west = getParamValue("lonwest");
             String east = getParamValue("loneast");
 
-            System.out.println("SPOT HANDLER: getOfileForL2BinWrapper() 1   rrrrrrrrr");
+//            System.out.println("SPOT HANDLER: getOfileForL2BinWrapper() 1   rrrrrrrrr");
             String ofileName = OFileUtils.getOfileForL2BinWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, l3bprod, suite, prodtype, north, south, west, east);
-            System.out.println("SPOT HANDLER: getOfileForL2BinWrapper() 2");
+//            System.out.println("SPOT HANDLER: getOfileForL2BinWrapper() 2");
 
             updateOFileInfo(ofileName);
 
@@ -2360,9 +2360,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 //                updateParamInfo("projection", projectionParamInfo.getDefaultValue());
             }
 
-            System.out.println("SPOT HANDLER: getOfileForL3MapGenWrapper() 1 tttttttt");
+//            System.out.println("SPOT HANDLER: getOfileForL3MapGenWrapper() 1 tttttttt");
             String ofileName = OFileUtils.getOfileForL3MapGenWrapper(ifileName, ofileNameDefault, getProgramName(), resolution, oformat, product, projection, interp, north, south, west, east);
-            System.out.println("SPOT HANDLER: getOfileForL3MapGenWrapper() 2");
+//            System.out.println("SPOT HANDLER: getOfileForL3MapGenWrapper() 2");
 
 
             updateOFileInfo(ofileName);
@@ -2452,7 +2452,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         @Override
         public void updateParamValues(Product selectedProduct) {
-            System.out.println("TEST 54545454");
+//            System.out.println("TEST 54545454");
 
             if (selectedProduct != null) {
                 String sampleFileName = selectedProduct.getFileLocation().getAbsolutePath();
