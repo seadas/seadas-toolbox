@@ -7,10 +7,7 @@ import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
-import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_InstallerController;
-import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
-import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3binController;
-import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
+import gov.nasa.gsfc.seadas.processing.preferences.*;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.VersionChecker;
 import org.esa.snap.rcp.SnapApp;
@@ -1469,15 +1466,62 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             isIfileValid = false;
             if (getProgramName() != null && verifyIFilePath(ifileName)) {
                 //ocssw.setIfileName(ifileName);
-                String ofileName = new File(ifileName).getParent() + File.separator + getOcssw().getOfileName(ifileName);
+
+                String ofileName = null;
+
+                String suffix = OCSSW_ExtractorsController.getPreferenceOfileNamingSchemeIfileReplace();
+                if (suffix == null || suffix.isEmpty()) {
+                    suffix = "sub";
+                }
+
+                boolean getOfileNameFromOCSSW = false;
+
+                if (OCSSW_ExtractorsController.OFILE_NAMING_SCHEME_OCSSW.equals(OCSSW_ExtractorsController.getPreferenceOfileNamingScheme())) {
+                    getOfileNameFromOCSSW = true;
+                }
+
+
+                if (getOfileNameFromOCSSW) {
+                    ofileName = new File(ifileName).getParent() + File.separator + getOcssw().getOfileName(ifileName);
+
+                } else {
+                    String ofileBasename = ifileName;
+
+                    if (ofileBasename.endsWith(".nc")) {
+                        ofileBasename = ofileBasename.substring(0, ofileBasename.length() - 3);
+                        ofileName = ofileBasename + "."+ suffix + ".nc";
+                    } else if (ofileBasename.endsWith(".hdf")) {
+                        ofileBasename = ofileBasename.substring(0, ofileBasename.length() - 4);
+                        ofileName = ofileBasename + "."+ suffix + ".hdf";
+                    } else if (ofileBasename.endsWith(".tif")) {
+                        ofileBasename = ofileBasename.substring(0, ofileBasename.length() - 4);
+                        ofileName = ofileBasename + "."+ suffix + ".tif";
+                    } else {
+                        ofileName = ofileBasename + "." +suffix;
+                    }
+                }
+
+
+                if (ofileName == null || ofileName.equals(ifileName)) {
+                    ofileName = new File(ifileName).getParent() + File.separator + "output.nc";
+                }
+
+
                 //SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
+
+
                 if (ofileName != null) {
                     //programName = getOcssw().getProgramName();
                     setParamList(ParamUtils.computeParamList(getOcssw().getXmlFileName()));
                     isIfileValid = true;
                     updateParamInfo(getPrimaryInputFileOptionName(), ifileName + "\n");
                     //updateGeoFileInfo(ifileName, inputFileInfo);
-                    updateOFileInfo(getOFileFullPath(ofileName));
+                    if (getOfileNameFromOCSSW) {
+                        updateOFileInfo(getOFileFullPath(ofileName));
+                    } else {
+                        updateOFileInfo(ofileName);
+                    }
+
                     updateParamValues(new File(ifileName));
                 }
             } else {
@@ -1572,10 +1616,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     private static class LonLat2Pixels_Processor extends ProcessorModel {
 
-        static final String _SWlon = "SWlon";
-        static final String _SWlat = "SWlat";
-        static final String _NElon = "NElon";
-        static final String _NElat = "NElat";
+        static final String _SWlon = "West (SWlon)";
+        static final String _SWlat = "South (SWlat)";
+        static final String _NElon = "East (NElon)";
+        static final String _NElat = "North (NElat)";
 
         public static String LON_LAT_2_PIXEL_PROGRAM_NAME = "lonlat2pixel";
 
@@ -1585,28 +1629,24 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
-
                 }
             });
             addPropertyChangeListener(_SWlon, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
-
                 }
             });
             addPropertyChangeListener(_SWlat, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
-
                 }
             });
             addPropertyChangeListener(_NElon, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     checkCompleteness();
-
                 }
             });
             addPropertyChangeListener(_NElat, new PropertyChangeListener() {
@@ -1650,6 +1690,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         public boolean updateIFileInfo(String ifileName) {
             updateParamInfo(getPrimaryInputFileOptionName(), ifileName);
             ocssw.setIfileName(ifileName);
+            checkCompleteness();
             return true;
         }
     }

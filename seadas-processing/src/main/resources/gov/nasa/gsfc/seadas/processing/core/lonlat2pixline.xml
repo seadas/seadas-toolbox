@@ -22,7 +22,7 @@
             <order>0</order>
         </option>
         <option type="int">
-            <name>SWlon</name>
+            <name>West (SWlon)</name>
             <value></value>
             <default></default>
             <description>Longitude of southwest corner of the box to be extracted</description>
@@ -30,7 +30,7 @@
             <order>1</order>
         </option>
         <option type="int">
-            <name>SWlat</name>
+            <name>South (SWlat)</name>
             <value></value>
             <default></default>
             <description>Latitude of southwest corner of the box to be extracted.</description>
@@ -38,7 +38,7 @@
             <order>2</order>
         </option>
         <option type="int">
-            <name>NElon</name>
+            <name>East (NElon)</name>
             <value></value>
             <default></default>
             <description>Longitude of northeast corner of the box to be extracted.</description>
@@ -46,7 +46,7 @@
             <order>3</order>
         </option>
         <option type="int">
-            <name>NElat</name>
+            <name>North (NElat)</name>
             <value></value>
             <default></default>
             <description>Latitude of northeast corner of the box to be extracted.</description>

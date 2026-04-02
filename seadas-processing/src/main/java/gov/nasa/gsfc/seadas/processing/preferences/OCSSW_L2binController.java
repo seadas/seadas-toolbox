@@ -43,12 +43,12 @@ import static com.bc.ceres.swing.TableLayout.cell;
  */
 
 
-@OptionsPanelController.SubRegistration(location = "SeaDAS/OCSSW",
+@OptionsPanelController.SubRegistration(location = "SeaDAS",
         displayName = "#Options_DisplayName_OCSSW_L2bin",
         keywords = "#Options_Keywords_OCSSW_L2bin",
         keywordsCategory = "OCSSW",
         id = "L2bin_preferences",
-        position = 1)
+        position = 8)
 
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L2bin=L2bin",

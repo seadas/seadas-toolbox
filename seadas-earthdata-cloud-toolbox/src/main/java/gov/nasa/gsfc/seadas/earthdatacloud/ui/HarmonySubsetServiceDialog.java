@@ -295,7 +295,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         outerPanel.setBorder(BorderFactory.createTitledBorder("Subset Parameters"));
 
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEtchedBorder());
+//        panel.setBorder(BorderFactory.createEtchedBorder());
 
         panel.setOpaque(false);
 
@@ -504,7 +504,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
-        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_SUBSET_TOOLTIP);
         panel.add(maxLatLabel, gbc);
 
         gbc.gridx = 2;
@@ -512,7 +512,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
         latMaxField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
-        latMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_TOOLTIP);
+        latMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_SUBSET_TOOLTIP);
         panel.add(latMaxField, gbc);
         gbc.gridwidth = 1;
 
@@ -522,7 +522,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
-        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_SUBSET_TOOLTIP);
         panel.add(minLonLabel, gbc);
 
 
@@ -533,7 +533,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.insets.left = 0;
         gbc.insets.right = 2;
         lonMinField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
-        lonMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_TOOLTIP);
+        lonMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_SUBSET_TOOLTIP);
         panel.add(lonMinField, gbc);
         gbc.gridwidth = 1;
 
@@ -544,7 +544,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.insets.left = 2;
         gbc.insets.right = 0;
         lonMaxField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
-        lonMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        lonMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_SUBSET_TOOLTIP);
         panel.add(lonMaxField, gbc);
         gbc.gridwidth = 1;
 
@@ -555,7 +555,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
         JLabel maxLonLabel = new JLabel(":" + Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL);
-        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_TOOLTIP);
+        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_SUBSET_TOOLTIP);
         panel.add(maxLonLabel, gbc);
 
         gbc.gridy++;
@@ -564,7 +564,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 1.0;
         JLabel minLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLAT_LABEL + ":");
-        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_SUBSET_TOOLTIP);
         panel.add(minLatLabel, gbc);
 
         gbc.gridx = 2;
@@ -573,7 +573,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 1.0;
         latMinField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
-        latMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_TOOLTIP);
+        latMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_SUBSET_TOOLTIP);
         panel.add(latMinField, gbc);
         gbc.gridwidth = 1;
 

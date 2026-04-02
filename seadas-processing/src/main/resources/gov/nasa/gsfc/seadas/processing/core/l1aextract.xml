@@ -23,7 +23,7 @@
             <order>0</order>
         </option>
         <option type="int">
-            <name>SWlon</name>
+            <name>West (SWlon)</name>
             <value></value>
             <default></default>
             <description>Southwest longitude</description>
@@ -32,7 +32,7 @@
             <usedAs>option</usedAs>
         </option>
         <option type="int">
-            <name>SWlat</name>
+            <name>South (SWlat)</name>
             <value></value>
             <default></default>
             <description>Southwest latitude</description>
@@ -41,7 +41,7 @@
             <usedAs>option</usedAs>
         </option>
         <option type="int">
-            <name>NElon</name>
+            <name>East (NElon)</name>
             <value></value>
             <default></default>
             <description>Northesat longitude</description>
@@ -50,7 +50,7 @@
             <usedAs>option</usedAs>
         </option>
         <option type="int">
-            <name>NElat</name>
+            <name>North (NElat)</name>
             <value></value>
             <default></default>
             <description>Northeast latitude</description>
