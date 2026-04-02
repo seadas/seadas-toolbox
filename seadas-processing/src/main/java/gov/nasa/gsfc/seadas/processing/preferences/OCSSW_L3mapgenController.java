@@ -43,7 +43,7 @@ import java.awt.*;
         keywords = "#Options_Keywords_OCSSW_L3mapgen",
         keywordsCategory = "Processors",
         id = "L3mapgen_preferences",
-        position = 4)
+        position = 10)
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L3mapgen=L3mapgen",
         "Options_Keywords_OCSSW_L3mapgen=seadas, ocssw, l3mapgen. mapping, mapped, l3m"

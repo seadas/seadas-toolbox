@@ -46,7 +46,7 @@ import java.awt.*;
         keywords = "#Options_Keywords_Bathymetry",
         keywordsCategory = "General Tools",
         id = "Bathymetry_preferences",
-        position = 7)
+        position = 6)
 
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_Bathymetry=Bathymetry",

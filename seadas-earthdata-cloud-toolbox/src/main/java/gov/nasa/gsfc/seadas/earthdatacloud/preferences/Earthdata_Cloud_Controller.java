@@ -48,7 +48,7 @@ import static gov.nasa.gsfc.seadas.earthdatacloud.preferences.Preference_Utils.*
         keywords = "#Options_Keywords_Earthdata_Cloud",
         keywordsCategory = "General Tools",
         id = "Earthdata_Cloud_preferences",
-        position = 7)
+        position = 2)
 
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_Earthdata_Cloud=Earthdata Cloud",
@@ -91,22 +91,26 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
     public static final String PROPERTY_MINLAT_LABEL = "South";
-    public static final String PROPERTY_MINLAT_TOOLTIP = "<html>Southernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLAT_TOOLTIP = "<html>Southernmost latitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLAT_SUBSET_TOOLTIP = "<html>Southernmost latitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MINLAT_DEFAULT = "";
 
     public static final String PROPERTY_MAXLAT_KEY = PROPERTY_ROOT_KEY + ".maxlat";
     public static final String PROPERTY_MAXLAT_LABEL = "North";
-    public static final String PROPERTY_MAXLAT_TOOLTIP = "<html>Northernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLAT_TOOLTIP = "<html>Northernmost latitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLAT_SUBSET_TOOLTIP = "<html>Northernmost latitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MAXLAT_DEFAULT = "";
 
     public static final String PROPERTY_MINLON_KEY = PROPERTY_ROOT_KEY + ".minlon";
     public static final String PROPERTY_MINLON_LABEL = "West";
-    public static final String PROPERTY_MINLON_TOOLTIP = "<html>Westernmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLON_TOOLTIP = "<html>Westernmost longitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLON_SUBSET_TOOLTIP = "<html>Westernmost longitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MINLON_DEFAULT = "";
 
     public static final String PROPERTY_MAXLON_KEY = PROPERTY_ROOT_KEY + ".maxlon";
     public static final String PROPERTY_MAXLON_LABEL = "East";
-    public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Easternmost longitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLON_SUBSET_TOOLTIP = "<html>Easternmost longitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MAXLON_DEFAULT = "";
 
     public static final String PROPERTY_REGION_KEY = PROPERTY_ROOT_KEY + ".region";
