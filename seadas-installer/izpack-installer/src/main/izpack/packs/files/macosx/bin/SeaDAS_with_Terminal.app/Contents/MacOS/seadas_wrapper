@@ -1,0 +1,3 @@
+#!/bin/bash
+script_path="$(dirname "$0")"/SeaDAS_with_Terminal
+open -a Terminal "$script_path"

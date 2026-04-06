@@ -1,0 +1,1 @@
+The SeaDAS installer should have created a symbolic link in this directory: SeaDAS --> ../../../seadas

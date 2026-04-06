@@ -6,11 +6,19 @@
 
         <job name="Create Symbolic Link">
             <os family="mac"/>
-            <executefile name="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/createSymLink.sh" workingDir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/">
+            <executefile name="$INSTALL_PATH/bin/SeaDAS.app/Contents/MacOS/createSymLink.sh" workingDir="$INSTALL_PATH/bin/SeaDAS.app/Contents/MacOS/">
 <!--                <arg>doit</arg>-->
 <!--                <arg>$variable</arg>-->
             </executefile>
         </job>
+
+    <job name="Create Symbolic Link Terminal">
+        <os family="mac"/>
+        <executefile name="$INSTALL_PATH/bin/SeaDAS_with_Terminal.app/Contents/MacOS/createSymLink.sh" workingDir="$INSTALL_PATH/bin/SeaDAS_with_Terminal.app/Contents/MacOS/">
+            <!--                <arg>doit</arg>-->
+            <!--                <arg>$variable</arg>-->
+        </executefile>
+    </job>
 <!--    <job name="Run SeaDAS" final="true">-->
 <!--        <os family="unix"/>-->
 <!--        <executefile name="$INSTALL_PATH/bin/seadas">-->

@@ -45,8 +45,15 @@
 
     <job name="Create Symbolic Link" final="true">
         <os family="mac"/>
-        <executefile name="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/createSymLink.sh"
-                     workingDir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS/">
+        <executefile name="$INSTALL_PATH/bin/SeaDAS.app/Contents/MacOS/createSymLink.sh"
+                     workingDir="$INSTALL_PATH/bin/SeaDAS.app/Contents/MacOS/">
+        </executefile>
+    </job>
+
+    <job name="Create Symbolic Link Terminal" final="true">
+        <os family="mac"/>
+        <executefile name="$INSTALL_PATH/bin/SeaDAS_with_Terminal.app/Contents/MacOS/createSymLink.sh"
+                     workingDir="$INSTALL_PATH/bin/SeaDAS_with_Terminal.app/Contents/MacOS/">
         </executefile>
     </job>
 </izpack:processing>

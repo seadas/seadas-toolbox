@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash -l
 
 #
 # resolve symlinks
@@ -52,6 +52,22 @@ if [ -n "$jdkhome" -a \! -d "$jdkhome" -a -d "$progdir/../$jdkhome" ]; then
     # #74333: permit jdkhome to be defined as relative to app dir
     jdkhome="$progdir/../$jdkhome"
 fi
+
+
+echo "SeaDAS Application Launch - System Diagnostics Log" > $progdir/../bin/seadas_launch.log
+echo "jdkhome=${jdkhome}"  >> $progdir/../bin/seadas_launch.log
+echo "progdir=${progdir}"  >> $progdir/../bin/seadas_launch.log
+echo "userdir=${userdir}"  >> $progdir/../bin/seadas_launch.log
+
+echo "uname -m : " `uname -m` >> $progdir/../bin/seadas_launch.log
+echo "uname -o : " `uname -o` >> $progdir/../bin/seadas_launch.log
+echo "uname -r : " `uname -r` >> $progdir/../bin/seadas_launch.log
+echo "uname -s : " `uname -s` >> $progdir/../bin/seadas_launch.log
+
+echo "which python3 : " `which python3` >> $progdir/../bin/seadas_launch.log
+echo "python3 -m pip list : " `python3 -m pip list` >> $progdir/../bin/seadas_launch.log
+
+
 
 readClusters() {
   if [ -x /usr/ucb/echo ]; then
@@ -125,3 +141,9 @@ case "`uname`" in
        exit 1
         ;;
 esac
+
+
+
+
+
+
