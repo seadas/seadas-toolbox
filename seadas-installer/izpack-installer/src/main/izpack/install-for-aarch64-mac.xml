@@ -192,7 +192,7 @@
                 <fileset targetdir="$INSTALL_PATH/bin" includes="*.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="seadas"/>
                 <fileset targetdir="$INSTALL_PATH/bin/SeaDAS.app/Contents/MacOS" includes="*.sh"/>
-                <fileset targetdir="$INSTALL_PATH/bin/SeaDAS_with_Terminal.app/Contents/MacOS" includes="*.sh"/>
+                <fileset targetdir="$INSTALL_PATH/bin/SeaDAS_with_Terminal.app/Contents/MacOS" includes="seadas_wrapper"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>
             </executable>
