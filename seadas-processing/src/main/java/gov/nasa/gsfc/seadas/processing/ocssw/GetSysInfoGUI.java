@@ -604,7 +604,9 @@ public class GetSysInfoGUI {
                 darwinFound = true;
                 if (machine != null && machine.contains("x86_64")) {
                     machineWarningColor = Color.RED;
-                    machine += "\n[OCSSW-Local] WARNING!!! Detected unsupported machine 'x86_64' - try launching SeaDAS via terminal";
+                    machine += "\n[OCSSW-Local] WARNING!!! Detected unsupported machine 'x86_64'";
+                    machine += "\n[OCSSW-Local] WARNING!!! This is a minor issue, but could likely cause processor 'l1bextract_oci' to fail";
+                    machine += "\n[OCSSW-Local] WARNING!!! The resolution would be to try launching SeaDAS via terminal";
                 }
             }
 
