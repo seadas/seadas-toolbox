@@ -565,6 +565,9 @@ public class GetSysInfoGUI {
 
 
         if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
+
             commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -VV"};
             runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Version: " , commandArray, "Python");
 
@@ -574,11 +577,44 @@ public class GetSysInfoGUI {
 //            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " type -a python3"};
 //            runCommandArray(sysInfoTextpane, "OCSSW-Local: Python3 Alias Detected: " , commandArray, "alias", false);
 
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
-            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Requests Installed: " , commandArray, "requests", false);
 
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
-            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 'requests' is Installed: " , commandArray, "requests", false);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 'netCDF4' is Installed: " , commandArray, "netCDF4", false);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 'numpy'' is Installed: " , commandArray, "numpy", false);
+
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " uname -o"};
+            String operatingSystem = runCommandArrayGetString( "[OCSSW-Local] uname -o : " , commandArray);
+
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " uname -m"};
+            String machine = runCommandArrayGetString( "[OCSSW-Local] uname -m : " , commandArray);
+
+
+
+            Color machineWarningColor = Color.BLACK;
+            boolean darwinFound = false;
+            if (operatingSystem != null && operatingSystem.contains("Darwin")) {
+                darwinFound = true;
+                if (machine != null && machine.contains("x86_64")) {
+                    machineWarningColor = Color.RED;
+                    machine += "\n[OCSSW-Local] WARNING!!! Detected unsupported machine 'x86_64' - try launching SeaDAS via terminal";
+                }
+            }
+
+            if (darwinFound) {
+                sysInfoText += operatingSystem;
+                appendToPane(sysInfoTextpane, operatingSystem + "\n", Color.BLACK);
+                sysInfoText += machine;
+                appendToPane(sysInfoTextpane, machine + "\n", machineWarningColor);
+            }
+
         }
 
 
@@ -838,6 +874,7 @@ public class GetSysInfoGUI {
         runCommandArray(sysInfoTextpane, label, commandArray, grepString,  true);
     }
 
+
     private void runCommandArray(JTextPane sysInfoTextpane, String label, String[] commandArray, String grepString, boolean showResults) {
         currentInfoLine = "";   // todo temporary nulling this as later lines need editing
 
@@ -917,6 +954,67 @@ public class GetSysInfoGUI {
         }
 
     }
+
+
+
+    private String runCommandArrayGetString(String label, String[] commandArray) {
+        String currentInfoLine = "";
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
+
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+            Integer numOfLines = 0;
+            currentInfoLine = label;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().length() > 1) {
+                    if (numOfLines > 0) {
+                        currentInfoLine += "\n";
+                    }
+
+                    currentInfoLine += line;
+                    numOfLines++;
+                }
+            }
+
+
+//            if (numOfLines == 0) {
+//                currentInfoLine += "\n";
+//            }
+
+
+            reader.close();
+
+            process.destroy();
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (process.exitValue() != 0) {
+                currentInfoLine += "  WARNING!: Non zero exit code returned for " + commandArray.toString();
+            }
+
+        } catch (IOException e) {
+            String warning = "  WARNING!! Could not retrieve system parameters because " + commandArray.toString() + " failed";
+            currentInfoLine += warning + "\n";
+
+            currentInfoLine += e.toString() + "\n";
+
+            e.printStackTrace();
+        }
+
+        return currentInfoLine;
+    }
+
+
 
     public static GridBagConstraints createConstraints() {
         GridBagConstraints gbc = new GridBagConstraints();
