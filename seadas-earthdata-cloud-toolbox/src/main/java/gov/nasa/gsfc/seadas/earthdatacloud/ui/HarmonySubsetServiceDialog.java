@@ -1252,12 +1252,12 @@ public class HarmonySubsetServiceDialog extends JDialog {
                 String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json"
                         + "?readable_granule_name=" + encodedFileName
                         + "&provider=OB_CLOUD"
-                        + "&page_size=10";
+                        + "&page_size=50";
 
                 System.out.println("Fetching granule coverage: " + cmrUrl);
 
                 java.net.URL urlObj = new java.net.URL(cmrUrl);
-                conn = (java.net.HttpURLConnection) urlObj.openConnection();
+                conn = (HttpURLConnection) urlObj.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setConnectTimeout(10000);
@@ -1276,7 +1276,8 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
                 String response;
                 try (java.io.InputStream is = conn.getInputStream();
-                     java.util.Scanner s = new java.util.Scanner(is, java.nio.charset.StandardCharsets.UTF_8.name()).useDelimiter("\\A")) {
+                     java.util.Scanner s = new java.util.Scanner(
+                             is, java.nio.charset.StandardCharsets.UTF_8.name()).useDelimiter("\\A")) {
                     response = s.hasNext() ? s.next() : "";
                 }
 
@@ -1292,23 +1293,16 @@ public class HarmonySubsetServiceDialog extends JDialog {
                     return;
                 }
 
-                // Try to find the best matching granule
-                org.json.JSONObject granule = entries.getJSONObject(0);
-                for (int i = 0; i < entries.length(); i++) {
-                    org.json.JSONObject g = entries.getJSONObject(i);
+                org.json.JSONObject granule = findExactGranuleMatch(entries, fileName, dataUrl);
 
-                    String producerGranuleId = g.optString("producer_granule_id", "");
-                    String title = g.optString("title", "");
-
-                    System.out.println("CMR match " + i
-                            + ": id=" + g.optString("id", "")
-                            + ", title=" + title
-                            + ", producer_granule_id=" + producerGranuleId);
-
-                    if (fileName.equals(producerGranuleId) || fileName.equals(title)) {
-                        granule = g;
-                        break;
-                    }
+                if (granule == null) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "Could not find an exact CMR granule match for:\n" + fileName + "\n\n"
+                                    + "Coverage preview was cancelled to avoid showing incorrect bounds.",
+                            "Exact Granule Match Not Found",
+                            JOptionPane.WARNING_MESSAGE));
+                    return;
                 }
 
                 String granuleId = granule.optString("id", "");
@@ -1317,80 +1311,9 @@ public class HarmonySubsetServiceDialog extends JDialog {
                 String title = granule.optString("title", "");
                 String producerGranuleId = granule.optString("producer_granule_id", "");
 
-                double minLat = Double.POSITIVE_INFINITY;
-                double maxLat = Double.NEGATIVE_INFINITY;
-                double minLon = Double.POSITIVE_INFINITY;
-                double maxLon = Double.NEGATIVE_INFINITY;
+                Bounds bounds = extractBoundsFromGranule(granule);
 
-                boolean boundsFound = false;
-
-                // First try CMR boxes (preferred)
-                org.json.JSONArray boxes = granule.optJSONArray("boxes");
-                if (boxes != null && boxes.length() > 0) {
-                    String box = boxes.get(0).toString();
-                    String[] parts = box.trim().split("[,\\s]+");
-
-                    if (parts.length >= 4) {
-                        // CMR box format: south west north east
-                        double south = Double.parseDouble(parts[0]);
-                        double west = Double.parseDouble(parts[1]);
-                        double north = Double.parseDouble(parts[2]);
-                        double east = Double.parseDouble(parts[3]);
-
-                        minLat = south;
-                        maxLat = north;
-                        minLon = west;
-                        maxLon = east;
-                        boundsFound = true;
-
-                        System.out.println("Using CMR box for bounds: " + box);
-                    }
-                }
-
-                // Fallback to polygons
-                if (!boundsFound) {
-                    org.json.JSONArray polygons = granule.optJSONArray("polygons");
-                    if (polygons != null && polygons.length() > 0) {
-                        for (int p = 0; p < polygons.length(); p++) {
-                            Object polyObj = polygons.get(p);
-                            String text;
-
-                            if (polyObj instanceof String) {
-                                text = (String) polyObj;
-                            } else if (polyObj instanceof org.json.JSONArray) {
-                                StringBuilder sb = new StringBuilder();
-                                flattenJsonArray((org.json.JSONArray) polyObj, sb);
-                                text = sb.toString();
-                            } else {
-                                text = polyObj.toString();
-                            }
-
-                            String[] coords = text.trim().split("[,\\s]+");
-                            if (coords.length < 4 || coords.length % 2 != 0) {
-                                continue;
-                            }
-
-                            for (int i = 0; i < coords.length; i += 2) {
-                                // Important: CMR polygon order is lon, lat
-                                double lon = Double.parseDouble(coords[i]);
-                                double lat = Double.parseDouble(coords[i + 1]);
-
-                                minLat = Math.min(minLat, lat);
-                                maxLat = Math.max(maxLat, lat);
-                                minLon = Math.min(minLon, lon);
-                                maxLon = Math.max(maxLon, lon);
-                            }
-
-                            boundsFound = true;
-                        }
-
-                        System.out.println("Using CMR polygons for bounds.");
-                    }
-                }
-
-                if (!boundsFound
-                        || Double.isInfinite(minLat) || Double.isInfinite(maxLat)
-                        || Double.isInfinite(minLon) || Double.isInfinite(maxLon)) {
+                if (bounds == null) {
                     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
                             this,
                             "No spatial coverage information found for this granule.",
@@ -1399,10 +1322,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
                     return;
                 }
 
-                final double fMinLat = minLat;
-                final double fMaxLat = maxLat;
-                final double fMinLon = minLon;
-                final double fMaxLon = maxLon;
+                String warning = buildCoverageConsistencyWarning(bounds);
 
                 SwingUtilities.invokeLater(() -> {
                     String message =
@@ -1412,9 +1332,10 @@ public class HarmonySubsetServiceDialog extends JDialog {
                                     "Producer Granule ID: " + producerGranuleId + "\n" +
                                     "Time Start: " + timeStart + "\n" +
                                     "Time End: " + timeEnd + "\n\n" +
-                                    String.format("Latitude range: %.6f to %.6f%n", fMinLat, fMaxLat) +
-                                    String.format("Longitude range: %.6f to %.6f%n%n", fMinLon, fMaxLon) +
-                                    "Note: These bounds come from CMR metadata and may differ from the actual file navigation.";
+                                    String.format("Latitude range: %.6f to %.6f%n", bounds.minLat, bounds.maxLat) +
+                                    String.format("Longitude range: %.6f to %.6f%n", bounds.minLon, bounds.maxLon) +
+                                    warning +
+                                    "\n\nNote: These bounds come from CMR metadata and may differ from the actual file navigation.";
 
                     JOptionPane.showMessageDialog(
                             this,
@@ -1424,9 +1345,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
                 });
 
             } catch (Exception e) {
-                System.err.println("Error previewing granule coverage: " + e.getMessage());
                 e.printStackTrace();
-
                 SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
                         this,
                         "Error fetching granule coverage: " + e.getMessage(),
@@ -1438,6 +1357,246 @@ public class HarmonySubsetServiceDialog extends JDialog {
                 }
             }
         }).start();
+    }
+    private String buildCoverageConsistencyWarning(Bounds granuleBounds) {
+        try {
+            double south = Double.parseDouble(latMinField.getText().trim());
+            double north = Double.parseDouble(latMaxField.getText().trim());
+            double west  = Double.parseDouble(lonMinField.getText().trim());
+            double east  = Double.parseDouble(lonMaxField.getText().trim());
+
+            double reqMinLat = Math.min(south, north);
+            double reqMaxLat = Math.max(south, north);
+
+            boolean requestCrossesDateline = west > east;
+
+            boolean latOverlap = rangesOverlap(
+                    granuleBounds.minLat, granuleBounds.maxLat,
+                    reqMinLat, reqMaxLat);
+
+            boolean lonOverlap;
+            if (requestCrossesDateline) {
+                lonOverlap = true; // safe for release
+            } else {
+                lonOverlap = rangesOverlap(
+                        granuleBounds.minLon, granuleBounds.maxLon,
+                        west, east);
+            }
+
+            if (latOverlap && lonOverlap) {
+                return "";
+            }
+
+            return "\nWARNING: The CMR-reported granule coverage may not overlap the requested region.";
+
+        } catch (Exception e) {
+            // safe fallback — do nothing
+            return "";
+        }
+    }
+
+    private boolean rangesOverlap(double min1, double max1, double min2, double max2) {
+        return max1 >= min2 && max2 >= min1;
+    }
+    private Bounds extractBoundsFromGranule(org.json.JSONObject granule) {
+
+        // Try boxes first
+        org.json.JSONArray boxes = granule.optJSONArray("boxes");
+        if (boxes != null && boxes.length() > 0) {
+            String[] parts = boxes.get(0).toString().trim().split("[,\\s]+");
+            if (parts.length >= 4) {
+                double south = Double.parseDouble(parts[0]);
+                double west = Double.parseDouble(parts[1]);
+                double north = Double.parseDouble(parts[2]);
+                double east = Double.parseDouble(parts[3]);
+                return new Bounds(south, north, west, east);
+            }
+        }
+
+        // Fallback to polygons (robust parsing)
+        org.json.JSONArray polygons = granule.optJSONArray("polygons");
+        if (polygons == null || polygons.length() == 0) {
+            return null;
+        }
+
+        String text = polygons.getJSONArray(0).getString(0);
+        String[] coords = text.trim().split("[,\\s]+");
+
+        Bounds lonLat = computeBounds(coords, true);
+        Bounds latLon = computeBounds(coords, false);
+
+        boolean lonLatValid = isValid(lonLat);
+        boolean latLonValid = isValid(latLon);
+
+        if (latLonValid && !lonLatValid) return latLon;
+        if (lonLatValid && !latLonValid) return lonLat;
+
+        return latLon; // safe default for PACE
+    }
+
+    private Bounds computeBounds(String[] coords, boolean lonLatOrder) {
+        double minLat = Double.POSITIVE_INFINITY;
+        double maxLat = Double.NEGATIVE_INFINITY;
+        double minLon = Double.POSITIVE_INFINITY;
+        double maxLon = Double.NEGATIVE_INFINITY;
+
+        for (int i = 0; i < coords.length; i += 2) {
+            double a = Double.parseDouble(coords[i]);
+            double b = Double.parseDouble(coords[i + 1]);
+
+            double lon = lonLatOrder ? a : b;
+            double lat = lonLatOrder ? b : a;
+
+            minLat = Math.min(minLat, lat);
+            maxLat = Math.max(maxLat, lat);
+            minLon = Math.min(minLon, lon);
+            maxLon = Math.max(maxLon, lon);
+        }
+
+        return new Bounds(minLat, maxLat, minLon, maxLon);
+    }
+
+    private boolean isValid(Bounds b) {
+        return b.minLat >= -90 && b.maxLat <= 90 &&
+                b.minLon >= -180 && b.maxLon <= 180;
+    }
+
+    private static class Bounds {
+        double minLat, maxLat, minLon, maxLon;
+
+        Bounds(double minLat, double maxLat, double minLon, double maxLon) {
+            this.minLat = minLat;
+            this.maxLat = maxLat;
+            this.minLon = minLon;
+            this.maxLon = maxLon;
+        }
+    }
+
+    private org.json.JSONObject findExactGranuleMatch(org.json.JSONArray entries, String fileName, String dataUrl) {
+        String normalizedTarget = normalizeGranuleName(fileName);
+
+        java.util.List<org.json.JSONObject> exactMatches = new java.util.ArrayList<>();
+
+        for (int i = 0; i < entries.length(); i++) {
+            org.json.JSONObject g = entries.getJSONObject(i);
+
+            String producerGranuleId = g.optString("producer_granule_id", "");
+            String title = g.optString("title", "");
+
+            boolean matched = false;
+
+            if (normalizedTarget.equals(normalizeGranuleName(producerGranuleId))) {
+                matched = true;
+            } else if (normalizedTarget.equals(normalizeGranuleName(title))) {
+                matched = true;
+            } else if (entryHasMatchingLink(g, normalizedTarget)) {
+                matched = true;
+            }
+
+            System.out.println("CMR candidate " + i
+                    + ": id=" + g.optString("id", "")
+                    + ", title=" + title
+                    + ", producer_granule_id=" + producerGranuleId
+                    + ", matched=" + matched);
+
+            if (matched) {
+                exactMatches.add(g);
+            }
+        }
+
+        if (exactMatches.isEmpty()) {
+            return null;
+        }
+
+        if (exactMatches.size() == 1) {
+            return exactMatches.get(0);
+        }
+
+        // Prefer exact match on producer_granule_id first
+        for (org.json.JSONObject g : exactMatches) {
+            String producerGranuleId = g.optString("producer_granule_id", "");
+            if (normalizedTarget.equals(normalizeGranuleName(producerGranuleId))) {
+                return g;
+            }
+        }
+
+        // Prefer exact match on title next
+        for (org.json.JSONObject g : exactMatches) {
+            String title = g.optString("title", "");
+            if (normalizedTarget.equals(normalizeGranuleName(title))) {
+                return g;
+            }
+        }
+
+        // Still ambiguous -> return null instead of guessing
+        System.err.println("Multiple exact CMR matches found for file: " + fileNameFromUrl(dataUrl));
+        return null;
+    }
+
+    private boolean entryHasMatchingLink(org.json.JSONObject granule, String normalizedTarget) {
+        org.json.JSONArray links = granule.optJSONArray("links");
+        if (links == null) {
+            return false;
+        }
+
+        for (int i = 0; i < links.length(); i++) {
+            org.json.JSONObject link = links.optJSONObject(i);
+            if (link == null) {
+                continue;
+            }
+
+            String href = link.optString("href", "");
+            String linkFileName = extractFileNameFromHref(href);
+
+            if (normalizedTarget.equals(normalizeGranuleName(linkFileName))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String extractFileNameFromHref(String href) {
+        if (href == null || href.isEmpty()) {
+            return "";
+        }
+
+        try {
+            String path = new java.net.URL(href).getPath();
+            int slash = path.lastIndexOf('/');
+            return slash >= 0 ? path.substring(slash + 1) : path;
+        } catch (Exception e) {
+            int slash = href.lastIndexOf('/');
+            return slash >= 0 ? href.substring(slash + 1) : href;
+        }
+    }
+
+    private String fileNameFromUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return "";
+        }
+        int slash = url.lastIndexOf('/');
+        return slash >= 0 ? url.substring(slash + 1) : url;
+    }
+
+    private String normalizeGranuleName(String s) {
+        if (s == null) {
+            return "";
+        }
+
+        String value = s.trim();
+
+        int queryIdx = value.indexOf('?');
+        if (queryIdx >= 0) {
+            value = value.substring(0, queryIdx);
+        }
+
+        int slash = value.lastIndexOf('/');
+        if (slash >= 0) {
+            value = value.substring(slash + 1);
+        }
+
+        return value.trim().toLowerCase(java.util.Locale.ROOT);
     }
 
     private void flattenJsonArray(org.json.JSONArray array, StringBuilder sb) {
