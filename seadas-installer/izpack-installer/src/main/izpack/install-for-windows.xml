@@ -52,7 +52,7 @@
         <res id="SeaDASLogo" src="images/seadas-icon-128.png"/>
         <res id="Installer.image" src="images/seadas-installer.png"/>
         <res id="Splash.image" src="images/seadas-installer.png"/>
-        <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
+        <res id="shortcutSpecWindows.xml" src="resources/shortcutSpecWindows.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
         <res id="FinishPanel.finish" src="about/finish.html"/>
@@ -109,30 +109,14 @@
         >
     </conditions>
 
-
     <panels>
-
-        <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
         <panel classname="HTMLInfoPanel" id="welcome"/>
-
-        <!-- this is our custom panel, loaded from the panels.jar file -->
-        <!--    <panel classname="com.izforge.izpack.panels.mypanels.MyHelloPanel" id="myHello">-->
-        <!--      <configuration>-->
-        <!--        <param name="welcome1" value="Welcome to SeaDAS Installation."/>-->
-        <!--        <param name="welcome2" value="Enjoy!"/>-->
-        <!--      </configuration>-->
-        <!--    </panel>-->
-
-
         <panel classname="InstallationTypePanel"/>
         <panel classname="HTMLLicencePanel" id="licence"/>
-        <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
-        <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
-        <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
-        <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
-         <panel classname="ProcessPanel" id="processPanelSpec.xml" />-->
+        <panel classname="ShortcutPanel" id="shortcutSpecWindows.xml"/>
+        <panel classname="ProcessPanel" id="ProcessPanel.Spec.xml"/>
         <panel classname="FinishPanel" id="finish"/>
     </panels>
 
