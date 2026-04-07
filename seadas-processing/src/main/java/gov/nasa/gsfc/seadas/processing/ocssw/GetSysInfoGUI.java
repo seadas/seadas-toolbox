@@ -49,6 +49,14 @@ public class GetSysInfoGUI {
 
     ModalDialog modalDialog;
 
+    Color ALERT_COLOR = new Color(100,0,220);
+    Color WARN_COLOR = new Color(220,0,0);
+    String INDENT_BIG = "             # ";
+
+    String OCSSW_LOCATION_MSG_STR = "[OCSSW-Local] ";
+
+    String WARN_TAG = " | WARN | ";
+
 //    PropertyContainer pc = new PropertyContainer();
 
     boolean windowsOS;
@@ -565,8 +573,103 @@ public class GetSysInfoGUI {
 
 
         if (OCSSW_LOCATION_LOCAL.equals(ocsswInfo.getOcsswLocation())) {
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
-            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
+//            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Earthdata Netrc Entry: " , commandArray, "urs.earthdata.nasa.gov", false);
+
+
+            // Test OS and machine
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " uname -o"};
+            String operatingSystem = runCommandArrayGetString(commandArray);
+
+            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " uname -m"};
+            String machine = runCommandArrayGetString(commandArray);
+
+
+            Color machineWarningColor = Color.BLACK;
+            boolean darwinFound = false;
+            if (operatingSystem != null && operatingSystem.contains("Darwin")) {
+                operatingSystem = OCSSW_LOCATION_MSG_STR + "Operating System Kernel (uname -o): " + operatingSystem + "\n";
+                darwinFound = true;
+                if (machine != null && machine.contains("x86_64")) {
+                    machineWarningColor = ALERT_COLOR;
+                    machine = OCSSW_LOCATION_MSG_STR + "Machine (uname -m): " + machine + "\n";
+                    machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "Warning: Detected unsupported machine 'x86_64' for Mac OS\n";
+                    machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "Primary processors not affected but this could cause processor 'l1bextract_oci' to fail\n";
+                    machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "The resolution (if desired) would be to launch SeaDAS via terminal\n";
+                } else {
+                    machine = OCSSW_LOCATION_MSG_STR + "Machine (uname -m): " + machine + "\n";
+                }
+            }
+
+            sysInfoText += operatingSystem;
+            appendToPane(sysInfoTextpane, operatingSystem, Color.BLACK);
+            sysInfoText += machine;
+            appendToPane(sysInfoTextpane, machine, machineWarningColor);
+
+
+            // Get OS
+
+            if (darwinFound) {
+
+                {
+                    String THIS_LOCATION_OCSSW = OCSSW_LOCATION_MSG_STR;
+
+                    String[] thisCommandArray = new String[]{bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " sw_vers"};
+                    String THIS_CONTAINS_STRING = "ProductName";
+                    String THIS_SUCCESS_MSG = "Operating System (sw_vers)";
+                    boolean showOutput = true;
+                    String THIS_WARN_MSG = "";
+                    String THIS_INDENTED_WARN_MSG = "";
+                    Color THIS_WARN_COLOR = Color.black;
+
+                    runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);
+                }
+
+                {
+                    String THIS_LOCATION_OCSSW = OCSSW_LOCATION_MSG_STR;
+
+                    String[] thisCommandArray = new String[]{bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " sw_vers"};
+                    String THIS_CONTAINS_STRING = "ProductVersion";
+                    String THIS_SUCCESS_MSG = "Operating System (sw_vers)";
+                    boolean showOutput = true;
+                    String THIS_WARN_MSG = "";
+                    String THIS_INDENTED_WARN_MSG = "";
+                    Color THIS_WARN_COLOR = Color.black;
+
+                    runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);
+                }
+
+                {
+                    String THIS_LOCATION_OCSSW = OCSSW_LOCATION_MSG_STR;
+
+                    String[] thisCommandArray = new String[]{bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " sw_vers"};
+                    String THIS_CONTAINS_STRING = "BuildVersion";
+                    String THIS_SUCCESS_MSG = "Operating System (sw_vers)";
+                    boolean showOutput = true;
+                    String THIS_WARN_MSG = "";
+                    String THIS_INDENTED_WARN_MSG = "";
+                    Color THIS_WARN_COLOR = Color.black;
+
+                    runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);
+                }
+            }
+
+
+
+            {
+                String THIS_LOCATION_OCSSW = OCSSW_LOCATION_MSG_STR;
+
+                String[] thisCommandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " cat ~" + System.getProperty("file.separator") + ".netrc"};
+                String THIS_CONTAINS_STRING = "urs.earthdata.nasa.gov";
+                String THIS_SUCCESS_MSG = "Earthdata Access Found: ~/.netrc";
+                boolean showOutput = false;
+                String THIS_WARN_MSG = "Earthdata Access NOT Found:";
+                String THIS_INDENTED_WARN_MSG = "Note: Earthdata access can be setup by adding your Earthdata Login\n credentials to the file ~/.netrc";
+                Color THIS_WARN_COLOR = WARN_COLOR;
+
+                runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);
+            }
+
 
             commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -VV"};
             runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 Version: " , commandArray, "Python");
@@ -579,43 +682,71 @@ public class GetSysInfoGUI {
 
 
 
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
-            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 'requests' is Installed: " , commandArray, "requests", false);
-
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
-            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 'netCDF4' is Installed: " , commandArray, "netCDF4", false);
-
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
-            runCommandArray(sysInfoTextpane, "[OCSSW-Local] Python3 'numpy'' is Installed: " , commandArray, "numpy", false);
-
-
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " uname -o"};
-            String operatingSystem = runCommandArrayGetString( "[OCSSW-Local] uname -o : " , commandArray);
-
-
-            commandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " uname -m"};
-            String machine = runCommandArrayGetString( "[OCSSW-Local] uname -m : " , commandArray);
 
 
 
-            Color machineWarningColor = Color.BLACK;
-            boolean darwinFound = false;
-            if (operatingSystem != null && operatingSystem.contains("Darwin")) {
-                darwinFound = true;
-                if (machine != null && machine.contains("x86_64")) {
-                    machineWarningColor = Color.RED;
-                    machine += "\n[OCSSW-Local] WARNING!!! Detected unsupported machine 'x86_64'";
-                    machine += "\n[OCSSW-Local] WARNING!!! This is a minor issue, but could likely cause processor 'l1bextract_oci' to fail";
-                    machine += "\n[OCSSW-Local] WARNING!!! The resolution would be to try launching SeaDAS via terminal";
-                }
+
+
+
+            // Test for requests
+
+            {
+                String THIS_LOCATION_OCSSW = OCSSW_LOCATION_MSG_STR;
+
+                String[] thisCommandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+                String THIS_CONTAINS_STRING = "requests";
+                String THIS_SUCCESS_MSG = "Python3 Module Found:";
+                boolean showOutput = true;
+                String THIS_WARN_MSG = "Python3 Module NOT Found: '" + THIS_CONTAINS_STRING + "'";
+                String THIS_INDENTED_WARN_MSG = "Note: Many primary processors not affected but a few key processors do need '" + THIS_CONTAINS_STRING +"'";
+                Color THIS_WARN_COLOR = WARN_COLOR;
+
+                runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);
             }
 
-            if (darwinFound) {
-                sysInfoText += operatingSystem;
-                appendToPane(sysInfoTextpane, operatingSystem + "\n", Color.BLACK);
-                sysInfoText += machine;
-                appendToPane(sysInfoTextpane, machine + "\n", machineWarningColor);
+
+
+            // TEST for netCDF4
+
+
+            {
+                String THIS_LOCATION_OCSSW = OCSSW_LOCATION_MSG_STR;
+
+                String[] thisCommandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+                String THIS_CONTAINS_STRING = "netCDF4";
+                String THIS_SUCCESS_MSG = "Python3 Module Found:";
+                boolean showOutput = true;
+                String THIS_WARN_MSG = "Python3 Module NOT Found: '" + THIS_CONTAINS_STRING + "'";
+                String THIS_INDENTED_WARN_MSG = "Note: Primary processors not affected but a few minor processors may need '" + THIS_CONTAINS_STRING +"'";
+                Color THIS_WARN_COLOR = ALERT_COLOR;
+
+                runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);
             }
+
+
+
+
+
+            // TEST for numpy
+
+            {
+                String THIS_LOCATION_OCSSW = OCSSW_LOCATION_MSG_STR;
+
+                String[] thisCommandArray = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " python3 -m pip list"};
+                String THIS_CONTAINS_STRING = "numpy";
+                String THIS_SUCCESS_MSG = "Python3 Module Found:";
+                boolean showOutput = true;
+                String THIS_WARN_MSG = "Python3 Module NOT Found: '" + THIS_CONTAINS_STRING + "'";
+                String THIS_INDENTED_WARN_MSG = "Note: Primary processors not affected but a few minor processors may need '" + THIS_CONTAINS_STRING +"'";
+                Color THIS_WARN_COLOR = ALERT_COLOR;
+
+                runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);
+            }
+
+
+
+
+
 
         }
 
@@ -959,8 +1090,59 @@ public class GetSysInfoGUI {
 
 
 
-    private String runCommandArrayGetString(String label, String[] commandArray) {
+
+
+    private void runCommandArrayUpdatePane(String[] thisCommandArray,
+                                           String THIS_CONTAINS_STRING,
+                                           String THIS_SUCCESS_MSG,
+                                           boolean showOutput,
+                                           String THIS_WARN_MSG,
+                                           String THIS_INDENTED_WARN_MSG,
+                                           Color THIS_WARN_COLOR,
+                                           String THIS_LOCATION_OCSSW,
+                                           JTextPane sysInfoTextpane
+                                             ) {
+
+
+        String thisReturnStr = runCommandArrayGetString(thisCommandArray, THIS_CONTAINS_STRING);
+        String thisMsg = "";
+        Color thisMsgColor = Color.BLACK;
+        if (thisReturnStr != null && thisReturnStr.contains(THIS_CONTAINS_STRING)) {
+            String outputMsg = "";
+            if (showOutput) {
+                outputMsg = thisReturnStr.replaceAll("\\s+", " ");
+            }
+            thisMsg = THIS_LOCATION_OCSSW + THIS_SUCCESS_MSG + " " + outputMsg + "\n";
+        } else {
+            if (THIS_WARN_MSG.length() == 0) {
+                return;
+            }
+
+            thisMsg = THIS_LOCATION_OCSSW + THIS_WARN_MSG + "\n";
+            String[] warnMsgArray = THIS_INDENTED_WARN_MSG.split("\n");
+            for (String warnMsg : warnMsgArray) {
+                thisMsg += THIS_LOCATION_OCSSW + INDENT_BIG + warnMsg.trim() + "\n";
+            }
+            thisMsgColor = THIS_WARN_COLOR;
+        }
+
+        sysInfoText += thisMsg;
+        appendToPane(sysInfoTextpane, thisMsg, thisMsgColor);
+
+    }
+
+
+
+    private String runCommandArrayGetString(String[] commandArray) {
+        return runCommandArrayGetString(commandArray, "");
+    }
+
+    private String runCommandArrayGetString(String[] commandArray, String containsString) {
         String currentInfoLine = "";
+
+        if (containsString == null || containsString.isEmpty()) {
+            containsString = "";
+        }
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(commandArray);
@@ -971,16 +1153,18 @@ public class GetSysInfoGUI {
                     new InputStreamReader(process.getInputStream()));
             String line;
             Integer numOfLines = 0;
-            currentInfoLine = label;
+            currentInfoLine = "";
 
             while ((line = reader.readLine()) != null) {
                 if (line.trim().length() > 1) {
-                    if (numOfLines > 0) {
-                        currentInfoLine += "\n";
-                    }
+                    if (containsString.isEmpty() || line.contains(containsString)) {
+                        if (numOfLines > 0) {
+                            currentInfoLine += "\n";
+                        }
 
-                    currentInfoLine += line;
-                    numOfLines++;
+                        currentInfoLine += line;
+                        numOfLines++;
+                    }
                 }
             }
 
