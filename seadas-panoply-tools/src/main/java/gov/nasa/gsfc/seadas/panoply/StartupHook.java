@@ -34,12 +34,12 @@ public final class StartupHook {
 
     public static void init() {
         if (listener != null) {
-            //System.out.println("[Panoply] StartupHook already initialized");
+            //System.out.println("[Metadata Viewer] StartupHook already initialized");
             return;
         }
         pm = resolveProductManager();
         if (pm == null) {
-            System.out.println("[Panoply] ERROR: Could not resolve ProductManager; Panoply hook disabled");
+            //System.out.println("[Metadata Viewer] ERROR: Could not resolve ProductManager; Metadata Viewer hook disabled");
             return;
         }
 
@@ -47,22 +47,21 @@ public final class StartupHook {
             @Override
             public void productAdded(ProductManager.Event e) {
                 Product product = e.getProduct();
-                //System.out.println("[Panoply] productAdded: " + safeName(product));
+                //System.out.println("[Metadata Viewer] productAdded: " + safeName(product));
 
                 File f = product.getFileLocation();
                 String filePath = (f != null ? f.getAbsolutePath() : null);
-                //System.out.println("[Panoply] Source for " + safeName(product) + ": " + filePath);
+                //System.out.println("[Metadata Viewer] Source for " + safeName(product) + ": " + filePath);
 
                 if (filePath != null) {
                     try {
-                        //System.out.println("[Panoply] Attaching to " + product.getName() + " from " + filePath);
+                        //System.out.println("[Metadata Viewer] Attaching to " + product.getName() + " from " + filePath);
                         //PanoplyStyleMetadataBuilder.attachPanoplyMetadata(product, filePath);
                         PanoplyStyleMetadataBuilder.addAllGroupsUnderDumpRoot(product, filePath);
 
-                        //System.out.println("[Panoply] Attached ✓");
+                        //System.out.println("[Metadata Viewer] Attached ✓");
                     } catch (Throwable ex) {
-                        System.out.println("[Panoply] attach failed: " +
-                                ex.getClass().getSimpleName() + ": " + ex.getMessage());
+                        //System.out.println("[Metadata Viewer] attach failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
                     }
                 }
             }
@@ -75,16 +74,16 @@ public final class StartupHook {
 
         pm.addListener(listener);
         installMetadataWindowGuard();
-        //System.out.println("[Panoply] ProductManager listener registered");
+        //System.out.println("[Metadata Viewer] ProductManager listener registered");
     }
 
     public static void shutdown() {
         if (pm != null && listener != null) {
             try {
                 pm.removeListener(listener);
-                //System.out.println("[Panoply] ProductManager listener removed");
+                //System.out.println("[Metadata Viewer] ProductManager listener removed");
             } catch (Throwable t) {
-                System.out.println("[Panoply] Warning removing listener: " + t.getMessage());
+                //System.out.println("[Metadata Viewer] Warning removing listener: " + t.getMessage());
             }
         }
         listener = null;
@@ -99,7 +98,7 @@ public final class StartupHook {
             Method m = ProductManager.class.getMethod("getInstance");
             Object obj = m.invoke(null);
             if (obj instanceof ProductManager) {
-                System.out.println("[Panoply] PM via ProductManager.getInstance()");
+                //System.out.println("[Metadata Viewer] PM via ProductManager.getInstance()");
                 return (ProductManager) obj;
             }
         } catch (ReflectiveOperationException ignore) {
@@ -111,7 +110,7 @@ public final class StartupHook {
             if (app != null) {
                 ProductManager viaApp = app.getProductManager();
                 if (viaApp != null) {
-                    System.out.println("[Panoply] PM via SnapApp.getDefault()");
+                    //System.out.println("[Metadata Viewer] PM via SnapApp.getDefault()");
                     return viaApp;
                 }
             }
@@ -122,7 +121,7 @@ public final class StartupHook {
         try {
             ProductManager viaGpf = GPF.getDefaultInstance().getProductManager();
             if (viaGpf != null) {
-                System.out.println("[Panoply] PM via GPF.getDefaultInstance()");
+                //System.out.println("[Metadata Viewer] PM via GPF.getDefaultInstance()");
                 return viaGpf;
             }
         } catch (Throwable ignore) {
