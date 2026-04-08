@@ -685,7 +685,7 @@ public class SpectrumAnimationTopComponent extends ToolTopComponent {
                     }
                 }
 
-                final String spectrumName = StringUtils.cleanUpGroupName(spectrumNameBuilder.toString());
+                final String spectrumName = StringUtilsTmp.cleanUpGroupName(spectrumNameBuilder.toString());
 
                 int symbolIndex = SpectrumShapeProvider.getValidIndex(displayIndex, false);
                 ++displayIndex;

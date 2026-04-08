@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+
+    <!--SNAP's main menu entries-->
+
+    <folder name="Menu">
+        <folder name="Help">
+
+
+            <folder name="SeaDAS">
+                <attr name="position" intvalue="1500"/>
+                <folder name="Configuration">
+                    <attr name="position" intvalue="20"/>
+                    <!--<file name="org-openide-actions-CutAction-separatorAfter.instance">-->
+                    <!--<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>-->
+                    <!--<attr name="position" intvalue="27"/>-->
+                    <!--</file>-->
+                </folder>
+                <folder name="Data Access">
+                    <attr name="position" intvalue="100"/>
+                </folder>
+
+
+                <folder name="Video-Tutorials">
+                    <attr name="position" intvalue="110"/>
+
+                    <folder name="Overview">
+                        <attr name="position" intvalue="100"/>
+                    </folder>
+
+                    <folder name="Installation">
+                        <attr name="position" intvalue="200"/>
+                    </folder>
+
+                    <folder name="General Tools">
+                        <attr name="position" intvalue="300"/>
+                    </folder>
+
+                    <folder name="Troubleshooting">
+                        <attr name="position" intvalue="400"/>
+                    </folder>
+
+                    <folder name="Science Processors (Installation)">
+                        <attr name="position" intvalue="500"/>
+                    </folder>
+
+                    <folder name="Science Processors">
+                        <attr name="position" intvalue="600"/>
+                    </folder>
+
+
+                    <folder name="Earthdata-Cloud">
+                        <attr name="position" intvalue="700"/>
+                    </folder>
+
+                </folder>
+
+
+                <!--                <folder name="Documentation">-->
+                <!--                    <attr name="position" intvalue="200"/>-->
+                <!--                </folder>-->
+            </folder>
+        </folder>
+
+
+        <folder name="SeaDAS-Toolbox">
+            <attr name="position" intvalue="350"/>
+            <folder name="SeaDAS Processors">
+                <attr name="position" intvalue="1000"/>
+
+                <folder name="Tools">
+                    <attr name="position" intvalue="10"/>
+                </folder>
+
+                <folder name="HawkEye">
+                    <attr name="position" intvalue="20"/>
+                </folder>
+                <folder name="MODIS">
+                    <attr name="position" intvalue="30"/>
+                </folder>
+                <folder name="VIIRS">
+                    <attr name="position" intvalue="40"/>
+                </folder>
+
+            </folder>
+
+
+            <folder name="General Tools">
+                <attr name="position" intvalue="2000"/>
+            </folder>
+
+
+            <folder name="Earthdata-Cloud">
+                <attr name="position" intvalue="2500"/>
+            </folder>
+
+        </folder>
+
+
+    </folder>
+
+
+    <folder name="Services">
+        <folder name="AutoupdateType">
+            <file name="seadas_toolbox_update_center.instance">
+                <attr name="displayName" stringvalue="SeaDAS Toolbox"/>
+                <attr name="enabled" boolvalue="true"/>
+                <attr name="instanceCreate"
+                      methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url"
+                      urlvalue="https://oceandata.sci.gsfc.nasa.gov/SeaDAS/updatecenter/9.x/seadas-toolbox/updates.xml.gz"/>
+            </file>
+        </folder>
+    </folder>
+
+
+    <!--<folder name="Actions">-->
+    <!--<folder name="Processing">-->
+    <!--<file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">-->
+    <!--<attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>-->
+    <!--<attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>-->
+    <!--<attr name="displayName" stringvalue="LandWaterMask"/>-->
+    <!--<attr name="dialogTitle" stringvalue="LandWaterMask"/>-->
+    <!--<attr name="operatorName" stringvalue="LandWaterMask"/>-->
+    <!--<attr name="helpId" stringvalue="WatermaskTool"/>-->
+    <!--<attr name="targetProductNameSuffix" stringvalue="_watermask"/>-->
+    <!--</file>-->
+    <!--</folder>-->
+    <!--</folder>-->
+
+    <!--<folder name="Menu">-->
+    <!--<folder name="OC Processing">-->
+    <!--<attr name="position" intvalue="600"/>-->
+    <!--<file name="gov-nasa-gsfc-seadas-processing-ui-OCSSWInstallerAction.shadow">-->
+    <!--<attr name="originalFile"-->
+    <!--stringvalue="Actions/OCProcessing/gov-nasa-gsfc-seadas-processing-ui-OCSSWInstallerAction.instance"/>-->
+    <!--<attr name="position" intvalue="100"/>-->
+    <!--</file>-->
+
+    <!--</folder>-->
+    <!--</folder>-->
+</filesystem>

@@ -16,6 +16,7 @@
 package gov.nasa.gsfc.seadas.processing.help.videoTutorials;
 
 import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
+import gov.nasa.gsfc.seadas.processing.help.MenuLocationUtils;
 import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
@@ -30,14 +31,14 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the video playlist.
  */
-@ActionID(category = "Video Tutorials Playlist", id = "ShowPlaylist06Action")
-@ActionRegistration(
-        displayName = "#CTL_ShowPlaylist06Action_DisplayName",
-        popupText = "#CTL_ShowPlaylist06Action_ShortDescription")
-@ActionReference(
-        path = "Menu/Video-Tutorials",
-        separatorBefore = 1999,
-        position = 2000)
+//@ActionID(category = "Video Tutorials Playlist", id = "ShowPlaylist06Action")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowPlaylist06Action_DisplayName",
+//        popupText = "#CTL_ShowPlaylist06Action_ShortDescription")
+//@ActionReference(
+//        path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION,
+//        separatorBefore = 1999,
+//        position = 2000)
 @NbBundle.Messages({
         "CTL_ShowPlaylist06Action_DisplayName=SeaDAS 9.2.0 | What's New",
         "CTL_ShowPlaylist06Action_ShortDescription=Opens YouTube playlist containing SeaDAS What's New tutorial videos"

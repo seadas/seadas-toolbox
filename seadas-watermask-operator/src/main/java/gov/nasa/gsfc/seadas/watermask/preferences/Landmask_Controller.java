@@ -93,7 +93,7 @@ public final class Landmask_Controller extends DefaultConfigController {
     public static final String PROPERTY_LANDMASK_COLOR_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.color";
     public static final String PROPERTY_LANDMASK_COLOR_LABEL = "Land Mask Color";
     public static final String PROPERTY_LANDMASK_COLOR_TOOLTIP = "Land mask color";
-    public static final Color PROPERTY_LANDMASK_COLOR_DEFAULT = new Color(0,0,0);
+    public static final Color PROPERTY_LANDMASK_COLOR_DEFAULT = new Color(40,30,0);
 
     public static final String PROPERTY_LANDMASK_TRANSPARENCY_KEY = PROPERTY_LANDMASK_ROOT_KEY + ".landmask.transparency";
     public static final String PROPERTY_LANDMASK_TRANSPARENCY_LABEL = "Land Mask Transparency";
