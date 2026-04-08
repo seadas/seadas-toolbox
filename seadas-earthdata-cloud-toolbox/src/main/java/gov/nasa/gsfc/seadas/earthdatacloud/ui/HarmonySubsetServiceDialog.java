@@ -1,7 +1,11 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.action.HarmonySubsetTask;
-import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrVariableMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.VariableItem;
+import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.ui.UIUtils;
 import org.esa.snap.ui.tool.ToolButtonFactory;
@@ -9,16 +13,21 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.openide.util.HelpCtx;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 
-import java.util.concurrent.ExecutionException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.IOException;
+import java.io.File;
+import java.util.prefs.Preferences;
 
 public class HarmonySubsetServiceDialog extends JDialog {
 
@@ -31,22 +40,26 @@ public class HarmonySubsetServiceDialog extends JDialog {
     // UI Components
     private JTextField urlInputField;
     private JTextField latMinField, latMaxField, lonMinField, lonMaxField;
-    private JList<String> variableList;
+    private JList<VariableItem> variableList;
     private JProgressBar progressBar;
-    private JButton subsetButton, cancelButton;
+    private JButton subsetButton, cancelButton, doneButton;
+    private HarmonySubsetTask currentSubsetTask;
     private JTextArea statusArea;
 
     // Data
     private String selectedFileUrl;
-    private JSONObject fileMetadata;
     private Double searchLatMin, searchLatMax, searchLonMin, searchLonMax;
+    private String cmrGranuleId;                 // optional, may be null
+    private Double granuleLatMin, granuleLatMax; // optional
+    private Double granuleLonMin, granuleLonMax; // optional
 
+    private CmrGranuleMetadataFetcher.GranuleMeta meta;
+    private String variablesLoadedForUrl;
+    private File selectedOutputFile;
+    private static final String PREF_LAST_DOWNLOAD_DIR = "harmonySubsetLastDownloadDir";
+    private final Preferences prefs = Preferences.userNodeForPackage(HarmonySubsetServiceDialog.class);
     public HarmonySubsetServiceDialog() {
         this(null, null, null, null, null);
-    }
-
-    public HarmonySubsetServiceDialog(String fileUrl) {
-        this(fileUrl, null, null, null, null);
     }
 
     public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax) {
@@ -56,206 +69,157 @@ public class HarmonySubsetServiceDialog extends JDialog {
         this.searchLatMax = latMax;
         this.searchLonMin = lonMin;
         this.searchLonMax = lonMax;
-        
+
         setLayout(new BorderLayout());
-        setSize(800, 700);
 
         propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
         helpButton = getHelpButton();
-        
-        // Fetch file metadata to get available variables
-        if (selectedFileUrl != null) {
-            fetchFileMetadata();
-        }
-        
+
         // Create main content
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
-        
+
         // Create button panel
         JPanel buttonPanel = createButtonPanel();
         add(buttonPanel, BorderLayout.SOUTH);
 
+        // Fetch file metadata to get available variables
+        if (selectedFileUrl != null) {
+            loadVariablesForSelectedGranule();
+        }
+
         pack();
-        setLocationRelativeTo(null);
+
+        // Optional: prevent the dialog from becoming too small
+        setMinimumSize(getSize());
+
         Window parent = SnapApp.getDefault().getMainFrame();
         setLocationRelativeTo(parent);
+
         Point location = getLocation();
         setLocation(location.x - 100, Math.max(0, location.y - 100));
-        
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private void fetchFileMetadata() {
-        // Start metadata fetching in background
+    public void setGranuleId(String granuleId) {
+        this.cmrGranuleId = granuleId;
+    }
+
+    public void setGranuleBounds(double latMin, double latMax, double lonMin, double lonMax) {
+        this.granuleLatMin = Math.min(latMin, latMax);
+        this.granuleLatMax = Math.max(latMin, latMax);
+        this.granuleLonMin = Math.min(lonMin, lonMax);
+        this.granuleLonMax = Math.max(lonMin, lonMax);
+    }
+
+    private String variablesLoadedForCollectionId;
+
+    private synchronized void loadVariablesForSelectedGranule() {
+        if (meta == null || meta.collectionConceptId == null || meta.collectionConceptId.isBlank()) {
+            SwingUtilities.invokeLater(() -> {
+                updateVariableList(new ArrayList<>());
+                updateStatus("No collection metadata available for variable detection.");
+                variableList.setEnabled(true);
+            });
+            return;
+        }
+
+        String collectionId = meta.collectionConceptId;
+
+        // If already loaded for this collection in the current UI state, do nothing.
+        if (collectionId.equals(variablesLoadedForCollectionId)) {
+            return;
+        }
+
+        updateStatus("Detecting available variables from file metadata...");
+        variableList.setEnabled(false);
+
         new Thread(() -> {
+            List<VariableItem> variables = new ArrayList<>();
+
             try {
-                System.out.println("=== Starting variable detection for: " + selectedFileUrl);
-                updateStatus("Detecting available variables...");
-                
-                // Use filename-based variable detection (most reliable for NetCDF files)
-                final List<String> variables = extractVariablesFromFileName(selectedFileUrl);
-                System.out.println("Detected variables from filename: " + variables);
-                
-                // Update UI immediately with filename-based variables
-                SwingUtilities.invokeLater(() -> {
-                    updateVariableList(variables);
-                    updateStatus("Variables detected from file type. Found " + variables.size() + " variables.");
-                });
-                
-                // Note: Metadata extraction from NetCDF files requires specialized libraries
-                // For now, we rely on filename-based detection which is reliable for ocean color data
-                
-            } catch (Exception e) {
-                System.out.println("Exception in variable detection: " + e.getMessage());
-                e.printStackTrace();
-                SwingUtilities.invokeLater(() -> {
-                    updateStatus("Error detecting variables: " + e.getMessage());
-                    // Fall back to default variables
-                    updateVariableList(getDefaultVariables());
-                });
+                System.out.println("=== Starting variable detection for collection: " + collectionId);
+
+                variables = FileVariableMetadataFetcher.fetchVariablesFromFile(selectedFileUrl);
+
+                if (variables == null) {
+                    variables = new ArrayList<>();
+                }
+
+                System.out.println("Detected variables from file metadata: " + variables);
+
+                // Mark as loaded only after fetch completes successfully.
+                variablesLoadedForCollectionId = collectionId;
+
+            } catch (Exception ex) {
+                System.out.println("Variable detection failed: " + ex.getMessage());
+                ex.printStackTrace();
             }
-        }).start();
+
+            final List<VariableItem> finalVariables = new ArrayList<>(variables);
+            SwingUtilities.invokeLater(() -> {
+                updateVariableList(finalVariables);
+                variableList.setEnabled(true);
+
+                if (finalVariables.isEmpty()) {
+                    updateStatus("No variables detected. Subsetting will use geographic bounds only.");
+                } else {
+                    updateStatus("Variable detection complete. Found " + finalVariables.size() + " variables.");
+                }
+            });
+        }, "variable-loader").start();
     }
 
-    private String buildMetadataUrl(String fileUrl) {
-        // For NetCDF files, we need to read just the header to get metadata
-        // Let's try to get the file header by adding a range request
-        
-        // Try to get just the first 1KB of the file to read the header
-        if (fileUrl.contains("?")) {
-            return fileUrl + "&range=bytes=0-1024";
+    private String getVariableCacheKey(CmrGranuleMetadataFetcher.GranuleMeta granuleMeta, String fileName) {
+        if (granuleMeta != null && granuleMeta.collectionConceptId != null
+                && !granuleMeta.collectionConceptId.isBlank()) {
+            return granuleMeta.collectionConceptId;
+        }
+        return fileName != null ? fileName : "unknown";
+    }
+    private void loadVariablesForGranule() {
+        DefaultListModel<VariableItem> model = (DefaultListModel<VariableItem>) variableList.getModel();
+        model.clear();
+        variableList.setEnabled(false);
+
+        SwingWorker<List<VariableItem>, Void> worker = new SwingWorker<>() {
+            @Override
+            protected List<VariableItem> doInBackground() throws Exception {
+                return CmrVariableMetadataFetcher.fetchVariablesFromCollection(
+                        meta.collectionConceptId);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    List<VariableItem> vars = get();
+                    updateVariableList(vars);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    model.clear();
+                } finally {
+                    variableList.setEnabled(true);
+                }
+            }
+        };
+
+        worker.execute();
+    }
+
+    private void updateVariableList(List<VariableItem> variables) {
+        DefaultListModel<VariableItem> model = (DefaultListModel<VariableItem>) variableList.getModel();
+        model.clear();
+
+        for (VariableItem v : variables) {
+            model.addElement(v);
+        }
+
+        if (!variables.isEmpty()) {
+            variableList.setSelectionInterval(0, variables.size() - 1);
         } else {
-            return fileUrl + "?range=bytes=0-1024";
-        }
-    }
-
-    private String extractCollectionId(String fileUrl) {
-        // Extract collection ID from input URL
-        if (fileUrl.contains("C3020920290-OB_CLOUD")) {
-            return "C3020920290-OB_CLOUD";
-        } else if (fileUrl.contains("C1265136924-OB_CLOUD")) {
-            return "C1265136924-OB_CLOUD";
-        } else if (fileUrl.contains("C1940468264-OB_CLOUD")) {
-            return "C1940468264-OB_CLOUD"; // VIIRS collection
-        } else {
-            // Default collection for ocean color data
-            return "C3020920290-OB_CLOUD";
-        }
-    }
-
-    private List<String> extractVariablesFromMetadata(JSONObject metadata) {
-        List<String> variables = new ArrayList<>();
-        
-        try {
-            System.out.println("Metadata keys: " + metadata.keySet());
-            
-            // Look for Band_attributes which is the standard structure for ocean color data
-            if (metadata.has("Band_attributes")) {
-                JSONObject bandAttributes = metadata.getJSONObject("Band_attributes");
-                System.out.println("Found Band_attributes with keys: " + bandAttributes.keySet());
-                for (String varName : bandAttributes.keySet()) {
-                    variables.add(varName);
-                }
-                System.out.println("Extracted " + variables.size() + " variables from Band_attributes");
-            } else if (metadata.has("band_attributes")) {
-                // Try lowercase version
-                JSONObject bandAttributes = metadata.getJSONObject("band_attributes");
-                System.out.println("Found band_attributes with keys: " + bandAttributes.keySet());
-                for (String varName : bandAttributes.keySet()) {
-                    variables.add(varName);
-                }
-                System.out.println("Extracted " + variables.size() + " variables from band_attributes");
-            } else if (metadata.has("variables")) {
-                // Fallback to variables structure
-                JSONObject varsObj = metadata.getJSONObject("variables");
-                System.out.println("Found variables with keys: " + varsObj.keySet());
-                for (String varName : varsObj.keySet()) {
-                    variables.add(varName);
-                }
-                System.out.println("Extracted " + variables.size() + " variables from variables");
-            } else if (metadata.has("dimensions")) {
-                // Sometimes variables are in dimensions
-                JSONObject dimsObj = metadata.getJSONObject("dimensions");
-                System.out.println("Found dimensions with keys: " + dimsObj.keySet());
-                for (String dimName : dimsObj.keySet()) {
-                    if (!dimName.equals("time") && !dimName.equals("lat") && !dimName.equals("lon")) {
-                        variables.add(dimName);
-                    }
-                }
-                System.out.println("Extracted " + variables.size() + " variables from dimensions");
-            } else if (metadata.has("coverage")) {
-                // Try coverage structure
-                JSONObject coverage = metadata.getJSONObject("coverage");
-                System.out.println("Found coverage with keys: " + coverage.keySet());
-                if (coverage.has("ranges")) {
-                    JSONObject ranges = coverage.getJSONObject("ranges");
-                    if (ranges.has("variables")) {
-                        JSONObject varsObj = ranges.getJSONObject("variables");
-                        for (String varName : varsObj.keySet()) {
-                            variables.add(varName);
-                        }
-                        System.out.println("Extracted " + variables.size() + " variables from coverage.ranges.variables");
-                    }
-                }
-            } else {
-                System.out.println("No known metadata structure found. Available keys: " + metadata.keySet());
-            }
-            
-            // If no variables found, try to extract from file URL or use defaults
-            if (variables.isEmpty()) {
-                System.out.println("No variables extracted from metadata, using filename-based detection");
-                variables = extractVariablesFromFileName(selectedFileUrl);
-            }
-            
-        } catch (Exception e) {
-            System.err.println("Error extracting variables from metadata: " + e.getMessage());
-            e.printStackTrace();
-        }
-        
-        return variables;
-    }
-
-    private List<String> extractVariablesFromFileName(String fileUrl) {
-        List<String> variables = new ArrayList<>();
-        
-        // Extract variables based on file name patterns
-        if (fileUrl.contains("PACE_OCI")) {
-            // PACE OCI variables
-            variables.addAll(Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670", "Rrs_490", "Rrs_510"));
-        } else if (fileUrl.contains("MODISA") || fileUrl.contains("MODIST")) {
-            // MODIS variables
-            variables.addAll(Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670", "Rrs_488", "Rrs_531"));
-        } else if (fileUrl.contains("VIIRS")) {
-            // VIIRS variables
-            variables.addAll(Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670", "Rrs_486", "Rrs_551"));
-        } else {
-            // Default variables
-            variables.addAll(getDefaultVariables());
-        }
-        
-        return variables;
-    }
-
-    private List<String> getDefaultVariables() {
-        return Arrays.asList("chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670");
-    }
-
-    private void updateVariableList(List<String> variables) {
-        if (variableList != null) {
-            DefaultListModel<String> model = new DefaultListModel<>();
-            for (String variable : variables) {
-                model.addElement(variable);
-            }
-            variableList.setModel(model);
-            
-            // Select all variables by default
-            int[] indices = new int[variables.size()];
-            for (int i = 0; i < variables.size(); i++) {
-                indices[i] = i;
-            }
-            variableList.setSelectedIndices(indices);
+            variableList.clearSelection();
         }
     }
 
@@ -327,15 +291,109 @@ public class HarmonySubsetServiceDialog extends JDialog {
     }
 
     private JPanel createSubsetPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Subset Parameters"));
+        JPanel outerPanel = new JPanel(new GridBagLayout());
+        outerPanel.setBorder(BorderFactory.createTitledBorder("Subset Parameters"));
 
-        // Spatial bounds
-        JLabel spatialLabel = new JLabel("Spatial Bounds:");
-        latMinField = new JTextField(10);
-        latMaxField = new JTextField(10);
-        lonMinField = new JTextField(10);
-        lonMaxField = new JTextField(10);
+        JPanel panel = new JPanel(new GridBagLayout());
+//        panel.setBorder(BorderFactory.createEtchedBorder());
+
+        panel.setOpaque(false);
+
+        JPanel spatialBoundsPanel = createSpatialBoundsPanel();
+
+        JPanel variablesPanel = createVariablesPanel();
+
+
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        int row = 0;
+
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        panel.add(spatialBoundsPanel, gbc);
+        row++;
+
+
+        // Variable list
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(variablesPanel, gbc);
+
+        // Center the compact content panel inside the full tab area
+        GridBagConstraints outerGbc = new GridBagConstraints();
+        outerGbc.gridx = 0;
+        outerGbc.gridy = 0;
+        outerGbc.weightx = 1.0;
+        outerGbc.weighty = 1.0;
+        outerGbc.anchor = GridBagConstraints.CENTER;
+        outerGbc.fill = GridBagConstraints.NONE;
+
+        outerPanel.add(panel, outerGbc);
+
+        return panel;
+    }
+
+
+
+    private JPanel createVariablesPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Variables"));
+
+
+        DefaultListModel<VariableItem> variableModel = new DefaultListModel<>();
+        variableList = new JList<>(variableModel);
+        variableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        variableList.setEnabled(false);
+        updateStatus("Loading variables...");
+        updateVariableList(new ArrayList<>());
+
+        JScrollPane variableScrollPane = new JScrollPane(variableList);
+//        variableScrollPane.setPreferredSize(new Dimension(520, 180));
+//        variableScrollPane.setPreferredSize(new Dimension(520, 180));
+
+        // Start empty; real values will be loaded from file metadata.
+        updateVariableList(new ArrayList<>());
+
+
+
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        int row = 0;
+
+        // Spatial label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(variableScrollPane, gbc);
+        row++;
+
+        return panel;
+    }
+
+    private JPanel createSpatialBoundsPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Spatial Bounds"));
+
+        JPanel classicPanel = createClassicBoundingBoxPanel();
+
 
         // Pre-fill spatial fields with search bounds if available
         if (searchLatMin != null && searchLatMax != null && searchLonMin != null && searchLonMax != null) {
@@ -345,64 +403,389 @@ public class HarmonySubsetServiceDialog extends JDialog {
             lonMaxField.setText(String.valueOf(searchLonMax));
         }
 
-        // Variable selection
-        JLabel variableLabel = new JLabel("Variables:");
-        String[] defaultVariables = {"chlor_a", "aot_869", "Rrs_443", "Rrs_555", "Rrs_670"};
-        variableList = new JList<>(defaultVariables);
-        variableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        JScrollPane variableScrollPane = new JScrollPane(variableList);
-        
-        // Initialize with default variables (will be updated when metadata loads)
-        updateVariableList(Arrays.asList(defaultVariables));
 
-        // Layout
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.anchor = GridBagConstraints.CENTER;
 
-        // Spatial bounds
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
-        panel.add(spatialLabel, gbc);
+        int row = 0;
 
-        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lat Min:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(latMinField, gbc);
+        // Spatial label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(classicPanel, gbc);
+        row++;
 
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lat Max:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(latMaxField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lon Min:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(lonMinField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 1;
-        panel.add(new JLabel("Lon Max:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 1;
-        panel.add(lonMaxField, gbc);
-
-        // Preview Coverage button
         JButton previewButton = new JButton("Preview Coverage");
         previewButton.addActionListener(e -> previewGranuleCoverage());
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
-        panel.add(previewButton, gbc);
 
-        // Variables
-        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
-        panel.add(variableLabel, gbc);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(previewButton);
 
-        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2; gbc.weighty = 1.0;
-        panel.add(variableScrollPane, gbc);
+
+        gbc.gridy = row;
+        panel.add(buttonPanel, gbc);
+
+
+
 
         return panel;
     }
 
 
+    private JPanel createClassicBoundingBoxPanel() {
+//        System.out.println("Creating Classic BoundingBox Panel");
 
+
+        JTextField tmpTextField = new JTextField(" 124°00′10″W ");
+        Dimension preferredTextFieldSize = tmpTextField.getPreferredSize();
+        int preferredColWidth = (int) Math.ceil(preferredTextFieldSize.getWidth() / 2.0);
+        Dimension preferredLabelSize = new Dimension(preferredColWidth, 1);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets.top = 0;
+        gbc.insets.bottom = 0;
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+        gbc.fill = GridBagConstraints.NONE;
+
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel0 = new JLabel("");
+        tmpLabel0.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel0, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel1 = new JLabel("");
+        tmpLabel1.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel1, gbc);
+
+        gbc.gridx = 2;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel2 = new JLabel("");
+        tmpLabel2.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel2, gbc);
+
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel3 = new JLabel("");
+        tmpLabel3.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel3, gbc);
+
+        gbc.gridx = 4;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel4 = new JLabel("");
+        tmpLabel4.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel4, gbc);
+
+        gbc.gridx = 5;
+        gbc.weightx = 1.0;
+        JLabel tmpLabel5 = new JLabel("");
+        tmpLabel5.setMinimumSize(preferredLabelSize);
+        panel.add(tmpLabel5, gbc);
+
+
+
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel maxLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_LABEL + ":");
+        maxLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_SUBSET_TOOLTIP);
+        panel.add(maxLatLabel, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        latMaxField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLat());
+        latMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLAT_SUBSET_TOOLTIP);
+        panel.add(latMaxField, gbc);
+        gbc.gridwidth = 1;
+
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel minLonLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLON_LABEL + ":");
+        minLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_SUBSET_TOOLTIP);
+        panel.add(minLonLabel, gbc);
+
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets.left = 0;
+        gbc.insets.right = 2;
+        lonMinField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLon());
+        lonMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLON_SUBSET_TOOLTIP);
+        panel.add(lonMinField, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.gridx = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets.left = 2;
+        gbc.insets.right = 0;
+        lonMaxField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMaxLon());
+        lonMaxField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_SUBSET_TOOLTIP);
+        panel.add(lonMaxField, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.insets.left = 0;
+        gbc.insets.right = 0;
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel maxLonLabel = new JLabel(":" + Earthdata_Cloud_Controller.PROPERTY_MAXLON_LABEL);
+        maxLonLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MAXLON_SUBSET_TOOLTIP);
+        panel.add(maxLonLabel, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        JLabel minLatLabel = new JLabel(Earthdata_Cloud_Controller.PROPERTY_MINLAT_LABEL + ":");
+        minLatLabel.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_SUBSET_TOOLTIP);
+        panel.add(minLatLabel, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        latMinField = new JTextField(Earthdata_Cloud_Controller.getPreferenceMinLat());
+        latMinField.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_MINLAT_SUBSET_TOOLTIP);
+        panel.add(latMinField, gbc);
+        gbc.gridwidth = 1;
+
+        latMinField.setMinimumSize(preferredTextFieldSize);
+        latMinField.setPreferredSize(preferredTextFieldSize);
+        latMaxField.setMinimumSize(preferredTextFieldSize);
+        latMaxField.setPreferredSize(preferredTextFieldSize);
+        lonMinField.setMinimumSize(preferredTextFieldSize);
+        lonMinField.setPreferredSize(preferredTextFieldSize);
+        lonMaxField.setMinimumSize(preferredTextFieldSize);
+        lonMaxField.setPreferredSize(preferredTextFieldSize);
+
+        panel.setMinimumSize(panel.getPreferredSize());
+        panel.setPreferredSize(panel.getPreferredSize());
+
+        return panel;
+
+    }
+
+
+
+
+    private void openBBoxDialog() {
+        // Prefer granule bounds for extent/clamp
+        if (granuleLatMin == null || granuleLatMax == null || granuleLonMin == null || granuleLonMax == null) {
+            Double[] bb = CmrGranuleMetadataFetcher.computeBBoxFromPolygons(meta.polygons);
+            if (bb != null) {
+                granuleLatMin = bb[0];
+                granuleLatMax = bb[1];
+                granuleLonMin = bb[2];
+                granuleLonMax = bb[3];
+            }
+        }
+
+        if (granuleLatMin == null || granuleLatMax == null || granuleLonMin == null || granuleLonMax == null) {
+            JOptionPane.showMessageDialog(this, "Granule bounds not available.", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            String fileUrl = urlInputField.getText().trim();
+            if (fileUrl.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a data file URL first",
+                        "No URL", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (searchLatMin == null || searchLatMax == null || searchLonMin == null || searchLonMax == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Bounds are not available yet.\nClick 'Preview Coverage' first (or enter bounds manually).",
+                        "No Bounds", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+
+            // Your CMR-based method that returns a browse image URL (png/jpg)
+            String previewUrl = getPreviewUrlFromCmr(fileName, null);
+
+            if (previewUrl == null || previewUrl.isBlank()) {
+                JOptionPane.showMessageDialog(this,
+                        "No preview image URL found for:\n" + fileName,
+                        "No Preview", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Load the preview image here (dialog expects BufferedImage)
+            BufferedImage previewImage = ImageIO.read(new URL(previewUrl));
+            if (previewImage == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Preview image could not be decoded:\n" + previewUrl,
+                        "Preview Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            BBoxSelectionDialog dialog = new BBoxSelectionDialog(
+                    SnapApp.getDefault().getMainFrame(),
+                    previewImage,
+                    granuleLatMin, granuleLatMax,
+                    granuleLonMin, granuleLonMax
+            );
+
+            dialog.setClampToExtent(true);
+            dialog.setVisible(true);
+            dialog.setFootprintPolygons(meta.polygons);
+
+            if (dialog.isConfirmed()) {
+                latMinField.setText(String.format("%.4f", dialog.getLatMin()));
+                latMaxField.setText(String.format("%.4f", dialog.getLatMax()));
+                lonMinField.setText(String.format("%.4f", dialog.getLonMin()));
+                lonMaxField.setText(String.format("%.4f", dialog.getLonMax()));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Failed to open bounding box dialog:\n" + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private String getPreviewUrlFromCmr(String fileName, String collectionConceptId) throws IOException {
+        // fileName should be just the granule filename (no path)
+        String encodedName = java.net.URLEncoder.encode(fileName, java.nio.charset.StandardCharsets.UTF_8);
+
+        StringBuilder cmr = new StringBuilder("https://cmr.earthdata.nasa.gov/search/granules.umm_json")
+                .append("?provider=OB_CLOUD")
+                .append("&page_size=10")
+                .append("&readable_granule_name=").append(encodedName);
+
+        // Strongly recommended to disambiguate (avoid wrong entry[0])
+        if (collectionConceptId != null && !collectionConceptId.isBlank()) {
+            cmr.append("&collection_concept_id=")
+                    .append(java.net.URLEncoder.encode(collectionConceptId, java.nio.charset.StandardCharsets.UTF_8));
+        }
+
+        java.net.URL urlObj = new java.net.URL(cmr.toString());
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlObj.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setConnectTimeout(15_000);
+        conn.setReadTimeout(30_000);
+
+        int status = conn.getResponseCode();
+        if (status >= 400) {
+            throw new IOException("CMR preview lookup failed: HTTP " + status + " for " + cmr);
+        }
+
+        String response;
+        try (java.io.InputStream is = conn.getInputStream()) {
+            java.util.Scanner s = new java.util.Scanner(is, java.nio.charset.StandardCharsets.UTF_8).useDelimiter("\\A");
+            response = s.hasNext() ? s.next() : "";
+        }
+
+        org.json.JSONObject json = new org.json.JSONObject(response);
+        org.json.JSONArray items = json.optJSONArray("items");
+        if (items == null || items.isEmpty()) {
+            return null;
+        }
+
+        // Prefer exact filename match if possible
+        org.json.JSONObject best = null;
+        for (int i = 0; i < items.length(); i++) {
+            org.json.JSONObject item = items.getJSONObject(i);
+            org.json.JSONObject umm = item.optJSONObject("umm");
+            if (umm == null) continue;
+
+            // CMR UMM sometimes uses GranuleUR, sometimes additional fields; try a few
+            String granuleUr = umm.optString("GranuleUR", "");
+            if (fileName.equals(granuleUr)) {
+                best = item;
+                break;
+            }
+            // Some collections don't populate GranuleUR; fall back later
+            if (best == null) best = item;
+        }
+
+        if (best == null) return null;
+
+        org.json.JSONObject umm = best.optJSONObject("umm");
+        if (umm == null) return null;
+
+        org.json.JSONArray related = umm.optJSONArray("RelatedUrls");
+        if (related == null) return null;
+
+        // Heuristic ranking: prefer true image links and visualization/browse types
+        String candidate = null;
+        for (int i = 0; i < related.length(); i++) {
+            org.json.JSONObject r = related.getJSONObject(i);
+
+            String type = r.optString("Type", "").trim();
+            String subtype = r.optString("Subtype", "").trim();
+            String url = r.optString("URL", "").trim();
+
+            if (url.isEmpty()) continue;
+
+            // Normalize (remove whitespace/newlines)
+            url = url.replace(" ", "%20");
+
+            // Must be absolute, otherwise Java URL() will fail in your bbox dialog
+            if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+                // If you *know* some URLs are relative, you can resolve them here:
+                // url = new java.net.URL(new java.net.URL("https://oceandata.sci.gsfc.nasa.gov/"), url).toString();
+                continue;
+            }
+
+            String urlLower = url.toLowerCase();
+            boolean looksLikeImage = urlLower.endsWith(".png") || urlLower.endsWith(".jpg") || urlLower.endsWith(".jpeg");
+            boolean isVisualization =
+                    type.equalsIgnoreCase("GET RELATED VISUALIZATION") ||
+                            type.toUpperCase().contains("VISUALIZATION") ||
+                            type.toUpperCase().contains("BROWSE") ||
+                            subtype.toUpperCase().contains("BROWSE") ||
+                            subtype.toUpperCase().contains("THUMBNAIL");
+
+            // Strong preference: visualization + actual image extension
+            if (isVisualization && looksLikeImage) {
+                return url;
+            }
+
+            // Next best: any image-looking URL
+            if (candidate == null && looksLikeImage) {
+                candidate = url;
+            }
+
+            // Last resort: visualization link even if extension unknown
+            if (candidate == null && isVisualization) {
+                candidate = url;
+            }
+        }
+
+        return candidate;
+    }
     private JPanel createStatusPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Status"));
@@ -422,12 +805,56 @@ public class HarmonySubsetServiceDialog extends JDialog {
         subsetButton.addActionListener(e -> requestSubset());
 
         cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> dispose());
+        cancelButton.addActionListener(e -> {
+            if (currentSubsetTask != null && !currentSubsetTask.isDone()) {
+                currentSubsetTask.cancel(true);
+                updateStatus("Subset request cancelled.");
+                subsetButton.setEnabled(true);
+                cancelButton.setEnabled(false);
+                doneButton.setEnabled(true);
+                progressBar.setIndeterminate(false);
+                progressBar.setString("Cancelled");
+            } else {
+                dispose();
+            }
+        });
+
+        doneButton = new JButton("Done");
+        doneButton.setEnabled(false);
+        doneButton.addActionListener(e -> dispose());
 
         panel.add(subsetButton);
         panel.add(cancelButton);
+        panel.add(doneButton);
 
         return panel;
+    }
+
+    public void onSubsetStarted() {
+        subsetButton.setEnabled(false);
+        cancelButton.setEnabled(true);
+        doneButton.setEnabled(false);
+    }
+
+    public void onSubsetSucceeded() {
+        subsetButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        doneButton.setEnabled(true);
+        getRootPane().setDefaultButton(doneButton);
+    }
+
+    public void onSubsetFailed() {
+        subsetButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        doneButton.setEnabled(true);
+        getRootPane().setDefaultButton(doneButton);
+    }
+
+    public void onSubsetCancelled() {
+        subsetButton.setEnabled(true);
+        cancelButton.setEnabled(false);
+        doneButton.setEnabled(true);
+        getRootPane().setDefaultButton(doneButton);
     }
 
     private void validateInputUrl() {
@@ -437,17 +864,65 @@ public class HarmonySubsetServiceDialog extends JDialog {
             return;
         }
 
-        statusArea.setText("Validating URL...");
-        // TODO: Implement URL validation logic
-        // This would check if the URL is accessible and contains valid data
+        selectedFileUrl = url;
+        variablesLoadedForUrl = null;
+        fetchFileMetadata();
+
         statusArea.setText("URL validation completed. Ready for subsetting.");
+    }
+
+    private synchronized void fetchFileMetadata() {
+        if (selectedFileUrl == null || selectedFileUrl.isBlank()) {
+            return;
+        }
+
+        if (selectedFileUrl.equals(variablesLoadedForUrl)) {
+            return;
+        }
+
+        variableList.setEnabled(false);
+        updateStatus("Detecting available variables from file metadata...");
+
+        final String fileUrl = selectedFileUrl;
+
+        new Thread(() -> {
+            List<VariableItem> variables = new ArrayList<>();
+
+            try {
+                System.out.println("=== Starting variable detection for: " + fileUrl);
+
+                List<VariableItem> detected = FileVariableMetadataFetcher.fetchVariablesFromFile(fileUrl);
+                if (detected != null) {
+                    variables = detected;
+                }
+
+                System.out.println("Detected variables from actual file metadata: " + variables);
+
+                variablesLoadedForUrl = fileUrl;
+
+            } catch (Exception e) {
+                System.out.println("Exception in variable detection: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            final List<VariableItem> finalVariables = new ArrayList<>(variables);
+            SwingUtilities.invokeLater(() -> {
+                updateVariableList(finalVariables);
+                variableList.setEnabled(true);
+
+                if (finalVariables.isEmpty()) {
+                    updateStatus("No variables detected. Subsetting will use geographic bounds only.");
+                } else {
+                    updateStatus("Variable detection complete. Found " + finalVariables.size() + " variables.");
+                }
+            });
+        }, "file-metadata-loader").start();
     }
 
     private void requestSubset() {
         try {
             System.out.println("=== Starting subset request ===");
-            
-            // Validate inputs
+
             if (!validateInputs()) {
                 System.out.println("Input validation failed");
                 return;
@@ -455,57 +930,250 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
             System.out.println("Input validation passed");
 
+            // Ask user where to save result
+            File outputFile = promptForOutputFile();
+            if (outputFile == null) {
+                System.out.println("Subset request cancelled by user at file save prompt.");
+                updateStatus("Subset request cancelled.");
+                return;
+            }
+
+            selectedOutputFile = outputFile;
+            System.out.println("Selected output file: " + outputFile.getAbsolutePath());
+
             // Disable buttons during processing
             subsetButton.setEnabled(false);
             cancelButton.setEnabled(false);
 
             // Get subset parameters
             JSONObject subsetParams = getSubsetParameters();
+            subsetParams.put("outputFile", outputFile.getAbsolutePath());
+
             System.out.println("Subset parameters: " + subsetParams.toString());
 
-            // Create subset task
-            HarmonySubsetTask subsetTask = new HarmonySubsetTask(
-                subsetParams,
-                progressBar,
-                subsetButton,
-                cancelButton,
-                this
+            currentSubsetTask = new HarmonySubsetTask(
+                    subsetParams,
+                    progressBar,
+                    subsetButton,
+                    cancelButton,
+                    this
             );
 
+            onSubsetStarted();
+
             System.out.println("Starting HarmonySubsetTask...");
-            subsetTask.execute();
-            
+            currentSubsetTask.addPropertyChangeListener(evt -> {
+                if ("progress".equals(evt.getPropertyName())) {
+                    int p = (Integer) evt.getNewValue();
+                    progressBar.setIndeterminate(false);
+                    progressBar.setValue(p);
+                    progressBar.setString(p + "%");
+                }
+            });
+            currentSubsetTask.execute();
+
         } catch (Exception e) {
             System.err.println("Error in requestSubset: " + e.getMessage());
             e.printStackTrace();
-            
-            // Re-enable buttons on error
-            subsetButton.setEnabled(true);
-            cancelButton.setEnabled(true);
-            
-            JOptionPane.showMessageDialog(this, 
-                "Error starting subset request: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
+
+            onSubsetFailed();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error starting subset request: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private File promptForOutputFile() {
+        String suggestedName = buildSuggestedSubsetFilename();
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save Subset Result");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setSelectedFile(new File(suggestedName));
+
+        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
+        if (lastDir != null && !lastDir.isBlank()) {
+            File dir = new File(lastDir);
+            if (dir.exists() && dir.isDirectory()) {
+                chooser.setCurrentDirectory(dir);
+            }
+        }
+
+        int result = chooser.showSaveDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+
+        File file = chooser.getSelectedFile();
+        if (file == null) {
+            return null;
+        }
+
+        if (!file.getName().toLowerCase().endsWith(".nc")) {
+            file = new File(file.getParentFile(), file.getName() + ".nc");
+        }
+
+        if (file.exists()) {
+            int overwrite = JOptionPane.showConfirmDialog(
+                    this,
+                    "The selected file already exists.\nDo you want to overwrite it?",
+                    "Confirm Overwrite",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (overwrite != JOptionPane.YES_OPTION) {
+                return null;
+            }
+        }
+
+        File parent = file.getParentFile();
+        if (parent != null) {
+            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+        }
+
+        return file;
+    }
+
+    private String buildSuggestedSubsetFilename() {
+        String baseName = null;
+
+        // 1. Prefer producer granule id
+        if (meta != null) {
+            if (meta.producerGranuleId != null && !meta.producerGranuleId.isBlank()) {
+                baseName = meta.producerGranuleId;
+            } else if (meta.granuleId != null && !meta.granuleId.isBlank()) {
+                baseName = meta.granuleId;
+            }
+        }
+
+        // 2. Fallback: derive from URL
+        if (baseName == null || baseName.isBlank()) {
+            String url = urlInputField.getText().trim();
+            if (!url.isEmpty()) {
+                int idx = url.lastIndexOf('/');
+                baseName = (idx >= 0) ? url.substring(idx + 1) : url;
+            }
+        }
+
+        // 3. Final fallback
+        if (baseName == null || baseName.isBlank()) {
+            baseName = "harmony_subset";
+        }
+
+        // Remove .nc if already present
+        if (baseName.toLowerCase().endsWith(".nc")) {
+            baseName = baseName.substring(0, baseName.length() - 3);
+        }
+
+        return baseName + "_subset.nc";
+    }
+
     private boolean validateInputs() {
-        // Basic validation
-        if (urlInputField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a data file URL", "Validation Error", JOptionPane.ERROR_MESSAGE);
+        String url = urlInputField.getText().trim();
+        if (url.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a data file URL.",
+                    "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // Validate spatial bounds
-        try {
-            if (!latMinField.getText().isEmpty()) Double.parseDouble(latMinField.getText());
-            if (!latMaxField.getText().isEmpty()) Double.parseDouble(latMaxField.getText());
-            if (!lonMinField.getText().isEmpty()) Double.parseDouble(lonMinField.getText());
-            if (!lonMaxField.getText().isEmpty()) Double.parseDouble(lonMaxField.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid spatial bounds. Please enter valid numbers.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+        String latMin = latMinField.getText().trim();
+        String latMax = latMaxField.getText().trim();
+        String lonMin = lonMinField.getText().trim();
+        String lonMax = lonMaxField.getText().trim();
+
+        boolean anyBbox =
+                !latMin.isEmpty() || !latMax.isEmpty() || !lonMin.isEmpty() || !lonMax.isEmpty();
+
+        boolean fullBbox =
+                !latMin.isEmpty() && !latMax.isEmpty() && !lonMin.isEmpty() && !lonMax.isEmpty();
+
+        int total = variableList.getModel().getSize();
+        int selected = variableList.getSelectedIndices().length;
+        boolean allVariablesSelected = total > 0 && selected == total;
+
+        // Reject partial bbox entry
+        if (anyBbox && !fullBbox) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please provide all four subset boundary values, or leave all of them blank.",
+                    "Incomplete Subset Boundary",
+                    JOptionPane.ERROR_MESSAGE);
             return false;
+        }
+
+        // Block full-granule/all-variables requests through the subset service
+        if (!fullBbox && allVariablesSelected) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter subset boundaries or select specific variables.\n\n" +
+                            "Requesting the full granule with all variables is not allowed through the subset operation.",
+                    "Subset Required",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Validate numeric bbox values only when a full bbox is provided
+        if (fullBbox) {
+            final double latMinVal;
+            final double latMaxVal;
+            final double lonMinVal;
+            final double lonMaxVal;
+
+            try {
+                latMinVal = Double.parseDouble(latMin);
+                latMaxVal = Double.parseDouble(latMax);
+                lonMinVal = Double.parseDouble(lonMin);
+                lonMaxVal = Double.parseDouble(lonMax);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Invalid spatial bounds. Please enter valid numbers.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (latMinVal < -90.0 || latMaxVal > 90.0) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Latitude values must be between -90 and 90.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (lonMinVal < -180.0 || lonMaxVal > 180.0) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Longitude values must be between -180 and 180.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (latMinVal >= latMaxVal) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Latitude minimum must be less than latitude maximum.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (lonMinVal >= lonMaxVal) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Longitude minimum must be less than longitude maximum.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
         }
 
         return true;
@@ -513,196 +1181,438 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
     private JSONObject getSubsetParameters() {
         JSONObject params = new JSONObject();
-        
-        params.put("url", urlInputField.getText().trim());
-        
-        // Spatial bounds
-        if (!latMinField.getText().isEmpty()) params.put("latMin", latMinField.getText());
-        if (!latMaxField.getText().isEmpty()) params.put("latMax", latMaxField.getText());
-        if (!lonMinField.getText().isEmpty()) params.put("lonMin", lonMinField.getText());
-        if (!lonMaxField.getText().isEmpty()) params.put("lonMax", lonMaxField.getText());
-        
-        // Variables - convert List to JSONArray
-        if (!variableList.isSelectionEmpty()) {
-            List<String> selectedVariables = variableList.getSelectedValuesList();
-            JSONArray variablesArray = new JSONArray();
-            for (String variable : selectedVariables) {
-                variablesArray.put(variable);
-            }
-            params.put("variables", variablesArray);
-        }
-        
 
-        
+        params.put("url", urlInputField.getText().trim());
+
+        if (meta != null) {
+            params.put("granuleId", meta.granuleId);
+            params.put("collectionId", meta.collectionConceptId);
+        }
+
+        String latMin = latMinField.getText().trim();
+        String latMax = latMaxField.getText().trim();
+        String lonMin = lonMinField.getText().trim();
+        String lonMax = lonMaxField.getText().trim();
+
+        if (!latMin.isEmpty()) {
+            params.put("latMin", latMin);
+        }
+        if (!latMax.isEmpty()) {
+            params.put("latMax", latMax);
+        }
+        if (!lonMin.isEmpty()) {
+            params.put("lonMin", lonMin);
+        }
+        if (!lonMax.isEmpty()) {
+            params.put("lonMax", lonMax);
+        }
+
+        int total = variableList.getModel().getSize();
+        int selected = variableList.getSelectedIndices().length;
+        boolean allVariablesSelected = total > 0 && selected == total;
+
+        params.put("allVariablesSelected", allVariablesSelected);
+
+        if (!allVariablesSelected && !variableList.isSelectionEmpty()) {
+            JSONArray variables = new JSONArray();
+            for (VariableItem item : variableList.getSelectedValuesList()) {
+                variables.put(item.fullName);
+            }
+            params.put("variables", variables);
+        }
+
         return params;
     }
 
     /**
-     * Preview granule coverage and suggest appropriate subset bounds
+     * Preview approximate granule coverage from CMR metadata.
+     * This is not the exact file navigation boundary.
      */
     private void previewGranuleCoverage() {
-        String url = urlInputField.getText().trim();
-        if (url.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a data file URL first", "No URL", JOptionPane.WARNING_MESSAGE);
+        String dataUrl = urlInputField.getText().trim();
+        if (dataUrl.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a data file URL first",
+                    "No URL",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Extract file name from URL
-        String fileName = url.substring(url.lastIndexOf('/') + 1);
-        
-        // Show progress
-        updateStatus("Fetching granule coverage information...");
-        
-        // Run in background thread to avoid blocking UI
+        String fileName = dataUrl.substring(dataUrl.lastIndexOf('/') + 1);
+        updateStatus("Fetching approximate granule coverage from CMR...");
+
         new Thread(() -> {
+            HttpURLConnection conn = null;
+
             try {
-                // Query CMR for granule metadata
-                String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
+                String encodedFileName = java.net.URLEncoder.encode(
+                        fileName, java.nio.charset.StandardCharsets.UTF_8.toString());
+
+                String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json"
+                        + "?readable_granule_name=" + encodedFileName
+                        + "&provider=OB_CLOUD"
+                        + "&page_size=50";
+
                 System.out.println("Fetching granule coverage: " + cmrUrl);
-                
+
                 java.net.URL urlObj = new java.net.URL(cmrUrl);
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlObj.openConnection();
+                conn = (HttpURLConnection) urlObj.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setConnectTimeout(10000);
                 conn.setReadTimeout(10000);
 
                 int status = conn.getResponseCode();
-                if (status == 200) {
-                    java.io.InputStream is = conn.getInputStream();
-                    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                    String response = s.hasNext() ? s.next() : "";
-                    org.json.JSONObject json = new org.json.JSONObject(response);
-                    org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
-                    
-                    if (entries.length() > 0) {
-                        org.json.JSONObject granule = entries.getJSONObject(0);
-                        
-                        // Extract coverage information
-                        String granuleId = granule.getString("id");
-                        String timeStart = granule.getString("time_start");
-                        String timeEnd = granule.getString("time_end");
-                        
-                        // Parse polygons to get spatial bounds
-                        org.json.JSONArray polygons = granule.getJSONArray("polygons");
-                        if (polygons.length() > 0) {
-                            Object firstPoly = polygons.get(0);
-                            String[] coords;
-                            if (firstPoly instanceof String) {
-                                coords = ((String) firstPoly).split(" ");
-                            } else if (firstPoly instanceof org.json.JSONArray) {
-                                // Flatten the nested array into a single string of coordinates
-                                org.json.JSONArray arr = (org.json.JSONArray) firstPoly;
-                                StringBuilder sb = new StringBuilder();
-                                for (int i = 0; i < arr.length(); i++) {
-                                    if (i > 0) sb.append(" ");
-                                    sb.append(arr.getString(i));
-                                }
-                                coords = sb.toString().split(" ");
-                            } else {
-                                throw new RuntimeException("Unexpected polygon format: " + firstPoly.getClass());
-                            }
-                            // Parse coordinates to find min/max bounds
-                            final double[] bounds = {Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE, Double.MIN_VALUE}; // minLat, maxLat, minLon, maxLon
-                            for (int i = 0; i < coords.length; i += 2) {
-                                double lat = Double.parseDouble(coords[i]);
-                                double lon = Double.parseDouble(coords[i + 1]);
-                                bounds[0] = Math.min(bounds[0], lat); // minLat
-                                bounds[1] = Math.max(bounds[1], lat); // maxLat
-                                bounds[2] = Math.min(bounds[2], lon); // minLon
-                                bounds[3] = Math.max(bounds[3], lon); // maxLon
-                            }
-                            final double minLat = bounds[0];
-                            final double maxLat = bounds[1];
-                            final double minLon = bounds[2];
-                            final double maxLon = bounds[3];
-                            // Calculate suggested subset bounds (slightly smaller than full coverage)
-                            double latMargin = (maxLat - minLat) * 0.1;
-                            double lonMargin = (maxLon - minLon) * 0.1;
-                            final double suggestedLatMin = minLat + latMargin;
-                            final double suggestedLatMax = maxLat - latMargin;
-                            final double suggestedLonMin = minLon + lonMargin;
-                            final double suggestedLonMax = maxLon - lonMargin;
-                            // Show coverage information in dialog
-                            SwingUtilities.invokeLater(() -> {
-                                showCoverageDialog(granuleId, timeStart, timeEnd, 
-                                    minLat, maxLat, minLon, maxLon,
-                                    suggestedLatMin, suggestedLatMax, suggestedLonMin, suggestedLonMax);
-                            });
-                            
-                        } else {
-                            SwingUtilities.invokeLater(() -> {
-                                JOptionPane.showMessageDialog(this, 
-                                    "No spatial coverage information found for this granule.", 
-                                    "No Coverage Data", JOptionPane.WARNING_MESSAGE);
-                            });
-                        }
-                        
-                    } else {
-                        SwingUtilities.invokeLater(() -> {
-                            JOptionPane.showMessageDialog(this, 
-                                "Granule not found in CMR: " + fileName, 
-                                "Granule Not Found", JOptionPane.ERROR_MESSAGE);
-                        });
-                    }
-                    
-                } else {
-                    SwingUtilities.invokeLater(() -> {
-                        JOptionPane.showMessageDialog(this, 
-                            "Failed to fetch granule information. HTTP status: " + status, 
-                            "CMR Error", JOptionPane.ERROR_MESSAGE);
-                    });
+                if (status != 200) {
+                    final int finalStatus = status;
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "Failed to fetch granule information. HTTP status: " + finalStatus,
+                            "CMR Error",
+                            JOptionPane.ERROR_MESSAGE));
+                    return;
                 }
-                
-            } catch (Exception e) {
-                System.err.println("Error previewing granule coverage: " + e.getMessage());
-                e.printStackTrace();
+
+                String response;
+                try (java.io.InputStream is = conn.getInputStream();
+                     java.util.Scanner s = new java.util.Scanner(
+                             is, java.nio.charset.StandardCharsets.UTF_8.name()).useDelimiter("\\A")) {
+                    response = s.hasNext() ? s.next() : "";
+                }
+
+                org.json.JSONObject json = new org.json.JSONObject(response);
+                org.json.JSONArray entries = json.getJSONObject("feed").optJSONArray("entry");
+
+                if (entries == null || entries.length() == 0) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "Granule not found in CMR: " + fileName,
+                            "Granule Not Found",
+                            JOptionPane.ERROR_MESSAGE));
+                    return;
+                }
+
+                org.json.JSONObject granule = findExactGranuleMatch(entries, fileName, dataUrl);
+
+                if (granule == null) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "Could not find an exact CMR granule match for:\n" + fileName + "\n\n"
+                                    + "Coverage preview was cancelled to avoid showing incorrect bounds.",
+                            "Exact Granule Match Not Found",
+                            JOptionPane.WARNING_MESSAGE));
+                    return;
+                }
+
+                String granuleId = granule.optString("id", "");
+                String timeStart = granule.optString("time_start", "");
+                String timeEnd = granule.optString("time_end", "");
+                String title = granule.optString("title", "");
+                String producerGranuleId = granule.optString("producer_granule_id", "");
+
+                Bounds bounds = extractBoundsFromGranule(granule);
+
+                if (bounds == null) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                            this,
+                            "No spatial coverage information found for this granule.",
+                            "No Coverage Data",
+                            JOptionPane.WARNING_MESSAGE));
+                    return;
+                }
+
+                String warning = buildCoverageConsistencyWarning(bounds);
+
                 SwingUtilities.invokeLater(() -> {
-                    JOptionPane.showMessageDialog(this, 
-                        "Error fetching granule coverage: " + e.getMessage(), 
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                    String message =
+                            "Approximate granule coverage from CMR metadata\n\n" +
+                                    "Granule ID: " + granuleId + "\n" +
+                                    "Title: " + title + "\n" +
+                                    "Producer Granule ID: " + producerGranuleId + "\n" +
+                                    "Time Start: " + timeStart + "\n" +
+                                    "Time End: " + timeEnd + "\n\n" +
+                                    String.format("Latitude range: %.6f to %.6f%n", bounds.minLat, bounds.maxLat) +
+                                    String.format("Longitude range: %.6f to %.6f%n", bounds.minLon, bounds.maxLon) +
+                                    warning +
+                                    "\n\nNote: These bounds come from CMR metadata and may differ from the actual file navigation.";
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            message,
+                            "Granule Coverage",
+                            JOptionPane.INFORMATION_MESSAGE);
                 });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                        this,
+                        "Error fetching granule coverage: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE));
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
         }).start();
     }
+    private String buildCoverageConsistencyWarning(Bounds granuleBounds) {
+        try {
+            double south = Double.parseDouble(latMinField.getText().trim());
+            double north = Double.parseDouble(latMaxField.getText().trim());
+            double west  = Double.parseDouble(lonMinField.getText().trim());
+            double east  = Double.parseDouble(lonMaxField.getText().trim());
 
-    /**
-     * Show coverage information dialog with suggested bounds
-     */
-    private void showCoverageDialog(String granuleId, String timeStart, String timeEnd,
-                                   double minLat, double maxLat, double minLon, double maxLon,
-                                   double suggestedLatMin, double suggestedLatMax, 
-                                   double suggestedLonMin, double suggestedLonMax) {
-        
-        String message = String.format(
-            "Granule Coverage Information:\n\n" +
-            "Granule ID: %s\n" +
-            "Time: %s to %s\n\n" +
-            "Full Coverage Bounds:\n" +
-            "Latitude:  %.4f° to %.4f°\n" +
-            "Longitude: %.4f° to %.4f°\n\n" +
-            "Suggested Subset Bounds (90%% of coverage):\n" +
-            "Latitude:  %.4f° to %.4f°\n" +
-            "Longitude: %.4f° to %.4f°\n\n" +
-            "Would you like to apply the suggested bounds to the subset form?",
-            granuleId, timeStart, timeEnd,
-            minLat, maxLat, minLon, maxLon,
-            suggestedLatMin, suggestedLatMax, suggestedLonMin, suggestedLonMax
-        );
-        
-        int choice = JOptionPane.showConfirmDialog(this, message, 
-            "Granule Coverage Preview", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-        
-        if (choice == JOptionPane.YES_OPTION) {
-            // Apply suggested bounds to the form
-            latMinField.setText(String.format("%.4f", suggestedLatMin));
-            latMaxField.setText(String.format("%.4f", suggestedLatMax));
-            lonMinField.setText(String.format("%.4f", suggestedLonMin));
-            lonMaxField.setText(String.format("%.4f", suggestedLonMax));
-            
-            updateStatus("Applied suggested bounds from granule coverage.");
+            double reqMinLat = Math.min(south, north);
+            double reqMaxLat = Math.max(south, north);
+
+            boolean requestCrossesDateline = west > east;
+
+            boolean latOverlap = rangesOverlap(
+                    granuleBounds.minLat, granuleBounds.maxLat,
+                    reqMinLat, reqMaxLat);
+
+            boolean lonOverlap;
+            if (requestCrossesDateline) {
+                lonOverlap = true; // safe for release
+            } else {
+                lonOverlap = rangesOverlap(
+                        granuleBounds.minLon, granuleBounds.maxLon,
+                        west, east);
+            }
+
+            if (latOverlap && lonOverlap) {
+                return "";
+            }
+
+            return "\nWARNING: The CMR-reported granule coverage may not overlap the requested region.";
+
+        } catch (Exception e) {
+            // safe fallback — do nothing
+            return "";
         }
     }
+
+    private boolean rangesOverlap(double min1, double max1, double min2, double max2) {
+        return max1 >= min2 && max2 >= min1;
+    }
+    private Bounds extractBoundsFromGranule(org.json.JSONObject granule) {
+
+        // Try boxes first
+        org.json.JSONArray boxes = granule.optJSONArray("boxes");
+        if (boxes != null && boxes.length() > 0) {
+            String[] parts = boxes.get(0).toString().trim().split("[,\\s]+");
+            if (parts.length >= 4) {
+                double south = Double.parseDouble(parts[0]);
+                double west = Double.parseDouble(parts[1]);
+                double north = Double.parseDouble(parts[2]);
+                double east = Double.parseDouble(parts[3]);
+                return new Bounds(south, north, west, east);
+            }
+        }
+
+        // Fallback to polygons (robust parsing)
+        org.json.JSONArray polygons = granule.optJSONArray("polygons");
+        if (polygons == null || polygons.length() == 0) {
+            return null;
+        }
+
+        String text = polygons.getJSONArray(0).getString(0);
+        String[] coords = text.trim().split("[,\\s]+");
+
+        Bounds lonLat = computeBounds(coords, true);
+        Bounds latLon = computeBounds(coords, false);
+
+        boolean lonLatValid = isValid(lonLat);
+        boolean latLonValid = isValid(latLon);
+
+        if (latLonValid && !lonLatValid) return latLon;
+        if (lonLatValid && !latLonValid) return lonLat;
+
+        return latLon; // safe default for PACE
+    }
+
+    private Bounds computeBounds(String[] coords, boolean lonLatOrder) {
+        double minLat = Double.POSITIVE_INFINITY;
+        double maxLat = Double.NEGATIVE_INFINITY;
+        double minLon = Double.POSITIVE_INFINITY;
+        double maxLon = Double.NEGATIVE_INFINITY;
+
+        for (int i = 0; i < coords.length; i += 2) {
+            double a = Double.parseDouble(coords[i]);
+            double b = Double.parseDouble(coords[i + 1]);
+
+            double lon = lonLatOrder ? a : b;
+            double lat = lonLatOrder ? b : a;
+
+            minLat = Math.min(minLat, lat);
+            maxLat = Math.max(maxLat, lat);
+            minLon = Math.min(minLon, lon);
+            maxLon = Math.max(maxLon, lon);
+        }
+
+        return new Bounds(minLat, maxLat, minLon, maxLon);
+    }
+
+    private boolean isValid(Bounds b) {
+        return b.minLat >= -90 && b.maxLat <= 90 &&
+                b.minLon >= -180 && b.maxLon <= 180;
+    }
+
+    private static class Bounds {
+        double minLat, maxLat, minLon, maxLon;
+
+        Bounds(double minLat, double maxLat, double minLon, double maxLon) {
+            this.minLat = minLat;
+            this.maxLat = maxLat;
+            this.minLon = minLon;
+            this.maxLon = maxLon;
+        }
+    }
+
+    private org.json.JSONObject findExactGranuleMatch(org.json.JSONArray entries, String fileName, String dataUrl) {
+        String normalizedTarget = normalizeGranuleName(fileName);
+
+        java.util.List<org.json.JSONObject> exactMatches = new java.util.ArrayList<>();
+
+        for (int i = 0; i < entries.length(); i++) {
+            org.json.JSONObject g = entries.getJSONObject(i);
+
+            String producerGranuleId = g.optString("producer_granule_id", "");
+            String title = g.optString("title", "");
+
+            boolean matched = false;
+
+            if (normalizedTarget.equals(normalizeGranuleName(producerGranuleId))) {
+                matched = true;
+            } else if (normalizedTarget.equals(normalizeGranuleName(title))) {
+                matched = true;
+            } else if (entryHasMatchingLink(g, normalizedTarget)) {
+                matched = true;
+            }
+
+            System.out.println("CMR candidate " + i
+                    + ": id=" + g.optString("id", "")
+                    + ", title=" + title
+                    + ", producer_granule_id=" + producerGranuleId
+                    + ", matched=" + matched);
+
+            if (matched) {
+                exactMatches.add(g);
+            }
+        }
+
+        if (exactMatches.isEmpty()) {
+            return null;
+        }
+
+        if (exactMatches.size() == 1) {
+            return exactMatches.get(0);
+        }
+
+        // Prefer exact match on producer_granule_id first
+        for (org.json.JSONObject g : exactMatches) {
+            String producerGranuleId = g.optString("producer_granule_id", "");
+            if (normalizedTarget.equals(normalizeGranuleName(producerGranuleId))) {
+                return g;
+            }
+        }
+
+        // Prefer exact match on title next
+        for (org.json.JSONObject g : exactMatches) {
+            String title = g.optString("title", "");
+            if (normalizedTarget.equals(normalizeGranuleName(title))) {
+                return g;
+            }
+        }
+
+        // Still ambiguous -> return null instead of guessing
+        System.err.println("Multiple exact CMR matches found for file: " + fileNameFromUrl(dataUrl));
+        return null;
+    }
+
+    private boolean entryHasMatchingLink(org.json.JSONObject granule, String normalizedTarget) {
+        org.json.JSONArray links = granule.optJSONArray("links");
+        if (links == null) {
+            return false;
+        }
+
+        for (int i = 0; i < links.length(); i++) {
+            org.json.JSONObject link = links.optJSONObject(i);
+            if (link == null) {
+                continue;
+            }
+
+            String href = link.optString("href", "");
+            String linkFileName = extractFileNameFromHref(href);
+
+            if (normalizedTarget.equals(normalizeGranuleName(linkFileName))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String extractFileNameFromHref(String href) {
+        if (href == null || href.isEmpty()) {
+            return "";
+        }
+
+        try {
+            String path = new java.net.URL(href).getPath();
+            int slash = path.lastIndexOf('/');
+            return slash >= 0 ? path.substring(slash + 1) : path;
+        } catch (Exception e) {
+            int slash = href.lastIndexOf('/');
+            return slash >= 0 ? href.substring(slash + 1) : href;
+        }
+    }
+
+    private String fileNameFromUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return "";
+        }
+        int slash = url.lastIndexOf('/');
+        return slash >= 0 ? url.substring(slash + 1) : url;
+    }
+
+    private String normalizeGranuleName(String s) {
+        if (s == null) {
+            return "";
+        }
+
+        String value = s.trim();
+
+        int queryIdx = value.indexOf('?');
+        if (queryIdx >= 0) {
+            value = value.substring(0, queryIdx);
+        }
+
+        int slash = value.lastIndexOf('/');
+        if (slash >= 0) {
+            value = value.substring(slash + 1);
+        }
+
+        return value.trim().toLowerCase(java.util.Locale.ROOT);
+    }
+
+    private void flattenJsonArray(org.json.JSONArray array, StringBuilder sb) {
+        for (int i = 0; i < array.length(); i++) {
+            Object item = array.get(i);
+            if (item instanceof org.json.JSONArray) {
+                flattenJsonArray((org.json.JSONArray) item, sb);
+            } else {
+                if (sb.length() > 0) {
+                    sb.append(' ');
+                }
+                sb.append(item.toString());
+            }
+        }
+    }
+
 
     protected AbstractButton getHelpButton() {
         if (helpId != null) {
@@ -731,113 +1641,21 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
     public void updateStatus(String message) {
         SwingUtilities.invokeLater(() -> {
-            statusArea.setText(message);
-            statusArea.setCaretPosition(0);
-        });
-    }
-
-    public void subsetCompleted(boolean success, String message) {
-        SwingUtilities.invokeLater(() -> {
-            subsetButton.setEnabled(true);
-            cancelButton.setEnabled(true);
-            
-            if (success) {
-                progressBar.setString("Subset completed successfully");
-                JOptionPane.showMessageDialog(this, "Subset request completed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                progressBar.setString("Subset failed");
-                JOptionPane.showMessageDialog(this, "Subset request failed: " + message, "Error", JOptionPane.ERROR_MESSAGE);
+            if (statusArea != null) {
+                statusArea.setText(message);
+                statusArea.setCaretPosition(0);
             }
         });
     }
 
-    // Extract collection ID from file URL using regex
-    public static String extractCollectionIdFromUrl(String fileUrl) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(C\\d{6,}-[A-Z_]+)");
-        java.util.regex.Matcher matcher = pattern.matcher(fileUrl);
-        if (matcher.find()) {
-            String collectionId = matcher.group(1);
-            // Only accept OB_CLOUD collections, reject OB_DAAC
-            if (collectionId.endsWith("-OB_CLOUD")) {
-                System.out.println("Found valid OB_CLOUD collection: " + collectionId);
-                return collectionId;
-            } else if (collectionId.endsWith("-OB_DAAC")) {
-                System.out.println("Rejecting OB_DAAC collection: " + collectionId + " (should be OB_CLOUD)");
-                return null;
-            } else {
-                System.out.println("Found collection with unknown provider: " + collectionId);
-                return null;
-            }
-        }
-        return null; // or a default/fallback
+    public CmrGranuleMetadataFetcher.GranuleMeta getMeta() {
+        return meta;
     }
 
-    // Get collection concept ID from CMR using short name
-    public static String getConceptId(String shortName) throws IOException {
-        String urlString = "https://cmr.earthdata.nasa.gov/search/collections.json?short_name=" + shortName;
-        java.net.URL url = new java.net.URL(urlString);
-        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-
-        java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+    public void setMeta(CmrGranuleMetadataFetcher.GranuleMeta meta) {
+        this.meta = meta;
+        if (selectedFileUrl != null) {
+            fetchFileMetadata();
         }
-        in.close();
-
-        org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-        org.json.JSONArray items = jsonResponse.getJSONObject("feed").getJSONArray("entry");
-
-        if (items.length() > 0) {
-            return items.getJSONObject(0).getString("id");
-        }
-        return null;
     }
-
-    // Fetch collection ID from CMR using the file name (granule name) and concept ID if available
-    public static String fetchCollectionIdFromCMR(String fileName, String conceptId) {
-        String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName + "&provider=OB_CLOUD";
-        if (conceptId != null) {
-            cmrUrl += "&concept_id=" + conceptId;
-        }
-        System.out.println("CMR granule lookup URL: " + cmrUrl);
-        try {
-            java.net.URL url = new java.net.URL(cmrUrl);
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-
-            int status = conn.getResponseCode();
-            if (status == 200) {
-                java.io.InputStream is = conn.getInputStream();
-                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                String response = s.hasNext() ? s.next() : "";
-                org.json.JSONObject json = new org.json.JSONObject(response);
-                org.json.JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
-                if (entries.length() > 0) {
-                    return entries.getJSONObject(0).getString("collection_concept_id");
-                }
-            } else {
-                System.err.println("CMR request failed with status: " + status);
-                // Try to read error response
-                try {
-                    java.io.InputStream is = conn.getErrorStream();
-                    if (is != null) {
-                        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                        String errorResponse = s.hasNext() ? s.next() : "";
-                        System.err.println("CMR error response: " + errorResponse);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Could not read CMR error response: " + e.getMessage());
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Error fetching collection ID from CMR: " + e.getMessage());
-        }
-        return null;
-    }
-} 
+}

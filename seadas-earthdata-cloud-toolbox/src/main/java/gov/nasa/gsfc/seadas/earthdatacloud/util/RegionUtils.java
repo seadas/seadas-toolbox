@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.util;
 
 import com.bc.ceres.core.ProgressMonitor;
+import org.checkerframework.checker.units.qual.A;
 import org.esa.snap.core.util.ResourceInstaller;
 import org.esa.snap.core.util.SystemUtils;
 
@@ -17,7 +18,7 @@ public class RegionUtils {
     private static String MINUTES_SYMBOL_STRING_REPLACEMENT = "_MINUTES_SYMBOL_REPLACEMENT_UNIQUE_IDENTIFIER_";
     private static String SECONDS_SYMBOL_STRING_REPLACEMENT = "_SECONDS_SYMBOL_REPLACEMENT_UNIQUE_IDENTIFIER_";
 
-    public static ArrayList<RegionsInfo> getAuxDataRegions(String REGIONS_FILE, boolean replaceExisting) {
+    public static ArrayList<RegionsInfo> getAuxDataRegions(String REGIONS_FILE, boolean replaceExisting, boolean categorize) {
 
         String REGIONS = "regions";
 
@@ -55,20 +56,40 @@ public class RegionUtils {
                 RegionsInfo selectInfo = new RegionsInfo("Select", RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
                 regionsInfos.add(selectInfo);
 
-                String line;
-                while ((line = br.readLine()) != null) {
+
+                ArrayList<String> arrayList = new ArrayList<String>();
+
+                String lineTmp;
+
+                while ((lineTmp = br.readLine()) != null) {
+                    lineTmp = lineTmp.trim();
+                    if (lineTmp.length() == 0 ||  lineTmp.startsWith("#")) {
+                        continue;
+                    }
+
+                    arrayList.add(lineTmp);
+                }
+
+                if (!categorize) {
+                    arrayList.sort(null);
+                }
+
+
+                for (String line : arrayList) {
 
                     line = line.trim();
                     if (line.length() == 0 ||  line.startsWith("#")) {
                         continue;
                     }
                     if (line.startsWith("--") && line.endsWith("--")) {
-                        if (line.contains("BLANK")) {
-                            RegionsInfo sectionInfo = new RegionsInfo("", RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
-                            regionsInfos.add(sectionInfo);
-                        } else {
-                            RegionsInfo sectionInfo = new RegionsInfo(line, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
-                            regionsInfos.add(sectionInfo);
+                        if (categorize) {
+                            if (line.contains("BLANK")) {
+                                RegionsInfo sectionInfo = new RegionsInfo("", RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
+                                regionsInfos.add(sectionInfo);
+                            } else {
+                                RegionsInfo sectionInfo = new RegionsInfo(line, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY, RegionsInfo.SPECIAL_ENTRY);
+                                regionsInfos.add(sectionInfo);
+                            }
                         }
                     } else {
                         String[] lineSplitOnEqualsSignArray = line.split("=");

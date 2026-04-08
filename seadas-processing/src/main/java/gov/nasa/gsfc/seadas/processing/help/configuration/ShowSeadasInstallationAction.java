@@ -28,18 +28,18 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeaDASInstallationAction")
-@ActionRegistration(
-        displayName = "#CTL_ShowSeaDASInstallationAction_MenuText",
-        popupText = "#CTL_ShowSeaDASInstallationAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS/Configuration",
-        position = 20
-)
-@NbBundle.Messages({
-        "CTL_ShowSeaDASInstallationAction_MenuText=Installation",
-        "CTL_ShowSeaDASInstallationAction_ShortDescription=Browse the SeaDAS installation web page"
-})
+//@ActionID(category = "Help", id = "ShowSeaDASInstallationAction")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowSeaDASInstallationAction_MenuText",
+//        popupText = "#CTL_ShowSeaDASInstallationAction_MenuText")
+//@ActionReference(
+//        path = "Menu/Help/SeaDAS/Configuration",
+//        position = 20
+//)
+//@NbBundle.Messages({
+//        "CTL_ShowSeaDASInstallationAction_MenuText=Installation",
+//        "CTL_ShowSeaDASInstallationAction_ShortDescription=Browse the SeaDAS installation web page"
+//})
 public class ShowSeadasInstallationAction extends AbstractAction {
 
     private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/downloads/";

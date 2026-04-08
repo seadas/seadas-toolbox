@@ -1,9 +1,224 @@
 #! CAUTION - DO NOT EDIT - THIS FILE GETS OVERWRITTEN - TO ADD CUSTOM USER REGIONS USE THE FILE: user_regions.txt
 
+# These boundaries are very slightly larger than official boundaries
+# which helps give context to surrounding features.
+# Some of the regions are based on boundaries established in:
+# https://legacy.iho.int/mtg_docs/com_wg/S-23WG/S-23WG_Misc/Draft_2002/Draft_2002.htm
+
+
 -- BLANK --
--- (BETA) Under Construction --
-Black Sea = 46.68 40.85 27.40 41.83
-Mediterranean Sea = 44.55 30.11 -5.49 36.37
+-- Seas --
+Adriatic Sea = 46.0 38.0 11.0 21.0
+Aegean Sea = 41.5 34.5 22.0 29.5
+Alboran Sea = 37.25 34.75 -6.0 -0.5
+Andaman Sea = 17.0 4.0 92.0 100.0
+Arabian Sea = 28.0 -2.0 49.0 76.0
+Arafura Sea = -7.0 -18.0 130.0 143.0
+Argentine Sea = -33.74 -55.46 -69.26 -53.24
+Aru Sea = -2.78 -9.89 130.62 141.58
+Balearic Sea = 42.25 38.5 -1.0 5.0
+Bali Sea = -6.70 -9.11 114.09 117.08
+Baltic Sea = 67.0 52.0 8.0 32.0
+Banda Sea = -0.22 -9.18 120.82 133.56
+Barents Sea = 82.27 65.8 11.15 69.64
+Beaufort Sea = 76.94 67.81 -157.82 -119.72
+Bering Sea = 66.0 51.0 161.0 -158.0
+Bismarck Sea = 0.0 -7.0 140.0 154.0
+Black Sea = 48.0 40.0 27.0 43.0
+Bohai Sea = 41.0 36.5 117.0 123.0
+Caribbean Sea = 23.78 6.88 -90.52 -58.33
+Caspian Sea = 47.43 36.10 46.46 55.38
+Celebes Sea = 8.55 0.18 116.85 125.90
+Celtic Sea = 52.92 46.30 -11.50 -2.34
+Ceram Sea = -0.99 -5.74 125.69 133.92
+Chukchi Sea = 72.0 65.53 -180.0 -155.3
+Coral Sea = -7.0 -31.0 140.0 172.0
+East China Sea = 34.0 23.0 121.0 133.0
+East Siberian Sea = 79.71 68.29 137.56 180.0
+Flores Sea = -5.10 -9.15 116.50 123.53
+Greenland Sea = 84.35 69.43 -35.37 17.63
+Halmahera Sea = 2.70 -1.87 127.32 131.47
+Iceland Sea = 74.10 60.8 -29.94 -5.54
+Inner Seas West Scotland = 58.73 54.23 -8.69 -4.36
+Ionian Sea = 40.5 35.0 14.0 24.0
+Irish Sea = 55.16 51.52 -6.74 -2.49
+Java Sea = -2.02 -9.25 104.92 120.26
+Kara Sea = 82.32 65.57 52.36 105.77
+Kattegat = 58.0 55.25 9.5 13.5
+Labrador Sea = 61.27 46.40 -65.53 -42.70
+Lakshadweep Sea = 16.0 -2.0 71.0 82.0
+Laptev Sea = 82.06 69.57 93.97 143.76
+Ligurian Sea = 45.0 42.0 7.0 11.5
+Lincoln Sea = 83.81 80.69 -70.86 -41.96
+Mediterranean Sea = 47.0 29.0 -8.0 38.0
+Molucca Sea = 4.70 -2.65 121.58 128.93
+Natuna Sea = 4.95 -3.40 102.62 110.83
+North Sea = 61.42 50.16 -5.08 9.64
+Norwegian Sea = 79.47 59.31 10.01 27.88
+Philippine Sea = 37.0 0.0 118.0 150.0
+Red Sea = 30.5 10.0 30.0 45.0
+Sargasso Sea = 35.0 20.0 40.0 70.0
+Savu Sea = -8.10 -11.12 119.46 125.37
+Scotia Sea = 52.0 -65.0 -65.0 -25.0
+Sea of Azov = 48.0 44.5 33.0 40.0
+Sea of Japan = 47.0 34.0 127.0 143.0
+Sea of Marmara = 41.5 39.5 25.5 30.5
+Sea of Okhotsk = 63.0 41.0 135.0 166.0
+Skagerrak = 60.15 53.72 5.42 13.70
+Solomon Sea = -3.0 -13.0 146.0 163.0
+South China Sea = 25.47 -0.07 102.02 122.59
+Sulu Sea = 13.95 4.42 116.52 123.87
+Tasman Sea = -27.0 -54.0 143.0 179.0
+Timor Sea = -7.0 -16.0 122.0 133.0
+Tyrrhenian Sea = 43.5 36.5 8.0 17.0
+White Sea = 69.26 63.20 31.25 46.87
+Yellow Sea = 41.0 31.0 117.0 128.0
+
+
+
+-- BLANK --
+-- Bays --
+Baffin Bay = 82.83 69.07 -81.23 -49.11
+Bay of Bengal = 23.0 4.0 78.0 97.0
+Bay of Biscay = 48.99 42.60 -9.51 -0.17
+Bay of Fundy = 46.23 43.07 -68.71 -63.22
+Chesapeake Bay = 39.6 35.9 -77.5 -74.3
+Delaware Bay = 40.0 38.55 -75.76 -74.55
+Hudson Bay = 67.13 50.36 -95.37 -75.97
+Korea Bay = 41.0 37.0 120.0 127.0
+Palk Bay = 11.0 8.0 78.0 81.0
+
+
+
+-- BLANK --
+-- Gulfs --
+Gulf of Aden = 18.0 8.0 40.0 68.0
+Gulf of Alaska = 62.0 53.0 -65.0 -135.0
+Gulf of America = 31.42 17.28 -98.75 -79.77
+Gulf of Aqaba = 30.0 27.0 33.5 35.5
+Gulf of Berau = -1.69 -3.16 131.44 134.33
+Gulf Of Bone = -1.92 -6.41 119.42 122.86
+Gulf of Bothnia = 66.0 59.0 16.0 27.0
+Gulf of California = 32.0 22.0 -116.0 -106.0
+Gulf of Carpentaria = -10.0 -18.0 134.5 143.0
+Gulf of Finland = 61.0 58.0 21.0 31.0
+Gulf of Guinea = 7.57 -1.70 -9.33 12.00
+Gulf of Maine = 46.0 40.0 -71.35 -63.87
+Gulf of Mannar = 10.0 5.0 76.0 82.0
+Gulf of Oman = 28.0 20.0 55.0 65.0
+Gulf of Panama = 9.25 7.0 -80.5 -78.0
+Gulf of Papua = -7.0 -10.0 142.0 148.0
+Gulf of Riga = 59.0 56.5 20.0 26.0
+Gulf of St. Lawrence = 52.66 45.05 -71.29 -55.01
+Gulf of Suez = 30.5 27.0 32.0 35.0
+Gulf Of Thailand = 14.20 5.32 98.69 106.33
+Gulf of Tomini = 1.94 -2.00 119.44 125.49
+Gulf Of Tonkin = 22.47 15.95 104.77 111.67
+Joseph Bonaparte Gulf = -12.0 -16.0 126.0 132.0
+Persian Gulf = 33.0 23.0 51.0 60.0
+
+
+-- BLANK --
+-- Lakes --
+Caspian Sea = 47.43 36.10 46.46 55.38
+Great Lakes = 49.22 41.05 -92.56 -75.79
+Lake Erie = 43.04 41.28 -83.68 -78.73
+Lake Huron = 46.24 42.79 -85.04 -81.08
+Lake Michigan = 46.30 41.42 -88.16 -84.48
+Lake Okeechobee = 27.32 26.54 -81.24 -80.42
+Lake Ontario = 44.41 42.95 -80.16 -75.83
+Lake Superior = 49.15 46.02 -92.58 -84.08
+Lake Titicaca = -14.78 -17.14 -70.45 -68.19
+
+
+-- BLANK --
+-- Straits/Channels/Passages --
+Bass Strait = -37.5 -44.0 143.0 150.5
+Bristol Channel = 52.12 49.94 -5.82 -2.05
+Bering Strait = 66.5 64.0 -174.0 -165.0
+Davis Strait = 70.83 59.17 -69.20 -46.49
+Drake Passage = -54.0 -65.0 -75.0 -53.0
+English Channel = 51.60 47.66 -6.16 2.12
+Hudson Strait = 65.38 57.48 -83.44 -64.04
+Makasar Strait = 1.63 -6.59 115.31 121.10
+Malacca Strait = 9.72 -0.01 95.03 104.37
+Northwestern Passages = 82.66 65.79 -129.37 -74.86
+Singapore Strait = 1.57 0.89 103.21 104.70
+Straits of Florida = 28.67 21.95 -83.70 -77.85
+Sumba Strait = -8.03 -9.70 118.25 120.44
+Sunda Strait = -5.24 -7.16 104.27 106.19
+Taiwan Strait = 26.0 21.5 116.5 122.0
+Torres Strait = -8.0 -12.0 141.0 145.0
+
+
+
+-- BLANK --
+-- Bights --
+Great Australian Bight = -31.0 -36.0 123.0 137.0
+Georgia Bight = 34.0 28.0 -82.0 -77.0
+South Atlantic Bight = 35.75 25.0 -82.0 -75.0
+
+
+
+
+-- BLANK --
+-- Estuaries/Sounds --
+Pamlico Sound = 36.73 34.43 -77.30 -75.30
+Rio de la Plata = -32.66 -37.75 -59.22 -53.21
+
+
+-- BLANK --
+-- Reefs --
+Great Barrier Reef = -10.0 -25.0 142.0 154.0
+
+
+
+-- BLANK --
+-- Southern Seas (Antarctica) --
+Amundsen Sea      = -72.0 -76.0 -126.25 -100.0
+Bellingshausen Sea = -65.0 -74.0 -104.0 -65.0
+Cooperation Sea   = -65.0 -73.0 53.8 81.75
+Cosmonauts Sea    = -65.0 -73.0 33.75 53.8
+Davis Sea         = -65.0 -73.0 88.0 95.58
+Drake Passage = -54.0 -65.0 -72.0 -53.0
+Dumont d'Urville Sea = -64.0 -73.0 113.2 146.84
+Lazarev Sea       = -65.0 -73.0 0.0 14.0
+Mawson Sea        = -65.0 -73.0 95.58 113.2
+Riiser-Larsen Sea = -65.0 -73.0 14.0 33.75
+Ross Sea          = -71.0 -80.0 160.0 -157.0
+Somov Sea         = -65.0 -73.0 146.84 172.0
+Tryoshnikova Gulf = -65.0 -73.0 88.0 95.58
+Weddell Sea       = -62.0 -80.0 -70.0 -8.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

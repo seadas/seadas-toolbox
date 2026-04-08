@@ -338,7 +338,7 @@ public class ImagePreviewHelper {
         }
     }
 
-    private void hideImagePreview() {
+    public void hideImagePreview() {
         previewWindow.setVisible(false);
         currentImageUrl = null;
     }

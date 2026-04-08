@@ -29,18 +29,18 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeaDASPresentationsAction")
-@ActionRegistration(
-        displayName = "#CTL_ShowSeaDASPresentationsAction_MenuText",
-        popupText = "#CTL_ShowSeaDASPresentationsAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS",
-        position = 40
-)
-@NbBundle.Messages({
-        "CTL_ShowSeaDASPresentationsAction_MenuText=Presentations",
-        "CTL_ShowSeaDASPresentationsAction_ShortDescription=Browse the SeaDAS presentations web page"
-})
+//@ActionID(category = "Help", id = "ShowSeaDASPresentationsAction")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowSeaDASPresentationsAction_MenuText",
+//        popupText = "#CTL_ShowSeaDASPresentationsAction_MenuText")
+//@ActionReference(
+//        path = "Menu/Help/SeaDAS",
+//        position = 40
+//)
+//@NbBundle.Messages({
+//        "CTL_ShowSeaDASPresentationsAction_MenuText=Presentations",
+//        "CTL_ShowSeaDASPresentationsAction_ShortDescription=Browse the SeaDAS presentations web page"
+//})
 public class ShowSeadasPresentationsPageAction extends AbstractAction {
 
     private static final String DEFAULT_PAGE_URL = "https://seadas.gsfc.nasa.gov/tutorials/presentations/";

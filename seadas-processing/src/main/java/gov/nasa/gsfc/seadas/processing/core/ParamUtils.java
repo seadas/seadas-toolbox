@@ -2,6 +2,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
+import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_ExtractorsController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L2binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3binController;
 import gov.nasa.gsfc.seadas.processing.preferences.OCSSW_L3mapgenController;
@@ -382,6 +383,29 @@ public class ParamUtils {
                         addValidValueToParamInfo(OCSSW_L3mapgenController.getPreferenceFAV5Projection(),
                                 OCSSW_L3mapgenController.getPreferenceFAV5ProjectionDescription(),
                                 paramInfo);
+                }
+            }
+
+
+
+            if (paramXmlFileName.contains("lonlat2pixline")) {
+                switch (optionName) {
+                    case "East (NElon)":
+                        setParamInfoPreference(paramInfo, OCSSW_ExtractorsController.getPreferenceEast(), false, true);
+                        setParamInfoToolTip(paramInfo, "Tooltip");
+                        break;
+                    case "North (NElat)":
+                        setParamInfoPreference(paramInfo, OCSSW_ExtractorsController.getPreferenceNorth(), false, true);
+                        setParamInfoToolTip(paramInfo, "Tooltip");
+                        break;
+                    case "West (SWlon)":
+                        setParamInfoPreference(paramInfo, OCSSW_ExtractorsController.getPreferenceWest(), false, true);
+                        setParamInfoToolTip(paramInfo, "Tooltip");
+                        break;
+                    case "South (SWlat)":
+                        setParamInfoPreference(paramInfo, OCSSW_ExtractorsController.getPreferenceSouth(), false, true);
+                        setParamInfoToolTip(paramInfo, "Tooltip");
+                        break;
                 }
             }
 

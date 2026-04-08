@@ -6,10 +6,25 @@
 #     These entries will directly populate the 'North', 'South', 'West', and 'East' fields.
 #  Format: (coordinates can be space and/or comma delimited)
 #  Name = North  South  West  East
+#  Example with standard notation:
+#    Chesapeake Bay = 39°36′00″N, 35°54′00″N, 77°30′00″W, 74°18′00″W
+#  Example with decimal notation:
+#    Chesapeake Bay = 39.6 35.9 -77.5 -74.3
+#
+#  Optionally, a single point can also be used which would then be used in conjunction with the 'Box Size'
+#  Format: (coordinates can be space and/or comma delimited)
+#  Name = Lat Lon
+#  Example with standard notation:
+#    Chesapeake Bay = 37°48′00″N, 76°6′00″W
+#  Examples with decimal notation:
+#    Chesapeake Bay = 37.8°N, 76.1°W
+#    Chesapeake Bay = 37.8, 76.1
 #--------------------------------------------------------------------------------------
 
 My Sample Region = 39°36′00″N, 35°54′00″N, 77°30′00″E, 74°18′00″E
 My Sample Region (Decimal) = 39.6°N, 35.9°N, 77.5°E, 74.3°E
+
+
 
 
 

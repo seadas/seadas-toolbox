@@ -48,7 +48,7 @@ import static gov.nasa.gsfc.seadas.earthdatacloud.preferences.Preference_Utils.*
         keywords = "#Options_Keywords_Earthdata_Cloud",
         keywordsCategory = "General Tools",
         id = "Earthdata_Cloud_preferences",
-        position = 7)
+        position = 2)
 
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_Earthdata_Cloud=Earthdata Cloud",
@@ -91,28 +91,38 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
     public static final String PROPERTY_MINLAT_LABEL = "South";
-    public static final String PROPERTY_MINLAT_TOOLTIP = "<html>Southernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLAT_TOOLTIP = "<html>Southernmost latitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLAT_SUBSET_TOOLTIP = "<html>Southernmost latitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MINLAT_DEFAULT = "";
 
     public static final String PROPERTY_MAXLAT_KEY = PROPERTY_ROOT_KEY + ".maxlat";
     public static final String PROPERTY_MAXLAT_LABEL = "North";
-    public static final String PROPERTY_MAXLAT_TOOLTIP = "<html>Northernmost latitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLAT_TOOLTIP = "<html>Northernmost latitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLAT_SUBSET_TOOLTIP = "<html>Northernmost latitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MAXLAT_DEFAULT = "";
 
     public static final String PROPERTY_MINLON_KEY = PROPERTY_ROOT_KEY + ".minlon";
     public static final String PROPERTY_MINLON_LABEL = "West";
-    public static final String PROPERTY_MINLON_TOOLTIP = "<html>Westernmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLON_TOOLTIP = "<html>Westernmost longitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MINLON_SUBSET_TOOLTIP = "<html>Westernmost longitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MINLON_DEFAULT = "";
 
     public static final String PROPERTY_MAXLON_KEY = PROPERTY_ROOT_KEY + ".maxlon";
     public static final String PROPERTY_MAXLON_LABEL = "East";
-    public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Easternmost longitude relative to requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLON_TOOLTIP = "<html>Easternmost longitude of requested region <br>(used in field 'bounding_box' of API)</html>";
+    public static final String PROPERTY_MAXLON_SUBSET_TOOLTIP = "<html>Easternmost longitude of requested subset <br>(used in field 'subset' of API)</html>";
     public static final String PROPERTY_MAXLON_DEFAULT = "";
 
     public static final String PROPERTY_REGION_KEY = PROPERTY_ROOT_KEY + ".region";
     public static final String PROPERTY_REGION_LABEL = "Region";
     public static final String PROPERTY_REGION_TOOLTIP = "Set region for the 'Region' or 'User Region' selector";
     public static final String PROPERTY_REGION_DEFAULT = "";
+
+    public static final  String PROPERTY_REGION_FILE_TOOLTIP = "<html>Pre-Defined Regions<br>" +
+            "Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt<b>" +
+            "These boundaries are very slightly larger than official boundaries<br>" +
+            "which helps give context to surrounding features.</html>";
+
     
     public static final String PROPERTY_BOX_SIZE_KEY = PROPERTY_ROOT_KEY + ".boxsize";
     public static final String PROPERTY_BOX_SIZE_LABEL = "Box Size";
@@ -121,15 +131,15 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_DEFAULT = "1.0";
 
 
-    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_regions.selector";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.selector";
     public static final String PROPERTY_PRESET_REGIONS_INCLUDE_LABEL = "Include 'Preset Regions' Selector";
     public static final String PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP = "Include 'Preset Regions' selector in GUI";
-    public static final boolean PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT = false;
+    public static final boolean PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT = true;
 
-    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_locations.selector";
+    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_locations.selector";
     public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL = "Include 'Preset Locations' Selector";
     public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP = "Include 'Preset Locations' selector in GUI";
-    public static final boolean PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT = true;
+    public static final boolean PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT = false;
 
 
     public static final String PROPERTY_USER_REGION_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".user_regions.selector";
@@ -142,6 +152,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_USER_LOCATIONS_INCLUDE_LABEL = "Include 'User Locations' Selector";
     public static final String PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP = "Include 'User Locations' selector in GUI";
     public static final boolean PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT = false;
+
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.categorize";
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL = "Categorize 'Preset Regions' Selector";
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_TOOLTIP = "Categorizes 'Preset Regions' selector in GUI (otherwise uses a sorted region list)";
+    public static final boolean PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT = true;
 
 
 
@@ -228,10 +243,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
         maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
-//        initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
+//        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY, PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT);
+//        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
@@ -502,26 +518,31 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_REGION_TOOLTIP)
         String regionDefault = PROPERTY_REGION_DEFAULT;
 
-//
-//        @Preference(key = PROPERTY_PRESET_REGIONS_INCLUDE_KEY,
-//                label = PROPERTY_PRESET_REGIONS_INCLUDE_LABEL,
-//                description = PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP)
-//        boolean presetRegionsIncludeDefault = PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT;
 
-        @Preference(key = PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY,
-                label = PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL,
-                description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
-        boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
+        @Preference(key = PROPERTY_PRESET_REGIONS_INCLUDE_KEY,
+                label = PROPERTY_PRESET_REGIONS_INCLUDE_LABEL,
+                description = PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP)
+        boolean presetRegionsIncludeDefault = PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT;
+
+//        @Preference(key = PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY,
+//                label = PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL,
+//                description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
+//        boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
 
         @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
                 label = PROPERTY_USER_REGION_INCLUDE_LABEL,
                 description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
         boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
 
-        @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
-                label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
-                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
-        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
+//        @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
+//                label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
+//                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
+//        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
+
+        @Preference(key = PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY,
+                label = PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL,
+                description = PROPERTY_PRESET_REGIONS_CATEGORIZE_TOOLTIP)
+        boolean presetRegionsCategorizeDefault = PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT;
 
         
         @Preference(key = PROPERTY_BOX_SIZE_KEY,
@@ -658,7 +679,13 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         return preferences.getPropertyBool(PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
     }
 
-    
+
+    public static boolean getPreferencePresetRegionsCategorize() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY, PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT);
+    }
+
+
     public static String getPreferenceBoxSize() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);

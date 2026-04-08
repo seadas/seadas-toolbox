@@ -30,17 +30,17 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowDateAccessDirectAction")
-@ActionRegistration(
-        displayName = "#CTL_ShowDateAccessDirectAction_MenuText",
-        popupText = "#CTL_ShowDateAccessDirectAction_MenuText")
-@ActionReference(
-        path = "Menu/Help/SeaDAS/Data Access",
-        position = 10)
-@NbBundle.Messages({
-        "CTL_ShowDateAccessDirectAction_MenuText=Direct Access",
-        "CTL_ShowDateAccessDirectAction_ShortDescription=Browse the NASA ocean color direct data access web page"
-})
+//@ActionID(category = "Help", id = "ShowDateAccessDirectAction")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowDateAccessDirectAction_MenuText",
+//        popupText = "#CTL_ShowDateAccessDirectAction_MenuText")
+//@ActionReference(
+//        path = "Menu/Help/SeaDAS/Data Access",
+//        position = 10)
+//@NbBundle.Messages({
+//        "CTL_ShowDateAccessDirectAction_MenuText=Direct Access",
+//        "CTL_ShowDateAccessDirectAction_ShortDescription=Browse the NASA ocean color direct data access web page"
+//})
 public class ShowDataAccessDirectAction extends AbstractAction {
 
     private static final String DEFAULT_PAGE_URL = "https://oceandata.sci.gsfc.nasa.gov/";

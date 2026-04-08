@@ -1,0 +1,266 @@
+#! CAUTION - DO NOT EDIT - THIS FILE GETS OVERWRITTEN - TO ADD CUSTOM USER REGIONS USE THE FILE: user regions.txt
+
+# These boundaries are very slightly larger than official boundaries
+# which helps give context to surrounding features.
+# Some of the regions are based on boundaries established in:
+# https://legacy.iho.int/mtg docs/com wg/S-23WG/S-23WG Misc/Draft 2002/Draft 2002.htm
+
+-- BLANK --
+-- (BETA Version) Under Construction --
+
+-- BLANK --
+
+
+
+
+
+
+-- IHO chapter 1 North Atlantic --
+# 1.00 North Atlantic = 72.31 -1.69 -100.68 15.72
+Skagerrak = 60.15 53.72 5.42 13.70
+North Sea = 61.42 50.16 -5.08 9.64
+Inner Seas West Scotland = 58.73 54.23 -8.69 -4.36
+Irish Sea = 55.16 51.52 -6.74 -2.49
+Bristol Channel = 52.12 49.94 -5.82 -2.05
+Celtic Sea = 52.92 46.30 -11.50 -2.34
+English Channel = 51.60 47.66 -6.16 2.12
+Bay of Biscay = 48.99 42.60 -9.51 -0.17
+Gulf of Guinea = 7.57 -1.70 -9.33 12.00
+Caribbean Sea = 23.78 6.88 -90.52 -58.33
+Gulf of America = 31.42 17.28 -98.75 -79.77
+Straits of Florida = 28.67 21.95 -83.70 -77.85
+Bay of Fundy = 46.23 43.07 -68.71 -63.22
+Gulf of St. Lawrence = 52.66 45.05 -71.29 -55.01
+Labrador Sea = 61.27 46.40 -65.53 -42.70
+
+
+
+-- IHO chapter 2 Baltic Sea --
+Baltic Sea = 67.0 52.0 8.0 32.0
+Gulf of Bothnia = 66.0 59.0 16.0 27.0
+Gulf of Finland = 61.0 58.0 21.0 31.0
+Gulf of Riga = 59.0 56.5 20.0 26.0
+Kattegat = 58.0 55.25 9.5 13.5
+
+
+-- IHO chapter 3 Mediterranean  --
+Mediterranean Sea = 47.0 29.0 -8.0 38.0
+Alboran Sea = 37.25 34.75 -6.0 -0.5
+Balearic Sea = 42.25 38.5 -1.0 5.0
+Ligurian Sea = 45.0 42.0 7.0 11.5
+Tyrrhenian Sea = 43.5 36.5 8.0 17.0
+Adriatic Sea = 46.0 38.0 11.0 21.0
+Ionian Sea = 40.5 35.0 14.0 24.0
+Aegean Sea = 41.5 34.5 22.0 29.5
+Sea of Marmara = 41.5 39.5 25.5 30.5
+Sea of Azov = 48.0 44.5 33.0 40.0
+Black Sea = 48.0 40.0 27.0 43.0
+
+
+
+
+
+
+
+
+-- IHO chapter 4 South Atlantic --
+Rio de la Plata = -32.66 -37.75 -59.22 -53.21
+Scotia Sea = 52.0 -65.0 -65.0 -25.0
+Drake Passage = -54.0 -65.0 -72.0 -53.0
+
+
+
+-- IHO chapter 5 Indian Ocean --
+Gulf of Suez = 30.5 27.0 32.0 35.0
+Gulf of Aqaba = 30.0 27.0 33.5 35.5
+Red Sea = 30.5 10.0 30.0 45.0
+Gulf of Aden = 18.0 8.0 40.0 68.0
+Persian Gulf = 33.0 23.0 51.0 60.0
+Gulf of Oman = 28.0 20.0 55.0 65.0
+Arabian Sea = 28.0 -2.0 49.0 76.0
+Lakshadweep Sea = 16.0 -2.0 71.0 82.0
+Gulf of Mannar = 10.0 5.0 76.0 82.0
+Palk Bay = 11.0 8.0 78.0 81.0
+Bay of Bengal = 23.0 4.0 78.0 97.0
+Andaman Sea = 17.0 4.0 92.0 100.0
+Timor Sea = -7.0 -16.0 122.0 133.0
+Joseph Bonaparte Gulf = -12.0 -16.0 126.0 132.0
+Arafura Sea = -7.0 -18.0 130.0 143.0
+Gulf of Carpentaria = -10.0 -18.0 134.5 143.0
+Great Australian Bight = -31.0 -36.0 123.0 137.0
+
+
+
+
+
+
+
+
+
+-- -- IHO chapter 6 South East Asia --
+#South China And Eastern Archipelagic Sea = 25.65 -20.58 94.55 145.09
+South China Sea = 25.47 -0.07 102.02 122.59
+Gulf Of Tonkin = 22.47 15.95 104.77 111.67
+Gulf Of Thailand = 14.20 5.32 98.69 106.33
+Natuna Sea = 4.95 -3.40 102.62 110.83
+Malacca Strait = 9.72 -0.01 95.03 104.37
+Singapore Strait = 1.57 0.89 103.21 104.70
+Sunda Strait = -5.24 -7.16 104.27 106.19
+Java Sea = -2.02 -9.25 104.92 120.26
+Makasar Strait = 1.63 -6.59 115.31 121.10
+Bali Sea = -6.70 -9.11 114.09 117.08
+Flores Sea = -5.10 -9.15 116.50 123.53
+Sumba Strait = -8.03 -9.70 118.25 120.44
+Savu Sea = -8.10 -11.12 119.46 125.37
+Aru Sea = -2.78 -9.89 130.62 141.58
+Banda Sea = -0.22 -9.18 120.82 133.56
+Gulf Of Bone = -1.92 -6.41 119.42 122.86
+Ceram Sea = -0.99 -5.74 125.69 133.92
+Gulf of Berau = -1.69 -3.16 131.44 134.33
+Halmahera Sea = 2.70 -1.87 127.32 131.47
+Molucca Sea = 4.70 -2.65 121.58 128.93
+Gulf of Tomini = 1.94 -2.00 119.44 125.49
+Celebes Sea = 8.55 0.18 116.85 125.90
+Sulu Sea = 13.95 4.42 116.52 123.87
+
+
+
+-- IHO chapter 7 North Pacific --
+Philippine Sea = 37.0 0.0 118.0 150.0
+Taiwan Strait = 26.0 21.5 116.5 122.0
+East China Sea = 34.0 23.0 121.0 133.0
+Yellow Sea = 41.0 31.0 117.0 128.0
+Bohai Sea = 41.0 36.5 117.0 123.0
+Korea Bay = 41.0 37.0 120.0 127.0
+Sea of Japan = 47.0 34.0 127.0 143.0
+Sea of Okhotsk = 63.0 41.0 135.0 166.0
+Bering Sea = 66.0 51.0 161.0 -158.0
+Bering Strait = 66.5 64.0 -174.0 -165.0
+Gulf of Alaska = 62.0 53.0 -65.0 -135.0
+Gulf of California = 32.0 22.0 -116.0 -106.0
+Gulf of Panama = 9.25 7.0 -80.5 -78.0
+
+
+-- IHO chapter 8 South Pacific --
+Bismarck Sea = 0.0 -7.0 140.0 154.0
+Solomon Sea = -3.0 -13.0 146.0 163.0
+Coral Sea = -7.0 -31.0 140.0 172.0
+Great Barrier Reef = -10.0 -25.0 142.0 154.0
+Gulf of Papua = -7.0 -10.0 142.0 148.0
+Torres Strait = -8.0 -12.0 141.0 145.0
+Tasman Sea = -27.0 -54.0 143.0 179.0
+Bass Strait = -37.5 -44.0 143.0 150.5
+
+
+
+
+
+
+
+-- BLANK --
+-- -- IHO chapter 9 Arctic Ocean --
+East Siberian Sea = 79.71 68.29 137.56 180.0
+Laptev Sea = 82.06 69.57 93.97 143.76
+Kara Sea = 82.32 65.57 52.36 105.77
+Barents Sea = 82.27 65.8 11.15 69.64
+White Sea = 69.26 63.20 31.25 46.87
+Greenland Sea = 84.35 69.43 -35.37 17.63
+Norwegian Sea = 79.47 59.31 10.01 27.88
+Iceland Sea = 74.10 60.8 -29.94 -5.54
+Davis Strait = 70.83 59.17 -69.20 -46.49
+Hudson Strait = 65.38 57.48 -83.44 -64.04
+Hudson Bay = 67.13 50.36 -95.37 -75.97
+Baffin Bay = 82.83 69.07 -81.23 -49.11
+Lincoln Sea = 83.81 80.69 -70.86 -41.96
+Northwestern Passages = 82.66 65.79 -129.37 -74.86
+Beaufort Sea = 76.94 67.81 -157.82 -119.72
+Chukchi Sea = 72.0 65.53 -180.0 -155.3
+
+
+
+-- BLANK --
+-- -- IHO chapter 10 Southern Ocean --
+Weddell Sea       = -62.0 -80.0 -70.0 -8.0
+Lazarev Sea       = -65.0 -73.0 0.0 14.0
+Riiser-Larsen Sea = -65.0 -73.0 14.0 33.75
+Cosmonauts Sea    = -65.0 -73.0 33.75 53.8
+Cooperation Sea   = -65.0 -73.0 53.8 81.75
+Davis Sea         = -65.0 -73.0 88.0 95.58
+Tryoshnikova Gulf = -65.0 -73.0 88.0 95.58
+Mawson Sea        = -65.0 -73.0 95.58 113.2
+Dumont d'Urville Sea = -64.0 -73.0 113.2 146.84
+Somov Sea         = -65.0 -73.0 146.84 172.0
+Ross Sea          = -71.0 -80.0 160.0 -157.0
+Amundsen Sea      = -72.0 -76.0 -126.25 -100.0
+Bellingshausen Sea = -65.0 -74.0 -104.0 -65.0
+Drake Passage = -54.0 -65.0 -72.0 -53.0
+
+
+
+
+-- Atlantic (Northwest)
+
+Chesapeake Bay = 39.78 36.50 -77.50 -75.37
+Delaware Bay = 40.0 38.55 -75.76 -74.55
+Gulf of Maine = 46.0 40.0 -71.35 -63.87
+Pamlico Sound = 36.73 34.43 -77.30 -75.30
+Sargasso Sea = 35.0 20.0 40.0 70.0
+
+-- Atlantic (Southwest) --
+Argentine Sea = -33.74 -55.46 -69.26 -53.24
+
+#Cape Horn = 55°58′48″S 67°17′21″W
+#Cape São Roque = 5°28′57″S 35°15′41″W
+#Gulf of Panama = 8.08642°N 79.28284°W
+#San Jorge Gulf = 46°04′52″S 66°50′11″W
+#San Matías Gulf = 41°30′S 64°30′W
+
+
+
+
+
+-- BLANK --
+-- Lakes/Inland Water Bodies --
+Great Lakes = 49.22 41.05 -92.56 -75.79
+Lake Erie = 43.04 41.28 -83.68 -78.73
+Lake Huron = 46.24 42.79 -85.04 -81.08
+Lake Michigan = 46.30 41.42 -88.16 -84.48
+Lake Okeechobee = 27.32 26.54 -81.24 -80.42
+Lake Ontario = 44.41 42.95 -80.16 -75.83
+Lake Superior = 49.15 46.02 -92.58 -84.08
+Lake Titicaca = -14.78 -17.14 -70.45 -68.19
+Caspian Sea = 47.43 36.10 46.46 55.38
+# Lake Baikal = 53°30′N 108°0′E
+# Lake Balkhash = 46°10′N 74°20′E
+# Lake Malawi = 12°00′S 34°30′E
+# Lake Tanganyika = 6°06′S 29°30′E
+# Lake Victoria = 1°S 33°E
+
+
+
+-- BLANK --
+-- Other --
+Bristol Channel = 52.12 49.94 -5.82 -2.05
+Drake Passage = -54.0 -65.0 -75.0 -53.0
+English Channel = 51.60 47.66 -6.16 2.12
+Great Barrier Reef = -10.0 -25.0 142.0 154.0
+#!!Sea!! Kattegat = 58.0 55.25 9.5 13.5
+Northwestern Passages = 82.66 65.79 -129.37 -74.86
+Pamlico Sound = 36.73 34.43 -77.30 -75.30
+Rio de la Plata = -32.66 -37.75 -59.22 -53.21
+#!!Sea!! Skagerrak = 60.15 53.72 5.42 13.70
+Great Australian Bight = -31.0 -36.0 123.0 137.0
+Georgia Bight = 34.0 28.0 -82.0 -77.0
+South Atlantic Bight = 35.75 25.0 -82.0 -75.0
+
+
+
+
+
+
+
+
+
+
+
+

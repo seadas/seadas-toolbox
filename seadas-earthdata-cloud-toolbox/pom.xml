@@ -20,6 +20,10 @@
     <description>Provides access to earthdata in the cloud through Harmony services.
     </description>
 
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+    </properties>
+
     <dependencies>
         <!-- SNAP core pieces (all pinned to ${snap.version}) -->
         <dependency>
@@ -165,6 +169,16 @@
                 <version>3.2.5</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>21</release>
+                    <compilerArgs>
+                        <arg>--enable-preview</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 

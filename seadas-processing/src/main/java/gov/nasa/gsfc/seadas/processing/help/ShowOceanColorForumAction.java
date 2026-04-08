@@ -36,7 +36,7 @@ import java.awt.event.ActionEvent;
         position = 30
 )
 @NbBundle.Messages({
-        "CTL_ShowOceanColorForumAction_MenuText=Forum",
+        "CTL_ShowOceanColorForumAction_MenuText=Ocean Color Forum",
         "CTL_ShowOceanColorForumAction_ShortDescription=Browse the SeaDAS/OceanColor forum web page"
 })
 public class ShowOceanColorForumAction extends AbstractAction {

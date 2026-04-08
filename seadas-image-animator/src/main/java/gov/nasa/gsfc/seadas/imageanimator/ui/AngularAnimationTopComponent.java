@@ -25,6 +25,8 @@ import org.esa.snap.core.util.StringUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.rcp.actions.help.HelpAction;
 import org.esa.snap.rcp.placemark.PlacemarkUtils;
+// todo This is used instead due to incompatibility with SNAP 13.  Later if they take our code, then this could be removed
+//import org.esa.snap.rcp.preferences.general.AngularViewController;
 import org.esa.snap.rcp.statistics.XYPlotMarker;
 import org.esa.snap.rcp.util.Dialogs;
 import org.esa.snap.rcp.windows.ToolTopComponent;
@@ -142,41 +144,64 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
             if (currentView != null) {
                 currentView.addPropertyChangeListener(ProductSceneView.PROPERTY_NAME_SELECTED_PIN, pinSelectionChangeListener);
                 setCurrentProduct(currentView.getProduct());
-                if (currentProduct.getName().contains("SPEX")) {
-                    String autoGroupingStr = "";
+//                if (currentProduct.getName().contains("SPEX")) {
+//                    String autoGroupingStr = "";
+////                    for (int wvl = 380; wvl < 390; wvl++) {
+////                        autoGroupingStr += "I_*_" + wvl + ":";
+////                    }
 //                    for (int wvl = 380; wvl < 390; wvl++) {
-//                        autoGroupingStr += "I_*_" + wvl + ":";
+//                        autoGroupingStr += "i_*_" + wvl + ":";
 //                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "i_*_" + wvl + ":";
-                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "aolp_*_" + wvl + ":";
-                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "dolp_*_" + wvl + ":";
-                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "q_*_" + wvl + ":";
-                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "u_*_" + wvl + ":";
-                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "qc_*_" + wvl + ":";
-                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "q_over_i_*_" + wvl + ":";
-                    }
-                    for (int wvl = 380; wvl < 390; wvl++) {
-                        autoGroupingStr += "u_over_i_*_" + wvl + ":";
-                    }
-                    autoGroupingStr += "i_polesample_stdev:i_polesample:i_stdev:i:" +
-                            "aolp_stdev:aolp:dolp_stdev:dolp:" +
-                            "qc_polsample:qc:q_stdev:q:u_stdev:u:" +
-                            "u_over_i_stdev:u_over_i:q_over_i_stdev:q_over_i:" +
-                            "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:scattering_angle:rotation_angle:" +
-                            "number_of_observations:view_time_offsets";
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "aolp_*_" + wvl + ":";
+//                    }
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "dolp_*_" + wvl + ":";
+//                    }
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "q_*_" + wvl + ":";
+//                    }
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "u_*_" + wvl + ":";
+//                    }
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "qc_*_" + wvl + ":";
+//                    }
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "q_over_i_*_" + wvl + ":";
+//                    }
+//                    for (int wvl = 380; wvl < 390; wvl++) {
+//                        autoGroupingStr += "u_over_i_*_" + wvl + ":";
+//                    }
+//                    autoGroupingStr += "i_polesample_stdev:i_polesample:i_stdev:i:" +
+//                            "aolp_stdev:aolp:dolp_stdev:dolp:" +
+//                            "qc_polsample:qc:q_stdev:q:u_stdev:u:" +
+//                            "u_over_i_stdev:u_over_i:q_over_i_stdev:q_over_i:" +
+//                            "sensor_azimuth:sensor_zenith:solar_azimuth:solar_zenith:scattering_angle:rotation_angle:" +
+//                            "number_of_observations:view_time_offsets";
+//                    currentProduct.setAutoGrouping(autoGroupingStr);
+//                }
+                if (currentProduct.getProductType().contains("SPEX Level-2")) {
+                    String autoGroupingStr = "Rrs1:Rrs1_*_443:Rrs1_*_548:Rrs1_*_668:Rrs1_*_748:Rrs2_*_443:Rrs2_*_548:Rrs2_*_668:Rrs2_*_748:" +
+                            "mask_dolp_*_443:mask_dolp_*_548:mask_dolp_*_668:mask_dolp_*_748:mask_ref_*_443:mask_ref_*_548:mask_ref_*_668:mask_ref_*_748:" ;
+                    autoGroupingStr += "angstrom:fmf:" +
+                            "aot_*:aot_fine:aot_coarse:mi_:mi_fine:mi_coarse:mr:mr_fine:mr_coarse:ssa:ssa_fine:ssa_coarse:"+
+                            "Rrs1:Rrs1_mean:Rrs1_std:Rrs2:Rrs2_mean:Rrs2_std:mask_dolp:mask_ref:" ;
+                    currentProduct.setAutoGrouping(autoGroupingStr);
+                } else if (currentProduct.getName().contains("SPEX")) {
+                    String autoGroupingStr = "i_*_385:i_*_440:i_*_443:i_*_548:i_*_550:i_*_668:i_*_670:i_*_748:i_*_750:" +
+                            "aolp_*_385:aolp_*_443:aolp_*_548:aolp_*_668:aolp_*_748:" +
+                            "dolp_*_385:dolp_*_443:dolp_*_548:dolp_*_668:dolp_*_748:" +
+                            "q_*_385:q_*_443:q_*_548:q_*_668:q_*_748:" +
+                             "u_*_385:u_*_443:u_*_548:u_*_668:u_*_748:";
+                    autoGroupingStr += "i:i_stdev:i_polsample:i_polsample_stdev:" +
+                            "aolp:aolp_stdev:dolp:dolp_stdev:" +
+                            "q:q_stdev:u:u_stdev:q_over_i:q_over_i_stdev:u:u_over_i:u_over_i_stdev:" +
+                            "qc:qc_polsample:" +
+                            "scattering_angle:rotation_angle:" +
+                            "sensor_azimuth:sensor_azimuth_angle:sensor_zenith:sensor_zenith_angle:" +
+                            "solar_azimuth:solar_azimuth_angle:solar_zenith:solar_zenith_angle:" +
+                            "obs_per_view:view_time_offsets:number_of_observations";
                     currentProduct.setAutoGrouping(autoGroupingStr);
                 }
                 if (!rasterToAngularMap.containsKey(currentView.getRaster())) {
@@ -548,7 +573,71 @@ public class AngularAnimationTopComponent extends ToolTopComponent {
     private void selectAngularBands() {
         final RasterDataNode currentRaster = currentView.getRaster();
         final DisplayableAngularview[] allAngularViews = rasterToAngularMap.get(currentRaster);
+
+
+        // todo This is commented out due to incompatibility with SNAP 13.  Later if they take our code, then this could be used
+
+        // todo START
+//
+//        int lineIndex = AngularViewController.getPreferenceLineIndex();
+//        int symbolIndex = AngularViewController.getPreferenceSymbolIndex();
+//        int symbolSize = AngularViewController.getPreferenceSymbolSize();
+//        Color plotColor = AngularViewController.getPreferencePlotColor();
+//
+//        double group1Wavelength = AngularViewController.getPreferenceGroup1Wavelength();
+//        double group1Tolerance = AngularViewController.getPreferenceGroup1Tolerance();
+//        int group1LineIndex = AngularViewController.getPreferenceGroup1LineIndex();
+//        int group1SymbolIndex = AngularViewController.getPreferenceGroup1SymbolIndex();
+//        int group1SymbolSize = AngularViewController.getPreferenceGroup1SymbolSize();
+//        Color group1Color = AngularViewController.getPreferenceGroup1Color();
+//
+//
+//        double group2Wavelength = AngularViewController.getPreferenceGroup2Wavelength();
+//        double group2Tolerance = AngularViewController.getPreferenceGroup2Tolerance();
+//        int group2LineIndex = AngularViewController.getPreferenceGroup2LineIndex();
+//        int group2SymbolIndex = AngularViewController.getPreferenceGroup2SymbolIndex();
+//        int group2SymbolSize = AngularViewController.getPreferenceGroup2SymbolSize();
+//        Color group2Color = AngularViewController.getPreferenceGroup2Color();
+//
+//
+//        double group3Wavelength = AngularViewController.getPreferenceGroup3Wavelength();
+//        double group3Tolerance = AngularViewController.getPreferenceGroup3Tolerance();
+//        int group3LineIndex = AngularViewController.getPreferenceGroup3LineIndex();
+//        int group3SymbolIndex = AngularViewController.getPreferenceGroup3SymbolIndex();
+//        int group3SymbolSize = AngularViewController.getPreferenceGroup3SymbolSize();
+//        Color group3Color = AngularViewController.getPreferenceGroup3Color();
+//
+//
+//        double group4Wavelength = AngularViewController.getPreferenceGroup4Wavelength();
+//        double group4Tolerance = AngularViewController.getPreferenceGroup4Tolerance();
+//        int group4LineIndex = AngularViewController.getPreferenceGroup4LineIndex();
+//        int group4SymbolIndex = AngularViewController.getPreferenceGroup4SymbolIndex();
+//        int group4SymbolSize = AngularViewController.getPreferenceGroup4SymbolSize();
+//        Color group4Color = AngularViewController.getPreferenceGroup4Color();
+//
+//
+//        double group5Wavelength = AngularViewController.getPreferenceGroup5Wavelength();
+//        double group5Tolerance = AngularViewController.getPreferenceGroup5Tolerance();
+//        int group5LineIndex = AngularViewController.getPreferenceGroup5LineIndex();
+//        int group5SymbolIndex = AngularViewController.getPreferenceGroup5SymbolIndex();
+//        int group5SymbolSize = AngularViewController.getPreferenceGroup5SymbolSize();
+//        Color group5Color = AngularViewController.getPreferenceGroup5Color();
+//
+//        final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(this), allAngularViews,
+//                lineIndex, symbolIndex, symbolSize, plotColor,
+//                group1Wavelength, group1Tolerance, group1LineIndex, group1SymbolIndex, group1SymbolSize, group1Color,
+//                group2Wavelength, group2Tolerance, group2LineIndex, group2SymbolIndex, group2SymbolSize, group2Color,
+//                group3Wavelength, group3Tolerance, group3LineIndex, group3SymbolIndex, group3SymbolSize, group3Color,
+//                group4Wavelength, group4Tolerance, group4LineIndex, group4SymbolIndex, group4SymbolSize, group4Color,
+//                group5Wavelength, group5Tolerance, group5LineIndex, group5SymbolIndex, group5SymbolSize, group5Color
+//        );
+
+        // todo This is used instead due to incompatibility with SNAP 13.  Later if they take our code, then this could be removed
         final AngularViewChooser angularViewChooser = new AngularViewChooser(SwingUtilities.getWindowAncestor(this), allAngularViews);
+
+
+        // todo END
+
         if (angularViewChooser.show() == ModalDialog.ID_OK) {
             final DisplayableAngularview[] angularViews = angularViewChooser.getAngularViews();
             rasterToAngularMap.put(currentRaster, angularViews);

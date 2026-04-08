@@ -46,7 +46,7 @@ import java.awt.*;
         keywords = "#Options_Keywords_OCSSW_L3bin",
         keywordsCategory = "Processors",
         id = "L3bin_preferences",
-        position = 3)
+        position = 12)
 
 @org.openide.util.NbBundle.Messages({
         "Options_DisplayName_OCSSW_L3bin=L3bin",

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nasa.gsfc.seadas.earthdatacloud.ui.OBDAACDataBrowser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 public class FetchOBDAACData extends JFrame {
@@ -246,49 +247,85 @@ public class FetchOBDAACData extends JFrame {
         return urls;
     }
 
-    public static String fetchCollectionIdFromCMR(String fileName, String conceptId) {
-        String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.json?readable_granule_name=" + fileName;
-        if (conceptId != null) {
-            cmrUrl += "&concept_id=" + conceptId;
-        }
-        try {
-            System.out.println("CMR granule lookup URL: " + cmrUrl);
-            URL url = new URL(cmrUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
+    private GranuleMeta fetchGranuleMetaFromCmr(String fileName) throws Exception {
+        String url = "https://cmr.earthdata.nasa.gov/search/granules.json"
+                + "?readable_granule_name=" + java.net.URLEncoder.encode(fileName, java.nio.charset.StandardCharsets.UTF_8)
+                + "&provider=OB_CLOUD";
 
-            int status = conn.getResponseCode();
-            if (status == 200) {
-                InputStream is = conn.getInputStream();
-                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                String response = s.hasNext() ? s.next() : "";
-                JSONObject json = new JSONObject(response);
-                JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
-                if (entries.length() > 0) {
-                    return entries.getJSONObject(0).getString("collection_concept_id");
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setConnectTimeout(15000);
+        conn.setReadTimeout(30000);
+
+        int status = conn.getResponseCode();
+        if (status >= 400) throw new Exception("HTTP " + status + " for " + url);
+
+        String json;
+        try (java.io.InputStream is = conn.getInputStream()) {
+            java.util.Scanner s = new java.util.Scanner(is, java.nio.charset.StandardCharsets.UTF_8).useDelimiter("\\A");
+            json = s.hasNext() ? s.next() : "";
+        }
+
+        org.json.JSONObject root = new org.json.JSONObject(json);
+        org.json.JSONArray entries = root.getJSONObject("feed").getJSONArray("entry");
+        if (entries.isEmpty()) throw new Exception("No CMR granule entry found for " + fileName);
+
+        org.json.JSONObject entry = entries.getJSONObject(0);
+
+        GranuleMeta meta = new GranuleMeta();
+        meta.granuleId = entry.optString("id", null);
+
+        // Prefer boxes (easy + fast)
+        // CMR "boxes" format: ["lat1 lon1 lat2 lon2", ...] (strings)
+        org.json.JSONArray boxes = entry.optJSONArray("boxes");
+        if (boxes != null && boxes.length() > 0) {
+            String[] parts = boxes.getString(0).trim().split("\\s+");
+            // lat1 lon1 lat2 lon2
+            double lat1 = Double.parseDouble(parts[0]);
+            double lon1 = Double.parseDouble(parts[1]);
+            double lat2 = Double.parseDouble(parts[2]);
+            double lon2 = Double.parseDouble(parts[3]);
+            meta.minLat = Math.min(lat1, lat2);
+            meta.maxLat = Math.max(lat1, lat2);
+            meta.minLon = Math.min(lon1, lon2);
+            meta.maxLon = Math.max(lon1, lon2);
+        }
+
+        // Optional: polygons (more accurate footprint)
+        // CMR "polygons": [ ["lat lon lat lon ..."], ... ]
+        org.json.JSONArray polygons = entry.optJSONArray("polygons");
+        if (polygons != null && polygons.length() > 0) {
+            meta.polygons = new java.util.ArrayList<>();
+            for (int i = 0; i < polygons.length(); i++) {
+                org.json.JSONArray ringArr = polygons.getJSONArray(i);
+                for (int j = 0; j < ringArr.length(); j++) {
+                    String ring = ringArr.getString(j);
+                    String[] pts = ring.trim().split("\\s+");
+                    double[] coords = new double[pts.length];
+                    for (int k = 0; k < pts.length; k++) coords[k] = Double.parseDouble(pts[k]);
+                    meta.polygons.add(coords);
                 }
-            } else {
-                InputStream es = conn.getErrorStream();
-                String errorResponse = "";
-                if (es != null) {
-                    java.util.Scanner s = new java.util.Scanner(es).useDelimiter("\\A");
-                    errorResponse = s.hasNext() ? s.next() : "";
-                }
-                System.err.println("CMR request failed with status: " + status + ", response: " + errorResponse);
             }
-        } catch (Exception e) {
-            System.err.println("Error fetching collection ID from CMR: " + e.getMessage());
         }
-        return null;
-    }
 
+        if (meta.granuleId == null || meta.granuleId.isBlank()) {
+            throw new Exception("CMR response missing granule id for " + fileName);
+        }
+
+        return meta;
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             FetchOBDAACData app = new FetchOBDAACData();
             app.setVisible(true);
         });
+    }
+
+
+    public static class GranuleMeta {
+        String granuleId;
+        Double minLat, maxLat, minLon, maxLon;
+        java.util.List<double[]> polygons; // optional: list of [lat,lon,lat,lon,...] rings or however you prefer
     }
 }

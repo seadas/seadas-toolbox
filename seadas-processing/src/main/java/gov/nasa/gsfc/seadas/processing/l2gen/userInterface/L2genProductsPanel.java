@@ -27,6 +27,8 @@ public class L2genProductsPanel extends JPanel {
     JPanel selectedProductsJPanel;
     JTextArea selectedProductsJTextArea;
     JLabel selectedProductsJLabel;
+    JTextField wavelength3dJTextField;
+    JLabel wavelength3dJLabel;
     private JButton restoreDefaultsButton;
     private JScrollPane selectedProductsJScrollPane;
 
@@ -109,15 +111,78 @@ public class L2genProductsPanel extends JPanel {
 
         selectedProductsJLabel = new JLabel("l2prod  ");
         selectedProductsJLabel.setVisible(true);
+        selectedProductsJLabel.setToolTipText("Level-2 products to be included in the output file");
 
-        mainPanel.add(selectedProductsJLabel,
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 1, 1));
 
-        mainPanel.add(selectedProductsJScrollPane,
-                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 3, 3));
+        wavelength3dJLabel = new JLabel("wavelength_3d  ");
+        wavelength3dJLabel.setVisible(true);
+        wavelength3dJLabel.setToolTipText("<html>Wavelengths to be included for each of the selected 3D products<br>" +
+                "&nbsp;&nbsp;&nbsp;<br>" +
+                "Format 'wavelength_3d=nnn,nnn,nnn:nnn' where:<br>" +
+                "&nbsp;&nbsp;&nbsp;nnn is a sensor wavelength<br>" +
+                "&nbsp;&nbsp;&nbsp;Wavelengths must be in ascending order<br>" +
+                "&nbsp;&nbsp;&nbsp;Comma delimits wavelength entries<br>" +
+                "&nbsp;&nbsp;&nbsp;Colon indicates to use all intervening wavelengths</html>");
+
+        JPanel prodPanel = new JPanel(new GridBagLayout());
+
+        prodPanel.add(selectedProductsJLabel,
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 0, 1, 1));
+
+        prodPanel.add(selectedProductsJScrollPane,
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 1, 1));
+
+
+
+        JPanel wavelength3dPanel = new JPanel(new GridBagLayout());
+
+        wavelength3dPanel.add(wavelength3dJLabel,
+                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 0, 1, 1));
+
+        wavelength3dPanel.add(wavelength3dJTextField,
+                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 0, 1, 1));
+
+
+
+        mainPanel.add(prodPanel,
+                new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 1, 1));
+
+        mainPanel.add(wavelength3dPanel,
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 1, 1));
+
+
 
         return mainPanel;
     }
+
+
+//    private JPanel createSelectedProductsJPanel() {
+//
+//        JPanel mainPanel = new JPanel(new GridBagLayout());
+//        mainPanel.setBorder(BorderFactory.createTitledBorder("Selected Products"));
+//
+//        selectedProductsJLabel = new JLabel("l2prod  ");
+//        selectedProductsJLabel.setVisible(true);
+//
+//
+//        wavelength3dJLabel = new JLabel("wavelength_3d  ");
+//        wavelength3dJLabel.setVisible(true);
+//
+//        mainPanel.add(selectedProductsJLabel,
+//                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 1, 1));
+//
+//        mainPanel.add(selectedProductsJScrollPane,
+//                new GridBagConstraintsCustom(1, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 3, 1));
+//
+//        mainPanel.add(wavelength3dJLabel,
+//                new GridBagConstraintsCustom(0, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 1, 1));
+//
+//        mainPanel.add(wavelength3dJTextField,
+//                new GridBagConstraintsCustom(1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, 4, 3, 1));
+//
+//        return mainPanel;
+//    }
+
 
     private void createSelectedProductsJTextArea() {
 
@@ -126,6 +191,10 @@ public class L2genProductsPanel extends JPanel {
         selectedProductsJTextArea.setWrapStyleWord(false);
         selectedProductsJTextArea.setRows(3);
         selectedProductsJTextArea.setEditable(true);
+
+        wavelength3dJTextField = new JTextField("");
+        wavelength3dJTextField.setColumns(20);
+
 
         selectedProductsJScrollPane = new JScrollPane(selectedProductsJTextArea);
 
@@ -158,6 +227,29 @@ public class L2genProductsPanel extends JPanel {
                 selectedProductsJTextArea.setText(l2genData.getParamValue(L2genData.L2PROD));
             }
         });
+
+
+        wavelength3dJTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String wavelength_3d = l2genData.sortStringList(wavelength3dJTextField.getText());
+                l2genData.setParamValue(L2genData.WAVELENGTH_3D, wavelength_3d);
+                wavelength3dJTextField.setText(l2genData.getParamValue(L2genData.WAVELENGTH_3D));
+            }
+        });
+
+        l2genData.addPropertyChangeListener(L2genData.WAVELENGTH_3D, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                wavelength3dJTextField.setText(l2genData.getParamValue(L2genData.WAVELENGTH_3D));
+            }
+        });
+
+
 
     }
 
