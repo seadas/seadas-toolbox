@@ -42,7 +42,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.*;
 
 public class GetSysInfoGUI {
 
-    final String PANEL_NAME = "Seadas/System Information";
+    final String PANEL_NAME = "Software & System Info";
     final String HELP_ID = "getSysInfo";
     String sysInfoText;
     String currentInfoLine;
@@ -624,8 +624,9 @@ public class GetSysInfoGUI {
                     machineWarningColor = ALERT_COLOR;
                     machine = OCSSW_LOCATION_MSG_STR + "Machine (uname -m): " + machine + "\n";
                     machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "Warning: Detected unsupported machine 'x86_64' for Mac OS\n";
-                    machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "Primary processors not affected but this could cause processor 'l1bextract_oci' to fail\n";
+                    machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "Primary processors not affected but this could cause some processors such as 'l1bextract_oci' to fail\n";
                     machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "The resolution (if desired) would be to launch SeaDAS via terminal\n";
+                    machine += OCSSW_LOCATION_MSG_STR + INDENT_BIG + "Do this by clicking on the SeaDAS launcher file which has the black 'terminal' icon (instead the one with the SeaDAS icon)\n";
                 } else {
                     machine = OCSSW_LOCATION_MSG_STR + "Machine (uname -m): " + machine + "\n";
                 }
@@ -963,18 +964,48 @@ public class GetSysInfoGUI {
                                 if (startFound) {
                                     if (!line.contains("NASA Science Processing (OCSSW)")) {
                                         if (line.contains("General System and Software")) {
-                                            currentInfoLine += "\n" + DASHES + "\n";
+                                            currentInfoLine = "\n" + DASHES + "\n";
                                             currentInfoLine += INDENT + "General System and Software: " + "\n";
                                             currentInfoLine += DASHES + "\n";
+
+                                            sysInfoText += currentInfoLine;
+                                            appendToPane(sysInfoTextpane, currentInfoLine + "\n" , Color.BLACK);
                                         } else {
-                                            currentInfoLine += line + "\n";
+//                                            currentInfoLine += line + "\n";
+
+
+
+                                            if (line.contains("Installed Missions")) {
+                                                if (!line.contains("oci")) {
+                                                    sysInfoText += line;
+                                                    appendToPane(sysInfoTextpane, line + "\n" , ALERT_COLOR);
+                                                    String msg = INDENT_BIG + "#Note: Mission 'oci' is NOT installed\n" +
+                                                            INDENT_BIG +  "#Missions can be installed at Menu > SeaDAS-Toolbox > Install/Update SeaDAS Processors";
+                                                    sysInfoText += msg;
+                                                    appendToPane(sysInfoTextpane, msg, ALERT_COLOR);
+                                                } else {
+                                                    sysInfoText += line;
+                                                    appendToPane(sysInfoTextpane, line + "\n", Color.BLACK);
+                                                }
+                                            } else {
+                                                sysInfoText += line;
+                                                appendToPane(sysInfoTextpane, line + "\n", Color.BLACK);
+                                            }
                                         }
                                     }
                                 }
                             }
 
-                            sysInfoText += currentInfoLine;
-                            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+
+//                            sysInfoText += currentInfoLine;
+//                            appendToPane(sysInfoTextpane, currentInfoLine, Color.BLACK);
+//
+//                            if (currentInfoLine.contains("Installed Missions")) {
+//                                if (!currentInfoLine.contains("ocihello")) {
+//                                    String msg = "Note: OCI is NOT installed";
+//                                    appendToPane(sysInfoTextpane, msg, ALERT_COLOR);
+//                                }
+//                            }
 
                             reader.close();
                             process.destroy();
