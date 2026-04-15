@@ -14,8 +14,8 @@
     <version>11.0.0</version>  <!--  <version>11.0.0-SNAPSHOT</version>-->
     <packaging>nbm</packaging>
 
-    <name>SeaDAS Panoply Tools</name>
-    <description>Panoply-inspired features for SeaDAS (auto metadata attachment, future diagnostics/plotting).</description>
+    <name>SeaDAS Metadata Tools</name>
+    <description>Provides automatic metadata attachment and supports metadata-related data handling in SeaDAS.</description>
 
     <dependencies>
         <!-- SNAP runtime + APIs actually used -->
