@@ -7,13 +7,13 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
-        <version>11.0.0</version>  <!-- <version>11.0.0-SNAPSHOT</version>-->
+        <version>11.1.0</version>  <!-- <version>11.1.0-SNAPSHOT</version>-->
 
     </parent>
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas-contour-operator</artifactId>
-    <version>11.0.0</version>  <!-- <version>11.0.0-SNAPSHOT</version>-->
+    <version>11.1.0</version>  <!-- <version>11.1.0-SNAPSHOT</version>-->
 
     <packaging>nbm</packaging>
 
