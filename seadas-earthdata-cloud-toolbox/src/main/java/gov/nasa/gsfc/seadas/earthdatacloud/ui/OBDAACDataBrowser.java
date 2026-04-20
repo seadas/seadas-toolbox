@@ -22,7 +22,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -368,15 +367,14 @@ public class OBDAACDataBrowser extends JPanel {
                 int row = resultsTable.rowAtPoint(e.getPoint());
                 int col = resultsTable.columnAtPoint(e.getPoint());
 
-                if (Earthdata_Cloud_Controller.getPreferenceImageLinkInclude() && col == 0) {
+                if (row < 0 || col != 0) {
+                    return;
+                }
+
+                if (Earthdata_Cloud_Controller.getPreferenceImageLinkInclude()) {
                     String fileName = (String) tableModel.getValueAt(row, 0);
-                    String browseUrl = fileName + ".png";
-                    if (browseUrl != null) {
-                        try {
-                            Desktop.getDesktop().browse(new URI(browseUrl));
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                    if (fileName != null && !fileName.isBlank()) {
+                        imagePreviewHelper.showFullImageDialog(fileName, OBDAACDataBrowser.this);
                     }
                 }
             }
