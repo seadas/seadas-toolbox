@@ -149,8 +149,8 @@
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
-<!--            <artifactId>seadas-panoply-tools</artifactId>-->
-<!--            <version>${seadas-panoply-tools}</version>-->
+<!--            <artifactId>seadas-metadata-tools</artifactId>-->
+<!--            <version>${seadas-metadata-tools}</version>-->
 <!--        </dependency>-->
         <dependency>
             <groupId>org.esa.snap</groupId>

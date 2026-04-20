@@ -1,6 +1,6 @@
-package gov.nasa.gsfc.seadas.panoply;
+package gov.nasa.gsfc.seadas.metadata;
 
-import gov.nasa.gsfc.seadas.panoply.ui.MetadataDumpTopComponent;
+import gov.nasa.gsfc.seadas.metadata.ui.MetadataDumpTopComponent;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductManager;
@@ -56,8 +56,8 @@ public final class StartupHook {
                 if (filePath != null) {
                     try {
                         //System.out.println("[Metadata Viewer] Attaching to " + product.getName() + " from " + filePath);
-                        //PanoplyStyleMetadataBuilder.attachPanoplyMetadata(product, filePath);
-                        PanoplyStyleMetadataBuilder.addAllGroupsUnderDumpRoot(product, filePath);
+                        //MetadataTreeBuilder.attachMetadata(product, filePath);
+                        MetadataTreeBuilder.addAllGroupsUnderDumpRoot(product, filePath);
 
                         //System.out.println("[Metadata Viewer] Attached ✓");
                     } catch (Throwable ex) {
@@ -146,7 +146,7 @@ public final class StartupHook {
             WindowManager wm = WindowManager.getDefault();
             for (TopComponent tc : wm.getRegistry().getOpened()) {
                 // Skip our own panel
-                if (tc instanceof gov.nasa.gsfc.seadas.panoply.ui.MetadataDumpTopComponent) continue;
+                if (tc instanceof gov.nasa.gsfc.seadas.metadata.ui.MetadataDumpTopComponent) continue;
 
                 String id = null;
                 try { id = wm.findTopComponentID(tc); } catch (Throwable ignore) {}
