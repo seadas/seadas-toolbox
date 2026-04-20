@@ -10,12 +10,12 @@
         <version>11.0.0</version>  <!--  <version>11.0.0-SNAPSHOT</version>-->
     </parent>
 
-    <artifactId>seadas-panoply-tools</artifactId>
+    <artifactId>seadas-metadata-tools</artifactId>
     <version>11.0.0</version>  <!--  <version>11.0.0-SNAPSHOT</version>-->
     <packaging>nbm</packaging>
 
-    <name>SeaDAS Panoply Tools</name>
-    <description>Panoply-inspired features for SeaDAS (auto metadata attachment, future diagnostics/plotting).</description>
+    <name>SeaDAS Metadata Tools</name>
+    <description>Metadata-inspired features for SeaDAS (auto metadata attachment, future diagnostics/plotting).</description>
 
     <dependencies>
         <!-- SNAP runtime + APIs actually used -->
@@ -133,7 +133,7 @@
                     <useOSGiDependencies>false</useOSGiDependencies>
 <!--                    <verifyRuntime>skip</verifyRuntime> -->
                     <publicPackages>
-                        <publicPackage>gov.nasa.gsfc.seadas.panoply.*</publicPackage>
+                        <publicPackage>gov.nasa.gsfc.seadas.metadata.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

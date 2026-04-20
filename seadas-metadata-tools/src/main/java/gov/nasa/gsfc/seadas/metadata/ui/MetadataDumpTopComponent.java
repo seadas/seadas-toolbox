@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.panoply.ui;
+package gov.nasa.gsfc.seadas.metadata.ui;
 
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.openide.awt.ActionID;
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
         persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED
 )
 @TopComponent.Registration(mode = "output", openAtStartup = false)
-@ActionID(category = "View", id = "gov.nasa.gsfc.seadas.panoply.ui.MetadataDumpTopComponent")
+@ActionID(category = "View", id = "gov.nasa.gsfc.seadas.metadata.ui.MetadataDumpTopComponent")
 @ActionReference(path = "Menu/View", position = 19300)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_MetadataDumpAction",
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 @Messages({
         "CTL_MetadataDumpAction=Metadata Dump",
         "CTL_MetadataDumpTopComponent=Metadata Dump",
-        "HINT_MetadataDumpTopComponent=Shows Panoply-style (ncdump) text for the selected variable or group"
+        "HINT_MetadataDumpTopComponent=Shows Metadata-style (ncdump) text for the selected variable or group"
 })
 
 public final class MetadataDumpTopComponent extends TopComponent implements LookupListener, PropertyChangeListener {

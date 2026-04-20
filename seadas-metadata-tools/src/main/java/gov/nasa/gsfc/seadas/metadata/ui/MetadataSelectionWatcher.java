@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.panoply.ui;
+package gov.nasa.gsfc.seadas.metadata.ui;
 
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
@@ -9,7 +9,7 @@ import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-public final class PanoplySelectionWatcher implements LookupListener {
+public final class MetadataSelectionWatcher implements LookupListener {
     private org.openide.util.Lookup.Result<MetadataElement> result;
     private static final String DUMP_TC_ID = "MetadataDumpTopComponent"; // update if you used a different preferredID
 

@@ -1,4 +1,4 @@
-package gov.nasa.gsfc.seadas.panoply;
+package gov.nasa.gsfc.seadas.metadata;
 
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
@@ -19,9 +19,9 @@ import java.util.*;
  * - All generated nodes are tagged (MARKER_ATTR) so we can safely refresh
  * - "Global attributes" / "gattributes" are intentionally ignored per requirement
  */
-public final class PanoplyStyleMetadataBuilder {
+public final class MetadataTreeBuilder {
 
-    private PanoplyStyleMetadataBuilder() {}
+    private MetadataTreeBuilder() {}
 
     // ---- Public entry point -------------------------------------------------
 
@@ -29,7 +29,7 @@ public final class PanoplyStyleMetadataBuilder {
     private static final String DUMP_ROOT_NAME = "Metadata_Dump";
 
     /** Marker to identify nodes we generated (so we can refresh them safely). */
-    private static final String MARKER_ATTR = "_panoply_section";
+    private static final String MARKER_ATTR = "_metadata_section";
     private static final String MARKER_VAL  = "v2";
     private static String CURRENT_FILE_BASENAME = null;
 
@@ -74,7 +74,7 @@ public final class PanoplyStyleMetadataBuilder {
 
             if (DEBUG) debugDumpRootChildren(dumpRoot);
         } catch (Throwable t) {
-            System.out.println("[Panoply] groups-only build failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+            System.out.println("[Metadata] groups-only build failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
         }
     }
 
@@ -435,7 +435,7 @@ public final class PanoplyStyleMetadataBuilder {
     // ---- Debug helpers ------------------------------------------------------
 
     private static void debugProbe(NetcdfFile nc, Product product, String fileUrlOrPath) {
-        System.out.println("=== Panoply DEBUG PROBE ===");
+        System.out.println("=== Metadata DEBUG PROBE ===");
         System.out.println("product.fileLocation = " + (product != null && product.getFileLocation() != null ? product.getFileLocation().getAbsolutePath() : "null"));
         System.out.println("explicit path arg     = " + fileUrlOrPath);
         System.out.println("nc.isNull?            = " + (nc == null));
@@ -456,7 +456,7 @@ public final class PanoplyStyleMetadataBuilder {
     }
 
     private static void debugDumpRootChildren(MetadataElement dumpRoot) {
-        System.out.println("[Panoply] Metadata_Dump children:");
+        System.out.println("[Metadata] Metadata_Dump children:");
         for (int i = 0; i < dumpRoot.getNumElements(); i++) {
             MetadataElement c = dumpRoot.getElementAt(i);
             System.out.printf("  - %s (attrs=%d, elements=%d)%n",
