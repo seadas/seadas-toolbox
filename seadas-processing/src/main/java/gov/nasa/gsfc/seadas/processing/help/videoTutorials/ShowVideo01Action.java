@@ -21,6 +21,7 @@ import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 import org.openide.util.actions.Presenter;
@@ -35,10 +36,14 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(
         displayName = "#CTL_ShowVideo01Action_DisplayName",
         popupText = "#CTL_ShowVideo01Action_ShortDescription")
-@ActionReference(
-        path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Overview",
-        position = 0,
-        separatorAfter = 100)
+
+@ActionReferences({
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Overview", position = 0, separatorAfter = 100),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Overview", position = 0, separatorAfter = 100)
+})
+
+
+
 @NbBundle.Messages({
         "CTL_ShowVideo01Action_DisplayName=SeaDAS Introduction: 30th Anniversary",
         "CTL_ShowVideo01Action_ShortDescription=Opens YouTube SeaDAS tutorial video"

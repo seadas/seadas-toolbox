@@ -21,6 +21,7 @@ import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 import org.openide.util.actions.Presenter;
@@ -35,9 +36,14 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(
         displayName = "#CTL_ShowVideo04Action_DisplayName",
         popupText = "#CTL_ShowVideo04Action_ShortDescription")
-@ActionReference(
-        path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION +  "/Science Processors (Installation)",
-        position = 20)
+
+@ActionReferences({
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION +  "/Science Processors (Installation)", position = 20),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 +  "/Science Processors (Installation)", position = 20)
+})
+
+
+
 @NbBundle.Messages({
         "CTL_ShowVideo04Action_DisplayName=Set up Python for the Science Processors (Mac, Linux)",
         "CTL_ShowVideo04Action_ShortDescription=Opens YouTube SeaDAS tutorial video"

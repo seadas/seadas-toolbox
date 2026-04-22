@@ -21,6 +21,7 @@ import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.*;
 import org.openide.util.actions.Presenter;
@@ -35,9 +36,13 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(
         displayName = "#CTL_ShowVideo09Action_DisplayName",
         popupText = "#CTL_ShowVideo09Action_ShortDescription")
-@ActionReference(
-        path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/General Tools",
-        position = 30)
+
+@ActionReferences({
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/General Tools", position = 30),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/General Tools", position = 30)
+})
+
+
 @NbBundle.Messages({
         "CTL_ShowVideo09Action_DisplayName=Export Image - Create Publication Quality Scene Images",
         "CTL_ShowVideo09Action_ShortDescription=Opens YouTube SeaDAS tutorial video"

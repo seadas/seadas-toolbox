@@ -36,9 +36,14 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(
         displayName = "#CTL_ShowVideo02Action_DisplayName",
         popupText = "#CTL_ShowVideo02Action_ShortDescription")
+
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Installation", position = 10)
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Installation", position = 10),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Installation", position = 10)
 })
+
+
+
 @NbBundle.Messages({
         "CTL_ShowVideo02Action_DisplayName=Install and Open SeaDAS (on a Mac OS)",
         "CTL_ShowVideo02Action_ShortDescription=Opens YouTube SeaDAS tutorial video"
