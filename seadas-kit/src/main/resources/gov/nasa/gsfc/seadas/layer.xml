@@ -53,46 +53,46 @@
             </folder>
         </folder>
 
-        <folder name="Earthdata-Cloud">
-            <attr name="position" intvalue="800"/>
-<!--            <folder name="Harmony Services">-->
-<!--                <attr name="position" intvalue="1000"/>-->
+<!--        <folder name="Earthdata-Cloud">-->
+<!--            <attr name="position" intvalue="800"/>-->
+<!--&lt;!&ndash;            <folder name="Harmony Services">&ndash;&gt;-->
+<!--&lt;!&ndash;                <attr name="position" intvalue="1000"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            </folder>&ndash;&gt;-->
+<!--        </folder>-->
+
+<!--        <folder name="Video-Tutorials">-->
+<!--            <attr name="position" intvalue="1100"/>-->
+
+<!--            <folder name="Overview">-->
+<!--                <attr name="position" intvalue="100"/>-->
 <!--            </folder>-->
-        </folder>
 
-        <folder name="Video-Tutorials">
-            <attr name="position" intvalue="1100"/>
+<!--            <folder name="Installation">-->
+<!--                <attr name="position" intvalue="200"/>-->
+<!--            </folder>-->
 
-            <folder name="Overview">
-                <attr name="position" intvalue="100"/>
-            </folder>
+<!--            <folder name="General Tools">-->
+<!--                <attr name="position" intvalue="300"/>-->
+<!--            </folder>-->
 
-            <folder name="Installation">
-                <attr name="position" intvalue="200"/>
-            </folder>
+<!--            <folder name="Troubleshooting">-->
+<!--                <attr name="position" intvalue="400"/>-->
+<!--            </folder>-->
 
-            <folder name="General Tools">
-                <attr name="position" intvalue="300"/>
-            </folder>
+<!--            <folder name="Science Processors (Installation)">-->
+<!--                <attr name="position" intvalue="500"/>-->
+<!--            </folder>-->
 
-            <folder name="Troubleshooting">
-                <attr name="position" intvalue="400"/>
-            </folder>
-
-            <folder name="Science Processors (Installation)">
-                <attr name="position" intvalue="500"/>
-            </folder>
-
-            <folder name="Science Processors">
-                <attr name="position" intvalue="600"/>
-            </folder>
+<!--            <folder name="Science Processors">-->
+<!--                <attr name="position" intvalue="600"/>-->
+<!--            </folder>-->
 
 
-            <folder name="Earthdata-Cloud">
-                <attr name="position" intvalue="700"/>
-            </folder>
+<!--            <folder name="Earthdata-Cloud">-->
+<!--                <attr name="position" intvalue="700"/>-->
+<!--            </folder>-->
 
-        </folder>
+<!--        </folder>-->
 
     </folder>
 

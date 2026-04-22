@@ -39,7 +39,7 @@ import java.awt.event.ActionEvent;
 
 @ActionReferences({
         @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/General Tools", position = 10),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/General Tools", position = 10)
+//        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/General Tools", position = 10)
 })
 
 

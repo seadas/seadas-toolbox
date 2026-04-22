@@ -41,8 +41,8 @@ import java.awt.event.ActionEvent;
         @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Earthdata-Cloud", position = 40),
         @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Science Processors (Installation)", position = 40),
 
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Earthdata-Cloud", position = 40),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Science Processors (Installation)", position = 40)
+//        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Earthdata-Cloud", position = 40),
+//        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Science Processors (Installation)", position = 40)
 })
 
 

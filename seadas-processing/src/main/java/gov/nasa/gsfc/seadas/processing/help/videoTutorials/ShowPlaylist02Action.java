@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowPlaylist02Action_ShortDescription")
 @ActionReferences({
         @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/General Tools", position = 0, separatorAfter = 1),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/General Tools", position = 0, separatorAfter = 1)
+//        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/General Tools", position = 0, separatorAfter = 1)
 })
 
 @NbBundle.Messages({

@@ -30,8 +30,8 @@ import java.awt.event.ActionEvent;
 @ActionReferences({
         @ActionReference(path = MenuLocationUtils.EARTHDATA_CLOUD_MENU_LOCATION,
                 position = 0),
-        @ActionReference(path = MenuLocationUtils.EARTHDATA_CLOUD_MENU_LOCATION2,
-                position = 40)
+//        @ActionReference(path = MenuLocationUtils.EARTHDATA_CLOUD_MENU_LOCATION2,
+//                position = 40)
 })
 
 @NbBundle.Messages({
