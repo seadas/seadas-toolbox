@@ -50,14 +50,14 @@
             It is used to filter manifest.mf and set the manifest's "OpenIDE-Module-Specification-Version" header.
             This is necessary to make NetBeans modules updatable and independent from the Maven version (= snap.version).
         -->
-        <seadas-toolbox.version>11.1.0</seadas-toolbox.version> <!--  <seadas-toolbox.version>11.1.0-SNAPSHOT</seadas-toolbox.version>-->
-        <seadas-contour-operator.version>11.1.0</seadas-contour-operator.version>  <!-- <seadas-contour-operator.version>11.1.0-SNAPSHOT</seadas-contour-operator.version>-->
-        <seadas-processing.version>11.1.0</seadas-processing.version>   <!-- <seadas-processing.version>11.1.0-SNAPSHOT</seadas-processing.version>-->
-        <seadas-watermask-operator.version>11.1.0</seadas-watermask-operator.version>   <!-- <seadas-watermask-operator.version>11.1.0-SNAPSHOT</seadas-watermask-operator.version>-->
-        <seadas-bathymetry-operator.version>11.1.0</seadas-bathymetry-operator.version>  <!-- <seadas-bathymetry-operator.version>11.1.0-SNAPSHOT</seadas-bathymetry-operator.version>-->
-        <seadas-image-animator.version>11.1.0</seadas-image-animator.version>   <!-- <seadas-image-animator.version>11.1.0-SNAPSHOT</seadas-image-animator.version>-->
-        <seadas-earthdata-cloud-toolbox.version>11.1.0</seadas-earthdata-cloud-toolbox.version>  <!--  <seadas-toolbox.version>11.1.0-SNAPSHOT</seadas-toolbox.version>-->
-        <seadas-metadata-tools>11.1.0</seadas-metadata-tools>  <!--  <seadas-toolbox.version>11.1.0-SNAPSHOT</seadas-toolbox.version>-->
+        <seadas-toolbox.version>12.0.0</seadas-toolbox.version> <!--  <seadas-toolbox.version>12.0.0-SNAPSHOT</seadas-toolbox.version>-->
+        <seadas-contour-operator.version>12.0.0</seadas-contour-operator.version>  <!-- <seadas-contour-operator.version>12.0.0-SNAPSHOT</seadas-contour-operator.version>-->
+        <seadas-processing.version>12.0.0</seadas-processing.version>   <!-- <seadas-processing.version>12.0.0-SNAPSHOT</seadas-processing.version>-->
+        <seadas-watermask-operator.version>12.0.0</seadas-watermask-operator.version>   <!-- <seadas-watermask-operator.version>12.0.0-SNAPSHOT</seadas-watermask-operator.version>-->
+        <seadas-bathymetry-operator.version>12.0.0</seadas-bathymetry-operator.version>  <!-- <seadas-bathymetry-operator.version>12.0.0-SNAPSHOT</seadas-bathymetry-operator.version>-->
+        <seadas-image-animator.version>12.0.0</seadas-image-animator.version>   <!-- <seadas-image-animator.version>12.0.0-SNAPSHOT</seadas-image-animator.version>-->
+        <seadas-earthdata-cloud-toolbox.version>12.0.0</seadas-earthdata-cloud-toolbox.version>  <!--  <seadas-toolbox.version>12.0.0-SNAPSHOT</seadas-toolbox.version>-->
+        <seadas-metadata-tools>12.0.0</seadas-metadata-tools>  <!--  <seadas-toolbox.version>12.0.0-SNAPSHOT</seadas-toolbox.version>-->
         <netbeans.version>RELEASE210</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>5.3.1</netcdf.version>
