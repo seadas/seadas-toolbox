@@ -22,7 +22,7 @@
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <artifactId>seadas</artifactId>
-    <version>11.1.0</version> <!--    <version>11.1.0-SNAPSHOT</version>-->
+    <version>12.0.0</version> <!--    <version>12.0.0-SNAPSHOT</version>-->
 
     <name>SeaDAS Tool Box</name>
     <description>Tools from SeaDAS</description>
