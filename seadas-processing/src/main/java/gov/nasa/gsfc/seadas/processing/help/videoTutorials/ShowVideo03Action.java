@@ -36,10 +36,17 @@ import java.awt.event.ActionEvent;
 @ActionRegistration(
         displayName = "#CTL_ShowVideo03Action_DisplayName",
         popupText = "#CTL_ShowVideo03Action_ShortDescription")
+
 @ActionReferences({
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Earthdata-Cloud", position = 40),
         @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Science Processors (Installation)", position = 40),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Earthdata-Cloud", position = 40)
+
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Earthdata-Cloud", position = 40),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Science Processors (Installation)", position = 40)
 })
+
+
+
 @NbBundle.Messages({
         "CTL_ShowVideo03Action_DisplayName=Set up Earthdata Login access",
         "CTL_ShowVideo03Action_ShortDescription=Opens YouTube SeaDAS tutorial video"
