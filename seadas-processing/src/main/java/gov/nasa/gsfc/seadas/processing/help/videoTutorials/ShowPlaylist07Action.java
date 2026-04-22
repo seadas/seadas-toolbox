@@ -39,7 +39,7 @@ import java.awt.event.ActionEvent;
 
 @ActionReferences({
         @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION, position = 0, separatorAfter = 1),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2, position = 0, separatorAfter = 1)
+//        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2, position = 0, separatorAfter = 1)
 })
 
 

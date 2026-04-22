@@ -39,7 +39,7 @@ import java.awt.event.ActionEvent;
 
 @ActionReferences({
         @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION +  "/Science Processors (Installation)", position = 20),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 +  "/Science Processors (Installation)", position = 20)
+//        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 +  "/Science Processors (Installation)", position = 20)
 })
 
 
