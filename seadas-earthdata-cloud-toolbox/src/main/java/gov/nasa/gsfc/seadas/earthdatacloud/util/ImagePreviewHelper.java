@@ -32,13 +32,24 @@ public class ImagePreviewHelper {
     private final Timer hoverTimer;
     private final Map<String, ImageIcon> previewCache;
     private final Map<String, String> resolvedPreviewUrlCache;
+    private final Object cacheLock = new Object();
 
-    private SwingWorker<ImageIcon, Void> loadWorker;
+    private SwingWorker<PreviewResult, Void> loadWorker;
     private String hoveredFileName;
     private String displayedFileName;
     private Point hoverLocationOnScreen;
     private JDialog parentDialog;
     private Component previewAnchor;
+
+    private static final class PreviewResult {
+        private final String resolvedUrl;
+        private final ImageIcon icon;
+
+        private PreviewResult(String resolvedUrl, ImageIcon icon) {
+            this.resolvedUrl = resolvedUrl;
+            this.icon = icon;
+        }
+    }
 
     public ImagePreviewHelper() {
         previewWindow = new JWindow();
@@ -139,16 +150,16 @@ public class ImagePreviewHelper {
             return;
         }
 
-        String cachedResolvedUrl = resolvedPreviewUrlCache.get(fileName);
+        String cachedResolvedUrl = getResolvedPreviewUrl(fileName);
         if (cachedResolvedUrl != null) {
-            ImageIcon cachedIcon = previewCache.get(cachedResolvedUrl);
+            ImageIcon cachedIcon = getCachedIcon(cachedResolvedUrl);
             if (cachedIcon != null) {
                 displayIcon(fileName, cachedIcon);
                 return;
             }
         }
 
-        List<String> previewUrls = getPreviewUrls(fileName);
+        List<String> previewUrls = buildPreviewUrls(fileName);
         if (previewUrls.isEmpty()) {
             hideImagePreview();
             return;
@@ -165,15 +176,14 @@ public class ImagePreviewHelper {
 
         loadWorker = new SwingWorker<>() {
             @Override
-            protected ImageIcon doInBackground() throws Exception {
+            protected PreviewResult doInBackground() {
                 for (String previewUrl : previewUrls) {
                     BufferedImage image = tryReadImage(previewUrl);
                     if (isCancelled()) {
                         return null;
                     }
                     if (image != null) {
-                        resolvedPreviewUrlCache.put(fileName, previewUrl);
-                        return new ImageIcon(scaleImage(image));
+                        return new PreviewResult(previewUrl, new ImageIcon(scaleImage(image)));
                     }
                 }
                 return null;
@@ -186,17 +196,14 @@ public class ImagePreviewHelper {
                 }
 
                 try {
-                    ImageIcon icon = get();
-                    if (icon == null) {
+                    PreviewResult result = get();
+                    if (result == null || result.icon == null) {
                         showStatus("Preview unavailable");
                         return;
                     }
 
-                    String resolvedUrl = resolvedPreviewUrlCache.get(fileName);
-                    if (resolvedUrl != null) {
-                        previewCache.put(resolvedUrl, icon);
-                    }
-                    displayIcon(fileName, icon);
+                    cachePreview(fileName, result.resolvedUrl, result.icon);
+                    displayIcon(fileName, result.icon);
                 } catch (Exception ignored) {
                     showStatus("Preview unavailable");
                 } finally {
@@ -327,7 +334,7 @@ public class ImagePreviewHelper {
 
     private ImageIcon getFirstCachedPreview(List<String> previewUrls) {
         for (String previewUrl : previewUrls) {
-            ImageIcon cachedIcon = previewCache.get(previewUrl);
+            ImageIcon cachedIcon = getCachedIcon(previewUrl);
             if (cachedIcon != null) {
                 return cachedIcon;
             }
@@ -335,7 +342,7 @@ public class ImagePreviewHelper {
         return null;
     }
 
-    private List<String> getPreviewUrls(String fileName) {
+    static List<String> buildPreviewUrls(String fileName) {
         Set<String> previewFileNames = new LinkedHashSet<>();
         previewFileNames.add(fileName);
         previewFileNames.addAll(getAlternatePreviewFileNames(fileName));
@@ -349,7 +356,7 @@ public class ImagePreviewHelper {
         return previewUrls;
     }
 
-    private List<String> getAlternatePreviewFileNames(String fileName) {
+    private static List<String> getAlternatePreviewFileNames(String fileName) {
         Set<String> alternates = new LinkedHashSet<>();
 
         if (fileName.contains("_NRT")) {
@@ -360,7 +367,7 @@ public class ImagePreviewHelper {
 
         if (fileName.contains(".NRT")) {
             alternates.add(fileName.replace(".NRT", ""));
-        } else {
+        } else if (!fileName.contains("_NRT")) {
             alternates.add(insertBeforeExtension(fileName, ".NRT"));
         }
 
@@ -369,32 +376,14 @@ public class ImagePreviewHelper {
                 .toList();
     }
 
-    private void addInsertedNrtVariants(Set<String> alternates, String fileName) {
-        String beforeVersion = insertBeforeLastDotBeforeExtension(fileName, "_NRT");
-        if (beforeVersion != null) {
-            alternates.add(beforeVersion);
-        }
-
+    private static void addInsertedNrtVariants(Set<String> alternates, String fileName) {
         String beforeExtension = insertBeforeExtension(fileName, "_NRT");
         if (beforeExtension != null) {
             alternates.add(beforeExtension);
         }
     }
 
-    private String insertBeforeLastDotBeforeExtension(String fileName, String token) {
-        int extensionDot = fileName.lastIndexOf('.');
-        if (extensionDot <= 0) {
-            return insertBeforeExtension(fileName, token);
-        }
-
-        int insertPosition = fileName.lastIndexOf('.', extensionDot - 1);
-        if (insertPosition <= 0) {
-            return insertBeforeExtension(fileName, token);
-        }
-        return fileName.substring(0, insertPosition) + token + fileName.substring(insertPosition);
-    }
-
-    private String insertBeforeExtension(String fileName, String token) {
+    private static String insertBeforeExtension(String fileName, String token) {
         int extensionDot = fileName.lastIndexOf('.');
         if (extensionDot <= 0) {
             return fileName + token;
@@ -408,27 +397,50 @@ public class ImagePreviewHelper {
     }
 
     public void showFullImageDialog(String fileName, Component parent) {
-        for (String previewUrl : getPreviewUrls(fileName)) {
-            ImageIcon cachedIcon = previewCache.get(previewUrl);
+        for (String previewUrl : buildPreviewUrls(fileName)) {
+            ImageIcon cachedIcon = getCachedIcon(previewUrl);
             if (cachedIcon != null) {
-                resolvedPreviewUrlCache.put(fileName, previewUrl);
+                cachePreview(fileName, previewUrl, cachedIcon);
                 showImageDialog(parent, cachedIcon);
                 return;
             }
         }
 
-        for (String previewUrl : getPreviewUrls(fileName)) {
-            BufferedImage image = tryReadImage(previewUrl);
-            if (image != null) {
-                ImageIcon icon = new ImageIcon(image);
-                previewCache.put(previewUrl, icon);
-                resolvedPreviewUrlCache.put(fileName, previewUrl);
-                showImageDialog(parent, icon);
-                return;
+        final JDialog loadingDialog = createLoadingDialog(parent);
+        SwingWorker<PreviewResult, Void> fullImageWorker = new SwingWorker<>() {
+            @Override
+            protected PreviewResult doInBackground() {
+                for (String previewUrl : buildPreviewUrls(fileName)) {
+                    BufferedImage image = tryReadImage(previewUrl);
+                    if (isCancelled()) {
+                        return null;
+                    }
+                    if (image != null) {
+                        return new PreviewResult(previewUrl, new ImageIcon(image));
+                    }
+                }
+                return null;
             }
-        }
 
-        JOptionPane.showMessageDialog(parent, "Image not available.");
+            @Override
+            protected void done() {
+                loadingDialog.dispose();
+                try {
+                    PreviewResult result = get();
+                    if (result == null || result.icon == null) {
+                        JOptionPane.showMessageDialog(parent, "Image not available.");
+                        return;
+                    }
+                    cachePreview(fileName, result.resolvedUrl, result.icon);
+                    showImageDialog(parent, result.icon);
+                } catch (Exception ignored) {
+                    JOptionPane.showMessageDialog(parent, "Failed to load image.");
+                }
+            }
+        };
+
+        fullImageWorker.execute();
+        loadingDialog.setVisible(true);
     }
 
     private void showImageDialog(Component parent, ImageIcon icon) {
@@ -436,5 +448,38 @@ public class ImagePreviewHelper {
         JScrollPane scrollPane = new JScrollPane(label);
         scrollPane.setPreferredSize(new Dimension(900, 700));
         JOptionPane.showMessageDialog(parent, scrollPane, "Full Image Preview", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private JDialog createLoadingDialog(Component parent) {
+        Window owner = parent == null ? null : SwingUtilities.getWindowAncestor(parent);
+        JDialog dialog = new JDialog(owner, "Loading Preview", Dialog.ModalityType.MODELESS);
+        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        dialog.getContentPane().add(new JLabel("Loading full image preview...", SwingConstants.CENTER),
+                BorderLayout.CENTER);
+        dialog.setSize(260, 90);
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(parent);
+        return dialog;
+    }
+
+    private String getResolvedPreviewUrl(String fileName) {
+        synchronized (cacheLock) {
+            return resolvedPreviewUrlCache.get(fileName);
+        }
+    }
+
+    private ImageIcon getCachedIcon(String previewUrl) {
+        synchronized (cacheLock) {
+            return previewCache.get(previewUrl);
+        }
+    }
+
+    private void cachePreview(String fileName, String previewUrl, ImageIcon icon) {
+        synchronized (cacheLock) {
+            resolvedPreviewUrlCache.put(fileName, previewUrl);
+            if (icon != null) {
+                previewCache.put(previewUrl, icon);
+            }
+        }
     }
 }
