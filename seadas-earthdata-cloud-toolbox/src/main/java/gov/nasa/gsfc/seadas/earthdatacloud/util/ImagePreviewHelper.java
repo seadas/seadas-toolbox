@@ -9,13 +9,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class ImagePreviewHelper {
 
@@ -25,11 +34,12 @@ public class ImagePreviewHelper {
     private static final int WINDOW_GAP = 10;
     private static final int MAX_CACHE_SIZE = 40;
 
-    private final JWindow previewWindow;
+    private JWindow previewWindow;
     private final JPanel previewPanel;
     private final JLabel previewLabel;
     private final JLabel statusLabel;
     private final Timer hoverTimer;
+    private final Timer exitTimer;
     private final Map<String, ImageIcon> previewCache;
     private final Map<String, String> resolvedPreviewUrlCache;
     private final Object cacheLock = new Object();
@@ -40,6 +50,7 @@ public class ImagePreviewHelper {
     private Point hoverLocationOnScreen;
     private JDialog parentDialog;
     private Component previewAnchor;
+    private Map<String, String> previewLinkMap;
 
     private static final class PreviewResult {
         private final String resolvedUrl;
@@ -52,11 +63,11 @@ public class ImagePreviewHelper {
     }
 
     public ImagePreviewHelper() {
-        previewWindow = new JWindow();
         previewPanel = new JPanel(new BorderLayout(0, 6));
         previewLabel = new JLabel("", SwingConstants.CENTER);
         statusLabel = new JLabel("", SwingConstants.CENTER);
         hoverTimer = new Timer(HOVER_DELAY_MS, e -> showPreviewForHoveredFile());
+        exitTimer = new Timer(150, e -> clearHoverStateIfPointerOutsidePreviewArea());
         previewCache = new LinkedHashMap<>(16, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, ImageIcon> eldest) {
@@ -71,6 +82,7 @@ public class ImagePreviewHelper {
         };
 
         hoverTimer.setRepeats(false);
+        exitTimer.setRepeats(false);
 
         previewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         previewLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -83,18 +95,19 @@ public class ImagePreviewHelper {
         previewPanel.add(previewLabel, BorderLayout.CENTER);
         previewPanel.add(statusLabel, BorderLayout.SOUTH);
 
-        previewWindow.setAlwaysOnTop(true);
-        previewWindow.setFocusableWindowState(false);
-        previewWindow.setContentPane(previewPanel);
+        previewWindow = createPreviewWindow(null);
     }
 
-    public void attachToTable(JTable table, Map<String, String> fileLinkMap, JDialog parentDialog) {
+    public void attachToTable(JTable table, Map<String, String> previewLinkMap, JDialog parentDialog) {
         this.parentDialog = parentDialog;
         this.previewAnchor = table;
+        this.previewLinkMap = previewLinkMap;
+        ensurePreviewWindowOwner(parentDialog != null ? parentDialog : SwingUtilities.getWindowAncestor(table));
 
         table.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
+                exitTimer.stop();
                 hoverLocationOnScreen = e.getLocationOnScreen();
 
                 int row = table.rowAtPoint(e.getPoint());
@@ -126,7 +139,7 @@ public class ImagePreviewHelper {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                clearHoverState();
+                exitTimer.restart();
             }
 
             @Override
@@ -139,8 +152,44 @@ public class ImagePreviewHelper {
     private void clearHoverState() {
         hoveredFileName = null;
         hoverTimer.stop();
+        exitTimer.stop();
         cancelLoadWorker();
         hideImagePreview();
+    }
+
+    private void clearHoverStateIfPointerOutsidePreviewArea() {
+        if (isPointerInComponent(previewAnchor) || isPointerInComponent(previewWindow)) {
+            return;
+        }
+        clearHoverState();
+    }
+
+    private boolean isPointerInComponent(Component component) {
+        if (component == null || !component.isShowing()) {
+            return false;
+        }
+        PointerInfo pointerInfo;
+        try {
+            pointerInfo = MouseInfo.getPointerInfo();
+        } catch (HeadlessException ignored) {
+            return false;
+        } catch (SecurityException ignored) {
+            return false;
+        }
+        if (pointerInfo == null) {
+            return false;
+        }
+
+        Point pointerLocation = pointerInfo.getLocation();
+        Point componentLocation;
+        try {
+            componentLocation = component.getLocationOnScreen();
+        } catch (IllegalComponentStateException ignored) {
+            return false;
+        }
+
+        Rectangle bounds = new Rectangle(componentLocation, component.getSize());
+        return bounds.contains(pointerLocation);
     }
 
     private void showPreviewForHoveredFile() {
@@ -159,7 +208,7 @@ public class ImagePreviewHelper {
             }
         }
 
-        List<String> previewUrls = buildPreviewUrls(fileName);
+        List<String> previewUrls = buildPreviewUrls(fileName, getPreviewLink(fileName));
         if (previewUrls.isEmpty()) {
             hideImagePreview();
             return;
@@ -171,20 +220,20 @@ public class ImagePreviewHelper {
             return;
         }
 
-        showStatus("Loading preview...");
+        showLoadingStatus();
         cancelLoadWorker();
 
         loadWorker = new SwingWorker<>() {
             @Override
             protected PreviewResult doInBackground() {
-                for (String previewUrl : previewUrls) {
-                    BufferedImage image = tryReadImage(previewUrl);
-                    if (isCancelled()) {
-                        return null;
-                    }
-                    if (image != null) {
-                        return new PreviewResult(previewUrl, new ImageIcon(scaleImage(image)));
-                    }
+                PreviewResult result = tryLoadFirstPreview(previewUrls, true);
+                if (result != null || isCancelled()) {
+                    return result;
+                }
+
+                List<String> cmrPreviewUrls = findCmrBrowseUrls(fileName);
+                if (!cmrPreviewUrls.isEmpty()) {
+                    return tryLoadFirstPreview(cmrPreviewUrls, true);
                 }
                 return null;
             }
@@ -198,14 +247,14 @@ public class ImagePreviewHelper {
                 try {
                     PreviewResult result = get();
                     if (result == null || result.icon == null) {
-                        showStatus("Preview unavailable");
+                        showUnavailableStatus();
                         return;
                     }
 
                     cachePreview(fileName, result.resolvedUrl, result.icon);
                     displayIcon(fileName, result.icon);
                 } catch (Exception ignored) {
-                    showStatus("Preview unavailable");
+                    showUnavailableStatus();
                 } finally {
                     loadWorker = null;
                 }
@@ -222,6 +271,25 @@ public class ImagePreviewHelper {
         previewWindow.pack();
         positionPreviewWindow();
         previewWindow.setVisible(true);
+        previewWindow.toFront();
+    }
+
+    private void showLoadingStatus() {
+        if (previewWindow.isVisible() && previewLabel.getIcon() != null) {
+            positionPreviewWindow();
+            return;
+        }
+
+        showStatus("Loading preview...");
+    }
+
+    private void showUnavailableStatus() {
+        if (previewWindow.isVisible() && previewLabel.getIcon() != null) {
+            hideImagePreview();
+            return;
+        }
+
+        showStatus("Preview unavailable");
     }
 
     private void showStatus(String text) {
@@ -232,6 +300,35 @@ public class ImagePreviewHelper {
         previewWindow.pack();
         positionPreviewWindow();
         previewWindow.setVisible(true);
+        previewWindow.toFront();
+    }
+
+    private JWindow createPreviewWindow(Window owner) {
+        JWindow window = owner == null ? new JWindow() : new JWindow(owner);
+        window.setAlwaysOnTop(true);
+        window.setFocusableWindowState(false);
+        window.setAutoRequestFocus(false);
+        window.setContentPane(previewPanel);
+        return window;
+    }
+
+    private void ensurePreviewWindowOwner(Window owner) {
+        if (owner == null || previewWindow.getOwner() == owner) {
+            return;
+        }
+
+        boolean wasVisible = previewWindow.isVisible();
+        Point location = previewWindow.getLocation();
+        previewWindow.setVisible(false);
+        previewWindow.dispose();
+
+        previewWindow = createPreviewWindow(owner);
+        previewWindow.pack();
+        previewWindow.setLocation(location);
+        if (wasVisible) {
+            previewWindow.setVisible(true);
+            previewWindow.toFront();
+        }
     }
 
     private Image scaleImage(BufferedImage image) {
@@ -332,6 +429,20 @@ public class ImagePreviewHelper {
         }
     }
 
+    private PreviewResult tryLoadFirstPreview(List<String> previewUrls, boolean scale) {
+        for (String previewUrl : previewUrls) {
+            BufferedImage image = tryReadImage(previewUrl);
+            if (loadWorker != null && loadWorker.isCancelled()) {
+                return null;
+            }
+            if (image != null) {
+                Image previewImage = scale ? scaleImage(image) : image;
+                return new PreviewResult(previewUrl, new ImageIcon(previewImage));
+            }
+        }
+        return null;
+    }
+
     private ImageIcon getFirstCachedPreview(List<String> previewUrls) {
         for (String previewUrl : previewUrls) {
             ImageIcon cachedIcon = getCachedIcon(previewUrl);
@@ -343,14 +454,24 @@ public class ImagePreviewHelper {
     }
 
     static List<String> buildPreviewUrls(String fileName) {
+        return buildPreviewUrls(fileName, null);
+    }
+
+    static List<String> buildPreviewUrls(String fileName, String preferredPreviewUrl) {
         Set<String> previewFileNames = new LinkedHashSet<>();
         previewFileNames.add(fileName);
         previewFileNames.addAll(getAlternatePreviewFileNames(fileName));
 
         List<String> previewUrls = new ArrayList<>();
+        if (preferredPreviewUrl != null && !preferredPreviewUrl.isBlank()) {
+            previewUrls.add(preferredPreviewUrl);
+        }
         for (String previewFileName : previewFileNames) {
             if (previewFileName != null && !previewFileName.isBlank()) {
-                previewUrls.add("https://oceandata.sci.gsfc.nasa.gov/browse_images/" + previewFileName + ".png");
+                String generatedUrl = "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + previewFileName + ".png";
+                if (!previewUrls.contains(generatedUrl)) {
+                    previewUrls.add(generatedUrl);
+                }
             }
         }
         return previewUrls;
@@ -363,6 +484,7 @@ public class ImagePreviewHelper {
             alternates.add(fileName.replace("_NRT", ""));
         } else {
             addInsertedNrtVariants(alternates, fileName);
+            addProductNrtVariant(alternates, fileName);
         }
 
         if (fileName.contains(".NRT")) {
@@ -391,13 +513,27 @@ public class ImagePreviewHelper {
         return fileName.substring(0, extensionDot) + token + fileName.substring(extensionDot);
     }
 
+    private static void addProductNrtVariant(Set<String> alternates, String fileName) {
+        String[] parts = fileName.split("\\.");
+        for (int i = 0; i < parts.length - 1; i++) {
+            if (parts[i].matches("L\\d[A-Z]?") && i + 1 < parts.length - 1) {
+                String product = parts[i + 1];
+                if (!product.endsWith("_NRT")) {
+                    parts[i + 1] = product + "_NRT";
+                    alternates.add(String.join(".", parts));
+                }
+                return;
+            }
+        }
+    }
+
     public void hideImagePreview() {
         previewWindow.setVisible(false);
         displayedFileName = null;
     }
 
     public void showFullImageDialog(String fileName, Component parent) {
-        for (String previewUrl : buildPreviewUrls(fileName)) {
+        for (String previewUrl : buildPreviewUrls(fileName, getPreviewLink(fileName))) {
             ImageIcon cachedIcon = getCachedIcon(previewUrl);
             if (cachedIcon != null) {
                 cachePreview(fileName, previewUrl, cachedIcon);
@@ -410,14 +546,14 @@ public class ImagePreviewHelper {
         SwingWorker<PreviewResult, Void> fullImageWorker = new SwingWorker<>() {
             @Override
             protected PreviewResult doInBackground() {
-                for (String previewUrl : buildPreviewUrls(fileName)) {
-                    BufferedImage image = tryReadImage(previewUrl);
-                    if (isCancelled()) {
-                        return null;
-                    }
-                    if (image != null) {
-                        return new PreviewResult(previewUrl, new ImageIcon(image));
-                    }
+                PreviewResult result = tryLoadFirstPreview(buildPreviewUrls(fileName, getPreviewLink(fileName)), false);
+                if (result != null || isCancelled()) {
+                    return result;
+                }
+
+                List<String> cmrPreviewUrls = findCmrBrowseUrls(fileName);
+                if (!cmrPreviewUrls.isEmpty()) {
+                    return tryLoadFirstPreview(cmrPreviewUrls, false);
                 }
                 return null;
             }
@@ -465,6 +601,64 @@ public class ImagePreviewHelper {
     private String getResolvedPreviewUrl(String fileName) {
         synchronized (cacheLock) {
             return resolvedPreviewUrlCache.get(fileName);
+        }
+    }
+
+    private String getPreviewLink(String fileName) {
+        return previewLinkMap == null ? null : previewLinkMap.get(fileName);
+    }
+
+    private List<String> findCmrBrowseUrls(String fileName) {
+        Set<String> cmrPreviewUrls = new LinkedHashSet<>();
+        for (String candidateFileName : getAlternatePreviewFileNames(fileName)) {
+            addCmrBrowseUrls(candidateFileName, cmrPreviewUrls);
+        }
+        return new ArrayList<>(cmrPreviewUrls);
+    }
+
+    private void addCmrBrowseUrls(String fileName, Set<String> cmrPreviewUrls) {
+        HttpURLConnection connection = null;
+        try {
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+            URL url = new URL("https://cmr.earthdata.nasa.gov/search/granules.json?provider=OB_CLOUD"
+                    + "&producer_granule_id=" + encodedFileName
+                    + "&page_size=1");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return;
+            }
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                JSONObject response = new JSONObject(new JSONTokener(reader));
+                JSONArray entries = response.getJSONObject("feed").optJSONArray("entry");
+                if (entries == null || entries.isEmpty()) {
+                    return;
+                }
+
+                JSONArray links = entries.getJSONObject(0).optJSONArray("links");
+                if (links == null) {
+                    return;
+                }
+
+                for (int i = 0; i < links.length(); i++) {
+                    JSONObject link = links.getJSONObject(i);
+                    String href = link.optString("href", "");
+                    String rel = link.optString("rel", "");
+                    String type = link.optString("type", "");
+                    if (!href.isBlank() && (rel.endsWith("/browse#") || "image/png".equalsIgnoreCase(type))) {
+                        cmrPreviewUrls.add(href);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
