@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <izpack:installation version="5.0"
-                     xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
+                     xsi:schemaLocation="http://izpack.org/schema/installation
+                        http://izpack.org/schema/5.2/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.2</appversion>
-        <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
-        <!--        <requiresjdk>no</requiresjdk>-->
         <url>https://seadas.gsfc.nasa.gov</url>
         <authors>
             <author name="Aynur Abdurazik" email="aynur.abdurazik@nasa.gov"/>
@@ -129,7 +128,6 @@
             <value>archive</value>
         </condition>
     </conditions>
-
 
     <panels>
 

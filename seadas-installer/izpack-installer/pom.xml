@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -6,12 +7,9 @@
     <artifactId>izpack-installer</artifactId>
     <version>1.2</version>
     <name>SeaDAS Installer</name>
-
-    <!-- seems like this needs to be "jar" to accomplish a build of java code too? a bit confused
-    on the difference between putting "pom" and "jar" here. -->
     <packaging>jar</packaging>
 
-    <!-- maven repository where the izpack-maven-plugin  and such live -->
+    <!-- maven repository where the izpack-maven-plugin and such live -->
     <repositories>
         <repository>
             <id>codehaus-releases</id>
@@ -19,12 +17,14 @@
         </repository>
     </repositories>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <staging.dir>${project.build.directory}/staging</staging.dir>
-    <izpack.version>5.1.3</izpack.version>
-    <installer-output-filename>seadas-izpack-installer.jar</installer-output-filename>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <staging.dir>${project.build.directory}/staging</staging.dir>
+        <izpack.version>5.2.4</izpack.version>
+
+        <!-- Base name (no .jar) for the installer JAR -->
+        <installer-output-filename>seadas-installer</installer-output-filename>
+    </properties>
 
     <developers>
         <developer>
@@ -36,11 +36,7 @@
         </developer>
     </developers>
 
-    <!-- must have a dependency on our separate package that contains the custom
-    panels -->
-
     <build>
-
         <defaultGoal>package</defaultGoal>
 
         <pluginManagement>
@@ -78,18 +74,16 @@
             <!-- copy all resources to the staging directory. -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <!-- here the phase you need -->
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>${staging.dir}</outputDirectory>
-
-                            <!-- recursive copy of all resource under src/main/izpack. this is the stuff to install as well as install.xml and panel data and such -->
                             <resources>
 
                                 <resource>
@@ -102,8 +96,7 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>../../../optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx
-                                    </directory>
+                                    <directory>../../../optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
@@ -112,8 +105,7 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>../../../seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas
-                                    </directory>
+                                    <directory>../../../seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
@@ -134,12 +126,12 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <executions>
                     <execution>
-                        <!--                <id>copy-resources</id>-->
                         <phase>validate</phase>
                         <goals>
                             <goal>run</goal>
@@ -166,7 +158,6 @@
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-
                     <execution>
                         <!-- copy izpack custom (custom panels, etc.) jars to izpack staging custom -->
                         <id>copy-izpack-dependencies</id>
@@ -181,23 +172,18 @@
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
-                            <includeArtifactIds>izpack-panels
-                            </includeArtifactIds> <!-- IMPORTANT: this causes *only* our custom panels to be copied -->
+                            <!-- IMPORTANT: this causes *only* our custom panels to be copied -->
+                            <includeArtifactIds>izpack-panels</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!--
-             We need to tell the izpack-maven-plugin what to use as the base directory (this is our staging area), and also tell it the install file to use:
-            -->
+            <!-- IzPack: build the installer JAR -->
             <plugin>
                 <groupId>org.codehaus.izpack</groupId>
                 <artifactId>izpack-maven-plugin</artifactId>
                 <version>${izpack.version}</version>
-                <!--       <configuration>-->
-                <!--          <descriptorEncoding>UTF-8</descriptorEncoding>-->
-                <!--        </configuration>-->
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -208,28 +194,17 @@
                             <!-- base for relative paths in izpack descriptor -->
                             <baseDir>${staging.dir}</baseDir>
                             <installFile>${staging.dir}/install.xml</installFile>
-                            <output>${project.build.directory}/${installer-output-filename}</output>
-                            <finalName>seadas-installer</finalName>
-                            <classifier>jar</classifier>
+
+                            <!-- Output: target/seadas-installer.jar -->
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <finalName>${installer-output-filename}</finalName>
+                            <!-- no classifier, so the file name is exactly finalName.jar -->
                         </configuration>
                     </execution>
                 </executions>
-                <!-- must have a dependency here on any code used in the installer, otherwise the classloader
-                will not find it.  So in this case we need our panels and then the package that contains the base classes
-                for the panels -->
-                <!--       <dependencies>-->
-                <!--          <dependency>-->
-                <!--            <groupId>org.codehaus.izpack</groupId>-->
-                <!--            <artifactId>izpack-panel</artifactId>-->
-                <!--            <version>${izpack.version}</version>-->
-                <!--          </dependency>-->
-                <!--          <dependency>-->
-                <!--            <groupId>gov.nasa.gsfc.seadas</groupId>-->
-                <!--            <artifactId>izpack-panels</artifactId>-->
-                <!--            <version>1.0-SNAPSHOT</version>-->
-                <!--          </dependency>-->
-                <!--        </dependencies>-->
             </plugin>
+
+            <!-- Launch4j: wrap installer JAR into a Windows EXE -->
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
@@ -243,7 +218,10 @@
                         </goals>
                         <configuration>
                             <headerType>gui</headerType>
-                            <jar>target/${installer-output-filename}</jar>
+
+                            <!-- This now matches the IzPack output exactly -->
+                            <jar>${project.build.directory}/${installer-output-filename}.jar</jar>
+
                             <outfile>target/${project.artifactId}.exe</outfile>
                             <classPath>
                                 <mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
@@ -252,7 +230,8 @@
                                 <bundledJre64Bit>false</bundledJre64Bit>
                                 <bundledJreAsFallback>false</bundledJreAsFallback>
                                 <minVersion>21.0.0</minVersion>
-                                <maxVersion>21.0.8</maxVersion>
+                                <!-- relaxed so future 21.x builds still work -->
+                                <maxVersion>21.99.99</maxVersion>
                                 <jdkPreference>preferJre</jdkPreference>
                                 <runtimeBits>32</runtimeBits>
                             </jre>
@@ -271,7 +250,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
-
 </project>
