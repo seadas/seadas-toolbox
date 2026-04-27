@@ -36,11 +36,13 @@ public class FileDownloadManager {
      * @param parentComponent Parent component for dialogs
      * @param onComplete Callback to execute when download completes
      */
-    public void downloadSelectedFiles(List<String> filesToDownload, 
+    public void downloadSelectedFiles(List<String> filesToDownload,
+                                    boolean downloadListOnly,
                                     java.util.Map<String, String> fileLinkMap,
                                     Component parentComponent,
                                     DownloadCompleteCallback onComplete) {
-        
+
+
         // Check credentials
         if (earthdataCredentials == null) {
             earthdataCredentials = WebPageFetcherWithJWT.getCredentials("urs.earthdata.nasa.gov");
@@ -56,40 +58,67 @@ public class FileDownloadManager {
             return; // User cancelled
         }
         
-        // Show progress dialog
-        showProgressDialog(parentComponent, filesToDownload.size());
-        
-        // Start download in background thread
-        new Thread(() -> {
-            int downloadedCount = 0;
-            
-            for (int i = 0; i < filesToDownload.size(); i++) {
-                String fileName = filesToDownload.get(i);
-                String url = fileLinkMap.get(fileName);
-                
-                if (url != null && downloadFile(url, downloadDir)) {
-                    downloadedCount++;
-                }
-                
-                // Update progress
-                int progress = i + 1;
-                SwingUtilities.invokeLater(() -> updateProgressBar(progress));
+
+
+        // Create a listing of all file urls requested for download which will be saved as a text file in the requested
+        // download directory
+        String fileUrls = "";
+        for (int i = 0; i < filesToDownload.size(); i++) {
+            String fileName = filesToDownload.get(i);
+            String url = fileLinkMap.get(fileName);
+
+
+            if (url != null) {
+                fileUrls += url + "\n";
             }
-            
-            // Hide progress dialog
-            SwingUtilities.invokeLater(() -> hideProgressDialog());
-            
-            // Show completion message and execute callback
-            final int finalDownloadedCount = downloadedCount;
-            SwingUtilities.invokeLater(() -> {
-                JOptionPane.showMessageDialog(parentComponent, 
-                    finalDownloadedCount + " file(s) downloaded to:\n" + downloadDir.toAbsolutePath());
-                
-                if (onComplete != null) {
-                    onComplete.onDownloadComplete(finalDownloadedCount, downloadDir);
+        }
+        downloadFileUrls(fileUrls, downloadDir);
+
+
+
+        if (!downloadListOnly) {
+
+            // Show progress dialog
+            showProgressDialog(parentComponent, filesToDownload.size());
+
+            // Start download in background thread
+            new Thread(() -> {
+
+
+                int downloadedCount = 0;
+                for (int i = 0; i < filesToDownload.size(); i++) {
+                    String fileName = filesToDownload.get(i);
+                    String url = fileLinkMap.get(fileName);
+
+                    if (url != null && downloadFile(url, downloadDir)) {
+                        downloadedCount++;
+                    }
+
+                    // Update progress
+                    int progress = i + 1;
+                    SwingUtilities.invokeLater(() -> updateProgressBar(progress));
                 }
-            });
-        }).start();
+
+
+                // Hide progress dialog
+                SwingUtilities.invokeLater(() -> hideProgressDialog());
+
+                // Show completion message and execute callback
+                final int finalDownloadedCount = downloadedCount;
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(parentComponent,
+                            finalDownloadedCount + " file(s) downloaded to:\n" + downloadDir.toAbsolutePath());
+
+                    if (onComplete != null) {
+                        onComplete.onDownloadComplete(finalDownloadedCount, downloadDir);
+                    }
+                });
+
+
+            }).start();
+        } else {
+            JOptionPane.showMessageDialog(parentComponent, "File urls list written to:\n" + downloadDir.toAbsolutePath());
+        }
     }
     
     /**
@@ -137,7 +166,51 @@ public class FileDownloadManager {
             return false;
         }
     }
-    
+
+
+    /**
+     * Write a text file containing a listing of the file URLs requested for download
+     *    - Includes urls regardless of whether the download fails
+     *    - Appends to existing list file if the list file already exits
+
+     *
+     * @param fileUrls A string containing a listing of the file URLs requested for download
+     * @param outputDir The directory to save the file to
+     * @return true if file list is written, false otherwise
+     */
+    public boolean downloadFileUrls(String fileUrls, Path outputDir) {
+
+        String FILENAME = "requested_download_files_url_list.txt";
+        try {
+            Files.createDirectories(outputDir);
+            Path outputPath = outputDir.resolve(FILENAME);
+            File outputFile = outputPath.toFile();
+
+            if (!outputFile.exists()) {
+                // Create new files list
+                fileUrls = "Listing of all file urls requested for download\n\n" + fileUrls;
+
+                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile, false));
+                writer.write(fileUrls);
+                writer.close();
+            } else {
+                // Append the list to the existing files list
+                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile, true));
+                writer.append(fileUrls);
+                writer.close();
+            }
+
+            return true;
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to write '" + FILENAME + "'  Error: " + e.getMessage());
+            return false;
+        }
+    }
+
+
     /**
      * Extracts the filename from a URL, handling query parameters.
      * 

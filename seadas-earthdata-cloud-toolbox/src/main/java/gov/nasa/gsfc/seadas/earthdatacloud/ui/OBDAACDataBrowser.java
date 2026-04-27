@@ -54,6 +54,7 @@ public class OBDAACDataBrowser extends JPanel {
     private int totalPages = 1;
     private JSpinner maxApiResultsSpinner;
     private JSpinner resultsPerPageSpinner;
+    JCheckBox urlListOnlyCheckbox;
 
     private JLabel pageLabel;
     private JLabel fetchedLabel;
@@ -188,6 +189,9 @@ public class OBDAACDataBrowser extends JPanel {
         // Initialize spinners first
         maxApiResultsSpinner = new JSpinner();
         resultsPerPageSpinner = new JSpinner();
+        urlListOnlyCheckbox = new JCheckBox("Download URL List Only");
+        urlListOnlyCheckbox.setSelected(false);
+        urlListOnlyCheckbox.setToolTipText("<html>When selecting 'Download'<br>A URL list will be created but no files will be downloaded.</html>");
         
         OBDAACDataBrowserPanels panels = new OBDAACDataBrowserPanels();
         JPanel paginationPanel = panels.createSpinnerPanel(maxApiResultsSpinner, resultsPerPageSpinner);
@@ -202,7 +206,7 @@ public class OBDAACDataBrowser extends JPanel {
 
         gbc.gridy++;
         gbc.gridx = 0;
-        add(createPaginationButtonPanel(paginationPanel, buttonPanel), gbc);
+        add(createPaginationButtonPanel(paginationPanel, urlListOnlyCheckbox, buttonPanel), gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -241,7 +245,7 @@ public class OBDAACDataBrowser extends JPanel {
         });
     }
 
-    private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
+    private JPanel createPaginationButtonPanel(JPanel panel1, JCheckBox urlListOnlyCheckbox, JPanel panel2) {
         GridBagConstraints gbc = new GridBagConstraints();
         GridBagLayout layout = new GridBagLayout();
 
@@ -255,13 +259,20 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridx = 0;
         panel.add(panel1, gbc);
 
+//        gbc.gridx++;
+//        gbc.weightx = 1;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        JLabel fill = new JLabel("");
+//        panel.add(fill, gbc);
+//        gbc.weightx = 0;
+//        gbc.fill = GridBagConstraints.NONE;
+
+
+
         gbc.gridx++;
-        gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        JLabel fill = new JLabel("");
-        panel.add(fill, gbc);
-        gbc.weightx = 0;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(urlListOnlyCheckbox, gbc);
+
 
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTHEAST;
@@ -530,7 +541,15 @@ public class OBDAACDataBrowser extends JPanel {
             return;
         }
 
-        downloadManager.downloadSelectedFiles(filesToDownload, fileLinkMap, this, 
+
+
+        boolean downloadListOnly = false;
+        if (urlListOnlyCheckbox != null && urlListOnlyCheckbox.isSelected()) {
+            downloadListOnly = true;
+        }
+
+
+        downloadManager.downloadSelectedFiles(filesToDownload, downloadListOnly, fileLinkMap, this,
             (downloadedCount, downloadDir) -> {
                 // Callback when download completes
                 for (String fileName : filesToDownload) {
@@ -1189,7 +1208,8 @@ public class OBDAACDataBrowser extends JPanel {
 
         boolean categorize = Earthdata_Cloud_Controller.getPreferencePresetRegionsCategorize();
 
-        if (Earthdata_Cloud_Controller.getPreferencePresetRegionsSelectorInclude()) {
+        boolean alwaysIncludePresetRegions = true;
+        if (alwaysIncludePresetRegions || Earthdata_Cloud_Controller.getPreferencePresetRegionsSelectorInclude()) {
 
 
             try {
