@@ -167,15 +167,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     
 
-    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_parent_dir";
-    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL = "Download Parent Directory";
-    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP = "Download Parent Directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL = "Download Directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP = "Download Directory";
     public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT = "";
 
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_dir";
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_LABEL = "Download Folder";
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_TOOLTIP = "Download Folder in the Parent Directory";
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT = "";
 
     public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY = PROPERTY_ROOT_KEY + ".results_font_zoom";
     public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_LABEL = "Results Font Zoom";
@@ -252,7 +248,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
+//        initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY, PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_LINK_INCLUDE_KEY, PROPERTY_IMAGE_LINK_INCLUDE_DEFAULT);
@@ -568,10 +564,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP)
         String downloadParentDirModeDefault = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT;
 
-        @Preference(key = PROPERTY_DOWNLOAD_DIR_MODE_KEY,
-                label = PROPERTY_DOWNLOAD_DIR_MODE_LABEL,
-                description = PROPERTY_DOWNLOAD_DIR_MODE_TOOLTIP)
-        String downloadDirModeDefault = PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT;
 
 
         @Preference(key = PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY,
@@ -704,27 +696,17 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     }
 
 
-    public static String getPreferenceDownloadParentDir() {
+    public static String getPreferenceDownloadDirectory() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
     }
     
-    public static void setPreferenceDownloadParentDir(String parentDirStr) {
+    public static void setPreferenceDownloadDirectory(String parentDirStr) {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         preferences.setPropertyString(PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, parentDirStr);
         return;
     }
 
-    public static String getPreferenceDownloadDir() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
-    }
-
-    public static void setPreferenceDownloadDir(String parentDirStr) {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        preferences.setPropertyString(PROPERTY_DOWNLOAD_DIR_MODE_KEY, parentDirStr);
-        return;
-    }
 
 
     public static boolean getPreferenceIsDay() {

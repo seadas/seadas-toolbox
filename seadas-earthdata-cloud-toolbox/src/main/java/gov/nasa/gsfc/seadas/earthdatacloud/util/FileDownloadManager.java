@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -55,12 +54,12 @@ public class FileDownloadManager {
         }
         
         // Get download directory from user
-        File urlsListFile = selectDownloadDirectory(parentComponent);
-        if (urlsListFile == null) {
+        File requestedUrlsListFile = getRequestedUrlsListFile(parentComponent);
+        if (requestedUrlsListFile == null) {
             return; // User cancelled
         }
 
-        Path downloadDir = urlsListFile.getParentFile().toPath();
+        Path downloadDir = requestedUrlsListFile.getParentFile().toPath();
 //                Path downloadDir = selectDownloadDirectory(parentComponent);
         if (downloadDir == null) {
             return; // User cancelled
@@ -70,17 +69,17 @@ public class FileDownloadManager {
 
         // Create a listing of all file urls requested for download which will be saved as a text file in the requested
         // download directory
-        String fileUrls = "";
+        String requestedUrlsListString = "";
         for (int i = 0; i < filesToDownload.size(); i++) {
             String fileName = filesToDownload.get(i);
             String url = fileLinkMap.get(fileName);
 
 
             if (url != null) {
-                fileUrls += url + "\n";
+                requestedUrlsListString += url + "\n";
             }
         }
-        downloadFileUrls(fileUrls, downloadDir, urlsListFile);
+        writeRequestedUrlListFile(requestedUrlsListString, requestedUrlsListFile);
 
 
 
@@ -182,30 +181,32 @@ public class FileDownloadManager {
      *    - Appends to existing list file if the list file already exits
 
      *
-     * @param fileUrls A string containing a listing of the file URLs requested for download
-     * @param outputDir The directory to save the file to
+     * @param requestedUrlsListString A string containing a listing of the file URLs requested for download
+     * @param requestedUrlsListFile The file to create which contains the URLs requested for download
      * @return true if file list is written, false otherwise
      */
-    public boolean downloadFileUrls(String fileUrls, Path outputDir, File urlsListFile) {
+    public boolean writeRequestedUrlListFile(String requestedUrlsListString, File requestedUrlsListFile) {
 
-        String FILENAME = "requested_download_files_url_list.txt";
+        if (requestedUrlsListFile == null || requestedUrlsListString == null) {
+            return false;
+        }
+
         try {
-            Files.createDirectories(outputDir);
-            Path outputPath = outputDir.resolve(URL_LIST_FILENAME);
-            File outputFile = outputPath.toFile();
-            outputFile = urlsListFile;
 
-            if (!outputFile.exists()) {
+            Path downloadDir = requestedUrlsListFile.getParentFile().toPath();
+            Files.createDirectories(downloadDir);
+
+            if (!requestedUrlsListFile.exists()) {
                 // Create new files list
-                fileUrls = "Listing of all file urls requested for download\n\n" + fileUrls;
+                requestedUrlsListString = "Listing of all file urls requested for download\n\n" + requestedUrlsListString;
 
-                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile, false));
-                writer.write(fileUrls);
+                BufferedWriter writer = new BufferedWriter(new FileWriter(requestedUrlsListFile, false));
+                writer.write(requestedUrlsListString);
                 writer.close();
             } else {
                 // Append the list to the existing files list
-                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile, true));
-                writer.append(fileUrls);
+                BufferedWriter writer = new BufferedWriter(new FileWriter(requestedUrlsListFile, true));
+                writer.append(requestedUrlsListString);
                 writer.close();
             }
 
@@ -214,7 +215,7 @@ public class FileDownloadManager {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Failed to write '" + FILENAME + "'  Error: " + e.getMessage());
+            System.err.println("Failed to write '" + requestedUrlsListFile.getAbsolutePath() + "'  Error: " + e.getMessage());
             return false;
         }
     }
@@ -293,13 +294,13 @@ public class FileDownloadManager {
      * @param parentComponent Parent component for the dialog
      * @return Selected directory path, or null if cancelled
      */
-    private File selectDownloadDirectory(Component parentComponent) {
+    private File getRequestedUrlsListFile(Component parentComponent) {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select Directory to Save Files");
+        fileChooser.setDialogTitle("Select where to download files and the URL Listing");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
         // Set initial directory based on preferences
-        String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
+        String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDirectory();
         File parentDownloadDirFile = null;
         
         if (parentDownloadDirStr != null && parentDownloadDirStr.trim().length() > 0) {
@@ -323,71 +324,33 @@ public class FileDownloadManager {
             fileChooser.setCurrentDirectory(parentDownloadDirFile);
             final File urlFile = new File(parentDownloadDirFile, URL_LIST_FILENAME);
             fileChooser.setSelectedFile(urlFile);
-            
-//            // Suggest directory name based on preferences
-//            String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
-//            int currIndex = 1;
-//            String downloadDirStrNoSuffix = "requested_download_files_url_list";
-//            boolean retainSuffix = false;
-//
-//            if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
-//                downloadDirStrNoSuffix = downloadDirStr;
-//                String[] downloadDirStrSplitArray = downloadDirStr.split("-");
-//                if (downloadDirStrSplitArray.length == 2) {
-//                    String suffix = downloadDirStrSplitArray[1];
-//                    int currIndexTmp = RegionUtils.convertStringToInt(suffix, -999);
-//                    if (currIndexTmp != -999) {
-//                        downloadDirStrNoSuffix = downloadDirStrSplitArray[0];
-//                        currIndex = currIndexTmp;
-//                        if (currIndex == 1) {
-//                            retainSuffix = true;
-//                        }
-//                    }
-//                }
-//            }
-//
-//            // Find available directory name
-//            String downloadDirStrIndexed;
-//            File file2 = null;
-//            while (file2 == null && currIndex < 1000) {
-//                if (currIndex == 1 && !retainSuffix) {
-//                    downloadDirStrIndexed = downloadDirStrNoSuffix;
-//                } else {
-//                    downloadDirStrIndexed = downloadDirStrNoSuffix + "-" + currIndex;
-//                }
-//
-//                file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
-//                if (!file2.exists()) {
-//                    break;
-//                }
-//                file2 = null;
-//                currIndex++;
-//            }
-//
-//            if (file2 != null) {
-//                fileChooser.setSelectedFile(file2);
-//            }
+
         }
         
         if (fileChooser.showSaveDialog(parentComponent) != JFileChooser.APPROVE_OPTION) {
             return null;
         }
-        
-        File selectedDir = fileChooser.getSelectedFile().getParentFile();
-        
-        // Save preferences
-        String selectedParent = selectedDir.getAbsolutePath();
-        if (selectedParent != null) {
-            Earthdata_Cloud_Controller.setPreferenceDownloadParentDir(selectedParent);
+
+        File selectedFile = fileChooser.getSelectedFile();
+        if (selectedFile == null) {
+            return null;
+        }
+
+//        Path selectedFilePath = selectedFile.toPath();
+//        Path selectedDownloadDirectoryPath = selectedFilePath.getParent();
+//        Earthdata_Cloud_Controller.setPreferenceDownloadDirectory(selectedDownloadDirectoryPath.toString());
+
+        File selectedDownloadParentFile = selectedFile.getParentFile();
+        if (selectedDownloadParentFile != null) {
+            // Save to preferences
+            String selectedDownloadParentFileString = selectedDownloadParentFile.getAbsolutePath();
+            Earthdata_Cloud_Controller.setPreferenceDownloadDirectory(selectedDownloadParentFileString);
         }
         
-        String selectedDownloadDir = fileChooser.getSelectedFile().getName();
-        if (selectedDownloadDir != null) {
-            Earthdata_Cloud_Controller.setPreferenceDownloadDir(selectedDownloadDir);
-        }
-        
-        return fileChooser.getSelectedFile();
+        return selectedFile;
     }
+
+
     
     /**
      * Callback interface for download completion events.
