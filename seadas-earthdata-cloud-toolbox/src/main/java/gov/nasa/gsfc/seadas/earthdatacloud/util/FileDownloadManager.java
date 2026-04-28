@@ -27,6 +27,8 @@ public class FileDownloadManager {
     private JDialog progressDialog;
     private JProgressBar progressBar;
     private String[] earthdataCredentials;
+
+    String URL_LIST_FILENAME = "requested_download_files_url_list.txt";
     
     /**
      * Downloads multiple files with progress tracking and user feedback.
@@ -53,7 +55,13 @@ public class FileDownloadManager {
         }
         
         // Get download directory from user
-        Path downloadDir = selectDownloadDirectory(parentComponent);
+        File urlsListFile = selectDownloadDirectory(parentComponent);
+        if (urlsListFile == null) {
+            return; // User cancelled
+        }
+
+        Path downloadDir = urlsListFile.getParentFile().toPath();
+//                Path downloadDir = selectDownloadDirectory(parentComponent);
         if (downloadDir == null) {
             return; // User cancelled
         }
@@ -72,7 +80,7 @@ public class FileDownloadManager {
                 fileUrls += url + "\n";
             }
         }
-        downloadFileUrls(fileUrls, downloadDir);
+        downloadFileUrls(fileUrls, downloadDir, urlsListFile);
 
 
 
@@ -178,13 +186,14 @@ public class FileDownloadManager {
      * @param outputDir The directory to save the file to
      * @return true if file list is written, false otherwise
      */
-    public boolean downloadFileUrls(String fileUrls, Path outputDir) {
+    public boolean downloadFileUrls(String fileUrls, Path outputDir, File urlsListFile) {
 
         String FILENAME = "requested_download_files_url_list.txt";
         try {
             Files.createDirectories(outputDir);
-            Path outputPath = outputDir.resolve(FILENAME);
+            Path outputPath = outputDir.resolve(URL_LIST_FILENAME);
             File outputFile = outputPath.toFile();
+            outputFile = urlsListFile;
 
             if (!outputFile.exists()) {
                 // Create new files list
@@ -284,10 +293,10 @@ public class FileDownloadManager {
      * @param parentComponent Parent component for the dialog
      * @return Selected directory path, or null if cancelled
      */
-    private Path selectDownloadDirectory(Component parentComponent) {
+    private File selectDownloadDirectory(Component parentComponent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select Directory to Save Files");
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
         // Set initial directory based on preferences
         String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
@@ -307,73 +316,77 @@ public class FileDownloadManager {
                 parentDownloadDirFile = userHomeDir;
             }
         }
+
+
         
         if (parentDownloadDirFile != null && parentDownloadDirFile.exists()) {
             fileChooser.setCurrentDirectory(parentDownloadDirFile);
+            final File urlFile = new File(parentDownloadDirFile, URL_LIST_FILENAME);
+            fileChooser.setSelectedFile(urlFile);
             
-            // Suggest directory name based on preferences
-            String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
-            int currIndex = 1;
-            String downloadDirStrNoSuffix = "results";
-            boolean retainSuffix = false;
-            
-            if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
-                downloadDirStrNoSuffix = downloadDirStr;
-                String[] downloadDirStrSplitArray = downloadDirStr.split("-");
-                if (downloadDirStrSplitArray.length == 2) {
-                    String suffix = downloadDirStrSplitArray[1];
-                    int currIndexTmp = RegionUtils.convertStringToInt(suffix, -999);
-                    if (currIndexTmp != -999) {
-                        downloadDirStrNoSuffix = downloadDirStrSplitArray[0];
-                        currIndex = currIndexTmp;
-                        if (currIndex == 1) {
-                            retainSuffix = true;
-                        }
-                    }
-                }
-            }
-            
-            // Find available directory name
-            String downloadDirStrIndexed;
-            File file2 = null;
-            while (file2 == null && currIndex < 1000) {
-                if (currIndex == 1 && !retainSuffix) {
-                    downloadDirStrIndexed = downloadDirStrNoSuffix;
-                } else {
-                    downloadDirStrIndexed = downloadDirStrNoSuffix + "-" + currIndex;
-                }
-                
-                file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
-                if (!file2.exists()) {
-                    break;
-                }
-                file2 = null;
-                currIndex++;
-            }
-            
-            if (file2 != null) {
-                fileChooser.setSelectedFile(file2);
-            }
+//            // Suggest directory name based on preferences
+//            String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
+//            int currIndex = 1;
+//            String downloadDirStrNoSuffix = "requested_download_files_url_list";
+//            boolean retainSuffix = false;
+//
+//            if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
+//                downloadDirStrNoSuffix = downloadDirStr;
+//                String[] downloadDirStrSplitArray = downloadDirStr.split("-");
+//                if (downloadDirStrSplitArray.length == 2) {
+//                    String suffix = downloadDirStrSplitArray[1];
+//                    int currIndexTmp = RegionUtils.convertStringToInt(suffix, -999);
+//                    if (currIndexTmp != -999) {
+//                        downloadDirStrNoSuffix = downloadDirStrSplitArray[0];
+//                        currIndex = currIndexTmp;
+//                        if (currIndex == 1) {
+//                            retainSuffix = true;
+//                        }
+//                    }
+//                }
+//            }
+//
+//            // Find available directory name
+//            String downloadDirStrIndexed;
+//            File file2 = null;
+//            while (file2 == null && currIndex < 1000) {
+//                if (currIndex == 1 && !retainSuffix) {
+//                    downloadDirStrIndexed = downloadDirStrNoSuffix;
+//                } else {
+//                    downloadDirStrIndexed = downloadDirStrNoSuffix + "-" + currIndex;
+//                }
+//
+//                file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
+//                if (!file2.exists()) {
+//                    break;
+//                }
+//                file2 = null;
+//                currIndex++;
+//            }
+//
+//            if (file2 != null) {
+//                fileChooser.setSelectedFile(file2);
+//            }
         }
         
         if (fileChooser.showSaveDialog(parentComponent) != JFileChooser.APPROVE_OPTION) {
             return null;
         }
         
-        File selectedDir = fileChooser.getSelectedFile();
+        File selectedDir = fileChooser.getSelectedFile().getParentFile();
         
         // Save preferences
-        String selectedParent = selectedDir.getParentFile().getAbsolutePath();
+        String selectedParent = selectedDir.getAbsolutePath();
         if (selectedParent != null) {
             Earthdata_Cloud_Controller.setPreferenceDownloadParentDir(selectedParent);
         }
         
-        String selectedDownloadDir = selectedDir.getName();
+        String selectedDownloadDir = fileChooser.getSelectedFile().getName();
         if (selectedDownloadDir != null) {
             Earthdata_Cloud_Controller.setPreferenceDownloadDir(selectedDownloadDir);
         }
         
-        return selectedDir.toPath();
+        return fileChooser.getSelectedFile();
     }
     
     /**

@@ -994,7 +994,8 @@ public class HarmonySubsetServiceDialog extends JDialog {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setSelectedFile(new File(suggestedName));
 
-        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
+        String lastDir = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
+//        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
         if (lastDir != null && !lastDir.isBlank()) {
             File dir = new File(lastDir);
             if (dir.exists() && dir.isDirectory()) {
@@ -1031,7 +1032,8 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         File parent = file.getParentFile();
         if (parent != null) {
-            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+//            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+            Earthdata_Cloud_Controller.setPreferenceDownloadParentDir(parent.getAbsolutePath());
         }
 
         return file;
