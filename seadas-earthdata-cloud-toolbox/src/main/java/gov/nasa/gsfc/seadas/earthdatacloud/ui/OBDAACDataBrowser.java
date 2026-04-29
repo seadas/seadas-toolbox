@@ -189,10 +189,7 @@ public class OBDAACDataBrowser extends JPanel {
         // Initialize spinners first
         maxApiResultsSpinner = new JSpinner();
         resultsPerPageSpinner = new JSpinner();
-        urlListOnlyCheckbox = new JCheckBox("Download URL List Only");
-        urlListOnlyCheckbox.setSelected(false);
-        urlListOnlyCheckbox.setToolTipText("<html>When selecting 'Download'<br>A URL list will be created but no files will be downloaded.</html>");
-        
+
         OBDAACDataBrowserPanels panels = new OBDAACDataBrowserPanels();
         JPanel paginationPanel = panels.createSpinnerPanel(maxApiResultsSpinner, resultsPerPageSpinner);
         JPanel buttonPanel = panels.createButtonPanel(
@@ -206,7 +203,7 @@ public class OBDAACDataBrowser extends JPanel {
 
         gbc.gridy++;
         gbc.gridx = 0;
-        add(createPaginationButtonPanel(paginationPanel, urlListOnlyCheckbox, buttonPanel), gbc);
+        add(createPaginationButtonPanel(paginationPanel, buttonPanel), gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -245,7 +242,7 @@ public class OBDAACDataBrowser extends JPanel {
         });
     }
 
-    private JPanel createPaginationButtonPanel(JPanel panel1, JCheckBox urlListOnlyCheckbox, JPanel panel2) {
+    private JPanel createPaginationButtonPanel(JPanel panel1, JPanel panel2) {
         GridBagConstraints gbc = new GridBagConstraints();
         GridBagLayout layout = new GridBagLayout();
 
@@ -259,19 +256,13 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridx = 0;
         panel.add(panel1, gbc);
 
-//        gbc.gridx++;
-//        gbc.weightx = 1;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        JLabel fill = new JLabel("");
-//        panel.add(fill, gbc);
-//        gbc.weightx = 0;
-//        gbc.fill = GridBagConstraints.NONE;
-
-
-
         gbc.gridx++;
-        gbc.anchor = GridBagConstraints.EAST;
-        panel.add(urlListOnlyCheckbox, gbc);
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel fill = new JLabel("");
+        panel.add(fill, gbc);
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
 
 
         gbc.gridx++;
@@ -463,7 +454,9 @@ public class OBDAACDataBrowser extends JPanel {
         navPanel.add(pageLabel);
         navPanel.add(nextButton);
 
-        JButton downloadButton = new JButton("Download");
+        JButton downloadButton = new JButton("Download All");
+        downloadButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files and <br>" +
+                "download all the data files (if 'Links Only' is NOT checked).</html>");
         downloadButton.addActionListener(e -> {
             if (imagePreviewHelper != null) {
                 // todo Danny check this
@@ -472,7 +465,9 @@ public class OBDAACDataBrowser extends JPanel {
             downloadSelectedFiles();
         });
         
-        JButton subsetButton = new JButton("Subset");
+        JButton subsetButton = new JButton("Subset *");
+        subsetButton.setToolTipText("<html>Create a subset of the selected file.<br>" +
+                "* Note: this tool only supports subsetting a single file at a time.</html>");
         subsetButton.addActionListener(e -> {
             if (imagePreviewHelper != null) {
                 // todo Danny check this
@@ -482,8 +477,53 @@ public class OBDAACDataBrowser extends JPanel {
         });
         
         JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        downloadPanel.add(subsetButton);
-        downloadPanel.add(downloadButton);
+//        downloadPanel.add(subsetButton);
+
+
+
+
+
+        urlListOnlyCheckbox = new JCheckBox("Links Only");
+        urlListOnlyCheckbox.setSelected(false);
+        urlListOnlyCheckbox.setToolTipText("<html>If checked, only a text-file containing URL links to each of the files is created and <br>NO data files will be downloaded.</html>");
+
+
+        JPanel newDownloadPanel = new JPanel(new GridBagLayout());
+        newDownloadPanel.setBorder(BorderFactory.createEtchedBorder());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(1, 1, 1, 1);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        newDownloadPanel.add(downloadButton, gbc);
+
+        gbc.gridx++;
+        newDownloadPanel.add(urlListOnlyCheckbox, gbc);
+
+
+
+        JPanel newSubsetPanel = new JPanel(new GridBagLayout());
+        newSubsetPanel.setBorder(BorderFactory.createEtchedBorder());
+
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.insets = new Insets(1, 1, 1, 1);
+        gbc2.anchor = GridBagConstraints.CENTER;
+        gbc2.fill = GridBagConstraints.NONE;
+        gbc2.gridx = 0;
+        gbc2.gridy = 0;
+        newSubsetPanel.add(subsetButton, gbc2);
+
+
+
+
+//        downloadPanel.add(downloadButton);
+
+//        downloadPanel.add(urlListOnlyCheckbox);
+
+        downloadPanel.add(newSubsetPanel);
+        downloadPanel.add(newDownloadPanel);
 
         panel.add(fetchedPanel, BorderLayout.WEST);
         panel.add(navPanel, BorderLayout.CENTER);

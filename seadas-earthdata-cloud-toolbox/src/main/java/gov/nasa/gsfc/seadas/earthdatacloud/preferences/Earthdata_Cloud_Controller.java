@@ -119,7 +119,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_REGION_DEFAULT = "";
 
     public static final  String PROPERTY_REGION_FILE_TOOLTIP = "<html>Pre-Defined Regions<br>" +
-            "Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt<b>" +
+            "Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt<br>" +
             "These boundaries are very slightly larger than official boundaries<br>" +
             "which helps give context to surrounding features.</html>";
 
@@ -169,7 +169,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_directory";
     public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL = "Download Directory";
-    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP = "Download Directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP = "Directory where the files will be downloaded (reflect where they were download the last time).";
     public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT = "";
 
 
@@ -248,7 +248,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
-//        initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY, PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_LINK_INCLUDE_KEY, PROPERTY_IMAGE_LINK_INCLUDE_DEFAULT);
