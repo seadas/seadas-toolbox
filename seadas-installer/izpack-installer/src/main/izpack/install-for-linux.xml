@@ -4,7 +4,6 @@
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://izpack.org/schema/installation
                         http://izpack.org/schema/5.2/izpack-installation-5.0.xsd">
-
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.2</appversion>
@@ -75,9 +74,9 @@
         <variable name="OPTTBXROOT" value="$INSTALL_PATH/seadas/optical-toolbox"/>
         <variable name="SEADASTBXROOT" value="$USER_HOME/seadas/seadas-toolbox"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>
-        <variable name="WELCOME_TEXT" value="SeaDAS 11.0.0 Installer"/>
+        <variable name="WELCOME_TEXT" value="SeaDAS 12.0.0 Installer"/>
         <variable name="WELCOME_VERSION" value="Version: 1.2"/>
-        <variable name="FINISH_TEXT" value="SeaDAS 11.0.0 is successfully installed. Enjoy!"/>
+        <variable name="FINISH_TEXT" value="SeaDAS 12.0.0 is successfully installed. Enjoy!"/>
         <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
         <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
@@ -100,65 +99,41 @@
     </dynamicvariables>
 
     <conditions>
-
-        <!-- Require Java 21 or newer -->
-        <condition id="java21OrHigher" type="java">
-            <java>
-                <class>java.lang.Boolean</class>
-                <field>False</field>
-            </java>
-            <returnvalue type="boolean">true</returnvalue>
-        </condition>
-
-
         <condition type="variable" id="standardinstallation">
             <name>setup.type</name>
             <value>standard</value>
         </condition>
-
         <condition type="variable" id="expertinstallation">
             <name>setup.type</name>
             <value>expert</value>
         </condition>
-
         <condition id="start-after-install" type="variable">
             <name>start.after.install</name>
             <value>true</value>
         </condition>
-
         <condition id="install-as-service" type="variable">
             <name>install.as.service</name>
             <value>true</value>
         </condition>
-
         <condition type="variable" id="runSeaDAS">
             <name>runSeaDASAfterInstall</name>
             <value>true</value>
         </condition>
-
         <condition type="contains" id="deleteDotSeaDAS">
             <variable>dotSeaDASDirStatus</variable>
             <value>delete</value>
         </condition>
-
         <condition type="contains" id="archiveDotSeaDAS">
             <variable>dotSeaDASDirStatus</variable>
             <value>archive</value>
         </condition>
-
     </conditions>
-
-
 
     <panels>
 
         <!-- FIXME why doesn't HTMLHelloPanel work any more?  it is nice not to have the "Please read the following information" text ... -->
         <panel classname="HTMLInfoPanel" id="welcome"/>
-        <panel classname="HTMLInfoPanel" id="JavaCheckPanel">
-            <configuration>
-                <file>java_warning.html</file>
-            </configuration>
-        </panel>
+        <!--        <panel classname="InstallationTypePanel"/>-->
         <panel classname="HTMLLicencePanel" id="licence"/>
         <!--    <panel classname="JDKPathPanel" id="jdkPathPanel" />-->
         <panel classname="TargetPanel" id="install_dir"/>
@@ -181,13 +156,13 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" override="true" casesensitive="true" os="unix"
+            <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux"
                      condition="izpack.linuxinstall">
-                <os family="unix"/>
+                <os family="linux"/>
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/unix"  override="true" casesensitive="true" os="unix"
+            <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux"
                      condition="izpack.linuxinstall"/>
             <parsable type="plain">
                 <fileset targetdir="${INSTALL_PATH}/bin">
@@ -226,15 +201,15 @@
             <fileset dir="packs/seadas" casesensitive="true" targetdir="$INSTALL_PATH/seadas-toolbox">
             </fileset>
         </pack>
-        <!--        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">-->
-        <!--            <description>JDK21 JRE</description>-->
-        <!--            <file src="packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"-->
-        <!--                  unpack="true" override="true"></file>-->
-        <!--            <executable type="bin" stage="never" failure="warn" keep="true">-->
-        <!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/bin" includes="*"/>-->
-        <!--                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/lib" includes="*"/>-->
-        <!--            </executable>-->
-        <!--        </pack>-->
+        <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">
+            <description>JDK21 JRE</description>
+            <file src="packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"
+                  unpack="true" override="true"></file>
+            <executable type="bin" stage="never" failure="warn" keep="true">
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/lib" includes="*"/>
+            </executable>
+        </pack>
     </packs>
 
     <natives>
