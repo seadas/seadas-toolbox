@@ -340,7 +340,7 @@ public class ImagePreviewHelper {
             previewWindow.setVisible(false);
 
             for (String imageUrl : getPreviewUrls(fileName)) {
-                Image image = ImageIO.read(new URL(imageUrl));
+                Image image = tryReadImage(imageUrl);
                 if (image == null) {
                     continue;
                 }
@@ -434,7 +434,7 @@ public class ImagePreviewHelper {
     public void showFullImageDialog(String fileName, Component parent) {
         try {
             for (String imageUrl : getPreviewUrls(fileName)) {
-                Image image = ImageIO.read(new URL(imageUrl));
+                Image image = tryReadImage(imageUrl);
                 if (image != null) {
                     ImageIcon icon = new ImageIcon(image);
                     JLabel label = new JLabel(icon);
@@ -447,6 +447,14 @@ public class ImagePreviewHelper {
             JOptionPane.showMessageDialog(parent, "Image not available.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(parent, "Failed to load image.");
+        }
+    }
+
+    private Image tryReadImage(String imageUrl) {
+        try {
+            return ImageIO.read(new URL(imageUrl));
+        } catch (Exception ignored) {
+            return null;
         }
     }
 
@@ -464,6 +472,12 @@ public class ImagePreviewHelper {
                     previewLinkMap.put(fileName, cmrPreviewUrl);
                     previewUrls.add(cmrPreviewUrl);
                 }
+            }
+        }
+        for (String alternateFileName : getAlternatePreviewFileNames(fileName)) {
+            String cmrPreviewUrl = getPreviewUrlFromCmr(alternateFileName);
+            if (cmrPreviewUrl != null && !cmrPreviewUrl.isBlank()) {
+                previewUrls.add(cmrPreviewUrl);
             }
         }
         previewUrls.addAll(buildPreviewUrls(fileName));
