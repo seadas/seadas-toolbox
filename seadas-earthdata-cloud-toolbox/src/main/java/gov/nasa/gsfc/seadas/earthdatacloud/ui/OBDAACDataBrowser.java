@@ -2045,10 +2045,7 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void fetchGranules(com.bc.ceres.core.ProgressMonitor pm) {
-        fileLinkMap.clear();
-        previewLinkMap.clear();
-        tableModel.setRowCount(0);
-        allGranules.clear();
+        clearResultsOnEdt();
 
         totalPages = 1;
         currentPage = 1;
@@ -2057,20 +2054,8 @@ public class OBDAACDataBrowser extends JPanel {
         int workDoneThisIncrement = 0;
         int totalWork = 100;
 
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            tableModel.removeRow(i);
-            allGranules.remove(i);
-        }
-
         totalFetched = 0;
         updateResultsTable(currentPage);
-
-        resultsTable.revalidate();
-        resultsTable.repaint();
-        SwingUtilities.invokeLater(() -> {
-            resultsTable.revalidate();
-            resultsTable.repaint();
-        });
 
 
         String productName = (String) productDropdown.getSelectedItem();
@@ -2217,13 +2202,7 @@ public class OBDAACDataBrowser extends JPanel {
                             }
 
                             if (dataHref != null) {
-                                allGranules.add(new String[]{fileName, dataHref});
-                                tableModel.addRow(new Object[]{fileName, false});
-                                resultsTable.putClientProperty(fileName, dataHref);
-                                fileLinkMap.put(fileName, dataHref);
-                                if (previewHref != null && !previewHref.isBlank()) {
-                                    previewLinkMap.put(fileName, previewHref);
-                                }
+                                addGranuleResultOnEdt(fileName, dataHref, previewHref);
                             }
                         }
 
@@ -2306,6 +2285,10 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void updateResultsTable(int page) {
+        runOnEdtAndWait(() -> updateResultsTableOnEdt(page));
+    }
+
+    private void updateResultsTableOnEdt(int page) {
         int resultsPerPage = getResultsPerPage();
         tableModel.setRowCount(0);
 
@@ -2330,6 +2313,42 @@ public class OBDAACDataBrowser extends JPanel {
 
         if (fetchedLabel != null) {
             fetchedLabel.setText("Files found: " + totalFetched + "     ");
+        }
+    }
+
+    private void clearResultsOnEdt() {
+        runOnEdtAndWait(() -> {
+            fileLinkMap.clear();
+            previewLinkMap.clear();
+            tableModel.setRowCount(0);
+            allGranules.clear();
+            resultsTable.revalidate();
+            resultsTable.repaint();
+        });
+    }
+
+    private void addGranuleResultOnEdt(String fileName, String dataHref, String previewHref) {
+        runOnEdtAndWait(() -> {
+            allGranules.add(new String[]{fileName, dataHref});
+            tableModel.addRow(new Object[]{fileName, false});
+            resultsTable.putClientProperty(fileName, dataHref);
+            fileLinkMap.put(fileName, dataHref);
+            if (previewHref != null && !previewHref.isBlank()) {
+                previewLinkMap.put(fileName, previewHref);
+            }
+        });
+    }
+
+    private void runOnEdtAndWait(Runnable runnable) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+            return;
+        }
+
+        try {
+            SwingUtilities.invokeAndWait(runnable);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to update results table on EDT", e);
         }
     }
 
