@@ -339,84 +339,10 @@ public class ImagePreviewHelper {
         try {
             previewWindow.setVisible(false);
 
-            for (String imageUrl : getPreviewUrls(fileName)) {
-                Image image = tryReadImage(imageUrl);
-                if (image == null) {
-                    continue;
-                }
-
-                int browseImageSize = Earthdata_Cloud_Controller.getPreferenceBrowseImageSize();
-
-                Image scaled = null;
-                boolean scaleOnHeight = false;
-                if (scaleOnHeight) {
-                    scaled = image.getScaledInstance(-1, browseImageSize, Image.SCALE_SMOOTH);
-                } else {
-                    scaled = image.getScaledInstance(browseImageSize, -1, Image.SCALE_SMOOTH);
-                }
-
-                previewLabel.setIcon(new ImageIcon(scaled));
-                previewWindow.pack();
-
-                int windowHeight = previewWindow.getHeight();
-
-
-                Image scaled2 = null;
-                if (windowHeight > parentDialog.getHeight()) {
-                    scaled2 = image.getScaledInstance(-1, parentDialog.getHeight(), Image.SCALE_SMOOTH);
-                    previewLabel.setIcon(new ImageIcon(scaled2));
-                    previewWindow.pack();
-
-                }
-
-                windowHeight = previewWindow.getHeight();
-
-
-
-
-
-                Point parentDialogLocation = parentDialog.getLocationOnScreen();
-                Point parentDialogLocationBottom = new Point(parentDialogLocation.x, parentDialogLocation.y + parentDialog.getHeight());
-                Point tableLocationTop = parent.getLocationOnScreen();
-
-
-                int offsetX = parentDialog.getWidth() + 5;
-
-
-
-
-
-                int locationY = tableLocationTop.y;
-                int offsetY = (int) Math.abs(parentDialogLocation.y - tableLocationTop.y);
-                offsetY = (int) Math.round(0.6 * offsetY);
-
-                boolean floating = false;
-
-
-
-
-
-                if (windowHeight < (int) Math.round(0.1 * parentDialog.getHeight())) {
-                    floating = true;
-                }
-
-                if (!floating) {
-                    int offsetYTop = (int) Math.floor((parentDialog.getHeight() - windowHeight) / 2.0);
-                    locationY = parentDialog.getLocationOnScreen().y + offsetYTop;
-                }
-
-
-                if (floating) {
-                    locationY = screenLocation.y - (int) Math.round(0.5 * windowHeight);
-                }
-
-
-
-                previewWindow.setLocation(parentDialogLocation.x + offsetX, locationY);
-
-
-                previewWindow.setVisible(true);
-                return imageUrl;
+            PreviewImage previewImage = loadPreviewImage(fileName);
+            if (previewImage != null) {
+                displayPreviewImage(previewImage.image, parent, screenLocation, parentDialog);
+                return previewImage.url;
             }
 
             hideImagePreview();
@@ -433,21 +359,93 @@ public class ImagePreviewHelper {
 
     public void showFullImageDialog(String fileName, Component parent) {
         try {
-            for (String imageUrl : getPreviewUrls(fileName)) {
-                Image image = tryReadImage(imageUrl);
-                if (image != null) {
-                    ImageIcon icon = new ImageIcon(image);
-                    JLabel label = new JLabel(icon);
-                    JScrollPane scrollPane = new JScrollPane(label);
-                    scrollPane.setPreferredSize(new Dimension(700, 700));
-                    JOptionPane.showMessageDialog(parent, scrollPane, "Full Image Preview", JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
+            PreviewImage previewImage = loadPreviewImage(fileName);
+            if (previewImage != null) {
+                ImageIcon icon = new ImageIcon(previewImage.image);
+                JLabel label = new JLabel(icon);
+                JScrollPane scrollPane = new JScrollPane(label);
+                scrollPane.setPreferredSize(new Dimension(700, 700));
+                JOptionPane.showMessageDialog(parent, scrollPane, "Full Image Preview", JOptionPane.PLAIN_MESSAGE);
+                return;
             }
             JOptionPane.showMessageDialog(parent, "Image not available.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(parent, "Failed to load image.");
         }
+    }
+
+    private PreviewImage loadPreviewImage(String fileName) {
+        PreviewImage previewImage = tryLoadPreviewImage(getFastPreviewUrls(fileName));
+        if (previewImage != null) {
+            return previewImage;
+        }
+        return tryLoadPreviewImage(getCmrAlternatePreviewUrls(fileName));
+    }
+
+    private PreviewImage tryLoadPreviewImage(List<String> imageUrls) {
+        for (String imageUrl : imageUrls) {
+            Image image = tryReadImage(imageUrl);
+            if (image != null) {
+                return new PreviewImage(imageUrl, image);
+            }
+        }
+        return null;
+    }
+
+    private void displayPreviewImage(Image image, Component parent, Point screenLocation, JDialog parentDialog) {
+        int browseImageSize = Earthdata_Cloud_Controller.getPreferenceBrowseImageSize();
+
+        Image scaled = null;
+        boolean scaleOnHeight = false;
+        if (scaleOnHeight) {
+            scaled = image.getScaledInstance(-1, browseImageSize, Image.SCALE_SMOOTH);
+        } else {
+            scaled = image.getScaledInstance(browseImageSize, -1, Image.SCALE_SMOOTH);
+        }
+
+        previewLabel.setIcon(new ImageIcon(scaled));
+        previewWindow.pack();
+
+        int windowHeight = previewWindow.getHeight();
+
+        Image scaled2 = null;
+        if (windowHeight > parentDialog.getHeight()) {
+            scaled2 = image.getScaledInstance(-1, parentDialog.getHeight(), Image.SCALE_SMOOTH);
+            previewLabel.setIcon(new ImageIcon(scaled2));
+            previewWindow.pack();
+
+        }
+
+        windowHeight = previewWindow.getHeight();
+
+        Point parentDialogLocation = parentDialog.getLocationOnScreen();
+        Point parentDialogLocationBottom = new Point(parentDialogLocation.x, parentDialogLocation.y + parentDialog.getHeight());
+        Point tableLocationTop = parent.getLocationOnScreen();
+
+        int offsetX = parentDialog.getWidth() + 5;
+
+        int locationY = tableLocationTop.y;
+        int offsetY = (int) Math.abs(parentDialogLocation.y - tableLocationTop.y);
+        offsetY = (int) Math.round(0.6 * offsetY);
+
+        boolean floating = false;
+
+        if (windowHeight < (int) Math.round(0.1 * parentDialog.getHeight())) {
+            floating = true;
+        }
+
+        if (!floating) {
+            int offsetYTop = (int) Math.floor((parentDialog.getHeight() - windowHeight) / 2.0);
+            locationY = parentDialog.getLocationOnScreen().y + offsetYTop;
+        }
+
+        if (floating) {
+            locationY = screenLocation.y - (int) Math.round(0.5 * windowHeight);
+        }
+
+        previewWindow.setLocation(parentDialogLocation.x + offsetX, locationY);
+
+        previewWindow.setVisible(true);
     }
 
     private Image tryReadImage(String imageUrl) {
@@ -458,7 +456,7 @@ public class ImagePreviewHelper {
         }
     }
 
-    private List<String> getPreviewUrls(String fileName) {
+    private List<String> getFastPreviewUrls(String fileName) {
         Set<String> previewUrls = new LinkedHashSet<>();
         if (previewLinkMap != null) {
             String previewUrl = previewLinkMap.get(fileName);
@@ -474,14 +472,29 @@ public class ImagePreviewHelper {
                 }
             }
         }
+        previewUrls.addAll(buildPreviewUrls(fileName));
+        return new ArrayList<>(previewUrls);
+    }
+
+    private List<String> getCmrAlternatePreviewUrls(String fileName) {
+        Set<String> previewUrls = new LinkedHashSet<>();
         for (String alternateFileName : getAlternatePreviewFileNames(fileName)) {
             String cmrPreviewUrl = getPreviewUrlFromCmr(alternateFileName);
             if (cmrPreviewUrl != null && !cmrPreviewUrl.isBlank()) {
                 previewUrls.add(cmrPreviewUrl);
             }
         }
-        previewUrls.addAll(buildPreviewUrls(fileName));
         return new ArrayList<>(previewUrls);
+    }
+
+    private static final class PreviewImage {
+        private final String url;
+        private final Image image;
+
+        private PreviewImage(String url, Image image) {
+            this.url = url;
+            this.image = image;
+        }
     }
 
     private String getPreviewUrlFromCmr(String fileName) {
