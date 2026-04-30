@@ -307,11 +307,23 @@ public class ImagePreviewHelper {
 
     private static List<String> getProductNameAliases(String fileName) {
         List<String> aliases = new ArrayList<>();
-        if (fileName.startsWith("PACE_OCI.") && fileName.contains(".L2.BGC.")) {
-            aliases.add(fileName.replace(".L2.BGC.", ".L2.OC_BGC."));
+        if (!fileName.startsWith("PACE_OCI.")) {
+            return aliases;
         }
-        if (fileName.startsWith("PACE_OCI.") && fileName.contains(".L2.OC_BGC.")) {
-            aliases.add(fileName.replace(".L2.OC_BGC.", ".L2.BGC."));
+
+        String[] parts = fileName.split("\\.", -1);
+        for (int i = 0; i < parts.length - 1; i++) {
+            if ("L2".equals(parts[i]) && i + 1 < parts.length - 1) {
+                String product = parts[i + 1];
+                if (product.startsWith("OC_")) {
+                    parts[i + 1] = product.substring("OC_".length());
+                    aliases.add(String.join(".", parts));
+                } else {
+                    parts[i + 1] = "OC_" + product;
+                    aliases.add(String.join(".", parts));
+                }
+                return aliases;
+            }
         }
         return aliases;
     }
