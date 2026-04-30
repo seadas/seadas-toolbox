@@ -1,0 +1,17 @@
+
+seadas-installer/izpack-installer/src/main/izpack/packs/jre/OpenJDK21U-jre_aarch64_mac_hotspot_21.0.8_9.tar.gz 
+seadas-installer/izpack-installer/src/main/izpack/packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz 
+seadas-installer/izpack-installer/src/main/izpack/packs/jre/OpenJDK21U-jre_x64_windows_hotspot_21.0.8_9.zip 
+seadas-installer/izpack-installer/src/main/izpack/about/java_warning.html
+seadas-installer/izpack-installer/src/main/izpack/install-for-linux-without-bundled-jre.xml
+seadas-installer/izpack-installer/src/main/izpack/install-for-mac-without-bundled-jre.xml
+seadas-installer/izpack-installer/src/main/izpack/install-for-windows-without-bundled-jre.xml
+
+
+
+seadas-installer/izpack-installer/src/main/izpack/about/welcome.html
+
+
+
+
+

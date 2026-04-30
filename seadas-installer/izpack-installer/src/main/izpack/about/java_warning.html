@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>SeaDAS – Java 21 Setup</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+            color: #222;
+        }
+        h2 {
+            color: #003366;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 6px;
+        }
+        ul {
+            margin-top: 8px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        p.note {
+            background-color: #f8f8f8;
+            border-left: 4px solid #0066cc;
+            padding: 10px;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+<h2>SeaDAS requires Java 21 (JDK), not just a JRE.</h2>
+
+<p>Detected Java version: <b>${JAVA_VERSION}</b></p>
+
+<p>
+    SeaDAS 10 needs a full <b>Java Development Kit (JDK) 21 or newer</b>.
+    A plain Java Runtime Environment (JRE) is not sufficient.
+</p>
+
+<p>
+    If you already have a JDK 21 installed on your system, please enter its path
+    in the field below or use the <b>Browse…</b> button to locate it.
+</p>
+
+<p>If you don’t yet have Java 21, you can:</p>
+<ul>
+    <li>Download and install <b>Temurin 21</b> (or OpenJDK 21) from
+        <a href="https://adoptium.net/temurin/releases/">adoptium.net</a>, or</li>
+    <li>Use the <b>SeaDAS installer with bundled Java</b> available at
+        <a href="https://seadas.gsfc.nasa.gov/downloads">SeaDAS Downloads Page</a>.</li>
+</ul>
+
+<p class="note">
+    Tip: On most systems, the JDK directory contains a <code>bin</code> folder
+    with <code>java</code> and <code>javac</code> inside.
+    Example paths:
+    <br>• <code>/usr/lib/jvm/jdk-21</code> (Linux)
+    <br>• <code>C:\Program Files\Eclipse Adoptium\jdk-21</code> (Windows)
+    <br>• <code>/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home</code> (macOS)
+</p>
+
+<p>Once a valid JDK 21 path is detected, the installation will continue automatically.</p>
+</body>
+</html>
+
+
