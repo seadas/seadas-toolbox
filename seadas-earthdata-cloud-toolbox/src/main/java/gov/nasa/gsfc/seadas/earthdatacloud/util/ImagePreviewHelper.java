@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.util;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -8,8 +10,17 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 public class ImagePreviewHelper {
     private JWindow previewWindow;
@@ -21,6 +32,7 @@ public class ImagePreviewHelper {
     boolean startingUp = true;
     private boolean previewIsDisplayed = false;
     Thread th = null;
+    private Map<String, String> previewLinkMap;
 
     public ImagePreviewHelper() {
         previewWindow = new JWindow();
@@ -32,7 +44,8 @@ public class ImagePreviewHelper {
 
 
 
-    public void attachToTable(JTable table, Map<String, String> fileLinkMap, JDialog parentDialog) {
+    public void attachToTable(JTable table, Map<String, String> previewLinkMap, JDialog parentDialog) {
+        this.previewLinkMap = previewLinkMap;
 
         table.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
@@ -104,8 +117,8 @@ public class ImagePreviewHelper {
 
                                             if (hoveringFileNameCurrent != null) {
                                                 if (!stringCompareEquals(hoveringFileNameCurrent, finishedFileName)) {
-                                                    String imageUrl = getPreviewUrl(hoveringFileNameCurrent);
-                                                    showImagePreview(imageUrl, table, hoveringLocationCurrent, parentDialog);
+                                                    String imageUrl = showImagePreview(hoveringFileNameCurrent, table,
+                                                            hoveringLocationCurrent, parentDialog);
                                                     currentImageUrl = imageUrl;
                                                     if (stringCompareEquals(hoveringFileNameCurrent, hoveringFileName)) {
                                                         finishedFileName = hoveringFileNameCurrent;
@@ -252,12 +265,85 @@ public class ImagePreviewHelper {
         return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
     }
 
-    private void showImagePreview(String imageUrl, Component parent, Point screenLocation, JDialog parentDialog) {
+    static List<String> buildPreviewUrls(String fileName) {
+        Set<String> previewFileNames = new LinkedHashSet<>();
+        previewFileNames.add(fileName);
+        previewFileNames.addAll(getAlternatePreviewFileNames(fileName));
+
+        List<String> previewUrls = new ArrayList<>();
+        for (String previewFileName : previewFileNames) {
+            if (previewFileName != null && !previewFileName.isBlank()) {
+                previewUrls.add(getPreviewUrlForFileName(previewFileName));
+            }
+        }
+        return previewUrls;
+    }
+
+    private static List<String> getAlternatePreviewFileNames(String fileName) {
+        Set<String> alternates = new LinkedHashSet<>();
+        Set<String> fileNameCandidates = new LinkedHashSet<>();
+        fileNameCandidates.add(fileName);
+        fileNameCandidates.addAll(getProductNameAliases(fileName));
+        alternates.addAll(getProductNameAliases(fileName));
+
+        for (String candidate : fileNameCandidates) {
+            if (candidate.contains("_NRT")) {
+                alternates.add(candidate.replace("_NRT", ""));
+            } else if (!candidate.contains(".NRT")) {
+                addInsertedNrtVariants(alternates, candidate);
+            }
+
+            if (candidate.contains(".NRT")) {
+                alternates.add(candidate.replace(".NRT", ""));
+            } else if (!candidate.contains("_NRT")) {
+                alternates.add(insertBeforeExtension(candidate, ".NRT"));
+            }
+        }
+
+        return alternates.stream()
+                .filter(candidate -> candidate != null && !candidate.isBlank() && !candidate.equals(fileName))
+                .toList();
+    }
+
+    private static List<String> getProductNameAliases(String fileName) {
+        List<String> aliases = new ArrayList<>();
+        if (fileName.startsWith("PACE_OCI.") && fileName.contains(".L2.BGC.")) {
+            aliases.add(fileName.replace(".L2.BGC.", ".L2.OC_BGC."));
+        }
+        if (fileName.startsWith("PACE_OCI.") && fileName.contains(".L2.OC_BGC.")) {
+            aliases.add(fileName.replace(".L2.OC_BGC.", ".L2.BGC."));
+        }
+        return aliases;
+    }
+
+    private static String insertBeforeExtension(String fileName, String token) {
+        int extensionDot = fileName.lastIndexOf('.');
+        if (extensionDot <= 0) {
+            return fileName + token;
+        }
+        return fileName.substring(0, extensionDot) + token + fileName.substring(extensionDot);
+    }
+
+    private static void addInsertedNrtVariants(Set<String> alternates, String fileName) {
+        String beforeExtension = insertBeforeExtension(fileName, "_NRT");
+        if (beforeExtension != null) {
+            alternates.add(beforeExtension);
+        }
+    }
+
+    private static String getPreviewUrlForFileName(String fileName) {
+        return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
+    }
+
+    private String showImagePreview(String fileName, Component parent, Point screenLocation, JDialog parentDialog) {
         try {
             previewWindow.setVisible(false);
 
-            Image image = ImageIO.read(new URL(imageUrl));
-            if (image != null) {
+            for (String imageUrl : getPreviewUrls(fileName)) {
+                Image image = ImageIO.read(new URL(imageUrl));
+                if (image == null) {
+                    continue;
+                }
 
                 int browseImageSize = Earthdata_Cloud_Controller.getPreferenceBrowseImageSize();
 
@@ -330,12 +416,14 @@ public class ImagePreviewHelper {
 
 
                 previewWindow.setVisible(true);
-            } else {
-                hideImagePreview();
+                return imageUrl;
             }
+
+            hideImagePreview();
         } catch (Exception e) {
             hideImagePreview();
         }
+        return null;
     }
 
     public void hideImagePreview() {
@@ -345,19 +433,91 @@ public class ImagePreviewHelper {
 
     public void showFullImageDialog(String fileName, Component parent) {
         try {
-            String imageUrl = getPreviewUrl(fileName);
-            Image image = ImageIO.read(new URL(imageUrl));
-            if (image != null) {
-                ImageIcon icon = new ImageIcon(image);
-                JLabel label = new JLabel(icon);
-                JScrollPane scrollPane = new JScrollPane(label);
-                scrollPane.setPreferredSize(new Dimension(700, 700));
-                JOptionPane.showMessageDialog(parent, scrollPane, "Full Image Preview", JOptionPane.PLAIN_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(parent, "Image not available.");
+            for (String imageUrl : getPreviewUrls(fileName)) {
+                Image image = ImageIO.read(new URL(imageUrl));
+                if (image != null) {
+                    ImageIcon icon = new ImageIcon(image);
+                    JLabel label = new JLabel(icon);
+                    JScrollPane scrollPane = new JScrollPane(label);
+                    scrollPane.setPreferredSize(new Dimension(700, 700));
+                    JOptionPane.showMessageDialog(parent, scrollPane, "Full Image Preview", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
             }
+            JOptionPane.showMessageDialog(parent, "Image not available.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(parent, "Failed to load image.");
         }
+    }
+
+    private List<String> getPreviewUrls(String fileName) {
+        Set<String> previewUrls = new LinkedHashSet<>();
+        if (previewLinkMap != null) {
+            String previewUrl = previewLinkMap.get(fileName);
+            if (previewUrl != null && !previewUrl.isBlank()) {
+                previewUrls.add(previewUrl);
+            }
+
+            if (previewUrls.isEmpty()) {
+                String cmrPreviewUrl = getPreviewUrlFromCmr(fileName);
+                if (cmrPreviewUrl != null && !cmrPreviewUrl.isBlank()) {
+                    previewLinkMap.put(fileName, cmrPreviewUrl);
+                    previewUrls.add(cmrPreviewUrl);
+                }
+            }
+        }
+        previewUrls.addAll(buildPreviewUrls(fileName));
+        return new ArrayList<>(previewUrls);
+    }
+
+    private String getPreviewUrlFromCmr(String fileName) {
+        try {
+            String encoded = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+            String cmrUrl = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
+                    + "?readable_granule_name=" + encoded
+                    + "&provider=OB_CLOUD";
+
+            HttpURLConnection connection = (HttpURLConnection) new URL(cmrUrl).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
+
+            try (InputStream stream = connection.getInputStream();
+                 Scanner scanner = new Scanner(stream, StandardCharsets.UTF_8).useDelimiter("\\A")) {
+                String response = scanner.hasNext() ? scanner.next() : "";
+                JSONObject json = new JSONObject(response);
+                JSONArray items = json.optJSONArray("items");
+                if (items == null || items.isEmpty()) {
+                    return null;
+                }
+
+                JSONObject umm = items.getJSONObject(0).optJSONObject("umm");
+                if (umm == null) {
+                    return null;
+                }
+
+                JSONArray relatedUrls = umm.optJSONArray("RelatedUrls");
+                if (relatedUrls == null) {
+                    return null;
+                }
+
+                for (int i = 0; i < relatedUrls.length(); i++) {
+                    JSONObject relatedUrl = relatedUrls.getJSONObject(i);
+                    String type = relatedUrl.optString("Type", "");
+                    String mimeType = relatedUrl.optString("MimeType", "");
+                    String format = relatedUrl.optString("Format", "");
+                    String url = relatedUrl.optString("URL", "");
+
+                    if (!url.isBlank() && (type.toUpperCase().contains("VISUALIZATION")
+                            || type.toUpperCase().contains("BROWSE")
+                            || "image/png".equalsIgnoreCase(mimeType)
+                            || "PNG".equalsIgnoreCase(format))) {
+                        return url;
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            return null;
+        }
+        return null;
     }
 }

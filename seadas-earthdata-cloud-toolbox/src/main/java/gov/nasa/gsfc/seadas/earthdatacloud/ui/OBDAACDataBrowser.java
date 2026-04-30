@@ -48,6 +48,7 @@ public class OBDAACDataBrowser extends JPanel {
     private final Map<String, JSONObject> metadataMap = new HashMap<>();
     private JRadioButton dayButton, nightButton, bothButton;
     private final Map<String, String> fileLinkMap = new HashMap<>();
+    private final Map<String, String> previewLinkMap = new HashMap<>();
 
     private int currentPage = 1;
     private int totalFetched = 1;
@@ -329,7 +330,7 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void setupTableRenderers() {
-        imagePreviewHelper.attachToTable(resultsTable, fileLinkMap, parentDialog);
+        imagePreviewHelper.attachToTable(resultsTable, previewLinkMap, parentDialog);
         resultsTable.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -2045,6 +2046,7 @@ public class OBDAACDataBrowser extends JPanel {
 
     private void fetchGranules(com.bc.ceres.core.ProgressMonitor pm) {
         fileLinkMap.clear();
+        previewLinkMap.clear();
         tableModel.setRowCount(0);
         allGranules.clear();
 
@@ -2179,6 +2181,9 @@ public class OBDAACDataBrowser extends JPanel {
                         JSONArray links = entry.optJSONArray("links");
 
                         if (fileName != null && !fileName.isEmpty() && links != null) {
+                            String dataHref = null;
+                            String previewHref = null;
+
                             for (int j = 0; j < links.length(); j++) {
                                 JSONObject link = links.getJSONObject(j);
 
@@ -2195,17 +2200,30 @@ public class OBDAACDataBrowser extends JPanel {
                                 }
                                 fileSpatialMap.put(fileName, spatialInfo);
 
-                                if (link.has("href") && link.getString("href").endsWith(".nc")) {
-                                    String href = link.getString("href");
-                                    allGranules.add(new String[]{fileName, href});
-                                    tableModel.addRow(new Object[]{fileName});
-                                    resultsTable.putClientProperty(fileName, href);
-                                    fileLinkMap.put(fileName, href);
+                                String href = link.optString("href", "");
+                                String rel = link.optString("rel", "");
+                                String type = link.optString("type", "");
 
-                                    break;
+                                if (dataHref == null && href.endsWith(".nc")) {
+                                    dataHref = href;
+                                }
+                                if (previewHref == null && (rel.endsWith("/browse#")
+                                        || "image/png".equalsIgnoreCase(type)
+                                        || href.contains("/browse_images/"))) {
+                                    previewHref = href;
                                 }
 
 
+                            }
+
+                            if (dataHref != null) {
+                                allGranules.add(new String[]{fileName, dataHref});
+                                tableModel.addRow(new Object[]{fileName, false});
+                                resultsTable.putClientProperty(fileName, dataHref);
+                                fileLinkMap.put(fileName, dataHref);
+                                if (previewHref != null && !previewHref.isBlank()) {
+                                    previewLinkMap.put(fileName, previewHref);
+                                }
                             }
                         }
 
@@ -2296,7 +2314,7 @@ public class OBDAACDataBrowser extends JPanel {
 
         for (int i = start; i < end; i++) {
             String[] row = allGranules.get(i);
-            tableModel.addRow(new Object[]{row[0], false, false});
+            tableModel.addRow(new Object[]{row[0], false});
             resultsTable.putClientProperty(row[0], row[1]);  // Store URL
         }
 
