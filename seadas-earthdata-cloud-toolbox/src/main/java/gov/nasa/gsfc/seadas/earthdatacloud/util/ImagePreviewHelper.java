@@ -337,8 +337,6 @@ public class ImagePreviewHelper {
 
     private String showImagePreview(String fileName, Component parent, Point screenLocation, JDialog parentDialog) {
         try {
-            previewWindow.setVisible(false);
-
             PreviewImage previewImage = loadPreviewImage(fileName);
             if (previewImage != null) {
                 displayPreviewImage(previewImage.image, parent, screenLocation, parentDialog);
@@ -353,8 +351,10 @@ public class ImagePreviewHelper {
     }
 
     public void hideImagePreview() {
-        previewWindow.setVisible(false);
-        currentImageUrl = null;
+        runOnEdt(() -> {
+            previewWindow.setVisible(false);
+            currentImageUrl = null;
+        });
     }
 
     public void showFullImageDialog(String fileName, Component parent) {
@@ -393,59 +393,69 @@ public class ImagePreviewHelper {
     }
 
     private void displayPreviewImage(Image image, Component parent, Point screenLocation, JDialog parentDialog) {
-        int browseImageSize = Earthdata_Cloud_Controller.getPreferenceBrowseImageSize();
+        runOnEdt(() -> {
+            int browseImageSize = Earthdata_Cloud_Controller.getPreferenceBrowseImageSize();
 
-        Image scaled = null;
-        boolean scaleOnHeight = false;
-        if (scaleOnHeight) {
-            scaled = image.getScaledInstance(-1, browseImageSize, Image.SCALE_SMOOTH);
-        } else {
-            scaled = image.getScaledInstance(browseImageSize, -1, Image.SCALE_SMOOTH);
-        }
+            Image scaled = null;
+            boolean scaleOnHeight = false;
+            if (scaleOnHeight) {
+                scaled = image.getScaledInstance(-1, browseImageSize, Image.SCALE_SMOOTH);
+            } else {
+                scaled = image.getScaledInstance(browseImageSize, -1, Image.SCALE_SMOOTH);
+            }
 
-        previewLabel.setIcon(new ImageIcon(scaled));
-        previewWindow.pack();
-
-        int windowHeight = previewWindow.getHeight();
-
-        Image scaled2 = null;
-        if (windowHeight > parentDialog.getHeight()) {
-            scaled2 = image.getScaledInstance(-1, parentDialog.getHeight(), Image.SCALE_SMOOTH);
-            previewLabel.setIcon(new ImageIcon(scaled2));
+            previewLabel.setIcon(new ImageIcon(scaled));
             previewWindow.pack();
 
+            int windowHeight = previewWindow.getHeight();
+
+            Image scaled2 = null;
+            if (windowHeight > parentDialog.getHeight()) {
+                scaled2 = image.getScaledInstance(-1, parentDialog.getHeight(), Image.SCALE_SMOOTH);
+                previewLabel.setIcon(new ImageIcon(scaled2));
+                previewWindow.pack();
+
+            }
+
+            windowHeight = previewWindow.getHeight();
+
+            Point parentDialogLocation = parentDialog.getLocationOnScreen();
+            Point parentDialogLocationBottom = new Point(parentDialogLocation.x, parentDialogLocation.y + parentDialog.getHeight());
+            Point tableLocationTop = parent.getLocationOnScreen();
+
+            int offsetX = parentDialog.getWidth() + 5;
+
+            int locationY = tableLocationTop.y;
+            int offsetY = (int) Math.abs(parentDialogLocation.y - tableLocationTop.y);
+            offsetY = (int) Math.round(0.6 * offsetY);
+
+            boolean floating = false;
+
+            if (windowHeight < (int) Math.round(0.1 * parentDialog.getHeight())) {
+                floating = true;
+            }
+
+            if (!floating) {
+                int offsetYTop = (int) Math.floor((parentDialog.getHeight() - windowHeight) / 2.0);
+                locationY = parentDialog.getLocationOnScreen().y + offsetYTop;
+            }
+
+            if (floating) {
+                locationY = screenLocation.y - (int) Math.round(0.5 * windowHeight);
+            }
+
+            previewWindow.setLocation(parentDialogLocation.x + offsetX, locationY);
+
+            previewWindow.setVisible(true);
+        });
+    }
+
+    private void runOnEdt(Runnable runnable) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+        } else {
+            SwingUtilities.invokeLater(runnable);
         }
-
-        windowHeight = previewWindow.getHeight();
-
-        Point parentDialogLocation = parentDialog.getLocationOnScreen();
-        Point parentDialogLocationBottom = new Point(parentDialogLocation.x, parentDialogLocation.y + parentDialog.getHeight());
-        Point tableLocationTop = parent.getLocationOnScreen();
-
-        int offsetX = parentDialog.getWidth() + 5;
-
-        int locationY = tableLocationTop.y;
-        int offsetY = (int) Math.abs(parentDialogLocation.y - tableLocationTop.y);
-        offsetY = (int) Math.round(0.6 * offsetY);
-
-        boolean floating = false;
-
-        if (windowHeight < (int) Math.round(0.1 * parentDialog.getHeight())) {
-            floating = true;
-        }
-
-        if (!floating) {
-            int offsetYTop = (int) Math.floor((parentDialog.getHeight() - windowHeight) / 2.0);
-            locationY = parentDialog.getLocationOnScreen().y + offsetYTop;
-        }
-
-        if (floating) {
-            locationY = screenLocation.y - (int) Math.round(0.5 * windowHeight);
-        }
-
-        previewWindow.setLocation(parentDialogLocation.x + offsetX, locationY);
-
-        previewWindow.setVisible(true);
     }
 
     private Image tryReadImage(String imageUrl) {
