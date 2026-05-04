@@ -964,10 +964,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
             System.out.println("Starting HarmonySubsetTask...");
             currentSubsetTask.addPropertyChangeListener(evt -> {
                 if ("progress".equals(evt.getPropertyName())) {
-                    int p = (Integer) evt.getNewValue();
-                    progressBar.setIndeterminate(false);
-                    progressBar.setValue(p);
-                    progressBar.setString(p + "%");
+                    progressBar.setValue((Integer) evt.getNewValue());
                 }
             });
             currentSubsetTask.execute();
