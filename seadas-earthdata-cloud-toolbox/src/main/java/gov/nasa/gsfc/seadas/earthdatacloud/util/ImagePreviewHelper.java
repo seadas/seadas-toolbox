@@ -12,10 +12,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +29,14 @@ public class ImagePreviewHelper {
     private JLabel previewLabel;
     private String currentImageUrl = null;
 
-    private String hoveringFileName = null;
+    private volatile String hoveringFileName = null;
     private String finishedFileName = null;
     boolean startingUp = true;
     private boolean previewIsDisplayed = false;
     Thread th = null;
     private Map<String, String> previewLinkMap;
+    private final Map<String, PreviewImage> previewImageCache = new HashMap<>();
+    private volatile long previewRequestId = 0;
 
     public ImagePreviewHelper() {
         previewWindow = new JWindow();
@@ -64,6 +68,7 @@ public class ImagePreviewHelper {
 
                     if (fileName != null && hoveringFileNameChanged) {
                         hoveringFileName = fileName;
+                        previewRequestId++;
 
                         table.setBackground(Color.WHITE);
                         table.setForeground(Color.BLACK);
@@ -95,10 +100,7 @@ public class ImagePreviewHelper {
                                             Point hoveringLocationCurrent = e.getLocationOnScreen();
 
                                             if (!stringCompareEquals(hoveringFileNameStart, hoveringFileNameCurrent)) {
-                                                if (finishedFileName != null) {
-                                                    hideImagePreview();
-                                                    finishedFileName = null;
-                                                }
+                                                finishedFileName = null;
                                                 hoveringFileNameStart = hoveringFileName; // get latest
                                                 i = 0;
                                                 continue;  // it has moved continue and sleep
@@ -119,11 +121,13 @@ public class ImagePreviewHelper {
                                                 if (!stringCompareEquals(hoveringFileNameCurrent, finishedFileName)) {
                                                     String imageUrl = showImagePreview(hoveringFileNameCurrent, table,
                                                             hoveringLocationCurrent, parentDialog);
-                                                    currentImageUrl = imageUrl;
-                                                    if (stringCompareEquals(hoveringFileNameCurrent, hoveringFileName)) {
+                                                    if (imageUrl != null) {
+                                                        currentImageUrl = imageUrl;
+                                                    }
+                                                    if (imageUrl != null && stringCompareEquals(hoveringFileNameCurrent,
+                                                            hoveringFileName)) {
                                                         finishedFileName = hoveringFileNameCurrent;
                                                     } else {
-                                                        hideImagePreview();
                                                         finishedFileName = null;
                                                     }
                                                 }
@@ -155,6 +159,7 @@ public class ImagePreviewHelper {
                     hoveringFileName = fileName;
                 } else {
                     hoveringFileName = null;
+                    previewRequestId++;
 
                     if (hoveringFileNameChanged) {
                         table.setBackground(Color.WHITE);
@@ -185,6 +190,7 @@ public class ImagePreviewHelper {
             public void mouseExited(MouseEvent e) {
 
                 hoveringFileName = null;
+                previewRequestId++;
                 table.setSelectionBackground(Color.WHITE);
                 table.setSelectionForeground(Color.BLACK);
                 table.setBackground(Color.WHITE);
@@ -192,7 +198,6 @@ public class ImagePreviewHelper {
                 table.setBackground(Color.WHITE);
                 table.setForeground(Color.BLACK);
                 table.setBorder(BorderFactory.createEmptyBorder());
-
 
                 hideImagePreview();
             }
@@ -274,6 +279,10 @@ public class ImagePreviewHelper {
         for (String previewFileName : previewFileNames) {
             if (previewFileName != null && !previewFileName.isBlank()) {
                 previewUrls.add(getPreviewUrlForFileName(previewFileName));
+                String filePathPreviewUrl = getPreviewUrlWithFilePath(previewFileName);
+                if (filePathPreviewUrl != null) {
+                    previewUrls.add(filePathPreviewUrl);
+                }
             }
         }
         return previewUrls;
@@ -347,17 +356,47 @@ public class ImagePreviewHelper {
         return "https://oceandata.sci.gsfc.nasa.gov/browse_images/" + fileName + ".png";
     }
 
+    private static String getPreviewUrlWithFilePath(String fileName) {
+        String filePath = getPaceL1bImageFilePath(fileName);
+        if (filePath == null) {
+            return null;
+        }
+        return getPreviewUrlForFileName(fileName) + "?file_path=" + filePath;
+    }
+
+    private static String getPaceL1bImageFilePath(String fileName) {
+        if (!fileName.startsWith("PACE_OCI.") || !fileName.contains(".L1B.")) {
+            return null;
+        }
+
+        String[] parts = fileName.split("\\.", -1);
+        if (parts.length < 2 || parts[1].length() < 8) {
+            return null;
+        }
+
+        String date = parts[1].substring(0, 8);
+        if (!date.chars().allMatch(Character::isDigit)) {
+            return null;
+        }
+
+        return "PACE_OCI/IMAGES/EDBRS/" + date.substring(0, 4) + "/" + date.substring(4, 8);
+    }
+
     private String showImagePreview(String fileName, Component parent, Point screenLocation, JDialog parentDialog) {
         try {
             PreviewImage previewImage = loadPreviewImage(fileName);
-            if (previewImage != null) {
+            if (previewImage != null && stringCompareEquals(fileName, hoveringFileName)) {
                 displayPreviewImage(previewImage.image, parent, screenLocation, parentDialog);
                 return previewImage.url;
             }
 
-            hideImagePreview();
+            if (stringCompareEquals(fileName, hoveringFileName)) {
+                hideImagePreview();
+            }
         } catch (Exception e) {
-            hideImagePreview();
+            if (stringCompareEquals(fileName, hoveringFileName)) {
+                hideImagePreview();
+            }
         }
         return null;
     }
@@ -387,11 +426,21 @@ public class ImagePreviewHelper {
     }
 
     private PreviewImage loadPreviewImage(String fileName) {
+        PreviewImage cachedPreviewImage = previewImageCache.get(fileName);
+        if (cachedPreviewImage != null) {
+            return cachedPreviewImage;
+        }
+
         PreviewImage previewImage = tryLoadPreviewImage(getFastPreviewUrls(fileName));
         if (previewImage != null) {
+            previewImageCache.put(fileName, previewImage);
             return previewImage;
         }
-        return tryLoadPreviewImage(getCmrAlternatePreviewUrls(fileName));
+        previewImage = tryLoadPreviewImage(getCmrAlternatePreviewUrls(fileName));
+        if (previewImage != null) {
+            previewImageCache.put(fileName, previewImage);
+        }
+        return previewImage;
     }
 
     private PreviewImage tryLoadPreviewImage(List<String> imageUrls) {
@@ -472,7 +521,12 @@ public class ImagePreviewHelper {
 
     private Image tryReadImage(String imageUrl) {
         try {
-            return ImageIO.read(new URL(imageUrl));
+            URLConnection connection = new URL(imageUrl).openConnection();
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(10000);
+            try (InputStream stream = connection.getInputStream()) {
+                return ImageIO.read(stream);
+            }
         } catch (Exception ignored) {
             return null;
         }
@@ -529,6 +583,8 @@ public class ImagePreviewHelper {
             HttpURLConnection connection = (HttpURLConnection) new URL(cmrUrl).openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(10000);
 
             try (InputStream stream = connection.getInputStream();
                  Scanner scanner = new Scanner(stream, StandardCharsets.UTF_8).useDelimiter("\\A")) {

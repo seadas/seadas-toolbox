@@ -97,4 +97,18 @@ class ImagePreviewHelperTest {
                 "https://oceandata.sci.gsfc.nasa.gov/browse_images/PACE_OCI.20250809T100037.L2.AOP.V3_1.nc.png"
         ), urls);
     }
+
+    @Test
+    void buildsFilePathFallbackUrlForPaceL1bGranuleNames() {
+        List<String> urls = ImagePreviewHelper.buildPreviewUrls("PACE_OCI.20250814T230607.L1B.V3.nc");
+
+        assertEquals(List.of(
+                "https://oceandata.sci.gsfc.nasa.gov/browse_images/PACE_OCI.20250814T230607.L1B.V3.nc.png",
+                "https://oceandata.sci.gsfc.nasa.gov/browse_images/PACE_OCI.20250814T230607.L1B.V3.nc.png?file_path=PACE_OCI/IMAGES/EDBRS/2025/0814",
+                "https://oceandata.sci.gsfc.nasa.gov/browse_images/PACE_OCI.20250814T230607.L1B.V3_NRT.nc.png",
+                "https://oceandata.sci.gsfc.nasa.gov/browse_images/PACE_OCI.20250814T230607.L1B.V3_NRT.nc.png?file_path=PACE_OCI/IMAGES/EDBRS/2025/0814",
+                "https://oceandata.sci.gsfc.nasa.gov/browse_images/PACE_OCI.20250814T230607.L1B.V3.NRT.nc.png",
+                "https://oceandata.sci.gsfc.nasa.gov/browse_images/PACE_OCI.20250814T230607.L1B.V3.NRT.nc.png?file_path=PACE_OCI/IMAGES/EDBRS/2025/0814"
+        ), urls);
+    }
 }
