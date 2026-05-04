@@ -278,11 +278,11 @@ public class ImagePreviewHelper {
         List<String> previewUrls = new ArrayList<>();
         for (String previewFileName : previewFileNames) {
             if (previewFileName != null && !previewFileName.isBlank()) {
-                previewUrls.add(getPreviewUrlForFileName(previewFileName));
                 String filePathPreviewUrl = getPreviewUrlWithFilePath(previewFileName);
                 if (filePathPreviewUrl != null) {
                     previewUrls.add(filePathPreviewUrl);
                 }
+                previewUrls.add(getPreviewUrlForFileName(previewFileName));
             }
         }
         return previewUrls;
@@ -539,14 +539,6 @@ public class ImagePreviewHelper {
             if (previewUrl != null && !previewUrl.isBlank()) {
                 previewUrls.add(previewUrl);
             }
-
-            if (previewUrls.isEmpty()) {
-                String cmrPreviewUrl = getPreviewUrlFromCmr(fileName);
-                if (cmrPreviewUrl != null && !cmrPreviewUrl.isBlank()) {
-                    previewLinkMap.put(fileName, cmrPreviewUrl);
-                    previewUrls.add(cmrPreviewUrl);
-                }
-            }
         }
         previewUrls.addAll(buildPreviewUrls(fileName));
         return new ArrayList<>(previewUrls);
@@ -554,10 +546,17 @@ public class ImagePreviewHelper {
 
     private List<String> getCmrAlternatePreviewUrls(String fileName) {
         Set<String> previewUrls = new LinkedHashSet<>();
+        String cmrPreviewUrl = getPreviewUrlFromCmr(fileName);
+        if (cmrPreviewUrl != null && !cmrPreviewUrl.isBlank()) {
+            if (previewLinkMap != null) {
+                previewLinkMap.put(fileName, cmrPreviewUrl);
+            }
+            previewUrls.add(cmrPreviewUrl);
+        }
         for (String alternateFileName : getAlternatePreviewFileNames(fileName)) {
-            String cmrPreviewUrl = getPreviewUrlFromCmr(alternateFileName);
-            if (cmrPreviewUrl != null && !cmrPreviewUrl.isBlank()) {
-                previewUrls.add(cmrPreviewUrl);
+            String alternateCmrUrl = getPreviewUrlFromCmr(alternateFileName);
+            if (alternateCmrUrl != null && !alternateCmrUrl.isBlank()) {
+                previewUrls.add(alternateCmrUrl);
             }
         }
         return new ArrayList<>(previewUrls);
