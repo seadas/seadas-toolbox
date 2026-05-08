@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <izpack:installation version="5.0"
-                     xmlns:izpack="https://github.com/izpack/izpack.github.com/tree/master/schema/5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="https://github.com/izpack/izpack.github.com/blob/master/schema/5.0/izpack-installation-5.0.xsd">
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS IzPack Installer</appname>
-        <appversion>1.1.0</appversion>
+        <appversion>1.2.0</appversion>
         <!--        <javaversion>jdk-11.0.19+7-jre</javaversion>-->
         <!--        <requiresjdk>no</requiresjdk>-->
         <url>https://seadas.gsfc.nasa.gov</url>
@@ -114,7 +114,6 @@
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
         </condition>
-        >
     </conditions>
 
 
@@ -159,7 +158,7 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" unpack="true"
+            <fileset dir="packs/snap"
                      override="true" casesensitive="true" os="mac" condition="izpack.macinstall">
                 <os family="mac"/>
                 <exclude name="bin/*"/>
