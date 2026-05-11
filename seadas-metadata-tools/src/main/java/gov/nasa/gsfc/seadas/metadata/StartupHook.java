@@ -68,7 +68,10 @@ public final class StartupHook {
 
             @Override
             public void productRemoved(ProductManager.Event e) {
-                MetadataDumpTopComponent.findInstance().clearView();
+                MetadataDumpTopComponent tc = MetadataDumpTopComponent.findInstance();
+                if (tc != null) {
+                    tc.clearView();
+                }
             }
         };
 
