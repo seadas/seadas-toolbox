@@ -44,7 +44,7 @@ public class OBDAACDataBrowserPanels {
         maxApiResultsSpinner.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_FETCH_MAX_RESULTS_TOOLTIP);
 
         paginationPanel.add(maxApiResultsSpinner);
-        paginationPanel.add(Box.createHorizontalStrut(20));
+        paginationPanel.add(Box.createHorizontalStrut(15));
         paginationPanel.add(new JLabel("Results Per Page:"));
 
         int resultsPerPagePref = Earthdata_Cloud_Controller.getPreferenceFetchResultsPerPage();
@@ -55,7 +55,7 @@ public class OBDAACDataBrowserPanels {
         resultsPerPageSpinner.setToolTipText(Earthdata_Cloud_Controller.PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP);
 
         paginationPanel.add(resultsPerPageSpinner);
-        paginationPanel.add(Box.createHorizontalStrut(60));
+        paginationPanel.add(Box.createHorizontalStrut(15));
 
         return paginationPanel;
     }
