@@ -40,7 +40,6 @@ public class RegionUtils {
                 }
 
             } catch (IOException e) {
-                System.out.println("ERROR");
 
             }
         }

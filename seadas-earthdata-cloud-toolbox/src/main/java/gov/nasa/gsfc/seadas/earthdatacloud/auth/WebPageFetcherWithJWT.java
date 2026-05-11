@@ -74,13 +74,11 @@ public class WebPageFetcherWithJWT {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading the .netrc file: " + e.getMessage());
         }
 
         if (credentials[0] != null && credentials[1] != null) {
             return credentials;  // Return username and password if found
         } else {
-            System.err.println("Credentials for machine " + machineName + " not found.");
             return null;  // Return null if credentials not found
         }
     }
@@ -169,7 +167,6 @@ public class WebPageFetcherWithJWT {
 
             }
         } catch (JSONException e) {
-            System.out.println("Error: " + e.getMessage());
         }
 
         if (access_token.contains("empty")) {
@@ -232,7 +229,6 @@ public class WebPageFetcherWithJWT {
         JSONArray tableArray = null;
         JTable jTable = null;
         tableArray = (JSONArray) jsonResponse.get("collections");
-        System.out.println("Response: " + jsonResponse.toString(4)); // Pretty print the JSON
         jTable = getJTableNew(tableArray);
         return jTable;
 
@@ -244,7 +240,6 @@ public class WebPageFetcherWithJWT {
         JSONArray tableArray = null;
         JTable jTable = null;
         tableArray = (JSONArray) jsonResponse.get("links");
-        System.out.println("Response: " + jsonResponse.toString(4)); // Pretty print the JSON
         jTable = getJTableNew(tableArray);
         return jTable;
 
@@ -284,7 +279,6 @@ public class WebPageFetcherWithJWT {
                             ex.printStackTrace();
                         }
                     } else {
-                        System.out.println("No valid URL in this cell.");
                     }
                 }
             }

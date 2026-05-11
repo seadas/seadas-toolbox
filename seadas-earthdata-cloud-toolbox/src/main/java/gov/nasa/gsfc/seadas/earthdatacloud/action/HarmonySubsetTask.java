@@ -586,7 +586,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     }
 
     private void status(String msg) {
-        System.out.println(msg);
         if (dialog != null) {
             SwingUtilities.invokeLater(() -> dialog.updateStatus(msg));
         }

@@ -245,10 +245,6 @@ public class BBoxSelectionDialog extends JDialog {
 
             // Improve rendering quality for scaled image
             setDoubleBuffered(true);
-            System.out.println("BBox panel extent lat[" + this.extentLatMin + "," + this.extentLatMax + "] "
-                    + "lon[" + this.extentLonMin + "," + this.extentLonMax + "]");
-            System.out.println("Image size " + image.getWidth() + "x" + image.getHeight()
-                    + " panel " + getWidth() + "x" + getHeight());
             double lonSpan = Math.abs(this.extentLonMax - this.extentLonMin);
             double latSpan = Math.abs(this.extentLatMax - this.extentLatMin);
             if (lonSpan < 1e-6 || latSpan < 1e-6) {

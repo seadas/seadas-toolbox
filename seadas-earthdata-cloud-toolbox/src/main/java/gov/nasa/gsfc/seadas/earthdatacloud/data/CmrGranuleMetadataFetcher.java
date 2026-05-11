@@ -138,13 +138,6 @@ public class CmrGranuleMetadataFetcher {
         String title = (String) g.get("title");
         String producerGranuleId = (String) g.get("producer_granule_id");
 
-        System.out.println("granule id: " + granuleId);
-        System.out.println("collection concept id: " + collectionConceptId);
-        System.out.println("granule title: " + g.get("title"));
-        System.out.println("granule size: " + g.get("granule_size"));
-        System.out.println("producer granule id: " + g.get("producer_granule_id"));
-        System.out.println("data set id: " + g.get("dataset_id"));
-
         Double minLat = null, maxLat = null, minLon = null, maxLon = null;
 
         // Prefer "boxes" if present (fast bbox)

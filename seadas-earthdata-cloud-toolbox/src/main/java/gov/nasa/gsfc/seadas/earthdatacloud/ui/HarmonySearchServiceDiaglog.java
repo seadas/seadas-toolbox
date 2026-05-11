@@ -111,7 +111,6 @@ public class HarmonySearchServiceDiaglog extends JDialog{
                             repaint();
                         });
                     } else {
-                        System.out.println("Task returned null!");
                     }
                 } catch (InterruptedException | ExecutionException ex) {
                     ex.printStackTrace();

@@ -123,17 +123,14 @@ public class FileDownloadManager {
                     Files.createDirectories(outputDir);
                     Path outputPath = outputDir.resolve(fileName);
                     Files.copy(in, outputPath, StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println("Downloaded: " + fileName);
                     return true;
                 }
             } else {
-                System.err.println("Download failed for " + fileUrl + "\nHTTP status: " + status);
                 return false;
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Download failed: " + e.getMessage());
             return false;
         }
     }

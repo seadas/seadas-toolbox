@@ -27,7 +27,6 @@ public class PythonScriptRunner {
             dir = dir.getParentFile();
         }
 
-        System.err.println("❌ Could not locate seadas-toolbox root from: " + baseDir);
         return baseDir;  // default to current dir
     }
 
@@ -86,15 +85,12 @@ public class PythonScriptRunner {
                     new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println("[PYTHON] " + line);
             }
 
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                System.err.println("❌ Python script exited with code: " + exitCode);
             }
         } catch (IOException | InterruptedException e) {
-            System.err.println("❌ Error running Python script: " + scriptName);
             e.printStackTrace();
         }
     }

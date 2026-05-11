@@ -238,7 +238,6 @@ public class ImagePreviewHelper {
             th.interrupt();
 
             int i = 0;
-            System.out.println("Killing from exit th alive num iter =" + i);
 
             while (th != null && th.isAlive() && i < 100) {
                 try {
@@ -248,12 +247,9 @@ public class ImagePreviewHelper {
                     return;
                 }
 
-                System.out.println("OUT th alive num iter =" + i);
-
                 i++;
             }
             th = null;
-            System.out.println("Killed from exit th alive num iter =" + i);
 
         }
     }

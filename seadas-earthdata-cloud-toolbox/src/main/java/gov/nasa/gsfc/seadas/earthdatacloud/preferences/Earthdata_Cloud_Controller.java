@@ -456,12 +456,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     private Property initPropertyDefaults(BindingContext context, String propertyName, Object propertyDefault) {
 
         if (context == null) {
-            System.out.println("WARNING: context is null");
         }
 
         Property property = context.getPropertySet().getProperty(propertyName);
         if (property == null) {
-            System.out.println("WARNING: property is null");
         }
 
         property.getDescriptor().setDefaultValue(propertyDefault);

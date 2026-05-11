@@ -24,16 +24,12 @@ public class OBDAACMetadataFetcher {
 
     private static void fetchAndSaveMetadata() {
         try {
-            System.out.println("Fetching collections from NASA CMR...");
             JSONArray collections = fetchCollections();
 
-            System.out.println("Filtering collections with available granules...");
             JSONArray filteredCollections = filterCollectionsWithGranules(collections);
 
-            System.out.println("Saving metadata to JSON file...");
             saveMetadataToFile(filteredCollections);
 
-            System.out.println("Metadata successfully saved in " + METADATA_FILE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,7 +50,6 @@ public class OBDAACMetadataFetcher {
             JSONObject collection = (JSONObject) obj;
             String shortName = (String) collection.get("short_name");
             if (hasGranules(shortName)) {
-                System.out.println(shortName);
                 validCollections.add(collection);
             }
         }
@@ -106,13 +101,10 @@ public class OBDAACMetadataFetcher {
             try (FileWriter fileWriter = new FileWriter(targetPath.toFile())) {
                 fileWriter.write(metadata.toJSONString());
                 fileWriter.flush();
-                System.out.println("✅ Metadata successfully saved in: " + targetPath.toAbsolutePath());
             }
         } catch (IOException e) {
-            System.err.println("❌ Error saving metadata file: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("❌ Unexpected error: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -108,9 +108,7 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
             }
 
             if (done) {
-                System.out.println("Status is successful!");
                 tableArray = (JSONArray) jsonResponse.get("links");
-                System.out.println("Response: " + jsonResponse.toString(4)); // Pretty print the JSON
                 jTable = getJTableNew(tableArray);
             } else {
             }
@@ -155,7 +153,6 @@ public class DataRetrievalTask extends SwingWorker<JSONObject, Void> {
                             ex.printStackTrace();
                         }
                     } else {
-                        System.out.println("No valid URL in this cell.");
                     }
                 }
             }

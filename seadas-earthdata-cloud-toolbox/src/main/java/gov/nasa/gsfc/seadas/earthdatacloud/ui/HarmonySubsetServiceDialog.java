@@ -140,21 +140,16 @@ public class HarmonySubsetServiceDialog extends JDialog {
             List<VariableItem> variables = new ArrayList<>();
 
             try {
-                System.out.println("=== Starting variable detection for collection: " + collectionId);
-
                 variables = FileVariableMetadataFetcher.fetchVariablesFromFile(selectedFileUrl);
 
                 if (variables == null) {
                     variables = new ArrayList<>();
                 }
 
-                System.out.println("Detected variables from file metadata: " + variables);
-
                 // Mark as loaded only after fetch completes successfully.
                 variablesLoadedForCollectionId = collectionId;
 
             } catch (Exception ex) {
-                System.out.println("Variable detection failed: " + ex.getMessage());
                 ex.printStackTrace();
             }
 
@@ -889,19 +884,14 @@ public class HarmonySubsetServiceDialog extends JDialog {
             List<VariableItem> variables = new ArrayList<>();
 
             try {
-                System.out.println("=== Starting variable detection for: " + fileUrl);
-
                 List<VariableItem> detected = FileVariableMetadataFetcher.fetchVariablesFromFile(fileUrl);
                 if (detected != null) {
                     variables = detected;
                 }
 
-                System.out.println("Detected variables from actual file metadata: " + variables);
-
                 variablesLoadedForUrl = fileUrl;
 
             } catch (Exception e) {
-                System.out.println("Exception in variable detection: " + e.getMessage());
                 e.printStackTrace();
             }
 
@@ -921,25 +911,18 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
     private void requestSubset() {
         try {
-            System.out.println("=== Starting subset request ===");
-
             if (!validateInputs()) {
-                System.out.println("Input validation failed");
                 return;
             }
-
-            System.out.println("Input validation passed");
 
             // Ask user where to save result
             File outputFile = promptForOutputFile();
             if (outputFile == null) {
-                System.out.println("Subset request cancelled by user at file save prompt.");
                 updateStatus("Subset request cancelled.");
                 return;
             }
 
             selectedOutputFile = outputFile;
-            System.out.println("Selected output file: " + outputFile.getAbsolutePath());
 
             // Disable buttons during processing
             subsetButton.setEnabled(false);
@@ -948,8 +931,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
             // Get subset parameters
             JSONObject subsetParams = getSubsetParameters();
             subsetParams.put("outputFile", outputFile.getAbsolutePath());
-
-            System.out.println("Subset parameters: " + subsetParams.toString());
 
             currentSubsetTask = new HarmonySubsetTask(
                     subsetParams,
@@ -961,7 +942,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
             onSubsetStarted();
 
-            System.out.println("Starting HarmonySubsetTask...");
             currentSubsetTask.addPropertyChangeListener(evt -> {
                 if ("progress".equals(evt.getPropertyName())) {
                     int p = (Integer) evt.getNewValue();
@@ -973,7 +953,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
             currentSubsetTask.execute();
 
         } catch (Exception e) {
-            System.err.println("Error in requestSubset: " + e.getMessage());
             e.printStackTrace();
 
             onSubsetFailed();
@@ -1254,8 +1233,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
                         + "&provider=OB_CLOUD"
                         + "&page_size=50";
 
-                System.out.println("Fetching granule coverage: " + cmrUrl);
-
                 java.net.URL urlObj = new java.net.URL(cmrUrl);
                 conn = (HttpURLConnection) urlObj.openConnection();
                 conn.setRequestMethod("GET");
@@ -1493,12 +1470,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
                 matched = true;
             }
 
-            System.out.println("CMR candidate " + i
-                    + ": id=" + g.optString("id", "")
-                    + ", title=" + title
-                    + ", producer_granule_id=" + producerGranuleId
-                    + ", matched=" + matched);
-
             if (matched) {
                 exactMatches.add(g);
             }
@@ -1529,7 +1500,6 @@ public class HarmonySubsetServiceDialog extends JDialog {
         }
 
         // Still ambiguous -> return null instead of guessing
-        System.err.println("Multiple exact CMR matches found for file: " + fileNameFromUrl(dataUrl));
         return null;
     }
 

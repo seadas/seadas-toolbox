@@ -103,7 +103,6 @@ public class OBDAACDataBrowser extends JPanel {
                 loadDateRangesFromReader(reader);
                 return;
             } catch (IOException e) {
-                System.err.println("Failed to read external mission date ranges: " + e.getMessage());
             }
         }
 
