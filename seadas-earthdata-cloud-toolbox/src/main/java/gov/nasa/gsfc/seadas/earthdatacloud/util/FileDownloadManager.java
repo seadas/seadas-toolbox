@@ -12,7 +12,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +25,9 @@ public class FileDownloadManager {
     
     private JDialog progressDialog;
     private JProgressBar progressBar;
+    private JLabel progressLabel;
+    private JLabel progressFileLabel;
+    private SwingWorker<DownloadResult, DownloadProgress> downloadWorker;
     private String[] earthdataCredentials;
     
     /**
@@ -56,40 +58,75 @@ public class FileDownloadManager {
             return; // User cancelled
         }
         
-        // Show progress dialog
         showProgressDialog(parentComponent, filesToDownload.size());
-        
-        // Start download in background thread
-        new Thread(() -> {
-            int downloadedCount = 0;
-            
-            for (int i = 0; i < filesToDownload.size(); i++) {
-                String fileName = filesToDownload.get(i);
-                String url = fileLinkMap.get(fileName);
-                
-                if (url != null && downloadFile(url, downloadDir)) {
-                    downloadedCount++;
+
+        downloadWorker = new SwingWorker<>() {
+            @Override
+            protected DownloadResult doInBackground() {
+                int downloadedCount = 0;
+
+                for (int i = 0; i < filesToDownload.size(); i++) {
+                    if (isCancelled()) {
+                        break;
+                    }
+                    final int fileIndex = i;
+                    String fileName = filesToDownload.get(fileIndex);
+                    String url = fileLinkMap.get(fileName);
+
+                    publish(new DownloadProgress(fileIndex, filesToDownload.size(), fileName, 0));
+
+                    if (url != null && downloadFile(url, downloadDir,
+                            currentFileProgress -> publish(new DownloadProgress(fileIndex, filesToDownload.size(),
+                                    fileName, currentFileProgress)))) {
+                        downloadedCount++;
+                    }
+
+                    publish(new DownloadProgress(fileIndex + 1, filesToDownload.size(), fileName, 0));
                 }
-                
-                // Update progress
-                int progress = i + 1;
-                SwingUtilities.invokeLater(() -> updateProgressBar(progress));
+
+                return new DownloadResult(downloadedCount, isCancelled());
             }
-            
-            // Hide progress dialog
-            SwingUtilities.invokeLater(() -> hideProgressDialog());
-            
-            // Show completion message and execute callback
-            final int finalDownloadedCount = downloadedCount;
-            SwingUtilities.invokeLater(() -> {
-                JOptionPane.showMessageDialog(parentComponent, 
-                    finalDownloadedCount + " file(s) downloaded to:\n" + downloadDir.toAbsolutePath());
-                
-                if (onComplete != null) {
-                    onComplete.onDownloadComplete(finalDownloadedCount, downloadDir);
+
+            @Override
+            protected void process(List<DownloadProgress> chunks) {
+                if (!chunks.isEmpty()) {
+                    updateProgressBar(chunks.get(chunks.size() - 1));
                 }
-            });
-        }).start();
+            }
+
+            @Override
+            protected void done() {
+                hideProgressDialog();
+
+                DownloadResult result;
+                try {
+                    result = get();
+                } catch (Exception e) {
+                    result = new DownloadResult(0, isCancelled());
+                }
+
+                if (result.cancelled) {
+                    JOptionPane.showMessageDialog(parentComponent, "Download cancelled.");
+                    return;
+                }
+
+                showCompletionMessage(parentComponent, downloadDir, result.downloadedCount, onComplete);
+            }
+        };
+
+        downloadWorker.execute();
+        progressDialog.setVisible(true);
+    }
+
+    private void showCompletionMessage(Component parentComponent, Path downloadDir, int downloadedCount,
+                                       DownloadCompleteCallback onComplete) {
+        final int finalDownloadedCount = downloadedCount;
+        JOptionPane.showMessageDialog(parentComponent,
+                finalDownloadedCount + " file(s) downloaded to:\n" + downloadDir.toAbsolutePath());
+                
+        if (onComplete != null) {
+            onComplete.onDownloadComplete(finalDownloadedCount, downloadDir);
+        }
     }
     
     /**
@@ -100,6 +137,10 @@ public class FileDownloadManager {
      * @return true if download was successful, false otherwise
      */
     public boolean downloadFile(String fileUrl, Path outputDir) {
+        return downloadFile(fileUrl, outputDir, null);
+    }
+
+    private boolean downloadFile(String fileUrl, Path outputDir, DownloadProgressListener progressListener) {
         try {
             String fileName = extractFileNameFromUrl(fileUrl);
             String token = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
@@ -119,10 +160,11 @@ public class FileDownloadManager {
             }
             
             if (status == 200) {
+                long totalBytes = conn.getContentLengthLong();
                 try (InputStream in = conn.getInputStream()) {
                     Files.createDirectories(outputDir);
                     Path outputPath = outputDir.resolve(fileName);
-                    Files.copy(in, outputPath, StandardCopyOption.REPLACE_EXISTING);
+                    copyWithProgress(in, outputPath, totalBytes, progressListener);
                     System.out.println("Downloaded: " + fileName);
                     return true;
                 }
@@ -131,10 +173,31 @@ public class FileDownloadManager {
                 return false;
             }
             
+        } catch (InterruptedIOException e) {
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Download failed: " + e.getMessage());
             return false;
+        }
+    }
+
+    private void copyWithProgress(InputStream in, Path outputPath, long totalBytes,
+                                  DownloadProgressListener progressListener) throws IOException {
+        try (OutputStream out = Files.newOutputStream(outputPath)) {
+            byte[] buffer = new byte[8192];
+            long bytesCopied = 0;
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                if (downloadWorker != null && downloadWorker.isCancelled()) {
+                    throw new InterruptedIOException("Download cancelled");
+                }
+                out.write(buffer, 0, bytesRead);
+                bytesCopied += bytesRead;
+                if (progressListener != null && totalBytes > 0) {
+                    progressListener.onProgress(Math.min(1.0, bytesCopied / (double) totalBytes));
+                }
+            }
         }
     }
     
@@ -164,22 +227,41 @@ public class FileDownloadManager {
      * @param max Maximum value for the progress bar
      */
     private void showProgressDialog(Component parent, int max) {
-        progressDialog = new JDialog(SwingUtilities.getWindowAncestor(parent), 
-                                   "Downloading...", 
+        progressDialog = new JDialog(SwingUtilities.getWindowAncestor(parent),
+                                   "Downloading...",
                                    Dialog.ModalityType.APPLICATION_MODAL);
-        progressDialog.setLayout(new BorderLayout());
-        progressDialog.setSize(400, 100);
+        progressDialog.setLayout(new BorderLayout(8, 8));
+        progressDialog.setSize(520, 155);
         progressDialog.setLocationRelativeTo(parent);
         
-        progressBar = new JProgressBar(0, max);
+        progressBar = new JProgressBar(0, 1000);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
-        
-        progressDialog.add(new JLabel("Please wait..."), BorderLayout.NORTH);
+        progressBar.setString("Preparing...");
+
+        progressLabel = new JLabel("Preparing download...");
+        progressFileLabel = new JLabel(" ");
+
+        JPanel messagePanel = new JPanel(new GridLayout(2, 1, 0, 2));
+        messagePanel.setBorder(BorderFactory.createEmptyBorder(8, 10, 0, 10));
+        messagePanel.add(progressLabel);
+        messagePanel.add(progressFileLabel);
+
+        progressDialog.add(messagePanel, BorderLayout.NORTH);
         progressDialog.add(progressBar, BorderLayout.CENTER);
-        progressDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        
-        new Thread(() -> progressDialog.setVisible(true)).start();
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(e -> {
+            if (downloadWorker != null) {
+                downloadWorker.cancel(true);
+            }
+        });
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 8, 10));
+        buttonPanel.add(cancelButton);
+        progressDialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        progressDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
     }
     
     /**
@@ -187,10 +269,40 @@ public class FileDownloadManager {
      * 
      * @param value The new progress value
      */
-    private void updateProgressBar(int value) {
+    private void updateProgressBar(DownloadProgress progress) {
         if (progressBar != null) {
-            progressBar.setValue(value);
+            double completedFiles = progress.completedFiles;
+            double currentFileProgress = progress.currentFileProgress;
+            int progressValue = (int) Math.round(((completedFiles + currentFileProgress)
+                    / Math.max(1, progress.totalFiles)) * 1000);
+            progressBar.setValue(Math.min(1000, progressValue));
+            progressBar.setString(formatOverallProgress(progressValue));
         }
+
+        if (progressLabel != null) {
+            int currentFileNumber = Math.min(progress.completedFiles + 1, progress.totalFiles);
+            progressLabel.setText("Downloading file " + currentFileNumber + " of " + progress.totalFiles);
+        }
+
+        if (progressFileLabel != null) {
+            progressFileLabel.setText(shortenFileName(progress.fileName, 62));
+            progressFileLabel.setToolTipText(progress.fileName);
+        }
+    }
+
+    private String formatOverallProgress(int progressValue) {
+        int percent = Math.min(100, Math.max(0, progressValue / 10));
+        return percent + "% overall";
+    }
+
+    private String shortenFileName(String fileName, int maxLength) {
+        if (fileName == null || fileName.length() <= maxLength) {
+            return fileName;
+        }
+
+        int prefixLength = Math.max(1, (maxLength - 3) / 2);
+        int suffixLength = Math.max(1, maxLength - 3 - prefixLength);
+        return fileName.substring(0, prefixLength) + "..." + fileName.substring(fileName.length() - suffixLength);
     }
     
     /**
@@ -202,6 +314,10 @@ public class FileDownloadManager {
             progressDialog.dispose();
             progressDialog = null;
         }
+        progressBar = null;
+        progressLabel = null;
+        progressFileLabel = null;
+        downloadWorker = null;
     }
     
     /**
@@ -314,5 +430,33 @@ public class FileDownloadManager {
          * @param downloadDir Directory where files were downloaded
          */
         void onDownloadComplete(int downloadedCount, Path downloadDir);
+    }
+
+    private interface DownloadProgressListener {
+        void onProgress(double currentFileProgress);
+    }
+
+    private static class DownloadProgress {
+        private final int completedFiles;
+        private final int totalFiles;
+        private final String fileName;
+        private final double currentFileProgress;
+
+        private DownloadProgress(int completedFiles, int totalFiles, String fileName, double currentFileProgress) {
+            this.completedFiles = completedFiles;
+            this.totalFiles = totalFiles;
+            this.fileName = fileName;
+            this.currentFileProgress = currentFileProgress;
+        }
+    }
+
+    private static class DownloadResult {
+        private final int downloadedCount;
+        private final boolean cancelled;
+
+        private DownloadResult(int downloadedCount, boolean cancelled) {
+            this.downloadedCount = downloadedCount;
+            this.cancelled = cancelled;
+        }
     }
 } 
