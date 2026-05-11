@@ -74,7 +74,6 @@ public final class MetadataTreeBuilder {
 
             if (DEBUG) debugDumpRootChildren(dumpRoot);
         } catch (Throwable t) {
-            System.out.println("[Metadata] groups-only build failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
         }
     }
 
@@ -435,32 +434,18 @@ public final class MetadataTreeBuilder {
     // ---- Debug helpers ------------------------------------------------------
 
     private static void debugProbe(NetcdfFile nc, Product product, String fileUrlOrPath) {
-        System.out.println("=== Metadata DEBUG PROBE ===");
-        System.out.println("product.fileLocation = " + (product != null && product.getFileLocation() != null ? product.getFileLocation().getAbsolutePath() : "null"));
-        System.out.println("explicit path arg     = " + fileUrlOrPath);
-        System.out.println("nc.isNull?            = " + (nc == null));
         if (nc != null) {
             Group root = nc.getRootGroup();
-            System.out.println("root name             = " + (root != null ? root.getShortName() : "null"));
-            System.out.println("root groups (#)       = " + (root != null ? root.getGroups().size() : -1));
-            System.out.println("root vars (#)         = " + (root != null ? root.getVariables().size() : -1));
-            System.out.println("root attrs (#)        = " + (root != null ? root.getAttributes().size() : -1));
             if (root != null) {
                 for (Group g : root.getGroups()) {
-                    System.out.printf("   - group '%s': vars=%d attrs=%d subgroups=%d%n",
-                            g.getShortName(), g.getVariables().size(), g.getAttributes().size(), g.getGroups().size());
                 }
             }
         }
-        System.out.println("===========================");
     }
 
     private static void debugDumpRootChildren(MetadataElement dumpRoot) {
-        System.out.println("[Metadata] Metadata_Dump children:");
         for (int i = 0; i < dumpRoot.getNumElements(); i++) {
             MetadataElement c = dumpRoot.getElementAt(i);
-            System.out.printf("  - %s (attrs=%d, elements=%d)%n",
-                    c.getName(), c.getNumAttributes(), c.getNumElements());
         }
     }
 
