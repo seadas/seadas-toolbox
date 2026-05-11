@@ -101,11 +101,11 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         if (result.has("jobID")) {
             String jobId = result.getString("jobID");
             status("Harmony job created: " + jobId + " — polling...");
-            setProgress(30);
+            setPhase("Harmony job submitted; polling...", 30);
             JSONObject finalJob = pollJob(env, jobId, token, Duration.ofMinutes(10));
             String status = finalJob.optString("status", "");
             status("Job status: " + status);
-            setProgress(85);
+            setPhase("Job complete; preparing downloads...", 85);
             if ("failed".equalsIgnoreCase(status)) {
                 throw new IOException("Harmony job failed: " + truncate(finalJob.toString(), 400));
             }
@@ -202,7 +202,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         }
 
         status("Resolved: granuleId=" + granuleId + " | collectionId=" + collectionId);
-        setProgress(10);
+        setPhase("Resolved IDs; building Harmony request...", 10);
         return new ResolvedIds(granuleId, collectionId);
     }
 
@@ -305,7 +305,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     }
 
     private JSONObject executeOgc(Env env, String ogcUrl, String token) throws Exception {
-        setProgress(5);
+        setPhase("Submitting Harmony request...", 5);
         HttpURLConnection conn = (HttpURLConnection) new URL(ogcUrl).openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(CONNECT_TIMEOUT_MS);
@@ -342,15 +342,19 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
 
         if (isJson) {
             String body = slurp(bis);
-            setProgress(20);
+            setPhase("Harmony response received...", 20);
             return new JSONObject(body);
         }
 
         long contentLength = conn.getContentLengthLong();
         status("Downloading subset result...");
-        setProgress(70);
+        if (contentLength > 0) {
+            setPhase("Downloading subset...", 70);
+        } else {
+            setPhaseIndeterminate("Downloading subset...");
+        }
         Path out = saveBinaryResponse(bis, "harmony_subset_", ".nc", contentLength);
-        setProgress(95);
+        setPhase("Finalizing...", 95);
 
         JSONObject result = new JSONObject();
         result.put("savedFile", out.toAbsolutePath().toString());
@@ -386,7 +390,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
 
     private JSONObject pollJob(Env env, String jobId, String token, Duration timeout) throws Exception {
         long deadline = System.currentTimeMillis() + timeout.toMillis();
-        int step = 25;
+        setPhaseIndeterminate("Polling Harmony job...");
 
         while (System.currentTimeMillis() < deadline) {
             if (isCancelled()) throw new InterruptedException("Cancelled");
@@ -396,9 +400,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             JSONObject json = httpGetJson(jobUrl, token);
             String st = json.optString("status", "");
             status("Job " + jobId + " status: " + st);
-
-            step = Math.min(85, step + 2);
-            setProgress(step);
+            setPhaseIndeterminate("Polling Harmony job (" + st + ")...");
 
             if ("successful".equalsIgnoreCase(st) ||
                     "partial_success".equalsIgnoreCase(st) ||
@@ -438,10 +440,17 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             downloaded++;
             Path out = saveRemoteFile(href, token, downloaded, netcdfCount);
             status("Downloaded: " + out.toAbsolutePath());
-            setProgress(Math.min(95, 85 + downloaded * 2));
+            setPhase("Downloaded " + downloaded + " of " + netcdfCount, downloadProgress(downloaded, netcdfCount));
         }
 
         return downloaded;
+    }
+
+    private static int downloadProgress(int filesCompleted, int totalFiles) {
+        if (totalFiles <= 0) {
+            return 95;
+        }
+        return Math.min(95, 85 + (int) Math.round(10.0 * filesCompleted / totalFiles));
     }
 
     // ------------------------ HTTP helpers ------------------------
@@ -498,14 +507,45 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             }
 
             String name = extractFileName(current);
+            long contentLength = conn.getContentLengthLong();
             try (InputStream is = conn.getInputStream()) {
                 Path out = resolveDownloadPath(name, downloadIndex, totalDownloads);
-                Files.copy(is, out, StandardCopyOption.REPLACE_EXISTING);
+                String label = "Downloading " + downloadIndex + " of " + totalDownloads + " (" + name + ")";
+                if (contentLength > 0) {
+                    setPhase(label, downloadProgress(downloadIndex - 1, totalDownloads));
+                } else {
+                    setPhaseIndeterminate(label);
+                }
+
+                int sliceStart = downloadProgress(downloadIndex - 1, totalDownloads);
+                int sliceEnd = downloadProgress(downloadIndex, totalDownloads);
+                copyDownloadStream(is, out, contentLength, sliceStart, sliceEnd);
                 return out;
             }
         }
 
         throw new IOException("Too many redirects: " + href);
+    }
+
+    private void copyDownloadStream(InputStream is, Path out, long contentLength, int sliceStart, int sliceEnd)
+            throws IOException {
+        try (OutputStream os = Files.newOutputStream(out, StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING)) {
+            byte[] buffer = new byte[8192];
+            long totalRead = 0;
+            int read;
+            while ((read = is.read(buffer)) != -1) {
+                if (isCancelled()) {
+                    throw new InterruptedIOException("Cancelled");
+                }
+                os.write(buffer, 0, read);
+                totalRead += read;
+                if (contentLength > 0) {
+                    int p = sliceStart + (int) Math.round((sliceEnd - sliceStart) * (totalRead / (double) contentLength));
+                    setProgress(Math.min(sliceEnd, p));
+                }
+            }
+        }
     }
 
     private Path resolveDownloadPath(String suggestedRemoteName, int downloadIndex, int totalDownloads) throws IOException {
@@ -568,21 +608,34 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     // ------------------------ UI helpers ------------------------
 
     private void updateUiStart() {
-        if (progressBar != null) {
-            progressBar.setIndeterminate(true);
-            progressBar.setString("Working...");
-        }
-        //setProgress(1);
+        setPhaseIndeterminate("Starting...");
         status("=== HarmonySubsetTask started ===");
     }
 
     private void updateUiEnd() {
-        if (progressBar != null) {
-            progressBar.setIndeterminate(false);
-            progressBar.setValue(100);
-            progressBar.setString("Done");
+        setPhase("Done", 100);
+    }
+
+    private void setPhase(String label, int progress) {
+        setPhaseInternal(label, progress, false);
+    }
+
+    private void setPhaseIndeterminate(String label) {
+        setPhaseInternal(label, -1, true);
+    }
+
+    private void setPhaseInternal(String label, int progress, boolean indeterminate) {
+        if (progress >= 0) {
+            setProgress(progress);
         }
-        setProgress(100);
+        if (progressBar != null) {
+            SwingUtilities.invokeLater(() -> {
+                progressBar.setIndeterminate(indeterminate);
+                if (label != null) {
+                    progressBar.setString(label);
+                }
+            });
+        }
     }
 
     private void status(String msg) {
@@ -601,6 +654,9 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             int read;
 
             while ((read = is.read(buffer)) != -1) {
+                if (isCancelled()) {
+                    throw new InterruptedIOException("Cancelled");
+                }
                 os.write(buffer, 0, read);
                 totalRead += read;
 
