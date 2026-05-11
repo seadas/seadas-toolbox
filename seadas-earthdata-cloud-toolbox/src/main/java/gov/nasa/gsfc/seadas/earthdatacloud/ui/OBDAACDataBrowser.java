@@ -455,7 +455,7 @@ public class OBDAACDataBrowser extends JPanel {
         navPanel.add(pageLabel);
         navPanel.add(nextButton);
 
-        JButton downloadButton = new JButton("Download All");
+        JButton downloadButton = new JButton("Download");
         downloadButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files and <br>" +
                 "download all the data files (if 'Links Only' is NOT checked).</html>");
         downloadButton.addActionListener(e -> {
