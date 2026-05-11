@@ -43,6 +43,7 @@ public class OBDAACDataBrowser extends JPanel {
     private boolean working = false;
     private JTable resultsTable;
     private DefaultTableModel tableModel;
+    private static final Color SELECTED_DOWNLOAD_BG = new Color(187, 222, 251);
     private final Map<String, String> productNameTooltips = new HashMap<>();
 
     private final Map<String, JSONObject> metadataMap = new HashMap<>();
@@ -301,7 +302,17 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void createTable() {
-        resultsTable = new JTable(tableModel);
+        resultsTable = new JTable(tableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    boolean selectedForDownload = Boolean.TRUE.equals(getValueAt(row, 1));
+                    c.setBackground(selectedForDownload ? SELECTED_DOWNLOAD_BG : getBackground());
+                }
+                return c;
+            }
+        };
     }
 
     private void configureTableAppearance() {
@@ -345,11 +356,14 @@ public class OBDAACDataBrowser extends JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value,
                                                            boolean isSelected, boolean hasFocus, int row, int column) {
 
+                setForeground(null);
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 if (column == 0 && value instanceof String) {
                     String fileName = (String) value;
                     String tooltip = fileSpatialMap.getOrDefault(fileName, "No spatial info");
                 }
+
+                setFont(table.getFont());
 
                 if (column == 0) {
                     setHorizontalAlignment(JLabel.LEFT);
@@ -358,6 +372,17 @@ public class OBDAACDataBrowser extends JPanel {
                     setHorizontalAlignment(JLabel.LEFT);
                 }
                 return c;
+            }
+        });
+
+        tableModel.addTableModelListener(e -> {
+            if (e.getColumn() == 1 && e.getType() == javax.swing.event.TableModelEvent.UPDATE) {
+                int first = Math.max(0, e.getFirstRow());
+                int last = Math.min(resultsTable.getRowCount() - 1, e.getLastRow());
+                for (int r = first; r <= last; r++) {
+                    Rectangle rect = resultsTable.getCellRect(r, 0, true);
+                    resultsTable.repaint(rect);
+                }
             }
         });
     }

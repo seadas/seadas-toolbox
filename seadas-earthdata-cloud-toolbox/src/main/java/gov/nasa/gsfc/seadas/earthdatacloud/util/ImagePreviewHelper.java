@@ -185,6 +185,7 @@ public class ImagePreviewHelper {
             public void mouseExited(MouseEvent e) {
 
                 hoveringFileName = null;
+                table.clearSelection();
                 table.setSelectionBackground(Color.WHITE);
                 table.setSelectionForeground(Color.BLACK);
                 table.setBackground(Color.WHITE);
