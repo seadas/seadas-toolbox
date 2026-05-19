@@ -29,7 +29,7 @@ import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo.OCSSW_SEADAS_INFO_
 
 public class SeadasToolboxVersion {
 
-   static String SEADAS_TOOLBOX_VERSION_URL = "https://seadas.gsfc.nasa.gov/downloads/SEADAS_TOOLBOX_VERSION.txt";
+   static String SEADAS_TOOLBOX_VERSION_URL = "https://oceandata.sci.gsfc.nasa.gov/seadas-downloads/SEADAS_TOOLBOX_VERSION.txt";
 
     public static enum SeadasToolboxRelease {
         INSTALLED_RELEASE,

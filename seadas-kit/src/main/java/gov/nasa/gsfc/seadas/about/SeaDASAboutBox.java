@@ -31,12 +31,12 @@ public class SeaDASAboutBox extends JPanel {
 
     private final static String PACKAGE = "SeaDAS-Toolbox";
 
-    private final static String RELEASE_NOTES_URL = "https://seadas.gsfc.nasa.gov/release-notes";
+    private final static String RELEASE_NOTES_URL = "https://www.earthdata.nasa.gov/data/tools/seadas/release-notes";
 
     private final static String OCEAN_COLOR_WEB_URL = "https://oceancolor.gsfc.nasa.gov/";
     private final static String OCEAN_COLOR_WEB_URL_NAME = "NASA Ocean Color Web";
 
-    private final static String SEADAS_WEB_URL = "https://seadas.gsfc.nasa.gov/";
+    private final static String SEADAS_WEB_URL = "https://https://www.earthdata.nasa.gov/data/tools/seadas";
     private final static String SEADAS_WEB_URL_NAME = "SeaDAS Web";
 
 
