@@ -153,10 +153,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP = "Include 'User Locations' selector in GUI";
     public static final boolean PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT = false;
 
-    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.categorize";
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".v3.preset_regions.categorize";
     public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL = "Categorize 'Preset Regions' Selector";
     public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_TOOLTIP = "Categorizes 'Preset Regions' selector in GUI (otherwise uses a sorted region list)";
-    public static final boolean PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT = true;
+    public static final boolean PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT = false;
 
 
 

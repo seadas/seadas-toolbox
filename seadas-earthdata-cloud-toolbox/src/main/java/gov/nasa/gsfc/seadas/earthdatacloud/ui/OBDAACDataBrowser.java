@@ -36,7 +36,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
     private JDatePickerImpl startDatePicker, endDatePicker;
     private JTextField minLatField, maxLatField, minLonField, maxLonField, coordinates, boxSize;
-    private JComboBox regions;
+    private JComboBox<RegionsInfo> regions;
     private JComboBox locations;
     private JComboBox user_regions;
     private JComboBox user_locations;
@@ -590,7 +590,9 @@ public class OBDAACDataBrowser extends JPanel {
         }
 
 
-        downloadManager.downloadSelectedFiles(filesToDownload, downloadListOnly, fileLinkMap, this,
+        
+        String searchCriteriaString = getSearchCriteriaOverviewString();
+        downloadManager.downloadSelectedFiles(filesToDownload, downloadListOnly, searchCriteriaString, fileLinkMap, this,
             (downloadedCount, downloadDir) -> {
                 // Callback when download completes
                 for (String fileName : filesToDownload) {
@@ -598,6 +600,69 @@ public class OBDAACDataBrowser extends JPanel {
                 }
             });
     }
+
+    private String getSearchCriteriaOverviewString() {
+        String searchCriteriaString = "";
+
+        String satellite = (String) satelliteDropdown.getSelectedItem();
+        String level = (String) levelDropdown.getSelectedItem();
+        String product = (String) productDropdown.getSelectedItem();
+
+        String user_regions_Name = null;
+        if (user_regions != null) {
+           RegionsInfo user_regions_RegionsInfo =  (RegionsInfo) user_regions.getSelectedItem();
+           user_regions_Name = user_regions_RegionsInfo.getName();
+        }
+
+        String regions_Name = null;
+        if (regions != null) {
+            RegionsInfo regions_RegionsInfo =  (RegionsInfo) regions.getSelectedItem();
+            regions_Name = regions_RegionsInfo.getName();
+        }
+
+
+
+        String startDate = null, endDate = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDatePicker.getModel().getValue() != null) {
+            startDate = sdf.format(startDatePicker.getModel().getValue());
+        }
+        if (endDatePicker.getModel().getValue() != null) {
+            endDate = sdf.format(endDatePicker.getModel().getValue());
+        }
+
+
+
+        String minLat = minLatField.getText().trim();
+        String maxLat = maxLatField.getText().trim();
+        String minLon = minLonField.getText().trim();
+        String maxLon = maxLonField.getText().trim();
+
+        minLat = RegionUtils.convertLatToDecimal(minLat);
+        maxLat = RegionUtils.convertLatToDecimal(maxLat);
+        minLon = RegionUtils.convertLonToDecimal(minLon);
+        maxLon = RegionUtils.convertLonToDecimal(maxLon);
+
+
+        searchCriteriaString += "Satellite: " + satellite + "\n";
+        searchCriteriaString += "Level: " + level + "\n";
+        searchCriteriaString += "Product: " + product + "\n";
+        searchCriteriaString += "Start Date: " + startDate + "\n";
+        searchCriteriaString += "End Date: " + endDate + "\n";
+        if (user_regions_Name != null) {
+            searchCriteriaString += "User Region: " + user_regions_Name + "\n";
+        }
+        if (regions_Name != null) {
+            searchCriteriaString += "Region: " + regions_Name + "\n";
+        }
+        searchCriteriaString += "North: " + maxLat + "\n";
+        searchCriteriaString += "South: " + minLat + "\n";
+        searchCriteriaString += "West: " + minLon + "\n";
+        searchCriteriaString += "East: " + maxLon + "\n";
+
+        return searchCriteriaString;
+    }
+
 
     private void subsetSelectedFiles() {
 
