@@ -55,6 +55,7 @@ public class OBDAACDataBrowser extends JPanel {
     private int totalPages = 1;
     private JSpinner maxApiResultsSpinner;
     private JSpinner resultsPerPageSpinner;
+    JCheckBox urlListOnlyCheckbox;
 
     private JLabel pageLabel;
     private JLabel fetchedLabel;
@@ -189,7 +190,7 @@ public class OBDAACDataBrowser extends JPanel {
         // Initialize spinners first
         maxApiResultsSpinner = new JSpinner();
         resultsPerPageSpinner = new JSpinner();
-        
+
         OBDAACDataBrowserPanels panels = new OBDAACDataBrowserPanels();
         JPanel paginationPanel = panels.createSpinnerPanel(maxApiResultsSpinner, resultsPerPageSpinner);
         JPanel buttonPanel = panels.createButtonPanel(
@@ -263,6 +264,7 @@ public class OBDAACDataBrowser extends JPanel {
         panel.add(fill, gbc);
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
+
 
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTHEAST;
@@ -454,6 +456,8 @@ public class OBDAACDataBrowser extends JPanel {
         navPanel.add(nextButton);
 
         JButton downloadButton = new JButton("Download");
+        downloadButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files and <br>" +
+                "download all the data files (if 'Links Only' is NOT checked).</html>");
         downloadButton.addActionListener(e -> {
             if (imagePreviewHelper != null) {
                 // todo Danny check this
@@ -462,7 +466,9 @@ public class OBDAACDataBrowser extends JPanel {
             downloadSelectedFiles();
         });
         
-        JButton subsetButton = new JButton("Subset");
+        JButton subsetButton = new JButton("Subset *");
+        subsetButton.setToolTipText("<html>Create a subset of the selected file.<br>" +
+                "* Note: this tool only supports subsetting a single file at a time.</html>");
         subsetButton.addActionListener(e -> {
             if (imagePreviewHelper != null) {
                 // todo Danny check this
@@ -472,8 +478,53 @@ public class OBDAACDataBrowser extends JPanel {
         });
         
         JPanel downloadPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        downloadPanel.add(subsetButton);
-        downloadPanel.add(downloadButton);
+//        downloadPanel.add(subsetButton);
+
+
+
+
+
+        urlListOnlyCheckbox = new JCheckBox("Links Only");
+        urlListOnlyCheckbox.setSelected(false);
+        urlListOnlyCheckbox.setToolTipText("<html>If checked, only a text-file containing URL links to each of the files is created and <br>NO data files will be downloaded.</html>");
+
+
+        JPanel newDownloadPanel = new JPanel(new GridBagLayout());
+        newDownloadPanel.setBorder(BorderFactory.createEtchedBorder());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(1, 1, 1, 1);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        newDownloadPanel.add(downloadButton, gbc);
+
+        gbc.gridx++;
+        newDownloadPanel.add(urlListOnlyCheckbox, gbc);
+
+
+
+        JPanel newSubsetPanel = new JPanel(new GridBagLayout());
+        newSubsetPanel.setBorder(BorderFactory.createEtchedBorder());
+
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.insets = new Insets(1, 1, 1, 1);
+        gbc2.anchor = GridBagConstraints.CENTER;
+        gbc2.fill = GridBagConstraints.NONE;
+        gbc2.gridx = 0;
+        gbc2.gridy = 0;
+        newSubsetPanel.add(subsetButton, gbc2);
+
+
+
+
+//        downloadPanel.add(downloadButton);
+
+//        downloadPanel.add(urlListOnlyCheckbox);
+
+        downloadPanel.add(newSubsetPanel);
+        downloadPanel.add(newDownloadPanel);
 
         panel.add(fetchedPanel, BorderLayout.WEST);
         panel.add(navPanel, BorderLayout.CENTER);
@@ -531,7 +582,15 @@ public class OBDAACDataBrowser extends JPanel {
             return;
         }
 
-        downloadManager.downloadSelectedFiles(filesToDownload, fileLinkMap, this, 
+
+
+        boolean downloadListOnly = false;
+        if (urlListOnlyCheckbox != null && urlListOnlyCheckbox.isSelected()) {
+            downloadListOnly = true;
+        }
+
+
+        downloadManager.downloadSelectedFiles(filesToDownload, downloadListOnly, fileLinkMap, this,
             (downloadedCount, downloadDir) -> {
                 // Callback when download completes
                 for (String fileName : filesToDownload) {
@@ -1190,7 +1249,8 @@ public class OBDAACDataBrowser extends JPanel {
 
         boolean categorize = Earthdata_Cloud_Controller.getPreferencePresetRegionsCategorize();
 
-        if (Earthdata_Cloud_Controller.getPreferencePresetRegionsSelectorInclude()) {
+        boolean alwaysIncludePresetRegions = true;
+        if (alwaysIncludePresetRegions || Earthdata_Cloud_Controller.getPreferencePresetRegionsSelectorInclude()) {
 
 
             try {
