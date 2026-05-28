@@ -389,11 +389,11 @@ public class OBDAACDataBrowser extends JPanel {
     private void setupResultsContainer(GridBagConstraints gbc) {
         resultsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
-        scrollPane.setPreferredSize(new Dimension(700, 500));
+        scrollPane.setPreferredSize(new Dimension(750, 500));
 
         resultsContainer = new JPanel(new BorderLayout());
         resultsContainer.setVisible(false); // 👈 initially hidden
-        resultsContainer.setPreferredSize(new Dimension(700, 600));  // Adjust height as needed
+        resultsContainer.setPreferredSize(new Dimension(750, 600));  // Adjust height as needed
 
         resultsContainer.removeAll();  // clean up old content if any
         resultsContainer.add(scrollPane, BorderLayout.CENTER);
@@ -428,11 +428,24 @@ public class OBDAACDataBrowser extends JPanel {
     private JPanel createPaginationPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
+
+
+        JCheckBox selectAllCheckbox = new JCheckBox("All");
+        selectAllCheckbox.setSelected(false);
+        selectAllCheckbox.setToolTipText("Select All");
+
+
+
         JPanel fetchedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton prevButton = new JButton("Previous");
-        JButton nextButton = new JButton("Next");
+        JButton prevButton = new JButton("<");
+        JButton nextButton = new JButton(">");
+        Dimension nextButtonDim = nextButton.getPreferredSize();
+        nextButtonDim = new Dimension((int) Math.floor(0.7 * nextButtonDim.width), nextButtonDim.height);
+        nextButton.setPreferredSize(nextButtonDim);
+        prevButton.setPreferredSize(nextButtonDim);
+
         pageLabel = new JLabel("Page 1");
         fetchedLabel = new JLabel("");
 
@@ -440,6 +453,12 @@ public class OBDAACDataBrowser extends JPanel {
             if (currentPage > 1) {
                 currentPage--;
                 updateResultsTable(currentPage);
+                if (selectAllCheckbox.isSelected()) {
+                    // Select All
+                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        tableModel.setValueAt(Boolean.TRUE, i, 1);
+                    }
+                }
             }
         });
 
@@ -447,13 +466,47 @@ public class OBDAACDataBrowser extends JPanel {
             if (currentPage < totalPages) {
                 currentPage++;
                 updateResultsTable(currentPage);
+                if (selectAllCheckbox.isSelected()) {
+                    // Select All
+                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        tableModel.setValueAt(Boolean.TRUE, i, 1);
+                    }
+                }
             }
         });
 
-        fetchedPanel.add(fetchedLabel);
-        navPanel.add(prevButton);
-        navPanel.add(pageLabel);
-        navPanel.add(nextButton);
+//        fetchedPanel.add(fetchedLabel);
+//        navPanel.add(prevButton);
+//        navPanel.add(pageLabel);
+//        navPanel.add(nextButton);
+
+
+        JPanel pagePanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints gbcPagePanel = new GridBagConstraints();
+        gbcPagePanel.insets = new Insets(1, 1, 1, 1);
+        gbcPagePanel.anchor = GridBagConstraints.WEST;
+        gbcPagePanel.fill = GridBagConstraints.NONE;
+        gbcPagePanel.gridx = 0;
+        gbcPagePanel.gridy = 0;
+        pagePanel.add(fetchedLabel, gbcPagePanel);
+
+        gbcPagePanel.gridx++;
+        pagePanel.add(prevButton, gbcPagePanel);
+
+        gbcPagePanel.gridx++;
+        gbcPagePanel.insets = new Insets(3, 3, 1, 1);
+        pagePanel.add(pageLabel, gbcPagePanel);
+        gbcPagePanel.insets = new Insets(1, 1, 1, 1);
+
+        gbcPagePanel.gridx++;
+        pagePanel.add(nextButton, gbcPagePanel);
+
+
+
+
+
+
 
         JButton downloadButton = new JButton("Download");
         downloadButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files and <br>" +
@@ -465,8 +518,14 @@ public class OBDAACDataBrowser extends JPanel {
             }
             downloadSelectedFiles();
         });
+
+
+
+
+
+
         
-        JButton subsetButton = new JButton("Subset *");
+        JButton subsetButton = new JButton("Subset");
         subsetButton.setToolTipText("<html>Create a subset of the selected file.<br>" +
                 "* Note: this tool only supports subsetting a single file at a time.</html>");
         subsetButton.addActionListener(e -> {
@@ -489,6 +548,29 @@ public class OBDAACDataBrowser extends JPanel {
         urlListOnlyCheckbox.setToolTipText("<html>If checked, only a text-file containing URL links to each of the files is created and <br>NO data files will be downloaded.</html>");
 
 
+
+
+        selectAllCheckbox.addActionListener(e -> {
+            // todo Danny
+
+            if (selectAllCheckbox.isSelected()) {
+                // Select All
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    tableModel.setValueAt(Boolean.TRUE, i, 1);
+                }
+            } else {
+                //  Select None
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    tableModel.setValueAt(Boolean.FALSE, i, 1);
+                }
+            }
+        });
+
+
+
+
+
+
         JPanel newDownloadPanel = new JPanel(new GridBagLayout());
         newDownloadPanel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -503,10 +585,13 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.gridx++;
         newDownloadPanel.add(urlListOnlyCheckbox, gbc);
 
+//        gbc.gridx++;
+//        newDownloadPanel.add(selectAllCheckbox, gbc);
+
 
 
         JPanel newSubsetPanel = new JPanel(new GridBagLayout());
-        newSubsetPanel.setBorder(BorderFactory.createEtchedBorder());
+//        newSubsetPanel.setBorder(BorderFactory.createEtchedBorder());
 
         GridBagConstraints gbc2 = new GridBagConstraints();
         gbc2.insets = new Insets(1, 1, 1, 1);
@@ -518,6 +603,16 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
+        JPanel selectAllPanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        gbc3.insets = new Insets(1, 1, 1, 1);
+        gbc3.anchor = GridBagConstraints.CENTER;
+        gbc3.fill = GridBagConstraints.NONE;
+        gbc3.gridx = 0;
+        gbc3.gridy = 0;
+        selectAllPanel.add(selectAllCheckbox, gbc3);
+
 
 //        downloadPanel.add(downloadButton);
 
@@ -525,9 +620,11 @@ public class OBDAACDataBrowser extends JPanel {
 
         downloadPanel.add(newSubsetPanel);
         downloadPanel.add(newDownloadPanel);
+        downloadPanel.add(selectAllPanel);
 
-        panel.add(fetchedPanel, BorderLayout.WEST);
-        panel.add(navPanel, BorderLayout.CENTER);
+//        panel.add(fetchedPanel, BorderLayout.WEST);
+//        panel.add(navPanel, BorderLayout.CENTER);
+        panel.add(pagePanel, BorderLayout.WEST);
         panel.add(downloadPanel, BorderLayout.EAST);
 
         return panel;
@@ -570,6 +667,17 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void downloadSelectedFiles() {
+
+        // Select All
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            tableModel.setValueAt(Boolean.TRUE, i, 1);
+        }
+
+        // Select None
+//        for (int i = 0; i < tableModel.getRowCount(); i++) {
+//            tableModel.setValueAt(Boolean.FALSE, i, 1);
+//        }
+
         List<String> filesToDownload = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
