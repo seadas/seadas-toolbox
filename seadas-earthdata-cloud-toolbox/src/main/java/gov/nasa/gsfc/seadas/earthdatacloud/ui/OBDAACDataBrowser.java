@@ -56,6 +56,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JSpinner maxApiResultsSpinner;
     private JSpinner resultsPerPageSpinner;
     JCheckBox urlListOnlyCheckbox;
+    JButton subsetButton;
 
     private JLabel pageLabel;
     private JLabel fetchedLabel;
@@ -430,7 +431,7 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        JCheckBox selectAllCheckbox = new JCheckBox("All");
+        JCheckBox selectAllCheckbox = new JCheckBox("Select All");
         selectAllCheckbox.setSelected(false);
         selectAllCheckbox.setToolTipText("Select All");
 
@@ -524,8 +525,9 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
+
         
-        JButton subsetButton = new JButton("Subset");
+        subsetButton = new JButton("Subset");
         subsetButton.setToolTipText("<html>Create a subset of the selected file.<br>" +
                 "* Note: this tool only supports subsetting a single file at a time.</html>");
         subsetButton.addActionListener(e -> {
@@ -547,6 +549,17 @@ public class OBDAACDataBrowser extends JPanel {
         urlListOnlyCheckbox.setSelected(false);
         urlListOnlyCheckbox.setToolTipText("<html>If checked, only a text-file containing URL links to each of the files is created and <br>NO data files will be downloaded.</html>");
 
+
+        JButton listButton = new JButton("URLs Only");
+        listButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files </html>");
+        listButton.addActionListener(e -> {
+            urlListOnlyCheckbox.setSelected(true);
+            if (imagePreviewHelper != null) {
+                // todo Danny check this
+                imagePreviewHelper.hideImagePreview();
+            }
+            downloadSelectedFiles();
+        });
 
 
 
@@ -572,7 +585,7 @@ public class OBDAACDataBrowser extends JPanel {
 
 
         JPanel newDownloadPanel = new JPanel(new GridBagLayout());
-        newDownloadPanel.setBorder(BorderFactory.createEtchedBorder());
+//        newDownloadPanel.setBorder(BorderFactory.createEtchedBorder());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(1, 1, 1, 1);
@@ -583,7 +596,7 @@ public class OBDAACDataBrowser extends JPanel {
         newDownloadPanel.add(downloadButton, gbc);
 
         gbc.gridx++;
-        newDownloadPanel.add(urlListOnlyCheckbox, gbc);
+        newDownloadPanel.add(listButton, gbc);
 
 //        gbc.gridx++;
 //        newDownloadPanel.add(selectAllCheckbox, gbc);
@@ -617,6 +630,8 @@ public class OBDAACDataBrowser extends JPanel {
 //        downloadPanel.add(downloadButton);
 
 //        downloadPanel.add(urlListOnlyCheckbox);
+
+
 
         downloadPanel.add(newSubsetPanel);
         downloadPanel.add(newDownloadPanel);
@@ -2278,6 +2293,16 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void fetchGranules(com.bc.ceres.core.ProgressMonitor pm) {
+
+        String level = (String) levelDropdown.getSelectedItem();
+
+        if (level != null && level.contains("L2")) {
+            subsetButton.setVisible(true);
+        } else {
+            subsetButton.setVisible(false);
+        }
+
+
         clearResultsOnEdt();
 
         totalPages = 1;
