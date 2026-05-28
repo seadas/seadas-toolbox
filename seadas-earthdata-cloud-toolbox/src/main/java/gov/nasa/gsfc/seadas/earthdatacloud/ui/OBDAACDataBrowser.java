@@ -55,8 +55,9 @@ public class OBDAACDataBrowser extends JPanel {
     private int totalPages = 1;
     private JSpinner maxApiResultsSpinner;
     private JSpinner resultsPerPageSpinner;
-    JCheckBox urlListOnlyCheckbox;
+    boolean urlListOnly = false;
     JButton subsetButton;
+    JCheckBox selectAllCheckbox;
 
     private JLabel pageLabel;
     private JLabel fetchedLabel;
@@ -431,9 +432,9 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        JCheckBox selectAllCheckbox = new JCheckBox("Select All");
+        selectAllCheckbox = new JCheckBox("Select All");
         selectAllCheckbox.setSelected(false);
-        selectAllCheckbox.setToolTipText("Select All");
+        selectAllCheckbox.setToolTipText("Select All for current page");
 
 
 
@@ -513,6 +514,7 @@ public class OBDAACDataBrowser extends JPanel {
         downloadButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files and <br>" +
                 "download all the data files (if 'Links Only' is NOT checked).</html>");
         downloadButton.addActionListener(e -> {
+            urlListOnly = false;
             if (imagePreviewHelper != null) {
                 // todo Danny check this
                 imagePreviewHelper.hideImagePreview();
@@ -545,15 +547,11 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        urlListOnlyCheckbox = new JCheckBox("Links Only");
-        urlListOnlyCheckbox.setSelected(false);
-        urlListOnlyCheckbox.setToolTipText("<html>If checked, only a text-file containing URL links to each of the files is created and <br>NO data files will be downloaded.</html>");
-
 
         JButton listButton = new JButton("URLs Only");
         listButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files </html>");
         listButton.addActionListener(e -> {
-            urlListOnlyCheckbox.setSelected(true);
+            urlListOnly = true;
             if (imagePreviewHelper != null) {
                 // todo Danny check this
                 imagePreviewHelper.hideImagePreview();
@@ -646,6 +644,8 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void runFetchWrapper() {
+        selectAllCheckbox.setSelected(false);
+
         ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(
                 parentDialog != null ? parentDialog : SnapApp.getDefault().getMainFrame(),
                 "Earthdata Cloud Browser") {
@@ -683,22 +683,34 @@ public class OBDAACDataBrowser extends JPanel {
 
     private void downloadSelectedFiles() {
 
-        // Select All
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            tableModel.setValueAt(Boolean.TRUE, i, 1);
-        }
-
-        // Select None
-//        for (int i = 0; i < tableModel.getRowCount(); i++) {
-//            tableModel.setValueAt(Boolean.FALSE, i, 1);
-//        }
 
         List<String> filesToDownload = new ArrayList<>();
+
+
+        // todo Danny
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
                 filesToDownload.add((String) tableModel.getValueAt(i, 0));
             }
         }
+
+        // todo Danny
+//        if (selectAllCheckbox.isSelected()) {
+//            for (int i = 0; i < allGranules.size(); i++) {
+//                String[] row = allGranules.get(i);
+//                filesToDownload.add(row[0]);
+//            }
+//        } else {
+//            for (int i = 0; i < tableModel.getRowCount(); i++) {
+//                if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
+//                    filesToDownload.add((String) tableModel.getValueAt(i, 0));
+//                }
+//            }
+//        }
+
+
+
+
 
         if (filesToDownload.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No files selected for download.");
@@ -707,15 +719,9 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
-        boolean downloadListOnly = false;
-        if (urlListOnlyCheckbox != null && urlListOnlyCheckbox.isSelected()) {
-            downloadListOnly = true;
-        }
-
-
         
         String searchCriteriaString = getSearchCriteriaOverviewString();
-        downloadManager.downloadSelectedFiles(filesToDownload, downloadListOnly, searchCriteriaString, fileLinkMap, this,
+        downloadManager.downloadSelectedFiles(filesToDownload, urlListOnly, searchCriteriaString, fileLinkMap, this,
             (downloadedCount, downloadDir) -> {
                 // Callback when download completes
                 for (String fileName : filesToDownload) {
