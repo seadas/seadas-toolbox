@@ -203,7 +203,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_KEY = PROPERTY_ROOT_KEY + ".fetch.results_per_page";
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_LABEL = "Results per Page";
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP = "Maximum number of files to display per page";
-    public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT = 50;
+    public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT = 200;
     public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE = 1;
     public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE = 1000;
     

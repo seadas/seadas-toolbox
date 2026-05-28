@@ -15,6 +15,7 @@ import org.json.JSONTokener;
 import org.openide.util.HelpCtx;
 
 import javax.swing.*;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -34,6 +35,7 @@ import java.util.List;
 
 public class OBDAACDataBrowser extends JPanel {
     private JComboBox<String> satelliteDropdown, levelDropdown, productDropdown;
+    private JComboBox<String> keyword;
     private JDatePickerImpl startDatePicker, endDatePicker;
     private JTextField minLatField, maxLatField, minLonField, maxLonField, coordinates, boxSize;
     private JComboBox<RegionsInfo> regions;
@@ -221,6 +223,10 @@ public class OBDAACDataBrowser extends JPanel {
 
         levelDropdown = new JComboBox<>();
         productDropdown = new JComboBox<>();
+        keyword = new JComboBox<>();
+        keyword.setToolTipText("If set, this keyword(s) restricts match of filename.   Keywords are a comma delimited list");
+
+        keyword.setEditable(true);
     }
 
     private void setupSatelliteDropdownListener() {
@@ -455,12 +461,14 @@ public class OBDAACDataBrowser extends JPanel {
             if (currentPage > 1) {
                 currentPage--;
                 updateResultsTable(currentPage);
-                if (selectAllCheckbox.isSelected()) {
-                    // Select All
-                    for (int i = 0; i < tableModel.getRowCount(); i++) {
-                        tableModel.setValueAt(Boolean.TRUE, i, 1);
-                    }
-                }
+                selectAllCheckbox.setSelected(false);
+
+//                if (selectAllCheckbox.isSelected()) {
+//                    // Select All
+//                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+//                        tableModel.setValueAt(Boolean.TRUE, i, 1);
+//                    }
+//                }
             }
         });
 
@@ -468,12 +476,13 @@ public class OBDAACDataBrowser extends JPanel {
             if (currentPage < totalPages) {
                 currentPage++;
                 updateResultsTable(currentPage);
-                if (selectAllCheckbox.isSelected()) {
-                    // Select All
-                    for (int i = 0; i < tableModel.getRowCount(); i++) {
-                        tableModel.setValueAt(Boolean.TRUE, i, 1);
-                    }
-                }
+                selectAllCheckbox.setSelected(false);
+//                if (selectAllCheckbox.isSelected()) {
+//                    // Select All
+//                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+//                        tableModel.setValueAt(Boolean.TRUE, i, 1);
+//                    }
+//                }
             }
         });
 
@@ -1013,6 +1022,7 @@ public class OBDAACDataBrowser extends JPanel {
             }
 
             levelDropdown.setSelectedIndex(levelIndex);
+
             updateProducts();
         }
         productDropdown.setRenderer(new DefaultListCellRenderer() {
@@ -1034,6 +1044,24 @@ public class OBDAACDataBrowser extends JPanel {
         String selectedSatellite = (String) satelliteDropdown.getSelectedItem();
         String selectedLevel = (String) levelDropdown.getSelectedItem();
         if (selectedSatellite == null || selectedLevel == null) return;
+
+        keyword.removeAllItems();
+
+        if (selectedLevel.contains("L3B")) {
+            String[] keywordsArray = {" ", "DAY", "R8", "MO", "R32", "SNSP", "SNSU", "SNAU", "SNWI", "SN"};
+            for (String key : keywordsArray) {
+                keyword.addItem(key);
+            }
+        } else if (selectedLevel.contains("L3M")) {
+            String[] keywordsArray = {" ", "DAY", "R8", "MO", "R32", "SNSP", "SNSU", "SNAU", "SNWI", "SN",
+                    "4km,DAY", "4km,R8", "4km,MO", "4km,R32", "4km,SNSP", "4km,SNSU", "4km,SNAU", "4km,SNWI", "4km,SN",
+                    "0p1deg,DAY", "0p1deg,R8", "0p1deg,MO", "0p1deg,R32", "0p1deg,SNSP", "0p1deg,SNSU", "0p1deg,SNAU", "0p1deg,SNWI", "0p1deg,SN"
+            };
+            for (String key : keywordsArray) {
+                keyword.addItem(key);
+            }
+        }
+
 
         JSONObject json = metadataMap.get(selectedSatellite);
         productDropdown.removeAllItems();
@@ -1115,6 +1143,19 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.weightx = 1;
         panel.add(productDropdown, gbc);
 
+        gbc.weighty = 1;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        JLabel keywordLabel =new JLabel("Keyword(s):");
+        keywordLabel.setToolTipText("If set, these keyword(s) restrict matching on the filename.   Keywords are a comma delimited list");
+
+        panel.add(keywordLabel, gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        panel.add(keyword, gbc);
         return panel;
     }
 
@@ -2323,6 +2364,7 @@ public class OBDAACDataBrowser extends JPanel {
 
 
         String productName = (String) productDropdown.getSelectedItem();
+
         String shortName = productNameTooltips.getOrDefault(productName, productName);
         int maxApiResults = (Integer) maxApiResultsSpinner.getValue();
         double workInAnIncrement = (int) Math.floor(maxApiResults / totalWork);
@@ -2423,13 +2465,54 @@ public class OBDAACDataBrowser extends JPanel {
                     JSONArray entries = json.getJSONObject("feed").getJSONArray("entry");
 
 
+                    String keywordSelectedItem = (String) keyword.getSelectedItem();
+                    String BLANK_STRING = "";
+                    String key1 = BLANK_STRING;
+                    String key2 = BLANK_STRING;
+                    String key3 = BLANK_STRING;
+                    String key4 = BLANK_STRING;
+
+                    if (keywordSelectedItem != null) {
+                        keywordSelectedItem = keywordSelectedItem.trim();
+                        String[] keywordsArray = keywordSelectedItem.split("\\s+|,|\\*");
+                        for (String key : keywordsArray) {
+                            key = key.trim();
+                            if (key.length() > 0) {
+                                if (BLANK_STRING.equals(key1)) {
+                                    key1 = key;
+                                } else if (BLANK_STRING.equals(key2)) {
+                                    key2 = key;
+                                } else if (BLANK_STRING.equals(key3)) {
+                                    key3 = key;
+                                } else if (BLANK_STRING.equals(key4)) {
+                                    key4 = key;
+                                }
+                            }
+                        }
+
+                    }
+                    boolean keywordSet = (keywordSelectedItem != null && !keywordSelectedItem.isEmpty());
+
+
                     for (int i = 0; i < entries.length(); i++) {
                         JSONObject entry = entries.getJSONObject(i);
 
                         String fileName = entry.optString("producer_granule_id", "");
                         JSONArray links = entry.optJSONArray("links");
 
-                        if (fileName != null && !fileName.isEmpty() && links != null) {
+
+                        boolean matchesKeyword = false;
+                        if (keywordSet) {
+                            if (fileName != null && !fileName.isEmpty()) {
+                                if (fileName.contains(key1) && fileName.contains(key2) && fileName.contains(key3) && fileName.contains(key4)) {
+                                    matchesKeyword = true;
+                                }
+                            }
+                        } else {
+                            matchesKeyword = true;
+                        }
+
+                        if (fileName != null && !fileName.isEmpty() && links != null && matchesKeyword) {
                             String dataHref = null;
                             String previewHref = null;
 
