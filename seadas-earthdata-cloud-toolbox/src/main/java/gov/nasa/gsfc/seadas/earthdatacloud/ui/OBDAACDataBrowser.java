@@ -4,6 +4,7 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
+import org.ejml.dense.row.linsol.AdjustableLinearSolver_DDRM;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.ui.UIUtils;
@@ -60,6 +61,8 @@ public class OBDAACDataBrowser extends JPanel {
     boolean urlListOnly = false;
     JButton subsetButton;
     JCheckBox selectAllCheckbox;
+
+    String getSearchCriteriaOverviewString = "";
 
     private JLabel pageLabel;
     private JLabel fetchedLabel;
@@ -729,7 +732,8 @@ public class OBDAACDataBrowser extends JPanel {
 
 
         
-        String searchCriteriaString = getSearchCriteriaOverviewString();
+//        String searchCriteriaString = getSearchCriteriaOverviewString();
+        String searchCriteriaString = getSearchCriteriaOverviewString;
         downloadManager.downloadSelectedFiles(filesToDownload, urlListOnly, searchCriteriaString, fileLinkMap, this,
             (downloadedCount, downloadDir) -> {
                 // Callback when download completes
@@ -740,7 +744,7 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private String getSearchCriteriaOverviewString() {
-        String searchCriteriaString = "";
+        String searchCriteriaString = "Search Parameters:\n";
 
         String satellite = (String) satelliteDropdown.getSelectedItem();
         String level = (String) levelDropdown.getSelectedItem();
@@ -2417,6 +2421,9 @@ public class OBDAACDataBrowser extends JPanel {
         totalFetched = 0;
 
 
+
+        getSearchCriteriaOverviewString = getSearchCriteriaOverviewString();
+
         try {
             while (totalFetched < maxApiResults) {
                 StringBuilder urlBuilder = new StringBuilder("https://cmr.earthdata.nasa.gov/search/granules.json?provider=OB_CLOUD");
@@ -2443,11 +2450,19 @@ public class OBDAACDataBrowser extends JPanel {
 
 
                 URL url = new URL(urlBuilder.toString());
+                getSearchCriteriaOverviewString += "\nURL Search Query:\n" + urlBuilder.toString() + "\n\n";
+
+                System.out.println(url);
+
+
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
 
                 BufferedReader bufferedReader = null;
+
+
                 if (conn != null) {
+                    conn.setRequestMethod("GET");
+
                     InputStream inputStream = conn.getInputStream();
                     if (inputStream != null) {
                         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -2456,6 +2471,21 @@ public class OBDAACDataBrowser extends JPanel {
                         }
                     }
                 }
+
+
+                if (conn == null || bufferedReader == null) {
+                    if (!testConnection()) {
+                        JOptionPane.showMessageDialog(this, "Could not open an internet connection to Earthdata search", "Earthdata Connection Issue",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Could not retrieve Earthdata search results", "Earthdata Connection Issue",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    return;
+                }
+
+                
 
                 if (bufferedReader != null) {
                     JSONTokener tokener = new JSONTokener(bufferedReader);
@@ -2580,7 +2610,7 @@ public class OBDAACDataBrowser extends JPanel {
                 }
             }
 
-            if (!allGranules.isEmpty()) {
+//            if (!allGranules.isEmpty()) {
                 if (parentDialog != null) {
                     pulseToFront(parentDialog);
                 }
@@ -2597,7 +2627,7 @@ public class OBDAACDataBrowser extends JPanel {
                     topLevelWindow.repaint();
                     topLevelWindow.pack();
                 }
-            }
+//            }
 
             totalPages = (int) Math.ceil((double) allGranules.size() / getResultsPerPage());
             currentPage = 1;
@@ -2605,8 +2635,48 @@ public class OBDAACDataBrowser extends JPanel {
 
         } catch (Exception e) {
             e.printStackTrace();
+
+            if (!testConnection()) {
+                JOptionPane.showMessageDialog(this, "Could not open an internet connection to Earthdata search", "Earthdata Connection Issue",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Could not retrieve Earthdata search results", "Earthdata Connection Issue",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
+
+
+    private boolean testConnection() {
+
+        try {
+            URL url = new URL("https://cmr.earthdata.nasa.gov/search");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            if (conn == null) {
+                return false;
+            }
+
+            conn.setRequestMethod("GET");
+
+            BufferedReader bufferedReader = null;
+            if (conn != null) {
+                InputStream inputStream = conn.getInputStream();
+                if (inputStream != null) {
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                    if (inputStreamReader != null) {
+                        bufferedReader = new BufferedReader(inputStreamReader);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+
 
     private void pulseToFront(Window w) {
         if (w == null) return;

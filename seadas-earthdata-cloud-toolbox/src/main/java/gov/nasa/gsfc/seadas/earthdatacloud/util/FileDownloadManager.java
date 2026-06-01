@@ -251,7 +251,7 @@ public class FileDownloadManager {
             Path downloadDir = requestedUrlsListFile.getParentFile().toPath();
             Files.createDirectories(downloadDir);
 
-            requestedUrlsListString = "OB_CLOUD Search Criteria:\n" +
+            requestedUrlsListString =
                     searchCriteriaString +
                     "Search Results - Returned File URLs:\n"
                     + requestedUrlsListString + "\n\n";
