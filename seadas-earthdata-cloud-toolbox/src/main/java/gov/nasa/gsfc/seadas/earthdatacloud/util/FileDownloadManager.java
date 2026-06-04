@@ -265,7 +265,7 @@ public class FileDownloadManager {
             } else {
                 // Append the list to the existing files list
                 BufferedWriter writer = new BufferedWriter(new FileWriter(requestedUrlsListFile, true));
-                writer.append(requestedUrlsListString);
+                writer.append("-------------------------------------------------------\n" + requestedUrlsListString);
                 writer.close();
             }
 
