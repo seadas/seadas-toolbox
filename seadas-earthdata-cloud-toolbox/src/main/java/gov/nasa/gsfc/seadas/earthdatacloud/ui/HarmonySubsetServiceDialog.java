@@ -24,7 +24,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.File;
 import java.util.prefs.Preferences;
@@ -991,7 +990,11 @@ public class HarmonySubsetServiceDialog extends JDialog {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setSelectedFile(new File(suggestedName));
 
-        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
+        // using the standard preferences so Subset and Earthdata Browser tools are synced up better
+        // commented out alternate version of preferences
+        //        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
+        String lastDir = Earthdata_Cloud_Controller.getPreferenceDownloadDirectory();
+
         if (lastDir != null && !lastDir.isBlank()) {
             File dir = new File(lastDir);
             if (dir.exists() && dir.isDirectory()) {
@@ -1028,7 +1031,10 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         File parent = file.getParentFile();
         if (parent != null) {
-            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+            // using the standard preferences so Subset and Earthdata Browser tools are synced up better
+            // commented out alternate version of preferences
+            //            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+            Earthdata_Cloud_Controller.setPreferenceDownloadDirectory(parent.getAbsolutePath());
         }
 
         return file;

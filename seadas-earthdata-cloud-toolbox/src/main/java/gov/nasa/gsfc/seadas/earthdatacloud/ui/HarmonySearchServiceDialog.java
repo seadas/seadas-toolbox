@@ -16,7 +16,7 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.util.concurrent.ExecutionException;
 
-public class HarmonySearchServiceDiaglog extends JDialog{
+public class HarmonySearchServiceDialog extends JDialog{
 
     public static final String TITLE = "OB_CLOUD Data Browser - powered by Harmony Search"; /*I18N*/
     public static final String DEFAULT_SELECTED_MISSION = "PACE";
@@ -27,7 +27,7 @@ public class HarmonySearchServiceDiaglog extends JDialog{
 
     JPanel searchInputMainPanel;
 
-    public HarmonySearchServiceDiaglog(){
+    public HarmonySearchServiceDialog(){
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         setLayout(new BorderLayout());
         setSize(900, 700);
@@ -40,9 +40,23 @@ public class HarmonySearchServiceDiaglog extends JDialog{
         pack();  // This fixes layout sizing
         setLocationRelativeTo(null);  // Center on screen (optional but nice)
         Window parent = SnapApp.getDefault().getMainFrame();
+
+
         setLocationRelativeTo(parent);  // Centers over the SeaDAS window
-        Point location = getLocation();
-        setLocation(location.x-200, Math.max(0, location.y - 200));
+
+//        int parentHalfHeight = (int) Math.floor(0.5 * parent.getPreferredSize().height);
+//        int parentHalfWidth = (int) Math.floor(0.5 * parent.getPreferredSize().width);
+//
+//        int childHalfHeight = (int) Math.floor(0.5 * embeddedBrowser.getPreferredSize().height);
+//        int childHalfWidth = (int) Math.floor(0.5 * embeddedBrowser.getPreferredSize().width);
+//
+//        int heightOffset = -parentHalfHeight + childHalfHeight;
+//        int widthOffset = -parentHalfWidth + childHalfWidth;
+
+
+        Point location = parent.getLocationOnScreen();
+        setLocation(Math.max(0, location.x - 100), Math.max(0, location.y - 100));
+//        setLocation(Math.max(0, location.x + widthOffset), Math.max(0, location.y + heightOffset));
     }
 
 
