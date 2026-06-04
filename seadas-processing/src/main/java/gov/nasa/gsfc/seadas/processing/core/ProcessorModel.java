@@ -740,6 +740,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                     badIfileClearAndWarn(ifileName);
                 }
 
+//            } else if ("l3bindump".equalsIgnoreCase(getProgramName())) {
+//
+//                String ofileName = ifileName + ".l3bindump.txt";
+//                updateOFileInfo(ofileName);
+//
+
             } else {
                 //ocssw.setIfileName(ifileName);
                 String ofileName = getOcssw().getOfileName(ifileName, getProgramName());
@@ -860,6 +866,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 dialog.setEnabled(true);
             } else {
 
+//                if ("l2bin".equalsIgnoreCase(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName()) || "l3bindump".equalsIgnoreCase(getProgramName())) {
                 if ("l2bin".equalsIgnoreCase(getProgramName()) || "l3mapgen".equalsIgnoreCase(getProgramName())) {
 //                    System.out.println("current ifile =" + getParamInfo("ifile").getValue());
 //                    System.out.println("new ifile =" + value);
@@ -2703,6 +2710,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         L3BinDump_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
+            setOpenInSeadas(false);
         }
 
         @Override
@@ -2721,6 +2729,18 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 isIfileValid = false;
                 removePropertyChangeListeners(getPrimaryInputFileOptionName());
             }
+
+
+            String ifileBaseNameNoExtension = ifileName;
+            if (ifileBaseNameNoExtension != null) {
+                if (ifileBaseNameNoExtension.endsWith(".nc")) {
+                    ifileBaseNameNoExtension = ifileBaseNameNoExtension.substring(0, ifileBaseNameNoExtension.length() -3);
+                }
+
+                String ofileName = ifileBaseNameNoExtension + ".dump.txt";
+                updateOFileInfo(ofileName);
+            }
+
 
             setReadyToRun(isIfileValid);
             return isIfileValid;

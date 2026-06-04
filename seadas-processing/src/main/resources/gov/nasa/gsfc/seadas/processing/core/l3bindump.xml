@@ -70,8 +70,14 @@
         <option type="ifile">
             <name>ifile</name>
             <value></value>
+            <source>command line</source>
+            <description>input L3 file name</description>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value>output.txt</value>
             <source>default</source>
-            <description>input L1 file name</description>
+            <description>input L3 file name</description>
         </option>
         <option type="string">
             <name>oformat</name>
