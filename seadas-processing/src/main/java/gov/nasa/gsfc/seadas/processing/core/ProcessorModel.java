@@ -2164,29 +2164,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         String[] suitesBySubSensor = null;
         ArrayList<String> suitesArrayList = new ArrayList();
 
-        try {
-            suitesByMission = getSuites(selectedFile, missionDir, getProgramName());
-            if (suitesByMission != null && suitesByMission.length > 0) {
-                for (String suite : suitesByMission) {
-                    if (suite != null && suite.trim().length() > 0) {
-                        suitesArrayList.add(suite);
-                    }
-                }
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            suitesByCommon = getSuites(selectedFile, commonDir, getProgramName());
-            if (suitesByCommon != null && suitesByCommon.length > 0) {
-                for (String suite : suitesByCommon) {
-                    if (suite != null && suite.trim().length() > 0) {
-                        suitesArrayList.add(suite);
-                    }
-                }
-            }
-        } catch (Exception e) {
-        }
 
         try {
             suitesBySubSensor = getSuites(selectedFile, subSensorDir, getProgramName());
@@ -2199,6 +2176,36 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         } catch (Exception e) {
         }
+
+
+        try {
+            suitesByMission = getSuites(selectedFile, missionDir, getProgramName());
+            if (suitesByMission != null && suitesByMission.length > 0) {
+                for (String suite : suitesByMission) {
+                    if (suite != null && suite.trim().length() > 0) {
+                        if (!suitesArrayList.contains(suite)) {
+                            suitesArrayList.add(suite);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            suitesByCommon = getSuites(selectedFile, commonDir, getProgramName());
+            if (suitesByCommon != null && suitesByCommon.length > 0) {
+                for (String suite : suitesByCommon) {
+                    if (suite != null && suite.trim().length() > 0) {
+                        if (!suitesArrayList.contains(suite)) {
+                            suitesArrayList.add(suite);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
 
 
         String[] suites = new String[suitesArrayList.size()];
