@@ -60,6 +60,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JSpinner resultsPerPageSpinner;
     boolean urlListOnly = false;
     JButton subsetButton;
+    boolean isL2File = false;
     JCheckBox selectAllCheckbox;
 
     String getSearchCriteriaOverviewString = "";
@@ -856,7 +857,7 @@ public class OBDAACDataBrowser extends JPanel {
                     var meta = get();
 
                     HarmonySubsetServiceDialog subsetDialog =
-                            new HarmonySubsetServiceDialog(finalFileUrl, finalLatMin, finalLatMax, finalLonMin, finalLonMax);
+                            new HarmonySubsetServiceDialog(finalFileUrl, finalLatMin, finalLatMax, finalLonMin, finalLonMax, isL2File);
 
                     subsetDialog.setMeta(meta);
                     subsetDialog.setGranuleId(meta.granuleId);
@@ -2349,8 +2350,10 @@ public class OBDAACDataBrowser extends JPanel {
 
         if (level != null && level.contains("L2")) {
             subsetButton.setVisible(true);
+            isL2File = true;
         } else {
             subsetButton.setVisible(false);
+            isL2File = false;
         }
 
 

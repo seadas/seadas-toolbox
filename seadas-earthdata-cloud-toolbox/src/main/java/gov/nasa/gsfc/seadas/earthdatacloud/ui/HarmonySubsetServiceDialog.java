@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
+import com.sun.jna.platform.mac.CoreFoundation;
 import gov.nasa.gsfc.seadas.earthdatacloud.action.HarmonySubsetTask;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrVariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
@@ -44,6 +45,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private JButton subsetButton, cancelButton, doneButton;
     private HarmonySubsetTask currentSubsetTask;
     private JTextArea statusArea;
+    private boolean isL2File = false;
 
     // Data
     private String selectedFileUrl;
@@ -58,16 +60,17 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private static final String PREF_LAST_DOWNLOAD_DIR = "harmonySubsetLastDownloadDir";
     private final Preferences prefs = Preferences.userNodeForPackage(HarmonySubsetServiceDialog.class);
     public HarmonySubsetServiceDialog() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, false);
     }
 
-    public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax) {
+    public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax, boolean isL2File) {
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.selectedFileUrl = fileUrl;
         this.searchLatMin = latMin;
         this.searchLatMax = latMax;
         this.searchLonMin = lonMin;
         this.searchLonMax = lonMax;
+        this.isL2File = isL2File;
 
         setLayout(new BorderLayout());
 
@@ -955,6 +958,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
                     progressBar,
                     subsetButton,
                     cancelButton,
+                    isL2File,
                     this
             );
 
