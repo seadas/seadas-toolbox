@@ -32,6 +32,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     private final JButton subsetButton;
     private final JButton cancelButton;
     private final HarmonySubsetServiceDialog dialog;
+    private final boolean isL2File;
 
     private static final int CONNECT_TIMEOUT_MS = 30_000;
     private static final int READ_TIMEOUT_MS    = 5 * 60_000;
@@ -40,11 +41,13 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                              JProgressBar progressBar,
                              JButton subsetButton,
                              JButton cancelButton,
+                             boolean isL2File,
                              HarmonySubsetServiceDialog dialog) {
         this.subsetParameters = subsetParameters;
         this.progressBar = progressBar;
         this.subsetButton = subsetButton;
         this.cancelButton = cancelButton;
+        this.isL2File = isL2File;
         this.dialog = dialog;
 
         String outputFile = subsetParameters.optString("outputFile", null);
@@ -241,24 +244,26 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         boolean variableSubsetRequested =
                 !allVariablesSelected && vars != null && vars.length() > 0;
 
-        // Harmony wants parameter_vars + variable=... for variable subsetting
-        String varSegment = variableSubsetRequested ? "parameter_vars" : "all";
+
+
+        // if level2 file then force inclusion of l2_flags
+        boolean forceAddL2Flags = false;
+        if (isL2File) {
+            forceAddL2Flags = true;
+        }
 
         StringBuilder url = new StringBuilder();
         url.append(env.harmonyBase)
                 .append("/")
                 .append(collectionConceptId)
-                .append("/ogc-api-coverages/1.0.0/collections/")
-                .append(varSegment)
-                .append("/coverage/rangeset");
+                .append("/ogc-api-coverages/1.0.0/collections/");
 
-        // Keep granuleid lowercase to match the working behavior you observed
-        url.append("?granuleid=")
-                .append(urlEncode(granuleConceptId));
 
         // Variable subset: use full Harmony variable paths from file metadata, e.g.
         // geophysical_data/chlor_a
         if (variableSubsetRequested) {
+            boolean l2_flags_found = false;
+
             StringBuilder variableCsv = new StringBuilder();
             for (int i = 0; i < vars.length(); i++) {
                 String var = vars.optString(i, "").trim();
@@ -269,12 +274,35 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                     variableCsv.append(",");
                 }
                 variableCsv.append(var);
+                if (var.contains("l2_flags")) {
+                    l2_flags_found = true;
+                }
             }
 
             if (variableCsv.length() > 0) {
-                url.append("&variable=").append(urlEncode(variableCsv.toString()));
+                if (isL2File && forceAddL2Flags && !l2_flags_found) {
+                    variableCsv.append(",").append("geophysical_data/").append("l2_flags");
+                }
+
+//                url.append("&variable=").append(urlEncode(variableCsv.toString()));
+                url.append(urlEncode(variableCsv.toString()));
             }
+        } else {
+            url.append("all");
         }
+
+
+        // Harmony wants parameter_vars + variable=... for variable subsetting
+        String varSegment = variableSubsetRequested ? "parameter_vars" : "all";
+
+        url.append("/coverage/rangeset");
+
+
+        // Keep granuleid lowercase to match the working behavior you observed
+        url.append("?granuleid=")
+                .append(urlEncode(granuleConceptId));
+
+
 
         // Spatial subset
         String latMin = subsetParameters.optString("latMin", null);
@@ -301,6 +329,8 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         url.append("&skipPreview=true");
         url.append("&pixelSubset=true");
 
+        // todo Comment this out
+//        System.out.println("URL=" + url.toString());
         return url.toString();
     }
 

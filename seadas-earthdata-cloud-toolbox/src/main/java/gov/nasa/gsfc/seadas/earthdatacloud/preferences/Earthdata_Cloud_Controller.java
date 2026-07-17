@@ -119,7 +119,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_REGION_DEFAULT = "";
 
     public static final  String PROPERTY_REGION_FILE_TOOLTIP = "<html>Pre-Defined Regions<br>" +
-            "Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt<b>" +
+            "Sets north, south, west, east based on contents of ~/.seadas/auxdata/regions/regions.txt<br>" +
             "These boundaries are very slightly larger than official boundaries<br>" +
             "which helps give context to surrounding features.</html>";
 
@@ -153,10 +153,10 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP = "Include 'User Locations' selector in GUI";
     public static final boolean PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT = false;
 
-    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.categorize";
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".v3.preset_regions.categorize";
     public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL = "Categorize 'Preset Regions' Selector";
     public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_TOOLTIP = "Categorizes 'Preset Regions' selector in GUI (otherwise uses a sorted region list)";
-    public static final boolean PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT = true;
+    public static final boolean PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT = false;
 
 
 
@@ -167,15 +167,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
 
     
 
-    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_parent_dir";
-    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL = "Download Parent Directory";
-    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP = "Download Parent Directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_LABEL = "Download Directory";
+    public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP = "Directory where the files will be downloaded (reflect where they were download the last time).";
     public static final String PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT = "";
 
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_KEY = PROPERTY_ROOT_KEY + ".download_dir";
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_LABEL = "Download Folder";
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_TOOLTIP = "Download Folder in the Parent Directory";
-    public static final String PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT = "";
 
     public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY = PROPERTY_ROOT_KEY + ".results_font_zoom";
     public static final String PROPERTY_RESULTS_FONT_ZOOM_MODE_LABEL = "Results Font Zoom";
@@ -207,7 +203,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_KEY = PROPERTY_ROOT_KEY + ".fetch.results_per_page";
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_LABEL = "Results per Page";
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_TOOLTIP = "Maximum number of files to display per page";
-    public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT = 50;
+    public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT = 200;
     public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE = 1;
     public static final int PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE = 1000;
     
@@ -243,15 +239,15 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
         maxLonProperty = initPropertyDefaults(context, PROPERTY_MAXLON_KEY, PROPERTY_MAXLON_DEFAULT);
         initPropertyDefaults(context, PROPERTY_REGION_KEY, PROPERTY_REGION_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
-//        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
+//        initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_INCLUDE_KEY, PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY, PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_USER_REGION_INCLUDE_KEY, PROPERTY_USER_REGION_INCLUDE_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY, PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT);
-//        initPropertyDefaults(context, PROPERTY_USER_LOCATIONS_INCLUDE_KEY, PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT);
+
         initPropertyDefaults(context, PROPERTY_BOX_SIZE_KEY, PROPERTY_BOX_SIZE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DAYNIGHT_MODE_KEY, PROPERTY_DAYNIGHT_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
-        initPropertyDefaults(context, PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY, PROPERTY_RESULTS_FONT_ZOOM_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_KEY, PROPERTY_IMAGE_PREVIEW_SIZE_MODE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_IMAGE_LINK_INCLUDE_KEY, PROPERTY_IMAGE_LINK_INCLUDE_DEFAULT);
@@ -519,25 +515,30 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         String regionDefault = PROPERTY_REGION_DEFAULT;
 
 
-        @Preference(key = PROPERTY_PRESET_REGIONS_INCLUDE_KEY,
-                label = PROPERTY_PRESET_REGIONS_INCLUDE_LABEL,
-                description = PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP)
-        boolean presetRegionsIncludeDefault = PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT;
+//        @Preference(key = PROPERTY_PRESET_REGIONS_INCLUDE_KEY,
+//                label = PROPERTY_PRESET_REGIONS_INCLUDE_LABEL,
+//                description = PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP)
+//        boolean presetRegionsIncludeDefault = PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT;
 
-//        @Preference(key = PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY,
-//                label = PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL,
-//                description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
-//        boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
+
+
+        @Preference(key = PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY,
+                label = PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL,
+                description = PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP)
+        boolean presetLocationsIncludeDefault = PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT;
+
 
         @Preference(key = PROPERTY_USER_REGION_INCLUDE_KEY,
                 label = PROPERTY_USER_REGION_INCLUDE_LABEL,
                 description = PROPERTY_USER_REGION_INCLUDE_TOOLTIP)
         boolean regionIncludeDefault = PROPERTY_USER_REGION_INCLUDE_DEFAULT;
 
-//        @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
-//                label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
-//                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
-//        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
+
+        @Preference(key = PROPERTY_USER_LOCATIONS_INCLUDE_KEY,
+                label = PROPERTY_USER_LOCATIONS_INCLUDE_LABEL,
+                description = PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP)
+        boolean userLocationsIncludeDefault = PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT;
+
 
         @Preference(key = PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY,
                 label = PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL,
@@ -562,10 +563,6 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_TOOLTIP)
         String downloadParentDirModeDefault = PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT;
 
-        @Preference(key = PROPERTY_DOWNLOAD_DIR_MODE_KEY,
-                label = PROPERTY_DOWNLOAD_DIR_MODE_LABEL,
-                description = PROPERTY_DOWNLOAD_DIR_MODE_TOOLTIP)
-        String downloadDirModeDefault = PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT;
 
 
         @Preference(key = PROPERTY_RESULTS_FONT_ZOOM_MODE_KEY,
@@ -698,27 +695,17 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     }
 
 
-    public static String getPreferenceDownloadParentDir() {
+    public static String getPreferenceDownloadDirectory() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, PROPERTY_DOWNLOAD_PARENT_DIR_MODE_DEFAULT);
     }
     
-    public static void setPreferenceDownloadParentDir(String parentDirStr) {
+    public static void setPreferenceDownloadDirectory(String parentDirStr) {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         preferences.setPropertyString(PROPERTY_DOWNLOAD_PARENT_DIR_MODE_KEY, parentDirStr);
         return;
     }
 
-    public static String getPreferenceDownloadDir() {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        return preferences.getPropertyString(PROPERTY_DOWNLOAD_DIR_MODE_KEY, PROPERTY_DOWNLOAD_DIR_MODE_DEFAULT);
-    }
-
-    public static void setPreferenceDownloadDir(String parentDirStr) {
-        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
-        preferences.setPropertyString(PROPERTY_DOWNLOAD_DIR_MODE_KEY, parentDirStr);
-        return;
-    }
 
 
     public static boolean getPreferenceIsDay() {

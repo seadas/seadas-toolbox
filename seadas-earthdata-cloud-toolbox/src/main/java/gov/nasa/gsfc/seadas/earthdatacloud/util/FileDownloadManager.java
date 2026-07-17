@@ -11,7 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +30,9 @@ public class FileDownloadManager {
     private JLabel progressFileLabel;
     private SwingWorker<DownloadResult, DownloadProgress> downloadWorker;
     private String[] earthdataCredentials;
-    
+
+    String URL_LIST_FILENAME = "requested_download_files_url_list.txt";
+
     /**
      * Downloads multiple files with progress tracking and user feedback.
      * 
@@ -38,11 +41,14 @@ public class FileDownloadManager {
      * @param parentComponent Parent component for dialogs
      * @param onComplete Callback to execute when download completes
      */
-    public void downloadSelectedFiles(List<String> filesToDownload, 
+    public void downloadSelectedFiles(List<String> filesToDownload,
+                                    boolean downloadListOnly,
+                                    String searchCriteriaString,
                                     java.util.Map<String, String> fileLinkMap,
                                     Component parentComponent,
                                     DownloadCompleteCallback onComplete) {
-        
+
+
         // Check credentials
         if (earthdataCredentials == null) {
             earthdataCredentials = WebPageFetcherWithJWT.getCredentials("urs.earthdata.nasa.gov");
@@ -51,84 +57,126 @@ public class FileDownloadManager {
                 return;
             }
         }
-        
+
+
+        // Check if any files selected
+        if (filesToDownload == null || filesToDownload.size() == 0) {
+            JOptionPane.showMessageDialog(parentComponent, "No files selected");
+            return;
+        }
+
         // Get download directory from user
-        Path downloadDir = selectDownloadDirectory(parentComponent);
+        File requestedUrlsListFile = getRequestedUrlsListFile(parentComponent);
+        if (requestedUrlsListFile == null) {
+            return; // User cancelled
+        }
+
+        Path downloadDir = requestedUrlsListFile.getParentFile().toPath();
         if (downloadDir == null) {
             return; // User cancelled
         }
-        
-        showProgressDialog(parentComponent, filesToDownload.size());
 
-        downloadWorker = new SwingWorker<>() {
-            @Override
-            protected DownloadResult doInBackground() {
-                int downloadedCount = 0;
 
-                for (int i = 0; i < filesToDownload.size(); i++) {
-                    if (isCancelled()) {
-                        break;
+
+
+
+
+        // Create a listing of all file urls requested for download which will be saved as a text file in the requested
+        // download directory
+        String requestedUrlsListString = "";
+        for (int i = 0; i < filesToDownload.size(); i++) {
+            String fileName = filesToDownload.get(i);
+            String url = fileLinkMap.get(fileName);
+
+            if (url != null) {
+                requestedUrlsListString += url + "\n";
+            }
+        }
+        boolean urlFileWriteStatus = writeRequestedUrlListFile(requestedUrlsListString, requestedUrlsListFile, searchCriteriaString);
+
+        if (!urlFileWriteStatus) {
+            JOptionPane.showMessageDialog(parentComponent, "ERROR!!: Failed to write file urls list:\n" + requestedUrlsListFile.getAbsolutePath());
+            return;
+        }
+
+        if (!downloadListOnly) {
+            showProgressDialog(parentComponent, filesToDownload.size());
+
+            downloadWorker = new SwingWorker<>() {
+                @Override
+                protected DownloadResult doInBackground() {
+                    int downloadedCount = 0;
+
+                    for (int i = 0; i < filesToDownload.size(); i++) {
+                        if (isCancelled()) {
+                            break;
+                        }
+                        final int fileIndex = i;
+                        String fileName = filesToDownload.get(fileIndex);
+                        String url = fileLinkMap.get(fileName);
+
+                        publish(new DownloadProgress(fileIndex, filesToDownload.size(), fileName, 0));
+
+                        if (url != null && downloadFile(url, downloadDir,
+                                currentFileProgress -> publish(new DownloadProgress(fileIndex, filesToDownload.size(),
+                                        fileName, currentFileProgress)))) {
+                            downloadedCount++;
+                        }
+
+                        publish(new DownloadProgress(fileIndex + 1, filesToDownload.size(), fileName, 0));
                     }
-                    final int fileIndex = i;
-                    String fileName = filesToDownload.get(fileIndex);
-                    String url = fileLinkMap.get(fileName);
 
-                    publish(new DownloadProgress(fileIndex, filesToDownload.size(), fileName, 0));
+                    return new DownloadResult(downloadedCount, isCancelled());
+                }
 
-                    if (url != null && downloadFile(url, downloadDir,
-                            currentFileProgress -> publish(new DownloadProgress(fileIndex, filesToDownload.size(),
-                                    fileName, currentFileProgress)))) {
-                        downloadedCount++;
+                @Override
+                protected void process(List<DownloadProgress> chunks) {
+                    if (!chunks.isEmpty()) {
+                        updateProgressBar(chunks.get(chunks.size() - 1));
+                    }
+                }
+
+                @Override
+                protected void done() {
+                    hideProgressDialog();
+
+                    DownloadResult result;
+                    try {
+                        result = get();
+                    } catch (Exception e) {
+                        result = new DownloadResult(0, isCancelled());
                     }
 
-                    publish(new DownloadProgress(fileIndex + 1, filesToDownload.size(), fileName, 0));
+                    if (result.cancelled) {
+                        JOptionPane.showMessageDialog(parentComponent, "Download cancelled.");
+                        return;
+                    }
+
+                    showCompletionMessage(parentComponent, downloadDir, result.downloadedCount, onComplete);
                 }
+            };
 
-                return new DownloadResult(downloadedCount, isCancelled());
-            }
+            downloadWorker.execute();
+            progressDialog.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(parentComponent, "File urls list written to:\n" + requestedUrlsListFile.getAbsolutePath());
+        }
 
-            @Override
-            protected void process(List<DownloadProgress> chunks) {
-                if (!chunks.isEmpty()) {
-                    updateProgressBar(chunks.get(chunks.size() - 1));
-                }
-            }
-
-            @Override
-            protected void done() {
-                hideProgressDialog();
-
-                DownloadResult result;
-                try {
-                    result = get();
-                } catch (Exception e) {
-                    result = new DownloadResult(0, isCancelled());
-                }
-
-                if (result.cancelled) {
-                    JOptionPane.showMessageDialog(parentComponent, "Download cancelled.");
-                    return;
-                }
-
-                showCompletionMessage(parentComponent, downloadDir, result.downloadedCount, onComplete);
-            }
-        };
-
-        downloadWorker.execute();
-        progressDialog.setVisible(true);
     }
 
-    private void showCompletionMessage(Component parentComponent, Path downloadDir, int downloadedCount,
-                                       DownloadCompleteCallback onComplete) {
+
+    private void showCompletionMessage (Component parentComponent, Path downloadDir,int downloadedCount,
+                                        DownloadCompleteCallback onComplete){
         final int finalDownloadedCount = downloadedCount;
         JOptionPane.showMessageDialog(parentComponent,
                 finalDownloadedCount + " file(s) downloaded to:\n" + downloadDir.toAbsolutePath());
-                
+
         if (onComplete != null) {
             onComplete.onDownloadComplete(finalDownloadedCount, downloadDir);
         }
     }
-    
+
+
     /**
      * Downloads a single file from the given URL to the specified directory.
      * 
@@ -181,6 +229,56 @@ public class FileDownloadManager {
             return false;
         }
     }
+
+
+    /**
+     * Write a text file containing a listing of the file URLs requested for download
+     *    - Includes urls regardless of whether the download fails
+     *    - Appends to existing list file if the list file already exits
+
+     *
+     * @param requestedUrlsListString A string containing a listing of the file URLs requested for download
+     * @param requestedUrlsListFile The file to create which contains the URLs requested for download
+     * @return true if file list is written, false otherwise
+     */
+    public boolean writeRequestedUrlListFile(String requestedUrlsListString, File requestedUrlsListFile, String searchCriteriaString) {
+
+        if (requestedUrlsListFile == null || requestedUrlsListString == null) {
+            return false;
+        }
+
+        try {
+            Path downloadDir = requestedUrlsListFile.getParentFile().toPath();
+            Files.createDirectories(downloadDir);
+
+            requestedUrlsListString =
+                    searchCriteriaString +
+                    "Search Results - Returned File URLs:\n"
+                    + requestedUrlsListString + "\n\n";
+
+
+            if (!requestedUrlsListFile.exists()) {
+                // Create new files list
+                BufferedWriter writer = new BufferedWriter(new FileWriter(requestedUrlsListFile, false));
+                writer.write(requestedUrlsListString);
+                writer.close();
+            } else {
+                // Append the list to the existing files list
+                BufferedWriter writer = new BufferedWriter(new FileWriter(requestedUrlsListFile, true));
+                writer.append("-------------------------------------------------------\n" + requestedUrlsListString);
+                writer.close();
+            }
+
+            return true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to write '" + requestedUrlsListFile.getAbsolutePath() + "'  Error: " + e.getMessage());
+            return false;
+        }
+    }
+
+
 
     private void copyWithProgress(InputStream in, Path outputPath, long totalBytes,
                                   DownloadProgressListener progressListener) throws IOException {
@@ -267,7 +365,7 @@ public class FileDownloadManager {
     /**
      * Updates the progress bar value.
      * 
-     * @param value The new progress value
+     * @param progress The new progress value
      */
     private void updateProgressBar(DownloadProgress progress) {
         if (progressBar != null) {
@@ -321,104 +419,71 @@ public class FileDownloadManager {
     }
     
     /**
-     * Opens a file chooser dialog for selecting the download directory.
+     * Opens a file chooser dialog for selecting the urls list file (which establishes a downloads directory).
      * Handles preference management and directory creation.
      * 
      * @param parentComponent Parent component for the dialog
      * @return Selected directory path, or null if cancelled
      */
-    private Path selectDownloadDirectory(Component parentComponent) {
+    private File getRequestedUrlsListFile(Component parentComponent) {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select Directory to Save Files");
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogTitle("Select where to download files and the URL Listing");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
         // Set initial directory based on preferences
-        String parentDownloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadParentDir();
-        File parentDownloadDirFile = null;
+        String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDirectory();
+        File downloadDirFile = null;
         
-        if (parentDownloadDirStr != null && parentDownloadDirStr.trim().length() > 0) {
-            parentDownloadDirFile = new File(parentDownloadDirStr);
-            if (!parentDownloadDirFile.exists()) {
-                parentDownloadDirFile.mkdirs();
+        if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
+            downloadDirFile = new File(downloadDirStr);
+            if (!downloadDirFile.exists()) {
+                downloadDirFile.mkdirs();
             }
         }
         
-        if (parentDownloadDirFile == null) {
+        if (downloadDirFile == null) {
             File userHomeDir = SystemUtils.getUserHomeDir();
-            parentDownloadDirFile = new File(userHomeDir, "Downloads");
-            if (!parentDownloadDirFile.exists()) {
-                parentDownloadDirFile = userHomeDir;
+            downloadDirFile = new File(userHomeDir, "Downloads");
+            if (!downloadDirFile.exists()) {
+                downloadDirFile = userHomeDir;
             }
         }
-        
-        if (parentDownloadDirFile != null && parentDownloadDirFile.exists()) {
-            fileChooser.setCurrentDirectory(parentDownloadDirFile);
-            
-            // Suggest directory name based on preferences
-            String downloadDirStr = Earthdata_Cloud_Controller.getPreferenceDownloadDir();
-            int currIndex = 1;
-            String downloadDirStrNoSuffix = "results";
-            boolean retainSuffix = false;
-            
-            if (downloadDirStr != null && downloadDirStr.trim().length() > 0) {
-                downloadDirStrNoSuffix = downloadDirStr;
-                String[] downloadDirStrSplitArray = downloadDirStr.split("-");
-                if (downloadDirStrSplitArray.length == 2) {
-                    String suffix = downloadDirStrSplitArray[1];
-                    int currIndexTmp = RegionUtils.convertStringToInt(suffix, -999);
-                    if (currIndexTmp != -999) {
-                        downloadDirStrNoSuffix = downloadDirStrSplitArray[0];
-                        currIndex = currIndexTmp;
-                        if (currIndex == 1) {
-                            retainSuffix = true;
-                        }
-                    }
-                }
-            }
-            
-            // Find available directory name
-            String downloadDirStrIndexed;
-            File file2 = null;
-            while (file2 == null && currIndex < 1000) {
-                if (currIndex == 1 && !retainSuffix) {
-                    downloadDirStrIndexed = downloadDirStrNoSuffix;
-                } else {
-                    downloadDirStrIndexed = downloadDirStrNoSuffix + "-" + currIndex;
-                }
-                
-                file2 = new File(parentDownloadDirFile, downloadDirStrIndexed);
-                if (!file2.exists()) {
-                    break;
-                }
-                file2 = null;
-                currIndex++;
-            }
-            
-            if (file2 != null) {
-                fileChooser.setSelectedFile(file2);
-            }
+
+
+        if (downloadDirFile != null && downloadDirFile.exists()) {
+            fileChooser.setCurrentDirectory(downloadDirFile);
+            final File urlFile = new File(downloadDirFile, URL_LIST_FILENAME);
+            fileChooser.setSelectedFile(urlFile);
+        } else {
+            // could not establish a default downloads directory to use, user should be able to pick one though in the finder.
         }
-        
+
+
         if (fileChooser.showSaveDialog(parentComponent) != JFileChooser.APPROVE_OPTION) {
             return null;
         }
-        
-        File selectedDir = fileChooser.getSelectedFile();
-        
-        // Save preferences
-        String selectedParent = selectedDir.getParentFile().getAbsolutePath();
-        if (selectedParent != null) {
-            Earthdata_Cloud_Controller.setPreferenceDownloadParentDir(selectedParent);
+
+        File selectedFile = fileChooser.getSelectedFile();
+        if (selectedFile == null) {
+            return null;
         }
-        
-        String selectedDownloadDir = selectedDir.getName();
-        if (selectedDownloadDir != null) {
-            Earthdata_Cloud_Controller.setPreferenceDownloadDir(selectedDownloadDir);
+
+//        Path selectedFilePath = selectedFile.toPath();
+//        Path selectedDownloadDirectoryPath = selectedFilePath.getParent();
+//        Earthdata_Cloud_Controller.setPreferenceDownloadDirectory(selectedDownloadDirectoryPath.toString());
+
+        File selectedDownloadDirFile = selectedFile.getParentFile();
+        if (selectedDownloadDirFile != null) {
+            // Save to preferences
+            String selectedDownloadDirectoryString = selectedDownloadDirFile.getAbsolutePath();
+            Earthdata_Cloud_Controller.setPreferenceDownloadDirectory(selectedDownloadDirectoryString);
         }
-        
-        return selectedDir.toPath();
+
+        return selectedFile;
     }
-    
+
+
+
     /**
      * Callback interface for download completion events.
      */

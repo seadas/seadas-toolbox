@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
+import com.sun.jna.platform.mac.CoreFoundation;
 import gov.nasa.gsfc.seadas.earthdatacloud.action.HarmonySubsetTask;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrVariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
@@ -24,7 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.File;
 import java.util.prefs.Preferences;
@@ -45,6 +45,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private JButton subsetButton, cancelButton, doneButton;
     private HarmonySubsetTask currentSubsetTask;
     private JTextArea statusArea;
+    private boolean isL2File = false;
 
     // Data
     private String selectedFileUrl;
@@ -59,16 +60,17 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private static final String PREF_LAST_DOWNLOAD_DIR = "harmonySubsetLastDownloadDir";
     private final Preferences prefs = Preferences.userNodeForPackage(HarmonySubsetServiceDialog.class);
     public HarmonySubsetServiceDialog() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, false);
     }
 
-    public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax) {
+    public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax, boolean isL2File) {
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.selectedFileUrl = fileUrl;
         this.searchLatMin = latMin;
         this.searchLatMax = latMax;
         this.searchLonMin = lonMin;
         this.searchLonMax = lonMax;
+        this.isL2File = isL2File;
 
         setLayout(new BorderLayout());
 
@@ -956,6 +958,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
                     progressBar,
                     subsetButton,
                     cancelButton,
+                    isL2File,
                     this
             );
 
@@ -991,7 +994,11 @@ public class HarmonySubsetServiceDialog extends JDialog {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setSelectedFile(new File(suggestedName));
 
-        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
+        // using the standard preferences so Subset and Earthdata Browser tools are synced up better
+        // commented out alternate version of preferences
+        //        String lastDir = prefs.get(PREF_LAST_DOWNLOAD_DIR, null);
+        String lastDir = Earthdata_Cloud_Controller.getPreferenceDownloadDirectory();
+
         if (lastDir != null && !lastDir.isBlank()) {
             File dir = new File(lastDir);
             if (dir.exists() && dir.isDirectory()) {
@@ -1028,7 +1035,10 @@ public class HarmonySubsetServiceDialog extends JDialog {
 
         File parent = file.getParentFile();
         if (parent != null) {
-            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+            // using the standard preferences so Subset and Earthdata Browser tools are synced up better
+            // commented out alternate version of preferences
+            //            prefs.put(PREF_LAST_DOWNLOAD_DIR, parent.getAbsolutePath());
+            Earthdata_Cloud_Controller.setPreferenceDownloadDirectory(parent.getAbsolutePath());
         }
 
         return file;
