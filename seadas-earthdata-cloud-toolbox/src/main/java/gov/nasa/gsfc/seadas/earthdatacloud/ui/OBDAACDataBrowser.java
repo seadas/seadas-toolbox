@@ -88,6 +88,8 @@ public class OBDAACDataBrowser extends JPanel {
             "VIIRSN", new String[]{"2011-10-28", "2024-12-31"}
     );
 
+    private static String SELECT_ALL = "-- Select All --";
+
     public OBDAACDataBrowser(JDialog parentDialog) {
         this.parentDialog = parentDialog;
         setLayout(new GridBagLayout());
@@ -1077,6 +1079,8 @@ public class OBDAACDataBrowser extends JPanel {
             List<String> productNames = new ArrayList<>();
             Map<String, String> tooltipMap = new HashMap<>();
 
+            tooltipMap.put(SELECT_ALL, SELECT_ALL + " -- (includes all products)");
+
             for (int i = 0; i < products.length(); i++) {
                 JSONObject prod = products.getJSONObject(i);
                 String name = prod.optString("product_name", "Unknown");
@@ -1086,6 +1090,9 @@ public class OBDAACDataBrowser extends JPanel {
             }
 
             Collections.sort(productNames);
+
+            productDropdown.addItem(SELECT_ALL);
+            productNameTooltips.put(SELECT_ALL, tooltipMap.get(SELECT_ALL));
 
             for (String name : productNames) {
                 productDropdown.addItem(name);
@@ -2372,6 +2379,24 @@ public class OBDAACDataBrowser extends JPanel {
 
         String productName = (String) productDropdown.getSelectedItem();
 
+        boolean showAll = false;
+
+        if (SELECT_ALL.equals(productName)) {
+            showAll = true;
+        }
+
+        ArrayList<String> shortNames = new ArrayList();
+        if (showAll) {
+            for (int i = 0; i < productDropdown.getItemCount(); i++) {
+
+                String currProductName = productDropdown.getItemAt(i);
+                if (!SELECT_ALL.equals(currProductName)) {
+                    String currShortName = productNameTooltips.getOrDefault(currProductName, currProductName);
+                    shortNames.add(currShortName);
+                }
+            }
+        }
+
         String shortName = productNameTooltips.getOrDefault(productName, productName);
         int maxApiResults = (Integer) maxApiResultsSpinner.getValue();
         double workInAnIncrement = (int) Math.floor(maxApiResults / totalWork);
@@ -2430,7 +2455,14 @@ public class OBDAACDataBrowser extends JPanel {
         try {
             while (totalFetched < maxApiResults) {
                 StringBuilder urlBuilder = new StringBuilder("https://cmr.earthdata.nasa.gov/search/granules.json?provider=OB_CLOUD");
-                urlBuilder.append("&short_name=").append(URLEncoder.encode(shortName, StandardCharsets.UTF_8));
+                if (showAll) {
+                    for (String shortNameCurr : shortNames) {
+                        urlBuilder.append("&short_name=").append(URLEncoder.encode(shortNameCurr, StandardCharsets.UTF_8));
+                    }
+                } else {
+                    urlBuilder.append("&short_name=").append(URLEncoder.encode(shortName, StandardCharsets.UTF_8));
+                }
+//                urlBuilder.append("&short_name=").append(URLEncoder.encode("PACE_OCI_L2_AOP_NRT", StandardCharsets.UTF_8));
                 urlBuilder.append("&page_size=").append(pageSize);
                 urlBuilder.append("&page_num=").append(page);
 
