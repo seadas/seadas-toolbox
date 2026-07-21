@@ -2531,19 +2531,16 @@ public class OBDAACDataBrowser extends JPanel {
 
 
                     String keywordSelectedItem = (String) keyword.getSelectedItem();
-//                    String BLANK_STRING = "";
-//                    String key1 = BLANK_STRING;
-//                    String key2 = BLANK_STRING;
-//                    String key3 = BLANK_STRING;
-//                    String key4 = BLANK_STRING;
 
                     ArrayList<String> inclusionKeys = new ArrayList<>();
                     ArrayList<String> exclusionKeys = new ArrayList<>();
                     ArrayList<String> andKeys = new ArrayList<>();
 
-                    // Sample call "AOP,&544,BGC,!NRT"  is equiv to (AOP or BCG) and 544 and not NRT
+                    // Sample call "||BGC,||AOP,100903,!NRT" is (BGC or AOP) and 100903 and not NRT
 
-                    if (keywordSelectedItem != null) {
+                    boolean keywordSet = (keywordSelectedItem != null && !keywordSelectedItem.isEmpty());
+
+                    if (keywordSet) {
                         keywordSelectedItem = keywordSelectedItem.trim();
                         String[] keywordsArray = keywordSelectedItem.split("\\s+|,|\\*");
                         for (String key : keywordsArray) {
@@ -2552,27 +2549,16 @@ public class OBDAACDataBrowser extends JPanel {
                                 if (key.startsWith("!")) {
                                     key = key.substring(1);
                                     exclusionKeys.add(key);
-                                } else if (key.startsWith("&")) {
-                                        key = key.substring(1);
-                                        andKeys.add(key);
+                                } else if (key.startsWith("||")) {
+                                        key = key.substring(2);
+                                        inclusionKeys.add(key);
                                 } else {
-                                    inclusionKeys.add(key);
+                                    andKeys.add(key);
                                 }
-
-//                                if (BLANK_STRING.equals(key1)) {
-//                                    key1 = key;
-//                                } else if (BLANK_STRING.equals(key2)) {
-//                                    key2 = key;
-//                                } else if (BLANK_STRING.equals(key3)) {
-//                                    key3 = key;
-//                                } else if (BLANK_STRING.equals(key4)) {
-//                                    key4 = key;
-//                                }
                             }
                         }
 
                     }
-                    boolean keywordSet = (keywordSelectedItem != null && !keywordSelectedItem.isEmpty());
 
 
                     for (int i = 0; i < entries.length(); i++) {
@@ -2581,45 +2567,40 @@ public class OBDAACDataBrowser extends JPanel {
                         String fileName = entry.optString("producer_granule_id", "");
                         JSONArray links = entry.optJSONArray("links");
 
+                        boolean matchesKeyword = true;
 
-                        boolean matchesKeyword = false;
-                        if (inclusionKeys.size() > 0) {
-                            for (String keyTest : inclusionKeys) {
-                                if (fileName.contains(keyTest)) {
-                                    matchesKeyword = true;
+                        if (keywordSet) {
+                            matchesKeyword = false;
+
+                            if (inclusionKeys.size() > 0) {
+                                for (String keyTest : inclusionKeys) {
+                                    if (fileName.contains(keyTest)) {
+                                        matchesKeyword = true;
+                                    }
+                                }
+                            } else {
+                                matchesKeyword = true;
+                            }
+
+                            if (andKeys.size() > 0) {
+                                for (String keyTest : andKeys) {
+                                    if (!fileName.contains(keyTest)) {
+                                        matchesKeyword = false;
+                                    }
                                 }
                             }
-                        } else {
-                            matchesKeyword = true;
-                        }
 
-                        if (andKeys.size() > 0) {
-                            for (String keyTest : andKeys) {
-                                if (!fileName.contains(keyTest)) {
-                                    matchesKeyword = false;
+                            if (exclusionKeys.size() > 0) {
+                                for (String keyTest : exclusionKeys) {
+                                    if (fileName.contains(keyTest)) {
+                                        matchesKeyword = false;
+                                    }
                                 }
                             }
-                        }
 
-                        if (exclusionKeys.size() > 0) {
-                            for (String keyTest : exclusionKeys) {
-                                if (fileName.contains(keyTest)) {
-                                    matchesKeyword = false;
-                                }
-                            }
                         }
 
 
-
-//                        if (keywordSet) {
-//                            if (fileName != null && !fileName.isEmpty()) {
-//                                if (fileName.contains(key1) && fileName.contains(key2) && fileName.contains(key3) && fileName.contains(key4)) {
-//                                    matchesKeyword = true;
-//                                }
-//                            }
-//                        } else {
-//                            matchesKeyword = true;
-//                        }
 
                         if (fileName != null && !fileName.isEmpty() && links != null && matchesKeyword) {
                             String dataHref = null;
@@ -2660,9 +2641,11 @@ public class OBDAACDataBrowser extends JPanel {
                             if (dataHref != null) {
                                 addGranuleResultOnEdt(fileName, dataHref, previewHref);
                             }
+
+                            totalFetched++;
+
                         }
 
-                        totalFetched++;
 
                         if (pm != null) {
                             if (workDone < (totalWork - 2)) {
