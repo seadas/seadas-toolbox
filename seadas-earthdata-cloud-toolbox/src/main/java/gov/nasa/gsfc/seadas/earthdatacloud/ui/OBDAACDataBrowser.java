@@ -4,7 +4,6 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
-import org.ejml.dense.row.linsol.AdjustableLinearSolver_DDRM;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.ui.UIUtils;
@@ -16,7 +15,6 @@ import org.json.JSONTokener;
 import org.openide.util.HelpCtx;
 
 import javax.swing.*;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -279,7 +277,6 @@ public class OBDAACDataBrowser extends JPanel {
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
 
-
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTHEAST;
         panel.add(panel2, gbc);
@@ -441,8 +438,6 @@ public class OBDAACDataBrowser extends JPanel {
     // Add back the correct createPaginationPanel method
     private JPanel createPaginationPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-
-
 
         selectAllCheckbox = new JCheckBox("Select All");
         selectAllCheckbox.setSelected(false);
@@ -697,35 +692,12 @@ public class OBDAACDataBrowser extends JPanel {
     }
 
     private void downloadSelectedFiles() {
-
-
         List<String> filesToDownload = new ArrayList<>();
-
-
-        // todo Danny
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
                 filesToDownload.add((String) tableModel.getValueAt(i, 0));
             }
         }
-
-        // todo Danny
-//        if (selectAllCheckbox.isSelected()) {
-//            for (int i = 0; i < allGranules.size(); i++) {
-//                String[] row = allGranules.get(i);
-//                filesToDownload.add(row[0]);
-//            }
-//        } else {
-//            for (int i = 0; i < tableModel.getRowCount(); i++) {
-//                if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
-//                    filesToDownload.add((String) tableModel.getValueAt(i, 0));
-//                }
-//            }
-//        }
-
-
-
-
 
         if (filesToDownload.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No files selected for download.");
@@ -733,9 +705,6 @@ public class OBDAACDataBrowser extends JPanel {
         }
 
 
-
-        
-//        String searchCriteriaString = getSearchCriteriaOverviewString();
         String searchCriteriaString = getSearchCriteriaOverviewString;
         downloadManager.downloadSelectedFiles(filesToDownload, urlListOnly, searchCriteriaString, fileLinkMap, this,
             (downloadedCount, downloadDir) -> {

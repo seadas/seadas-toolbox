@@ -244,8 +244,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         boolean variableSubsetRequested =
                 !allVariablesSelected && vars != null && vars.length() > 0;
 
-
-
         // if level2 file then force inclusion of l2_flags
         boolean forceAddL2Flags = false;
         if (isL2File) {
@@ -329,8 +327,6 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
         url.append("&skipPreview=true");
         url.append("&pixelSubset=true");
 
-        // todo Comment this out
-//        System.out.println("URL=" + url.toString());
         return url.toString();
     }
 

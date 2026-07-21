@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
-import com.sun.jna.platform.mac.CoreFoundation;
 import gov.nasa.gsfc.seadas.earthdatacloud.action.HarmonySubsetTask;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrVariableMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.FileVariableMetadataFetcher;
@@ -45,7 +44,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private JButton subsetButton, cancelButton, doneButton;
     private HarmonySubsetTask currentSubsetTask;
     private JTextArea statusArea;
-    private boolean isL2File = false;
+    private boolean isL2File;
 
     // Data
     private String selectedFileUrl;
