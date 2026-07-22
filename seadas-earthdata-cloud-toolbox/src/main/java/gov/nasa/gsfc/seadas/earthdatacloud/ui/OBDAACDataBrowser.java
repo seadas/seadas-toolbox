@@ -1049,6 +1049,7 @@ public class OBDAACDataBrowser extends JPanel {
             Map<String, String> tooltipMap = new HashMap<>();
 
             tooltipMap.put(SELECT_ALL, SELECT_ALL + " -- (includes all products)");
+            boolean separateRefinedNRTEntries = Earthdata_Cloud_Controller.getPreferenceSeparateRefinedNRTEntries();
 
             for (int i = 0; i < products.length(); i++) {
                 JSONObject prod = products.getJSONObject(i);
@@ -1064,8 +1065,19 @@ public class OBDAACDataBrowser extends JPanel {
             productNameTooltips.put(SELECT_ALL, tooltipMap.get(SELECT_ALL));
 
             for (String name : productNames) {
-                productDropdown.addItem(name);
-                productNameTooltips.put(name, tooltipMap.get(name));
+
+                boolean removeNRT = false;
+
+                if (selectedLevel != null && (selectedLevel.contains("L2") || selectedLevel.contains("L3B") || selectedLevel.contains("L3M"))) {
+                    if (!separateRefinedNRTEntries) {
+                        removeNRT = true;
+                    }
+                }
+
+                if (!removeNRT || removeNRT && !name.endsWith("NRT") ) {
+                    productDropdown.addItem(name);
+                    productNameTooltips.put(name, tooltipMap.get(name));
+                }
             }
 
             int selectedIndex = 0;
@@ -2370,6 +2382,15 @@ public class OBDAACDataBrowser extends JPanel {
                 if (!SELECT_ALL.equals(currProductName)) {
                     String currShortName = productNameTooltips.getOrDefault(currProductName, currProductName);
                     shortNames.add(currShortName);
+
+                    boolean separateRefinedNRTEntries = Earthdata_Cloud_Controller.getPreferenceSeparateRefinedNRTEntries();
+                    if (level != null && (level.contains("L2") || level.contains("L3B") || level.contains("L3M"))) {
+                        if (!separateRefinedNRTEntries) {
+                            String nrtShortname = currShortName + "_NRT";
+                            shortNames.add(nrtShortname);
+                        }
+                    }
+
                 }
             }
         }
@@ -2438,8 +2459,26 @@ public class OBDAACDataBrowser extends JPanel {
                     }
                 } else {
                     urlBuilder.append("&short_name=").append(URLEncoder.encode(shortName, StandardCharsets.UTF_8));
+
+                    boolean separateRefinedNRTEntries = Earthdata_Cloud_Controller.getPreferenceSeparateRefinedNRTEntries();
+
+//                    if (separateRefinedNRTEntries && shortName.endsWith("_NRT")) {
+//                        String refinedShortName = shortName.replace("_NRT","");
+////                        String refinedShortName = shortName.substring(0,shortName.length() - 4);
+//                        urlBuilder.append("&short_name=").append(URLEncoder.encode(refinedShortName, StandardCharsets.UTF_8));
+//                    }
+
+//                    if (level != null && level.contains("L2")) {
+
+                    if (level != null && (level.contains("L2") || level.contains("L3B") || level.contains("L3M"))) {
+                        if (!separateRefinedNRTEntries) {
+                            String nrtShortname = shortName + "_NRT";
+                            urlBuilder.append("&short_name=").append(URLEncoder.encode(nrtShortname, StandardCharsets.UTF_8));
+                        }
+                    }
+
                 }
-//                urlBuilder.append("&short_name=").append(URLEncoder.encode("PACE_OCI_L2_AOP_NRT", StandardCharsets.UTF_8));
+
                 urlBuilder.append("&page_size=").append(pageSize);
                 urlBuilder.append("&page_num=").append(page);
 

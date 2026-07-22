@@ -72,7 +72,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String MODE_NIGHT = "Night";
     public static final String MODE_BOTH = "Both";
     
-    private static final String PROPERTY_ROOT_KEY = "seadas.toolbox.earthdata_cloud";
+    private static final String PROPERTY_ROOT_KEY = "seadas.toolbox.earthdata_cloud.v2";
 
     public static final String PROPERTY_SATELLITE_NAME_KEY = PROPERTY_ROOT_KEY + ".satellite";
     public static final String PROPERTY_SATELLITE_LABEL = "Satellite/Instrument";
@@ -87,7 +87,13 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_PRODUCT_KEY = PROPERTY_ROOT_KEY + ".product";
     public static final String PROPERTY_PRODUCT_LABEL = "Product Name";
     public static final String PROPERTY_PRODUCT_TOOLTIP = "Product";
-    public static final String PROPERTY_PRODUCT_DEFAULT = "BGC_NRT";
+    public static final String PROPERTY_PRODUCT_DEFAULT = "BGC";
+
+    public static final String PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_KEY = PROPERTY_ROOT_KEY + ".separateRefinedNRTEntries";
+    public static final String PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_LABEL = "Search Refined and NRT Separately";
+    public static final String PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_TOOLTIP = "Search refined data and NRT in separate product searches";
+    public static final boolean PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_DEFAULT = false;
+
 
     public static final String PROPERTY_MINLAT_KEY = PROPERTY_ROOT_KEY + ".minlat";
     public static final String PROPERTY_MINLAT_LABEL = "South";
@@ -131,12 +137,12 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_BOX_SIZE_DEFAULT = "1.0";
 
 
-    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_regions.selector";
+    public static final String PROPERTY_PRESET_REGIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_regions.selector";
     public static final String PROPERTY_PRESET_REGIONS_INCLUDE_LABEL = "Include 'Preset Regions' Selector";
     public static final String PROPERTY_PRESET_REGIONS_INCLUDE_TOOLTIP = "Include 'Preset Regions' selector in GUI";
     public static final boolean PROPERTY_PRESET_REGIONS_INCLUDE_DEFAULT = true;
 
-    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".v2.preset_locations.selector";
+    public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_KEY = PROPERTY_ROOT_KEY + ".preset_locations.selector";
     public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_LABEL = "Include 'Preset Locations' Selector";
     public static final String PROPERTY_PRESET_LOCATIONS_INCLUDE_TOOLTIP = "Include 'Preset Locations' selector in GUI";
     public static final boolean PROPERTY_PRESET_LOCATIONS_INCLUDE_DEFAULT = false;
@@ -153,7 +159,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_USER_LOCATIONS_INCLUDE_TOOLTIP = "Include 'User Locations' selector in GUI";
     public static final boolean PROPERTY_USER_LOCATIONS_INCLUDE_DEFAULT = false;
 
-    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".v3.preset_regions.categorize";
+    public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_KEY = PROPERTY_ROOT_KEY + ".preset_regions.categorize";
     public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_LABEL = "Categorize 'Preset Regions' Selector";
     public static final String PROPERTY_PRESET_REGIONS_CATEGORIZE_TOOLTIP = "Categorizes 'Preset Regions' selector in GUI (otherwise uses a sorted region list)";
     public static final boolean PROPERTY_PRESET_REGIONS_CATEGORIZE_DEFAULT = false;
@@ -196,9 +202,9 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static final String PROPERTY_FETCH_MAX_RESULTS_KEY = PROPERTY_ROOT_KEY + ".fetch.max_results";
     public static final String PROPERTY_FETCH_MAX_RESULTS_LABEL = "Max Results";
     public static final String PROPERTY_FETCH_MAX_RESULTS_TOOLTIP = "Maximum number of files to request be retrieved";
-    public static final int PROPERTY_FETCH_MAX_RESULTS_DEFAULT = 1000;
+    public static final int PROPERTY_FETCH_MAX_RESULTS_DEFAULT = 10000;
     public static final int PROPERTY_FETCH_MAX_RESULTS_MIN_VALUE = 1;
-    public static final int PROPERTY_FETCH_MAX_RESULTS_MAX_VALUE = 10000;
+    public static final int PROPERTY_FETCH_MAX_RESULTS_MAX_VALUE = 100000;
 
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_KEY = PROPERTY_ROOT_KEY + ".fetch.results_per_page";
     public static final String PROPERTY_FETCH_RESULTS_PER_PAGE_LABEL = "Results per Page";
@@ -234,6 +240,7 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_SATELLITE_NAME_KEY, PROPERTY_SATELLITE_DEFAULT);
         initPropertyDefaults(context, PROPERTY_DATA_LEVEL_KEY, PROPERTY_DATA_LEVEL_DEFAULT);
         initPropertyDefaults(context, PROPERTY_PRODUCT_KEY, PROPERTY_PRODUCT_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_KEY, PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_DEFAULT);
         minLatProperty = initPropertyDefaults(context, PROPERTY_MINLAT_KEY, PROPERTY_MINLAT_DEFAULT);
         maxLatProperty = initPropertyDefaults(context, PROPERTY_MAXLAT_KEY, PROPERTY_MAXLAT_DEFAULT);
         minLonProperty = initPropertyDefaults(context, PROPERTY_MINLON_KEY, PROPERTY_MINLON_DEFAULT);
@@ -489,6 +496,12 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 description = PROPERTY_PRODUCT_TOOLTIP)
         String productDefault = PROPERTY_PRODUCT_DEFAULT;
 
+        @Preference(key = PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_KEY,
+                label = PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_LABEL,
+                description = PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_TOOLTIP)
+        boolean separateRefinedNrtEntriesDefault = PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_DEFAULT;
+
+
         @Preference(key = PROPERTY_MINLAT_KEY,
                 label = PROPERTY_MINLAT_LABEL,
                 description = PROPERTY_MINLAT_TOOLTIP)
@@ -624,6 +637,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     public static String getPreferenceProduct() {
         final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
         return preferences.getPropertyString(PROPERTY_PRODUCT_KEY, PROPERTY_PRODUCT_DEFAULT);
+    }
+
+    public static boolean getPreferenceSeparateRefinedNRTEntries() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyBool(PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_KEY, PROPERTY_SEPARATE_REFINED_NRT_ENTRIES_DEFAULT);
     }
 
 
