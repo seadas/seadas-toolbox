@@ -58,7 +58,7 @@ public class OBDAACDataBrowser extends JPanel {
     private JSpinner resultsPerPageSpinner;
     boolean urlListOnly = false;
     JButton subsetButton;
-    boolean isL2File = false;
+    boolean needsL2Flags = false;
     JCheckBox selectAllCheckbox;
 
     String getSearchCriteriaOverviewString = "";
@@ -828,7 +828,7 @@ public class OBDAACDataBrowser extends JPanel {
                     var meta = get();
 
                     HarmonySubsetServiceDialog subsetDialog =
-                            new HarmonySubsetServiceDialog(finalFileUrl, finalLatMin, finalLatMax, finalLonMin, finalLonMax, isL2File);
+                            new HarmonySubsetServiceDialog(finalFileUrl, finalLatMin, finalLatMax, finalLonMin, finalLonMax, needsL2Flags);
 
                     subsetDialog.setMeta(meta);
                     subsetDialog.setGranuleId(meta.granuleId);
@@ -2325,11 +2325,19 @@ public class OBDAACDataBrowser extends JPanel {
         String level = (String) levelDropdown.getSelectedItem();
 
         if (level != null && level.contains("L2")) {
-            subsetButton.setVisible(true);
-            isL2File = true;
+            if ("PACE_HARP2".equals(satelliteDropdown.getSelectedItem()) || "PACE_SPEXONE".equals(satelliteDropdown.getSelectedItem())) {
+                subsetButton.setVisible(true);
+                needsL2Flags = false;
+            } else {
+                subsetButton.setVisible(true);
+                needsL2Flags = true;
+            }
+
+            // todo if HARP or SPEXone then false
+
         } else {
             subsetButton.setVisible(false);
-            isL2File = false;
+            needsL2Flags = false;
         }
 
 

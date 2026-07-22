@@ -32,7 +32,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
     private final JButton subsetButton;
     private final JButton cancelButton;
     private final HarmonySubsetServiceDialog dialog;
-    private final boolean isL2File;
+    private final boolean needsL2Flags;
 
     private static final int CONNECT_TIMEOUT_MS = 30_000;
     private static final int READ_TIMEOUT_MS    = 5 * 60_000;
@@ -41,13 +41,13 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
                              JProgressBar progressBar,
                              JButton subsetButton,
                              JButton cancelButton,
-                             boolean isL2File,
+                             boolean needsL2Flags,
                              HarmonySubsetServiceDialog dialog) {
         this.subsetParameters = subsetParameters;
         this.progressBar = progressBar;
         this.subsetButton = subsetButton;
         this.cancelButton = cancelButton;
-        this.isL2File = isL2File;
+        this.needsL2Flags = needsL2Flags;
         this.dialog = dialog;
 
         String outputFile = subsetParameters.optString("outputFile", null);
@@ -246,7 +246,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
 
         // if level2 file then force inclusion of l2_flags
         boolean forceAddL2Flags = false;
-        if (isL2File) {
+        if (needsL2Flags) {
             forceAddL2Flags = true;
         }
 
@@ -278,7 +278,7 @@ public class HarmonySubsetTask extends SwingWorker<JSONObject, Void> {
             }
 
             if (variableCsv.length() > 0) {
-                if (isL2File && forceAddL2Flags && !l2_flags_found) {
+                if (needsL2Flags && forceAddL2Flags && !l2_flags_found) {
                     variableCsv.append(",").append("geophysical_data/").append("l2_flags");
                 }
 

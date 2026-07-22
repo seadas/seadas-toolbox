@@ -44,7 +44,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
     private JButton subsetButton, cancelButton, doneButton;
     private HarmonySubsetTask currentSubsetTask;
     private JTextArea statusArea;
-    private boolean isL2File;
+    private boolean needsL2Flags;
 
     // Data
     private String selectedFileUrl;
@@ -62,14 +62,14 @@ public class HarmonySubsetServiceDialog extends JDialog {
         this(null, null, null, null, null, false);
     }
 
-    public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax, boolean isL2File) {
+    public HarmonySubsetServiceDialog(String fileUrl, Double latMin, Double latMax, Double lonMin, Double lonMax, boolean needsL2Flags) {
         super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
         this.selectedFileUrl = fileUrl;
         this.searchLatMin = latMin;
         this.searchLatMax = latMax;
         this.searchLonMin = lonMin;
         this.searchLonMax = lonMax;
-        this.isL2File = isL2File;
+        this.needsL2Flags = needsL2Flags;
 
         setLayout(new BorderLayout());
 
@@ -957,7 +957,7 @@ public class HarmonySubsetServiceDialog extends JDialog {
                     progressBar,
                     subsetButton,
                     cancelButton,
-                    isL2File,
+                    needsL2Flags,
                     this
             );
 
