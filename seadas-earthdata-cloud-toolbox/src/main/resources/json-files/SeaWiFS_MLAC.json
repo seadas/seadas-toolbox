@@ -1,0 +1,12 @@
+{
+    "L2": [
+        {
+            "product_name": "MLAC_IOP",
+            "short_name": "SeaWiFS_MLAC_L2_MLAC_IOP"
+        },
+        {
+            "product_name": "MLAC_OC",
+            "short_name": "SeaWiFS_MLAC_L2_MLAC_OC"
+        }
+    ]
+}

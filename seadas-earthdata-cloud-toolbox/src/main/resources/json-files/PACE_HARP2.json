@@ -13,39 +13,11 @@
             "short_name": "PACE_HARP2_L0_D3"
         },
         {
-            "product_name": "General",
-            "short_name": "PACE_HARP2_L0"
-        },
-        {
-            "product_name": "REAL",
-            "short_name": "PACE_HARP2_L0_REAL"
-        },
-        {
             "product_name": "SCI",
             "short_name": "PACE_HARP2_L0_SCI"
         }
     ],
     "L1A": [
-        {
-            "product_name": "AST0",
-            "short_name": "PACE_HARP2_L1A_AST0"
-        },
-        {
-            "product_name": "AST1",
-            "short_name": "PACE_HARP2_L1A_AST1"
-        },
-        {
-            "product_name": "AST2",
-            "short_name": "PACE_HARP2_L1A_AST2"
-        },
-        {
-            "product_name": "AST3",
-            "short_name": "PACE_HARP2_L1A_AST3"
-        },
-        {
-            "product_name": "AST4",
-            "short_name": "PACE_HARP2_L1A_AST4"
-        },
         {
             "product_name": "SCI",
             "short_name": "PACE_HARP2_L1A_SCI"
@@ -53,22 +25,66 @@
     ],
     "L1B": [
         {
-            "product_name": "AST4",
-            "short_name": "PACE_HARP2_L1B_AST4"
-        },
-        {
             "product_name": "SCI",
             "short_name": "PACE_HARP2_L1B_SCI"
         }
     ],
     "L1C": [
         {
-            "product_name": "AST4",
-            "short_name": "PACE_HARP2_L1C_AST4"
-        },
-        {
             "product_name": "SCI",
             "short_name": "PACE_HARP2_L1C_SCI"
+        }
+    ],
+    "L2": [
+        {
+            "product_name": "MAPOL_LAND_NRT",
+            "short_name": "PACE_HARP2_L2_MAPOL_LAND_NRT"
+        },
+        {
+            "product_name": "MAPOL_LAND",
+            "short_name": "PACE_HARP2_L2_MAPOL_LAND"
+        },
+        {
+            "product_name": "MAPOL_OCEAN_NRT",
+            "short_name": "PACE_HARP2_L2_MAPOL_OCEAN_NRT"
+        },
+        {
+            "product_name": "MAPOL_OCEAN",
+            "short_name": "PACE_HARP2_L2_MAPOL_OCEAN"
+        },
+        {
+            "product_name": "CLOUD_GPC_NRT",
+            "short_name": "PACE_HARP2_L2_CLOUD_GPC_NRT"
+        },
+        {
+            "product_name": "CLOUD_GPC",
+            "short_name": "PACE_HARP2_L2_CLOUD_GPC"
+        }
+    ],
+    "L3M": [
+        {
+            "product_name": "MAPOL_LAND_NRT",
+            "short_name": "PACE_HARP2_L3M_MAPOL_LAND_NRT"
+        },
+        {
+            "product_name": "MAPOL_LAND",
+            "short_name": "PACE_HARP2_L3M_MAPOL_LAND"
+        },
+        {
+            "product_name": "MAPOL_OCEAN_NRT",
+            "short_name": "PACE_HARP2_L3M_MAPOL_OCEAN_NRT"
+        },
+        {
+            "product_name": "MAPOL_OCEAN",
+            "short_name": "PACE_HARP2_L3M_MAPOL_OCEAN"
+        },
+        {
+            "product_name": "CLOUD_GPC_NRT",
+            "short_name": "PACE_HARP2_L3M_CLOUD_GPC_NRT"
+        },
+        {
+            "product_name": "CLOUD_GPC",
+            "short_name": "PACE_HARP2_L3M_CLOUD_GPC"
         }
     ]
 }

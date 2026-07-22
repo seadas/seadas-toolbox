@@ -1,10 +1,6 @@
 {
     "L3b": [
         {
-            "product_name": "CYANTC",
-            "short_name": "MERGED_S3_OLCI_L3b_CYANTC"
-        },
-        {
             "product_name": "ILW",
             "short_name": "MERGED_S3_OLCI_L3b_ILW"
         }

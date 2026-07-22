@@ -67,12 +67,12 @@
             "short_name": "MODIST_L3b_POC"
         },
         {
-            "product_name": "PAR",
-            "short_name": "MODIST_L3b_PAR"
-        },
-        {
             "product_name": "PAR_NRT",
             "short_name": "MODIST_L3b_PAR_NRT"
+        },
+        {
+            "product_name": "PAR",
+            "short_name": "MODIST_L3b_PAR"
         },
         {
             "product_name": "RRS_NRT",
@@ -133,12 +133,12 @@
             "short_name": "MODIST_L3m_POC"
         },
         {
-            "product_name": "PAR",
-            "short_name": "MODIST_L3m_PAR"
-        },
-        {
             "product_name": "PAR_NRT",
             "short_name": "MODIST_L3m_PAR_NRT"
+        },
+        {
+            "product_name": "PAR",
+            "short_name": "MODIST_L3m_PAR"
         },
         {
             "product_name": "RRS_NRT",
@@ -155,12 +155,12 @@
             "short_name": "MODIST_L4b_AVW"
         },
         {
-            "product_name": "CARBON",
-            "short_name": "MODIST_L4b_CARBON"
-        },
-        {
             "product_name": "GSM",
             "short_name": "MODIST_L4b_GSM"
+        },
+        {
+            "product_name": "CARBON",
+            "short_name": "MODIST_L4b_CARBON"
         }
     ],
     "L4m": [
@@ -169,12 +169,12 @@
             "short_name": "MODIST_L4m_AVW"
         },
         {
-            "product_name": "CARBON",
-            "short_name": "MODIST_L4m_CARBON"
-        },
-        {
             "product_name": "GSM",
             "short_name": "MODIST_L4m_GSM"
+        },
+        {
+            "product_name": "CARBON",
+            "short_name": "MODIST_L4m_CARBON"
         }
     ]
 }

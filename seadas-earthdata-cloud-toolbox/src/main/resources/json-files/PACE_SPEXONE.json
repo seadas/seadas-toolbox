@@ -22,5 +22,81 @@
             "product_name": "SCI",
             "short_name": "PACE_SPEXONE_L1C_SCI"
         }
+    ],
+    "L2": [
+        {
+            "product_name": "MAPOL_LAND_NRT",
+            "short_name": "PACE_SPEXONE_L2_MAPOL_LAND_NRT"
+        },
+        {
+            "product_name": "MAPOL_LAND",
+            "short_name": "PACE_SPEXONE_L2_MAPOL_LAND"
+        },
+        {
+            "product_name": "MAPOL_OCEAN_NRT",
+            "short_name": "PACE_SPEXONE_L2_MAPOL_OCEAN_NRT"
+        },
+        {
+            "product_name": "MAPOL_OCEAN",
+            "short_name": "PACE_SPEXONE_L2_MAPOL_OCEAN"
+        },
+        {
+            "product_name": "AER_RTAPLAND_NRT",
+            "short_name": "PACE_SPEXONE_L2_AER_RTAPLAND_NRT"
+        },
+        {
+            "product_name": "AER_RTAPLAND",
+            "short_name": "PACE_SPEXONE_L2_AER_RTAPLAND"
+        },
+        {
+            "product_name": "AER_RTAPOCEAN_NRT",
+            "short_name": "PACE_SPEXONE_L2_AER_RTAPOCEAN_NRT"
+        },
+        {
+            "product_name": "AER_RTAPOCEAN",
+            "short_name": "PACE_SPEXONE_L2_AER_RTAPOCEAN"
+        }
+    ],
+    "L3M": [
+        {
+            "product_name": "AER_RTAP_NRT",
+            "short_name": "PACE_SPEXONE_L3M_AER_RTAP_NRT"
+        },
+        {
+            "product_name": "AER_RTAP",
+            "short_name": "PACE_SPEXONE_L3M_AER_RTAP"
+        },
+        {
+            "product_name": "MAPOL_LAND_NRT",
+            "short_name": "PACE_SPEXONE_L3M_MAPOL_LAND_NRT"
+        },
+        {
+            "product_name": "MAPOL_LAND",
+            "short_name": "PACE_SPEXONE_L3M_MAPOL_LAND"
+        },
+        {
+            "product_name": "MAPOL_OCEAN_NRT",
+            "short_name": "PACE_SPEXONE_L3M_MAPOL_OCEAN_NRT"
+        },
+        {
+            "product_name": "MAPOL_OCEAN",
+            "short_name": "PACE_SPEXONE_L3M_MAPOL_OCEAN"
+        },
+        {
+            "product_name": "AER_RTAPLAND_NRT",
+            "short_name": "PACE_SPEXONE_L3M_AER_RTAPLAND_NRT"
+        },
+        {
+            "product_name": "AER_RTAPLAND",
+            "short_name": "PACE_SPEXONE_L3M_AER_RTAPLAND"
+        },
+        {
+            "product_name": "AER_RTAPOCEAN_NRT",
+            "short_name": "PACE_SPEXONE_L3M_AER_RTAPOCEAN_NRT"
+        },
+        {
+            "product_name": "AER_RTAPOCEAN",
+            "short_name": "PACE_SPEXONE_L3M_AER_RTAPOCEAN"
+        }
     ]
 }

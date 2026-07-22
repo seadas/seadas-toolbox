@@ -1,4 +1,10 @@
 {
+    "L0": [
+        {
+            "product_name": "General",
+            "short_name": "SeaWiFS_L0"
+        }
+    ],
     "L1": [
         {
             "product_name": "GAC",
@@ -7,24 +13,6 @@
         {
             "product_name": "MLAC",
             "short_name": "SeaWiFS_L1_MLAC"
-        }
-    ],
-    "L2": [
-        {
-            "product_name": "GAC_IOP",
-            "short_name": "SeaWiFS_L2_GAC_IOP"
-        },
-        {
-            "product_name": "GAC_OC",
-            "short_name": "SeaWiFS_L2_GAC_OC"
-        },
-        {
-            "product_name": "MLAC_IOP",
-            "short_name": "SeaWiFS_L2_MLAC_IOP"
-        },
-        {
-            "product_name": "MLAC_OC",
-            "short_name": "SeaWiFS_L2_MLAC_OC"
         }
     ],
     "L3b": [
@@ -93,12 +81,12 @@
             "short_name": "SeaWiFS_L4b_AVW"
         },
         {
-            "product_name": "CARBON",
-            "short_name": "SeaWiFS_L4b_CARBON"
-        },
-        {
             "product_name": "GSM",
             "short_name": "SeaWiFS_L4b_GSM"
+        },
+        {
+            "product_name": "CARBON",
+            "short_name": "SeaWiFS_L4b_CARBON"
         }
     ],
     "L4m": [
@@ -107,12 +95,16 @@
             "short_name": "SeaWiFS_L4m_AVW"
         },
         {
+            "product_name": "GSM",
+            "short_name": "SeaWiFS_L4m_GSM"
+        },
+        {
             "product_name": "CARBON",
             "short_name": "SeaWiFS_L4m_CARBON"
         },
         {
-            "product_name": "GSM",
-            "short_name": "SeaWiFS_L4m_GSM"
+            "product_name": "ELOEV",
+            "short_name": "SeaWiFS_L4m_ELOEV"
         }
     ]
 }

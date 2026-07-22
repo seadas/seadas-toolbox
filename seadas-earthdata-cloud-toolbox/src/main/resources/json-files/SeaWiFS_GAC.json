@@ -1,0 +1,12 @@
+{
+    "L2": [
+        {
+            "product_name": "GAC_IOP",
+            "short_name": "SeaWiFS_GAC_L2_GAC_IOP"
+        },
+        {
+            "product_name": "GAC_OC",
+            "short_name": "SeaWiFS_GAC_L2_GAC_OC"
+        }
+    ]
+}

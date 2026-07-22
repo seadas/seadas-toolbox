@@ -59,12 +59,12 @@
             "short_name": "VIIRSN_L3b_POC"
         },
         {
-            "product_name": "PAR",
-            "short_name": "VIIRSN_L3b_PAR"
-        },
-        {
             "product_name": "PAR_NRT",
             "short_name": "VIIRSN_L3b_PAR_NRT"
+        },
+        {
+            "product_name": "PAR",
+            "short_name": "VIIRSN_L3b_PAR"
         },
         {
             "product_name": "RRS_NRT",
@@ -117,12 +117,12 @@
             "short_name": "VIIRSN_L3m_POC"
         },
         {
-            "product_name": "PAR",
-            "short_name": "VIIRSN_L3m_PAR"
-        },
-        {
             "product_name": "PAR_NRT",
             "short_name": "VIIRSN_L3m_PAR_NRT"
+        },
+        {
+            "product_name": "PAR",
+            "short_name": "VIIRSN_L3m_PAR"
         },
         {
             "product_name": "RRS_NRT",

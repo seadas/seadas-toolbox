@@ -19,14 +19,6 @@
     ],
     "L3b": [
         {
-            "product_name": "AVW",
-            "short_name": "VIIRSJ1_L3b_AVW"
-        },
-        {
-            "product_name": "CARBON",
-            "short_name": "VIIRSJ1_L3b_CARBON"
-        },
-        {
             "product_name": "CHL_NRT",
             "short_name": "VIIRSJ1_L3b_CHL_NRT"
         },
@@ -67,12 +59,12 @@
             "short_name": "VIIRSJ1_L3b_POC"
         },
         {
-            "product_name": "PAR",
-            "short_name": "VIIRSJ1_L3b_PAR"
-        },
-        {
             "product_name": "PAR_NRT",
             "short_name": "VIIRSJ1_L3b_PAR_NRT"
+        },
+        {
+            "product_name": "PAR",
+            "short_name": "VIIRSJ1_L3b_PAR"
         },
         {
             "product_name": "RRS_NRT",
@@ -84,14 +76,6 @@
         }
     ],
     "L3m": [
-        {
-            "product_name": "AVW",
-            "short_name": "VIIRSJ1_L3m_AVW"
-        },
-        {
-            "product_name": "CARBON",
-            "short_name": "VIIRSJ1_L3m_CARBON"
-        },
         {
             "product_name": "CHL_NRT",
             "short_name": "VIIRSJ1_L3m_CHL_NRT"
@@ -133,12 +117,12 @@
             "short_name": "VIIRSJ1_L3m_POC"
         },
         {
-            "product_name": "PAR",
-            "short_name": "VIIRSJ1_L3m_PAR"
-        },
-        {
             "product_name": "PAR_NRT",
             "short_name": "VIIRSJ1_L3m_PAR_NRT"
+        },
+        {
+            "product_name": "PAR",
+            "short_name": "VIIRSJ1_L3m_PAR"
         },
         {
             "product_name": "RRS_NRT",
