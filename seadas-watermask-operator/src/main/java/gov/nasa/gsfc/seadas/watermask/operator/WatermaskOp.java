@@ -359,7 +359,7 @@ public class WatermaskOp extends Operator {
                     "Water masked pixels",
                     targetProduct.getSceneRasterWidth(),
                     targetProduct.getSceneRasterHeight(),
-                    LAND_WATER_FRACTION_BAND_NAME + "> 0",
+                    LAND_WATER_FRACTION_BAND_NAME + "== 100",
                     waterMaskColor,
                     waterMaskTransparency);
             maskGroup.add(waterMask);
