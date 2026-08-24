@@ -51,7 +51,9 @@
         <res id="SeaDASLogo" src="images/seadas-icon-128.png"/>
         <res id="Installer.image" src="images/seadas-installer.png"/>
         <res id="Splash.image" src="images/seadas-installer.png"/>
-        <res id="shortcutSpecWindows.xml" src="resources/shortcutSpecWindows.xml"/>
+        <!-- id must be "Win_shortcutSpec.xml": ShortcutPanelLogic looks the spec
+             up as TargetFactory.getCurrentOSPrefix() + "shortcutSpec.xml" -->
+        <res id="Win_shortcutSpec.xml" src="resources/shortcutSpecWindows.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
         <res id="FinishPanel.finish" src="about/finish.html"/>
@@ -113,7 +115,7 @@
         <panel classname="HTMLLicencePanel" id="licence"/>
         <panel classname="TargetPanel" id="install_dir"/>
         <panel classname="InstallPanel" id="install"/>
-        <panel classname="ShortcutPanel" id="shortcutSpecWindows.xml"/>
+        <panel classname="ShortcutPanel"/>
         <panel classname="ProcessPanel" id="ProcessPanel.Spec.xml"/>
         <panel classname="FinishPanel" id="finish"/>
     </panels>

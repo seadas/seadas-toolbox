@@ -1,49 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<!-- http://www.softwarepassion.com/deploy-your-java-application-with-izpack-installer/
+<!--
+  Shortcut specification for Linux / Unix.
+
+  IzPack's ShortcutPanelLogic looks this up as
+  TargetFactory.getCurrentOSPrefix() + "shortcutSpec.xml", so the descriptor
+  must declare it with id "Unix_shortcutSpec.xml".  If the id does not match,
+  the lookup throws and the exception is swallowed - no shortcut is created
+  and nothing is logged.
 -->
 <izpack:shortcuts version="5.0"
                   xmlns:izpack="http://izpack.org/schema/shortcuts"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://izpack.org/schema/shortcuts http://izpack.org/schema/5.0/izpack-shortcuts-5.0.xsd
-http://izpack.org/schema/shortcuts ">
+                  xsi:schemaLocation="http://izpack.org/schema/shortcuts http://izpack.org/schema/5.0/izpack-shortcuts-5.0.xsd">
 
     <skipIfNotSupported/>
 
-    <programGroup defaultName="Siemens AWORT" location="applications"/>
+    <programGroup defaultName="SeaDAS" location="applications"/>
 
     <shortcut
-            name="SeaDAS Application"
+            name="SeaDAS"
             programGroup="yes"
             desktop="yes"
-            applications="no"
+            applications="yes"
             type="Application"
             startMenu="yes"
             startup="no"
-            target="$INSTALL_PATH\bin\seadas"
+            target="$INSTALL_PATH/bin/seadas"
             commandLine=""
-            description="SeaDAS Application"
-            iconFile="$INSTALL_PATH\bin\splash.png"
+            description="SeaDAS - NASA Ocean Biology Processing Group toolbox"
+            iconFile="$INSTALL_PATH/bin/app.png"
             iconIndex="0"
             initialState="noShow">
-        <createForPack name="core"/>
-
-    </shortcut>
-
-
-    <shortcut
-            name="SeaDAS Uninstaller"
-            programGroup="yes"
-            desktop="no"
-            applications="no"
-            startMenu="no"
-            startup="no"
-            target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
-            commandLine=""
-            iconFile="%SystemRoot%\system32\SHELL32.dll"
-            iconIndex="31"
-            description="Uninstall SoftwarePassion Example">
-
-        <createForPack name="Base"/>
+        <createForPack name="snap"/>
     </shortcut>
 
 </izpack:shortcuts>

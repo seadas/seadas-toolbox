@@ -59,7 +59,6 @@
         <res id="SeaDASLogo" src="images/seadas-icon-128.png"/>
         <res id="Installer.image" src="images/seadas-installer.png"/>
         <res id="Splash.image" src="images/seadas-installer.png"/>
-        <res id="shortcutSpecLinux.xml" src="resources/shortcutSpecLinux.xml"/>
         <res id="userInputSpec.xml" src="resources/userInputSpec.xml"/>
         <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec.xml" />
         <res id="finish" src="about/finish.html"/>
@@ -137,7 +136,10 @@
         <panel classname="TargetPanel" id="install_dir"/>
         <!-- <panel classname="PacksPanel" id="sdk_pack_select"/> -->
         <panel classname="InstallPanel" id="install"/>
-        <panel classname="ShortcutPanel" id="shortcutSpecLinux.xml"/>
+        <!-- No ShortcutPanel on macOS: IzPack ships only Unix_Shortcut and
+             Win_Shortcut, so there is no Mac implementation to create one, and
+             .desktop entries are meaningless here.  The application is launched
+             from the seadas.app bundle installed under $INSTALL_PATH/bin. -->
         <!--    <panel classname="UserInputPanel" id="userInputPanel4Run"/>-->
         <panel classname="ProcessPanel" id="processPanelSpec.xml" />
         <panel classname="FinishPanel" id="finish"/>
