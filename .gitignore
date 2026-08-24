@@ -18,5 +18,7 @@ seadas-installer/izpack-installer/target
 seadas-installer/izpack-installer/src/main/izpack/packs/opttbx/
 seadas-installer/izpack-installer/src/main/izpack/packs/seadas/
 seadas-installer/izpack-installer/src/main/izpack/packs/snap/
+# default output directory of seadas-installer/izpack-installer/build-all.sh
+seadas-installer/izpack-installer/dist/
 .claude
 CLAUDE.md
