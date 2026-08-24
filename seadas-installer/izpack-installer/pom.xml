@@ -22,9 +22,91 @@
         <staging.dir>${project.build.directory}/staging</staging.dir>
         <izpack.version>5.2.4</izpack.version>
 
-        <!-- Base name (no .jar) for the installer JAR -->
-        <installer-output-filename>seadas-installer</installer-output-filename>
+        <!--
+            installer.descriptor and installer-output-filename are supplied by the
+            mac / linux / win profiles below.  There is deliberately no default: a
+            build without -P would otherwise silently produce an installer for the
+            wrong platform.  Build with one of:
+
+                mvn package -P mac      (macOS, Apple Silicon)
+                mvn package -P linux
+                mvn package -P win
+        -->
     </properties>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <properties>
+                <installer.descriptor>install-for-mac.xml</installer.descriptor>
+                <installer-output-filename>seadas-installer-macos-aarch64</installer-output-filename>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>linux</id>
+            <properties>
+                <installer.descriptor>install-for-linux.xml</installer.descriptor>
+                <installer-output-filename>seadas-installer-linux-x64</installer-output-filename>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>win</id>
+            <properties>
+                <installer.descriptor>install-for-windows.xml</installer.descriptor>
+                <installer-output-filename>seadas-installer-windows-x64</installer-output-filename>
+            </properties>
+            <build>
+                <plugins>
+                    <!-- Launch4j: wrap the installer JAR into a Windows EXE.
+                         Only meaningful for the Windows build. -->
+                    <plugin>
+                        <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                        <artifactId>launch4j-maven-plugin</artifactId>
+                        <version>2.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>l4j-gui</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>launch4j</goal>
+                                </goals>
+                                <configuration>
+                                    <headerType>gui</headerType>
+
+                                    <!-- This now matches the IzPack output exactly -->
+                                    <jar>${project.build.directory}/${installer-output-filename}.jar</jar>
+
+                                    <outfile>target/${installer-output-filename}.exe</outfile>
+                                    <classPath>
+                                        <mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
+                                    </classPath>
+                                    <jre>
+                                        <requires64Bit>true</requires64Bit>
+                                        <minVersion>21.0.0</minVersion>
+                                        <!-- relaxed so future 21.x builds still work -->
+                                        <maxVersion>21.99.99</maxVersion>
+                                    </jre>
+                                    <versionInfo>
+                                        <fileVersion>1.0.0.0</fileVersion>
+                                        <txtFileVersion>${project.version}</txtFileVersion>
+                                        <fileDescription>${project.name}</fileDescription>
+                                        <copyright>C</copyright>
+                                        <productVersion>1.0.0.0</productVersion>
+                                        <txtProductVersion>1.0.0.0</txtProductVersion>
+                                        <productName>${project.name}</productName>
+                                        <internalName>SeaDAS</internalName>
+                                        <originalFilename>${installer-output-filename}.exe</originalFilename>
+                                    </versionInfo>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <developers>
         <developer>
@@ -193,59 +275,12 @@
                         <configuration>
                             <!-- base for relative paths in izpack descriptor -->
                             <baseDir>${staging.dir}</baseDir>
-                            <installFile>${staging.dir}/install.xml</installFile>
+                            <installFile>${staging.dir}/${installer.descriptor}</installFile>
 
                             <!-- Output: target/seadas-installer.jar -->
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <finalName>${installer-output-filename}</finalName>
                             <!-- no classifier, so the file name is exactly finalName.jar -->
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Launch4j: wrap installer JAR into a Windows EXE -->
-            <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>2.6.0</version>
-                <executions>
-                    <execution>
-                        <id>l4j-gui</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
-                        <configuration>
-                            <headerType>gui</headerType>
-
-                            <!-- This now matches the IzPack output exactly -->
-                            <jar>${project.build.directory}/${installer-output-filename}.jar</jar>
-
-                            <outfile>target/${project.artifactId}.exe</outfile>
-                            <classPath>
-                                <mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
-                            </classPath>
-                            <jre>
-                                <bundledJre64Bit>false</bundledJre64Bit>
-                                <bundledJreAsFallback>false</bundledJreAsFallback>
-                                <minVersion>21.0.0</minVersion>
-                                <!-- relaxed so future 21.x builds still work -->
-                                <maxVersion>21.99.99</maxVersion>
-                                <jdkPreference>preferJre</jdkPreference>
-                                <runtimeBits>32</runtimeBits>
-                            </jre>
-                            <versionInfo>
-                                <fileVersion>1.0.0.0</fileVersion>
-                                <txtFileVersion>${project.version}</txtFileVersion>
-                                <fileDescription>${project.name}</fileDescription>
-                                <copyright>C</copyright>
-                                <productVersion>1.0.0.0</productVersion>
-                                <txtProductVersion>1.0.0.0</txtProductVersion>
-                                <productName>${project.name}</productName>
-                                <internalName>SeaDAS</internalName>
-                                <originalFilename>${project.artifactId}.exe</originalFilename>
-                            </versionInfo>
                         </configuration>
                     </execution>
                 </executions>
