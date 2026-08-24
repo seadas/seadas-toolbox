@@ -10,10 +10,10 @@
 # copied over install.xml.  'mvn clean package' wipes target/, so every
 # artifact is moved into OUTDIR before the next platform starts.
 #
-# Any previous artifacts for the platforms being built are removed from
-# OUTDIR first, so repeated runs do not pile up.  Platforms that are not
-# being built are left alone: 'build-all.sh linux' will not disturb an
-# existing windows installer.
+# Artifacts are moved into OUTDIR, overwriting the previous build of the
+# same platform, so repeated runs do not pile up.  Nothing is deleted up
+# front: a build that fails leaves the last good installer in place, and
+# platforms that are not being built are never touched.
 #
 # Roughly 2-3 minutes and ~900MB per platform.
 
@@ -46,19 +46,6 @@ echo "Output directory: $OUTDIR"
 for p in $PLATFORMS; do
     echo
     echo "=================== $p ==================="
-
-    # Drop any previous artifacts for this platform so OUTDIR does not
-    # accumulate stale builds.  Only this platform's files are removed, so
-    # running one platform at a time does not discard the others.  The name
-    # is read back from the profile rather than hardcoded here, so it cannot
-    # drift from the pom.
-    name=$(mvn help:evaluate -q -P "$p" -Dexpression=installer-output-filename -DforceStdout 2>/dev/null | tail -1)
-    if [ -n "$name" ]; then
-        rm -f "$OUTDIR/$name.jar" "$OUTDIR/$name.exe"
-    else
-        echo "build-all.sh: could not resolve the output name for '$p'" >&2
-        exit 1
-    fi
 
     mvn clean package -P "$p"
 
