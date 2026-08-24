@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<installation xmlns:izpack="http://izpack.org/schema/installation"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              version="5.0"
-              xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
-    >
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS IzPack Installer</appname>
         <appversion>1.1.0</appversion>
@@ -106,7 +105,6 @@
             <name>runSeaDASAfterInstall</name>
             <value>${runSeaDASAfterInstall}</value>
         </condition>
-        >
     </conditions>
 
     <panels>
@@ -135,7 +133,7 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" unpack="true"
+            <fileset dir="packs/snap"
                      override="true" casesensitive="true" os="windows" condition="izpack.windowsinstall">
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
@@ -194,4 +192,4 @@
         </native>
     </natives>
 
-</installation>
+</izpack:installation>

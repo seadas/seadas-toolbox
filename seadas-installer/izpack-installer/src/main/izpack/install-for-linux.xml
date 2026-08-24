@@ -156,13 +156,13 @@
                 Client Platform, Generic EO Data Abstraction, Tiled Memory Management, and a
                 Graph Processing Framework.
             </description>
-            <fileset dir="packs/snap" unpack="true" override="true" casesensitive="true" os="linux"
+            <fileset dir="packs/snap" override="true" casesensitive="true" os="unix"
                      condition="izpack.linuxinstall">
-                <os family="linux"/>
+                <os family="unix"/>
                 <exclude name="bin/*"/>
                 <exclude name="etc/*"/>
             </fileset>
-            <fileset dir="packs/files/unix" unpack="true" override="true" casesensitive="true" os="linux"
+            <fileset dir="packs/files/unix" override="true" casesensitive="true" os="unix"
                      condition="izpack.linuxinstall"/>
             <parsable type="plain">
                 <fileset targetdir="${INSTALL_PATH}/bin">
