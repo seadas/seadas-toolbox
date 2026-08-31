@@ -276,42 +276,142 @@
                     <value></value>
                     <description>proj.4 projection string or a predefined l3mapgen projection shortcut</description>
                 </validValue>
+
                 <validValue>
-                    <value>smi</value>
-                    <description><![CDATA[Standard Mapped image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lon_0=<central_meridian>"]]></description>
+                    <value>aeqd</value>
+                    <description><![CDATA[Azimuthal Equidistant projection,
+                    (projection="+proj=aeqd
+                                +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude") ]]></description>
                 </validValue>
+
                 <validValue>
-                    <value>platecarree</value>
-                    <description><![CDATA[ Plate Carree image, cylindrical projection, uses central_meridian, projection="+proj=eqc +lon_0=<central_meridian>"]]></description>
+                    <value>alaska</value>
+                    <description><![CDATA[
+                    Alaskan Albers Equal Area Conic USGS version,
+                    (projection="EPSG:3338") ]]></description>
                 </validValue>
-                <validValue>
-                    <value>mollweide</value>
-                    <description><![CDATA[Mollweide projection projection="+proj=moll +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>lambert</value>
-                    <description><![CDATA[Lambert conformal conic projection, uses central_meridian, projection="+proj=lcc +lon_0=<central_meridian>"]]></description>
-                </validValue>
+
                 <validValue>
                     <value>albersconic</value>
-                    <description><![CDATA[Albers equal-area conic projection, uses central_meridian projection="+proj=aea +lon_0=<central_meridian>"]]></description>
+                    <description><![CDATA[Albers Equal-Area Conic projection,
+                    (projection="+proj=aea +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude>
+                                +lat_1=<scene south latitude>
+                                +lat_2=<scene north latitude>")]]></description>
                 </validValue>
-                <validValue>
-                    <value>mercator</value>
-                    <description><![CDATA[ Mercator cylindrical map projection, uses central_meridian projection="+proj=merc +lon_0=<central_meridian>"]]></description>
-                </validValue>
-                <validValue>
-                    <value>ease2</value>
-                    <description><![CDATA[Ease Grid 2 projection, uses central_meridian,  projection="+proj=cea +lon_0=0 +lat_ts=30 +ellps=WGS84 +datum=WGS84 +units=m +lat_0=<central_meridian>"]]></description>
-                </validValue>
+
+
                 <validValue>
                     <value>conus</value>
-                    <description>USA Contiguous Albers Equal Area Conic USGS version</description>
+                    <description><![CDATA[
+                    USA Contiguous Albers Equal Area Conic USGS version,
+                    (projection="+proj=aea +lat_1=29.5 +lat_2=45.5
+                         +lat_0=23.0 +lon_0=-96 +x_0=0 +y_0=0
+                         +ellps=GRS80 +datum=NAD83 +units=m")]]></description>
                 </validValue>
+
+
+                <validValue>
+                    <value>ease2</value>
+                    <description><![CDATA[
+                    Ease Grid 2 projection, uses central_meridian,  projection="EPSG:6933"]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>gibs</value>
+                    <description><![CDATA[
+                    latitudinally dependent projection, Plate Carree between 60S and 60N else use Polar Sterographic,
+                   (North Polar: projection="EPSG:3413"
+                   South Polar: projection="EPSG:3031")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>lambert</value>
+                    <description><![CDATA[
+                    Lambert Conformal Conic projection,
+                    (projection="+proj=lcc +lon_0=<central_meridian> +lat_0=<scene center latitude> +lat_1=<scene south latitude> +lat_2=<scene north latitude>")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>mercator</value>
+                    <description><![CDATA[
+                    Mercator cylindrical map projection,
+                    (projection="+proj=merc +lon_0=<central_meridian>")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>mollweide</value>
+                    <description><![CDATA[
+                    Mollweide projection,
+                    (projection="+proj=moll +lon_0=<central_meridian>")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>obliquemerc</value>
+                    <description><![CDATA[
+                    Oblique Mercator cylindrical map projection,
+                    (projection="+proj=omerc +gamma=0 +lat_0=<lat_0>
+                          +lonc=<central_meridian> +alpha=<azimuth>
+                          +k_0=1 +x_0=0 +y_0=0")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>ortho</value>
+                    <description><![CDATA[
+                    Orthographic projection,
+                    (projection="+proj=ortho +lat_0=<lat_0> +lon_0=<central_meridian>
+                          +ellps=GRS80 +units=m")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>platecarree</value>
+                    <description><![CDATA[
+                    Plate Carree image, cylindrical projection,
+                    (projection="+proj=eqc +lon_0=<central_meridian>")]]></description>
+                </validValue>
+
                 <validValue>
                     <value>raw</value>
-                    <description>raw dump of the bin file</description>
+                    <description>raw dump of the bin file contents</description>
                 </validValue>
+
+                <validValue>
+                    <value>smi</value>
+                    <description><![CDATA[
+                    Standard Mapped image, cylindrical projection,
+                    (projection="+proj=eqc +lon_0=<central_meridian>")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>stere</value>
+                    <description><![CDATA[
+                    Stereographic projection,
+                    (projection="+proj=stere +lat_0=<lat_0> +lat_ts=<lat_ts>
+                          +lon_0=<central_meridian>
+                          +ellps=WGS84 +datum=WGS84 +units=m")]]></description>
+                </validValue>
+
+                <validValue>
+                    <value>transmerc</value>
+                    <description><![CDATA[
+                    Transverse Mercator cylindrical projection,
+                    (projection="+proj=tmerc
+                                +lon_0=<central_meridian>
+                                +lat_0=<scene center latitude")]]></description>
+                </validValue>
+
+
+                <validValue>
+                    <value>utm</value>
+                    <description><![CDATA[
+                    Universal Transverse Mercator cylindrical projection,
+                    (projection="+proj=utm +zone=<utm_zone> [+south]")]]></description>
+                </validValue>
+
+
+
+
 
                 <validValue>
                     <value>#### Proj4 Projection Expressions ####</value>
