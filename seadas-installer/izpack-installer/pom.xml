@@ -23,39 +23,44 @@
         <izpack.version>5.2.4</izpack.version>
 
         <!--
-            installer.descriptor and installer-output-filename are supplied by the
-            mac / linux / win profiles below.  There is deliberately no default: a
-            build without -P would otherwise silently produce an installer for the
-            wrong platform.  Build with one of:
+            installer.source and installer.platform are supplied by the mac / linux
+            / win profiles below.  There is deliberately no default: a build without
+            -P would otherwise silently produce an installer for the wrong platform.
+            Build with one of:
 
                 mvn package -P mac      (macOS, Apple Silicon)
                 mvn package -P linux
                 mvn package -P win
+
+            Add the nojre profile for an installer that does not bundle a JRE and
+            uses a JDK 21+ already on the machine instead, e.g. -P linux,nojre.
         -->
+        <installer.descriptor>${installer.source}</installer.descriptor>
+        <installer-output-filename>seadas-installer-${installer.platform}</installer-output-filename>
     </properties>
 
     <profiles>
         <profile>
             <id>mac</id>
             <properties>
-                <installer.descriptor>install-for-mac.xml</installer.descriptor>
-                <installer-output-filename>seadas-installer-macos-aarch64</installer-output-filename>
+                <installer.source>install-for-mac.xml</installer.source>
+                <installer.platform>macos-aarch64</installer.platform>
             </properties>
         </profile>
 
         <profile>
             <id>linux</id>
             <properties>
-                <installer.descriptor>install-for-linux.xml</installer.descriptor>
-                <installer-output-filename>seadas-installer-linux-x64</installer-output-filename>
+                <installer.source>install-for-linux.xml</installer.source>
+                <installer.platform>linux-x64</installer.platform>
             </properties>
         </profile>
 
         <profile>
             <id>win</id>
             <properties>
-                <installer.descriptor>install-for-windows.xml</installer.descriptor>
-                <installer-output-filename>seadas-installer-windows-x64</installer-output-filename>
+                <installer.source>install-for-windows.xml</installer.source>
+                <installer.platform>windows-x64</installer.platform>
             </properties>
             <build>
                 <plugins>
@@ -99,6 +104,70 @@
                                         <internalName>SeaDAS</internalName>
                                         <originalFilename>${installer-output-filename}.exe</originalFilename>
                                     </versionInfo>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Combine with mac, linux or win.  Derives the descriptor from that
+             platform's install-for-*.xml with src/main/xslt/without-bundled-jre.xsl,
+             so there is no second descriptor to keep in sync by hand.  Must stay
+             declared after the platform profiles: it overrides their properties. -->
+        <profile>
+            <id>nojre</id>
+            <properties>
+                <installer.descriptor>without-bundled-jre-${installer.source}</installer.descriptor>
+                <installer-output-filename>seadas-installer-${installer.platform}-nojre</installer-output-filename>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>derive-nojre-descriptor</id>
+                                <!-- after validate, which fills the staging directory -->
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <xslt in="${staging.dir}/${installer.source}"
+                                              out="${staging.dir}/${installer.descriptor}"
+                                              style="${basedir}/src/main/xslt/without-bundled-jre.xsl"
+                                              force="true"/>
+
+                                        <!-- The stylesheet matches by content.  If a descriptor
+                                             edit ever stops it matching, stop here instead of
+                                             shipping a "no JRE" installer that still bundles
+                                             one, or that never asks for a JDK. -->
+                                        <fail message="${installer.descriptor} still references packs/jre/">
+                                            <condition>
+                                                <resourcecontains resource="${staging.dir}/${installer.descriptor}"
+                                                                  substring="packs/jre/"/>
+                                            </condition>
+                                        </fail>
+                                        <fail message="${installer.descriptor} has no JDKPathPanel">
+                                            <condition>
+                                                <not>
+                                                    <resourcecontains resource="${staging.dir}/${installer.descriptor}"
+                                                                      substring="classname=&quot;JDKPathPanel&quot;"/>
+                                                </not>
+                                            </condition>
+                                        </fail>
+                                        <fail message="${installer.descriptor} does not set jdkhome from jdkPath">
+                                            <condition>
+                                                <not>
+                                                    <resourcecontains resource="${staging.dir}/${installer.descriptor}"
+                                                                      substring="name=&quot;jdkhome&quot; value=&quot;$${jdkPath}&quot;"/>
+                                                </not>
+                                            </condition>
+                                        </fail>
+                                    </target>
                                 </configuration>
                             </execution>
                         </executions>
