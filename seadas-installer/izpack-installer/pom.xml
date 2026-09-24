@@ -90,8 +90,11 @@
                                     <jre>
                                         <requires64Bit>true</requires64Bit>
                                         <minVersion>21.0.0</minVersion>
-                                        <!-- relaxed so future 21.x builds still work -->
-                                        <maxVersion>21.99.99</maxVersion>
+                                        <!-- No maxVersion: any Java 21+ may run the installer.
+                                             This only picks the JVM that runs the .exe; SeaDAS
+                                             itself runs on the bundled JRE or, for nojre, on
+                                             the JDK chosen on the JDKPathPanel. -->
+
                                     </jre>
                                     <versionInfo>
                                         <fileVersion>1.0.0.0</fileVersion>

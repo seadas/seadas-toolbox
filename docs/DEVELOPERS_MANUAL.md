@@ -1097,9 +1097,8 @@ stylesheet changes only four things — it drops the pack installing from
 
 The user needs a full **JDK 21+**, not a JRE: IzPack's `JDKPathPanel` rejects any
 folder without `bin/javac`. The panel skips itself when the JVM running the
-installer qualifies. Note that the Windows launch4j wrapper caps the JVM at
-21.x (`maxVersion` 21.99.99), so the no-JRE `.exe` will not start on a machine
-that only has Java 22+; the `.jar` will.
+installer qualifies. The Windows launch4j wrapper sets only a minimum JVM
+version (21), so both `.exe` installers start on any Java 21 or newer.
 
 The installer copies three cluster trees into `src/main/izpack/packs/`:
 `snap-desktop/snap-application/target/snap/`,
