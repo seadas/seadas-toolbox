@@ -1089,15 +1089,21 @@ on Windows), about 50 MB smaller. There is no hand-maintained
 `*-without-bundled-jre.xml`: the descriptor is generated into `target/staging`
 from `install-for-<os>.xml` by `src/main/xslt/without-bundled-jre.xsl`, so a
 fix to a bundled descriptor reaches its no-JRE twin automatically. The
-stylesheet changes only four things — it drops the pack installing from
-`packs/jre/`, adds a `JDKPathPanel` after the licence panel, sets `jdkhome` to
-`${jdkPath}` (the panel's result; the name is case-sensitive) and drops
-`JDKPathPanel.maxVersion`. The build fails if the result still references
+stylesheet changes only the following. It drops the pack installing from
+`packs/jre/` and adds a `JDKPathPanel` after the licence panel. It presets
+`jdkPath` once to the running JVM's home (`${JAVA_HOME}`) and sets `jdkhome` to
+`${jdkPath}`, the panel's result; the name is case-sensitive. It drops
+`JDKPathPanel.maxVersion` and registers `resources/nojre-langpack-eng.xml`,
+which replaces IzPack's panel text: that text assumes a maximum version and
+links to java.sun.com. The preset is needed because IzPack 5.2.4 guesses the
+JDK as the *parent* of the running JVM's home. That was right when `java.home`
+was `<jdk>/jre` (Java 8 and older); on Java 9+ the guess always fails and the
+panel always prompts. The build fails if the result still references
 `packs/jre/`, lacks the panel, or does not set `jdkhome` from `jdkPath`.
 
 The user needs a full **JDK 21+**, not a JRE: IzPack's `JDKPathPanel` rejects any
 folder without `bin/javac`. The panel skips itself when the JVM running the
-installer qualifies. The Windows launch4j wrapper sets only a minimum JVM
+installer is a JDK 21+; otherwise it asks for one. The Windows launch4j wrapper sets only a minimum JVM
 version (21), so both `.exe` installers start on any Java 21 or newer.
 
 The installer copies three cluster trees into `src/main/izpack/packs/`:
