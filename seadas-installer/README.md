@@ -78,6 +78,10 @@ mvn clean package -P linux             # -> target/seadas-installer-linux-x64.ja
 mvn clean package -P linux,nojre       # -> target/seadas-installer-linux-x64-nojre.jar
 ```
 
+A direct Maven build leaves the installer in `izpack-installer/target/`, **not**
+in `dist/`; only `build-all.sh` moves installers into `dist/`. The next
+`mvn clean` deletes `target/`, so copy the installer out if you want to keep it.
+
 A platform profile is required; there is deliberately no default. The
 no-JRE descriptors are generated at build time from `install-for-<os>.xml`, so
 make descriptor changes there only. See `docs/DEVELOPERS_MANUAL.md` §14.2 at
