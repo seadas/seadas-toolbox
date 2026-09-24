@@ -45,9 +45,6 @@
         <res id="JDKPathPanel.info" src="about/readme.html"/>
         <res id="HTMLHelloPanel.welcome" src="about/welcome.html"/>
         <res id="HTMLInfoPanel.welcome" src="about/welcome.html"/>
-        <res id="TargetPanel.dir.windows" src="resources/TargetDirWindows.txt"/>
-        <res id="TargetPanel.dir.unix" src="resources/TargetDirUnix.txt"/>
-        <res id="TargetPanel.dir.ubuntu_linux" src="resources/TargetDirUnix.txt"/>
         <res id="SeaDASLogo" src="images/seadas-icon-128.png"/>
         <res id="Installer.image" src="images/seadas-installer.png"/>
         <res id="Splash.image" src="images/seadas-installer.png"/>
@@ -59,6 +56,8 @@
         <res id="FinishPanel.finish" src="about/finish.html"/>
     </resources>
     <variables>
+        <!-- INSTALL_PATH alone sets the default install folder offered by the
+             TargetPanel: IzPack consults TargetPanel.dir.* only when it is unset. -->
         <variable name="INSTALL_PATH" value="$USER_HOME\SeaDAS"/>
         <variable name="app.name" value="@{appname}"/>
         <!--<variable name="RESOURCEROOT" value="src/main/izpack"/>-->
@@ -70,8 +69,6 @@
         <variable name="WELCOME_TEXT" value="SeaDAS 12.0.0 Installer"/>
         <variable name="WELCOME_VERSION" value="Version: 1.1"/>
         <variable name="FINISH_TEXT" value="SeaDAS 12.0.0 is successfully installed. Enjoy!"/>
-        <!--    <variable name="TargetPanel.dir.windows" value="C:/SeaDAS"/>-->
-        <!--    <variable name="TargetPanel.dir.ubuntu_linux" value="usr/local/snap"/>-->
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>

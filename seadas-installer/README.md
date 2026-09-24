@@ -95,6 +95,10 @@ java -jar seadas-installer-macos-aarch64.jar      # macOS
 On Windows, double-click `seadas-installer-windows-x64.exe`, or run the `.jar`
 with `java -jar`.
 
+The installer offers `SeaDAS` in the user's home folder as the install
+location on every platform. That default comes from the `INSTALL_PATH`
+variable in `install-for-<os>.xml`.
+
 The `-nojre` installers need a full **JDK 21 or newer**, not just a JRE: the
 installer only accepts a folder containing `bin/javac`. If the JDK running the
 installer qualifies, it is used without asking. Otherwise the installer asks
