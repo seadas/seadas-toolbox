@@ -97,9 +97,6 @@ reference material unless you are deliberately working on them.
 | Python 3 | for `bin/` scripts and some Earthdata helpers | Only needed for doc regeneration and a few cloud features. |
 | OCSSW | matching tag | Needed to *run* anything in `seadas-processing`; not needed to compile. |
 
-> The checked-in `README.md` still says OpenJDK 11 and references SeaDAS 9
-> branches. It is stale — follow this manual for the current branch.
-
 Artifacts are resolved from four repositories declared in the root POM: the SNAP
 Nexus (`nexus.snap-ci.ovh`), the NASA SeaDAS repository
 (`seadas.gsfc.nasa.gov/mvn-seadas`), Maven Central, and Unidata (for netCDF).
@@ -1194,8 +1191,6 @@ about box, and the `seadas.*` config files live in the SNAP forks),
 - **`VERSION.txt` at the repo root contains the literal string
   `${project.version}`** — it is a filtering template that is only substituted
   when copied by the assembly, so it is not a source of truth for the version.
-- **`README.md` is stale** (Java 11, SeaDAS 9 branches, a Travis badge pointing
-  at `s3tbx`).
 - **Dead code paths in `ProcessorTypeInfo`**: `SMIGEN`, `L2BIN_AQUARIUS`,
   `L1MAPGEN`, `L2MAPGEN`, `NEXT_LEVEL_NAME_PY`, `OBPG_FILE_TYPE_PY` and
   `MULTILEVEL_PROCESSOR_PY` are commented out, but their XML descriptors and (for

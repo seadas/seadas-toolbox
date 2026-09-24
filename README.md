@@ -1,80 +1,101 @@
 SeaDAS Toolbox (seadas-toolbox)
-==========================
+===============================
 
-A toolbox for the OBPG processing code.
+A toolbox for the OBPG processing code. It adds NASA Ocean Biology Processing
+Group tools (OCSSW processors, Earthdata search and download, land/water mask,
+bathymetry, contours and more) to the ESA SNAP desktop application as a set of
+NetBeans modules.
 
-[![Build Status](https://travis-ci.org/senbox-org/s3tbx.svg?branch=master)](https://travis-ci.org/senbox-org/s3tbx)
-[![Coverity Scan Status](https://scan.coverity.com/projects/7247/badge.svg)](https://scan.coverity.com/projects/senbox-org-s3tbx)
+For architecture, conventions and day-to-day development, see the
+[developer's manual](docs/DEVELOPERS_MANUAL.md).
 
 Building seadas-toolbox from the source
-------------------------------
+---------------------------------------
 
-Download and install the required build tools
-* Install OpenJDK 11 and set JAVA_HOME accordingly.
-* Install Maven and set MAVEN_HOME accordingly.
-* Install git
+### Prerequisites
 
-Add $JAVA_HOME/bin, $MAVEN_HOME/bin to your PATH.
+* **JDK 21**, with `JAVA_HOME` set accordingly. The SNAP build enforces Java 21.
+* **Maven 3**, with `MAVEN_HOME` set accordingly.
+* **git**
 
-Clone the following SeaDAS git repositories into a directory referred to here as [SEADAS]
+Add `$JAVA_HOME/bin` and `$MAVEN_HOME/bin` to your `PATH`.
+
+### Clone the four repositories
+
+The toolbox builds against three SeaDAS forks of SNAP. Clone all four side by
+side into one directory, referred to here as `${snap}`:
 
     cd ${snap}
-    git clone https://github.com/seadas/seadas-toolbox.git
-    git clone https://github.com/senbox-org/optical-toolbox.git
-    git clone https://github.com/senbox-org/snap-desktop.git
     git clone https://github.com/senbox-org/snap-engine.git
+    git clone https://github.com/senbox-org/snap-desktop.git
+    git clone https://github.com/senbox-org/optical-toolbox.git
+    git clone https://github.com/seadas/seadas-toolbox.git
 
-Checkout and build the corresponding branches for your desired release.  See SeaDAS Release Tags (below) for other SeaDAS 8 versions.
+### Choose a version
 
-SNAP-Engine:
+All four repositories must be on matching versions. The `master` branch of the
+three SNAP forks is ESA's SNAP, not SeaDAS, so always check out a `SEADAS-…` tag
+or branch there.
 
-    cd [SEADAS]/snap-engine
-    git checkout SEADAS-9.0.2-SNAP-11.0.0-04-30-24
+**Release build**: check out the same release tag in all four repositories,
+for example:
+
+    SEADAS-12.0.0-RC2
+
+**Development build** (SeaDAS 12.0.0 on SNAP 14.0.0): check out this branch
+in all four repositories:
+
+    SEADAS-12.0.0-SNAP-14.0.0
+
+### Build
+
+Build and install the repositories in this order: snap-engine, snap-desktop,
+optical-toolbox, then seadas-toolbox. Replace `<version>` with the tag or
+branch chosen above.
+
+    cd ${snap}/snap-engine
+    git checkout <version>
     mvn install -Dmaven.test.skip=true
-    *NOTE if mvn fails then try: 'mvn install'
-    * Also you could try this:  1. mvn clean -U compile install   
-                                2. mvn install  -Dmaven.test.skip=true
 
-SNAP-Desktop:
-
-    cd [SEADAS]/snap-desktop
-    git checkout  SEADAS-9.0.2-SNAP-11.0.0-04-30-24
+    cd ${snap}/snap-desktop
+    git checkout <version>
     mvn install -Dmaven.test.skip=true
 
-Sentinel-3 Toolbox:
-
-    cd [SEADAS]/optical-toolbox
-    git checkout  SEADAS-9.0.2-SNAP-11.0.0-04-30-24
+    cd ${snap}/optical-toolbox
+    git checkout <version>
     mvn install -Dmaven.test.skip=true
 
-SeaDAS Toolbox:
-
-    cd [SEADAS]/seadas-toolbox
-    git checkout master
+    cd ${snap}/seadas-toolbox
+    git checkout <version>
     mvn install -Dmaven.test.skip=true
 
+If a build fails on missing or stale dependencies, retry with
+`mvn clean -U install -Dmaven.test.skip=true`.
 
+The toolbox is packaged as a NetBeans cluster in
+`seadas-kit/target/netbeans_clusters/seadas`.
 
 Setting up IntelliJ IDEA
 ------------------------
 
-
-1. In IntelliJ IDEA, select "Import Project" and select the ${snap} directory. (Some versions: select "New -> Project From Existing Sources", then navigate upwards in the file selector to select the ${snap} directory, then select "Open")
-2. Select "Import project from external model" -> "Maven"
-3. Ensure the "Root directory" is ${snap}. (Note: put your actual path).
-   Select "Search for projects recursively"; Ensure **not** to enable the option *Create module groups for multi-module Maven projects*. Everything can be default values.
-
-4. Set the used SDK for the main project. SeaDAS-8.3.10 is tested with OpenJDK 11.0.9.
-
-5. Use the following configuration to run SNAP in the IDE:
+1. In IntelliJ IDEA, select "Import Project" and select the `${snap}` directory.
+   (Some versions: select "New -> Project From Existing Sources", then navigate
+   upwards in the file selector to select the `${snap}` directory, then select
+   "Open".)
+2. Select "Import project from external model" -> "Maven".
+3. Ensure the "Root directory" is `${snap}` (your actual path). Select
+   "Search for projects recursively". Do **not** enable *Create module groups
+   for multi-module Maven projects*. Everything else can keep its default value.
+4. Set the project SDK to JDK 21.
+5. Use the following configuration to run SeaDAS in the IDE:
 
    **Main class:** `org.esa.snap.nbexec.Launcher`
 
    **VM parameters:** `-Dsun.awt.nopixfmt=true -Dsun.java2d.noddraw=true -Dsun.java2d.dpiaware=false`
 
-   All VM parameters are optional
+   All VM parameters are optional.
 
-   **Program arguments:**    
+   **Program arguments:**
    `--userdir "${snap}/seadas-toolbox/target/userdir"`
    `--clusters "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx"`
    `--patches "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/optical-toolbox/$/target/classes"`
@@ -83,19 +104,37 @@ Setting up IntelliJ IDEA
 
    **Use classpath of module:** `snap-main`
 
+   With `--patches`, recompiling a module is enough for the next launch to pick
+   up a Java change.
 
+Building the installers
+-----------------------
+
+The SeaDAS application installers (bundled with Java, or using a JDK 21+ already
+on the machine) are built from `seadas-installer/` after the build above. See
+[seadas-installer/README.md](seadas-installer/README.md).
 
 SeaDAS Release Tags
-------------------------
-SeaDAS Release: 9.0.1
+-------------------
 
-  https://github.com/seadas/seadas-toolbox/releases/tag/SEADAS-9.0.1
-  
-  https://github.com/senbox-org/snap-desktop/releases/tag/SEADAS-9.0.1
-  
-  https://github.com/senbox-org/snap-engine/releases/tag/SEADAS-9.0.1
-  
-  https://github.com/senbox-org/optical-toolbox/releases/tag/SEADAS-9.0.1
+Each tag exists in all four repositories.
 
+SeaDAS Release: 11.0.0
 
+  https://github.com/seadas/seadas-toolbox/releases/tag/SEADAS-11.0.0
 
+  https://github.com/senbox-org/snap-desktop/releases/tag/SEADAS-11.0.0
+
+  https://github.com/senbox-org/snap-engine/releases/tag/SEADAS-11.0.0
+
+  https://github.com/senbox-org/optical-toolbox/releases/tag/SEADAS-11.0.0
+
+SeaDAS 12.0.0 release candidate: `SEADAS-12.0.0-RC2`
+
+  https://github.com/seadas/seadas-toolbox/releases/tag/SEADAS-12.0.0-RC2
+
+  https://github.com/senbox-org/snap-desktop/releases/tag/SEADAS-12.0.0-RC2
+
+  https://github.com/senbox-org/snap-engine/releases/tag/SEADAS-12.0.0-RC2
+
+  https://github.com/senbox-org/optical-toolbox/releases/tag/SEADAS-12.0.0-RC2
