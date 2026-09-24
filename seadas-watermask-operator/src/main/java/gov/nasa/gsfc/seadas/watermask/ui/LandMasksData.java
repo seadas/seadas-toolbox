@@ -66,7 +66,7 @@ class LandMasksData {
 
 
     private String waterMaskName = "WaterMask";
-    private String waterMaskMath = getWaterFractionBandName() + " > 0";
+    private String waterMaskMath = getWaterFractionBandName() + " == 100";
     private String waterMaskDescription = "Water masked pixels";
 
 
