@@ -20,7 +20,7 @@ The installer copies build output from the sibling checkouts, so all four
 repositories must sit side by side, on matching branches:
 
 ```
-<snap>/
+<seadas>/
 ├── snap-engine/
 ├── snap-desktop/
 ├── optical-toolbox/
@@ -30,10 +30,10 @@ repositories must sit side by side, on matching branches:
 Build and install them in this order:
 
 ```bash
-cd <snap>/snap-engine      && mvn install -Dmaven.test.skip=true
-cd <snap>/snap-desktop     && mvn install -Dmaven.test.skip=true
-cd <snap>/optical-toolbox  && mvn install -Dmaven.test.skip=true
-cd <snap>/seadas-toolbox   && mvn install -Dmaven.test.skip=true
+cd <seadas>/snap-engine      && mvn install -Dmaven.test.skip=true
+cd <seadas>/snap-desktop     && mvn install -Dmaven.test.skip=true
+cd <seadas>/optical-toolbox  && mvn install -Dmaven.test.skip=true
+cd <seadas>/seadas-toolbox   && mvn install -Dmaven.test.skip=true
 ```
 
 The installer build picks up:
@@ -48,7 +48,7 @@ The bundled JREs are checked in under
 ### 2. Build the installers
 
 ```bash
-cd <snap>/seadas-toolbox/seadas-installer/izpack-installer
+cd <seadas>/seadas-toolbox/seadas-installer/izpack-installer
 
 ./build-all.sh                    # all six installers
 ./build-all.sh linux win          # only the named platforms

@@ -111,7 +111,7 @@ The toolbox compiles against SNAP artifacts that are normally built from sibling
 checkouts on matching `SEADAS-*` branches. The conventional layout is:
 
 ```
-${snap}/
+${seadas}/
 ├── snap-engine/
 ├── snap-desktop/
 ├── optical-toolbox/
@@ -122,10 +122,10 @@ Build strictly in dependency order — engine, then desktop, then optical-toolbo
 then this repository:
 
 ```bash
-cd ${snap}/snap-engine       && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
-cd ${snap}/snap-desktop      && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
-cd ${snap}/optical-toolbox   && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
-cd ${snap}/seadas-toolbox    && git checkout SEADAS-12.0.0-SNAP-14.0.0 && mvn install -Dmaven.test.skip=true
+cd ${seadas}/snap-engine       && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
+cd ${seadas}/snap-desktop      && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
+cd ${seadas}/optical-toolbox   && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
+cd ${seadas}/seadas-toolbox    && git checkout SEADAS-12.0.0-SNAP-14.0.0 && mvn install -Dmaven.test.skip=true
 ```
 
 If you only need to work on the toolbox and the matching SNAP artifacts are
@@ -202,12 +202,12 @@ and point it at your freshly built cluster and class trees.
 
 - **Main class:** `org.esa.snap.nbexec.Launcher`
 - **Use classpath of module:** `snap-main`
-- **Working directory:** `${snap}/snap-desktop/snap-application/target/snap/`
+- **Working directory:** `${seadas}/snap-desktop/snap-application/target/snap/`
 - **Program arguments:**
   ```
-  --userdir  "${snap}/seadas-toolbox/target/userdir"
-  --clusters "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx"
-  --patches  "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/optical-toolbox/$/target/classes"
+  --userdir  "${seadas}/seadas-toolbox/target/userdir"
+  --clusters "${seadas}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${seadas}/optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx"
+  --patches  "${seadas}/snap-engine/$/target/classes:${seadas}/seadas-toolbox/$/target/classes:${seadas}/optical-toolbox/$/target/classes"
   ```
 - **VM parameters (optional):**
   `-Dsun.awt.nopixfmt=true -Dsun.java2d.noddraw=true -Dsun.java2d.dpiaware=false`
@@ -219,7 +219,7 @@ repackaging the NBM) is enough for the next launch to pick up your change.** The
 cluster itself only needs rebuilding when you touch resources that are packaged
 differently — layer files, help sets, manifests.
 
-Import the project by pointing IntelliJ at the `${snap}` parent directory and
+Import the project by pointing IntelliJ at the `${seadas}` parent directory and
 importing as Maven with "search for projects recursively"; do **not** enable
 "create module groups for multi-module Maven projects".
 

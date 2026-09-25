@@ -23,9 +23,9 @@ Add `$JAVA_HOME/bin` and `$MAVEN_HOME/bin` to your `PATH`.
 ### Clone the four repositories
 
 The toolbox builds against three SeaDAS forks of SNAP. Clone all four side by
-side into one directory, referred to here as `${snap}`:
+side into one directory, referred to here as `${seadas}`:
 
-    cd ${snap}
+    cd ${seadas}
     git clone https://github.com/senbox-org/snap-engine.git
     git clone https://github.com/senbox-org/snap-desktop.git
     git clone https://github.com/senbox-org/optical-toolbox.git
@@ -53,19 +53,19 @@ Build and install the repositories in this order: snap-engine, snap-desktop,
 optical-toolbox, then seadas-toolbox. Replace `<version>` with the tag or
 branch chosen above.
 
-    cd ${snap}/snap-engine
+    cd ${seadas}/snap-engine
     git checkout <version>
     mvn install -Dmaven.test.skip=true
 
-    cd ${snap}/snap-desktop
+    cd ${seadas}/snap-desktop
     git checkout <version>
     mvn install -Dmaven.test.skip=true
 
-    cd ${snap}/optical-toolbox
+    cd ${seadas}/optical-toolbox
     git checkout <version>
     mvn install -Dmaven.test.skip=true
 
-    cd ${snap}/seadas-toolbox
+    cd ${seadas}/seadas-toolbox
     git checkout <version>
     mvn install -Dmaven.test.skip=true
 
@@ -78,12 +78,12 @@ The toolbox is packaged as a NetBeans cluster in
 Setting up IntelliJ IDEA
 ------------------------
 
-1. In IntelliJ IDEA, select "Import Project" and select the `${snap}` directory.
+1. In IntelliJ IDEA, select "Import Project" and select the `${seadas}` directory.
    (Some versions: select "New -> Project From Existing Sources", then navigate
-   upwards in the file selector to select the `${snap}` directory, then select
+   upwards in the file selector to select the `${seadas}` directory, then select
    "Open".)
 2. Select "Import project from external model" -> "Maven".
-3. Ensure the "Root directory" is `${snap}` (your actual path). Select
+3. Ensure the "Root directory" is `${seadas}` (your actual path). Select
    "Search for projects recursively". Do **not** enable *Create module groups
    for multi-module Maven projects*. Everything else can keep its default value.
 4. Set the project SDK to JDK 21.
@@ -96,11 +96,11 @@ Setting up IntelliJ IDEA
    All VM parameters are optional.
 
    **Program arguments:**
-   `--userdir "${snap}/seadas-toolbox/target/userdir"`
-   `--clusters "${snap}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${snap}/optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx"`
-   `--patches "${snap}/snap-engine/$/target/classes:${snap}/seadas-toolbox/$/target/classes:${snap}/optical-toolbox/$/target/classes"`
+   `--userdir "${seadas}/seadas-toolbox/target/userdir"`
+   `--clusters "${seadas}/seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas:${seadas}/optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx"`
+   `--patches "${seadas}/snap-engine/$/target/classes:${seadas}/seadas-toolbox/$/target/classes:${seadas}/optical-toolbox/$/target/classes"`
 
-   **Working directory:** `${snap}/snap-desktop/snap-application/target/snap/`
+   **Working directory:** `${seadas}/snap-desktop/snap-application/target/snap/`
 
    **Use classpath of module:** `snap-main`
 
