@@ -1107,11 +1107,21 @@ The installer copies three cluster trees into `src/main/izpack/packs/`:
 `snap-desktop/snap-application/target/snap/`,
 `optical-toolbox/opttbx-kit/target/netbeans_clusters/opttbx`, and
 `seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas` — so **the full stack
-must be built and installed before packaging**. Per
-`docs/IzPack-Packaging-Instruction.md`, the packaged `snap/etc/snap.clusters`,
-`snap.properties` (`snap.context=seadas`,
-`snap.context.application.name=SeaDAS`) and `snap.conf` (`extra_clusters`) are
-adjusted so the extra clusters load and the application is branded SeaDAS.
+must be built and installed before packaging**. These trees are Java and
+platform-independent, so all six installers share them.
+
+The installed `bin/` and `etc/` do **not** come from the SNAP tree: every
+descriptor excludes `bin/*` and `etc/*` from `packs/snap` and installs them
+from `src/main/izpack/packs/files/<os>/` instead (`unix`, `macosx`, `winx64`).
+That is where SeaDAS's launcher configuration lives (`seadas.clusters`,
+`seadas.conf`, `snap.conf` with `extra_clusters`, `snap.properties`), so
+branding or cluster changes go there. `seadas-installer/docs/IzPack-Packaging-Instruction.md`
+describes an older setup that edited `packs/snap/etc/` directly; the pom no
+longer does that, since those files were never installed.
+
+Build with `clean` (`build-all.sh` always does). The copy into `target/staging`
+only replaces files whose source is newer and never removes files deleted
+upstream, so a `mvn package` over an old `target/` can pick up leftovers.
 
 ### 14.3 Release checklist (as practised)
 
