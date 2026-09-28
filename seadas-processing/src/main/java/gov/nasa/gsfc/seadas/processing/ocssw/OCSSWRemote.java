@@ -688,7 +688,7 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public Process executeSimple(ProcessorModel processorModel) {
 
-        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+        SeadasProcess seadasProcess = new SeadasProcess(ocsswInfo, jobId);
 
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
         Response response = target.path("ocssw").path("executeOcsswProgramSimple").path(jobId).path(processorModel.getProgramName()).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
@@ -723,6 +723,8 @@ public class OCSSWRemote extends OCSSW {
                 e.printStackTrace();
             }
         }
+        // Callers such as L2genData check p.exitValue(), and SeadasProcess defaults to 1 (failed).
+        seadasProcess.setExitValue(getProcessExitValue());
         return seadasProcess;
     }
 
