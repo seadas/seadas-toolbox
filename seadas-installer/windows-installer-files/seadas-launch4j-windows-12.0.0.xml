@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Users\aabduraz\MainDev\installers\Windows-Installer-Files\seadas-12.0.0-windows-installer.jar</jar>
+  <outfile>C:\Users\aabduraz\MainDev\installers\Windows-Installer-Files\seadas_12.0.0_windows_installer.exe</outfile>
+  <errTitle>SeaDAS Installer</errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>https://adoptium.net/</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon></icon>
+  <jre>
+    <path>jdk-21.0.8+9-jre</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>true</requires64Bit>
+    <minVersion>21.0.0</minVersion>
+    <maxVersion></maxVersion>
+    <opt>--add-exports=java.base/java.lang=ALL-UNNAMED</opt>
+    <opt>--add-exports=java.desktop/sun.awt=ALL-UNNAMED</opt>
+    <opt>--add-exports=java.desktop/sun.java2d=ALL-UNNAMED</opt>
+    <opt>-Dsun.java2d.opengl=false</opt>
+  </jre>
+</launch4jConfig>
