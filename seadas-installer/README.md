@@ -65,7 +65,8 @@ The installers are written to `izpack-installer/dist/` (or `OUTDIR`):
 seadas-installer-linux-x64.jar            seadas-installer-linux-x64-nojre.jar
 seadas-installer-macos-aarch64.jar        seadas-installer-macos-aarch64-nojre.jar
 seadas-installer-windows-x64.jar / .exe   seadas-installer-windows-x64-nojre.jar / .exe
-seadas_<version>_windows64_installer.exe  (the Windows installer for users; see below)
+seadas_<version>_windows64_installer.exe  seadas_<version>_windows64_nojre_installer.exe
+                                          (the Windows installers for users; see below)
 ```
 
 A rebuild overwrites the previous installer for that platform. A failed build
@@ -83,30 +84,38 @@ A direct Maven build leaves the installer in `izpack-installer/target/`, **not**
 in `dist/`; only `build-all.sh` moves installers into `dist/`. The next
 `mvn clean` deletes `target/`, so copy the installer out if you want to keep it.
 
-### 3. The Windows installer for users
+### 3. The Windows installers for users
 
-`win` also produces `seadas_<version>_windows64_installer.exe`, an
-[Inno Setup](https://jrsoftware.org/isinfo.php) installer. This is the Windows
-installer to publish, and it needs no Java to start. It is built entirely on
-Linux, with no manual Windows steps:
+`win` also produces `seadas_<version>_windows64_installer.exe`, and
+`win-nojre` produces `seadas_<version>_windows64_nojre_installer.exe`. Both
+are [Inno Setup](https://jrsoftware.org/isinfo.php) installers. These are the
+Windows installers to publish, and they need no Java to start. They are built
+entirely on Linux, with no manual Windows steps:
 
 1. `mvn package -P win` lays out the installed SeaDAS folder in
    `target/windows/SeaDAS/`, with the same files the IzPack installer would
-   install, and the bundled JRE unpacked. It copies the Inno Setup script and
+   install, and the bundled JRE unpacked (not for `nojre`). It copies the Inno Setup script and
    the files it uses from `seadas-installer/windows-installer-files/` next to
    it, and writes `target/windows/build.iss` with the SeaDAS version (from the
-   root `pom.xml`) and the JRE folder name.
+   root `pom.xml`), the JRE folder name, and `NoJre` for `nojre`.
 2. `build-all.sh` compiles `target/windows/seadas-windows.iss` with Inno
    Setup's ISCC, running under Wine in Docker (image `amake/innosetup`, pinned
    by digest; override it with `INNO_IMAGE`).
 
-So `win` needs **Docker**, and the user running `build-all.sh` must be able to
-run `docker`. The ISCC step adds about 2.5 minutes. A direct
-`mvn package -P win` does step 1 only. `win-nojre` does not build an Inno
-installer.
+So `win` and `win-nojre` need **Docker**, and the user running `build-all.sh`
+must be able to run `docker`. The ISCC step adds about 2.5 minutes. A direct
+`mvn package -P win` (or `-P win,nojre`) does step 1 only.
 
-The install folder is only known at install time, so the Inno installer
-fills in `jdkhome` in `etc\seadas.conf` and `etc\snap.conf` itself. Change the
+The no-JRE Inno installer adds a page that asks where Java is installed. Any
+Java 21 or newer works, a JDK or a JRE, unlike the IzPack `-nojre` installers,
+which need a JDK. The page is preset with the first Java 21+ it finds in
+`JAVA_HOME` or the registry entries of the Oracle and Eclipse Adoptium
+installers. For a silent install (`/VERYSILENT`), pass `/JAVAHOME=<folder>`
+if none of those has one.
+
+The Java location, and the install folder, are only known at install time, so
+the Inno installer fills in `jdkhome` in `etc\seadas.conf` and
+`etc\snap.conf` itself. Change the
 installer's wizard text, license, icons or shortcuts in
 `windows-installer-files/`. Keep the script's `AppId` unchanged, so a new
 version installs over the old one. The installer is not code-signed yet (the
