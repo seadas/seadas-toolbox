@@ -1059,6 +1059,7 @@ seadas-installer/
 │   ├── src/main/xslt/    without-bundled-jre.xsl (derives the no-JRE descriptors)
 │   └── dist/             output (do not delete — rebuilds overwrite)
 ├── izpack-panels/        custom IzPack panels
+├── windows-installer-files/  Inno Setup script, license/welcome .rtf and icons
 └── docs/IzPack-Packaging-Instruction.md
 ```
 
@@ -1079,6 +1080,22 @@ profile, not by copying a file over `install.xml`. `mvn clean package` wipes
 platform. Nothing is deleted up front: a failed build leaves the last good
 installer in place. The Windows profile additionally wraps the jar with
 launch4j (`l4j-gui`) to produce an `.exe`.
+
+**The Windows installer for users (Inno Setup).** For `win` (not `win-nojre`),
+the `windows-inno-input` antrun execution also lays out the installed folder
+as `target/windows/SeaDAS/`. It copies the same filesets as the descriptor's
+packs, unpacks the JRE zip, and substitutes IzPack's `${installer:maxHeapSize}`
+and `${extra_clusters}` in `etc/`. Those values, the JRE zip and its folder
+name are read from `install-for-windows.xml`, so nothing is duplicated. It
+leaves `jdkhome=${jdkhome}`: the Inno script's `[Code]` replaces it at install
+time with `{app}\<JRE folder>`. Next to the folder it puts
+`windows-installer-files/seadas-windows.iss` with its `.rtf`/`.ico` files, and
+`build.iss` (the version from the root POM, and the JRE folder name).
+`build-all.sh win` then runs ISCC under Wine in the pinned `amake/innosetup`
+Docker image, and copies `seadas_<version>_windows64_installer.exe` into
+`OUTDIR`. Before this, the Inno installer was made by hand: the IzPack `.exe`
+was installed on a Windows machine and that install folder was repackaged with
+Inno, which could carry the builder's install path in `etc/snap.conf`.
 
 **Installers without a bundled JRE.** Adding the `nojre` profile to a platform
 (`-P linux,nojre`) produces `seadas-installer-<platform>-nojre.jar` (and `.exe`
@@ -1133,7 +1150,8 @@ upstream, so a `mvn package` over an old `target/` can pick up leftovers.
 3. Regenerate the command-line help sections (§11) against the OCSSW tag being
    shipped.
 4. Full clean build of all four repositories.
-5. Build the installers (`build-all.sh`) and smoke-test each platform.
+5. Build the installers (`build-all.sh`) and smoke-test each platform,
+   including an install of the Inno installer on a Windows machine.
 6. Tag all four repositories with a matching annotated tag and an explicit
    `GIT_COMMITTER_DATE`.
 7. Publish the NBMs to the update centre and the installers to the download site.

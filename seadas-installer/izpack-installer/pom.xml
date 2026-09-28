@@ -37,6 +37,8 @@
         -->
         <installer.descriptor>${installer.source}</installer.descriptor>
         <installer-output-filename>seadas-installer-${installer.platform}</installer-output-filename>
+        <!-- The nojre profile sets this: the Inno installer bundles the JRE. -->
+        <windows.inno.skip>false</windows.inno.skip>
     </properties>
 
     <profiles>
@@ -111,6 +113,115 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- Inno Setup input for the final Windows installer: lays out the
+                         installed SeaDAS folder as target/windows/SeaDAS, the way the
+                         IzPack installer would install it, and copies the Inno script
+                         from ../windows-installer-files next to it.  build-all.sh
+                         compiles it with ISCC.  Skipped by the nojre profile. -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>windows-inno-input</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${windows.inno.skip}</skip>
+                                    <target>
+                                        <property name="win.dir" value="${project.build.directory}/windows"/>
+                                        <property name="app.dir" value="${win.dir}/SeaDAS"/>
+                                        <property name="packs" value="${staging.dir}/packs"/>
+                                        <property name="descriptor" value="${staging.dir}/${installer.source}"/>
+
+                                        <!-- Read the values IzPack would substitute from the
+                                             descriptor, so they are not kept in two places. -->
+                                        <macrodef name="descriptor-value">
+                                            <attribute name="property"/>
+                                            <attribute name="contains"/>
+                                            <attribute name="pattern"/>
+                                            <sequential>
+                                                <loadfile property="@{property}" srcfile="${descriptor}">
+                                                    <filterchain>
+                                                        <linecontains>
+                                                            <contains value="@{contains}"/>
+                                                        </linecontains>
+                                                        <tokenfilter>
+                                                            <replaceregex pattern="@{pattern}" replace="\1"/>
+                                                        </tokenfilter>
+                                                        <striplinebreaks/>
+                                                    </filterchain>
+                                                </loadfile>
+                                                <fail message="${installer.source}: no value found for @{contains}"
+                                                      unless="@{property}"/>
+                                            </sequential>
+                                        </macrodef>
+                                        <descriptor-value property="max.heap"
+                                                          contains="name=&quot;installer:maxHeapSize&quot;"
+                                                          pattern=".*value=&quot;([^&quot;]+)&quot;.*"/>
+                                        <descriptor-value property="extra.clusters"
+                                                          contains="name=&quot;extra_clusters&quot;"
+                                                          pattern=".*value=&quot;([^&quot;]+)&quot;.*"/>
+                                        <descriptor-value property="jre.dir"
+                                                          contains="name=&quot;jdkhome&quot;"
+                                                          pattern=".*\\([^\\&quot;]+)&quot;.*"/>
+                                        <descriptor-value property="jre.archive"
+                                                          contains="src=&quot;packs/jre/"
+                                                          pattern=".*src=&quot;([^&quot;]+)&quot;.*"/>
+
+                                        <!-- The SeaDAS version, from the seadas-toolbox root pom -->
+                                        <xmlproperty file="${basedir}/../../pom.xml" prefix="root" keepRoot="true"/>
+                                        <fail message="no version in ../../pom.xml" unless="root.project.version"/>
+
+                                        <delete dir="${win.dir}"/>
+
+                                        <!-- Same filesets as the snap, opttbx, seadas-toolbox and
+                                             JRE packs in install-for-windows.xml -->
+                                        <copy todir="${app.dir}">
+                                            <fileset dir="${packs}/snap" excludes="bin/*, etc/*"/>
+                                        </copy>
+                                        <copy todir="${app.dir}" overwrite="true">
+                                            <fileset dir="${packs}/files/winx64"/>
+                                        </copy>
+                                        <copy todir="${app.dir}/optical-toolbox">
+                                            <fileset dir="${packs}/opttbx"/>
+                                        </copy>
+                                        <copy todir="${app.dir}/seadas-toolbox">
+                                            <fileset dir="${packs}/seadas"/>
+                                        </copy>
+                                        <unzip src="${staging.dir}/${jre.archive}" dest="${app.dir}"/>
+                                        <available file="${app.dir}/${jre.dir}/bin/java.exe" property="jre.ok"/>
+                                        <fail message="${jre.archive} did not unpack to ${jre.dir}" unless="jre.ok"/>
+
+                                        <!-- IzPack's parsable etc files.  ${jdkhome} stays: the
+                                             Inno installer fills it in with the folder the user
+                                             picks.  ${HOME} is for the SeaDAS launcher, not IzPack. -->
+                                        <replace dir="${app.dir}/etc"
+                                                 includes="seadas.clusters, seadas.conf, seadas.properties, snap.clusters, snap.conf, snap.properties">
+                                            <replacefilter token="$${installer:maxHeapSize}" value="${max.heap}"/>
+                                            <replacefilter token="$${extra_clusters}" value="${extra.clusters}"/>
+                                        </replace>
+
+                                        <copy todir="${win.dir}">
+                                            <fileset dir="${basedir}/../windows-installer-files"
+                                                     includes="*.iss, *.rtf, *.ico"/>
+                                        </copy>
+                                        <echo file="${win.dir}/build.iss">; Written by 'mvn package -P win' (izpack-installer/pom.xml)
+#define MyAppVersion "${root.project.version}"
+#define JreDir "${jre.dir}"
+</echo>
+                                        <!-- ISCC runs in Docker as another user and needs to
+                                             write its output here. -->
+                                        <mkdir dir="${win.dir}/out"/>
+                                        <chmod dir="${win.dir}/out" perm="a+rwx" type="dir"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -123,6 +234,7 @@
             <properties>
                 <installer.descriptor>without-bundled-jre-${installer.source}</installer.descriptor>
                 <installer-output-filename>seadas-installer-${installer.platform}-nojre</installer-output-filename>
+                <windows.inno.skip>true</windows.inno.skip>
             </properties>
             <build>
                 <plugins>

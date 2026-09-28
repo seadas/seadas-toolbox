@@ -7,6 +7,12 @@
 #   ./build-all.sh linux-nojre     Linux installer that uses the machine's JDK
 #   OUTDIR=/tmp/installers ./build-all.sh
 #
+# 'win' also builds the final Windows installer, seadas_<version>_windows64_installer.exe:
+# the Maven build lays out the installed SeaDAS folder and the Inno Setup
+# script (see pom.xml and ../windows-installer-files), and this script
+# compiles it with Inno Setup's ISCC, run under Wine in Docker, so Docker is
+# required for 'win'.  INNO_IMAGE overrides the image.
+#
 # Platforms: mac, linux, win, and mac-nojre, linux-nojre, win-nojre for the
 # installers without a bundled JRE.  Each is selected by Maven profiles (see
 # pom.xml): 'linux' is -P linux, 'linux-nojre' is -P linux,nojre.  Nothing is
@@ -26,6 +32,9 @@ cd "$(dirname "$0")"
 
 OUTDIR="${OUTDIR:-$PWD/dist}"
 
+# Inno Setup 6 under Wine, pinned so rebuilds use the same compiler
+INNO_IMAGE="${INNO_IMAGE:-amake/innosetup@sha256:e003376ba818547275fe10c95e2a29be0f2d12d45e9eb8f205b6672dc5685bb1}"
+
 if [ $# -gt 0 ]; then
     PLATFORMS="$*"
 else
@@ -40,6 +49,13 @@ for p in $PLATFORMS; do
             exit 2
             ;;
     esac
+done
+
+for p in $PLATFORMS; do
+    if [ "$p" = win ] && ! docker info >/dev/null 2>&1; then
+        echo "build-all.sh: 'win' needs Docker to run Inno Setup, and 'docker info' failed" >&2
+        exit 1
+    fi
 done
 
 mkdir -p "$OUTDIR"
@@ -64,6 +80,18 @@ for p in $PLATFORMS; do
             mv "$f" "$OUTDIR"/
         fi
     done
+
+    if [ "$p" = win ]; then
+        echo
+        echo "=================== win: Inno Setup ==================="
+        docker run --rm -v "$PWD/target/windows:/work" "$INNO_IMAGE" seadas-windows.iss
+        # Written by the container's user: copy it rather than move it, so
+        # the copy in OUTDIR belongs to whoever runs this script.
+        for f in target/windows/out/*.exe; do
+            cp "$f" "$OUTDIR"/
+            rm -f "$f"
+        done
+    fi
 done
 
 echo
