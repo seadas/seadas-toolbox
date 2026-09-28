@@ -1456,8 +1456,6 @@ public class L2genData implements SeaDASProcessorModel {
         OCSSWExecutionMonitor ocsswExecutionMonitor = new OCSSWExecutionMonitor();
         try {
             ocsswExecutionMonitor.executeWithProgressMonitor(processorModel, ocssw, UPDATE_LUTS_SCRIPT);
-            Process p = ocssw.execute(processorModel.getParamList()); //processorModel.executeProcess();
-
         } catch (Exception e) {
             System.out.println("ERROR - Problem running " + UPDATE_LUTS_SCRIPT);
             System.out.println(e.getMessage());
