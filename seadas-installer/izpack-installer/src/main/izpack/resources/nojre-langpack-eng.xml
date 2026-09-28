@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    English text overrides for the installers without a bundled JRE, registered
+    as CustomLangPack.xml_eng by src/main/xslt/without-bundled-jre.xsl.
+
+    IzPack's own JDKPathPanel strings assume a maximum JDK version, which these
+    installers do not set (the text printed "${JDKPathPanel.maxVersion}"
+    literally), and point at java.sun.com.
+-->
+<izpack:langpack version="5.0"
+                 xmlns:izpack="http://izpack.org/schema/langpack"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://izpack.org/schema/langpack http://izpack.org/schema/5.0/izpack-langpack-5.0.xsd">
+    <str id="JDKPathPanel.intro" txt="SeaDAS needs a Java Development Kit (JDK) ${JDKPathPanel.minVersion} or newer. A Java runtime (JRE) alone is not enough: the folder must contain bin/javac."/>
+    <str id="JDKPathPanel.jdkDownload" txt="&lt;html&gt;&lt;p&gt;SeaDAS needs a Java Development Kit (JDK) ${JDKPathPanel.minVersion} or newer.&lt;p/&gt; If none is installed, download one from &lt;a href='https://adoptium.net/temurin/releases/'&gt;https://adoptium.net/temurin/releases/&lt;/a&gt;, or use the SeaDAS installer with bundled Java.&lt;/html&gt;"/>
+</izpack:langpack>

@@ -2,11 +2,14 @@
 #
 # Build the SeaDAS IzPack installers.
 #
-#   ./build-all.sh                 build mac, linux and win
+#   ./build-all.sh                 build every installer, with and without JRE
 #   ./build-all.sh linux win       build only the named platforms
+#   ./build-all.sh linux-nojre     Linux installer that uses the machine's JDK
 #   OUTDIR=/tmp/installers ./build-all.sh
 #
-# Each platform is selected by a Maven profile (see pom.xml); nothing is
+# Platforms: mac, linux, win, and mac-nojre, linux-nojre, win-nojre for the
+# installers without a bundled JRE.  Each is selected by Maven profiles (see
+# pom.xml): 'linux' is -P linux, 'linux-nojre' is -P linux,nojre.  Nothing is
 # copied over install.xml.  'mvn clean package' wipes target/, so every
 # artifact is moved into OUTDIR before the next platform starts.
 #
@@ -26,14 +29,14 @@ OUTDIR="${OUTDIR:-$PWD/dist}"
 if [ $# -gt 0 ]; then
     PLATFORMS="$*"
 else
-    PLATFORMS="mac linux win"
+    PLATFORMS="mac linux win mac-nojre linux-nojre win-nojre"
 fi
 
 for p in $PLATFORMS; do
     case "$p" in
-        mac|linux|win) ;;
+        mac|linux|win|mac-nojre|linux-nojre|win-nojre) ;;
         *)
-            echo "build-all.sh: unknown platform '$p' (expected mac, linux or win)" >&2
+            echo "build-all.sh: unknown platform '$p' (expected mac, linux, win, or one of those with -nojre)" >&2
             exit 2
             ;;
     esac
@@ -47,7 +50,8 @@ for p in $PLATFORMS; do
     echo
     echo "=================== $p ==================="
 
-    mvn clean package -P "$p"
+    # linux -> linux, linux-nojre -> linux,nojre
+    mvn clean package -P "${p/-/,}"
 
     if ! ls target/seadas-installer-*.jar >/dev/null 2>&1; then
         echo "build-all.sh: the $p build produced no installer jar" >&2
