@@ -127,6 +127,11 @@ public class OCSSWRemote extends OCSSW {
 
     public boolean uploadClientFile(String fileName) {
 
+        // Checked separately from the ifile itself: an earlier run may have uploaded the MTL file but not its bands.
+        if (!isAncFile(fileName)) {
+            uploadCompanionFiles(fileName);
+        }
+
         if (fileExistsOnServer(fileName) && !needToUplaodFileContent(programName, fileName)) {
             return ifileUploadSuccess = true;
         }
@@ -170,6 +175,77 @@ public class OCSSWRemote extends OCSSW {
         //System.out.println("upload process is done: " + pmSwingWorker.isDone());
         return ifileUploadSuccess;
 
+    }
+
+    private void uploadCompanionFiles(String fileName) {
+        List<File> companionFiles = new ArrayList<>();
+        for (File companionFile : getCompanionFiles(fileName)) {
+            if (!fileExistsOnServer(companionFile.getAbsolutePath())) {
+                companionFiles.add(companionFile);
+            }
+        }
+        if (companionFiles.isEmpty()) {
+            return;
+        }
+
+        SnapApp snapApp = SnapApp.getDefault();
+
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
+                "OCSSW Remote Server File Upload") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+                pm.beginTask("Uploading " + companionFiles.size() + " files that go with '" + fileName + "' to the remote server ", companionFiles.size());
+                try {
+                    for (File companionFile : companionFiles) {
+                        pm.setSubTaskName("Uploading " + companionFile.getName() + " to the remote server ...");
+                        final FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", companionFile);
+                        final MultiPart multiPart = new FormDataMultiPart()
+                                .bodyPart(fileDataBodyPart);
+                        target.path("fileServices").path("uploadClientFile").path(jobId).request().post(Entity.entity(multiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+                        pm.worked(1);
+                    }
+                } finally {
+                    pm.done();
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.executeWithBlocking();
+    }
+
+    /**
+     * Some inputs are only a pointer to other files in the same directory. A Landsat
+     * "<scene>_MTL.txt" file is read by l2gen, which then opens "<scene>_B1.TIF" etc. next to it,
+     * so those files must be on the server as well.
+     *
+     * @param fileName the input file selected by the user
+     * @return the other files in the same directory that the program will read, possibly empty
+     */
+    protected File[] getCompanionFiles(String fileName) {
+        File file = new File(fileName);
+        String sceneId = getLandsatSceneId(file.getName());
+        File dir = file.getParentFile();
+        if (sceneId == null || dir == null) {
+            return new File[0];
+        }
+        File[] companionFiles = dir.listFiles(f -> f.isFile()
+                && f.getName().startsWith(sceneId + "_")
+                && !f.getName().equals(file.getName()));
+        return companionFiles == null ? new File[0] : companionFiles;
+    }
+
+    /**
+     * @return the scene id ("LC08_L1TP_..._T1") if the file name is a Landsat MTL metadata file, otherwise null
+     */
+    static String getLandsatSceneId(String fileName) {
+        String upperCaseName = fileName.toUpperCase();
+        for (String suffix : new String[]{"_MTL.TXT", "_MTL.XML", "_MTL.JSON"}) {
+            if (upperCaseName.endsWith(suffix)) {
+                return fileName.substring(0, fileName.length() - suffix.length());
+            }
+        }
+        return null;
     }
 
     public boolean uploadParFile(File parFile) {

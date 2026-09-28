@@ -50,8 +50,46 @@ public class OCSSWVM extends OCSSWRemote {
             }
             copyFileC2S(sourceFilePathName);
         }
+        // Checked separately from the ifile itself: an earlier run may have copied the MTL file but not its bands.
+        if (!isAncFile(sourceFilePathName)) {
+            copyCompanionFilesC2S(sourceFilePathName);
+        }
         ifileUploadSuccess = true;
         return ifileUploadSuccess;
+    }
+
+    private void copyCompanionFilesC2S(String sourceFilePathName) {
+        String sourceDir = new File(sourceFilePathName).getAbsoluteFile().getParent();
+        if (new File(workingDir).getAbsolutePath().equals(sourceDir)) {
+            return;
+        }
+        File[] companionFiles = Arrays.stream(getCompanionFiles(sourceFilePathName))
+                .filter(f -> !new File(workingDir, f.getName()).exists())
+                .toArray(File[]::new);
+        if (companionFiles.length == 0) {
+            return;
+        }
+
+        SnapApp snapApp = SnapApp.getDefault();
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
+                "OCSSW Shared Folder File Copy") {
+
+            @Override
+            protected Void doInBackground(ProgressMonitor pm) throws Exception {
+                pm.beginTask("Copying " + companionFiles.length + " files to the shared folder " + workingDir, companionFiles.length);
+                try {
+                    for (File companionFile : companionFiles) {
+                        pm.setSubTaskName("Copying file '" + companionFile.getName() + "'");
+                        copyFileC2S(companionFile.getAbsolutePath());
+                        pm.worked(1);
+                    }
+                } finally {
+                    pm.done();
+                }
+                return null;
+            }
+        };
+        pmSwingWorker.executeWithBlocking();
     }
 
     /**
