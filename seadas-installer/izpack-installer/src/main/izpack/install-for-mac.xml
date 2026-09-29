@@ -165,6 +165,11 @@
             </fileset>
             <fileset dir="packs/files/macosx" override="true" casesensitive="true" os="mac"
                      condition="izpack.macinstall"/>
+            <!-- Shared with Linux: one copy of the script, in packs/files/unix/bin. -->
+            <file src="packs/files/unix/bin/start_ocssw_docker" targetdir="$INSTALL_PATH/bin"
+                  override="true" condition="izpack.macinstall">
+                <os family="mac"/>
+            </file>
             <parsable encoding="UTF-8">
                 <fileset targetdir="${INSTALL_PATH}/etc">
                     <include name="*.sh"/>
@@ -189,6 +194,7 @@
                 <fileset targetdir="$INSTALL_PATH/bin" includes="archiveDotSeaDAS.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="*.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="seadas"/>
+                <fileset targetdir="$INSTALL_PATH/bin" includes="start_ocssw_docker"/>
                 <fileset targetdir="$INSTALL_PATH/bin/seadas.app/Contents/MacOS" includes="*.sh"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="gpt"/>
                 <fileset targetdir="$INSTALL_PATH/bin" includes="pconvert"/>

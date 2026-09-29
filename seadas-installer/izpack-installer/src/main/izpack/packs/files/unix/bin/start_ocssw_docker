@@ -1,0 +1,189 @@
+#!/bin/bash
+# Starts the SeaDAS OCSSW server in Docker (the seadas/ocssw-run image) for
+# OCSSW location "docker".  SeaDAS runs this script itself when the server is
+# not answering; it can also be run by hand.  Linux and macOS; Windows uses
+# start_ocssw_docker.ps1.
+#
+#   1. checks that Docker is installed and running (on macOS it starts Docker Desktop),
+#   2. creates the OCSSW and shared directories,
+#   3. copies ~/.netrc (Earthdata Login) into the shared directory,
+#   4. pulls the image if it is not there yet,
+#   5. starts the container, recreating it if the image, directories or ports changed,
+#   6. waits until the server answers.
+#
+# No file extension on purpose: the installer rewrites ${...} placeholders in *.sh files.
+
+usage() {
+    cat <<EOF
+Usage: start_ocssw_docker [options]
+  --image IMAGE        Docker image                  (default: $IMAGE)
+  --name NAME          container name                (default: $NAME)
+  --ocssw-dir DIR      host directory for OCSSW      (default: $OCSSW_DIR)
+  --shared-dir DIR     SeaDAS OCSSW shared directory (default: $SHARED_DIR)
+  --netrc FILE         Earthdata Login .netrc        (default: $NETRC)
+  --port N             server port                   (default: $PORT)
+  --input-port N       process output stream port    (default: $INPUT_PORT)
+  --error-port N       process error stream port     (default: $ERROR_PORT)
+  --host-network       use the host network instead of publishing ports (Linux
+                       only; the ports are then always 6400, 6402 and 6403)
+  --timeout SECONDS    how long to wait for the server (default: $TIMEOUT)
+EOF
+}
+
+IMAGE="seadas/ocssw-run:12.0.0"
+NAME="seadas-ocssw"
+OCSSW_DIR="$HOME/ocssw-docker"
+SHARED_DIR="$HOME/seadasClientServerShared"
+NETRC="$HOME/.netrc"
+PORT=6400
+INPUT_PORT=6402
+ERROR_PORT=6403
+HOST_NETWORK=0
+TIMEOUT=180
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --image)        IMAGE="$2"; shift 2 ;;
+        --name)         NAME="$2"; shift 2 ;;
+        --ocssw-dir)    OCSSW_DIR="$2"; shift 2 ;;
+        --shared-dir)   SHARED_DIR="$2"; shift 2 ;;
+        --netrc)        NETRC="$2"; shift 2 ;;
+        --port)         PORT="$2"; shift 2 ;;
+        --input-port)   INPUT_PORT="$2"; shift 2 ;;
+        --error-port)   ERROR_PORT="$2"; shift 2 ;;
+        --host-network) HOST_NETWORK=1; shift ;;
+        --timeout)      TIMEOUT="$2"; shift 2 ;;
+        -h|--help)      usage; exit 0 ;;
+        *)              echo "Unknown option: $1" >&2; usage >&2; exit 1 ;;
+    esac
+done
+
+# Exit codes, also read by SeaDAS.
+E_NO_DOCKER=2; E_DAEMON=3; E_PULL=4; E_START=5; E_TIMEOUT=6; E_DIRS=7
+
+step() { echo "==> $*"; }
+fail() { local code=$1; shift; echo "ERROR: $*" >&2; exit "$code"; }
+
+# SeaDAS started from the macOS Dock or a desktop launcher gets a minimal PATH
+# that often misses the docker command.
+PATH="$PATH:/usr/local/bin:/opt/homebrew/bin:$HOME/.docker/bin:/Applications/Docker.app/Contents/Resources/bin"
+
+# --- 1. Docker ---------------------------------------------------------------
+step "Checking Docker"
+command -v docker >/dev/null 2>&1 ||
+    fail $E_NO_DOCKER "Docker is not installed (no 'docker' command found). Install Docker Desktop (macOS) or Docker Engine (Linux) from https://docs.docker.com/get-docker/"
+
+if ! docker info >/dev/null 2>&1; then
+    if [ "$(uname -s)" = Darwin ] && [ -d /Applications/Docker.app ]; then
+        step "Starting Docker Desktop"
+        open -a Docker
+        for _ in $(seq 1 60); do
+            sleep 2
+            docker info >/dev/null 2>&1 && break
+        done
+    fi
+    if ! err=$(docker info 2>&1 >/dev/null); then
+        case "$err" in
+            *"permission denied"*)
+                fail $E_DAEMON "No permission to use Docker. Add yourself to the docker group ('sudo usermod -aG docker $USER'), then log out and back in." ;;
+            *)
+                fail $E_DAEMON "Docker is not running. Start Docker Desktop (or 'sudo systemctl start docker' on Linux) and try again. Docker said: $err" ;;
+        esac
+    fi
+fi
+
+# --- 2. Directories ----------------------------------------------------------
+step "Creating $OCSSW_DIR and $SHARED_DIR"
+mkdir -p "$OCSSW_DIR" "$SHARED_DIR" || fail $E_DIRS "Cannot create $OCSSW_DIR or $SHARED_DIR"
+OCSSW_DIR=$(cd "$OCSSW_DIR" && pwd -P)
+SHARED_DIR=$(cd "$SHARED_DIR" && pwd -P)
+
+# --- 3. Earthdata Login ------------------------------------------------------
+NETRC_CHANGED=0
+if [ -f "$NETRC" ]; then
+    if ! cmp -s "$NETRC" "$SHARED_DIR/.netrc"; then
+        step "Copying $NETRC into $SHARED_DIR"
+        cp "$NETRC" "$SHARED_DIR/.netrc" && chmod 600 "$SHARED_DIR/.netrc" || fail $E_DIRS "Cannot copy $NETRC to $SHARED_DIR"
+        NETRC_CHANGED=1
+    fi
+else
+    echo "WARNING: $NETRC not found. OCSSW needs Earthdata Login credentials to download ancillary data; see https://urs.earthdata.nasa.gov/" >&2
+fi
+
+# --- 4. Image ----------------------------------------------------------------
+# The image is built for linux/amd64 only; Apple Silicon runs it under emulation.
+if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
+    step "Downloading $IMAGE (first time only, this can take several minutes)"
+    docker pull --platform linux/amd64 "$IMAGE" || fail $E_PULL "Could not download $IMAGE"
+fi
+
+# --- 5. Container ------------------------------------------------------------
+# Everything that is fixed when the container is created goes into a label, so
+# a change in any of it (new SeaDAS version, other directories or ports) recreates it.
+CONFIG="image=$IMAGE ocssw=$OCSSW_DIR shared=$SHARED_DIR ports=$PORT,$INPUT_PORT,$ERROR_PORT hostnet=$HOST_NETWORK"
+LABEL=gov.nasa.gsfc.seadas.ocssw.config
+
+if docker container inspect "$NAME" >/dev/null 2>&1; then
+    current=$(docker container inspect -f "{{ index .Config.Labels \"$LABEL\" }}" "$NAME")
+    if [ "$current" != "$CONFIG" ]; then
+        step "Settings changed, recreating container $NAME"
+        docker rm -f "$NAME" >/dev/null || fail $E_START "Cannot remove the old container $NAME"
+    fi
+fi
+
+if docker container inspect "$NAME" >/dev/null 2>&1; then
+    if [ "$(docker container inspect -f '{{.State.Running}}' "$NAME")" = true ]; then
+        if [ $NETRC_CHANGED = 1 ]; then
+            # The server reads .netrc from the shared directory only when it starts.
+            step "Restarting container $NAME for the new .netrc"
+            docker restart "$NAME" >/dev/null || fail $E_START "Cannot restart container $NAME"
+        else
+            step "Container $NAME is already running"
+        fi
+    else
+        step "Starting container $NAME"
+        docker start "$NAME" >/dev/null || fail $E_START "Cannot start container $NAME"
+    fi
+else
+    step "Creating container $NAME"
+    if [ $HOST_NETWORK = 1 ]; then
+        network=(--network host)
+    else
+        network=(-p "$PORT:6400" -p "$INPUT_PORT:6402" -p "$ERROR_PORT:6403")
+    fi
+    docker run -d --name "$NAME" --platform linux/amd64 \
+        --label "$LABEL=$CONFIG" \
+        "${network[@]}" \
+        -v "$SHARED_DIR:/root/seadasClientServerShared" \
+        -v "$OCSSW_DIR:/root/ocssw" \
+        "$IMAGE" >/dev/null || fail $E_START "Cannot start container $NAME (is port $PORT already in use?)"
+fi
+
+# --- 6. Wait for the server --------------------------------------------------
+step "Waiting for the OCSSW server on port $PORT"
+# Any HTTP answer means the server is up.  A bare TCP connect is not enough:
+# Docker's port proxy accepts connections before the server listens.
+server_answers() {
+    if command -v curl >/dev/null 2>&1; then
+        local code
+        code=$(curl -s -o /dev/null -m 2 -w '%{http_code}' "http://localhost:$PORT/ocsswws/" 2>/dev/null)
+        [ -n "$code" ] && [ "$code" != 000 ]
+    else
+        (exec 3<>"/dev/tcp/127.0.0.1/$PORT" &&
+            printf 'GET /ocsswws/ HTTP/1.0\r\n\r\n' >&3 &&
+            timeout 2 head -c 4 <&3 | grep -q HTTP) 2>/dev/null
+    fi
+}
+for _ in $(seq 1 "$TIMEOUT"); do
+    if server_answers; then
+        step "OCSSW server is up"
+        exit 0
+    fi
+    if [ "$(docker container inspect -f '{{.State.Running}}' "$NAME" 2>/dev/null)" != true ]; then
+        docker logs --tail 20 "$NAME" >&2
+        fail $E_START "Container $NAME stopped; its last log lines are above"
+    fi
+    sleep 1
+done
+docker logs --tail 20 "$NAME" >&2
+fail $E_TIMEOUT "The OCSSW server did not answer on port $PORT within $TIMEOUT seconds"

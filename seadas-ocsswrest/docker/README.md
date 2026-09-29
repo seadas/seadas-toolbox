@@ -27,23 +27,45 @@ Publish with `docker push seadas/ocssw-run:<tag>`.
 
 ## Run
 
+SeaDAS starts the container itself when OCSSW location is `docker`: at startup, after
+switching to docker, and whenever a processor is run while the server is not answering.
+It runs `bin/start_ocssw_docker` (Linux, macOS) or `bin\start_ocssw_docker.ps1`
+(Windows) from the SeaDAS installation; the sources are in
+`seadas-installer/izpack-installer/src/main/izpack/packs/files/{unix,winx64}/bin/`.
+The script:
+
+1. checks that Docker is installed and running (it starts Docker Desktop on macOS and Windows),
+2. creates the OCSSW directory (*OCSSW Docker Dir*, default `~/ocssw-docker`) and the
+   shared directory (*OCSSW Shared Dir*, default `~/seadasClientServerShared`),
+3. copies `~/.netrc` (on Windows `.netrc` or `_netrc` in `%USERPROFILE%`) into the shared directory,
+4. pulls `seadas/ocssw-run:<SeaDAS version>` if it is missing,
+5. starts the container `seadas-ocssw`, recreating it when the image, directories or ports
+   changed (they are recorded in a container label), and restarting it when `.netrc` changed,
+6. waits until the server answers.
+
+SeaDAS asks for the image matching its own version (the `seadas.ocssw.dockerImage`
+preference overrides it), so **every SeaDAS release needs `seadas/ocssw-run:<version>`
+pushed to Docker Hub**. The script can also be run by hand; `--help` lists its options.
+What it does amounts to:
+
 ```bash
-docker run -d --name ocssw \
+docker run -d --name seadas-ocssw --platform linux/amd64 \
   -p 6400:6400 -p 6402:6402 -p 6403:6403 \
   -v "$HOME/seadasClientServerShared:/root/seadasClientServerShared" \
-  -v ocssw:/root/ocssw \
+  -v "$HOME/ocssw-docker:/root/ocssw" \
   seadas/ocssw-run:12.0.0
 ```
 
 - **Shared directory.** The host side must be the directory set as *OCSSW Shared Dir*
-  in SeaDAS (default `~/seadasClientServerShared`). SeaDAS copies input files into it,
-  including the band files next to a Landsat `*_MTL.txt`, and OCSSW writes outputs there.
-- **OCSSW.** `ocssw` above is a named volume, so OCSSW survives container restarts and
-  image upgrades. Install OCSSW into it from SeaDAS (OCSSW Manager), or instead
-  bind-mount an existing Linux OCSSW installation at `/root/ocssw`.
-- **Earthdata Login.** Put a `.netrc` in the shared directory; the server copies it to
+  in SeaDAS. SeaDAS copies input files into it, including the band files next to a
+  Landsat `*_MTL.txt`, and OCSSW writes outputs there.
+- **OCSSW.** The container keeps OCSSW in the *OCSSW Docker Dir*, so it survives container
+  restarts and image upgrades. Install OCSSW into it from SeaDAS (OCSSW Manager). It is
+  deliberately not `~/ocssw`, the default for a local (macOS or Linux) OCSSW.
+- **Earthdata Login.** The server copies `.netrc` from the shared directory to
   `/root/.netrc` when it starts. Never bake credentials into the image. If there is
   none, the server logs a `NoSuchFileException` for it and carries on.
+- **Apple Silicon.** The image is linux/amd64 only and runs under emulation.
 - **Memory.** The server heap defaults to `-Xmx4G`; change it with
   `-e OCSSW_SERVER_JAVA_OPTS=-Xmx8G`. OCSSW programs run as separate processes and are
   not limited by it.
