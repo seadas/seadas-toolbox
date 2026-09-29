@@ -65,18 +65,6 @@ public class ParamUIFactory {
 
         parameterComponent.setPreferredSize(parameterComponent.getPreferredSize());
 
-        if (processorModel.getProgramName().indexOf("smigen") != -1) {
-            SMItoPPMUI smItoPPMUI = new SMItoPPMUI(processorModel);
-            JPanel smitoppmPanel = smItoPPMUI.getSMItoPPMPanel();
-            parameterComponent.add(smitoppmPanel, BorderLayout.SOUTH);
-            smitoppmPanel.addPropertyChangeListener(new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                    parameterComponent.validate();
-                    parameterComponent.repaint();
-                }
-            });
-        }
         parameterComponent.setMaximumSize(parameterComponent.getPreferredSize());
         parameterComponent.setMinimumSize(parameterComponent.getPreferredSize());
         return parameterComponent;

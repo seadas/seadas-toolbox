@@ -93,7 +93,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             L2EXTRACT = "l2extract",
             L2EXTRACT_XML_FILE = "l2extract.xml";
 
-    private ProcessorModel secondaryProcessor;
     private Pattern progressPattern;
 
     private ProcessorTypeInfo.ProcessorID processorID;
@@ -240,21 +239,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public void setMultipleInputFiles(boolean multipleInputFiles) {
         this.multipleInputFiles = multipleInputFiles;
-    }
-
-    public void createsmitoppmProcessorModel(String ofileName) {
-        ProcessorModel smitoppm = new ProcessorModel("smitoppm_4_ui", getOcssw());
-        smitoppm.setAcceptsParFile(false);
-        ParamInfo pi1 = new ParamInfo("ifile", getParamValue(getPrimaryOutputFileOptionName()));
-        pi1.setOrder(0);
-        pi1.setType(ParamInfo.Type.IFILE);
-        ParamInfo pi2 = new ParamInfo("ofile", ofileName);
-        pi2.setOrder(1);
-        pi2.setType(ParamInfo.Type.OFILE);
-        smitoppm.addParamInfo(pi1);
-        smitoppm.addParamInfo(pi2);
-        setSecondaryProcessor(smitoppm);
-
     }
 
     public void addParamInfo(String name, String value, ParamInfo.Type type) {
@@ -1006,14 +990,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
         }
         return rootDir == null ? new File(".") : rootDir;
-    }
-
-    public ProcessorModel getSecondaryProcessor() {
-        return secondaryProcessor;
-    }
-
-    public void setSecondaryProcessor(ProcessorModel secondaryProcessor) {
-        this.secondaryProcessor = secondaryProcessor;
     }
 
     public boolean isValidIfile() {

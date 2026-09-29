@@ -307,15 +307,6 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
                         }
                     }
 
-                    ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
-                    if (secondaryProcessor != null) {
-                        ocssw.setIfileName(secondaryProcessor.getParamValue(secondaryProcessor.getPrimaryInputFileOptionName()));
-                        int exitCode = ocssw.execute(secondaryProcessor.getParamList()).exitValue();
-                        if (exitCode == 0) {
-                            Dialogs.showInformation(secondaryProcessor.getProgramName(),
-                                    secondaryProcessor.getProgramName() + " done!\n", null);
-                        }
-                    }
                     //delete the directories that temporaraly holds install_ocssw, maifest_ocssw and etc
                     if(TMP_OCSSW_INSTALLER_DIR.exists()){
                         FileUtils.deleteDirectory(TMP_OCSSW_INSTALLER_DIR);
