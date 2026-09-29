@@ -70,6 +70,7 @@ public class OCSSWInfoGUI {
     JTextField ocsswTagTextfield;
     JComboBox ocsswLocationComboBox;
     JTextField ocsswSharedDir;
+    JTextField ocsswDockerDir;
     JTextField ocsswRootTextfield;
     JTextField ocsswserverAddressTextfield;
     JTextField serverPortTextfield;
@@ -164,6 +165,7 @@ public class OCSSWInfoGUI {
                 if (checkParameters()) {
                     ocsswConfigData.updateconfigData(pc);
                     finish = true;
+                    OCSSWDockerStarter.ensureServer(parent);
                 }
             } else {
                 finish = true;
@@ -358,57 +360,61 @@ public class OCSSWInfoGUI {
         GridBagConstraints gbc = createConstraints();
         panel.setBorder(UIUtils.createGroupBorder("Docker"));
 
-        JLabel ocsswSharedDirLabel = new JLabel(OCSSW_SHARED_DIR_LABEL + ": ");
-        ocsswSharedDir = new JTextField(20);
-
-
-        ocsswSharedDirLabel.setMinimumSize(ocsswSharedDirLabel.getPreferredSize());
-        ocsswSharedDir.setMinimumSize(new JTextField(10).getPreferredSize());
-
-
         pc.addProperty(Property.create(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, OCSSWConfigData.getSeadasClientServerSharedDirDefaultValue())));
         pc.getDescriptor(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY).setDisplayName(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY);
+        pc.addProperty(Property.create(SEADAS_OCSSW_DOCKER_DIR_PROPERTY, preferences.get(SEADAS_OCSSW_DOCKER_DIR_PROPERTY, OCSSWConfigData.getOcsswDockerDirDefaultValue())));
+        pc.getDescriptor(SEADAS_OCSSW_DOCKER_DIR_PROPERTY).setDisplayName(SEADAS_OCSSW_DOCKER_DIR_PROPERTY);
 
         final BindingContext ctx = new BindingContext(pc);
 
+        ocsswSharedDir = new JTextField(20);
         ctx.bind(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir);
+        addDirectoryRow(panel, gbc, OCSSW_SHARED_DIR_LABEL, ocsswSharedDir, SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY);
 
+        gbc.gridy += 1;
+        ocsswDockerDir = new JTextField(20);
+        ocsswDockerDir.setToolTipText("<html>Host directory where the Docker container keeps OCSSW (mounted as /root/ocssw).<br>" +
+                "SeaDAS creates it and starts the container when needed.</html>");
+        ctx.bind(SEADAS_OCSSW_DOCKER_DIR_PROPERTY, ocsswDockerDir);
+        addDirectoryRow(panel, gbc, OCSSW_DOCKER_DIR_LABEL, ocsswDockerDir, SEADAS_OCSSW_DOCKER_DIR_PROPERTY);
 
-        JButton ocsswSharedDirButton = new JButton("...");
+        panel.setMinimumSize(panel.getMinimumSize());
 
+        return panel;
+    }
 
-        ocsswSharedDirButton.addActionListener(new ActionListener() {
+    private void addDirectoryRow(JPanel panel, GridBagConstraints gbc, String labelText, final JTextField textField, final String propertyName) {
+        JLabel label = new JLabel(labelText + ": ");
+        label.setMinimumSize(label.getPreferredSize());
+        textField.setMinimumSize(new JTextField(10).getPreferredSize());
+
+        JButton button = new JButton("...");
+        button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 File newDir = getDir();
                 if (newDir != null) {
-                    ocsswSharedDir.setText(newDir.getAbsolutePath());
-                    pc.setValue(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, ocsswSharedDir.getText());
+                    textField.setText(newDir.getAbsolutePath());
+                    pc.setValue(propertyName, textField.getText());
                 }
             }
         });
-
-        ocsswSharedDirButton.setMinimumSize(ocsswSharedDirButton.getPreferredSize());
+        button.setMinimumSize(button.getPreferredSize());
 
         gbc.gridx = 0;
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
-        panel.add(ocsswSharedDirLabel, gbc);
+        panel.add(label, gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(ocsswSharedDir, gbc);
+        panel.add(textField, gbc);
 
         gbc.gridx = 2;
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
-        panel.add(ocsswSharedDirButton, gbc);
-
-        panel.setMinimumSize(panel.getMinimumSize());
-
-
-        return panel;
+        panel.add(button, gbc);
     }
 
     private JPanel getVirtualMachinePanel() {
@@ -888,11 +894,14 @@ public class OCSSWInfoGUI {
                 break;
 
             case OCSSW_LOCATION_VIRTUAL_MACHINE:
-            case OCSSW_LOCATION_DOCKER:
                 if (!directoryCheck(OCSSW_SHARED_DIR_LABEL, ocsswSharedDir.getText())) {
                     return false;
                 }
 
+                break;
+
+            case OCSSW_LOCATION_DOCKER:
+                // start_ocssw_docker creates both directories when it starts the container.
                 break;
 
             case OCSSW_LOCATION_REMOTE_SERVER:

@@ -46,6 +46,11 @@ public class OCSSWConfigData {
     final static String SEADAS_OCSSW_SERVER_ADDRESS_PROPERTY = "seadas.ocssw.serverAddress";
     final static String SEADAS_CLIENT_ID_PROPERTY = "seadas.client.id";
     public final static String SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY = "seadas.ocssw.sharedDir";
+    // Host directory mounted as /root/ocssw in the ocssw-run container.  Kept apart from the
+    // local OCSSW default (~/ocssw) so a native OCSSW and the Linux one in Docker never mix.
+    public final static String SEADAS_OCSSW_DOCKER_DIR_PROPERTY = "seadas.ocssw.dockerDir";
+    // Optional override of the ocssw-run image; by default seadas/ocssw-run:<SeaDAS version>.
+    public final static String SEADAS_OCSSW_DOCKER_IMAGE_PROPERTY = "seadas.ocssw.dockerImage";
     final static String SEADAS_OCSSW_VERSION_NUMBER_PROEPRETY ="seadas.ocssw.version";
     final static String SEADAS_OCSSW_DEBUG ="seadas.ocssw.debug";
 
@@ -60,6 +65,7 @@ public class OCSSWConfigData {
     final static String SEADAS_CLIENT_ID_DEFAULT_VALUE = System.getProperty("user.name");
     //public final static String SEADAS_CLIENT_SERVER_SHARED_DIR_DEFAULT_VALUE =  System.getProperty("user.home") + File.separator + "seadasClientServerShared";
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_NAME = "seadasClientServerShared";
+    final static String SEADAS_OCSSW_DOCKER_DIR_NAME = "ocssw-docker";
     final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "false";
     public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "V2026.0";
     public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT = "";
@@ -69,6 +75,7 @@ public class OCSSWConfigData {
     final static String OCSSW_TAG_LABEL = "Valid OCSSW Tags";
     final static String OCSSW_LOCATION_LABEL = "OCSSW Location";
     final static String OCSSW_SHARED_DIR_LABEL = "OCSSW Shared Dir";
+    final static String OCSSW_DOCKER_DIR_LABEL = "OCSSW Docker Dir";
     final static String OCSSW_ROOT_LABEL = "OCSSW ROOT";
     final static String OCSSW_SERVER_ADDRESS_LABEL = "OCSSW Server Address";
     final static String SERVER_PORT_LABEL = "Server Port";
@@ -106,6 +113,10 @@ public class OCSSWConfigData {
         Path path = Paths.get(System.getProperty("user.home"), SEADAS_CLIENT_SERVER_SHARED_DIR_NAME);
         SeadasFileUtils.debug("seadasClientServerDIR path: " + path.toString());
         return path.toString();
+    }
+
+    public static String getOcsswDockerDirDefaultValue() {
+        return Paths.get(System.getProperty("user.home"), SEADAS_OCSSW_DOCKER_DIR_NAME).toString();
     }
 
     public void updateconfigData(PropertyContainer pc) {

@@ -145,7 +145,7 @@ public class OCSSWInfo {
         }
     }
 
-    public static OCSSWInfo getInstance() {
+    public static synchronized OCSSWInfo getInstance() {
         if (ocsswInfo == null) {
             ocsswInfo = new OCSSWInfo();
             ocsswInfo.detectOcssw();
@@ -154,7 +154,7 @@ public class OCSSWInfo {
         return ocsswInfo;
     }
 
-    public static OCSSWInfo updateOCSSWInfo() {
+    public static synchronized OCSSWInfo updateOCSSWInfo() {
         ocsswInfo = new OCSSWInfo();
         ocsswInfo.detectOcssw();
         return ocsswInfo;

@@ -79,6 +79,26 @@
                  <li><b>Server Error Stream Port</b></li>
              </ul>
          </li>
+         <li><b>docker</b> -  OCSSW runs in a Docker container (the <i>seadas/ocssw-run</i> image) on this machine.
+             Requires Docker Desktop (Windows, macOS) or Docker Engine (Linux).
+             <ul>
+                 <li><b>OCSSW Shared Dir</b> - the directory shared by SeaDAS and the container: input files are
+                     copied into it and OCSSW writes its output there (default: ~/seadasClientServerShared)</li>
+             </ul>
+             <ul>
+                 <li><b>OCSSW Docker Dir</b> - the directory where the container keeps its OCSSW installation
+                     (default: ~/ocssw-docker).  It is kept apart from a local OCSSW (~/ocssw), which is built for
+                     this machine and cannot run in the Linux container.</li>
+             </ul>
+             <p>SeaDAS starts the container itself when <b>docker</b> is selected, at SeaDAS startup and whenever
+                 an OCSSW processor is run while the OCSSW server is not answering.  It downloads the image the
+                 first time (this can take several minutes), creates both directories, copies your Earthdata Login
+                 file (~/.netrc, or _netrc on Windows) into the shared directory and starts the container, named
+                 <i>seadas-ocssw</i>.  The container keeps running after SeaDAS exits.  After the first start,
+                 install OCSSW with the OCSSW Manager.</p>
+             <p>To start the container without SeaDAS, run <b>bin/start_ocssw_docker</b> (Linux, macOS) or
+                 <b>bin\start_ocssw_docker.ps1</b> (Windows) from the SeaDAS installation directory.</p>
+         </li>
 </ul>
 </p>
 <p>Note: this tool updates the configuration file: <b>~/.seadas9/etc/seadas.properties</b></p>

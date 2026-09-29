@@ -65,7 +65,8 @@ public class GetSysInfoGUI {
     private String ocsswRunnerScriptPath;
     private String ocsswBinDirPath;
     private String ocsswRootEnv = System.getenv(SEADAS_OCSSW_ROOT_ENV);
-    String ocsswRootDocker = SystemUtils.getUserHomeDir().toString() + File.separator + "ocssw";
+    String ocsswRootDocker = Config.instance("seadas").load().preferences()
+            .get(OCSSWConfigData.SEADAS_OCSSW_DOCKER_DIR_PROPERTY, OCSSWConfigData.getOcsswDockerDirDefaultValue());
 
 
     private String DASHES = "-----------------------------------------------------------------------";
