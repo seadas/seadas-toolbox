@@ -107,11 +107,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.11.0</version>
                 <inherited>true</inherited>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                <!-- Override, not merge: the root POM's release 17 and JavaFX/NetBeans compilerArgs don't apply to this
+                     standalone server, which runs on the Java 11 runtime in the ocssw-run Docker image. -->
+                <configuration combine.self="override">
+                    <release>8</release>
+                    <encoding>UTF-8</encoding>
+                    <debug>true</debug>
                 </configuration>
             </plugin>
             <plugin>

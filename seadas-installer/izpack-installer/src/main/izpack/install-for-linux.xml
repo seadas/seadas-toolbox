@@ -81,8 +81,8 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="ceresContext" value="seadas"/>
         <variable name="seadasDebug" value="false"/>
-        <variable name="maxHeapSize" value="4096M"/>
-        <variable name="installer:maxHeapSize" value="4096M"/>
+        <variable name="maxHeapSize" value="12G"/>
+        <variable name="installer:maxHeapSize" value="12G"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
         <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>
