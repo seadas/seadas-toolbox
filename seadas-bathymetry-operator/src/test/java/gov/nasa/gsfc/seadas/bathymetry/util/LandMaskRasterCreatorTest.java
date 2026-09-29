@@ -16,6 +16,7 @@
 
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -28,6 +29,7 @@ import static org.junit.Assert.assertEquals;
  * @author Thomas Storm
  */
 @SuppressWarnings({"ReuseOfLocalVariable"})
+@Ignore("Copied from the watermask tests without their test resources (.png, .shp, .zip), which are missing from this module.")
 public class LandMaskRasterCreatorTest {
 
     @Test

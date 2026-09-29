@@ -4,6 +4,7 @@ import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.dataop.maptransf.Datum;
 import org.esa.snap.core.gpf.GPF;
 import org.esa.snap.core.gpf.graph.GraphException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by knowles on 5/31/17.
  */
+@Ignore("Needs the bathymetry auxdata, which is not available in a unit test run: BathymetryOp fails with bathymetryReader == null.")
 public class BathymetryOpTest {
 
 

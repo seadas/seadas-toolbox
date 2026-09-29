@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.util;
 
 import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryUtils;
-import junit.framework.TestCase;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;
@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.zip.ZipFile;
 
 import static org.esa.snap.core.util.Debug.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
-public class ShapeFileRasterizerTest extends TestCase {
+@Ignore("Copied from the watermask tests without their test resources (.png, .shp, .zip), which are missing from this module.")
+public class ShapeFileRasterizerTest {
 
     @Test
     public void testImageCreation() throws Exception {
