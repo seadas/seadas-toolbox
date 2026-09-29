@@ -909,7 +909,7 @@ public class OBDAACDataBrowser extends JPanel {
         if (helpId != null) {
             final AbstractButton helpButton = ToolButtonFactory.createButton(UIUtils.loadImageIcon(HELP_ICON),
                     false);
-            helpButton.setToolTipText("Help for OB_CLOUD Data Browser");
+            helpButton.setToolTipText("Help for Earthdata Cloud Data Browser");
             helpButton.setName("helpButton");
             helpButton.addActionListener(e -> getHelpCtx(helpId).display());
             return helpButton;
@@ -2890,7 +2890,7 @@ public class OBDAACDataBrowser extends JPanel {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("OB_CLOUD Data Browser via Harmony Search Service");
+            JFrame frame = new JFrame("Earthdata Cloud Data Browser");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setContentPane(new OBDAACDataBrowser(new JDialog()));
             frame.setSize(900, 700);

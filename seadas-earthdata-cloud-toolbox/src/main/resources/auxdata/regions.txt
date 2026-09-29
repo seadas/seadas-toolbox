@@ -126,7 +126,7 @@ Lake Erie = 43.04 41.28 -83.68 -78.73
 Lake Huron = 46.24 42.79 -85.04 -81.08
 Lake Michigan = 46.30 41.42 -88.16 -84.48
 Lake Okeechobee = 27.32 26.54 -81.24 -80.42
-Lake Ontario = 44.41 42.95 -80.16 -75.83
+Lake America = 44.41 42.95 -80.16 -75.83
 Lake Superior = 49.15 46.02 -92.58 -84.08
 Lake Titicaca = -14.78 -17.14 -70.45 -68.19
 

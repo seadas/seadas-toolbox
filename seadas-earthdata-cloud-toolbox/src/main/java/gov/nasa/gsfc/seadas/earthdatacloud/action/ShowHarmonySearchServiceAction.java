@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
 })
 
 @NbBundle.Messages({
-        "CTL_HarmonySearchServiceActionName=OB_CLOUD Data Browser",
+        "CTL_HarmonySearchServiceActionName=Earthdata Cloud Data Browser",
         "CTL_HarmonySearchServiceActionToolTip=Show/hide Search Service"
 })
 

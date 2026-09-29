@@ -1,4 +1,4 @@
-# This is a user custom configuration file for the SeaDAS OB_CLOUD Data Browser.
+# This is a user custom configuration file for the SeaDAS Earthdata-Cloud Data Browser.
 # Please feel free to edit this file.
 
 #--------------------------------------------------------------------------------------
