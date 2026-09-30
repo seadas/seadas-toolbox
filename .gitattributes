@@ -4,6 +4,11 @@
 *.sh                                                                text eol=lf
 seadas-ocsswrest/docker/**                                          text eol=lf
 seadas-installer/izpack-installer/src/main/izpack/packs/files/unix/bin/*  text eol=lf
+# macOS launchers without an extension (that directory also holds binary .nib/.icns files).
+seadas-installer/izpack-installer/src/main/izpack/packs/files/macosx/bin/gpt                              text eol=lf
+seadas-installer/izpack-installer/src/main/izpack/packs/files/macosx/bin/pconvert                         text eol=lf
+seadas-installer/izpack-installer/src/main/izpack/packs/files/macosx/bin/seadas                           text eol=lf
+seadas-installer/izpack-installer/src/main/izpack/packs/files/macosx/bin/seadas.app/Contents/Resources/script  text eol=lf
 
 # Never convert images, even when a pattern above matches them.
 *.png  binary
