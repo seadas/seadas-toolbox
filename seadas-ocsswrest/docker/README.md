@@ -23,6 +23,12 @@ SKIP_MAVEN=1 seadas-ocsswrest/docker/build.sh           # reuse target/seadas-oc
 the jar; `build.sh` runs `mvn package` on the module itself (the parent POM must be
 resolvable, i.e. run it from a seadas-toolbox checkout).
 
+On Windows, run it from WSL or Git Bash. The repository's `.gitattributes` keeps
+`build.sh`, `entrypoint.sh` and the rest of this directory LF-only; a checkout made
+before that file existed may still have CRLF endings, which make bash fail with
+`/bin/bash^M: bad interpreter` and would leave a broken `entrypoint.sh` in the image.
+Refresh it with `rm seadas-ocsswrest/docker/* && git checkout -- seadas-ocsswrest/docker`.
+
 Publish with `docker push seadas/ocssw-run:<tag>`.
 
 ## Run
@@ -56,6 +62,24 @@ docker run -d --name seadas-ocssw --platform linux/amd64 \
   seadas/ocssw-run:12.0.0
 ```
 
+On Windows (PowerShell):
+
+```powershell
+docker run -d --name seadas-ocssw --platform linux/amd64 `
+  -p 6400:6400 -p 6402:6402 -p 6403:6403 `
+  -v "$env:USERPROFILE\seadasClientServerShared:/root/seadasClientServerShared" `
+  -v "$env:USERPROFILE\ocssw-docker:/root/ocssw" `
+  seadas/ocssw-run:12.0.0
+```
+
+**Both `-v` mounts are required.** A container started without them, e.g. a plain
+`docker run seadas/ocssw-run:12.0.0` or the *Run* button in Docker Desktop, still
+starts and answers on port 6400, but Docker gives both directories empty anonymous
+volumes instead: the server never sees the client's shared directory (so no input
+files and no `.netrc`), and OCSSW installed into it is lost when the container is
+removed. Remove such a container (`docker rm -f seadas-ocssw`) and let SeaDAS or the
+script recreate it.
+
 - **Shared directory.** The host side must be the directory set as *OCSSW Shared Dir*
   in SeaDAS. SeaDAS copies input files into it, including the band files next to a
   Landsat `*_MTL.txt`, and OCSSW writes outputs there.
@@ -64,7 +88,8 @@ docker run -d --name seadas-ocssw --platform linux/amd64 \
   deliberately not `~/ocssw`, the default for a local (macOS or Linux) OCSSW.
 - **Earthdata Login.** The server copies `.netrc` from the shared directory to
   `/root/.netrc` when it starts. Never bake credentials into the image. If there is
-  none, the server logs a `NoSuchFileException` for it and carries on.
+  none, the server logs `No .netrc in the shared directory` and carries on; check
+  `docker logs seadas-ocssw` for `Copied .netrc from the shared directory`.
 - **Apple Silicon.** The image is linux/amd64 only and runs under emulation.
 - **Memory.** The server heap defaults to `-Xmx4G`; change it with
   `-e OCSSW_SERVER_JAVA_OPTS=-Xmx8G`. OCSSW programs run as separate processes and are
