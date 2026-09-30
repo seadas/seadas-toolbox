@@ -16,10 +16,8 @@
 package gov.nasa.gsfc.seadas.processing.help;
 
 import org.esa.snap.runtime.Config;
-//import org.esa.snap;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
@@ -29,20 +27,20 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowSeaDASTutorialsAction")
+@ActionID(category = "Help", id = "ShowSeaDASWikiAction")
 @ActionRegistration(
-        displayName = "#CTL_ShowSeaDASTutorialsAction_MenuText",
-        popupText = "#CTL_ShowSeaDASTutorialsAction_MenuText")
+        displayName = "#CTL_ShowSeaDASWikiAction_MenuText",
+        popupText = "#CTL_ShowSeaDASWikiAction_MenuText")
 @ActionReference(
         path = "Menu/Help",
-        position = 203)
+        position = 201)
 @NbBundle.Messages({
-        "CTL_ShowSeaDASTutorialsAction_MenuText=SeaDAS on Help Hub",
-        "CTL_ShowSeaDASTutorialsAction_ShortDescription=Browse the SeaDAS tutorials on the NASA Help Hub web page"
+        "CTL_ShowSeaDASWikiAction_MenuText=SeaDAS Wiki",
+        "CTL_ShowSeaDASWikiAction_ShortDescription=Browse the SeaDAS wiki on github web"
 })
-public class ShowSeadasTutorialsAction extends AbstractAction {
+public class ShowSeadasWikiAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://nasa.github.io/oceandata-notebooks/sections/seadas-toolbox.html";
+    private static final String DEFAULT_PAGE_URL = "https://github.com/seadas/seadas-toolbox/wiki";
 
     /**
      * Launches the default browser to display the web site.
@@ -52,6 +50,6 @@ public class ShowSeadasTutorialsAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.tutorials", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.wiki", DEFAULT_PAGE_URL));
     }
 }
