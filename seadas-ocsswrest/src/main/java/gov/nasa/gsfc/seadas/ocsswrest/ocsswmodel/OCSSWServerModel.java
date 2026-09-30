@@ -261,15 +261,16 @@ public class OCSSWServerModel {
     }
 
     public static void copyNetrcFile() {
+        File sourceFile = new File(System.getProperty("user.home") + File.separator + "seadasClientServerShared" + File.separator + ".netrc");
         File targetFile = new File(System.getProperty("user.home") + File.separator + ".netrc");
+        if (!sourceFile.exists()) {
+            System.out.println("No .netrc in the shared directory; keeping " + targetFile.getAbsolutePath()
+                    + (targetFile.exists() ? "" : " (none present, Earthdata downloads will need credentials)"));
+            return;
+        }
         try {
-            targetFile.createNewFile();
-            Path targetPath = targetFile.toPath();
-            File sourceFile = new File(System.getProperty("user.home") + File.separator + "seadasClientServerShared" + File.separator + ".netrc");
-            Path sourcePath = sourceFile.toPath();
-            System.out.println(".netrc in seadasClientServer " + sourceFile.exists());
-            System.out.println(".netrc in home dir " + targetFile.exists());
-            Files.copy(sourcePath, targetPath, REPLACE_EXISTING);
+            Files.copy(sourceFile.toPath(), targetFile.toPath(), REPLACE_EXISTING);
+            System.out.println("Copied .netrc from the shared directory to " + targetFile.getAbsolutePath());
         } catch (java.io.IOException ioException) {
             ioException.printStackTrace();
         }

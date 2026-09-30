@@ -82,7 +82,7 @@ public class OCSSWRestServer extends ResourceConfig {
         BASE_URI = "http://"+ SERVER_API + ":" + baseUriPortNumber + "/" + OCSSW_REST_SERVICES_CONTEXT_PATH + "/";
         SQLiteJDBC.createTables();
         OCSSWServerModel.initiliaze();
-        System.out.println(String.format("ORS is starting at ", BASE_URI));
+        System.out.println(String.format("ORS is starting at %s", BASE_URI));
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey new app started with WADL available at "
                 + "%sapplication.wadl\nPress 'Ctrl' + 'C'  to stop it...", BASE_URI));
