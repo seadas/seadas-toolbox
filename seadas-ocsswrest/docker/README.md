@@ -52,7 +52,7 @@ The script:
 SeaDAS asks for the image matching its own version (the `seadas.ocssw.dockerImage`
 preference overrides it), so **every SeaDAS release needs `seadas/ocssw-run:<version>`
 pushed to Docker Hub**. The script can also be run by hand; `--help` lists its options.
-What it does amounts to:
+What it does amounts to, on Linux and macOS:
 
 ```bash
 docker run -d --name seadas-ocssw --platform linux/amd64 \
@@ -62,7 +62,10 @@ docker run -d --name seadas-ocssw --platform linux/amd64 \
   seadas/ocssw-run:12.0.0
 ```
 
-On Windows (PowerShell):
+On Windows, in PowerShell. Don't paste the Linux command there: PowerShell continues
+lines with a backtick, not `\`, so each line runs on its own and no container is created.
+Don't run it from WSL either; there `$HOME` is the WSL home, not the Windows user folder
+SeaDAS uses.
 
 ```powershell
 docker run -d --name seadas-ocssw --platform linux/amd64 `
