@@ -1,0 +1,11 @@
+# Files that run inside Linux (shell scripts, the Docker image build context) must keep
+# LF line endings even in a Windows checkout with core.autocrlf=true, or bash fails
+# with "/bin/bash^M: bad interpreter".
+*.sh                                                                text eol=lf
+seadas-ocsswrest/docker/**                                          text eol=lf
+seadas-installer/izpack-installer/src/main/izpack/packs/files/unix/bin/*  text eol=lf
+
+# Never convert images, even when a pattern above matches them.
+*.png  binary
+*.ico  binary
+*.icns binary
