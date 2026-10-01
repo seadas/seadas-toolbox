@@ -1,22 +1,22 @@
 {
-    "L3b": [
-        {
-            "product_name": "ILW",
-            "short_name": "MERGED_S3_OLCI_L3b_ILW"
-        }
-    ],
     "L3m": [
         {
-            "product_name": "CYANTC",
-            "short_name": "MERGED_S3_OLCI_L3m_CYANTC"
+            "product_name": "ILW",
+            "short_name": "MERGED_S3_OLCI_L3m_ILW"
         },
         {
             "product_name": "CYAN",
             "short_name": "MERGED_S3_OLCI_L3m_CYAN"
         },
         {
+            "product_name": "CYANTC",
+            "short_name": "MERGED_S3_OLCI_L3m_CYANTC"
+        }
+    ],
+    "L3b": [
+        {
             "product_name": "ILW",
-            "short_name": "MERGED_S3_OLCI_L3m_ILW"
+            "short_name": "MERGED_S3_OLCI_L3b_ILW"
         }
     ]
 }

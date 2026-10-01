@@ -1,10 +1,4 @@
 {
-    "L0": [
-        {
-            "product_name": "General",
-            "short_name": "CZCS_L0"
-        }
-    ],
     "L1": [
         {
             "product_name": "General",
@@ -15,6 +9,12 @@
         {
             "product_name": "OC",
             "short_name": "CZCS_L2_OC"
+        }
+    ],
+    "L0": [
+        {
+            "product_name": "General",
+            "short_name": "CZCS_L0"
         }
     ],
     "L3b": [

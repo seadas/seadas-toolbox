@@ -1,212 +1,144 @@
 {
-    "L0": [
-        {
-            "product_name": "SCI",
-            "short_name": "PACE_OCI_L0_SCI"
-        }
-    ],
-    "L1A": [
-        {
-            "product_name": "SCI",
-            "short_name": "PACE_OCI_L1A_SCI"
-        }
-    ],
-    "L1B": [
-        {
-            "product_name": "SCI",
-            "short_name": "PACE_OCI_L1B_SCI"
-        }
-    ],
-    "L1C": [
-        {
-            "product_name": "SCI",
-            "short_name": "PACE_OCI_L1C_SCI"
-        }
-    ],
     "L2": [
-        {
-            "product_name": "UVAI_UAA_NRT",
-            "short_name": "PACE_OCI_L2_UVAI_UAA_NRT"
-        },
-        {
-            "product_name": "UVAI_UAA",
-            "short_name": "PACE_OCI_L2_UVAI_UAA"
-        },
-        {
-            "product_name": "AER_UAA_NRT",
-            "short_name": "PACE_OCI_L2_AER_UAA_NRT"
-        },
-        {
-            "product_name": "AER_UAA",
-            "short_name": "PACE_OCI_L2_AER_UAA"
-        },
-        {
-            "product_name": "AOP_NRT",
-            "short_name": "PACE_OCI_L2_AOP_NRT"
-        },
         {
             "product_name": "AOP",
             "short_name": "PACE_OCI_L2_AOP"
-        },
-        {
-            "product_name": "CLOUD_MASK_NRT",
-            "short_name": "PACE_OCI_L2_CLOUD_MASK_NRT"
-        },
-        {
-            "product_name": "CLOUD_MASK",
-            "short_name": "PACE_OCI_L2_CLOUD_MASK"
-        },
-        {
-            "product_name": "CLOUD_NRT",
-            "short_name": "PACE_OCI_L2_CLOUD_NRT"
-        },
-        {
-            "product_name": "CLOUD",
-            "short_name": "PACE_OCI_L2_CLOUD"
-        },
-        {
-            "product_name": "LANDVI_NRT",
-            "short_name": "PACE_OCI_L2_LANDVI_NRT"
-        },
-        {
-            "product_name": "LANDVI",
-            "short_name": "PACE_OCI_L2_LANDVI"
-        },
-        {
-            "product_name": "BGC_NRT",
-            "short_name": "PACE_OCI_L2_BGC_NRT"
         },
         {
             "product_name": "BGC",
             "short_name": "PACE_OCI_L2_BGC"
         },
         {
-            "product_name": "IOP_NRT",
-            "short_name": "PACE_OCI_L2_IOP_NRT"
+            "product_name": "SFREFL",
+            "short_name": "PACE_OCI_L2_SFREFL"
         },
         {
-            "product_name": "IOP",
-            "short_name": "PACE_OCI_L2_IOP"
+            "product_name": "BGC_NRT",
+            "short_name": "PACE_OCI_L2_BGC_NRT"
         },
         {
-            "product_name": "PAR_NRT",
-            "short_name": "PACE_OCI_L2_PAR_NRT"
-        },
-        {
-            "product_name": "PAR",
-            "short_name": "PACE_OCI_L2_PAR"
+            "product_name": "AOP_NRT",
+            "short_name": "PACE_OCI_L2_AOP_NRT"
         },
         {
             "product_name": "SFREFL_NRT",
             "short_name": "PACE_OCI_L2_SFREFL_NRT"
         },
         {
-            "product_name": "SFREFL",
-            "short_name": "PACE_OCI_L2_SFREFL"
+            "product_name": "AER_UAA",
+            "short_name": "PACE_OCI_L2_AER_UAA"
+        },
+        {
+            "product_name": "IOP",
+            "short_name": "PACE_OCI_L2_IOP"
+        },
+        {
+            "product_name": "LANDVI",
+            "short_name": "PACE_OCI_L2_LANDVI"
+        },
+        {
+            "product_name": "TRGAS",
+            "short_name": "PACE_OCI_L2_TRGAS"
+        },
+        {
+            "product_name": "CLOUD_MASK",
+            "short_name": "PACE_OCI_L2_CLOUD_MASK"
+        },
+        {
+            "product_name": "CLOUD_MASK_NRT",
+            "short_name": "PACE_OCI_L2_CLOUD_MASK_NRT"
+        },
+        {
+            "product_name": "CLOUD",
+            "short_name": "PACE_OCI_L2_CLOUD"
+        },
+        {
+            "product_name": "IOP_NRT",
+            "short_name": "PACE_OCI_L2_IOP_NRT"
+        },
+        {
+            "product_name": "AER_UAA_NRT",
+            "short_name": "PACE_OCI_L2_AER_UAA_NRT"
+        },
+        {
+            "product_name": "PAR",
+            "short_name": "PACE_OCI_L2_PAR"
+        },
+        {
+            "product_name": "UVAI_UAA",
+            "short_name": "PACE_OCI_L2_UVAI_UAA"
+        },
+        {
+            "product_name": "CLOUD_NRT",
+            "short_name": "PACE_OCI_L2_CLOUD_NRT"
+        },
+        {
+            "product_name": "UVAI_UAA_NRT",
+            "short_name": "PACE_OCI_L2_UVAI_UAA_NRT"
+        },
+        {
+            "product_name": "LANDVI_NRT",
+            "short_name": "PACE_OCI_L2_LANDVI_NRT"
         },
         {
             "product_name": "TRGAS_NRT",
             "short_name": "PACE_OCI_L2_TRGAS_NRT"
         },
         {
-            "product_name": "TRGAS",
-            "short_name": "PACE_OCI_L2_TRGAS"
+            "product_name": "CLOSE",
+            "short_name": "PACE_OCI_L2_CLOSE"
+        },
+        {
+            "product_name": "PAR_NRT",
+            "short_name": "PACE_OCI_L2_PAR_NRT"
         }
     ],
-    "L3B": [
+    "L1B": [
         {
-            "product_name": "LANDVI_NRT",
-            "short_name": "PACE_OCI_L3B_LANDVI_NRT"
+            "product_name": "SCI",
+            "short_name": "PACE_OCI_L1B_SCI"
         },
         {
-            "product_name": "LANDVI",
-            "short_name": "PACE_OCI_L3B_LANDVI"
-        },
-        {
-            "product_name": "SFREFL_NRT",
-            "short_name": "PACE_OCI_L3B_SFREFL_NRT"
-        },
-        {
-            "product_name": "SFREFL",
-            "short_name": "PACE_OCI_L3B_SFREFL"
+            "product_name": "CLOSE",
+            "short_name": "PACE_OCI_L1B_CLOSE"
         }
     ],
     "L3M": [
         {
-            "product_name": "UVAI_UAA_NRT",
-            "short_name": "PACE_OCI_L3M_UVAI_UAA_NRT"
-        },
-        {
-            "product_name": "UVAI_UAA",
-            "short_name": "PACE_OCI_L3M_UVAI_UAA"
-        },
-        {
-            "product_name": "AER_UAA_NRT",
-            "short_name": "PACE_OCI_L3M_AER_UAA_NRT"
-        },
-        {
-            "product_name": "AER_UAA",
-            "short_name": "PACE_OCI_L3M_AER_UAA"
-        },
-        {
-            "product_name": "AOP_NRT",
-            "short_name": "PACE_OCI_L3M_AOP_NRT"
-        },
-        {
-            "product_name": "AOP",
-            "short_name": "PACE_OCI_L3M_AOP"
-        },
-        {
-            "product_name": "CLOUD_MASK_NRT",
-            "short_name": "PACE_OCI_L3M_CLOUD_MASK_NRT"
-        },
-        {
-            "product_name": "CLOUD_MASK",
-            "short_name": "PACE_OCI_L3M_CLOUD_MASK"
-        },
-        {
-            "product_name": "CLOUD_NRT",
-            "short_name": "PACE_OCI_L3M_CLOUD_NRT"
-        },
-        {
-            "product_name": "CLOUD",
-            "short_name": "PACE_OCI_L3M_CLOUD"
-        },
-        {
-            "product_name": "KD_NRT",
-            "short_name": "PACE_OCI_L3M_KD_NRT"
-        },
-        {
-            "product_name": "KD",
-            "short_name": "PACE_OCI_L3M_KD"
-        },
-        {
-            "product_name": "LANDVI_NRT",
-            "short_name": "PACE_OCI_L3M_LANDVI_NRT"
+            "product_name": "BGC",
+            "short_name": "PACE_OCI_L3M_BGC"
         },
         {
             "product_name": "LANDVI",
             "short_name": "PACE_OCI_L3M_LANDVI"
         },
         {
+            "product_name": "AOP",
+            "short_name": "PACE_OCI_L3M_AOP"
+        },
+        {
             "product_name": "BGC_NRT",
             "short_name": "PACE_OCI_L3M_BGC_NRT"
-        },
-        {
-            "product_name": "BGC",
-            "short_name": "PACE_OCI_L3M_BGC"
-        },
-        {
-            "product_name": "IOP_NRT",
-            "short_name": "PACE_OCI_L3M_IOP_NRT"
         },
         {
             "product_name": "IOP",
             "short_name": "PACE_OCI_L3M_IOP"
         },
         {
-            "product_name": "PAR_NRT",
-            "short_name": "PACE_OCI_L3M_PAR_NRT"
+            "product_name": "SFREFL",
+            "short_name": "PACE_OCI_L3M_SFREFL"
+        },
+        {
+            "product_name": "AER_UAA",
+            "short_name": "PACE_OCI_L3M_AER_UAA"
+        },
+        {
+            "product_name": "IOP_NRT",
+            "short_name": "PACE_OCI_L3M_IOP_NRT"
+        },
+        {
+            "product_name": "KD",
+            "short_name": "PACE_OCI_L3M_KD"
         },
         {
             "product_name": "PAR",
@@ -217,34 +149,122 @@
             "short_name": "PACE_OCI_L3M_SFREFL_NRT"
         },
         {
-            "product_name": "SFREFL",
-            "short_name": "PACE_OCI_L3M_SFREFL"
+            "product_name": "TRGAS",
+            "short_name": "PACE_OCI_L3M_TRGAS"
+        },
+        {
+            "product_name": "AOP_NRT",
+            "short_name": "PACE_OCI_L3M_AOP_NRT"
+        },
+        {
+            "product_name": "CLOUD",
+            "short_name": "PACE_OCI_L3M_CLOUD"
+        },
+        {
+            "product_name": "CLOUD_NRT",
+            "short_name": "PACE_OCI_L3M_CLOUD_NRT"
+        },
+        {
+            "product_name": "AER_UAA_NRT",
+            "short_name": "PACE_OCI_L3M_AER_UAA_NRT"
+        },
+        {
+            "product_name": "CLOSE",
+            "short_name": "PACE_OCI_L3M_CLOSE"
+        },
+        {
+            "product_name": "KD_NRT",
+            "short_name": "PACE_OCI_L3M_KD_NRT"
+        },
+        {
+            "product_name": "LANDVI_NRT",
+            "short_name": "PACE_OCI_L3M_LANDVI_NRT"
+        },
+        {
+            "product_name": "PAR_NRT",
+            "short_name": "PACE_OCI_L3M_PAR_NRT"
         },
         {
             "product_name": "TRGAS_NRT",
             "short_name": "PACE_OCI_L3M_TRGAS_NRT"
         },
         {
-            "product_name": "TRGAS",
-            "short_name": "PACE_OCI_L3M_TRGAS"
+            "product_name": "UVAI_UAA",
+            "short_name": "PACE_OCI_L3M_UVAI_UAA"
+        },
+        {
+            "product_name": "UVAI_UAA_NRT",
+            "short_name": "PACE_OCI_L3M_UVAI_UAA_NRT"
+        }
+    ],
+    "L1C": [
+        {
+            "product_name": "SCI",
+            "short_name": "PACE_OCI_L1C_SCI"
         }
     ],
     "L4M": [
         {
-            "product_name": "NPP_CAFE_NRT",
-            "short_name": "PACE_OCI_L4M_NPP_CAFE_NRT"
+            "product_name": "MOANA",
+            "short_name": "PACE_OCI_L4M_MOANA"
         },
         {
             "product_name": "NPP_CAFE",
             "short_name": "PACE_OCI_L4M_NPP_CAFE"
         },
         {
-            "product_name": "MOANA",
-            "short_name": "PACE_OCI_L4M_MOANA"
-        },
-        {
             "product_name": "MOANA_NRT",
             "short_name": "PACE_OCI_L4M_MOANA_NRT"
+        },
+        {
+            "product_name": "NPP_CAFE_NRT",
+            "short_name": "PACE_OCI_L4M_NPP_CAFE_NRT"
+        }
+    ],
+    "L1A": [
+        {
+            "product_name": "SCI",
+            "short_name": "PACE_OCI_L1A_SCI"
+        }
+    ],
+    "L0": [
+        {
+            "product_name": "SCI",
+            "short_name": "PACE_OCI_L0_SCI"
+        }
+    ],
+    "L3B": [
+        {
+            "product_name": "CLOSE",
+            "short_name": "PACE_OCI_L3B_CLOSE"
+        },
+        {
+            "product_name": "IOP_NRT",
+            "short_name": "PACE_OCI_L3B_IOP_NRT"
+        },
+        {
+            "product_name": "KD_NRT",
+            "short_name": "PACE_OCI_L3B_KD_NRT"
+        },
+        {
+            "product_name": "LANDVI",
+            "short_name": "PACE_OCI_L3B_LANDVI"
+        },
+        {
+            "product_name": "LANDVI_NRT",
+            "short_name": "PACE_OCI_L3B_LANDVI_NRT"
+        },
+        {
+            "product_name": "PAR_NRT",
+            "short_name": "PACE_OCI_L3B_PAR_NRT"
+        },
+        {
+            "product_name": "SFREFL",
+            "short_name": "PACE_OCI_L3B_SFREFL"
+        },
+        {
+            "product_name": "SFREFL_NRT",
+            "short_name": "PACE_OCI_L3B_SFREFL_NRT"
         }
     ]
 }
