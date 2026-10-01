@@ -38,7 +38,9 @@ switching to docker, and whenever a processor is run while the server is not ans
 It runs `bin/start_ocssw_docker` (Linux, macOS) or `bin\start_ocssw_docker.ps1`
 (Windows) from the SeaDAS installation; the sources are in
 `seadas-installer/izpack-installer/src/main/izpack/packs/files/{unix,winx64}/bin/`.
-The script:
+A development run (application home `snap-desktop/snap-application/target/snap`) has no
+such `bin` script; start it with `-Dseadas.ocssw.docker.script=<path>` pointing at one
+of those sources.  The script:
 
 1. checks that Docker is installed and running (it starts Docker Desktop on macOS and Windows),
 2. creates the OCSSW directory (*OCSSW Docker Dir*, default `~/ocssw-docker`) and the

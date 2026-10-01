@@ -98,6 +98,9 @@
                  install OCSSW with the OCSSW Manager.</p>
              <p>To start the container without SeaDAS, run <b>bin/start_ocssw_docker</b> (Linux, macOS) or
                  <b>bin\start_ocssw_docker.ps1</b> (Windows) from the SeaDAS installation directory.</p>
+             <p>To have SeaDAS run a start script from another location, for example when running SeaDAS from a
+                 development build that has no <b>bin/start_ocssw_docker</b>, start SeaDAS with the Java option
+                 <b>-Dseadas.ocssw.docker.script=</b><i>&lt;full path of the script&gt;</i>.</p>
          </li>
 </ul>
 </p>
