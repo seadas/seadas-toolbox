@@ -85,7 +85,9 @@ for p in $PLATFORMS; do
     if [ "${p%-nojre}" = win ]; then
         echo
         echo "=================== $p: Inno Setup ==================="
-        docker run --rm -v "$PWD/target/windows:/work" "$INNO_IMAGE" seadas-windows.iss
+        # The compiler only reads and writes /work.  No network, so a missing
+        # or broken docker0 bridge on the host cannot fail the build.
+        docker run --rm --network none -v "$PWD/target/windows:/work" "$INNO_IMAGE" seadas-windows.iss
         # Written by the container's user: copy it rather than move it, so
         # the copy in OUTDIR belongs to whoever runs this script.
         for f in target/windows/out/*.exe; do
