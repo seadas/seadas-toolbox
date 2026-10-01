@@ -18,8 +18,8 @@
         <javax.ws.rs>2.1-m07</javax.ws.rs>
         <jersey.version>2.27</jersey.version>
         <grizzly.version>2.3.31</grizzly.version>
-        <junit.version>4.12</junit.version>
-        <sqlite.version>3.20.1</sqlite.version>
+        <junit.version>4.13.2</junit.version>
+        <sqlite.version>3.53.4.0</sqlite.version>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
