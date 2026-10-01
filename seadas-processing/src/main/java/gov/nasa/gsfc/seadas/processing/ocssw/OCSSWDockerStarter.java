@@ -33,6 +33,8 @@ public class OCSSWDockerStarter {
 
     private static final String SCRIPT_UNIX = "start_ocssw_docker";
     private static final String SCRIPT_WINDOWS = "start_ocssw_docker.ps1";
+    // Full path of the start script, overriding the one in the installation's bin.
+    private static final String SCRIPT_PROPERTY = "seadas.ocssw.docker.script";
     private static final String IMAGE_REPOSITORY = "seadas/ocssw-run";
     private static final String LOG_FILE_NAME = "ocssw_docker_start.log";
     private static final String TITLE = "OCSSW Docker";
@@ -71,11 +73,11 @@ public class OCSSWDockerStarter {
             return false;
         }
         try {
-            File script = findScript();
-            if (script == null) {
-                Dialogs.showError(TITLE, "Cannot find " + scriptName() + " in "
-                        + new File(SystemUtils.getApplicationHomeDir(), "bin")
-                        + ".\nStart the OCSSW Docker container yourself, see the SeaDAS help on OCSSW in Docker.");
+            File script = scriptFile();
+            if (!script.isFile()) {
+                Dialogs.showError(TITLE, "Cannot find " + script + ".\n"
+                        + "To use a copy elsewhere, set -D" + SCRIPT_PROPERTY + "=<path to " + scriptName() + ">.\n"
+                        + "Or start the OCSSW Docker container yourself, see the SeaDAS help on OCSSW in Docker.");
                 return false;
             }
 
@@ -143,9 +145,18 @@ public class OCSSWDockerStarter {
         return isWindows() ? SCRIPT_WINDOWS : SCRIPT_UNIX;
     }
 
-    private static File findScript() {
-        File script = new File(new File(SystemUtils.getApplicationHomeDir(), "bin"), scriptName());
-        return script.isFile() ? script : null;
+    /**
+     * The start script: the file named by -Dseadas.ocssw.docker.script if set,
+     * otherwise bin/start_ocssw_docker[.ps1] in the SeaDAS installation.  The
+     * property is for development runs, whose application home (for example
+     * snap-desktop/snap-application/target/snap) has no installer scripts.
+     */
+    private static File scriptFile() {
+        String path = System.getProperty(SCRIPT_PROPERTY);
+        if (path != null && !path.trim().isEmpty()) {
+            return new File(path.trim());
+        }
+        return new File(new File(SystemUtils.getApplicationHomeDir(), "bin"), scriptName());
     }
 
     private static List<String> buildCommand(File script) {
