@@ -6,26 +6,32 @@
 
     <folder name="Menu">
         <folder name="Help">
-            <folder name="SeaDAS">
-                <attr name="position" intvalue="1500"/>
-<!--                <folder name="Configuration">-->
-<!--                    <attr name="position" intvalue="20"/>-->
-<!--                    &lt;!&ndash;<file name="org-openide-actions-CutAction-separatorAfter.instance">&ndash;&gt;-->
-<!--                        &lt;!&ndash;<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>&ndash;&gt;-->
-<!--                        &lt;!&ndash;<attr name="position" intvalue="27"/>&ndash;&gt;-->
-<!--                    &lt;!&ndash;</file>&ndash;&gt;-->
-<!--                </folder>-->
-                <folder name="Data Access">
-                    <attr name="position" intvalue="100"/>
-                </folder>
-                <folder name="Video-Tutorials">
-                    <attr name="position" intvalue="101"/>
-                </folder>
-
-<!--                <folder name="Documentation">-->
-<!--                    <attr name="position" intvalue="200"/>-->
-<!--                </folder>-->
+            <folder name="SeaDAS Video Tutorials">
+                <attr name="position" intvalue="30"/>
             </folder>
+            <folder name="Data Access">
+                <attr name="position" intvalue="120"/>
+            </folder>
+<!--            <folder name="SeaDAS">-->
+<!--                <attr name="position" intvalue="1500"/>-->
+<!--&lt;!&ndash;                <folder name="Configuration">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <attr name="position" intvalue="20"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                    &lt;!&ndash;<file name="org-openide-actions-CutAction-separatorAfter.instance">&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                        &lt;!&ndash;<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                        &lt;!&ndash;<attr name="position" intvalue="27"/>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                    &lt;!&ndash;</file>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                </folder>&ndash;&gt;-->
+<!--                <folder name="Data Access">-->
+<!--                    <attr name="position" intvalue="100"/>-->
+<!--                </folder>-->
+<!--                <folder name="Video-Tutorials">-->
+<!--                    <attr name="position" intvalue="101"/>-->
+<!--                </folder>-->
+
+<!--&lt;!&ndash;                <folder name="Documentation">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <attr name="position" intvalue="200"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                </folder>&ndash;&gt;-->
+<!--            </folder>-->
         </folder>
 
 

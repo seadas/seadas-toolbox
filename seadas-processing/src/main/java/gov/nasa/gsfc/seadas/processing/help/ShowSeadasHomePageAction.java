@@ -34,11 +34,14 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowSeadasHomePageAction_MenuText")
 @ActionReferences({
         @ActionReference(
-                path = "Menu/Help/SeaDAS",
-                position = 10,
-                separatorBefore = 5,
-                separatorAfter = 15
+                path = "Menu/Help",
+                position = 10
         )
+//        @ActionReference(
+//                path = "Menu/Help",
+//                position = 10,
+//                separatorBefore = 5
+//        )
 //        @ActionReference(
 //                path = "Menu/SeaDAS-Toolbox",
 //                position = 3001,
@@ -47,7 +50,7 @@ import java.awt.event.ActionEvent;
 })
 
 @NbBundle.Messages({
-        "CTL_ShowSeadasHomePageAction_MenuText=SeaDAS Web",
+        "CTL_ShowSeadasHomePageAction_MenuText=SeaDAS on Earthdata Web",
         "CTL_ShowSeadasHomePageAction_ShortDescription=Browse the SeaDAS home page"
 })
 public class ShowSeadasHomePageAction extends AbstractAction {

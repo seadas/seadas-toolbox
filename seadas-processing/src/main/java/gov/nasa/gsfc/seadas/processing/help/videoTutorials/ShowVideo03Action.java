@@ -38,11 +38,11 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowVideo03Action_ShortDescription")
 
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Earthdata-Cloud", position = 40),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Science Processors (Installation)", position = 40),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/Earthdata-Cloud", position = 40),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/Science Processors (Installation)", position = 40),
 
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Earthdata-Cloud", position = 40),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Science Processors (Installation)", position = 40)
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_MENU_LOCATION + "/Earthdata-Cloud", position = 40),
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_MENU_LOCATION + "/Science Processors (Installation)", position = 40)
 })
 
 

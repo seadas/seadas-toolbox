@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowWebSeabassAction_MenuText",
         popupText = "#CTL_ShowWebSeabassAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS/Data Access",
+        path = "Menu/Help/Data Access",
         position = 70)
 @NbBundle.Messages({
         "CTL_ShowWebSeabassAction_MenuText=SeaBASS",

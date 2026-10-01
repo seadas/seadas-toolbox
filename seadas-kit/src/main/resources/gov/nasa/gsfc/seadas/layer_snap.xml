@@ -8,8 +8,7 @@
         <folder name="Help">
 
 
-            <folder name="SeaDAS">
-                <attr name="position" intvalue="1500"/>
+
 <!--                <folder name="Configuration">-->
 <!--                    <attr name="position" intvalue="20"/>-->
 <!--                    &lt;!&ndash;<file name="org-openide-actions-CutAction-separatorAfter.instance">&ndash;&gt;-->
@@ -17,13 +16,10 @@
 <!--                    &lt;!&ndash;<attr name="position" intvalue="27"/>&ndash;&gt;-->
 <!--                    &lt;!&ndash;</file>&ndash;&gt;-->
 <!--                </folder>-->
-                <folder name="Data Access">
-                    <attr name="position" intvalue="100"/>
-                </folder>
 
 
-                <folder name="Video-Tutorials">
-                    <attr name="position" intvalue="110"/>
+                <folder name="SeaDAS Video Tutorials">
+                    <attr name="position" intvalue="30"/>
 
                     <folder name="Overview">
                         <attr name="position" intvalue="100"/>
@@ -45,9 +41,9 @@
                         <attr name="position" intvalue="500"/>
                     </folder>
 
-                    <folder name="Science Processors">
-                        <attr name="position" intvalue="600"/>
-                    </folder>
+<!--                    <folder name="Science Processors">-->
+<!--                        <attr name="position" intvalue="600"/>-->
+<!--                    </folder>-->
 
 
                     <folder name="Earthdata-Cloud">
@@ -56,11 +52,15 @@
 
                 </folder>
 
+            <folder name="Data Access">
+                <attr name="position" intvalue="120"/>
+            </folder>
 
-                <!--                <folder name="Documentation">-->
+
+            <!--                <folder name="Documentation">-->
                 <!--                    <attr name="position" intvalue="200"/>-->
                 <!--                </folder>-->
-            </folder>
+
         </folder>
 
 

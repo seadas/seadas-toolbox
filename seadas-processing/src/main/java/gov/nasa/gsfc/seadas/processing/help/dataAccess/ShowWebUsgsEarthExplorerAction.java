@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowWebEarthExplorerAction_MenuText",
         popupText = "#CTL_ShowWebEarthExplorerAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS/Data Access",
+        path = "Menu/Help/Data Access",
         position = 80)
 @NbBundle.Messages({
         "CTL_ShowWebEarthExplorerAction_MenuText=USGS Earth Explorer",
