@@ -23,7 +23,7 @@ import java.awt.event.ActionListener;
  */
 @ActionID(category = "Help", id = "org.esa.snap.rcp.about.SeaDASAboutAction" )
 @ActionRegistration(displayName = "#CTL_SeaDASAboutAction_Name" )
-@ActionReference(path = "Menu/Help", position = 1000)
+@ActionReference(path = "Menu/Help", position = 1500)
 @Messages({
         "CTL_SeaDASAboutAction_Name=About SeaDAS-Toolbox",
         "CTL_SeaDASAboutAction_Title=About SeaDAS-Toolbox",
