@@ -38,9 +38,7 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowVideo08Action_ShortDescription")
 
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/General Tools", position = 20),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_MENU_LOCATION + "/General Tools", position = 20)
-})
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/General Tools", position = 20)})
 
 
 

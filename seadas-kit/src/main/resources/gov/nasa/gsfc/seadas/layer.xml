@@ -12,26 +12,26 @@
             <folder name="Data Access">
                 <attr name="position" intvalue="120"/>
             </folder>
-<!--            <folder name="SeaDAS">-->
-<!--                <attr name="position" intvalue="1500"/>-->
-<!--&lt;!&ndash;                <folder name="Configuration">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <attr name="position" intvalue="20"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                    &lt;!&ndash;<file name="org-openide-actions-CutAction-separatorAfter.instance">&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;                        &lt;!&ndash;<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;                        &lt;!&ndash;<attr name="position" intvalue="27"/>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;                    &lt;!&ndash;</file>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            <folder name="SeaDAS">&ndash;&gt;-->
+<!--&lt;!&ndash;                <attr name="position" intvalue="1500"/>&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                <folder name="Configuration">&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                    <attr name="position" intvalue="20"/>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                    &lt;!&ndash;<file name="org-openide-actions-CutAction-separatorAfter.instance">&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                        &lt;!&ndash;<attr name="instanceCreate" newvalue="javax.swing.JSeparator"/>&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                        &lt;!&ndash;<attr name="position" intvalue="27"/>&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                    &lt;!&ndash;</file>&ndash;&gt;&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                </folder>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                <folder name="Data Access">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <attr name="position" intvalue="100"/>&ndash;&gt;-->
 <!--&lt;!&ndash;                </folder>&ndash;&gt;-->
-<!--                <folder name="Data Access">-->
-<!--                    <attr name="position" intvalue="100"/>-->
-<!--                </folder>-->
-<!--                <folder name="Video-Tutorials">-->
-<!--                    <attr name="position" intvalue="101"/>-->
-<!--                </folder>-->
+<!--&lt;!&ndash;                <folder name="Video-Tutorials">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <attr name="position" intvalue="101"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                </folder>&ndash;&gt;-->
 
-<!--&lt;!&ndash;                <folder name="Documentation">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <attr name="position" intvalue="200"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                </folder>&ndash;&gt;-->
-<!--            </folder>-->
+<!--&lt;!&ndash;&lt;!&ndash;                <folder name="Documentation">&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                    <attr name="position" intvalue="200"/>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;                </folder>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            </folder>&ndash;&gt;-->
         </folder>
 
 
@@ -69,39 +69,39 @@
 <!--            </folder>-->
         </folder>
 
-        <folder name="Video-Tutorials">
-            <attr name="position" intvalue="1100"/>
+<!--        <folder name="Video-Tutorials">-->
+<!--            <attr name="position" intvalue="1100"/>-->
 
-            <folder name="Overview">
-                <attr name="position" intvalue="100"/>
-            </folder>
+<!--            <folder name="Overview">-->
+<!--                <attr name="position" intvalue="100"/>-->
+<!--            </folder>-->
 
-            <folder name="Installation">
-                <attr name="position" intvalue="200"/>
-            </folder>
+<!--            <folder name="Installation">-->
+<!--                <attr name="position" intvalue="200"/>-->
+<!--            </folder>-->
 
-            <folder name="General Tools">
-                <attr name="position" intvalue="300"/>
-            </folder>
+<!--            <folder name="General Tools">-->
+<!--                <attr name="position" intvalue="300"/>-->
+<!--            </folder>-->
 
-            <folder name="Troubleshooting">
-                <attr name="position" intvalue="400"/>
-            </folder>
+<!--            <folder name="Troubleshooting">-->
+<!--                <attr name="position" intvalue="400"/>-->
+<!--            </folder>-->
 
-            <folder name="Science Processors (Installation)">
-                <attr name="position" intvalue="500"/>
-            </folder>
+<!--            <folder name="Science Processors (Installation)">-->
+<!--                <attr name="position" intvalue="500"/>-->
+<!--            </folder>-->
 
-            <folder name="Science Processors">
-                <attr name="position" intvalue="600"/>
-            </folder>
+<!--            <folder name="Science Processors">-->
+<!--                <attr name="position" intvalue="600"/>-->
+<!--            </folder>-->
 
 
-            <folder name="Earthdata-Cloud">
-                <attr name="position" intvalue="700"/>
-            </folder>
+<!--            <folder name="Earthdata-Cloud">-->
+<!--                <attr name="position" intvalue="700"/>-->
+<!--            </folder>-->
 
-        </folder>
+<!--        </folder>-->
 
     </folder>
 
