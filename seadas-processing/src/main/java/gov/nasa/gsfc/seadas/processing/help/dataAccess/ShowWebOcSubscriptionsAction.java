@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowWebOcSubscriptionsAction_MenuText",
         popupText = "#CTL_ShowWebOcSubscriptionsAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS/Data Access",
+        path = "Menu/Help/Data Access",
         position = 50)
 @NbBundle.Messages({
         "CTL_ShowWebOcSubscriptionsAction_MenuText=Ocean Color Subscriptions",

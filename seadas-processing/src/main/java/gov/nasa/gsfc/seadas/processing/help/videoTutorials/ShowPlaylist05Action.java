@@ -38,9 +38,7 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowPlaylist05Action_ShortDescription")
 
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Earthdata-Cloud", position = 0, separatorAfter = 1),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Earthdata-Cloud", position = 0, separatorAfter = 1)
-})
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/Earthdata-Cloud", position = 0, separatorAfter = 1)})
 
 
 @NbBundle.Messages({

@@ -38,9 +38,7 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowPlaylist07Action_ShortDescription")
 
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION, position = 0, separatorAfter = 1),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2, position = 0, separatorAfter = 1)
-})
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION, position = 0, separatorAfter = 1)})
 
 
 

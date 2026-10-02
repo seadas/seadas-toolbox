@@ -37,9 +37,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowPlaylist01Action_DisplayName",
         popupText = "#CTL_ShowPlaylist01Action_ShortDescription")
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Installation", position = 0, separatorAfter = 1),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Installation", position = 0, separatorAfter = 1)
-})
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/Installation", position = 0, separatorAfter = 1)})
 @NbBundle.Messages({
         "CTL_ShowPlaylist01Action_DisplayName=PLAYLIST: Installation",
         "CTL_ShowPlaylist01Action_ShortDescription=Opens YouTube playlist containing SeaDAS tutorial videos"

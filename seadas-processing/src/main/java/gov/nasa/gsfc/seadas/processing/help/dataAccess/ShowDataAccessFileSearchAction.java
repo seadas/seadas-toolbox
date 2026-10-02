@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowDateAccessFileSearchAction_MenuText",
         popupText = "#CTL_ShowDateAccessFileSearchAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS/Data Access",
+        path = "Menu/Help/Data Access",
         position = 20)
 @NbBundle.Messages({
         "CTL_ShowDateAccessFileSearchAction_MenuText=Earthdata Search",

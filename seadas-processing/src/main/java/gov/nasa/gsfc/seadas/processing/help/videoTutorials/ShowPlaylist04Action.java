@@ -32,16 +32,14 @@ import java.awt.event.ActionEvent;
 /**
  * This action launches the default browser to display the video playlist.
  */
-@ActionID(category = "Video Tutorials Playlist", id = "ShowPlaylist04Action")
-@ActionRegistration(
-        displayName = "#CTL_ShowPlaylist04Action_DisplayName",
-        popupText = "#CTL_ShowPlaylist04Action_ShortDescription")
-
-@ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Science Processors", position = 0, separatorAfter = 1),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Science Processors", position = 0, separatorAfter = 1)
-})
-
+//@ActionID(category = "Video Tutorials Playlist", id = "ShowPlaylist04Action")
+//@ActionRegistration(
+//        displayName = "#CTL_ShowPlaylist04Action_DisplayName",
+//        popupText = "#CTL_ShowPlaylist04Action_ShortDescription")
+//
+//@ActionReferences({
+//        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/Science Processors", position = 0, separatorAfter = 1)})
+//
 
 
 @NbBundle.Messages({

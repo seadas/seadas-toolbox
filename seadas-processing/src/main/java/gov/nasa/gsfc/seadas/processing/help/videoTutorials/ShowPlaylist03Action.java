@@ -37,9 +37,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowPlaylist03Action_DisplayName",
         popupText = "#CTL_ShowPlaylist03Action_ShortDescription")
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION + "/Science Processors (Installation)", position = 0, separatorAfter = 1),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 + "/Science Processors (Installation)", position = 0, separatorAfter = 1)
-})
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION + "/Science Processors (Installation)", position = 0, separatorAfter = 1)})
 
 
 @NbBundle.Messages({

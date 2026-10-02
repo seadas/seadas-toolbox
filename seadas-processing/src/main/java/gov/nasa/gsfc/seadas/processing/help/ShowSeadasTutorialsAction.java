@@ -34,10 +34,10 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowSeaDASTutorialsAction_MenuText",
         popupText = "#CTL_ShowSeaDASTutorialsAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS",
-        position = 50)
+        path = "Menu/Help",
+        position = 30)
 @NbBundle.Messages({
-        "CTL_ShowSeaDASTutorialsAction_MenuText=Help Hub",
+        "CTL_ShowSeaDASTutorialsAction_MenuText=SeaDAS on Help Hub",
         "CTL_ShowSeaDASTutorialsAction_ShortDescription=Browse the SeaDAS tutorials on the NASA Help Hub web page"
 })
 public class ShowSeadasTutorialsAction extends AbstractAction {

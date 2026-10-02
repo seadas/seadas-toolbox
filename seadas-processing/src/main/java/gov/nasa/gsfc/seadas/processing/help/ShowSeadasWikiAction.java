@@ -13,9 +13,8 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see http://www.gnu.org/licenses/
  */
-package gov.nasa.gsfc.seadas.processing.help.dataAccess;
+package gov.nasa.gsfc.seadas.processing.help;
 
-import gov.nasa.gsfc.seadas.processing.help.DesktopHelper;
 import org.esa.snap.runtime.Config;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -25,25 +24,23 @@ import org.openide.util.NbBundle;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-//import org.esa.snap;
-
 /**
  * This action launches the default browser to display the project web page.
  */
-@ActionID(category = "Help", id = "ShowWebSeabassAction")
+@ActionID(category = "Help", id = "ShowSeaDASWikiAction")
 @ActionRegistration(
-        displayName = "#CTL_ShowWebSeabassAction_MenuText",
-        popupText = "#CTL_ShowWebSeabassAction_MenuText")
+        displayName = "#CTL_ShowSeaDASWikiAction_MenuText",
+        popupText = "#CTL_ShowSeaDASWikiAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/Data Access",
-        position = 70)
+        path = "Menu/Help",
+        position = 20)
 @NbBundle.Messages({
-        "CTL_ShowWebSeabassAction_MenuText=SeaBASS",
-        "CTL_ShowWebSeabassAction_ShortDescription=Open the NASA SeaBASS web page"
+        "CTL_ShowSeaDASWikiAction_MenuText=SeaDAS Wiki on GitHub",
+        "CTL_ShowSeaDASWikiAction_ShortDescription=Browse the SeaDAS wiki on github web"
 })
-public class ShowWebSeabassAction extends AbstractAction {
+public class ShowSeadasWikiAction extends AbstractAction {
 
-    private static final String DEFAULT_PAGE_URL = "https://seabass.gsfc.nasa.gov/";
+    private static final String DEFAULT_PAGE_URL = "https://github.com/seadas/seadas-toolbox/wiki";
 
     /**
      * Launches the default browser to display the web site.
@@ -53,6 +50,6 @@ public class ShowWebSeabassAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        DesktopHelper.browse(Config.instance().preferences().get("seadas.showWebSeabass", DEFAULT_PAGE_URL));
+        DesktopHelper.browse(Config.instance().preferences().get("seadas.wiki", DEFAULT_PAGE_URL));
     }
 }

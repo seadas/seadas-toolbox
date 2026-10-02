@@ -38,9 +38,7 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowVideo04Action_ShortDescription")
 
 @ActionReferences({
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION +  "/Science Processors (Installation)", position = 20),
-        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_LOCATION2 +  "/Science Processors (Installation)", position = 20)
-})
+        @ActionReference(path = MenuLocationUtils.SEADAS_VIDEOS_HELP_LOCATION +  "/Science Processors (Installation)", position = 20)})
 
 
 

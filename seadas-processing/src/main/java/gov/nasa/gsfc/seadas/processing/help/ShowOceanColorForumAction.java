@@ -32,12 +32,12 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowOceanColorForumAction_MenuText",
         popupText = "#CTL_ShowOceanColorForumAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS",
-        position = 30
+        path = "Menu/Help",
+        position = 40
 )
 @NbBundle.Messages({
-        "CTL_ShowOceanColorForumAction_MenuText=Ocean Color Forum",
-        "CTL_ShowOceanColorForumAction_ShortDescription=Browse the SeaDAS/OceanColor forum web page"
+        "CTL_ShowOceanColorForumAction_MenuText=SeaDAS on Earthdata Forum",
+        "CTL_ShowOceanColorForumAction_ShortDescription=Browse the SeaDAS question on the Earthdata forum web page"
 })
 public class ShowOceanColorForumAction extends AbstractAction {
 

@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
         displayName = "#CTL_ShowWebOpenDapAction_MenuText",
         popupText = "#CTL_ShowWebOpenDapAction_MenuText")
 @ActionReference(
-        path = "Menu/Help/SeaDAS/Data Access",
+        path = "Menu/Help/Data Access",
         position = 60)
 @NbBundle.Messages({
         "CTL_ShowWebOpenDapAction_MenuText=OPeNDAP",
