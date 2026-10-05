@@ -13,6 +13,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -54,14 +56,27 @@ public class OCSSWDockerStarter {
     /**
      * Makes sure the OCSSW server is reachable before OCSSW is used.  Does nothing
      * unless the OCSSW location is docker and the server is not answering.
+     * OCSSWInfo only checks the server when it is created, so the port is probed
+     * as well: the container may have stopped since.
      *
      * @return false if the server is still not reachable; the user has been told why
      */
     public static boolean ensureServer(Window parent) {
-        if (!isDockerLocation() || OCSSWInfo.getInstance().isOcsswServerUp()) {
+        if (!isDockerLocation() || (OCSSWInfo.getInstance().isOcsswServerUp() && isServerPortOpen())) {
             return true;
         }
         return start(parent);
+    }
+
+    private static boolean isServerPortOpen() {
+        Preferences preferences = Config.instance("seadas").load().preferences();
+        try (Socket socket = new Socket()) {
+            int port = Integer.parseInt(preferences.get(SEADAS_OCSSW_PORT_PROPERTY, SEADAS_OCSSW_PORT_DEFAULT_VALUE).trim());
+            socket.connect(new InetSocketAddress(OCSSWInfo.DOCKER_SERVER_API, port), 2000);
+            return true;
+        } catch (IOException | NumberFormatException e) {
+            return false;
+        }
     }
 
     /**
