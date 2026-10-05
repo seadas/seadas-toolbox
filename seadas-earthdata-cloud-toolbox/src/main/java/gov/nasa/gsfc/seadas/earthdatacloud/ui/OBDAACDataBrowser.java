@@ -82,11 +82,7 @@ public class OBDAACDataBrowser extends JPanel {
     private final static String HELP_ID = "earthdataCloudSearch";
     private final static String HELP_ICON = "icons/Help24.gif";
 
-    Map<String, String[]> missionDateRanges = Map.of(
-            "SeaHawk/HawkEye", new String[]{"2018-12-01", "2023-12-31"},
-            "MODISA", new String[]{"2002-07-04", "2024-12-31"},
-            "VIIRSN", new String[]{"2011-10-28", "2024-12-31"}
-    );
+    private final Map<String, String[]> missionDateRanges = new HashMap<>();
 
     private static String SELECT_ALL = "-- All Products --";
 
@@ -98,80 +94,40 @@ public class OBDAACDataBrowser extends JPanel {
         loadMetadata();
         imagePreviewHelper = new ImagePreviewHelper();
         downloadManager = new FileDownloadManager();
-        loadMissionDateRangesFromFile();
         initComponents();
         refreshMetadataFromCmr();
     }
 
-    private void loadMissionDateRangesFromFile() {
-        missionDateRanges = new HashMap<>();
-
-        Path externalFile = Paths.get("seadas-toolbox", "seadas-earthdata-cloud-toolbox",
-                "src", "main", "resources", "json-files", "mission_date_ranges.json");
-
-        if (Files.exists(externalFile)) {
-//            System.out.println("Loading mission_date_ranges.json from external path: " + externalFile.toAbsolutePath());
-            try (BufferedReader reader = Files.newBufferedReader(externalFile, StandardCharsets.UTF_8)) {
-                loadDateRangesFromReader(reader);
-                return;
-            } catch (IOException e) {
-                System.err.println("Failed to read external mission date ranges: " + e.getMessage());
-            }
-        }
-
-//        System.out.println("Loading mission_date_ranges.json from classpath");
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("json-files/mission_date_ranges.json")) {
-            if (input != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
-                loadDateRangesFromReader(reader);
-            } else {
-//                System.err.println("Resource not found: json-files/mission_date_ranges.json");
-            }
-        } catch (IOException e) {
-//            System.err.println("Failed to read mission date ranges from classpath: " + e.getMessage());
-        }
-    }
-
-    private void loadDateRangesFromReader(BufferedReader reader) throws IOException {
-        JSONObject json = new JSONObject(new JSONTokener(reader));
-        for (String key : json.keySet()) {
-            JSONObject dates = json.getJSONObject(key);
-            String start = dates.optString("start", null);
-            String end = dates.optString("end", "present");
-            if (start != null) {
-                missionDateRanges.put(key, new String[]{start, end});
-            }
-        }
-    }
-
-
     private void loadMetadata() {
-        metadataMap.putAll(ObCloudCollectionCatalog.load());
+        ObCloudCollectionCatalog.Contents contents = ObCloudCollectionCatalog.load();
+        metadataMap.putAll(contents.missions);
+        missionDateRanges.putAll(contents.dateRanges);
     }
 
     /**
-     * Fetches the current OB_CLOUD collection list from CMR in the background. When it
-     * differs from what the browser shows, it is saved for next time and the satellite,
-     * level and product lists are updated, keeping the current selection. Failures (for
+     * Fetches the current OB_CLOUD collection list and mission date ranges from CMR in
+     * the background. When they differ from what the browser shows, they are saved for
+     * next time and the satellite, level and product lists and the date range are
+     * updated, keeping the current selection. Failures (for
      * example no network) only leave the current list in place.
      */
     private void refreshMetadataFromCmr() {
-        new SwingWorker<Map<String, JSONObject>, Void>() {
+        new SwingWorker<ObCloudCollectionCatalog.Contents, Void>() {
             @Override
-            protected Map<String, JSONObject> doInBackground() throws Exception {
+            protected ObCloudCollectionCatalog.Contents doInBackground() throws Exception {
                 return ObCloudCollectionCatalog.fetchFromCmr();
             }
 
             @Override
             protected void done() {
-                Map<String, JSONObject> fetched;
+                ObCloudCollectionCatalog.Contents fetched;
                 try {
                     fetched = get();
                 } catch (Exception e) {
                     SystemUtils.LOG.info("Could not refresh the OB_CLOUD collection list from CMR: " + e.getMessage());
                     return;
                 }
-                if (ObCloudCollectionCatalog.sameContent(fetched, metadataMap)) {
+                if (fetched.sameAs(new ObCloudCollectionCatalog.Contents(metadataMap, missionDateRanges))) {
                     return;
                 }
                 try {
@@ -184,13 +140,15 @@ public class OBDAACDataBrowser extends JPanel {
         }.execute();
     }
 
-    private void applyMetadata(Map<String, JSONObject> metadata) {
+    private void applyMetadata(ObCloudCollectionCatalog.Contents contents) {
         String satellite = (String) satelliteDropdown.getSelectedItem();
         String level = (String) levelDropdown.getSelectedItem();
         String product = (String) productDropdown.getSelectedItem();
 
         metadataMap.clear();
-        metadataMap.putAll(metadata);
+        metadataMap.putAll(contents.missions);
+        missionDateRanges.clear();
+        missionDateRanges.putAll(contents.dateRanges);
         List<String> sortedSatellites = new ArrayList<>(metadataMap.keySet());
         Collections.sort(sortedSatellites);
         // Replacing the model fires no action event; the selections below do.

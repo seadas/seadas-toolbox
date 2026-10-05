@@ -1,0 +1,98 @@
+{
+    "MERGED_S3_OLCI": {
+        "start": "2016-04-25",
+        "end": "present"
+    },
+    "PACE_SPEXONE": {
+        "start": "2024-02-05",
+        "end": "present"
+    },
+    "PACE_OCI": {
+        "start": "2024-02-08",
+        "end": "present"
+    },
+    "CALIPSO_CALIOP": {
+        "start": "2006-04-28",
+        "end": "2018-09-14"
+    },
+    "VIIRSJ1": {
+        "start": "2017-11-29",
+        "end": "present"
+    },
+    "MODISA": {
+        "start": "2002-07-04",
+        "end": "present"
+    },
+    "SeaWiFS_GAC": {
+        "start": "1997-09-04",
+        "end": "2010-12-11"
+    },
+    "SeaWiFS_MLAC": {
+        "start": "1997-09-04",
+        "end": "2010-12-11"
+    },
+    "VIIRSJ2": {
+        "start": "2022-11-10",
+        "end": "present"
+    },
+    "HICO": {
+        "start": "2009-09-25",
+        "end": "2014-09-13"
+    },
+    "PACE_HARP2": {
+        "start": "2024-02-05",
+        "end": "present"
+    },
+    "AVHRR": {
+        "start": "2000-01-01",
+        "end": "2009-12-31"
+    },
+    "GOCI": {
+        "start": "2010-06-26",
+        "end": "2021-03-31"
+    },
+    "OSCAR": {
+        "start": "2000-01-01",
+        "end": "2009-12-31"
+    },
+    "HYCOM": {
+        "start": "2000-01-01",
+        "end": "2009-12-31"
+    },
+    "OLCIS3B": {
+        "start": "2018-04-25",
+        "end": "present"
+    },
+    "SeaWiFS": {
+        "start": "1997-09-04",
+        "end": "2010-12-11"
+    },
+    "VIIRSN": {
+        "start": "2012-01-02",
+        "end": "present"
+    },
+    "OLCIS3A": {
+        "start": "2016-04-05",
+        "end": "present"
+    },
+    "MODIST": {
+        "start": "2000-02-24",
+        "end": "present"
+    },
+    "OCTS": {
+        "start": "1996-10-31",
+        "end": "1997-06-30"
+    },
+    "CZCS": {
+        "start": "1978-10-30",
+        "end": "1986-06-22"
+    },
+    "MERIS": {
+        "start": "2002-03-21",
+        "end": "2012-05-09"
+    },
+    "HAWKEYE": {
+        "start": "2018-12-03",
+        "end": "2023-10-27"
+    }
+}

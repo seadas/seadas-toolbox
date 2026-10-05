@@ -7,11 +7,17 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ObCloudCollectionCatalogTest {
+
+    private static JSONObject collection(String shortName, String start, String end) {
+        JSONObject entry = new JSONObject().put("short_name", shortName).put("time_start", start);
+        return end != null ? entry.put("time_end", end) : entry;
+    }
 
     private static JSONArray entries(String... shortNames) {
         JSONArray entries = new JSONArray();
@@ -38,20 +44,50 @@ class ObCloudCollectionCatalogTest {
     }
 
     @Test
-    void comparesContent() {
-        Map<String, JSONObject> a = ObCloudCollectionCatalog.categorize(entries("MODISA_L2_OC", "MODISA_L2_IOP"));
-        Map<String, JSONObject> b = ObCloudCollectionCatalog.categorize(entries("MODISA_L2_OC", "MODISA_L2_IOP"));
-        Map<String, JSONObject> c = ObCloudCollectionCatalog.categorize(entries("MODISA_L2_OC", "MODISA_L2_IOP", "MODISA_L2_SST"));
+    void worksOutMissionDateRanges() {
+        JSONArray entries = new JSONArray()
+                .put(collection("MODISA_L2_OC", "2002-07-04T00:00:00.000Z", null))
+                .put(collection("MODISA_L3m_CHL", "2002-07-04T00:00:00.000Z", null))
+                .put(collection("MODISA_L4m_ELOEV", "2000-01-01T00:00:00.000Z", "2021-10-31T23:59:59.999Z"))
+                .put(collection("SeaWiFS_L2_OC", "1997-09-04T00:00:00.000Z", "2010-12-11T23:59:59.999Z"))
+                .put(collection("SeaWiFS_L1A", "1997-09-05T00:00:00.000Z", "2010-12-10T00:00:00.000Z"))
+                .put(collection("OSCAR_L4m_ELOEV", "2000-01-01T00:00:00.000Z", "2009-12-31T23:59:59.999Z"));
 
-        assertTrue(ObCloudCollectionCatalog.sameContent(a, b));
-        assertFalse(ObCloudCollectionCatalog.sameContent(a, c));
+        Map<String, String[]> ranges = ObCloudCollectionCatalog.dateRanges(entries);
+
+        // Level-4 only counts when a mission has nothing else
+        assertArrayEquals(new String[]{"2002-07-04", "present"}, ranges.get("MODISA"));
+        assertArrayEquals(new String[]{"1997-09-04", "2010-12-11"}, ranges.get("SeaWiFS"));
+        assertArrayEquals(new String[]{"2000-01-01", "2009-12-31"}, ranges.get("OSCAR"));
+    }
+
+    @Test
+    void comparesContents() {
+        JSONArray entries = new JSONArray()
+                .put(collection("MODISA_L2_OC", "2002-07-04T00:00:00.000Z", null))
+                .put(collection("MODISA_L2_IOP", "2002-07-04T00:00:00.000Z", null));
+        ObCloudCollectionCatalog.Contents a = new ObCloudCollectionCatalog.Contents(
+                ObCloudCollectionCatalog.categorize(entries), ObCloudCollectionCatalog.dateRanges(entries));
+        ObCloudCollectionCatalog.Contents b = new ObCloudCollectionCatalog.Contents(
+                ObCloudCollectionCatalog.categorize(entries), ObCloudCollectionCatalog.dateRanges(entries));
+
+        assertTrue(a.sameAs(b));
+
+        entries.put(collection("MODISA_L2_SST", "2002-07-04T00:00:00.000Z", null));
+        assertFalse(a.sameAs(new ObCloudCollectionCatalog.Contents(
+                ObCloudCollectionCatalog.categorize(entries), ObCloudCollectionCatalog.dateRanges(entries))));
+
+        entries.put(collection("MODISA_L1A", "2002-07-01T00:00:00.000Z", null));
+        assertFalse(a.sameAs(new ObCloudCollectionCatalog.Contents(
+                a.missions, ObCloudCollectionCatalog.dateRanges(entries))));
     }
 
     @Test
     void loadsEveryBundledFile() {
-        Map<String, JSONObject> bundled = ObCloudCollectionCatalog.loadBundled();
+        ObCloudCollectionCatalog.Contents bundled = ObCloudCollectionCatalog.loadBundled();
 
-        assertEquals(24, bundled.size());
-        assertTrue(bundled.get("PACE_OCI").has("L2"));
+        assertEquals(24, bundled.missions.size());
+        assertTrue(bundled.missions.get("PACE_OCI").has("L2"));
+        assertEquals(24, bundled.dateRanges.size());
     }
 }
