@@ -59,6 +59,26 @@ for p in $PLATFORMS; do
     fi
 done
 
+# The installers take the SeaDAS modules from seadas-kit's cluster, which only
+# 'mvn install' in seadas-toolbox refreshes.  Refuse to package a module whose
+# sources are newer than its jar there.  SKIP_CLUSTER_CHECK=1 skips this.
+if [ "${SKIP_CLUSTER_CHECK:-0}" != 1 ]; then
+    TOOLBOX_DIR=../..
+    KIT_MODULES="$TOOLBOX_DIR/seadas-kit/target/netbeans_clusters/seadas/modules"
+    stale=""
+    for m in $(sed -n 's#.*<module>\(.*\)</module>.*#\1#p' "$TOOLBOX_DIR/pom.xml"); do
+        jar="$KIT_MODULES/gov-nasa-gsfc-seadas-$m.jar"
+        if [ ! -f "$jar" ] || [ -n "$(find "$TOOLBOX_DIR/$m/src" "$TOOLBOX_DIR/$m/pom.xml" -newer "$jar" -type f -print -quit)" ]; then
+            stale="$stale $m"
+        fi
+    done
+    if [ -n "$stale" ]; then
+        echo "build-all.sh: seadas-kit's cluster is older than the sources of:$stale" >&2
+        echo "Run 'mvn install -Dmaven.test.skip=true' in seadas-toolbox first (or set SKIP_CLUSTER_CHECK=1)." >&2
+        exit 1
+    fi
+fi
+
 mkdir -p "$OUTDIR"
 echo "Building:         $PLATFORMS"
 echo "Output directory: $OUTDIR"
