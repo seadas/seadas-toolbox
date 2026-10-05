@@ -19,6 +19,8 @@ RUN apt-get update \
 
 # The server resolves ocsswroot, the shared directory and its job database (ocssw.db)
 # against the home directory and the working directory, so everything lives in /root.
+# entrypoint.sh starts the server as root, or with HOST_UID/HOST_GID as that user,
+# whose home is then /root too.
 WORKDIR /root
 COPY seadas-ocsswserver.jar ocsswserver.config entrypoint.sh /root/
 RUN mkdir -p /root/ocssw /root/seadasClientServerShared

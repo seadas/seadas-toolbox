@@ -61,8 +61,15 @@ docker run -d --name seadas-ocssw --platform linux/amd64 \
   -p 6400:6400 -p 6402:6402 -p 6403:6403 \
   -v "$HOME/seadasClientServerShared:/root/seadasClientServerShared" \
   -v "$HOME/ocssw-docker:/root/ocssw" \
+  -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" \
   seadas/ocssw-run:12.0.0
 ```
+
+The `HOST_UID`/`HOST_GID` line is for Linux (the script passes it only there): the
+server and OCSSW then run as you rather than root, so OCSSW and its outputs in the two
+directories belong to you instead of root, which only `sudo` could delete. At start
+the container also hands over to you any root-owned files that older containers left
+in those directories. Docker Desktop on macOS and Windows already maps ownership to you.
 
 On Windows, in PowerShell. Don't paste the Linux command there: PowerShell continues
 lines with a backtick, not `\`, so each line runs on its own and no container is created.

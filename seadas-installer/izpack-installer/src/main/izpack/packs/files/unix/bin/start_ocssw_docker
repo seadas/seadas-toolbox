@@ -118,9 +118,19 @@ if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
 fi
 
 # --- 5. Container ------------------------------------------------------------
+# On Linux the container would write the OCSSW and shared directories as root;
+# with the user's ids it runs OCSSW as that user instead (see entrypoint.sh).
+# Docker Desktop on macOS already maps file ownership to the user.
+user_env=()
+RUN_AS=
+if [ "$(uname -s)" = Linux ]; then
+    RUN_AS="$(id -u):$(id -g)"
+    user_env=(-e "HOST_UID=$(id -u)" -e "HOST_GID=$(id -g)")
+fi
+
 # Everything that is fixed when the container is created goes into a label, so
-# a change in any of it (new SeaDAS version, other directories or ports) recreates it.
-CONFIG="image=$IMAGE ocssw=$OCSSW_DIR shared=$SHARED_DIR ports=$PORT,$INPUT_PORT,$ERROR_PORT hostnet=$HOST_NETWORK"
+# a change in any of it (new SeaDAS version, other directories, ports or user) recreates it.
+CONFIG="image=$IMAGE ocssw=$OCSSW_DIR shared=$SHARED_DIR ports=$PORT,$INPUT_PORT,$ERROR_PORT hostnet=$HOST_NETWORK user=$RUN_AS"
 LABEL=gov.nasa.gsfc.seadas.ocssw.config
 
 if docker container inspect "$NAME" >/dev/null 2>&1; then
@@ -154,6 +164,7 @@ else
     docker run -d --name "$NAME" --platform linux/amd64 \
         --label "$LABEL=$CONFIG" \
         "${network[@]}" \
+        "${user_env[@]}" \
         -v "$SHARED_DIR:/root/seadasClientServerShared" \
         -v "$OCSSW_DIR:/root/ocssw" \
         "$IMAGE" >/dev/null || fail $E_START "Cannot start container $NAME (is port $PORT already in use?)"
