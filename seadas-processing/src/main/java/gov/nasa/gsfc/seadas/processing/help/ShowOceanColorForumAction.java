@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowOceanColorForumAction_MenuText")
 @ActionReference(
         path = "Menu/Help",
-        position = 40
+        position = 350
 )
 @NbBundle.Messages({
         "CTL_ShowOceanColorForumAction_MenuText=SeaDAS on Earthdata Forum",

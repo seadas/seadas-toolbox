@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
         popupText = "#CTL_ShowSeaDASWikiAction_MenuText")
 @ActionReference(
         path = "Menu/Help",
-        position = 20)
+        position = 310)
 @NbBundle.Messages({
         "CTL_ShowSeaDASWikiAction_MenuText=SeaDAS Wiki on GitHub",
         "CTL_ShowSeaDASWikiAction_ShortDescription=Browse the SeaDAS wiki on github web"

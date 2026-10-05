@@ -7,10 +7,10 @@
     <folder name="Menu">
         <folder name="Help">
             <folder name="SeaDAS Video Tutorials">
-                <attr name="position" intvalue="30"/>
+                <attr name="position" intvalue="320"/>
             </folder>
             <folder name="Data Access">
-                <attr name="position" intvalue="120"/>
+                <attr name="position" intvalue="800"/>
             </folder>
 <!--&lt;!&ndash;            <folder name="SeaDAS">&ndash;&gt;-->
 <!--&lt;!&ndash;                <attr name="position" intvalue="1500"/>&ndash;&gt;-->

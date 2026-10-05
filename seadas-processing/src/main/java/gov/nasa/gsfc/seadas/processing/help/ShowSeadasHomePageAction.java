@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
 @ActionReferences({
         @ActionReference(
                 path = "Menu/Help",
-                position = 10
+                position = 300
         )
 //        @ActionReference(
 //                path = "Menu/Help",
