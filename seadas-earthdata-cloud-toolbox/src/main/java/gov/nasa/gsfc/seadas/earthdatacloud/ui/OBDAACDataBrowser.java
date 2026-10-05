@@ -2,8 +2,10 @@ package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
+import gov.nasa.gsfc.seadas.earthdatacloud.data.ObCloudCollectionCatalog;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
+import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
 import org.esa.snap.ui.UIUtils;
@@ -98,6 +100,7 @@ public class OBDAACDataBrowser extends JPanel {
         downloadManager = new FileDownloadManager();
         loadMissionDateRangesFromFile();
         initComponents();
+        refreshMetadataFromCmr();
     }
 
     private void loadMissionDateRangesFromFile() {
@@ -143,40 +146,66 @@ public class OBDAACDataBrowser extends JPanel {
 
 
     private void loadMetadata() {
-        boolean usedExternal = false;
-        JSONTokener tokener;
-        Set<String> missionKeys = new HashSet<>();
-        try {
-            if (!usedExternal) {
-                String[] resourceFiles = {
-                        "CZCS.json", "HAWKEYE.json", "HICO.json", "MERGED_S3_OLCI.json", "MERIS.json",
-                        "MODISA.json", "MODIST.json", "OCTS.json", "OLCIS3A.json", "OLCIS3B.json",
-                        "PACE_HARP2.json", "PACE_OCI.json", "PACE_SPEXONE.json", // Add expected resources
-                        "SeaWiFS.json", "VIIRSJ1.json", "VIIRSJ2.json", "VIIRSN.json"
-                };
+        metadataMap.putAll(ObCloudCollectionCatalog.load());
+    }
 
-                for (String fileName : resourceFiles) {
-                    String key = fileName.replace(".json", "");
-                    InputStream input = getClass().getClassLoader()
-                            .getResourceAsStream("json-files/" + fileName);
-                    if (input == null) {
-//                        System.err.println("⚠ Missing embedded resource: " + fileName);
-                        continue;
-                    }
-
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
-                        tokener = new JSONTokener(reader);
-                        JSONObject json = new JSONObject(tokener);
-                        metadataMap.put(key, json);
-                        missionKeys.add(key);
-                    }
-                }
+    /**
+     * Fetches the current OB_CLOUD collection list from CMR in the background. When it
+     * differs from what the browser shows, it is saved for next time and the satellite,
+     * level and product lists are updated, keeping the current selection. Failures (for
+     * example no network) only leave the current list in place.
+     */
+    private void refreshMetadataFromCmr() {
+        new SwingWorker<Map<String, JSONObject>, Void>() {
+            @Override
+            protected Map<String, JSONObject> doInBackground() throws Exception {
+                return ObCloudCollectionCatalog.fetchFromCmr();
             }
 
+            @Override
+            protected void done() {
+                Map<String, JSONObject> fetched;
+                try {
+                    fetched = get();
+                } catch (Exception e) {
+                    SystemUtils.LOG.info("Could not refresh the OB_CLOUD collection list from CMR: " + e.getMessage());
+                    return;
+                }
+                if (ObCloudCollectionCatalog.sameContent(fetched, metadataMap)) {
+                    return;
+                }
+                try {
+                    ObCloudCollectionCatalog.saveCache(fetched);
+                } catch (IOException e) {
+                    SystemUtils.LOG.warning("Cannot save the OB_CLOUD collection list: " + e.getMessage());
+                }
+                applyMetadata(fetched);
+            }
+        }.execute();
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading metadata: " + e.getMessage());
+    private void applyMetadata(Map<String, JSONObject> metadata) {
+        String satellite = (String) satelliteDropdown.getSelectedItem();
+        String level = (String) levelDropdown.getSelectedItem();
+        String product = (String) productDropdown.getSelectedItem();
+
+        metadataMap.clear();
+        metadataMap.putAll(metadata);
+        List<String> sortedSatellites = new ArrayList<>(metadataMap.keySet());
+        Collections.sort(sortedSatellites);
+        // Replacing the model fires no action event; the selections below do.
+        satelliteDropdown.setModel(new DefaultComboBoxModel<>(sortedSatellites.toArray(new String[0])));
+
+        if (satellite != null && metadataMap.containsKey(satellite)) {
+            satelliteDropdown.setSelectedItem(satellite);
+            if (level != null) {
+                levelDropdown.setSelectedItem(level);
+            }
+            if (product != null) {
+                productDropdown.setSelectedItem(product);
+            }
+        } else if (satelliteDropdown.getItemCount() > 0) {
+            satelliteDropdown.setSelectedIndex(0);
         }
     }
 
