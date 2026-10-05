@@ -12,7 +12,8 @@
 # the Maven build lays out the installed SeaDAS folder and the Inno Setup
 # script (see pom.xml and ../windows-installer-files), and this script
 # compiles it with Inno Setup's ISCC, run under Wine in Docker, so Docker is
-# required for both.  INNO_IMAGE overrides the image.
+# required for both; a run without arguments skips them when Docker is not
+# available.  INNO_IMAGE overrides the image.
 #
 # Platforms: mac, linux, win, and mac-nojre, linux-nojre, win-nojre for the
 # installers without a bundled JRE.  Each is selected by Maven profiles (see
@@ -52,12 +53,20 @@ for p in $PLATFORMS; do
     esac
 done
 
-for p in $PLATFORMS; do
-    if [ "${p%-nojre}" = win ] && ! docker info >/dev/null 2>&1; then
-        echo "build-all.sh: '$p' needs Docker to run Inno Setup, and 'docker info' failed" >&2
-        exit 1
-    fi
-done
+# The Windows installers need Docker.  Without it, a default run (no platforms
+# named) skips them with a warning; asking for win or win-nojre by name fails.
+case " $PLATFORMS " in
+    *" win "*|*" win-nojre "*)
+        if ! docker info >/dev/null 2>&1; then
+            if [ $# -gt 0 ]; then
+                echo "build-all.sh: win and win-nojre need Docker to run Inno Setup, and 'docker info' failed" >&2
+                exit 1
+            fi
+            echo "build-all.sh: WARNING: 'docker info' failed, so the Windows installers (win, win-nojre) are skipped; they need Docker to run Inno Setup" >&2
+            PLATFORMS="$(echo $PLATFORMS | tr ' ' '\n' | grep -v '^win' | tr '\n' ' ')"
+        fi
+        ;;
+esac
 
 # The installers take the SeaDAS modules from seadas-kit's cluster, which only
 # 'mvn install' in seadas-toolbox refreshes.  Refuse to package a module whose
