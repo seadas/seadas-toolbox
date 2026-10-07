@@ -437,6 +437,139 @@
 </p>
 
 
+
+
+<p class="sub_section_title">Spatial Filter: Custom User Locations and Regions</p>
+
+<p class="main_contents">
+    The user can define their own locations and regions with two optional selectors
+    ('User Locations' and 'User Regions') which are available in the preferences.
+    Locations are defined as single point coordinates whereas 'Regions' are defined
+    as geographic areas with 'North', 'South', 'West' and 'East' bounds.
+</p>
+
+
+
+
+<!--<p class="indent_bullet_1_title">&#x2022;-->
+<!--    User Locations-->
+<!--</p>-->
+
+
+<!--<p class="indent_bullet_1_contents">-->
+<!--    Selecting the user-defined 'User Locations' will set the "Coordinates" field,-->
+<!--    which in turn will set the North, South, West and East fields.-->
+<!--</p>-->
+
+<!--<p class="main_contents_image_2">-->
+<!--    <img src="images/earthdata_search_user_location.png" width="350" border="0"><br><br>-->
+<!--</p>-->
+
+
+
+<!--<p class="indent_bullet_2_title">- -->
+<!--    To enable the 'User Locations' selector-->
+<!--</p>-->
+
+<!--<p class="indent_bullet_2_contents">-->
+<!--    The 'User Locations' field is not available by default,-->
+<!--    but can easily be added by going to the Preferences page:<br>-->
+<!--    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>-->
+<!--    and checking "Include 'User Locations' Selector".-->
+<!--</p>-->
+
+<!--<p class="indent_bullet_2_title">- -->
+<!--    To edit the 'User Locations' selector-->
+<!--</p>-->
+
+<!--<p class="indent_bullet_2_contents">-->
+<!--    Entries can be added to the 'User Locations' selector by manually editing the following file:<br>-->
+<!--    ~/.seadas/auxdata/regions/user_locations.txt.-->
+<!--</p>-->
+
+<!--<p class="indent_bullet_2_contents">-->
+<!--    Here's a sample of the formatting in the 'User Locations' configuration file:-->
+<!--</p>-->
+
+<!--<div class="div_indent_2">-->
+<!--<table class="outline">-->
+<!--    <tr>-->
+<!--        <td class="blank_paragraph">-->
+<!--            <pre>-->
+<!--#  Name = Lat Lon-->
+<!--#  (coordinates can be space and/or comma delimited)-->
+
+<!--My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W</pre>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--</table>-->
+
+<!--</div>-->
+<!--<br>-->
+
+
+
+
+<p class="indent_bullet_1_title">&#x2022;
+    User Regions
+</p>
+
+<p class="indent_bullet_1_contents">
+    Selecting the user-defined 'User Regions' will directly populate
+    the North, South, West and East fields.
+</p>
+
+<p class="main_contents_image_2">
+    <img src="images/earthdata_search_user_region.png" width="350" border="0"><br><br>
+</p>
+
+<p class="indent_bullet_2_title">-
+    To enable the 'User Regions' selector
+</p>
+
+<p class="indent_bullet_2_contents">
+    The 'User Regions' field is not available by default,
+    but can easily be added by going to the Preferences page:<br>
+    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
+    and checking "Include 'User Regions' Selector".
+</p>
+
+<p class="indent_bullet_2_title">-
+    To edit the 'User Regions' selector
+</p>
+
+<p class="indent_bullet_2_contents">
+    Entries can be added to the 'User Regions' selector by manually editing the following file:<br>
+    ~/.seadas/auxdata/regions/user_regions.txt.
+</p>
+
+<p class="indent_bullet_2_contents">
+    Here's an example entry to illustrate the formatting in the 'User Regions' configuration file:
+</p>
+
+
+<div class="div_indent_2">
+
+    <table class="outline">
+        <tr>
+            <td class="blank_paragraph">
+                <pre>
+#  Name = North  South  West  East
+#  (coordinates can be space and/or comma delimited)
+
+Arctic Circle: Iceland-Norway = 70.0°N, 60.0°N, 25.0°W, 10.0°E</pre>
+            </td>
+        </tr>
+    </table>
+
+</div>
+<br>
+
+
+
+
+
+
 <p class="sub_section_title">Spatial Filter: Accessory Tools</p>
 
 <p class="main_contents">
@@ -592,139 +725,6 @@
 
 </div>
 <br>
-
-
-
-<p class="sub_section_title">Spatial Filter: Custom User Locations and Regions</p>
-
-<p class="main_contents">
-    The user can define their own locations and regions with two optional selectors
-    ('User Locations' and 'User Regions') which are available in the preferences.
-    Locations are defined as single point coordinates whereas 'Regions' are defined
-    as geographic areas with 'North', 'South', 'West' and 'East' bounds.
-</p>
-
-
-
-
-<!--<p class="indent_bullet_1_title">&#x2022;-->
-<!--    User Locations-->
-<!--</p>-->
-
-
-<!--<p class="indent_bullet_1_contents">-->
-<!--    Selecting the user-defined 'User Locations' will set the "Coordinates" field,-->
-<!--    which in turn will set the North, South, West and East fields.-->
-<!--</p>-->
-
-<!--<p class="main_contents_image_2">-->
-<!--    <img src="images/earthdata_search_user_location.png" width="350" border="0"><br><br>-->
-<!--</p>-->
-
-
-
-<!--<p class="indent_bullet_2_title">- -->
-<!--    To enable the 'User Locations' selector-->
-<!--</p>-->
-
-<!--<p class="indent_bullet_2_contents">-->
-<!--    The 'User Locations' field is not available by default,-->
-<!--    but can easily be added by going to the Preferences page:<br>-->
-<!--    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>-->
-<!--    and checking "Include 'User Locations' Selector".-->
-<!--</p>-->
-
-<!--<p class="indent_bullet_2_title">- -->
-<!--    To edit the 'User Locations' selector-->
-<!--</p>-->
-
-<!--<p class="indent_bullet_2_contents">-->
-<!--    Entries can be added to the 'User Locations' selector by manually editing the following file:<br>-->
-<!--    ~/.seadas/auxdata/regions/user_locations.txt.-->
-<!--</p>-->
-
-<!--<p class="indent_bullet_2_contents">-->
-<!--    Here's a sample of the formatting in the 'User Locations' configuration file:-->
-<!--</p>-->
-
-<!--<div class="div_indent_2">-->
-<!--<table class="outline">-->
-<!--    <tr>-->
-<!--        <td class="blank_paragraph">-->
-<!--            <pre>-->
-<!--#  Name = Lat Lon-->
-<!--#  (coordinates can be space and/or comma delimited)-->
-
-<!--My Sample Location = 37°48&prime;00&Prime;N, 76°6&prime;00&Prime;W</pre>-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--</table>-->
-
-<!--</div>-->
-<!--<br>-->
-
-
-
-
-<p class="indent_bullet_1_title">&#x2022;
-    User Regions
-</p>
-
-<p class="indent_bullet_1_contents">
-    Selecting the user-defined 'User Regions' will directly populate
-    the North, South, West and East fields.
-</p>
-
-<p class="main_contents_image_2">
-    <img src="images/earthdata_search_user_region.png" width="350" border="0"><br><br>
-</p>
-
-<p class="indent_bullet_2_title">-
-    To enable the 'User Regions' selector
-</p>
-
-<p class="indent_bullet_2_contents">
-    The 'User Regions' field is not available by default,
-    but can easily be added by going to the Preferences page:<br>
-    (Menu > SeaDAS > Settings > Seadas Toolbox > Earthdata Cloud)<br>
-    and checking "Include 'User Regions' Selector".
-</p>
-
-<p class="indent_bullet_2_title">-
-    To edit the 'User Regions' selector
-</p>
-
-<p class="indent_bullet_2_contents">
-    Entries can be added to the 'User Regions' selector by manually editing the following file:<br>
-    ~/.seadas/auxdata/regions/user_regions.txt.
-</p>
-
-<p class="indent_bullet_2_contents">
-    Here's an example entry to illustrate the formatting in the 'User Regions' configuration file:
-</p>
-
-
-<div class="div_indent_2">
-
-    <table class="outline">
-        <tr>
-            <td class="blank_paragraph">
-                <pre>
-#  Name = North  South  West  East
-#  (coordinates can be space and/or comma delimited)
-
-Arctic Circle: Iceland-Norway = 70.0°N, 60.0°N, 25.0°W, 10.0°E</pre>
-            </td>
-        </tr>
-    </table>
-
-</div>
-<br>
-
-
-
-
-
 
 
 
