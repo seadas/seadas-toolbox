@@ -101,6 +101,23 @@
     Secure file downloads with Earthdata login support and progress monitoring.
 </p>
 
+
+
+<p class="indent_bullet_0_title">
+    External Help Tutorials:
+</p>
+
+<p class="indent_bullet_1">&#x2022;
+    SeaDAS Wiki:
+    <object classid="java:eu.esa.snap.netbeans.javahelp.BrowserDisplayer">
+        <param name="content" value="https://github.com/seadas/seadas-toolbox/wiki/">
+        <param name="text" value="<html><u>https://github.com/seadas/seadas-toolbox/wiki/</u></html>">
+    </object>
+</p>
+
+
+
+
 <br>
 
 
@@ -683,7 +700,7 @@
 </p>
 
 <p class="indent_bullet_2_contents">
-    Here's a sample of the formatting in the 'User Regions' configuration file:
+    Here's an example entry to illustrate the formatting in the 'User Regions' configuration file:
 </p>
 
 
@@ -696,7 +713,7 @@
 #  Name = North  South  West  East
 #  (coordinates can be space and/or comma delimited)
 
-My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;00&Prime;E, 74°18&prime;00&Prime;E</pre>
+Arctic Circle: Iceland-Norway = 70.0°N, 60.0°N, 25.0°W, 10.0°E</pre>
             </td>
         </tr>
     </table>
@@ -786,7 +803,8 @@ My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;0
     Download File Checkbox
 </p>
 <p class="indent_bullet_1_contents">
-    Selecting this adds it to the files to be downloaded.  Multiple files can be downloaded at once.
+    Selecting this adds it to the files to be downloaded.  Multiple files can be
+    downloaded at once.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
@@ -807,14 +825,41 @@ My Sample Region = 39°36&prime;00&Prime;N, 35°54&prime;00&Prime;N, 77°30&prime;0
     Subset
 </p>
 <p class="indent_bullet_1_contents">
-    This tool is under-construction for a future SeaDAS release.  It will make a subset of the selected files.
+    This enables the remote subsetting (spatial, product) of the selected file.  This option
+    is only currently available for level-2 files.  This option only supports subsetting a
+    single file, so if multiple files are selected only one file in the list will get subsetted.
 </p>
 
 <p class="indent_bullet_1_title">&#x2022;
     Download
 </p>
 <p class="indent_bullet_1_contents">
-    This opens a file finder window for saving the downloads directory.  All files will be downloaded into a single directory.
+    This downloads both:
+</p>
+
+<p class="indent_bullet_2_title">- URL links text file
+</p>
+<p class="indent_bullet_2_contents">
+    This file contains the URL links to the selected file(s) along with the search parameters.
+</p>
+
+<p class="indent_bullet_2_title">- Data file(s)
+</p>
+<p class="indent_bullet_2_contents">
+    This selected file(s)
+</p>
+
+<p class="indent_bullet_1_title">&#x2022;
+    URLSs Only
+</p>
+<p class="indent_bullet_1_contents">
+    This downloads:
+</p>
+
+<p class="indent_bullet_2_title">- URL links text file
+</p>
+<p class="indent_bullet_2_contents">
+    This file contains the URL links to the selected file(s) along with the search parameters.
 </p>
 
 
