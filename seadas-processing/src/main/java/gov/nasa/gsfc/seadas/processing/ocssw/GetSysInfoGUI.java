@@ -855,7 +855,7 @@ public class GetSysInfoGUI {
 
         // Get for tag
 
-        String[] commandArrayTag = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " install_ocssw --tag V2026.0 --installed_tag"};
+        String[] commandArrayTag = new String[]{ bash, "-l", "-c", OCSSWInfo.getInstance().getOcsswRunnerScriptPath() + " --ocsswroot " + OCSSWInfo.getInstance().getOcsswRoot() + " install_ocssw --tag V2026.5 --installed_tag"};
         String callReturnTag = runCommandArrayGetString(commandArrayTag, "", true);
 
         {

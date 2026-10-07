@@ -67,7 +67,7 @@ public class OCSSWConfigData {
     final static String SEADAS_CLIENT_SERVER_SHARED_DIR_NAME = "seadasClientServerShared";
     final static String SEADAS_OCSSW_DOCKER_DIR_NAME = "ocssw-docker";
     final static String SEADAS_OCSSW_DEBUG_DEFAULT_VALUE =  "false";
-    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "V2026.0";
+    public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE = "V2026.5";
     public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT = "";
     public final static String SEADAS_OCSSW_TAG_DEFAULT_VALUE_ALT2 = "";
 
