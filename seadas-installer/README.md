@@ -68,7 +68,8 @@ seadas-installer-windows-x64.jar / .exe   seadas-installer-windows-x64-nojre.jar
 seadas_<version>_windows64_installer.exe  seadas_<version>_windows64_installer_no_bundled_jre.exe
                                           (the Windows installers for users; see below)
 seadas_<version>_linux64_installer.sh     seadas_<version>_linux64_installer_no_bundled_jre.sh
-                                          (the Linux installers for users; see below)
+seadas_<version>_mac_aarch64_installer.sh seadas_<version>_mac_installer_no_bundled_jre.sh
+                                          (the Linux and macOS installers for users; see below)
 ```
 
 A rebuild overwrites the previous installer for that platform. A failed build
@@ -124,25 +125,35 @@ version installs over the old one. The installer is not code-signed yet (the
 `SignTool` line is commented out). Test it on a Windows machine before
 publishing, since it is built under Wine.
 
-### 4. The Linux installers for users
+### 4. The Linux and macOS installers for users
 
-`linux` also produces `seadas_<version>_linux64_installer.sh`, and
-`linux-nojre` produces `seadas_<version>_linux64_installer_no_bundled_jre.sh`.
-These are the Linux installers to publish: self-extracting archives made with
-[makeself](https://makeself.io/), so `build-all.sh` needs `makeself` on the
-PATH for both (`apt install makeself`). Without it, a run with no arguments
-skips them with a warning, and asking for `linux` or `linux-nojre` fails.
+`linux`, `linux-nojre`, `mac` and `mac-nojre` also produce the `.sh`
+installers to publish:
+
+| Platform      | Installer                                                |
+| ------------- | -------------------------------------------------------- |
+| `linux`       | `seadas_<version>_linux64_installer.sh`                  |
+| `linux-nojre` | `seadas_<version>_linux64_installer_no_bundled_jre.sh`   |
+| `mac`         | `seadas_<version>_mac_aarch64_installer.sh`              |
+| `mac-nojre`   | `seadas_<version>_mac_installer_no_bundled_jre.sh`       |
+
+They are self-extracting archives made with [makeself](https://makeself.io/),
+so `build-all.sh` needs `makeself` on the PATH for them (`apt install makeself`,
+or `brew install makeself` on a Mac). Without it, a run with no arguments
+skips these four with a warning, and asking for one of them by name fails.
 
 Each archive holds the IzPack jar and
-`seadas-installer/linux-installer-files/start-installer.sh`, which makeself
+`seadas-installer/sh-installer-files/start-installer.sh`, which makeself
 runs after unpacking it to `$TMPDIR` (about 1 GB):
 
-* The bundled-JRE archive also holds the Java 21 JRE from `packs/jre/`, and
-  the installer runs on it.
-* The no-JRE archive holds no Java. The installer runs on the machine's Java:
-  `JAVA_HOME`, else `java` on the PATH. With no Java, or one older than 21, it
-  stops with a message saying what it found. The installer then offers that
-  Java's folder for SeaDAS to use, and asks for another if it is not a JDK.
+* The bundled-JRE archives also hold the platform's Java 21 JRE from
+  `packs/jre/` (x64 for Linux, aarch64 for macOS), and the installer runs on it.
+* The no-JRE archives hold no Java. The installer runs on the machine's Java:
+  `JAVA_HOME`, else on macOS the newest Java 21+ known to
+  `/usr/libexec/java_home`, else `java` on the PATH. With no Java, or one older
+  than 21, it stops with a message saying what it found. The installer then
+  offers that Java's folder for SeaDAS to use, and asks for another if it is
+  not a JDK.
 
 Arguments after `--` go to the installer, for example on a machine without a
 display:
@@ -152,8 +163,11 @@ sh seadas_<version>_linux64_installer.sh -- -console
 ```
 
 `sh <file> --check` verifies an archive, and `--list` shows what is in it.
-The makeself step adds about 20 seconds. These replace the old hand-made
-`.sh` installers, which started the installer with a Java 8 JRE.
+The makeself step adds about 20 seconds per installer. These replace the old
+hand-made `.sh` installers, which started the installer with a Java 8 JRE
+(an Intel one on macOS, which Apple Silicon can only run through Rosetta 2).
+
+The macOS `.dmg` is not built here: making a disk image needs macOS tools.
 
 A platform profile is required; there is deliberately no default. The
 no-JRE descriptors are generated at build time from `install-for-<os>.xml`, so
@@ -168,6 +182,8 @@ no-JRE ones, which need Java 21 or newer:
 ```bash
 sh seadas_<version>_linux64_installer.sh                  # Linux
 sh seadas_<version>_linux64_installer_no_bundled_jre.sh   # Linux, Java 21+ via JAVA_HOME or PATH
+sh seadas_<version>_mac_aarch64_installer.sh              # macOS (Apple Silicon)
+sh seadas_<version>_mac_installer_no_bundled_jre.sh       # macOS, Java 21+
 ```
 
 On Windows, run `seadas_<version>_windows64_installer.exe` (see above).

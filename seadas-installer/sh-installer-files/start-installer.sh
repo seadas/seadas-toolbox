@@ -1,20 +1,28 @@
 #!/bin/sh
 #
-# Starts the SeaDAS IzPack installer inside seadas_<version>_linux64_installer*.sh.
+# Starts the SeaDAS IzPack installer inside the .sh installers for Linux and
+# macOS (seadas_<version>_linux64_installer*.sh, seadas_<version>_mac*_installer*.sh).
 # makeself runs this in the unpacked archive; arguments after '--' on the .sh
 # command line are passed on to the installer, e.g. on a machine without a display:
 #
 #   sh seadas_<version>_linux64_installer.sh -- -console
 #
-# The installer with a bundled JRE carries a Java 21 JRE in ./jre to run on.  The
-# one without uses JAVA_HOME, or else 'java' on PATH, and the installer then
-# offers that Java's folder for SeaDAS to use.
+# The installers with a bundled JRE carry a Java 21 JRE in ./jre to run on
+# (./jre/bin/java on Linux, ./jre/Contents/Home/bin/java on macOS).  Those without
+# use JAVA_HOME, else on macOS the newest Java 21+ that /usr/libexec/java_home
+# knows, else 'java' on PATH; the installer then offers that Java's folder for
+# SeaDAS to use.
 
 if [ -x ./jre/bin/java ]; then
     JAVA=./jre/bin/java
+elif [ -x ./jre/Contents/Home/bin/java ]; then
+    JAVA=./jre/Contents/Home/bin/java
 else
+    JAVA=""
     if [ -n "${JAVA_HOME:-}" ] && [ -x "$JAVA_HOME/bin/java" ]; then
         JAVA="$JAVA_HOME/bin/java"
+    elif [ -x /usr/libexec/java_home ] && home=$(/usr/libexec/java_home -v 21+ 2>/dev/null) && [ -x "$home/bin/java" ]; then
+        JAVA="$home/bin/java"
     else
         JAVA=$(command -v java || true)
     fi
