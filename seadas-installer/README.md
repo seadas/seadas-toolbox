@@ -65,7 +65,7 @@ The installers are written to `izpack-installer/dist/` (or `OUTDIR`):
 seadas-installer-linux-x64.jar            seadas-installer-linux-x64-nojre.jar
 seadas-installer-macos-aarch64.jar        seadas-installer-macos-aarch64-nojre.jar
 seadas-installer-windows-x64.jar / .exe   seadas-installer-windows-x64-nojre.jar / .exe
-seadas_<version>_windows64_installer.exe  seadas_<version>_windows64_nojre_installer.exe
+seadas_<version>_windows64_installer.exe  seadas_<version>_windows64_installer_no_bundled_jre.exe
                                           (the Windows installers for users; see below)
 seadas_<version>_linux64_installer.sh     seadas_<version>_linux64_installer_no_bundled_jre.sh
                                           (the Linux installers for users; see below)
@@ -89,7 +89,7 @@ in `dist/`; only `build-all.sh` moves installers into `dist/`. The next
 ### 3. The Windows installers for users
 
 `win` also produces `seadas_<version>_windows64_installer.exe`, and
-`win-nojre` produces `seadas_<version>_windows64_nojre_installer.exe`. Both
+`win-nojre` produces `seadas_<version>_windows64_installer_no_bundled_jre.exe`. Both
 are [Inno Setup](https://jrsoftware.org/isinfo.php) installers. These are the
 Windows installers to publish, and they need no Java to start. They are built
 entirely on Linux, with no manual Windows steps:

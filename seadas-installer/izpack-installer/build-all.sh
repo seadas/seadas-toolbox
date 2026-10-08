@@ -8,7 +8,7 @@
 #   OUTDIR=/tmp/installers ./build-all.sh
 #
 # 'win' and 'win-nojre' also build the Windows installers for users,
-# seadas_<version>_windows64_installer.exe and ..._windows64_nojre_installer.exe:
+# seadas_<version>_windows64_installer.exe and ..._windows64_installer_no_bundled_jre.exe:
 # the Maven build lays out the installed SeaDAS folder and the Inno Setup
 # script (see pom.xml and ../windows-installer-files), and this script
 # compiles it with Inno Setup's ISCC, run under Wine in Docker, so Docker is

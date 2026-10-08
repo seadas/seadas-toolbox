@@ -1096,7 +1096,7 @@ the Java folder's `release` file. Next to the folder it puts
 `build.iss` (the version from the root POM, the JRE folder name, and
 `#define NoJre` for `nojre`). `build-all.sh` then runs ISCC under Wine in the
 pinned `amake/innosetup` Docker image, and copies
-`seadas_<version>_windows64[_nojre]_installer.exe` into `OUTDIR`. Before this, the Inno installer was made by hand: the IzPack `.exe`
+`seadas_<version>_windows64_installer[_no_bundled_jre].exe` into `OUTDIR`. Before this, the Inno installer was made by hand: the IzPack `.exe`
 was installed on a Windows machine and that install folder was repackaged with
 Inno, which could carry the builder's install path in `etc/snap.conf`.
 

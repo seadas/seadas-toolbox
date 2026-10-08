@@ -15,7 +15,7 @@
 #include "build.iss"
 
 #ifdef NoJre
-  #define OutputSuffix "_nojre"
+  #define OutputSuffix "_no_bundled_jre"
 #else
   #define OutputSuffix ""
 #endif
@@ -49,7 +49,7 @@ InfoBeforeFile=seadas_installer_welcome_message.rtf
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=out
-OutputBaseFilename=seadas_{#MyAppVersion}_windows64{#OutputSuffix}_installer
+OutputBaseFilename=seadas_{#MyAppVersion}_windows64_installer{#OutputSuffix}
 SetupIconFile=seadas_installer_icon.ico
 UninstallDisplayIcon={app}\{#ShortcutIconFileName2}
 Compression=lzma
