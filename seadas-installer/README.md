@@ -67,6 +67,8 @@ seadas-installer-macos-aarch64.jar        seadas-installer-macos-aarch64-nojre.j
 seadas-installer-windows-x64.jar / .exe   seadas-installer-windows-x64-nojre.jar / .exe
 seadas_<version>_windows64_installer.exe  seadas_<version>_windows64_nojre_installer.exe
                                           (the Windows installers for users; see below)
+seadas_<version>_linux64_installer.sh     seadas_<version>_linux64_installer_no_bundled_jre.sh
+                                          (the Linux installers for users; see below)
 ```
 
 A rebuild overwrites the previous installer for that platform. A failed build
@@ -122,6 +124,37 @@ version installs over the old one. The installer is not code-signed yet (the
 `SignTool` line is commented out). Test it on a Windows machine before
 publishing, since it is built under Wine.
 
+### 4. The Linux installers for users
+
+`linux` also produces `seadas_<version>_linux64_installer.sh`, and
+`linux-nojre` produces `seadas_<version>_linux64_installer_no_bundled_jre.sh`.
+These are the Linux installers to publish: self-extracting archives made with
+[makeself](https://makeself.io/), so `build-all.sh` needs `makeself` on the
+PATH for both (`apt install makeself`). Without it, a run with no arguments
+skips them with a warning, and asking for `linux` or `linux-nojre` fails.
+
+Each archive holds the IzPack jar and
+`seadas-installer/linux-installer-files/start-installer.sh`, which makeself
+runs after unpacking it to `$TMPDIR` (about 1 GB):
+
+* The bundled-JRE archive also holds the Java 21 JRE from `packs/jre/`, and
+  the installer runs on it.
+* The no-JRE archive holds no Java. The installer runs on the machine's Java:
+  `JAVA_HOME`, else `java` on the PATH. With no Java, or one older than 21, it
+  stops with a message saying what it found. The installer then offers that
+  Java's folder for SeaDAS to use, and asks for another if it is not a JDK.
+
+Arguments after `--` go to the installer, for example on a machine without a
+display:
+
+```bash
+sh seadas_<version>_linux64_installer.sh -- -console
+```
+
+`sh <file> --check` verifies an archive, and `--list` shows what is in it.
+The makeself step adds about 20 seconds. These replace the old hand-made
+`.sh` installers, which started the installer with a Java 8 JRE.
+
 A platform profile is required; there is deliberately no default. The
 no-JRE descriptors are generated at build time from `install-for-<os>.xml`, so
 make descriptor changes there only. See `docs/DEVELOPERS_MANUAL.md` §14.2 at
@@ -129,7 +162,17 @@ the repository root for how that works.
 
 ## How to Run
 
-Every installer needs **Java 21 or newer** on the machine to start.
+The installers for users start without any Java on the machine, except the
+no-JRE ones, which need Java 21 or newer:
+
+```bash
+sh seadas_<version>_linux64_installer.sh                  # Linux
+sh seadas_<version>_linux64_installer_no_bundled_jre.sh   # Linux, Java 21+ via JAVA_HOME or PATH
+```
+
+On Windows, run `seadas_<version>_windows64_installer.exe` (see above).
+
+The IzPack jars themselves need **Java 21 or newer** to start:
 
 ```bash
 java -jar seadas-installer-linux-x64.jar          # Linux

@@ -15,6 +15,11 @@
 # required for both; a run without arguments skips them when Docker is not
 # available.  INNO_IMAGE overrides the image.
 #
+# 'linux' and 'linux-nojre' likewise also build the Linux installers for users,
+# seadas_<version>_linux64_installer.sh and ..._linux64_installer_no_bundled_jre.sh:
+# self-extracting archives made with makeself, which is required for both and
+# skipped the same way when missing.
+#
 # Platforms: mac, linux, win, and mac-nojre, linux-nojre, win-nojre for the
 # installers without a bundled JRE.  Each is selected by Maven profiles (see
 # pom.xml): 'linux' is -P linux, 'linux-nojre' is -P linux,nojre.  Nothing is
@@ -67,6 +72,57 @@ case " $PLATFORMS " in
         fi
         ;;
 esac
+
+# The Linux installers for users are made with makeself, handled the same way.
+MAKESELF="$(command -v makeself || command -v makeself.sh || true)"
+case " $PLATFORMS " in
+    *" linux "*|*" linux-nojre "*)
+        if [ -z "$MAKESELF" ]; then
+            if [ $# -gt 0 ]; then
+                echo "build-all.sh: linux and linux-nojre need makeself (https://makeself.io/, e.g. 'apt install makeself')" >&2
+                exit 1
+            fi
+            echo "build-all.sh: WARNING: makeself not found, so the Linux installers (linux, linux-nojre) are skipped; install it from https://makeself.io/" >&2
+            PLATFORMS="$(echo $PLATFORMS | tr ' ' '\n' | grep -v '^linux' | tr '\n' ' ')"
+        fi
+        ;;
+esac
+
+# The SeaDAS version, for the names of the installers for users
+VERSION="$(awk '/<artifactId>seadas<\/artifactId>/{f=1} f && /<version>/{match($0, /<version>[^<]*<\/version>/); print substr($0, RSTART + 9, RLENGTH - 19); exit}' ../../pom.xml)"
+if [ -z "$VERSION" ]; then
+    echo "build-all.sh: no SeaDAS version in ../../pom.xml" >&2
+    exit 1
+fi
+
+# Wraps a Linux IzPack jar in a self-extracting seadas_<version>_linux64_installer*.sh.
+# The bundled-JRE one carries the Java 21 JRE from packs/jre to run the installer;
+# the no-JRE one runs it on the machine's Java (see ../linux-installer-files).
+make_linux_sh() {
+    local p="$1" jar="$2" stage=target/linux-sh out
+    if [ "$p" = linux ]; then
+        out="seadas_${VERSION}_linux64_installer.sh"
+    else
+        out="seadas_${VERSION}_linux64_installer_no_bundled_jre.sh"
+    fi
+    rm -rf "$stage"
+    mkdir -p "$stage"
+    ln "$jar" "$stage/seadas-installer.jar" 2>/dev/null || cp "$jar" "$stage/seadas-installer.jar"
+    cp ../linux-installer-files/start-installer.sh "$stage/"
+    chmod +x "$stage/start-installer.sh"
+    if [ "$p" = linux ]; then
+        local jres=(src/main/izpack/packs/jre/OpenJDK21U-jre_x64_linux_*.tar.gz)
+        if [ ${#jres[@]} -ne 1 ] || [ ! -f "${jres[0]}" ]; then
+            echo "build-all.sh: expected one Linux JRE archive in src/main/izpack/packs/jre, found: ${jres[*]}" >&2
+            exit 1
+        fi
+        mkdir "$stage/jre"
+        tar -xzf "${jres[0]}" -C "$stage/jre" --strip-components=1
+    fi
+    # --nox11: never try to open an xterm; the installer opens its own window.
+    "$MAKESELF" --nox11 "$stage" "$OUTDIR/$out" "SeaDAS $VERSION installer" ./start-installer.sh
+    rm -rf "$stage"
+}
 
 # The installers take the SeaDAS modules from seadas-kit's cluster, which only
 # 'mvn install' in seadas-toolbox refreshes.  Refuse to package a module whose
@@ -123,6 +179,16 @@ for p in $PLATFORMS; do
             cp "$f" "$OUTDIR"/
             rm -f "$f"
         done
+    fi
+
+    if [ "${p%-nojre}" = linux ]; then
+        echo
+        echo "=================== $p: makeself ==================="
+        if [ "$p" = linux ]; then
+            make_linux_sh "$p" "$OUTDIR/seadas-installer-linux-x64.jar"
+        else
+            make_linux_sh "$p" "$OUTDIR/seadas-installer-linux-x64-nojre.jar"
+        fi
     fi
 done
 
