@@ -229,6 +229,33 @@ public class OCSSWInfo {
     }
 
     /**
+     * Tells the user that programName cannot run because OCSSW is not installed where
+     * the current OCSSW location looks for it.  Without this the processor GUIs just
+     * stay empty: they get no output file name or parameter defaults from OCSSW.
+     */
+    public static void displayOcsswNotInstalledMessage(String programName) {
+        String location = getInstance().getOcsswLocation();
+        String where;
+        String alternative = "";
+        if (OCSSW_LOCATION_DOCKER.equals(location)) {
+            Preferences preferences = Config.instance("seadas").load().preferences();
+            String dockerDir = preferences.get(SEADAS_OCSSW_DOCKER_DIR_PROPERTY, getOcsswDockerDirDefaultValue());
+            where = "in the OCSSW Docker folder\n" + dockerDir;
+            alternative = "\n\nIf OCSSW is already installed in another folder, set 'OCSSW Docker Dir'\n"
+                    + "in the OCSSW configuration to that folder instead.";
+        } else if (OCSSW_LOCATION_LOCAL.equals(location)) {
+            where = "at\n" + getInstance().getOcsswRoot();
+        } else {
+            where = "on the OCSSW server";
+        }
+        JOptionPane.showMessageDialog(new JOptionPane(),
+                programName + " cannot run: the SeaDAS science processors (OCSSW) are not installed " + where + ".\n\n"
+                        + "Install them with SeaDAS-Toolbox > Install/Update SeaDAS Processors..." + alternative,
+                "OCSSW Not Installed",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
      * OCSSW_LOCATION_PROPERTY takes only one of the following three values: local, virtualMachine, IP address of a remote server
      *
      * @return

@@ -150,6 +150,18 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
             return;
         }
 
+        // Every processor but the installer needs OCSSW installed.  OCSSWInfo only looks
+        // when it is created, so ask again before saying no: OCSSW may have been
+        // installed since, e.g. with the installer in this session.
+        if (!OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME.equals(programName) && !OCSSWInfo.getInstance().isOCSSWExist()) {
+            ocsswInfo = OCSSWInfo.updateOCSSWInfo();
+            ocssw = OCSSW.getOCSSWInstance();
+            if (ocssw == null || !ocsswInfo.isOCSSWExist()) {
+                OCSSWInfo.displayOcsswNotInstalledMessage(programName);
+                return;
+            }
+        }
+
         ocssw.setProgramName(programName);
 
         final AppContext appContext = getAppContext();
