@@ -132,13 +132,15 @@ public class OCSSWInfo {
     private OCSSWInfo() {
         preferences = Config.instance("seadas").load().preferences();
         if (preferences != null ) {
-            logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, System.getProperty("user.dir"));
+            // Not the working directory: for an installed SeaDAS that is its bin folder,
+            // which users cannot write to (C:\Program Files\SeaDAS\bin on Windows).
+            logDirPath = preferences.get(SEADAS_LOG_DIR_PROPERTY, SEADAS_LOG_DIR_DEFAULT_VALUE);
             File logDir = new File(getLogDirPath());
             if (!logDir.exists()) {
                 try {
-                    Files.createDirectory(Paths.get(logDirPath));
+                    Files.createDirectories(Paths.get(logDirPath));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    SystemUtils.LOG.warning("Cannot create the OCSSW log directory " + logDirPath + ": " + e.getMessage());
                 }
             }
             seadasVersion = preferences.get(SEADAS_VERSION_PROPERTY, null);
@@ -361,9 +363,10 @@ public class OCSSWInfo {
                 fileWriter.close();
             }
         } catch (Exception exc) {
-            JOptionPane.showMessageDialog(new JOptionPane(), "Log file directory is not accessible to write.",
-                    "OCSSW Initialization Warning",
-                    JOptionPane.WARNING_MESSAGE);
+            // No dialog: this runs while SeaDAS looks for the OCSSW server, often off the
+            // event dispatch thread, and a server that is not up yet is normal for docker.
+            SystemUtils.LOG.warning("Cannot write to the OCSSW log directory " + logDirPath + " (" + exc.getMessage()
+                    + "); OCSSW initialization error: " + e.getMessage());
         }
     }
 
