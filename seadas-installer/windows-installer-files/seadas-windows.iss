@@ -189,7 +189,10 @@ end;
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
   Result := True;
-  if (CurPageID = JavaPage.ID) and (JavaError <> '') then
+  // Not in a silent install: Setup still calls this for every page, and MsgBox
+  // ignores /SUPPRESSMSGBOXES, so it would wait for a click nobody can give.
+  // PrepareToInstall stops a silent install instead.
+  if (CurPageID = JavaPage.ID) and not WizardSilent and (JavaError <> '') then
   begin
     MsgBox(JavaError, mbError, MB_OK);
     Result := False;
