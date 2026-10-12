@@ -27,6 +27,9 @@
 #define ArchiveDotSeaDASScriptName "archiveDotSeaDAS_windows.bat"
 #define ShortcutIconFileName1 "seadas_installer_icon.ico"
 #define ShortcutIconFileName2 "seadas_icon.ico"
+; "SeaDAS 12": a plain "SeaDAS" shortcut would replace the one an older SeaDAS made
+; (and this version's uninstall would then delete it), and the two look the same.
+#define ShortcutName MyAppName + " " + Copy(MyAppVersion, 1, Pos(".", MyAppVersion) - 1)
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -73,8 +76,8 @@ Source: "*.ico"; DestDir: "{app}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; HotKey: "ctrl+alt+s"; IconFilename: "{app}\{#ShortcutIconFileName1}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; Tasks: desktopicon; IconFilename: "{app}\{#ShortcutIconFileName2}"
+Name: "{autoprograms}\{#ShortcutName}"; Filename: "{app}\bin\{#MyAppExeName}"; HotKey: "ctrl+alt+s"; IconFilename: "{app}\{#ShortcutIconFileName2}"
+Name: "{autodesktop}\{#ShortcutName}"; Filename: "{app}\bin\{#MyAppExeName}"; Tasks: desktopicon; IconFilename: "{app}\{#ShortcutIconFileName2}"
 
 [InstallDelete]
 ; Installing over an older SeaDAS must not leave its modules behind: NetBeans
