@@ -160,6 +160,48 @@ public class OCSSWServerModel {
         return false;
     }
 
+    private static final String TIME_FILES_URL = "https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/";
+    private static final String[] TIME_FILES = {"utcpole.dat", "leapsec.dat"};
+    private static final long TIME_FILES_MAX_AGE_MS = 7L * 24 * 3600 * 1000;
+    private static long timeFilesCheckedAt = 0;
+
+    /**
+     * Makes sure $OCVARROOT/modis/utcpole.dat and leapsec.dat exist and are at most a
+     * week old.  OCSSW's geolocation and L1B programs for several missions read them
+     * (geolocate_hawkeye, l1bgen_oci, l1cgen, ...), but OCSSW only installs them with
+     * a MODIS mission, so a HawkEye-only install fails without them.  Checked at most
+     * once an hour; a failed download is logged and never stops the program.
+     */
+    public static synchronized void ensureTimeFiles() {
+        long now = System.currentTimeMillis();
+        if (ocsswRoot == null || !isOCSSWExist() || now - timeFilesCheckedAt < 3600 * 1000) {
+            return;
+        }
+        timeFilesCheckedAt = now;
+        File dir = new File(ocsswRoot, "var" + File.separator + "modis");
+        for (String name : TIME_FILES) {
+            File file = new File(dir, name);
+            if (file.isFile() && now - file.lastModified() < TIME_FILES_MAX_AGE_MS) {
+                continue;
+            }
+            Path tmp = null;
+            try {
+                Files.createDirectories(dir.toPath());
+                tmp = Files.createTempFile(dir.toPath(), name, ".part");
+                try (java.io.InputStream in = new URL(TIME_FILES_URL + name).openStream()) {
+                    Files.copy(in, tmp, REPLACE_EXISTING);
+                }
+                Files.move(tmp, file.toPath(), REPLACE_EXISTING);
+                System.out.println("Downloaded " + file);
+            } catch (IOException e) {
+                System.out.println("Could not download " + TIME_FILES_URL + name + " to " + dir + ": " + e.getMessage());
+                if (tmp != null) {
+                    tmp.toFile().delete();
+                }
+            }
+        }
+    }
+
     public static boolean isOCSSWExist() {
         return ocsswExist;
     }

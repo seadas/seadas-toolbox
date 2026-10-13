@@ -215,6 +215,7 @@ private boolean isAncFile(String fileName) {
 }
 
 public InputStream executeProgramAndGetStdout(String jobId, String programName, JsonObject jsonObject) {
+    OCSSWServerModel.ensureTimeFiles();  // utcpole.dat/leapsec.dat for missions OCSSW does not install them with
 
     String[] commandArray = ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), transformCommandArray(jobId, jsonObject, programName));
 
@@ -467,6 +468,7 @@ public void updateFileListFileContent(String fileListFileName, String mlpDir) {
 }
 
 public void executeProcessInWorkingDirectory(String[] commandArray, String workingDir, String jobId) {
+    OCSSWServerModel.ensureTimeFiles();  // utcpole.dat/leapsec.dat for missions OCSSW does not install them with
 
     debug("command array content: ");
     for (int j = 0; j < commandArray.length; j++) {
@@ -513,6 +515,7 @@ public void executeProcessInWorkingDirectory(String[] commandArray, String worki
 }
 
 public void executeProcessSimple(String[] commandArray, String jobId, String programName) {
+    OCSSWServerModel.ensureTimeFiles();  // utcpole.dat/leapsec.dat for missions OCSSW does not install them with
 
 
     StringBuilder sb = new StringBuilder();
@@ -545,6 +548,7 @@ public void executeProcessSimple(String[] commandArray, String jobId, String pro
 }
 
 public Process executeSimple(String[] commandArray) {
+    OCSSWServerModel.ensureTimeFiles();  // utcpole.dat/leapsec.dat for missions OCSSW does not install them with
 
     StringBuilder sb = new StringBuilder();
     for (String item : commandArray) {
@@ -566,6 +570,7 @@ public Process executeSimple(String[] commandArray) {
 }
 
 public void execute(String[] commandArrayParam, String workingDir, String jobIdParam) {
+    OCSSWServerModel.ensureTimeFiles();  // utcpole.dat/leapsec.dat for missions OCSSW does not install them with
     String jobID = jobIdParam;
     String[] commandArray = commandArrayParam;
     SwingWorker swingWorker = new SwingWorker() {
