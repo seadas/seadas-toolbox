@@ -183,7 +183,6 @@ Where the logs are:
 
 ## Known issues in 12.0.0
 
-- **Local OCSSW without MODIS (Linux and macOS without Docker):** geolocate_hawkeye fails with "…/var/modis/utcpole.dat not found". OCSSW installs the time-correction files `utcpole.dat` and `leapsec.dat` only together with a MODIS mission; the OCSSW developers have been told. With OCSSW in Docker this is handled for you: SeaDAS's OCSSW server downloads both files before running a processor and refreshes them weekly. For a local OCSSW, download [utcpole.dat](https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/utcpole.dat) and [leapsec.dat](https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/leapsec.dat) into `var/modis` inside your OCSSW folder, or install MODIS Aqua as well. `utcpole.dat` is updated weekly, so refresh it now and then.
 - **Not code-signed:** the Windows installers show "Windows protected your PC" until they are signed.
 - **Install progress:** the processor installer reports progress per package only, so large packages look stalled.
 - **Memory on 12 GB computers:** SeaDAS may use up to 12 GB and processing PACE OCI takes about 5 GB in the container. On a 12 GB computer, close other programs while processing large files.
