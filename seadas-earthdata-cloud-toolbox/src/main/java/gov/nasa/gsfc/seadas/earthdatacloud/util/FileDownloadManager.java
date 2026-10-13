@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +31,7 @@ public class FileDownloadManager {
     private String[] earthdataCredentials;
 
     String URL_LIST_FILENAME = "requested_download_files_url_list.txt";
+    private static final String EARTHDATA_HOST = "urs.earthdata.nasa.gov";
 
     /**
      * Downloads multiple files with progress tracking and user feedback.
@@ -104,6 +106,16 @@ public class FileDownloadManager {
                 @Override
                 protected DownloadResult doInBackground() {
                     int downloadedCount = 0;
+                    List<String> failures = new ArrayList<>();
+
+                    // One token for the whole run.  If Earthdata rejects the login in ~/.netrc,
+                    // stop here and say so instead of failing every file silently.
+                    String token;
+                    try {
+                        token = WebPageFetcherWithJWT.getAccessToken(EARTHDATA_HOST);
+                    } catch (Exception e) {
+                        return new DownloadResult(0, false, failures, rootMessage(e));
+                    }
 
                     for (int i = 0; i < filesToDownload.size(); i++) {
                         if (isCancelled()) {
@@ -115,16 +127,23 @@ public class FileDownloadManager {
 
                         publish(new DownloadProgress(fileIndex, filesToDownload.size(), fileName, 0));
 
-                        if (url != null && downloadFile(url, downloadDir,
+                        String failure = url == null ? "no download URL" : downloadFile(url, downloadDir, token,
                                 currentFileProgress -> publish(new DownloadProgress(fileIndex, filesToDownload.size(),
-                                        fileName, currentFileProgress)))) {
+                                        fileName, currentFileProgress)));
+                        if (failure == null) {
                             downloadedCount++;
+                        } else if (!isCancelled()) {
+                            failures.add(fileName + ": " + failure);
+                            if (failure.startsWith("HTTP 401")) {
+                                // The token was refused: the remaining files would fail the same way.
+                                return new DownloadResult(downloadedCount, false, failures, failure);
+                            }
                         }
 
                         publish(new DownloadProgress(fileIndex + 1, filesToDownload.size(), fileName, 0));
                     }
 
-                    return new DownloadResult(downloadedCount, isCancelled());
+                    return new DownloadResult(downloadedCount, isCancelled(), failures, null);
                 }
 
                 @Override
@@ -142,7 +161,7 @@ public class FileDownloadManager {
                     try {
                         result = get();
                     } catch (Exception e) {
-                        result = new DownloadResult(0, isCancelled());
+                        result = new DownloadResult(0, isCancelled(), new ArrayList<>(), null);
                     }
 
                     if (result.cancelled) {
@@ -150,7 +169,15 @@ public class FileDownloadManager {
                         return;
                     }
 
-                    showCompletionMessage(parentComponent, downloadDir, result.downloadedCount, onComplete);
+                    if (result.loginError != null) {
+                        JOptionPane.showMessageDialog(parentComponent,
+                                "Earthdata login failed: " + EARTHDATA_HOST + " did not accept the user name or password in\n"
+                                        + netrcPath() + "\n\nUpdate the password there and try again.\n\nDetails: " + result.loginError,
+                                "Earthdata Login", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    showCompletionMessage(parentComponent, downloadDir, result.downloadedCount, result.failures, onComplete);
                 }
             };
 
@@ -164,10 +191,20 @@ public class FileDownloadManager {
 
 
     private void showCompletionMessage (Component parentComponent, Path downloadDir,int downloadedCount,
-                                        DownloadCompleteCallback onComplete){
+                                        List<String> failures, DownloadCompleteCallback onComplete){
         final int finalDownloadedCount = downloadedCount;
-        JOptionPane.showMessageDialog(parentComponent,
-                finalDownloadedCount + " file(s) downloaded to:\n" + downloadDir.toAbsolutePath());
+        if (failures.isEmpty()) {
+            JOptionPane.showMessageDialog(parentComponent,
+                    finalDownloadedCount + " file(s) downloaded to:\n" + downloadDir.toAbsolutePath());
+        } else {
+            StringBuilder message = new StringBuilder(finalDownloadedCount + " file(s) downloaded to:\n"
+                    + downloadDir.toAbsolutePath() + "\n\n" + failures.size() + " file(s) failed:\n");
+            failures.stream().limit(10).forEach(f -> message.append(f).append('\n'));
+            if (failures.size() > 10) {
+                message.append("... and ").append(failures.size() - 10).append(" more\n");
+            }
+            JOptionPane.showMessageDialog(parentComponent, message.toString(), "Download", JOptionPane.WARNING_MESSAGE);
+        }
 
         if (onComplete != null) {
             onComplete.onDownloadComplete(finalDownloadedCount, downloadDir);
@@ -177,34 +214,41 @@ public class FileDownloadManager {
 
     /**
      * Downloads a single file from the given URL to the specified directory.
-     * 
+     *
      * @param fileUrl The URL of the file to download
      * @param outputDir The directory to save the file to
      * @return true if download was successful, false otherwise
      */
     public boolean downloadFile(String fileUrl, Path outputDir) {
-        return downloadFile(fileUrl, outputDir, null);
+        try {
+            return downloadFile(fileUrl, outputDir, WebPageFetcherWithJWT.getAccessToken(EARTHDATA_HOST), null) == null;
+        } catch (Exception e) {
+            System.err.println("Download failed: " + rootMessage(e));
+            return false;
+        }
     }
 
-    private boolean downloadFile(String fileUrl, Path outputDir, DownloadProgressListener progressListener) {
+    /**
+     * @return null if the file was downloaded, otherwise why not, e.g. "HTTP 403 (access denied)"
+     */
+    private String downloadFile(String fileUrl, Path outputDir, String token, DownloadProgressListener progressListener) {
         try {
             String fileName = extractFileNameFromUrl(fileUrl);
-            String token = WebPageFetcherWithJWT.getAccessToken("urs.earthdata.nasa.gov");
-            
+
             HttpURLConnection conn = (HttpURLConnection) new URL(fileUrl).openConnection();
             conn.setInstanceFollowRedirects(false);
             conn.setRequestProperty("Authorization", "Bearer " + token);
-            
+
             int status = conn.getResponseCode();
-            if (status == HttpURLConnection.HTTP_MOVED_PERM || 
-                status == HttpURLConnection.HTTP_MOVED_TEMP || 
+            if (status == HttpURLConnection.HTTP_MOVED_PERM ||
+                status == HttpURLConnection.HTTP_MOVED_TEMP ||
                 status == 303) {
                 String newUrl = conn.getHeaderField("Location");
                 conn = (HttpURLConnection) new URL(newUrl).openConnection();
                 conn.setRequestProperty("Authorization", "Bearer " + token);
                 status = conn.getResponseCode();
             }
-            
+
             if (status == 200) {
                 long totalBytes = conn.getContentLengthLong();
                 try (InputStream in = conn.getInputStream()) {
@@ -212,20 +256,35 @@ public class FileDownloadManager {
                     Path outputPath = outputDir.resolve(fileName);
                     copyWithProgress(in, outputPath, totalBytes, progressListener);
                     System.out.println("Downloaded: " + fileName);
-                    return true;
+                    return null;
                 }
-            } else {
-                System.err.println("Download failed for " + fileUrl + "\nHTTP status: " + status);
-                return false;
             }
-            
+            System.err.println("Download failed for " + fileUrl + "\nHTTP status: " + status);
+            switch (status) {
+                case 401: return "HTTP 401 (Earthdata login not accepted, check " + netrcPath() + ")";
+                case 403: return "HTTP 403 (access denied)";
+                case 404: return "HTTP 404 (file not found)";
+                default:  return "HTTP " + status;
+            }
         } catch (InterruptedIOException e) {
-            return false;
+            return "interrupted";
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Download failed: " + e.getMessage());
-            return false;
+            return rootMessage(e);
         }
+    }
+
+    private static String netrcPath() {
+        return new File(System.getProperty("user.home"), ".netrc").getAbsolutePath();
+    }
+
+    // The innermost message: getAccessToken wraps the real cause in RuntimeExceptions.
+    private static String rootMessage(Throwable e) {
+        while (e.getCause() != null) {
+            e = e.getCause();
+        }
+        return e.getMessage() != null ? e.getMessage() : e.toString();
     }
 
 
@@ -516,10 +575,14 @@ public class FileDownloadManager {
     private static class DownloadResult {
         private final int downloadedCount;
         private final boolean cancelled;
+        private final List<String> failures;
+        private final String loginError;  // set when Earthdata rejected the login; nothing else was tried
 
-        private DownloadResult(int downloadedCount, boolean cancelled) {
+        private DownloadResult(int downloadedCount, boolean cancelled, List<String> failures, String loginError) {
             this.downloadedCount = downloadedCount;
             this.cancelled = cancelled;
+            this.failures = failures;
+            this.loginError = loginError;
         }
     }
 } 
