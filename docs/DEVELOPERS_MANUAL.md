@@ -254,12 +254,30 @@ one, grep for the old string and change all of them.
 
 Tags are annotated and follow `SEADAS-<version>[-qualifier][-date]`, e.g.
 `SEADAS-11.0.0`, `SEADAS-11.0.0-RC5`, `SEADAS-12.0.0-SNAP-13.0.0-2026-04-29`,
-`SEADAS-10.0.0-no-JRE`. `docs/GitNotes` records the convention of stamping a tag
-with an explicit date:
+`SEADAS-10.0.0-no-JRE`. (Before 9.0, `seadas-toolbox` was tagged with its own
+`1.x.y` numbers, e.g. `1.4.0` for SeaDAS 8.4.0.) Release tags are stamped with the
+release date rather than the moment the command was run:
 
 ```bash
-GIT_COMMITTER_DATE="2026-04-29 12:00" git tag -a SEADAS-12.0.0 \
-  -m "SeaDAS Toolbox 12.0.0, released in the SeaDAS 12.0.0 platform (SNAP 14.0.0)"
+GIT_COMMITTER_DATE="2026-10-15 12:00" git tag -a SEADAS-12.0.0 \
+  -m "SeaDAS 12.0.0 release based on SNAP 14.0.1"
+```
+
+A release is usually the last release candidate re-tagged. `^{}` points the new tag
+at the commit, not at the RC's tag object:
+
+```bash
+GIT_COMMITTER_DATE="2026-10-15 12:00" git tag -a SEADAS-12.0.0 SEADAS-12.0.0-RC6^{} \
+  -m "SeaDAS 12.0.0 release based on SNAP 14.0.1"
+git push origin SEADAS-12.0.0
+```
+
+Other recipes that come up:
+
+```bash
+git push --delete origin <tag> && git tag -d <tag>   # remove a tag everywhere
+git branch -r --sort=-committerdate | head           # most recently changed remote branches
+git checkout --track origin/<branch>                 # local branch for an existing remote one
 ```
 
 Tags are cut in parallel across `snap-engine`, `snap-desktop`, `optical-toolbox`
@@ -971,12 +989,14 @@ defaults). Look in the controller for the exact keys.
 `getConvertedPixels`, `downloadFile`, `downloadAncFileList`,
 `getMLPOutputFilesList`, `downloadMLPOutputFile`, `fileServices/fileVerification`.
 
-**Branding-related properties** (in the SNAP forks, not here — see
-`docs/BrandingNotes`): `snap-engine/etc/seadas.properties`,
-`snap-engine/etc/seadas.auxdata.properties`, `snap-desktop/etc/seadas.conf`.
-SeaDAS overrides SNAP's colour-manipulation defaults there
-(`seadas.color.manipulation.*`), and those files need re-checking each release
-when SNAP changes its own.
+**Colour-manipulation defaults** (see also §14.4): SeaDAS's defaults differ from SNAP's
+(for example, band-specific colour schemes are applied automatically and the scheme
+selector is verbose). They are compiled in, in
+`snap-engine/snap-core/src/main/java/org/esa/snap/core/datamodel/ColorManipulationDefaults.java`
+in the SeaDAS fork. `snap.properties` (`snap-engine/etc/` and the installer's
+`packs/files/<os>/etc/`) lists the same values as commented-out
+`seadas.color.manipulation.*` lines for reference; uncomment one to override it. Re-check
+the class each time SNAP changes its own defaults.
 
 ---
 
@@ -1163,6 +1183,33 @@ upstream, so a `mvn package` over an old `target/` can pick up leftovers.
 > Merging to `master` is the maintainer's job. Development happens on the
 > `SEADAS-<toolbox>-SNAP-<snap>` release branch.
 
+### 14.4 Branding: where "SeaDAS" lives in the SNAP forks
+
+SeaDAS's name, version strings and look come from the `snap-engine` /
+`snap-desktop` forks and the installer, not from this repository's modules. Check
+these when SNAP is updated or a release changes the version:
+
+| What | Where |
+| --- | --- |
+| Version and product name in the NetBeans UI | `snap-desktop/snap-branding/src/main/nbm-branding/modules/org-netbeans-core.jar/org/netbeans/core/ui/Bundle.properties` |
+| Main window title | `…/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties`, and `SnapApp.getEmptyTitle()` in `snap-desktop/snap-rcp` (adds the version and the RC number) |
+| Splash screen text | `…/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties` |
+| About boxes | `snap-desktop/snap-rcp/.../rcp/about/SeadasAboutBox.java` (the application), `seadas-kit/.../seadas/about/SeaDASAboutBox.java` (the toolbox) |
+| Application name, user directory `~/.seadas` | `SystemUtils.getApplicationName()` in `snap-engine/snap-core`, `EngineConfig` (`USER_DIR_DEFAULT`) in `snap-engine/snap-runtime` |
+| Colour-manipulation defaults | `ColorManipulationDefaults.java` in `snap-engine/snap-core` (see §16) |
+| Launcher settings, clusters, default properties | `seadas-installer/izpack-installer/src/main/izpack/packs/files/<os>/etc/` (`seadas.conf`, `seadas.clusters`, `snap.conf`, `snap.properties`, `seadas.auxdata.properties`); see §14.2 |
+| Toolbars | `snap-desktop/snap-rcp/src/main/resources/org/esa/snap/rcp/toolbars/Standard.xml` and that module's `layer.xml` |
+
+An action can sit in more than one toolbar by listing several references:
+
+```java
+@ActionReferences({
+        @ActionReference(path = "Toolbars/" + PackageDefaults.RANGE_FINDER_TOOLBAR_NAME,
+                position = PackageDefaults.RANGE_FINDER_TOOLBAR_POSITION),
+        @ActionReference(path = "Toolbars/Geometry", position = 101)
+})
+```
+
 ---
 
 ## 15. Developer scripts (`bin/`)
@@ -1178,11 +1225,8 @@ upstream, so a `mvn package` over an old `target/` can pick up leftovers.
 | `l2gen_custom.par` | Sample l2gen parameter file. |
 | `blue_marble.py`, `blue_marble_part1.py` | Auxdata generation helpers. |
 
-`docs/` also holds durable notes worth reading before a release:
-`GitNotes` (branch/tag recipes), `DevelopmentNotes` (where branding, splash,
-about box, and the `seadas.*` config files live in the SNAP forks),
-`BrandingNotes` (SNAP-vs-SeaDAS default property values), `dev/versions.md`,
-`dev/config`, `release-notes/`.
+`docs/` also holds `dev/versions.md`, `dev/config` and `release-notes/`. Tag recipes
+are in §6, branding locations in §14.4.
 
 ---
 
