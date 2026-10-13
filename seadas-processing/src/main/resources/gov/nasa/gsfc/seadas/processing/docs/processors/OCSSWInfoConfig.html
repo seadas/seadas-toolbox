@@ -96,6 +96,12 @@
                  file (~/.netrc, or _netrc on Windows) into the shared directory and starts the container, named
                  <i>seadas-ocssw</i>.  The container keeps running after SeaDAS exits.  After the first start,
                  install OCSSW with the OCSSW Manager.</p>
+             <p>The OCSSW server in the container downloads the time files utcpole.dat and leapsec.dat into
+                 var/modis of the OCSSW Docker Dir when they are missing or more than a week old.  OCSSW installs
+                 them only with a MODIS mission, but programs such as geolocate_hawkeye need them.</p>
+             <p>SeaDAS downloads the image only when it is missing.  To get an updated image, run
+                 <b>docker pull seadas/ocssw-run:12.0.0</b> and <b>docker rm -f seadas-ocssw</b>, then restart
+                 SeaDAS; it recreates the container from the new image and keeps OCSSW.</p>
              <p>To start the container without SeaDAS, run <b>bin/start_ocssw_docker</b> (Linux, macOS) or
                  <b>bin\start_ocssw_docker.ps1</b> (Windows) from the SeaDAS installation directory.</p>
              <p>To have SeaDAS run a start script from another location, for example when running SeaDAS from a

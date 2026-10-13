@@ -54,6 +54,17 @@ of those sources.  The script:
 SeaDAS asks for the image matching its own version (the `seadas.ocssw.dockerImage`
 preference overrides it), so **every SeaDAS release needs `seadas/ocssw-run:<version>`
 pushed to Docker Hub**. The script can also be run by hand; `--help` lists its options.
+
+The script pulls the image only when it is missing, so a fix republished under the same
+tag does not reach a machine that already has the image. To update it there:
+
+```
+docker pull seadas/ocssw-run:12.0.0
+docker rm -f seadas-ocssw
+```
+
+then restart SeaDAS (or run the script), which recreates the container from the new image.
+OCSSW in the *OCSSW Docker Dir* is kept.
 What it does amounts to, on Linux and macOS:
 
 ```bash
@@ -95,6 +106,12 @@ script recreate it.
   `/root/.netrc` when it starts. Never bake credentials into the image. If there is
   none, the server logs `No .netrc in the shared directory` and carries on; check
   `docker logs seadas-ocssw` for `Copied .netrc from the shared directory`.
+- **Time files.** Before running an OCSSW program the server makes sure
+  `/root/ocssw/var/modis/utcpole.dat` and `leapsec.dat` exist and are at most 7 days old,
+  downloading them from `https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/` when
+  not (checked at most once an hour). OCSSW installs them only with a MODIS mission, but
+  geolocate_hawkeye and other non-MODIS programs read them. A failed download is logged
+  (`Could not download …` in `docker logs seadas-ocssw`) and does not stop the program.
 - **Apple Silicon.** The image is linux/amd64 only and runs under emulation.
 - **Memory.** The server heap defaults to `-Xmx4G`; change it with
   `-e OCSSW_SERVER_JAVA_OPTS=-Xmx8G`. OCSSW programs run as separate processes and are
