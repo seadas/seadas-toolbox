@@ -48,7 +48,7 @@ Download one of the two Windows installers; most users want the one with the bun
 | `seadas_12.0.0_windows64_installer.exe` | you want everything in one package (recommended) |
 | `seadas_12.0.0_windows64_installer_no_bundled_jre.exe` | you already have Java 21 or newer installed and want a smaller download |
 
-1. Close any running SeaDAS 12. The installer cannot replace files that are in use.
+1. Close any running SeaDAS. The installer cannot replace files that are in use.
 2. Run the installer. Windows may show "Windows protected your PC" because the installer is not code-signed yet: click **More info**, then **Run anyway**.
 3. Accept the administrator prompt. SeaDAS installs into `C:\Program Files\SeaDAS`.
 4. Without a bundled JRE, the installer shows a **Select Java** page, filled in with the first Java 21+ it finds (`JAVA_HOME`, or the Oracle and Adoptium installs). Choose another folder if needed; anything older than Java 21 is refused.
