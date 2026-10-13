@@ -127,6 +127,8 @@ make_sh() {
         tar -xzf "${jres[0]}" -C "$stage/jre" --strip-components=1
     fi
     # --nox11: never try to open an xterm; the installer opens its own window.
+    # Remove the old one first: writing over it would keep its creation date.
+    rm -f "$OUTDIR/$out"
     "$MAKESELF" --nox11 "$stage" "$OUTDIR/$out" "SeaDAS $VERSION installer" ./start-installer.sh
     rm -rf "$stage"
 }
@@ -181,8 +183,10 @@ for p in $PLATFORMS; do
         # or broken docker0 bridge on the host cannot fail the build.
         docker run --rm --network none -v "$PWD/target/windows:/work" "$INNO_IMAGE" seadas-windows.iss
         # Written by the container's user: copy it rather than move it, so
-        # the copy in OUTDIR belongs to whoever runs this script.
+        # the copy in OUTDIR belongs to whoever runs this script.  Remove the
+        # old one first: copying over it would keep its creation date.
         for f in target/windows/out/*.exe; do
+            rm -f "$OUTDIR/$(basename "$f")"
             cp "$f" "$OUTDIR"/
             rm -f "$f"
         done
