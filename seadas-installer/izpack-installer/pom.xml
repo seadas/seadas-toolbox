@@ -377,7 +377,8 @@
                                 </resource>
 
                                 <resource>
-                                    <directory>../../../seadas-toolbox/seadas-kit/target/netbeans_clusters/seadas</directory>
+                                    <!-- this checkout's cluster, so a build in a git worktree packs its own modules -->
+                                    <directory>../../seadas-kit/target/netbeans_clusters/seadas</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
