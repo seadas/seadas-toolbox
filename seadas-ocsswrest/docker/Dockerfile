@@ -8,13 +8,17 @@
 FROM ubuntu:20.04
 
 # python3 and python3-requests are what OCSSW's install_ocssw and ocssw_runner need;
-# the OCSSW binaries bring their own libraries.
+# the OCSSW binaries bring their own libraries. OCSSW's scripts also call 'file' to
+# tell file types apart (get_output_name, and so l2gen's output file name, fails
+# without it) and may unpack .xz files; the 2.0 image had both.
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        openjdk-11-jre-headless \
        python3 \
        python3-requests \
        ca-certificates \
+       file \
+       xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # The server resolves ocsswroot, the shared directory and its job database (ocssw.db)
