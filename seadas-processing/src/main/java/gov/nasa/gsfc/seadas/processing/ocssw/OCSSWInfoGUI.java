@@ -165,7 +165,12 @@ public class OCSSWInfoGUI {
                 if (checkParameters()) {
                     ocsswConfigData.updateconfigData(pc);
                     finish = true;
-                    OCSSWDockerStarter.ensureServer(parent);
+                    // Always run the start script for docker, not only when the server is
+                    // down: a running container keeps its old folders, ports and image until
+                    // the script recreates it.  Unchanged settings just leave it running.
+                    if (OCSSWDockerStarter.isDockerLocation()) {
+                        OCSSWDockerStarter.start(parent);
+                    }
                 }
             } else {
                 finish = true;
