@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWDockerStarter;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 
 import java.io.File;
@@ -393,6 +394,13 @@ public class ParamInfo implements java.lang.Comparable<ParamInfo>, Cloneable {
                     if (fileInfo.getFile() != null && !fileInfo.getFile().exists()) {
                         if ("local" == OCSSWInfo.getInstance().getOcsswLocation()) {
                             setValidationComment("WARNING!!! File '" + fileInfo.getFile().getAbsolutePath() + "' does not exist");
+                        } else if (OCSSWInfo.OCSSW_LOCATION_DOCKER.equals(OCSSWInfo.getInstance().getOcsswLocation())) {
+                            // Container paths (/root/ocssw/var/anc/...) live in the folders the
+                            // container mounts, not under the user's home as for the VM below.
+                            File onHost = OCSSWDockerStarter.containerPathOnHost(fileInfo.getFile().getPath());
+                            if (onHost != null && !onHost.exists()) {
+                                setValidationComment("WARNING!!! File '" + onHost.getAbsolutePath() + "' does not exist");
+                            }
                         } else {
                             String fileName = fileInfo.getFile().toString();
                             if (fileName != null && fileName.contains("root")) {

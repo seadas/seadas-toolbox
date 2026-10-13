@@ -54,6 +54,31 @@ public class OCSSWDockerStarter {
     }
 
     /**
+     * Where a path inside the OCSSW container lives on this computer, using the folders
+     * the container mounts (OCSSW Docker Dir and OCSSW Shared Dir), or null if the path
+     * is under neither.  E.g. /root/ocssw/var/anc/x.nc -> E:\ocssw-docker\var\anc\x.nc.
+     */
+    public static File containerPathOnHost(String containerPath) {
+        Preferences preferences = Config.instance("seadas").load().preferences();
+        return containerPathOnHost(containerPath,
+                preferences.get(SEADAS_OCSSW_DOCKER_DIR_PROPERTY, getOcsswDockerDirDefaultValue()),
+                preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, getSeadasClientServerSharedDirDefaultValue()));
+    }
+
+    static File containerPathOnHost(String containerPath, String ocsswDir, String sharedDir) {
+        // On Windows a File made from "/root/..." prints as "\root\...".
+        String path = containerPath.replace('\\', '/');
+        String[][] mounts = {{"/root/ocssw", ocsswDir}, {"/root/seadasClientServerShared", sharedDir}};
+        for (String[] mount : mounts) {
+            if (mount[1] != null && (path.equals(mount[0]) || path.startsWith(mount[0] + "/"))) {
+                String rest = path.substring(mount[0].length());
+                return rest.isEmpty() ? new File(mount[1]) : new File(mount[1], rest.substring(1).replace('/', File.separatorChar));
+            }
+        }
+        return null;
+    }
+
+    /**
      * Makes sure the OCSSW server is reachable before OCSSW is used.  Does nothing
      * unless the OCSSW location is docker and the server is not answering.
      * OCSSWInfo only checks the server when it is created, so the port is probed
