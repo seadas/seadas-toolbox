@@ -32,11 +32,10 @@ From a fresh Windows PC to a chlorophyll image takes about an hour and a half, m
 4. **Start SeaDAS 12** from the SeaDAS 12 desktop shortcut.
 5. **Choose Docker:** SeaDAS-Toolbox > SeaDAS Processor Location... > OCSSW Location **docker**. Set OCSSW Docker Dir to a drive with at least 20 GB free, then click **OK** and wait for "OCSSW server is up". A few minutes the first time.
 6. **Install the processors:** SeaDAS-Toolbox > Install/Update SeaDAS Processors... > tick **HawkEye** > **Run**. Set Windows sleep to Never first; about 10.5 GB, 20 to 60 minutes.
-7. **Add the two HawkEye time files** (see [Known issues](#known-issues-in-1200)): download `utcpole.dat` and `leapsec.dat` into `var\modis` inside your OCSSW Docker Dir.
-8. **Get a test file:** Earthdata-Cloud > Earthdata Cloud Data Browser > satellite HAWKEYE, level L1 > Search > select one file > Download. About 180 MB.
-9. **Geolocate it:** SeaDAS-Toolbox > SeaDAS Processors > HawkEye > geolocate_hawkeye > choose the downloaded L1A file > Run. A GEO file appears next to it.
-10. **Make the Level-2 file:** SeaDAS-Toolbox > SeaDAS Processors > l2gen > choose the same L1A file. Check that the output name fills in (`…L2.OC.nc`), click **Get Ancillary**, then **Run**. About 10 minutes.
-11. **Look at the result:** File > Open Product > the `L2.OC.nc` file next to your input > open the `chlor_a` band.
+7. **Get a test file:** Earthdata-Cloud > Earthdata Cloud Data Browser > satellite HAWKEYE, level L1 > Search > select one file > Download. About 180 MB.
+8. **Geolocate it:** SeaDAS-Toolbox > SeaDAS Processors > HawkEye > geolocate_hawkeye > choose the downloaded L1A file > Run. A GEO file appears next to it.
+9. **Make the Level-2 file:** SeaDAS-Toolbox > SeaDAS Processors > l2gen > choose the same L1A file. Check that the output name fills in (`…L2.OC.nc`), click **Get Ancillary**, then **Run**. About 10 minutes.
+10. **Look at the result:** File > Open Product > the `L2.OC.nc` file next to your input > open the `chlor_a` band.
 
 If a step does not behave as described, see [Troubleshooting](#troubleshooting): the messages there match what SeaDAS shows.
 
@@ -139,7 +138,7 @@ A first install with PACE OCI therefore downloads 15 GB or more, which takes fro
 
 Processing a SeaHawk HawkEye Level-1A file to Level-2 takes three steps, all from the **SeaDAS-Toolbox > SeaDAS Processors** menu. Other missions work the same way; some skip the geolocation step.
 
-1. **geolocate_hawkeye** (under HawkEye): choose the L1A file as input. It writes a GEO file next to it, for example `SEAHAWK1_HAWKEYE.20230624T143116.GEO.nc`. HawkEye needs two time-correction files OCSSW does not always install; see Known issues.
+1. **geolocate_hawkeye** (under HawkEye): choose the L1A file as input. It writes a GEO file next to it, for example `SEAHAWK1_HAWKEYE.20230624T143116.GEO.nc`. It needs two time-correction files, which SeaDAS's OCSSW server downloads by itself.
 2. **l2gen**: choose the same L1A file. SeaDAS fills in the GEO file and the output name (`…L2.OC.nc`). If the output name stays empty, OCSSW is not working; see Troubleshooting.
 3. In l2gen, click **Get Ancillary** to download the matching meteorology, ozone and sea-surface-temperature files (optional: without them l2gen uses climatology). Then click **Run**.
 
@@ -183,7 +182,7 @@ Where the logs are:
 
 ## Known issues in 12.0.0
 
-- **HawkEye (and possibly OCI and HICO) without MODIS:** geolocate_hawkeye fails with "/root/ocssw/var/modis/utcpole.dat not found". OCSSW installs the time-correction files `utcpole.dat` and `leapsec.dat` only together with a MODIS mission; the OCSSW developers have been told. Workaround: download [utcpole.dat](https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/utcpole.dat) and [leapsec.dat](https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/leapsec.dat) into a folder `var\modis` inside your OCSSW Docker Dir (for example `E:\ocssw-docker\var\modis`), or install MODIS Aqua as well. `utcpole.dat` is updated weekly, so refresh it now and then.
+- **Local OCSSW without MODIS (Linux and macOS without Docker):** geolocate_hawkeye fails with "/root/ocssw/var/modis/utcpole.dat not found". OCSSW installs the time-correction files `utcpole.dat` and `leapsec.dat` only together with a MODIS mission; the OCSSW developers have been told. With OCSSW in Docker this is handled for you: SeaDAS's OCSSW server downloads both files before running a processor and refreshes them weekly. For a local OCSSW, download [utcpole.dat](https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/utcpole.dat) and [leapsec.dat](https://oceandata.sci.gsfc.nasa.gov/Ancillary/LUTs/modis/leapsec.dat) into `var/modis` inside your OCSSW folder, or install MODIS Aqua as well. `utcpole.dat` is updated weekly, so refresh it now and then.
 - **Not code-signed:** the Windows installers show "Windows protected your PC" until they are signed.
 - **Install progress:** the processor installer reports progress per package only, so large packages look stalled.
 - **Memory on 12 GB computers:** SeaDAS may use up to 12 GB and processing PACE OCI takes about 5 GB in the container. On a 12 GB computer, close other programs while processing large files.
