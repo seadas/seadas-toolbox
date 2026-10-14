@@ -259,7 +259,7 @@ Tags are annotated and follow `SEADAS-<version>[-qualifier][-date]`, e.g.
 release date rather than the moment the command was run:
 
 ```bash
-GIT_COMMITTER_DATE="2026-10-15 12:00" git tag -a SEADAS-12.0.0 \
+GIT_COMMITTER_DATE="2026-10-20 12:00" git tag -a SEADAS-12.0.0 \
   -m "SeaDAS 12.0.0 release based on SNAP 14.0.1"
 ```
 
@@ -267,7 +267,7 @@ A release is usually the last release candidate re-tagged. `^{}` points the new 
 at the commit, not at the RC's tag object:
 
 ```bash
-GIT_COMMITTER_DATE="2026-10-15 12:00" git tag -a SEADAS-12.0.0 SEADAS-12.0.0-RC6^{} \
+GIT_COMMITTER_DATE="2026-10-20 12:00" git tag -a SEADAS-12.0.0 SEADAS-12.0.0-RC6^{} \
   -m "SeaDAS 12.0.0 release based on SNAP 14.0.1"
 git push origin SEADAS-12.0.0
 ```
