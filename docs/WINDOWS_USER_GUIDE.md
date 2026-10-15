@@ -1,6 +1,6 @@
 # SeaDAS 12 on Windows – User Guide
 
-Last updated: October 13, 2026 (SeaDAS 12.0.0)
+Last updated: October 14, 2026 (SeaDAS 12.0.0)
 
 ## Overview
 
@@ -10,7 +10,7 @@ What you need:
 
 | Item | Requirement |
 | --- | --- |
-| Windows | Windows 10 (22H2) or Windows 11, 64-bit |
+| Windows | Windows 11, 64-bit |
 | Memory | 16 GB recommended. SeaDAS may use up to 12 GB, and processing a PACE OCI file alone takes about 5 GB inside the container |
 | Disk | about 1 GB for SeaDAS, 10 GB for OCSSW's shared data, plus each mission (PACE OCI about 5 GB, HawkEye about 0.5 GB), plus your data files. A drive with 30 GB or more free is a good start |
 | Docker | Docker Desktop for Windows with the WSL 2 engine |
@@ -41,7 +41,7 @@ If a step does not behave as described, see [Troubleshooting](#troubleshooting):
 
 ## Installing SeaDAS 12
 
-Download one of the two Windows installers; most users want the one with the bundled Java:
+Download one of the two Windows installers from the [SeaDAS 12.0.0 Download](https://github.com/seadas/seadas-toolbox/wiki/SeaDAS-12.0.0-Download) page; most users want the one with the bundled Java:
 
 | Installer | Use it when |
 | --- | --- |
@@ -51,7 +51,7 @@ Download one of the two Windows installers; most users want the one with the bun
 1. Close any running SeaDAS. The installer cannot replace files that are in use.
 2. Run the installer. Windows may show "Windows protected your PC" because the installer is not code-signed yet: click **More info**, then **Run anyway**.
 3. Accept the administrator prompt. SeaDAS installs into `C:\Program Files\SeaDAS`.
-4. Without a bundled JRE, the installer shows a **Select Java** page, filled in with the first Java 21+ it finds (`JAVA_HOME`, or the Oracle and Adoptium installs). Choose another folder if needed; anything older than Java 21 is refused.
+4. Without a bundled JRE, the installer shows a **Select Java** page, filled in with the first Java 21+ it finds (`JAVA_HOME`, or the Oracle and Adoptium installs). Choose another folder if needed; anything older than Java 21 is refused. See also the [SeaDAS User Guide for Installers Without Bundled JRE](https://github.com/seadas/seadas-toolbox/wiki/SeaDAS-User-Guide-for-Installers-Without-Bundled-JRE).
 5. Keep **Create a desktop shortcut** ticked (the default) if you want one.
 
 Start SeaDAS from the **SeaDAS 12** shortcut on the desktop or in the Start menu.
