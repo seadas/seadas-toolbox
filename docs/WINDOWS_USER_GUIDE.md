@@ -1,6 +1,6 @@
 # SeaDAS 12 on Windows – User Guide
 
-Last updated: October 14, 2026 (SeaDAS 12.0.0)
+Last updated: October 16, 2026 (SeaDAS 12.0.0)
 
 ## Overview
 
@@ -187,3 +187,6 @@ Where the logs are:
 - **Install progress:** the processor installer reports progress per package only, so large packages look stalled.
 - **Memory on 12 GB computers:** SeaDAS may use up to 12 GB and processing PACE OCI takes about 5 GB in the container. On a 12 GB computer, close other programs while processing large files.
 - **Older container image:** a computer that downloaded `seadas/ocssw-run:12.0.0` before 13 October 2026 has a copy without the file-type tool, and l2gen gets no output name. Update it as shown in Troubleshooting.
+- **Restart after installing Docker Desktop:** a new Docker Desktop install with the WSL 2 engine may not run until Windows is restarted, and SeaDAS cannot start the OCSSW container until Docker Desktop runs. Restart Windows after installing Docker Desktop, even if it does not ask.
+- **Sentinel-2 MSI L1C in l2gen:** SeaDAS copies only the selected input file into the shared folder, not the rest of the Sentinel-2 `.SAFE` product, so l2gen in the container does not find the band images and fails. This affects processing only; opening and viewing Sentinel-2 files works.
+- **Sentinel-2C:** the OCSSW V2026.5 science processors support Sentinel-2A and 2B only, so l2gen stops with "Unknown platform: 2C" on Sentinel-2C products (file names starting with `S2C_`). Many recent Sentinel-2 products are from Sentinel-2C.
