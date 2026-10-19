@@ -1,6 +1,6 @@
 # SeaDAS 12 on Windows – User Guide
 
-Last updated: October 16, 2026 (SeaDAS 12.0.0)
+Last updated: October 19, 2026 (SeaDAS 12.0.0)
 
 ## Overview
 
@@ -26,7 +26,7 @@ SeaDAS copies your input into the shared folder and asks the container to proces
 
 From a fresh Windows PC to a chlorophyll image takes about an hour and a half, mostly downloads. This path uses SeaHawk HawkEye, the smallest mission to install; the later sections explain each step in more detail.
 
-1. **Install Docker Desktop** with the WSL 2 engine, restart Windows if asked, and start Docker Desktop once (see [Setting up Docker Desktop](#setting-up-docker-desktop)). About 15 minutes.
+1. **Install Docker Desktop** with the WSL 2 engine, restart Windows even if it does not ask, and start Docker Desktop once (see [Setting up Docker Desktop](#setting-up-docker-desktop)). If Docker Desktop says "WSL needs updating", run `wsl --update` in PowerShell and click **Try Again**. About 15 minutes.
 2. **Save your Earthdata Login** in `C:\Users\YOUR_WINDOWS_NAME\.netrc` (see [Earthdata Login](#earthdata-login)). About 5 minutes.
 3. **Install SeaDAS 12** with `seadas_12.0.0_windows64_installer.exe`, keeping all defaults. About 5 minutes.
 4. **Start SeaDAS 12** from the SeaDAS 12 desktop shortcut.
@@ -36,6 +36,8 @@ From a fresh Windows PC to a chlorophyll image takes about an hour and a half, m
 8. **Geolocate it:** SeaDAS-Toolbox > SeaDAS Processors > HawkEye > geolocate_hawkeye > choose the downloaded L1A file > Run. A GEO file appears next to it.
 9. **Make the Level-2 file:** SeaDAS-Toolbox > SeaDAS Processors > l2gen > choose the same L1A file. Check that the output name fills in (`…L2.OC.nc`), click **Get Ancillary**, then **Run**. About 10 minutes.
 10. **Look at the result:** File > Open Product > the `L2.OC.nc` file next to your input > open the `chlor_a` band.
+
+Do the steps in order: the SeaDAS processors work only when Docker Desktop is running (step 1) and OCSSW is installed (step 6). Before that, SeaDAS may show "Remote server is down. OCSSW is not accessible."
 
 If a step does not behave as described, see [Troubleshooting](#troubleshooting): the messages there match what SeaDAS shows.
 
@@ -82,8 +84,8 @@ An outdated password shows up as "Earthdata login failed" in the Earthdata Cloud
 Docker Desktop runs the OCSSW container. You install it once; after that SeaDAS starts it when needed.
 
 1. Install WSL 2 if it is not there yet: open PowerShell as administrator, run `wsl --install`, and restart Windows.
-2. Download and install Docker Desktop from [docs.docker.com](https://docs.docker.com/desktop/setup/install/windows-install/). Keep **Use WSL 2 instead of Hyper-V** selected.
-3. Start Docker Desktop once, accept its terms, and wait until it reports that the engine is running.
+2. Download and install Docker Desktop from [docs.docker.com](https://docs.docker.com/desktop/setup/install/windows-install/). Keep **Use WSL 2 instead of Hyper-V** selected. Restart Windows afterwards, even if it does not ask.
+3. Start Docker Desktop once, accept its terms, and wait until it reports that the engine is running. If it says "WSL needs updating" instead, run `wsl --update` in PowerShell, then click **Try Again**.
 4. Check it from PowerShell: `docker version` should print a client and a server section.
 
 With the WSL 2 engine, Docker can use folders on any of your drives, so you can keep OCSSW on a drive other than C:. Docker Desktop must be running while you process data; if it is not, SeaDAS tries to start it, and otherwise asks you to.
@@ -163,7 +165,8 @@ The **Earthdata Cloud Data Browser** (menu **Earthdata-Cloud**, or **SeaDAS-Tool
 | l2gen's output name stays empty | OCSSW cannot read the input; an old copy of the container image lacked the file-type tool | In PowerShell: `docker pull seadas/ocssw-run:12.0.0`, then `docker rm -f seadas-ocssw`, then restart SeaDAS |
 | geolocate_hawkeye: "/root/ocssw/var/modis/utcpole.dat not found" | A copy of the container image from before 13 October 2026, which does not fetch the time files yet, or no internet access from the container | In PowerShell: `docker pull seadas/ocssw-run:12.0.0`, then `docker rm -f seadas-ocssw`, then restart SeaDAS and run it again |
 | "SeaDAS could not start the OCSSW Docker container" | Docker Desktop missing or not running, or the image could not be downloaded | Follow the reason shown under the message; check Docker Desktop is running and you are online |
-| "Remote server is down. OCSSW is not accessible." | the container is not answering | Start Docker Desktop; then reopen SeaDAS-Toolbox > SeaDAS Processor Location... and click OK |
+| Docker Desktop: "WSL needs updating" | the installed WSL is older than Docker Desktop needs | In PowerShell: `wsl --update`, then click **Try Again** in Docker Desktop; restart Windows if the engine still does not start |
+| "Remote server is down. OCSSW is not accessible." | the container is not answering, often because Docker Desktop is not running yet after a new install | Start Docker Desktop; then reopen SeaDAS-Toolbox > SeaDAS Processor Location... and click OK |
 | "Earthdata login failed" | outdated or mistyped password in `.netrc` | Fix `C:\Users\YOU\.netrc`, then try again |
 | "install_ocssw failed" with "Connection reset by peer" | the download was interrupted | Run the installer again; it continues where it stopped |
 | Disk full while installing | OCSSW is on a drive with too little space | Choose an OCSSW Docker Dir on a larger drive and install again (see the note below) |
@@ -188,5 +191,5 @@ Where the logs are:
 - **Memory on 12 GB computers:** SeaDAS may use up to 12 GB and processing PACE OCI takes about 5 GB in the container. On a 12 GB computer, close other programs while processing large files.
 - **Older container image:** a computer that downloaded `seadas/ocssw-run:12.0.0` before 13 October 2026 has a copy without the file-type tool, and l2gen gets no output name. Update it as shown in Troubleshooting.
 - **Restart after installing Docker Desktop:** a new Docker Desktop install with the WSL 2 engine may not run until Windows is restarted, and SeaDAS cannot start the OCSSW container until Docker Desktop runs. Restart Windows after installing Docker Desktop, even if it does not ask.
-- **Sentinel-2 MSI L1C in l2gen:** SeaDAS copies only the selected input file into the shared folder, not the rest of the Sentinel-2 `.SAFE` product, so l2gen in the container does not find the band images and fails. This affects processing only; opening and viewing Sentinel-2 files works.
+- **Sentinel-2 MSI L1C in l2gen:** SeaDAS copies only the selected input file into the shared folder, not the rest of the Sentinel-2 `.SAFE` product, so l2gen in the container does not find the band images and fails. This affects processing only; opening and viewing Sentinel-2 files works. Also, l2gen takes the product's `manifest.safe` as input: selecting `MTD_MSIL1C.xml` fails with "Could not find type for file".
 - **Sentinel-2C:** the OCSSW V2026.5 science processors support Sentinel-2A and 2B only, so l2gen stops with "Unknown platform: 2C" on Sentinel-2C products (file names starting with `S2C_`). Many recent Sentinel-2 products are from Sentinel-2C.
