@@ -1,10 +1,14 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.ui;
 
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
+import gov.nasa.gsfc.seadas.earthdatacloud.auth.EarthdataRemoteAccess;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.CmrGranuleMetadataFetcher;
 import gov.nasa.gsfc.seadas.earthdatacloud.data.ObCloudCollectionCatalog;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.FileDownloadManager;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.dataio.ProductReader;
+import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import gov.nasa.gsfc.seadas.earthdatacloud.util.*;
@@ -545,6 +549,16 @@ public class OBDAACDataBrowser extends JPanel {
 
 
 
+        JButton openRemoteButton = new JButton("Open Remotely");
+        openRemoteButton.setToolTipText("<html>Open the selected files in SeaDAS directly from Earthdata Cloud,<br>" +
+                "without downloading them. Data are fetched as you view them.</html>");
+        openRemoteButton.addActionListener(e -> {
+            if (imagePreviewHelper != null) {
+                imagePreviewHelper.hideImagePreview();
+            }
+            openSelectedFilesRemotely();
+        });
+
         JButton listButton = new JButton("URLs Only");
         listButton.setToolTipText("<html>Download a text-file containing URL links to the each of the files </html>");
         listButton.addActionListener(e -> {
@@ -592,6 +606,9 @@ public class OBDAACDataBrowser extends JPanel {
 
         gbc.gridx++;
         newDownloadPanel.add(listButton, gbc);
+
+        gbc.gridx++;
+        newDownloadPanel.add(openRemoteButton, gbc);
 
 //        gbc.gridx++;
 //        newDownloadPanel.add(selectAllCheckbox, gbc);
@@ -676,6 +693,91 @@ public class OBDAACDataBrowser extends JPanel {
 
         pmSwingWorker.executeWithBlocking();
 
+    }
+
+    private static final int MAX_REMOTE_OPEN = 5;
+
+    /**
+     * Opens the selected NetCDF files as SeaDAS products read over HTTPS (byte ranges, with the Earthdata Login
+     * token from .netrc), so nothing is downloaded up front.
+     */
+    private void openSelectedFilesRemotely() {
+        List<String> selected = new ArrayList<>();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            if (Boolean.TRUE.equals(tableModel.getValueAt(i, 1))) {
+                selected.add((String) tableModel.getValueAt(i, 0));
+            }
+        }
+        if (selected.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No files selected to open.");
+            return;
+        }
+        if (selected.size() > MAX_REMOTE_OPEN) {
+            JOptionPane.showMessageDialog(this, "Select at most " + MAX_REMOTE_OPEN + " files to open remotely.",
+                    "Open Remotely", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        EarthdataRemoteAccess.ensureRegistered();
+        Component parent = parentDialog != null ? parentDialog : SnapApp.getDefault().getMainFrame();
+        List<String> problems = new ArrayList<>();
+
+        ProgressMonitorSwingWorker<List<Product>, Void> worker = new ProgressMonitorSwingWorker<List<Product>, Void>(parent, "Open Remotely") {
+            @Override
+            protected List<Product> doInBackground(com.bc.ceres.core.ProgressMonitor pm) {
+                List<Product> products = new ArrayList<>();
+                pm.beginTask("Opening files from Earthdata Cloud", selected.size());
+                try {
+                    for (String fileName : selected) {
+                        if (pm.isCanceled()) {
+                            break;
+                        }
+                        pm.setSubTaskName(fileName);
+                        String url = fileLinkMap.get(fileName);
+                        try {
+                            if (url == null) {
+                                throw new IOException("no download link found");
+                            }
+                            ProductReader reader = ProductIO.getProductReaderForInput(url);
+                            if (reader == null) {
+                                throw new IOException("no SeaDAS reader supports this product remotely");
+                            }
+                            products.add(reader.readProductNodes(url, null));
+                        } catch (Exception ex) {
+                            SystemUtils.LOG.log(java.util.logging.Level.WARNING, "Remote open failed: " + fileName, ex);
+                            problems.add(fileName + ": " + rootMessage(ex));
+                        }
+                        pm.worked(1);
+                    }
+                } finally {
+                    pm.done();
+                }
+                return products;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    for (Product product : get()) {
+                        SnapApp.getDefault().getProductManager().addProduct(product);
+                    }
+                } catch (Exception ex) {
+                    problems.add(rootMessage(ex));
+                }
+                if (!problems.isEmpty()) {
+                    JOptionPane.showMessageDialog(parent, "Could not open:\n" + String.join("\n", problems),
+                            "Open Remotely", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        worker.execute();
+    }
+
+    private static String rootMessage(Throwable t) {
+        while (t.getCause() != null && t.getCause() != t) {
+            t = t.getCause();
+        }
+        return t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName();
     }
 
     private void downloadSelectedFiles() {
