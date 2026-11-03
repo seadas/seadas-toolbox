@@ -768,6 +768,10 @@ public class OBDAACDataBrowser extends JPanel {
                     JOptionPane.showMessageDialog(parent, "Could not open:\n" + String.join("\n", problems),
                             "Open Remotely", JOptionPane.ERROR_MESSAGE);
                 }
+                if (problems.size() < selected.size()) {
+                    // Something opened: show the SeaDAS window, where the new product is in Product Explorer.
+                    SnapApp.getDefault().getMainFrame().toFront();
+                }
             }
         };
         worker.execute();

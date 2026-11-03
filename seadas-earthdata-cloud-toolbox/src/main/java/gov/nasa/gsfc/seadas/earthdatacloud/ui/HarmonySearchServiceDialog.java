@@ -28,7 +28,9 @@ public class HarmonySearchServiceDialog extends JDialog{
     JPanel searchInputMainPanel;
 
     public HarmonySearchServiceDialog(){
-        super(SnapApp.getDefault().getMainFrame(), TITLE, JDialog.DEFAULT_MODALITY_TYPE);
+        // Modeless and not owned by the main window, so the SeaDAS window stays usable
+        // (e.g. to view bands of a remotely opened file) and can be brought in front of the browser.
+        super((Window) null, TITLE, ModalityType.MODELESS);
         setLayout(new BorderLayout());
         setSize(900, 700);
 
