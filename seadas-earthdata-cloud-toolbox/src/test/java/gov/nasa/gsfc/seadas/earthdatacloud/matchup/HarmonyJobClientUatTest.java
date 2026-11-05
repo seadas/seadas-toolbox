@@ -75,6 +75,39 @@ class HarmonyJobClientUatTest {
     }
 
     @Test
+    void aRunOfTheTwoPaceObservationsJoinsToSeabass(@TempDir Path dir) throws Exception {
+        Path sb = dir.resolve("pace-demo.sb");
+        Files.write(sb, List.of("/begin_header", "/missing=-9999", "/delimiter=comma",
+                "/fields=station,date,time,lat,lon", "/units=none,yyyymmdd,hh:mm:ss,degrees,degrees", "/end_header",
+                "ligurian,20260603,11:35:00,40.596,5.813", "baltic,20260603,11:35:00,55.914,19.015"));
+        String pace = "C1281448693-OB_CLOUD";
+        MatchupRun run = MatchupRun.create(sb, new MatchupRun.Settings(HarmonyEnvironment.UAT, List.of(pace),
+                0.1, Duration.ofHours(3), List.of(), 2), dir.resolve("pace-demo.matchup.json"));
+        HarmonyJobClient client = HarmonyJobClient.create(HarmonyEnvironment.UAT, () -> System.getenv("UAT_TOKEN"));
+
+        run.execute(client, () -> false, new MatchupRun.Listener() {
+        });
+        assertTrue(run.finished());
+        assertEquals(2, run.counts().get(MatchupRun.State.DONE), run.tasks().toString());
+
+        MatchupProduct product = MatchupProduct.fetch(HttpTransport.jdk(), HarmonyEnvironment.UAT.cmr(), pace);
+        assertEquals("sr^-1", product.unitsOf("Rrs"));
+        ResultJoiner.Joined joined = run.join(Map.of(pace, product), ResultJoiner.Rows.ALL);
+        assertTrue(joined.warnings().isEmpty(), joined.warnings().toString());
+        Path out = dir.resolve("pace-demo.matchup.sb");
+        joined.writer().write(out);
+
+        SeabassFile result = SeabassFile.read(out);
+        assertEquals("yes", result.value(0, "matchup_found"));
+        assertEquals("PACE_OCI.20260603T113224.L2.OC_AOP.V3_2.NRT.nc", result.value(0, "oci_pace_l2fname"));
+        assertEquals("-143.0", result.value(0, "oci_pace_tdiff"));
+        assertEquals("yes", result.value(1, "matchup_found"), "the earlier matched pass (design D2)");
+        assertEquals("-5844.0", result.value(1, "oci_pace_tdiff"));
+        assertEquals("sr^-1", result.units().get(result.fieldIndex("oci_pace_rrs_442.3")));
+        System.out.println("UAT run: " + result.fields().size() + " fields, label " + run.label());
+    }
+
+    @Test
     void aBadTokenIsReportedAsALoginProblem() {
         HarmonyJobClient client = new HarmonyJobClient(HarmonyEnvironment.UAT.harmony(),
                 () -> "not-a-token-not-a-token", HttpTransport.jdk(), d -> Thread.sleep(d.toMillis()),
