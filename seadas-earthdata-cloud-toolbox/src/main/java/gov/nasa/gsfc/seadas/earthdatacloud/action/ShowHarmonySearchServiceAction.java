@@ -41,6 +41,8 @@ import java.awt.event.ActionEvent;
 
 public class ShowHarmonySearchServiceAction extends AbstractSnapAction implements LookupListener, Presenter.Menu, Presenter.Toolbar {
 
+    private static HarmonySearchServiceDialog browserDialog;
+
     Product product;
 
     private final Lookup lookup;
@@ -65,9 +67,12 @@ public class ShowHarmonySearchServiceAction extends AbstractSnapAction implement
         updateEnabledState();
         updateEnabledState();
 
-        HarmonySearchServiceDialog harmonySearchServiceDiaglog = new HarmonySearchServiceDialog();
-        harmonySearchServiceDiaglog.setVisible(true);
-        harmonySearchServiceDiaglog.dispose();
+        // One browser per session: closing it only hides it, so reopening keeps the last search and results.
+        if (browserDialog == null) {
+            browserDialog = new HarmonySearchServiceDialog();
+        }
+        browserDialog.setVisible(true);
+        browserDialog.toFront();
         updateEnabledState();
 
     }
