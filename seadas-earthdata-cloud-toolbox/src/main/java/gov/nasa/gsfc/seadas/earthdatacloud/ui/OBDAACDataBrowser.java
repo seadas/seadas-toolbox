@@ -697,6 +697,9 @@ public class OBDAACDataBrowser extends JPanel {
 
     private static final int MAX_REMOTE_OPEN = 5;
 
+    /** Products this browser opened remotely, by file name, so a file still open in SeaDAS is not opened twice. */
+    private final Map<String, Product> remotelyOpenedProducts = new HashMap<>();
+
     /**
      * Opens the selected NetCDF files as SeaDAS products read over HTTPS (byte ranges, with the Earthdata Login
      * token from .netrc), so nothing is downloaded up front.
@@ -712,6 +715,20 @@ public class OBDAACDataBrowser extends JPanel {
             JOptionPane.showMessageDialog(this, "No files selected to open.");
             return;
         }
+        List<String> alreadyOpen = new ArrayList<>();
+        for (String fileName : selected) {
+            Product product = remotelyOpenedProducts.get(fileName);
+            if (product != null && SnapApp.getDefault().getProductManager().contains(product)) {
+                alreadyOpen.add(fileName);
+            }
+        }
+        selected.removeAll(alreadyOpen);
+        uncheckFiles(alreadyOpen);
+        if (selected.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Already open in SeaDAS:\n" + String.join("\n", alreadyOpen),
+                    "Open Remotely", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
         if (selected.size() > MAX_REMOTE_OPEN) {
             JOptionPane.showMessageDialog(this, "Select at most " + MAX_REMOTE_OPEN + " files to open remotely.",
                     "Open Remotely", JOptionPane.WARNING_MESSAGE);
@@ -722,10 +739,10 @@ public class OBDAACDataBrowser extends JPanel {
         Component parent = parentDialog != null ? parentDialog : SnapApp.getDefault().getMainFrame();
         List<String> problems = new ArrayList<>();
 
-        ProgressMonitorSwingWorker<List<Product>, Void> worker = new ProgressMonitorSwingWorker<List<Product>, Void>(parent, "Open Remotely") {
+        ProgressMonitorSwingWorker<Map<String, Product>, Void> worker = new ProgressMonitorSwingWorker<Map<String, Product>, Void>(parent, "Open Remotely") {
             @Override
-            protected List<Product> doInBackground(com.bc.ceres.core.ProgressMonitor pm) {
-                List<Product> products = new ArrayList<>();
+            protected Map<String, Product> doInBackground(com.bc.ceres.core.ProgressMonitor pm) {
+                Map<String, Product> products = new LinkedHashMap<>();
                 pm.beginTask("Opening files from Earthdata Cloud", selected.size());
                 try {
                     for (String fileName : selected) {
@@ -738,11 +755,16 @@ public class OBDAACDataBrowser extends JPanel {
                             if (url == null) {
                                 throw new IOException("no download link found");
                             }
+                            if (fileName.contains(".L3b.")) {
+                                // The SeaDAS reader does not display L3 binned files, local or remote.
+                                throw new IOException("L3 binned (L3b) files can't be displayed in SeaDAS. "
+                                        + "Choose the L3 mapped (L3m) product instead.");
+                            }
                             ProductReader reader = ProductIO.getProductReaderForInput(url);
                             if (reader == null) {
                                 throw new IOException("no SeaDAS reader supports this product remotely");
                             }
-                            products.add(reader.readProductNodes(url, null));
+                            products.put(fileName, reader.readProductNodes(url, null));
                         } catch (Exception ex) {
                             SystemUtils.LOG.log(java.util.logging.Level.WARNING, "Remote open failed: " + fileName, ex);
                             problems.add(fileName + ": " + rootMessage(ex));
@@ -758,9 +780,12 @@ public class OBDAACDataBrowser extends JPanel {
             @Override
             protected void done() {
                 try {
-                    for (Product product : get()) {
+                    Map<String, Product> opened = get();
+                    for (Product product : opened.values()) {
                         SnapApp.getDefault().getProductManager().addProduct(product);
                     }
+                    remotelyOpenedProducts.putAll(opened);
+                    uncheckFiles(opened.keySet());
                 } catch (Exception ex) {
                     problems.add(rootMessage(ex));
                 }
@@ -775,6 +800,14 @@ public class OBDAACDataBrowser extends JPanel {
             }
         };
         worker.execute();
+    }
+
+    private void uncheckFiles(Collection<String> fileNames) {
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            if (fileNames.contains(tableModel.getValueAt(i, 0))) {
+                tableModel.setValueAt(Boolean.FALSE, i, 1);
+            }
+        }
     }
 
     private static String rootMessage(Throwable t) {
