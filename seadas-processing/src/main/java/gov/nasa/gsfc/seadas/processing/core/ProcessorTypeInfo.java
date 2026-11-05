@@ -32,6 +32,7 @@ public class ProcessorTypeInfo {
         L2MERGE,
         L3BINMERGE,
         GEOREGION_GEN,
+        ANNOTATE_L3MAPGEN,
 //        L2BIN_AQUARIUS,
         L3BIN,
         L3MAPGEN,
@@ -80,6 +81,7 @@ public class ProcessorTypeInfo {
         put("l2merge", ProcessorID.L2MERGE);
         put("l3binmerge", ProcessorID.L3BINMERGE);
         put("georegion_gen", ProcessorID.GEOREGION_GEN);
+        put("annotate_l3mapgen", ProcessorID.ANNOTATE_L3MAPGEN);
 //        put("l2bin_aquarius", ProcessorID.L2BIN_AQUARIUS);
         put("l2gen", ProcessorID.L2GEN);
         put("l3gen", ProcessorID.L3GEN);

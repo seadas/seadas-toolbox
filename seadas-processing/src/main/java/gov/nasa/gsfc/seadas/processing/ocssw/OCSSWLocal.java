@@ -162,6 +162,7 @@ public class OCSSWLocal extends OCSSW {
         } else {
             cmdArrayForParams = getCommandArrayParam(processorModel.getParamList());
         }
+        cmdArrayForParams = OCSSW.keepSpacesInArguments(processorModel.getProgramName(), cmdArrayForParams);
 
         commandArraySuffix = processorModel.getCmdArraySuffix();
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
@@ -333,6 +334,9 @@ public class OCSSWLocal extends OCSSW {
         }
         if (programName.equals("georegion_gen")) {
             return "georegion_output.nc";
+        }
+        if (programName.equals("annotate_l3mapgen")) {
+            return OCSSW.getAnnotateL3mapgenOfileName(ifileName);
         }
         String[] commandArrayParams = {GET_OUTPUT_NAME_PROGRAM_NAME, ifileName, programName};
         ofileName = findOfileName(ifileName, SeadasArrayUtils.concat(commandArrayPrefix, commandArrayParams));

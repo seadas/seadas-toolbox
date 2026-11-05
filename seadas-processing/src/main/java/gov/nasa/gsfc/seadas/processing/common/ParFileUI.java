@@ -38,7 +38,8 @@ public class ParFileUI {
         if ("l2bin".equals(pm.getProgramName()) ||
                 "l3bin".equals(pm.getProgramName()) ||
                 "l3binmerge".equals(pm.getProgramName()) ||
-                "l3bindump".equals(pm.getProgramName())
+                "l3bindump".equals(pm.getProgramName()) ||
+                "annotate_l3mapgen".equals(pm.getProgramName())
         ) {
             openInAppCheckBox.setSelected(false);
             openInAppCheckBox.setVisible(false);

@@ -464,6 +464,9 @@ public class OCSSWRemote extends OCSSW {
         if (programName.equals("l3bindump")) {
             return ifileName + ".xml";
         }
+        if (programName.equals("annotate_l3mapgen")) {
+            return OCSSW.getAnnotateL3mapgenOfileName(ifileName);
+        }
 
         if(programName.equals("l1bgen_generic")){
             programName = "l1bgen";
@@ -1130,6 +1133,7 @@ public class OCSSWRemote extends OCSSW {
         } else {
             cmdArrayForParams = getCommandArrayParam(processorModel.getParamList());
         }
+        cmdArrayForParams = OCSSW.keepSpacesInArguments(processorModel.getProgramName(), cmdArrayForParams);
         commandArraySuffix = processorModel.getCmdArraySuffix();
         //The final command array is the concatination of commandArrayPrefix, cmdArrayForParams, and commandArraySuffix
         //TODO: for ocssw_install commandArrayPrefix has the program name with the file path, so it can't include programNameArray again

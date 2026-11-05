@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 public class CallL3BinDumpAction extends CallCloProgramAction {
 
     @Override
-    void displayOutput(final ProcessorModel processorModel) {
+    protected void displayOutput(final ProcessorModel processorModel) {
         String output = processorModel.getExecutionLogMessage();
         StringTokenizer st = new StringTokenizer(output, "\n");
         int numRows = st.countTokens();

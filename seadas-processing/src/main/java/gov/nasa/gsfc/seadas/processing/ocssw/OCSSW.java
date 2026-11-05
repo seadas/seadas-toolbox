@@ -488,4 +488,35 @@ public abstract class OCSSW {
     }
 
     public abstract InputStream getProductXMLFile(L2genData.Source source) throws IOException;
+
+    /**
+     * Default output name for annotate_l3mapgen: the input file's name with "_annotated.png"
+     * in place of its extension (e.g. X.L3m.DAY.CHL.4km.nc becomes X.L3m.DAY.CHL.4km_annotated.png).
+     */
+    public static String getAnnotateL3mapgenOfileName(String ifileName) {
+        String name = new java.io.File(ifileName).getName();
+        int dot = name.lastIndexOf('.');
+        return (dot > 0 ? name.substring(0, dot) : name) + "_annotated.png";
+    }
+
+    /**
+     * ocssw_runner runs its arguments as {@code $*}, which splits them again at spaces, so an option value
+     * containing spaces reaches the program as several arguments. For annotate_l3mapgen, the spaces in
+     * --label are replaced with non-breaking spaces, which are not split and look the same on the map.
+     */
+    public static String[] keepSpacesInArguments(String programName, String[] args) {
+        if (!"annotate_l3mapgen".equals(programName) || args == null) {
+            return args;
+        }
+        final String labelOption = "--label ";
+        String[] result = args.clone();
+        for (int i = 0; i < result.length; i++) {
+            String arg = result[i];
+            if (arg != null && arg.startsWith(labelOption)) {
+                String label = arg.substring(labelOption.length()).trim().replaceAll("\\s+", "\u00A0");
+                result[i] = labelOption + label;
+            }
+        }
+        return result;
+    }
 }

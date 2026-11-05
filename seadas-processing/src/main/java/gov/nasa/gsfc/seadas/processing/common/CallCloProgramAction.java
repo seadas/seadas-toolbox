@@ -343,7 +343,7 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
         swingWorker.execute();
     }
 
-    void displayOutput(ProcessorModel processorModel) throws Exception {
+    protected void displayOutput(ProcessorModel processorModel) throws Exception {
         String ofileName = processorModel.getOfileName();
         if (openOutputInApp) {
 

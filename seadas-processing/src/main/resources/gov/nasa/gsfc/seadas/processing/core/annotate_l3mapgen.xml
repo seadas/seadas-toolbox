@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>NO_PAR_FILE</parFileOptionName>
+        <primaryOptions>
+            <primaryOption>ifile</primaryOption>
+            <primaryOption>ofile</primaryOption>
+        </primaryOptions>
+    </programMetaData>
+    <options>
+        <option type="ifile">
+            <name>ifile</name>
+            <value></value>
+            <default></default>
+            <description>Input L3 mapped NetCDF or PNG file (from l3mapgen); it is not changed</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>0</order>
+        </option>
+        <option type="ofile">
+            <name>ofile</name>
+            <value></value>
+            <default></default>
+            <description>Output PNG image</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>1</order>
+        </option>
+        <option type="string">
+            <name>label</name>
+            <value></value>
+            <default></default>
+            <description>Optional text added to the map title</description>
+            <usedAs>option_minusminus</usedAs>
+            <colSpan>2</colSpan>
+            <order>2</order>
+        </option>
+        <option type="boolean">
+            <name>overlay-only</name>
+            <value>false</value>
+            <default>false</default>
+            <description>Write a transparent PNG with only the map features (no data image)</description>
+            <usedAs>flag_minusminus</usedAs>
+            <order>3</order>
+        </option>
+        <option type="string">
+            <name>coastline</name>
+            <value>black</value>
+            <default></default>
+            <validValues>
+                <validValue><value></value><description>Do not draw</description></validValue>
+                <validValue><value>black</value><description>black</description></validValue>
+                <validValue><value>white</value><description>white</description></validValue>
+                <validValue><value>gray</value><description>gray</description></validValue>
+                <validValue><value>navy</value><description>navy</description></validValue>
+                <validValue><value>red</value><description>red</description></validValue>
+            </validValues>
+            <description>Coastline color (blank: no coastlines; any matplotlib color name or #rrggbb)</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>4</order>
+        </option>
+        <option type="string">
+            <name>political-borders</name>
+            <value>black</value>
+            <default></default>
+            <validValues>
+                <validValue><value></value><description>Do not draw</description></validValue>
+                <validValue><value>black</value><description>black</description></validValue>
+                <validValue><value>white</value><description>white</description></validValue>
+                <validValue><value>gray</value><description>gray</description></validValue>
+                <validValue><value>navy</value><description>navy</description></validValue>
+                <validValue><value>red</value><description>red</description></validValue>
+            </validValues>
+            <description>Country border color (blank: no borders; any matplotlib color name or #rrggbb)</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>5</order>
+        </option>
+        <option type="string">
+            <name>gridline</name>
+            <value>black</value>
+            <default></default>
+            <validValues>
+                <validValue><value></value><description>Do not draw</description></validValue>
+                <validValue><value>black</value><description>black</description></validValue>
+                <validValue><value>white</value><description>white</description></validValue>
+                <validValue><value>gray</value><description>gray</description></validValue>
+                <validValue><value>navy</value><description>navy</description></validValue>
+                <validValue><value>red</value><description>red</description></validValue>
+            </validValues>
+            <description>Gridline color (blank: no gridlines; any matplotlib color name or #rrggbb)</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>6</order>
+        </option>
+        <option type="string">
+            <name>grid-numbers</name>
+            <value>black</value>
+            <default></default>
+            <validValues>
+                <validValue><value></value><description>Do not draw</description></validValue>
+                <validValue><value>black</value><description>black</description></validValue>
+                <validValue><value>white</value><description>white</description></validValue>
+                <validValue><value>gray</value><description>gray</description></validValue>
+                <validValue><value>navy</value><description>navy</description></validValue>
+                <validValue><value>red</value><description>red</description></validValue>
+            </validValues>
+            <description>Latitude/longitude label color (blank: no labels; any matplotlib color name or #rrggbb)</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>7</order>
+        </option>
+        <option type="string">
+            <name>land</name>
+            <value></value>
+            <default></default>
+            <validValues>
+                <validValue><value></value><description>Do not fill</description></validValue>
+                <validValue><value>lightgray</value><description>lightgray</description></validValue>
+                <validValue><value>white</value><description>white</description></validValue>
+                <validValue><value>gray</value><description>gray</description></validValue>
+                <validValue><value>tan</value><description>tan</description></validValue>
+                <validValue><value>black</value><description>black</description></validValue>
+            </validValues>
+            <description>Land fill color (blank: land not filled; any matplotlib color name or #rrggbb)</description>
+            <usedAs>option_minusminus</usedAs>
+            <order>8</order>
+        </option>
+    </options>
+</paramInfo>
