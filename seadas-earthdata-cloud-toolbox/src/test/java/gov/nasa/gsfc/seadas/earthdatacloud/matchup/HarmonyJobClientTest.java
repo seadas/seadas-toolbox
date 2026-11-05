@@ -54,13 +54,13 @@ class HarmonyJobClientTest {
     }
 
     @Test
-    void requestBoxStopsAtThePolesAndTheAntimeridianAndCarriesALabel() {
-        MatchupRequest request = new MatchupRequest("C1-OB_CLOUD", 89.95, 179.95, WHEN, 0.1,
+    void requestBoxShrinksEvenlyNearThePolesAndTheAntimeridianAndCarriesALabel() {
+        MatchupRequest request = new MatchupRequest("C1-OB_CLOUD", 89.95, -179.95, WHEN, 0.1,
                 Duration.ofHours(3), List.of("chlor_a", "Rrs_443"), "seadas-run-1");
         String query = URLDecoder.decode(request.uri(FakeHarmony.ROOT).getRawQuery(), StandardCharsets.UTF_8);
 
-        assertTrue(query.contains("lat(89.85:90.0)"), query);
-        assertTrue(query.contains("lon(179.85:180.0)"), query);
+        assertTrue(query.contains("lat(89.9:90.0)"), "midpoint stays 89.95: " + query);
+        assertTrue(query.contains("lon(-180.0:-179.9)"), "midpoint stays -179.95: " + query);
         assertTrue(query.contains("time(\"2010-10-10T15:07:30Z\":\"2010-10-10T21:07:30Z\")"), query);
         assertTrue(query.endsWith("&label=seadas-run-1"), query);
         assertTrue(request.uri(FakeHarmony.ROOT).getPath().contains("/collections/chlor_a,Rrs_443/coverage"));
@@ -72,6 +72,8 @@ class HarmonyJobClientTest {
         assertThrows(IllegalArgumentException.class, () -> MatchupRequest.of("C1-OB_CLOUD", 91, 0, WHEN));
         assertThrows(IllegalArgumentException.class, () -> MatchupRequest.of("C1-OB_CLOUD", 0, 181, WHEN));
         assertThrows(IllegalArgumentException.class, () -> MatchupRequest.of("C1-OB_CLOUD", Double.NaN, 0, WHEN));
+        assertThrows(IllegalArgumentException.class, () -> MatchupRequest.of("C1-OB_CLOUD", 0, 180.0, WHEN));
+        assertThrows(IllegalArgumentException.class, () -> MatchupRequest.of("C1-OB_CLOUD", -89.9995, 0, WHEN));
         assertThrows(IllegalArgumentException.class, () -> new MatchupRequest("C1-OB_CLOUD", 0, 0, WHEN, 0.1,
                 Duration.ofHours(4), null, null));
         assertThrows(IllegalArgumentException.class, () -> new MatchupRequest("C1-OB_CLOUD", 0, 0, WHEN, 0,

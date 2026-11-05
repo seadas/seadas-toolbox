@@ -16,9 +16,9 @@ import java.util.Objects;
  * and a time range centred on it, answered by the service as CSV.
  *
  * <p>The service takes the box's midpoint as the observation, so the box only
- * has to find the granules; it is clamped at the poles and at the antimeridian
- * (an observation within the half-width of ±180° gets a box that stops there).
- * The service applies its own 3 h rule, so the window is capped at 3 h.
+ * has to find the granules. Near a pole or ±180° it shrinks evenly so its
+ * midpoint stays on the observation; within 0.001° of either the request is
+ * refused. The service applies its own 3 h rule, so the window is capped at 3 h.
  *
  * @param collectionId CMR concept ID of the Level-2 collection, e.g. {@code C1281448693-OB_CLOUD}
  * @param lat          observation latitude, degrees north
@@ -51,6 +51,10 @@ public record MatchupRequest(String collectionId, double lat, double lon, Instan
         if (!(Math.abs(lon) <= 180.0)) {
             throw new IllegalArgumentException("longitude out of range (-180 to 180): " + lon);
         }
+        if (90.0 - Math.abs(lat) < 0.001 || 180.0 - Math.abs(lon) < 0.001) {
+            throw new IllegalArgumentException("within 0.001 degrees of a pole or of 180 degrees longitude: "
+                    + lat + ", " + lon);
+        }
         if (!(halfBoxDeg > 0.0 && halfBoxDeg <= 5.0)) {
             throw new IllegalArgumentException("box half-width must be above 0 and at most 5 degrees: " + halfBoxDeg);
         }
@@ -81,10 +85,13 @@ public record MatchupRequest(String collectionId, double lat, double lon, Instan
 
     /** The request's URL under a Harmony root, as harmony-py builds it (OGC Coverages, async). */
     public URI uri(URI harmony) {
-        double south = Math.max(-90.0, lat - halfBoxDeg);
-        double north = Math.min(90.0, lat + halfBoxDeg);
-        double west = Math.max(-180.0, lon - halfBoxDeg);
-        double east = Math.min(180.0, lon + halfBoxDeg);
+        // Symmetric, so the midpoint the service reads is the observation.
+        double halfLat = Math.min(halfBoxDeg, 90.0 - Math.abs(lat));
+        double halfLon = Math.min(halfBoxDeg, 180.0 - Math.abs(lon));
+        double south = lat - halfLat;
+        double north = lat + halfLat;
+        double west = lon - halfLon;
+        double east = lon + halfLon;
         Instant start = time.minus(halfWindow).truncatedTo(ChronoUnit.SECONDS);
         Instant stop = time.plus(halfWindow).truncatedTo(ChronoUnit.SECONDS);
 

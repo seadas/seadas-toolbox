@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Writes a SeaBASS file with columns appended to it, as {@code mk_matchup.py}
@@ -37,6 +39,7 @@ public final class SeabassWriter {
     private final Map<String, String> newUnits = new LinkedHashMap<>();
     private final Map<String, Map<Integer, String>> values = new HashMap<>();
     private final List<String> comments = new ArrayList<>();
+    private Set<Integer> retained;
 
     public SeabassWriter(SeabassFile input) {
         this.input = input;
@@ -87,6 +90,14 @@ public final class SeabassWriter {
         comments.add(text == null ? "" : text);
     }
 
+    /**
+     * Writes only these data rows (0-based), in file order; by default every row.
+     * The script drops the rows without a matchup unless asked to keep them.
+     */
+    public void retainRows(Set<Integer> rows) {
+        retained = new TreeSet<>(rows);
+    }
+
     /** The fields this writer adds, in order. */
     public List<String> addedFields() {
         return List.copyOf(newFields);
@@ -114,6 +125,9 @@ public final class SeabassWriter {
         String separator = input.delimiter().separator();
         List<String> fields = input.fields();
         for (int row = 0; row < input.rowCount(); row++) {
+            if (retained != null && !retained.contains(row)) {
+                continue;
+            }
             List<String> tokens = new ArrayList<>(input.row(row));
             for (int i = 0; i < fields.size(); i++) {
                 Map<Integer, String> column = values.get(fields.get(i));

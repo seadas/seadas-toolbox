@@ -1,0 +1,65 @@
+{
+ "hits": 7,
+ "items": [
+  {
+   "meta": {
+    "concept-id": "V1282982006-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/angstrom"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1282982008-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/aot_865"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1282982010-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/avw",
+    "Units": "nm"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1282987791-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/l2_flags"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1282982012-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/nflh",
+    "Units": "W m^-2 um^-1 sr^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1282982014-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Rrs",
+    "Units": "sr^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1282982016-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Rrs_unc",
+    "Units": "sr^-1"
+   }
+  }
+ ]
+}

@@ -1,0 +1,119 @@
+{
+ "hits": 13,
+ "items": [
+  {
+   "meta": {
+    "concept-id": "V1273912947-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/angstrom"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912949-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/aot_862"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912951-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/chlor_a",
+    "Units": "mg m^-3"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912953-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Kd_490",
+    "Units": "m^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912955-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/l2_flags"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912957-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/par",
+    "Units": "einstein m^-2 day^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912959-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/pic",
+    "Units": "mol m^-3"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912961-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/poc",
+    "Units": "mg m^-3"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912963-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Rrs_410",
+    "Units": "sr^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912965-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Rrs_443",
+    "Units": "sr^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912967-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Rrs_486",
+    "Units": "sr^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912969-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Rrs_551",
+    "Units": "sr^-1"
+   }
+  },
+  {
+   "meta": {
+    "concept-id": "V1273912971-OB_CLOUD"
+   },
+   "umm": {
+    "Name": "geophysical_data/Rrs_671",
+    "Units": "sr^-1"
+   }
+  }
+ ]
+}
