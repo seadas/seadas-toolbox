@@ -215,6 +215,32 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
     
 
 
+    public static final String PROPERTY_MATCHUP_SECTION_KEY = PROPERTY_ROOT_KEY + ".matchup.section";
+    public static final String PROPERTY_MATCHUP_SECTION_LABEL = "Satellite–In Situ Matchup";
+    public static final String PROPERTY_MATCHUP_SECTION_TOOLTIP = "Settings of the Satellite–In Situ Matchup tool";
+
+    public static final String MATCHUP_ENVIRONMENT_PRODUCTION = "Production";
+    public static final String MATCHUP_ENVIRONMENT_UAT = "UAT (testing)";
+    public static final String PROPERTY_MATCHUP_ENVIRONMENT_KEY = PROPERTY_ROOT_KEY + ".matchup.environment";
+    public static final String PROPERTY_MATCHUP_ENVIRONMENT_LABEL = "Harmony";
+    public static final String PROPERTY_MATCHUP_ENVIRONMENT_TOOLTIP = "Harmony and CMR to use: production, or UAT for testing (test data only)";
+    public static final String PROPERTY_MATCHUP_ENVIRONMENT_DEFAULT = MATCHUP_ENVIRONMENT_PRODUCTION;
+
+    public static final String PROPERTY_MATCHUP_JOBS_KEY = PROPERTY_ROOT_KEY + ".matchup.jobs_in_flight";
+    public static final String PROPERTY_MATCHUP_JOBS_LABEL = "Harmony Jobs at Once";
+    public static final String PROPERTY_MATCHUP_JOBS_TOOLTIP = "Most matchup jobs running in Harmony at the same time";
+    public static final int PROPERTY_MATCHUP_JOBS_DEFAULT = 10;
+    public static final int PROPERTY_MATCHUP_JOBS_MIN_VALUE = 1;
+    public static final int PROPERTY_MATCHUP_JOBS_MAX_VALUE = 20;
+
+    public static final String PROPERTY_MATCHUP_BOX_KEY = PROPERTY_ROOT_KEY + ".matchup.box_half_width";
+    public static final String PROPERTY_MATCHUP_BOX_LABEL = "Search Box Half-Width (degrees)";
+    public static final String PROPERTY_MATCHUP_BOX_TOOLTIP = "Half-width of the box around each observation used to find granules; the matchup itself always uses a 5x5 pixel box";
+    public static final double PROPERTY_MATCHUP_BOX_DEFAULT = 0.1;
+    public static final double PROPERTY_MATCHUP_BOX_MIN_VALUE = 0.01;
+    public static final double PROPERTY_MATCHUP_BOX_MAX_VALUE = 1.0;
+
+
     private static final String PROPERTY_RESTORE_KEY_SUFFIX = PROPERTY_ROOT_KEY + ".restore.defaults";
 
     public static final String PROPERTY_RESTORE_SECTION_KEY = PROPERTY_RESTORE_KEY_SUFFIX + ".section";
@@ -263,6 +289,11 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         initPropertyDefaults(context, PROPERTY_FETCH_RESULTS_PER_PAGE_KEY, PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT);
 
 
+
+        initPropertyDefaults(context, PROPERTY_MATCHUP_SECTION_KEY, true);
+        initPropertyDefaults(context, PROPERTY_MATCHUP_ENVIRONMENT_KEY, PROPERTY_MATCHUP_ENVIRONMENT_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_MATCHUP_JOBS_KEY, PROPERTY_MATCHUP_JOBS_DEFAULT);
+        initPropertyDefaults(context, PROPERTY_MATCHUP_BOX_KEY, PROPERTY_MATCHUP_BOX_DEFAULT);
 
         initPropertyDefaults(context, PROPERTY_RESTORE_SECTION_KEY, true);
         restoreDefaults =  initPropertyDefaults(context, PROPERTY_RESTORE_DEFAULTS_KEY, PROPERTY_RESTORE_DEFAULTS_DEFAULT);
@@ -610,6 +641,29 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
                 interval = "[" + PROPERTY_FETCH_RESULTS_PER_PAGE_MIN_VALUE + " ," + PROPERTY_FETCH_RESULTS_PER_PAGE_MAX_VALUE + "]")
         int fetchResultsPerPageDefault = PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT;
 
+        @Preference(key = PROPERTY_MATCHUP_SECTION_KEY,
+                label = PROPERTY_MATCHUP_SECTION_LABEL,
+                description = PROPERTY_MATCHUP_SECTION_TOOLTIP)
+        boolean matchupSection = true;
+
+        @Preference(key = PROPERTY_MATCHUP_ENVIRONMENT_KEY,
+                label = PROPERTY_MATCHUP_ENVIRONMENT_LABEL,
+                description = PROPERTY_MATCHUP_ENVIRONMENT_TOOLTIP,
+                valueSet = {MATCHUP_ENVIRONMENT_PRODUCTION, MATCHUP_ENVIRONMENT_UAT})
+        String matchupEnvironmentDefault = PROPERTY_MATCHUP_ENVIRONMENT_DEFAULT;
+
+        @Preference(key = PROPERTY_MATCHUP_JOBS_KEY,
+                label = PROPERTY_MATCHUP_JOBS_LABEL,
+                description = PROPERTY_MATCHUP_JOBS_TOOLTIP,
+                interval = "[" + PROPERTY_MATCHUP_JOBS_MIN_VALUE + " ," + PROPERTY_MATCHUP_JOBS_MAX_VALUE + "]")
+        int matchupJobsDefault = PROPERTY_MATCHUP_JOBS_DEFAULT;
+
+        @Preference(key = PROPERTY_MATCHUP_BOX_KEY,
+                label = PROPERTY_MATCHUP_BOX_LABEL,
+                description = PROPERTY_MATCHUP_BOX_TOOLTIP,
+                interval = "[" + PROPERTY_MATCHUP_BOX_MIN_VALUE + " ," + PROPERTY_MATCHUP_BOX_MAX_VALUE + "]")
+        double matchupBoxDefault = PROPERTY_MATCHUP_BOX_DEFAULT;
+
         @Preference(key = PROPERTY_RESTORE_SECTION_KEY,
                 label = PROPERTY_RESTORE_SECTION_LABEL,
                 description = PROPERTY_RESTORE_SECTION_TOOLTIP)
@@ -776,4 +830,21 @@ public final class Earthdata_Cloud_Controller extends DefaultConfigController {
         return preferences.getPropertyInt(PROPERTY_FETCH_RESULTS_PER_PAGE_KEY, PROPERTY_FETCH_RESULTS_PER_PAGE_DEFAULT);
     }
 
+
+    public static String getPreferenceMatchupEnvironment() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        return preferences.getPropertyString(PROPERTY_MATCHUP_ENVIRONMENT_KEY, PROPERTY_MATCHUP_ENVIRONMENT_DEFAULT);
+    }
+
+    public static int getPreferenceMatchupJobsInFlight() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        int jobs = preferences.getPropertyInt(PROPERTY_MATCHUP_JOBS_KEY, PROPERTY_MATCHUP_JOBS_DEFAULT);
+        return Math.max(PROPERTY_MATCHUP_JOBS_MIN_VALUE, Math.min(PROPERTY_MATCHUP_JOBS_MAX_VALUE, jobs));
+    }
+
+    public static double getPreferenceMatchupBoxHalfWidth() {
+        final PropertyMap preferences = SnapApp.getDefault().getAppContext().getPreferences();
+        double box = preferences.getPropertyDouble(PROPERTY_MATCHUP_BOX_KEY, PROPERTY_MATCHUP_BOX_DEFAULT);
+        return Math.max(PROPERTY_MATCHUP_BOX_MIN_VALUE, Math.min(PROPERTY_MATCHUP_BOX_MAX_VALUE, box));
+    }
 }

@@ -545,6 +545,37 @@ public final class MatchupRun {
         return label;
     }
 
+    /** Every data row's observation, usable or not, in file order. */
+    public List<SeabassObservation> observations() {
+        return List.copyOf(observations.values());
+    }
+
+    /** Whether the run has sent anything to Harmony: then its settings are fixed and its record kept. */
+    public synchronized boolean started() {
+        return tasks.stream().anyMatch(t -> t.jobId() != null || t.state() == State.DONE
+                || t.state() == State.FAILED);
+    }
+
+    /**
+     * Deletes a run that never made a job: its record and empty results folder.
+     *
+     * @throws IllegalStateException when the run has started
+     */
+    public void discard() throws IOException {
+        if (started()) {
+            throw new IllegalStateException("The run has started; its record is kept: " + record);
+        }
+        Files.deleteIfExists(record);
+        Path folder = resultsFolder();
+        if (Files.isDirectory(folder)) {
+            try (var entries = Files.list(folder)) {
+                if (entries.findAny().isEmpty()) {
+                    Files.delete(folder);
+                }
+            }
+        }
+    }
+
     public synchronized List<Task> tasks() {
         return Collections.unmodifiableList(new ArrayList<>(tasks));
     }

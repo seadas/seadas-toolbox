@@ -64,6 +64,10 @@ class HarmonyJobClientTest {
         assertTrue(query.contains("time(\"2010-10-10T15:07:30Z\":\"2010-10-10T21:07:30Z\")"), query);
         assertTrue(query.endsWith("&label=seadas-run-1"), query);
         assertTrue(request.uri(FakeHarmony.ROOT).getPath().contains("/collections/chlor_a,Rrs_443/coverage"));
+        // Harmony matches CMR's names, group included (checked in UAT, 2026-11-05).
+        URI grouped = request.withVariables(List.of("geophysical_data/chlor_a")).uri(FakeHarmony.ROOT);
+        assertTrue(grouped.getRawPath().endsWith("/collections/geophysical_data%2Fchlor_a/coverage/rangeset"),
+                grouped.getRawPath());
     }
 
     @Test
@@ -79,7 +83,7 @@ class HarmonyJobClientTest {
         assertThrows(IllegalArgumentException.class, () -> new MatchupRequest("C1-OB_CLOUD", 0, 0, WHEN, 0,
                 Duration.ofHours(1), null, null));
         assertThrows(IllegalArgumentException.class,
-                () -> MatchupRequest.of("C1-OB_CLOUD", 0, 0, WHEN).withVariables(List.of("a/b")));
+                () -> MatchupRequest.of("C1-OB_CLOUD", 0, 0, WHEN).withVariables(List.of("a,b")));
     }
 
     // ------------------------------------------------------------ single calls

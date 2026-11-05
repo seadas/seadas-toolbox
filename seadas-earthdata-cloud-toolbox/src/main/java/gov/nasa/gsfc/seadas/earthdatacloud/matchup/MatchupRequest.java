@@ -26,7 +26,8 @@ import java.util.Objects;
  * @param time         observation time
  * @param halfBoxDeg   half-width of the search box, degrees
  * @param halfWindow   half-width of the time range, at most 3 h
- * @param variables    variables to report, or {@code all}
+ * @param variables    variables to report, by their CMR names with the group
+ *                     ({@code geophysical_data/chlor_a}), or {@code all}
  * @param label        Harmony job label, so a user can find the run's jobs; may be null
  */
 public record MatchupRequest(String collectionId, double lat, double lon, Instant time, double halfBoxDeg,
@@ -63,7 +64,8 @@ public record MatchupRequest(String collectionId, double lat, double lon, Instan
         }
         variables = variables == null || variables.isEmpty() ? List.of("all") : List.copyOf(variables);
         for (String variable : variables) {
-            if (variable.isBlank() || variable.contains(",") || variable.contains("/")) {
+            // Names as CMR has them, with the group: geophysical_data/chlor_a.
+            if (variable.isBlank() || variable.contains(",")) {
                 throw new IllegalArgumentException("not a variable name: " + variable);
             }
         }

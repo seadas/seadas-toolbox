@@ -28,9 +28,12 @@ import java.util.Map;
  * <p><b>Units</b> come from the collection's CMR variable records, which carry
  * the granule's {@code units} attributes (checked for VIIRS and PACE OCI).
  *
- * @param units variable name (without its group) to units as CMR has them, or null for none
+ * @param units     variable name (without its group) to units as CMR has them, or null for none
+ * @param variables the variables' CMR names with their group ({@code geophysical_data/chlor_a}), as
+ *                  a request names them
  */
-public record MatchupProduct(String collectionId, String shortName, Map<String, String> units) {
+public record MatchupProduct(String collectionId, String shortName, Map<String, String> units,
+                             List<String> variables) {
 
     /**
      * Granule name prefix to the script's column prefix (lower-cased
@@ -49,6 +52,12 @@ public record MatchupProduct(String collectionId, String shortName, Map<String, 
 
     public MatchupProduct {
         units = Collections.unmodifiableMap(new LinkedHashMap<>(units));
+        variables = variables == null ? List.of() : List.copyOf(variables);
+    }
+
+    /** Units only, for joining results. */
+    public MatchupProduct(String collectionId, String shortName, Map<String, String> units) {
+        this(collectionId, shortName, units, List.of());
     }
 
     /** The column prefix for a granule, e.g. {@code viirs_jpss-1} for {@code JPSS1_VIIRS.2026...nc}. */
@@ -97,16 +106,20 @@ public record MatchupProduct(String collectionId, String shortName, Map<String, 
         }
 
         Map<String, String> units = new LinkedHashMap<>();
+        List<String> names = new ArrayList<>();
         for (int i = 0; i < variableIds.size(); i += 100) {
             List<String> chunk = variableIds.subList(i, Math.min(variableIds.size(), i + 100));
             StringBuilder query = new StringBuilder("page_size=100");
             for (String id : chunk) {
                 query.append("&concept_id[]=").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
             }
-            units.putAll(unitsFrom(get(http, URI.create(cmr + "/search/variables.umm_json?"
-                    + query.toString().replace("[]", "%5B%5D")))));
+            JSONObject variables = get(http, URI.create(cmr + "/search/variables.umm_json?"
+                    + query.toString().replace("[]", "%5B%5D")));
+            units.putAll(unitsFrom(variables));
+            names.addAll(namesFrom(variables));
         }
-        return new MatchupProduct(collectionId, shortName, units);
+        names.sort(null);
+        return new MatchupProduct(collectionId, shortName, units, names);
     }
 
     /** Variable name (without its group path) to units, from a CMR {@code variables.umm_json} reply. */
@@ -122,6 +135,19 @@ public record MatchupProduct(String collectionId, String shortName, Map<String, 
             }
         }
         return units;
+    }
+
+    /** The variables' full names, group included, from a CMR {@code variables.umm_json} reply. */
+    static List<String> namesFrom(JSONObject variables) {
+        List<String> names = new ArrayList<>();
+        JSONArray items = variables.optJSONArray("items");
+        for (int i = 0; items != null && i < items.length(); i++) {
+            String name = items.getJSONObject(i).getJSONObject("umm").optString("Name", "");
+            if (!name.isEmpty()) {
+                names.add(name);
+            }
+        }
+        return names;
     }
 
     private static JSONObject get(HttpTransport http, URI uri) throws IOException, InterruptedException {
