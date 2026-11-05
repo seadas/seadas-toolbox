@@ -11,7 +11,9 @@ import java.awt.event.WindowEvent;
 /**
  * The Satellite–In Situ Matchup window: a SeaBASS file against Level-2
  * products, one Harmony job per observation and product, written back as an
- * augmented SeaBASS file. Modeless, so SeaDAS stays usable during a run.
+ * augmented SeaBASS file. Modeless, so SeaDAS stays usable during a run, and
+ * not owned by the SeaDAS window, so that window can come in front of it (e.g.
+ * to view a granule opened remotely from the results).
  */
 public final class MatchupDialog extends JDialog {
 
@@ -30,8 +32,9 @@ public final class MatchupDialog extends JDialog {
                 new MatchupSession.Options(environment, maxInFlight, halfBoxDeg), TokenSource.netrc()));
     }
 
+    /** @param owner the SeaDAS window: where to open; the dialog isn't owned by it */
     MatchupDialog(Window owner, MatchupSession session) {
-        super(owner, TITLE + (session.options().environment() == HarmonyEnvironment.UAT ? " (Harmony UAT)" : ""),
+        super((Window) null, TITLE + (session.options().environment() == HarmonyEnvironment.UAT ? " (Harmony UAT)" : ""),
                 ModalityType.MODELESS);
         panel = new MatchupPanel(session, this::closeWindow);
         setContentPane(panel);

@@ -57,6 +57,9 @@ final class ResultsStep extends Step {
     private final JTable table = new JTable(model);
     private final JButton exportSeabass = new JButton("Export SeaBASS…");
     private final JButton exportCsv = new JButton("Export CSV…");
+    private final JButton openGranule = new JButton(RemoteGranules.TITLE);
+    private final RemoteGranules remote = new RemoteGranules();
+    private boolean opening;
     private MatchupResults results;
     private Outcome showing;
     private boolean updating;
@@ -81,10 +84,21 @@ final class ResultsStep extends Step {
         add(Look.scroll(table), BorderLayout.CENTER);
 
         JButton productView = later("Show on product view");
-        JButton granule = later("Open granule remotely");
+        openGranule.setToolTipText("<html>Open the selected rows' granules in SeaDAS from the Earthdata Archive, "
+                + "without downloading them.<br>Double-clicking a row does the same.</html>");
+        openGranule.addActionListener(e -> openGranules());
+        table.getSelectionModel().addListSelectionListener(e -> updateOpenGranule());
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && table.rowAtPoint(e.getPoint()) >= 0) {
+                    openGranules();
+                }
+            }
+        });
         JButton scatter = later("Scatter plot…");
         JPanel buttons = Look.clear(new BorderLayout());
-        buttons.add(Look.row(8, productView, granule, scatter), BorderLayout.WEST);
+        buttons.add(Look.row(8, productView, openGranule, scatter), BorderLayout.WEST);
         buttons.add(Look.row(8, exportCsv, exportSeabass), BorderLayout.EAST);
         JPanel south = Look.clear(null);
         south.setLayout(new BoxLayout(south, BoxLayout.Y_AXIS));
@@ -127,7 +141,9 @@ final class ResultsStep extends Step {
                 + "(no pixel of any granule at the position); no overpass (no granule in the time window, so not "
                 + "sent); failed; or not usable (no time or position).\n\n"
                 + "Export SeaBASS writes the input file with the matchup columns added, as mk_matchup.py does. "
-                + "Export CSV writes every granule row the service returned.";
+                + "Export CSV writes every granule row the service returned.\n\n"
+                + "Open granule remotely (or double-click a row) opens the row's granule in SeaDAS straight from "
+                + "the Earthdata Archive, using your Earthdata Login from ~/.netrc.";
     }
 
     @Override
@@ -217,6 +233,7 @@ final class ResultsStep extends Step {
         items.sort(Comparator.comparingInt((MatchupResults.Item i) -> i.task().row())
                 .thenComparingInt(i -> order.indexOf(i.task().collection())));
         model.set(items, columns(collection, items), collection == null);
+        updateOpenGranule();
 
         for (int i = 0; i < table.getColumnCount(); i++) {
             String name = model.getColumnName(i);
@@ -392,6 +409,35 @@ final class ResultsStep extends Step {
             JOptionPane.showMessageDialog(this, Text.wrap(message), "Export SeaBASS",
                     warnings.isEmpty() ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
         }, () -> exportSeabass.setEnabled(true));
+    }
+
+    /** The selected rows' granules: file name to product short name. */
+    private Map<String, String> selectedGranules() {
+        Map<String, String> granules = new LinkedHashMap<>();
+        for (int viewRow : table.getSelectedRows()) {
+            Map<String, String> chosen = model.item(table.convertRowIndexToModel(viewRow)).chosen();
+            if (chosen != null && chosen.get("granule") != null && chosen.get("product") != null) {
+                granules.put(chosen.get("granule"), chosen.get("product"));
+            }
+        }
+        return granules;
+    }
+
+    private void updateOpenGranule() {
+        openGranule.setEnabled(!opening && !selectedGranules().isEmpty());
+    }
+
+    private void openGranules() {
+        Map<String, String> granules = selectedGranules();
+        if (opening || granules.isEmpty()) {
+            return;
+        }
+        opening = true;
+        updateOpenGranule();
+        remote.open(this, granules, () -> {
+            opening = false;
+            updateOpenGranule();
+        });
     }
 
     private void exportCsv() {
