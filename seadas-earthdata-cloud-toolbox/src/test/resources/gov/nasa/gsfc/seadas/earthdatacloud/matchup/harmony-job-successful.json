@@ -1,0 +1,47 @@
+{
+  "status": "successful",
+  "message": "The job has completed successfully",
+  "progress": 100,
+  "createdAt": "2026-11-04T21:19:13.681Z",
+  "updatedAt": "2026-11-04T21:19:20.616Z",
+  "dataExpiration": "2026-12-04T21:19:13.681Z",
+  "links": [
+    {
+      "title": "STAC catalog",
+      "href": "https://harmony.uat.earthdata.nasa.gov/stac/f7c9563c-7355-413f-aee6-f023d00014fe/",
+      "rel": "stac-catalog-json",
+      "type": "application/json"
+    },
+    {
+      "href": "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/f7c9563c-7355-413f-aee6-f023d00014fe/13055080/TERRA_MODIS.20101010T180501.L2.OC.csv",
+      "title": "TERRA_MODIS.20101010T180501.L2.OC.csv",
+      "type": "text/csv",
+      "rel": "data",
+      "bbox": [
+        -122.5816,
+        26.39408,
+        -91.00153,
+        47.7925
+      ],
+      "temporal": {
+        "start": "2010-10-10T18:05:01.000Z",
+        "end": "2010-10-10T18:10:00.000Z"
+      }
+    },
+    {
+      "href": "https://harmony.uat.earthdata.nasa.gov/jobs/f7c9563c-7355-413f-aee6-f023d00014fe?page=1&limit=2000",
+      "title": "The current page",
+      "type": "application/json",
+      "rel": "self"
+    }
+  ],
+  "labels": [],
+  "steps": "https://harmony.uat.earthdata.nasa.gov/jobs/f7c9563c-7355-413f-aee6-f023d00014fe/steps",
+  "serviceName": "satellite-in-situ-matchup",
+  "request": "https://harmony.uat.earthdata.nasa.gov/C1272944705-OB_CLOUD/ogc-api-coverages/1.0.0/collections/all/coverage/rangeset?subset=lat(32.75%3A33.25)&subset=lon(-119.75%3A-119.25)&subset=time(%222010-10-10T17%3A37%3A30Z%22%3A%222010-10-10T18%3A37%3A30Z%22)&format=text%2Fcsv&forceAsync=true",
+  "numInputGranules": 1,
+  "jobID": "f7c9563c-7355-413f-aee6-f023d00014fe",
+  "originalDataSize": "26.04 MiB",
+  "outputDataSize": "1.74 KiB",
+  "dataSizePercentChange": "99.99% reduction"
+}

@@ -1,0 +1,17 @@
+{
+  "jobStatuses": [
+    {
+      "jobID": "82277934-0fc3-4cca-9892-aa1da802d89c",
+      "status": "successful",
+      "progress": 100
+    },
+    {
+      "jobID": "f7c9563c-7355-413f-aee6-f023d00014fe",
+      "status": "successful",
+      "progress": 100
+    }
+  ],
+  "notFoundJobIDs": [
+    "00000000-0000-0000-0000-000000000000"
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "code": "harmony.UnsupportedOperation",
+  "description": "Error: the requested combination of operations: reformatting to text/csv on C1281448693-OB_CLOUD is unsupported. The following services may have matched if additional operations were requested: satellite-in-situ-matchup requires spatialSubset."
+}
