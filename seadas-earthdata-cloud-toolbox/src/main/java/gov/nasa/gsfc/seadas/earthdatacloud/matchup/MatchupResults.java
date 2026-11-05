@@ -113,6 +113,20 @@ public final class MatchupResults {
             }
             items.add(item(task, observation, values, best));
         }
+        // A row at the same place and time as an earlier one shares that row's outcome.
+        Map<String, Item> byKey = new java.util.HashMap<>();
+        for (Item item : items) {
+            byKey.put(item.task().collection() + "#" + item.task().row(), item);
+        }
+        for (int i = 0; i < items.size(); i++) {
+            Item item = items.get(i);
+            Item original = byKey.get(item.task().collection() + "#" + item.task().sameAs());
+            if (item.task().sameAs() >= 0 && original != null) {
+                String same = "same as #" + (item.task().sameAs() + 1);
+                items.set(i, new Item(item.task(), item.observation(), original.outcome(), original.chosen(),
+                        original.reason() == null ? same : original.reason() + "; " + same));
+            }
+        }
         return new MatchupResults(rows, items);
     }
 

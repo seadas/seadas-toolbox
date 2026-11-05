@@ -35,6 +35,7 @@ public final class MatchupScreenshots {
                 "/units=none,yyyymmdd,hh:mm:ss,degrees,degrees,mg/m^3", "/end_header",
                 "ligurian,20260603,11:35:00,40.596,5.813,0.12",
                 "baltic,20260603,11:35:00,55.914,19.015,2.40",
+                "baltic_repeat,20260603,11:35:00,55.914,19.015,2.45",
                 "santa_barbara,20101010,18:07:30,33.0,-119.5,1.10",
                 "black_sea,20170406,09:33:00,42.925,40.537,0.85",
                 "no_position,20170406,10:00:00,-9999,40.537,0.80"));
@@ -67,7 +68,9 @@ public final class MatchupScreenshots {
             p.go(2);
             ((RunStep) p.step(2)).start(false);
         });
-        Thread.sleep(4000);
+        Thread.sleep(1500);
+        shoot(p, out.resolve("3-start.png"));
+        Thread.sleep(2500);
         shoot(p, out.resolve("3a-running.png"));
         waitIdle(p.step(2));
         shoot(p, out.resolve("3b-run-done.png"));
@@ -78,10 +81,15 @@ public final class MatchupScreenshots {
         });
         shoot(p, out.resolve("4a-results.png"));
         edt(() -> {
-            javax.swing.JComboBox<?> product = find(p.step(3), javax.swing.JComboBox.class, 1);
-            product.setSelectedItem("MODIST_L2_OC");
+            javax.swing.JComboBox<?> product = find(p.step(3), javax.swing.JComboBox.class, 0);
+            product.setSelectedItem("PACE OCI AOP NRT");
         });
-        shoot(p, out.resolve("4b-results-modist.png"));
+        shoot(p, out.resolve("4b-results-pace.png"));
+        edt(() -> {
+            javax.swing.JComboBox<?> product = find(p.step(3), javax.swing.JComboBox.class, 0);
+            product.setSelectedItem("All products");
+        });
+        shoot(p, out.resolve("4c-results-all.png"));
         MatchupResults results = MatchupResults.of(session.run());
         results.writeCsv(out.resolve("sims-demo_matchup.csv"));
         System.out.println("Summary: " + results.summary(null));
@@ -136,8 +144,13 @@ public final class MatchupScreenshots {
 
     private static void shoot(Component component, Path png) throws Exception {
         AtomicReference<BufferedImage> image = new AtomicReference<>();
+        // Twice: wrapped text knows its height once it has a width.
         SwingUtilities.invokeAndWait(() -> {
             component.setSize(component.getPreferredSize());
+            layout(component);
+        });
+        SwingUtilities.invokeAndWait(() -> {
+            layout(component);
             layout(component);
             BufferedImage img = new BufferedImage(component.getWidth(), component.getHeight(),
                     BufferedImage.TYPE_INT_RGB);
@@ -151,7 +164,9 @@ public final class MatchupScreenshots {
         System.out.println("Saved " + png);
     }
 
+    /** As revalidate would on screen: fresh sizes, then lay out. */
     private static void layout(Component component) {
+        component.invalidate();
         component.doLayout();
         if (component instanceof Container container) {
             for (Component child : container.getComponents()) {

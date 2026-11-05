@@ -251,11 +251,45 @@ class MatchupRunTest {
         assertEquals(MatchupRun.NO_OVERPASS, saved.get(1).message());
         assertTrue(saved.get(2).message().startsWith("Latitude missing"), "an earlier reason is kept");
         assertTrue(saved.subList(4, 8).stream().allMatch(t -> t.state() == MatchupRun.State.SKIPPED));
+        assertEquals(1, saved.get(0).granules(), "CMR's count is kept");
+        assertEquals(0, saved.get(1).granules());
+        assertNull(saved.get(3).granules(), "unknown where CMR failed");
 
         FakeHarmony harmony = new FakeHarmony();
         run.execute(harmony.client(), () -> false, new MatchupRun.Listener() {
         });
         assertEquals(2, harmony.calls("GET", "/" + MODISA).size());
         assertEquals(0, harmony.calls("GET", "/" + OTHER).size());
+    }
+
+    @Test
+    void aRowAtTheSamePlaceAndTimeIsMatchedOnceAndSharesTheResult(@TempDir Path dir) throws Exception {
+        Path file = dir.resolve("twice.sb");
+        Files.write(file, List.of("/begin_header", "/missing=-9999", "/delimiter=comma",
+                "/fields=station,date,time,lat,lon,chl", "/units=none,yyyymmdd,hh:mm:ss,degrees,degrees,mg/m^3",
+                "/end_header",
+                "1,20240520,19:30:00,29.9702,-87.1583,0.407",
+                "1b,20240520,19:30:00,29.9702,-87.1583,0.410"));
+        MatchupRun run = MatchupRun.create(file, settings(MODISA), dir.resolve("twice.matchup.json"));
+        MatchupRun.Task second = run.tasks().get(1);
+        assertEquals(MatchupRun.State.SKIPPED, second.state());
+        assertEquals(0, second.sameAs());
+        assertEquals(-1, run.tasks().get(0).sameAs());
+
+        FakeHarmony harmony = new FakeHarmony();
+        run.execute(harmony.client(), () -> false, new MatchupRun.Listener() {
+        });
+        assertEquals(1, harmony.calls("GET", "/" + MODISA).size(), "one job for both rows");
+        assertEquals(1, run.tasks().get(0).granules(), "granule rows counted from the result");
+
+        MatchupResults results = MatchupResults.of(run);
+        assertEquals(MatchupResults.Outcome.MATCHED, results.items().get(1).outcome());
+        assertEquals("same as #1", results.items().get(1).reason());
+
+        MatchupProduct modis = new MatchupProduct(MODISA, "MODISA_L2_OC", Map.of("chlor_a", "mg m^-3"));
+        List<String> out = run.join(Map.of(MODISA, modis), ResultJoiner.Rows.ALL).writer().lines();
+        int end = out.indexOf("/end_header");
+        assertTrue(out.get(end + 2).endsWith(",0.410,AQUA_MODIS.20240520T191501.L2.OC.nc,60.0,0.05,0.384000,"
+                + "0.012000,yes"), out.get(end + 2));
     }
 }

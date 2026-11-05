@@ -1,27 +1,35 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.matchup.ui;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupRun;
+import gov.nasa.gsfc.seadas.earthdatacloud.matchup.SeabassFile;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.SeabassObservation;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.SeabassObservations;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.prefs.Preferences;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Step 1: the SeaBASS file and its observations. */
 final class ObservationsStep extends Step {
@@ -29,7 +37,15 @@ final class ObservationsStep extends Step {
     private static final Preferences PREFS = Preferences.userNodeForPackage(ObservationsStep.class);
     private static final String LAST_DIR = "matchup.lastDirectory";
 
-    private final JLabel summary = new JLabel(" ");
+    /** Fields that place an observation rather than measure something. */
+    private static final Set<String> PLACE_FIELDS = Set.of("station", "date", "time", "year", "month", "day", "sdy",
+            "hour", "minute", "second", "lat", "lon", "cruise", "associated_files", "associated_file_types");
+    /** A field name ending in a wavelength: Rrs412, Rrs_443, a_490.5. */
+    private static final Pattern BAND = Pattern.compile("(.*?)_?\\d+(\\.\\d+)?");
+
+    private final Look.Pill counts = new Look.Pill(" ", 28);
+    private final Look.Pill fileChip = new Look.Pill(" ");
+    private final Look.Wrap footnote = Look.small(" ");
     private final ObservationTable model = new ObservationTable();
     private final Runnable next;
 
@@ -37,31 +53,55 @@ final class ObservationsStep extends Step {
         super(session);
         this.next = next;
 
+        counts.colors(Color.WHITE, Look.TEXT).line(Look.BORDER, false);
+        counts.setFont(Look.base());
+        counts.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 12, 5, 12));
+        JPanel top = Look.clear(new BorderLayout(16, 0));
+        top.add(Look.heading("Observations",
+                Look.muted("In-situ records to match. Times are UTC; positions in decimal degrees.")),
+                BorderLayout.CENTER);
+        top.add(counts, BorderLayout.EAST);
+
         JButton open = new JButton("Open SeaBASS file…");
         open.addActionListener(e -> chooseFile());
+        JButton csv = new JButton("Add CSV… (later)");
+        csv.setEnabled(false);
+        JButton pins = new JButton("From pins… (later)");
+        pins.setEnabled(false);
         JButton resume = new JButton("Resume a run…");
         resume.setToolTipText("Carry on with a run saved earlier (a .matchup-run.json file)");
         resume.addActionListener(e -> chooseRecord());
-        JPanel top = new JPanel(new BorderLayout());
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        buttons.add(open);
-        buttons.add(javax.swing.Box.createHorizontalStrut(6));
-        buttons.add(resume);
-        top.add(buttons, BorderLayout.WEST);
-        summary.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
-        top.add(summary, BorderLayout.CENTER);
-        add(top, BorderLayout.NORTH);
+        fileChip.colors(Look.BLUE_PALER, Look.TEXT);
+        fileChip.setFont(Look.font(-1, Font.PLAIN));
+        fileChip.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        JPanel buttons = Look.clear(new BorderLayout());
+        buttons.add(Look.row(8, open, csv, pins, resume), BorderLayout.WEST);
+        buttons.add(fileChip, BorderLayout.EAST);
 
-        JTable table = new JTable(model);
+        JPanel north = Look.clear(new BorderLayout(0, 14));
+        north.add(top, BorderLayout.NORTH);
+        north.add(buttons, BorderLayout.SOUTH);
+        add(north, BorderLayout.NORTH);
+
+        JTable table = new JTable(model) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row) && model.skipped(convertRowIndexToModel(row))) {
+                    c.setBackground(Look.SKIPPED_ROW);
+                    c.setForeground(Look.SKIPPED_TEXT);
+                }
+                return c;
+            }
+        };
+        Look.style(table);
         table.setAutoCreateRowSorter(true);
-        table.getColumnModel().getColumn(0).setPreferredWidth(50);
-        table.getColumnModel().getColumn(1).setPreferredWidth(50);
-        table.getColumnModel().getColumn(2).setPreferredWidth(150);
-        table.getColumnModel().getColumn(5).setPreferredWidth(320);
-        add(new JScrollPane(table), BorderLayout.CENTER);
-
-        add(new JLabel("<html>Each observation needs a date and time (UTC) and a position. Rows without them "
-                + "are listed but not sent.</html>"), BorderLayout.SOUTH);
+        int[] widths = {40, 110, 150, 90, 95, 130, 300};
+        for (int i = 0; i < widths.length; i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
+        }
+        add(Look.scroll(table), BorderLayout.CENTER);
+        add(footnote, BorderLayout.SOUTH);
 
         session.addListener(this::refresh);
         refresh();
@@ -72,18 +112,44 @@ final class ObservationsStep extends Step {
         return "Observations";
     }
 
+    @Override
+    String navNote() {
+        return "Runs in Harmony: no downloads, no OCSSW needed.";
+    }
+
+    @Override
+    String help() {
+        return "Open a SeaBASS file of in-situ measurements. Each row needs a date and time (UTC) and a position; "
+                + "rows without them are listed but not sent. A row at the same place and time as an earlier one is "
+                + "matched once and gets the earlier row's result.\n\n"
+                + "A run is saved beside the file as it goes (<name>.matchup-run.json). Opening the file again, "
+                + "or Resume a run…, carries on from where it stopped.";
+    }
+
     private void refresh() {
-        model.set(session.observations());
-        if (session.file() == null) {
-            summary.setText("No file open");
+        SeabassFile file = session.file();
+        model.set(file, session.observations(), session.duplicates());
+        if (file == null) {
+            counts.setText("No file open");
+            fileChip.setVisible(false);
+            footnote.setText(" ");
             return;
         }
-        String time = SeabassObservations.timeSource(session.file());
-        summary.setText("<html><b>" + Text.escape(session.seabass().getFileName().toString()) + "</b>: "
-                + Text.plural(session.observations().size(), "record", "records") + ", "
-                + session.usableObservations() + " usable"
-                + (time == null ? "" : "; time from " + Text.escape(time)) + "</html>");
-        summary.setToolTipText(session.seabass().toString());
+        int total = session.observations().size();
+        long usable = session.usableObservations();
+        long skipped = total - usable;
+        counts.setText("<html><b>" + total + "</b> " + (total == 1 ? "record" : "records") + " · <b>" + usable
+                + "</b> usable" + (skipped == 0 ? "" : " · <b><font color='" + Look.hex(Look.ORANGE_TEXT) + "'>"
+                + skipped + " skipped</font></b>") + "</html>");
+        String name = session.seabass().getFileName().toString();
+        fileChip.setText(name + " · " + Text.plural(total, "record", "records"));
+        fileChip.setToolTipText(session.seabass().toString());
+        fileChip.setVisible(true);
+        String time = SeabassObservations.timeSource(file);
+        footnote.setText("<html>Date-time comes from the SeaBASS fields mk_matchup.py accepts: date and time, "
+                + "year/month/day or sdy with the time fields, or the header’s /start_date."
+                + (time == null ? "" : " This file: " + Text.escape(time) + ".")
+                + " Position comes from the lat and lon fields.</html>");
     }
 
     private void chooseFile() {
@@ -160,14 +226,49 @@ final class ObservationsStep extends Step {
                 "Run not finished", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
     }
 
+    /**
+     * The in-situ fields a row has values for, wavelength series folded:
+     * {@code chl, Rrs ×6, wt}.
+     */
+    static String inSituFields(SeabassFile file, int row) {
+        Map<String, List<String>> groups = new LinkedHashMap<>();
+        for (String field : file.fields()) {
+            String lower = field.toLowerCase(Locale.ROOT);
+            if (PLACE_FIELDS.contains(lower) || file.isMissing(file.value(row, field))) {
+                continue;
+            }
+            Matcher band = BAND.matcher(field);
+            String key = band.matches() && !band.group(1).isEmpty() ? band.group(1) : field;
+            groups.computeIfAbsent(key, k -> new ArrayList<>()).add(field);
+        }
+        List<String> parts = new ArrayList<>();
+        groups.forEach((name, list) -> parts.add(list.size() == 1 ? list.get(0) : name + " ×" + list.size()));
+        return String.join(", ", parts);
+    }
+
     /** The observations as a table. */
     private static final class ObservationTable extends AbstractTableModel {
-        private static final String[] COLUMNS = {"#", "Line", "Date-time (UTC)", "Latitude", "Longitude", "Note"};
+        private static final String[] COLUMNS = {"#", "File", "Date-time (UTC)", "Latitude", "Longitude",
+                "In-situ fields", "Note"};
         private List<SeabassObservation> rows = List.of();
+        private Map<Integer, Integer> duplicates = Map.of();
+        private List<String> fields = List.of();
+        private String fileName = "";
 
-        void set(List<SeabassObservation> observations) {
+        void set(SeabassFile file, List<SeabassObservation> observations, Map<Integer, Integer> sameAs) {
             rows = observations;
+            duplicates = sameAs;
+            fileName = file == null ? "" : file.source().getFileName().toString();
+            fields = new ArrayList<>();
+            for (SeabassObservation o : observations) {
+                fields.add(file == null ? "" : inSituFields(file, o.row()));
+            }
             fireTableDataChanged();
+        }
+
+        boolean skipped(int row) {
+            SeabassObservation o = rows.get(row);
+            return !o.usable() || duplicates.containsKey(o.row());
         }
 
         @Override
@@ -187,7 +288,7 @@ final class ObservationsStep extends Step {
 
         @Override
         public Class<?> getColumnClass(int column) {
-            return column <= 1 ? Integer.class : column == 3 || column == 4 ? Double.class : String.class;
+            return column == 0 ? Integer.class : column == 3 || column == 4 ? Double.class : String.class;
         }
 
         @Override
@@ -195,11 +296,21 @@ final class ObservationsStep extends Step {
             SeabassObservation o = rows.get(row);
             return switch (column) {
                 case 0 -> o.row() + 1;
-                case 1 -> o.lineNumber();
+                case 1 -> fileName;
                 case 2 -> Text.time(o.time());
                 case 3 -> Double.isNaN(o.lat()) ? null : o.lat();
                 case 4 -> Double.isNaN(o.lon()) ? null : o.lon();
-                default -> o.problem() != null ? "⚠ " + o.problem() : o.note() == null ? "" : o.note();
+                case 5 -> fields.get(row);
+                default -> {
+                    if (o.problem() != null) {
+                        yield "Skipped: " + o.problem();
+                    }
+                    Integer original = duplicates.get(o.row());
+                    if (original != null) {
+                        yield "Same place and time as #" + (original + 1) + ": matched once";
+                    }
+                    yield o.note() == null ? "" : o.note();
+                }
             };
         }
     }

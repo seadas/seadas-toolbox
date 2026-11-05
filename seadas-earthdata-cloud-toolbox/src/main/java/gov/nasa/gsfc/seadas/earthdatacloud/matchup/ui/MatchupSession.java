@@ -46,6 +46,7 @@ final class MatchupSession {
     private Path seabass;
     private SeabassFile file;
     private List<SeabassObservation> observations = List.of();
+    private Map<Integer, Integer> duplicates;
     private List<MatchupCollections.Entry> chosen = List.of();
     private Duration halfWindow = MatchupRequest.DEFAULT_HALF_WINDOW;
     private List<String> variables = List.of();
@@ -76,6 +77,7 @@ final class MatchupSession {
         seabass = path.toAbsolutePath().normalize();
         file = read;
         observations = list;
+        duplicates = null;
         run = null;
         coverage = null;
         changed();
@@ -92,6 +94,7 @@ final class MatchupSession {
         seabass = loaded.seabass();
         file = loaded.file();
         observations = loaded.observations();
+        duplicates = null;
         List<MatchupCollections.Entry> entries = new ArrayList<>();
         for (String id : loaded.settings().collections()) {
             entries.add(MatchupCollections.byId(id).orElseThrow(() ->
@@ -189,8 +192,17 @@ final class MatchupSession {
         return observations;
     }
 
+    /** Observations that will be sent: usable, and not at the same place and time as an earlier one. */
     long usableObservations() {
-        return observations.stream().filter(SeabassObservation::usable).count();
+        return observations.stream().filter(SeabassObservation::usable).count() - duplicates().size();
+    }
+
+    /** Usable rows at the same place and time as an earlier one: row to that row (0-based). */
+    Map<Integer, Integer> duplicates() {
+        if (duplicates == null) {
+            duplicates = MatchupRun.duplicates(observations);
+        }
+        return duplicates;
     }
 
     List<MatchupCollections.Entry> chosen() {

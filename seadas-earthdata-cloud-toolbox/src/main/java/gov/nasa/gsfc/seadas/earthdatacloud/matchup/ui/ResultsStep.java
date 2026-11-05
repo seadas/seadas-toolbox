@@ -5,9 +5,13 @@ import gov.nasa.gsfc.seadas.earthdatacloud.matchup.HttpTransport;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupCollections;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupProduct;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupResults;
+import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupResults.Outcome;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupRun;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.ResultJoiner;
+import gov.nasa.gsfc.seadas.earthdatacloud.matchup.SeabassFile;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -16,74 +20,126 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToggleButton;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /** Step 4: what each observation got, and the exports. */
 final class ResultsStep extends Step {
 
     private static final String ALL_PRODUCTS = "All products";
+    /** The chips, in the order shown; the last three only when there are some. */
+    private static final List<Outcome> CHIPS = List.of(Outcome.MATCHED, Outcome.REJECTED, Outcome.NOT_IN_GRANULE,
+            Outcome.NO_OVERPASS, Outcome.FAILED, Outcome.SKIPPED, Outcome.WAITING);
 
-    private final JLabel summary = new JLabel(" ");
-    private final JComboBox<String> show = new JComboBox<>();
     private final JComboBox<String> product = new JComboBox<>();
+    private final Map<String, String> productIds = new LinkedHashMap<>();
+    private final JPanel chips = Look.clear(new FlowLayout(FlowLayout.LEFT, 8, 0));
+    private final ButtonGroup chipGroup = new ButtonGroup();
+    private final Look.Wrap rejections = Look.small(" ");
     private final ItemTable model = new ItemTable();
     private final JTable table = new JTable(model);
     private final JButton exportSeabass = new JButton("Export SeaBASS…");
     private final JButton exportCsv = new JButton("Export CSV…");
     private MatchupResults results;
+    private Outcome showing;
     private boolean updating;
 
     ResultsStep(MatchupSession session) {
         super(session);
 
-        show.addItem("All");
-        for (MatchupResults.Outcome outcome : MatchupResults.Outcome.values()) {
-            show.addItem(outcome.words());
-        }
-        JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        filters.add(new JLabel("Show"));
-        filters.add(show);
-        filters.add(new JLabel("Product"));
-        filters.add(product);
-        JPanel top = new JPanel(new GridLayout(0, 1, 0, 6));
-        top.add(summary);
-        top.add(filters);
-        add(top, BorderLayout.NORTH);
+        JPanel head = Look.clear(new BorderLayout(16, 0));
+        head.add(Look.heading("Results", null), BorderLayout.WEST);
+        head.add(Look.row(8, new JLabel("Product"), product), BorderLayout.EAST);
+        JPanel filters = Look.clear(new BorderLayout(6, 0));
+        filters.add(chips, BorderLayout.WEST);
+        filters.add(rejections, BorderLayout.CENTER);
+        JPanel north = Look.clear(new BorderLayout(0, 12));
+        north.add(head, BorderLayout.NORTH);
+        north.add(filters, BorderLayout.SOUTH);
+        add(north, BorderLayout.NORTH);
 
+        Look.style(table);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.setAutoCreateRowSorter(true);
-        table.setDefaultRenderer(String.class, new ReasonRenderer());
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        add(Look.scroll(table), BorderLayout.CENTER);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        buttons.add(exportSeabass);
-        buttons.add(exportCsv);
-        buttons.add(new JLabel("The SeaBASS export adds the columns mk_matchup.py writes; the CSV has every granule row."));
-        add(buttons, BorderLayout.SOUTH);
+        JButton productView = later("Show on product view");
+        JButton granule = later("Open granule remotely");
+        JButton scatter = later("Scatter plot…");
+        JPanel buttons = Look.clear(new BorderLayout());
+        buttons.add(Look.row(8, productView, granule, scatter), BorderLayout.WEST);
+        buttons.add(Look.row(8, exportCsv, exportSeabass), BorderLayout.EAST);
+        JPanel south = Look.clear(null);
+        south.setLayout(new BoxLayout(south, BoxLayout.Y_AXIS));
+        buttons.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel note = Look.small("<html>SeaBASS output: one row per observation, written to a new file. Where "
+                + "several granules match, the row uses a matched granule first, then the smallest |tdiff|. "
+                + "The CSV keeps every granule.</html>");
+        note.setAlignmentX(LEFT_ALIGNMENT);
+        south.add(buttons);
+        south.add(Box.createVerticalStrut(10));
+        south.add(note);
+        add(south, BorderLayout.SOUTH);
 
-        show.addActionListener(e -> filter());
-        product.addActionListener(e -> filter());
+        product.addActionListener(e -> {
+            if (!updating) {
+                filter();
+            }
+        });
         exportSeabass.addActionListener(e -> exportSeabass());
         exportCsv.addActionListener(e -> exportCsv());
         refresh();
     }
 
+    private static JButton later(String text) {
+        JButton button = new JButton(text);
+        button.setEnabled(false);
+        button.setToolTipText("Comes in a later version");
+        return button;
+    }
+
     @Override
     String title() {
         return "Results";
+    }
+
+    @Override
+    String help() {
+        return "Each observation and product ends one of these ways: matched; rejected by a matchup rule (the "
+                + "reason and its level in brackets: 1 time, 2–4 cloud or flags, 5 too variable); not in granule "
+                + "(no pixel of any granule at the position); no overpass (no granule in the time window, so not "
+                + "sent); failed; or not usable (no time or position).\n\n"
+                + "Export SeaBASS writes the input file with the matchup columns added, as mk_matchup.py does. "
+                + "Export CSV writes every granule row the service returned.";
+    }
+
+    @Override
+    String navNote() {
+        MatchupRun run = session.run();
+        if (run == null) {
+            return null;
+        }
+        Map<MatchupRun.State, Integer> counts = run.counts();
+        int sent = run.tasks().size() - counts.get(MatchupRun.State.SKIPPED);
+        return (run.finished() ? "Run finished" : "Run not finished: results so far") + " · "
+                + Text.plural(sent, "request", "requests") + " · " + counts.get(MatchupRun.State.FAILED) + " failed";
     }
 
     @Override
@@ -109,11 +165,18 @@ final class ResultsStep extends Step {
         try {
             String selected = (String) product.getSelectedItem();
             product.removeAllItems();
-            product.addItem(ALL_PRODUCTS);
+            productIds.clear();
             for (MatchupCollections.Entry entry : session.chosen()) {
-                product.addItem(entry.shortName());
+                String name = SatelliteStep.shortLabel(entry);
+                productIds.put(name, entry.id(session.options().environment()));
+                product.addItem(name);
             }
-            product.setSelectedItem(selected != null ? selected : ALL_PRODUCTS);
+            if (productIds.size() > 1) {
+                product.addItem(ALL_PRODUCTS);
+            }
+            if (selected != null && (productIds.containsKey(selected) || ALL_PRODUCTS.equals(selected))) {
+                product.setSelectedItem(selected);
+            }
         } finally {
             updating = false;
         }
@@ -123,59 +186,166 @@ final class ResultsStep extends Step {
         filter();
     }
 
+    /** The product shown, or null for all. */
     private String collection() {
-        String name = (String) product.getSelectedItem();
-        if (name == null || ALL_PRODUCTS.equals(name)) {
-            return null;
-        }
-        return session.chosen().stream().filter(e -> e.shortName().equals(name)).findFirst()
-                .map(e -> e.id(session.options().environment())).orElse(null);
+        return productIds.get((String) product.getSelectedItem());
     }
 
     private void filter() {
-        if (updating) {
-            return;
-        }
         if (results == null) {
-            summary.setText(" ");
-            model.set(List.of(), List.of());
+            model.set(List.of(), List.of(), false);
+            rejections.setText(" ");
+            showChips(null);
             return;
         }
         String collection = collection();
-        MatchupRun run = session.run();
-        String waiting = run != null && !run.finished() ? " (the run isn't finished)" : "";
-        summary.setText("<html>" + Text.escape(results.summary(collection)) + waiting + "</html>");
+        showChips(collection);
+        Map<String, Integer> why = results.rejections(collection);
+        List<String> parts = new ArrayList<>();
+        why.forEach((reason, n) -> parts.add(reason + " " + n));
+        rejections.setText(parts.isEmpty() ? " " : "Rejected: " + String.join(" · ", parts));
 
-        String wanted = (String) show.getSelectedItem();
         List<MatchupResults.Item> items = new ArrayList<>();
         for (MatchupResults.Item item : results.items()) {
             if ((collection == null || collection.equals(item.task().collection()))
-                    && ("All".equals(wanted) || item.outcome().words().equals(wanted))) {
+                    && (showing == null || item.outcome() == showing)) {
                 items.add(item);
             }
         }
         // By observation, then product in the run's order.
         List<String> order = session.run() == null ? List.of() : session.run().settings().collections();
-        items.sort(java.util.Comparator.comparingInt((MatchupResults.Item i) -> i.task().row())
+        items.sort(Comparator.comparingInt((MatchupResults.Item i) -> i.task().row())
                 .thenComparingInt(i -> order.indexOf(i.task().collection())));
-        // One product: its variables' means as columns.
+        model.set(items, columns(collection, items), collection == null);
+
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            String name = model.getColumnName(i);
+            int width = switch (name) {
+                case "Obs" -> 55;
+                case "Date-time (UTC)" -> 150;
+                case "Product" -> 145;
+                case "Granule" -> 300;
+                case "Status" -> 200;
+                case "tdiff (s)" -> 80;
+                case "CV" -> 65;
+                default -> 95;
+            };
+            table.getColumnModel().getColumn(i).setPreferredWidth(width);
+            if (!name.equals("Status") && !name.equals("Product")) {
+                table.getColumnModel().getColumn(i).setCellRenderer(new Look.Cell(true));
+            }
+            if (name.equals("Status")) {
+                table.getColumnModel().getColumn(i).setCellRenderer(new Look.PillCell() {
+                    @Override
+                    Look.Tone tone(Object value, int row) {
+                        return tone(model.item(row).outcome());
+                    }
+
+                    private Look.Tone tone(Outcome outcome) {
+                        return switch (outcome) {
+                            case MATCHED -> Look.Tone.STRONG_BLUE;
+                            case REJECTED -> Look.Tone.ORANGE;
+                            case FAILED -> Look.Tone.RED;
+                            case NO_OVERPASS, SKIPPED -> Look.Tone.DASHED;
+                            case NOT_IN_GRANULE, WAITING -> Look.Tone.GREY;
+                        };
+                    }
+                });
+            }
+        }
+    }
+
+    /** The filter chips with their counts for the product shown. */
+    private void showChips(String collection) {
+        chips.removeAll();
+        for (javax.swing.AbstractButton b : java.util.Collections.list(chipGroup.getElements())) {
+            chipGroup.remove(b);
+        }
+        Map<Outcome, Integer> counts = results == null ? Map.of() : results.counts(collection);
+        int all = counts.values().stream().mapToInt(Integer::intValue).sum();
+        addChip("All", all, null);
+        for (Outcome outcome : CHIPS) {
+            int n = counts.getOrDefault(outcome, 0);
+            if (n > 0 || CHIPS.indexOf(outcome) < 4) {
+                addChip(capital(outcome.words()), n, outcome);
+            }
+        }
+        chips.revalidate();
+        chips.repaint();
+    }
+
+    private void addChip(String label, int count, Outcome outcome) {
+        Chip chip = new Chip(label, count);
+        chip.setSelected(outcome == showing);
+        chip.addActionListener(e -> {
+            showing = outcome;
+            filter();
+        });
+        chipGroup.add(chip);
+        chips.add(chip);
+    }
+
+    private static String capital(String words) {
+        return Character.toUpperCase(words.charAt(0)) + words.substring(1);
+    }
+
+    /**
+     * Columns after the fixed ones, for one product: each satellite variable,
+     * after its in-situ counterpart when the file has one (chl, chlor_a sat).
+     */
+    private List<Column> columns(String collection, List<MatchupResults.Item> items) {
+        List<Column> columns = new ArrayList<>();
+        if (collection == null) {
+            return columns;
+        }
         List<String> variables = new ArrayList<>();
-        if (collection != null) {
-            for (MatchupResults.Item item : items) {
-                if (item.chosen() != null) {
-                    for (String column : item.chosen().keySet()) {
-                        if (column.startsWith("sat_") && column.endsWith("_mean") && !variables.contains(column)) {
-                            variables.add(column);
-                        }
+        for (MatchupResults.Item item : items) {
+            if (item.chosen() != null) {
+                for (String key : item.chosen().keySet()) {
+                    if (key.startsWith("sat_") && key.endsWith("_mean") && !variables.contains(key)) {
+                        variables.add(key);
                     }
                 }
             }
         }
-        model.set(items, variables);
-        int[] widths = {40, 45, 140, 150, 95, 190, 300, 70, 70};
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setPreferredWidth(i < widths.length ? widths[i] : 90);
+        // Pairs first (in situ beside satellite), then the other variables.
+        SeabassFile file = session.file();
+        List<Column> unpaired = new ArrayList<>();
+        for (String key : variables) {
+            String variable = key.substring("sat_".length(), key.length() - "_mean".length());
+            String field = file == null ? null : inSituField(file, variable);
+            if (field != null) {
+                columns.add(new Column(field + " in situ", field, null));
+                columns.add(new Column(variable + " sat", null, key));
+            } else {
+                unpaired.add(new Column(variable + " sat", null, key));
+            }
         }
+        columns.addAll(unpaired);
+        return columns;
+    }
+
+    /** The SeaBASS field measuring what a satellite variable does, or null. */
+    static String inSituField(SeabassFile file, String variable) {
+        List<String> candidates = new ArrayList<>();
+        String lower = variable.toLowerCase(Locale.ROOT);
+        if (lower.equals("chlor_a")) {
+            candidates.addAll(List.of("chl", "chl_a", "chla", "tchl"));
+        } else if (lower.startsWith("sst")) {
+            candidates.addAll(List.of("wt", "sst"));
+        } else if (lower.matches("rrs_\\d+")) {
+            String band = lower.substring(4);
+            candidates.addAll(List.of("rrs" + band, "rrs_" + band));
+        }
+        candidates.add(lower);
+        for (String candidate : candidates) {
+            for (String field : file.fields()) {
+                if (field.toLowerCase(Locale.ROOT).equals(candidate)) {
+                    return field;
+                }
+            }
+        }
+        return null;
     }
 
     // ------------------------------------------------------------ exports
@@ -257,18 +427,59 @@ final class ResultsStep extends Step {
         return out;
     }
 
-    // ------------------------------------------------------------ table
+    // ------------------------------------------------------------ chips and table
+
+    /** A rounded filter button: its name and count, filled when chosen. */
+    private static final class Chip extends JToggleButton {
+        Chip(String label, int count) {
+            super(label + "  " + count);
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setFocusPainted(false);
+            setOpaque(false);
+            setFont(Look.base().deriveFont(Font.PLAIN));
+            getModel().addChangeListener(e -> setFont(Look.base().deriveFont(isSelected() ? Font.BOLD : Font.PLAIN)));
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            int w = Look.width(this, Look.base().deriveFont(Font.BOLD), getText()) + 26;
+            return new Dimension(w, 30);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = Look.smooth(g);
+            g2.setColor(isSelected() ? Look.BLUE_PALE : Color.WHITE);
+            g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, getHeight(), getHeight());
+            g2.setColor(isSelected() ? Look.BLUE : hasFocus() ? Look.BORDER_DARK : Look.BORDER);
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, getHeight(), getHeight());
+            g2.setFont(getFont());
+            g2.setColor(Look.TEXT);
+            var metrics = g2.getFontMetrics();
+            g2.drawString(getText(), (getWidth() - metrics.stringWidth(getText())) / 2,
+                    (getHeight() - metrics.getHeight()) / 2 + metrics.getAscent());
+            g2.dispose();
+        }
+    }
+
+    /** An extra column: an in-situ field, or a satellite value from the chosen granule row. */
+    private record Column(String name, String field, String key) {
+    }
 
     private final class ItemTable extends AbstractTableModel {
-        private final String[] fixed = {"#", "Line", "Date-time (UTC)", "Product", "Outcome", "Reason", "Granule",
-                "tdiff (s)", "CV"};
         private List<MatchupResults.Item> items = List.of();
-        private List<String> variables = List.of();
+        private List<Column> extra = List.of();
+        private List<String> fixed = List.of();
 
-        void set(List<MatchupResults.Item> newItems, List<String> newVariables) {
-            boolean structure = !newVariables.equals(variables);
+        void set(List<MatchupResults.Item> newItems, List<Column> newExtra, boolean withProduct) {
+            List<String> newFixed = withProduct
+                    ? List.of("Obs", "Date-time (UTC)", "Product", "Granule", "Status", "tdiff (s)", "CV")
+                    : List.of("Obs", "Date-time (UTC)", "Granule", "Status", "tdiff (s)", "CV");
+            boolean structure = !newExtra.equals(extra) || !newFixed.equals(fixed);
             items = newItems;
-            variables = newVariables;
+            extra = newExtra;
+            fixed = newFixed;
             if (structure) {
                 fireTableStructureChanged();
             } else {
@@ -287,57 +498,67 @@ final class ResultsStep extends Step {
 
         @Override
         public int getColumnCount() {
-            return fixed.length + variables.size();
+            return fixed.size() + extra.size();
         }
 
         @Override
         public String getColumnName(int column) {
-            if (column < fixed.length) {
-                return fixed[column];
-            }
-            String name = variables.get(column - fixed.length);
-            return name.substring("sat_".length(), name.length() - "_mean".length());
+            return column < fixed.size() ? fixed.get(column) : extra.get(column - fixed.size()).name();
         }
 
         @Override
         public Class<?> getColumnClass(int column) {
-            return column <= 1 ? Integer.class : String.class;
+            return getColumnName(column).equals("Obs") ? Integer.class : String.class;
         }
 
         @Override
         public Object getValueAt(int row, int column) {
             MatchupResults.Item item = items.get(row);
             Map<String, String> chosen = item.chosen();
-            return switch (column) {
-                case 0 -> item.task().row() + 1;
-                case 1 -> item.observation() == null ? null : item.observation().lineNumber();
-                case 2 -> item.observation() == null ? "" : Text.time(item.observation().time());
-                case 3 -> MatchupCollections.byId(item.task().collection()).map(MatchupCollections.Entry::shortName)
+            if (column >= fixed.size()) {
+                Column c = extra.get(column - fixed.size());
+                if (c.field() != null) {
+                    SeabassFile file = session.file();
+                    String value = file == null ? null : file.value(item.task().row(), c.field());
+                    return value == null || file.isMissing(value) ? "—" : value;
+                }
+                return value(chosen, c.key());
+            }
+            return switch (fixed.get(column)) {
+                case "Obs" -> item.task().row() + 1;
+                case "Date-time (UTC)" -> item.observation() == null || item.observation().time() == null ? "—"
+                        : Text.time(item.observation().time()).substring(0, 16);
+                case "Product" -> MatchupCollections.byId(item.task().collection()).map(SatelliteStep::shortLabel)
                         .orElse(item.task().collection());
-                case 4 -> item.outcome().words();
-                case 5 -> item.reason() == null ? "" : item.reason();
-                case 6 -> chosen == null ? "" : chosen.getOrDefault("granule", "");
-                case 7 -> chosen == null ? "" : chosen.getOrDefault("tdiff", "");
-                case 8 -> chosen == null ? "" : chosen.getOrDefault("rrsaot_cv", "");
-                default -> chosen == null ? "" : chosen.getOrDefault(variables.get(column - fixed.length), "");
+                case "Granule" -> chosen == null ? "—" : chosen.getOrDefault("granule", "—");
+                case "Status" -> status(item);
+                case "tdiff (s)" -> value(chosen, "tdiff");
+                default -> {
+                    String cv = value(chosen, "rrsaot_cv");
+                    try {
+                        yield String.format(Locale.ROOT, "%.3f", Double.parseDouble(cv));
+                    } catch (NumberFormatException e) {
+                        yield cv;
+                    }
+                }
             };
         }
-    }
 
-    /** Shows a rejection's full reasons as the tooltip. */
-    private final class ReasonRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable t, Object value, boolean selected, boolean focus,
-                                                       int row, int column) {
-            Component c = super.getTableCellRendererComponent(t, value, selected, focus, row, column);
-            String tip = null;
-            if (t.convertColumnIndexToModel(column) == 5) {
-                MatchupResults.Item item = model.item(t.convertRowIndexToModel(row));
-                tip = item.outcome() == MatchupResults.Outcome.REJECTED
-                        ? MatchupResults.reasonInFull(item.chosen().get("exclusion_levels")) : item.reason();
+        private String value(Map<String, String> chosen, String key) {
+            String value = chosen == null ? null : chosen.get(key);
+            return value == null || value.isBlank() ? "—" : value;
+        }
+
+        /** {@code matched}, {@code rejected · too variable (5)}, {@code matched · same as #3}. */
+        private String status(MatchupResults.Item item) {
+            String text = item.outcome().words();
+            if (item.outcome() == Outcome.REJECTED && item.chosen() != null) {
+                text += " · " + MatchupResults.reason(item.chosen().get("exclusion_levels"));
             }
-            setToolTipText(tip == null || tip.isEmpty() ? null : tip);
-            return c;
+            if (item.task().sameAs() >= 0) {
+                text += " · same as #" + (item.task().sameAs() + 1);
+            }
+            return text;
         }
     }
 }

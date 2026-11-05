@@ -10,13 +10,27 @@ abstract class Step extends JPanel {
     protected final MatchupSession session;
 
     Step(MatchupSession session) {
-        super(new BorderLayout(0, 8));
+        super(new BorderLayout(0, 14));
         this.session = session;
-        setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
+        setBackground(Look.MAIN);
+        setBorder(BorderFactory.createEmptyBorder(20, 24, 16, 24));
     }
 
     /** The name in the step list. */
     abstract String title();
+
+    /** What the Help button says about this step. */
+    abstract String help();
+
+    /** The short note at the foot of the step list while this step is open; null for none. */
+    String navNote() {
+        return null;
+    }
+
+    /** The Next button's text. */
+    String nextLabel() {
+        return "Next ›";
+    }
 
     /** Whether the step can be opened yet, and why not. */
     String unavailableReason() {

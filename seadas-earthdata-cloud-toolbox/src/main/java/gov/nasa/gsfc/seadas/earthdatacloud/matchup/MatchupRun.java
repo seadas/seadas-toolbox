@@ -91,18 +91,36 @@ public final class MatchupRun {
      * @param jobId   the Harmony job, once submitted
      * @param status  Harmony's final job status, once finished
      * @param message why it failed or was skipped, or Harmony's message
-     * @param files   downloaded result files, relative to the results folder; empty until done
+     * @param files    downloaded result files, relative to the results folder; empty until done
+     * @param granules granules the request touches: CMR's count from the coverage check, then the
+     *                 number of granule rows in the results; null when not known
      */
     public record Task(int row, String collection, State state, String jobId, String status, String message,
-                       List<String> files) {
+                       List<String> files, Integer granules) {
         public Task {
             files = files == null ? List.of() : List.copyOf(files);
         }
 
         Task with(State newState, String newJobId, String newStatus, String newMessage, List<String> newFiles) {
-            return new Task(row, collection, newState, newJobId, newStatus, newMessage, newFiles);
+            return new Task(row, collection, newState, newJobId, newStatus, newMessage, newFiles, granules);
+        }
+
+        Task withGranules(Integer count) {
+            return new Task(row, collection, state, jobId, status, message, files, count);
+        }
+
+        /** For a row at the same place and time as an earlier one: that row (0-based), else -1. */
+        public int sameAs() {
+            if (state != State.SKIPPED || message == null || !message.startsWith(SAME_AS)) {
+                return -1;
+            }
+            String digits = message.substring(SAME_AS.length()).replaceAll("\\D.*$", "");
+            return digits.isEmpty() ? -1 : Integer.parseInt(digits) - 1;
         }
     }
+
+    /** The message of a row at the same place and time as an earlier one, before that row's number. */
+    public static final String SAME_AS = "same place and time as #";
 
     /** What a run reports as it goes, on the thread running it. */
     public interface Listener {
@@ -156,10 +174,15 @@ public final class MatchupRun {
         SeabassFile file = SeabassFile.read(source);
         List<SeabassObservation> observations = SeabassObservations.of(file);
         String label = "seadas-matchup-" + UUID.randomUUID().toString().substring(0, 8);
+        Map<Integer, Integer> duplicates = duplicates(observations);
         List<Task> tasks = new ArrayList<>();
         for (String collection : settings.collections()) {
             for (SeabassObservation observation : observations) {
                 String problem = observation.problem();
+                Integer original = duplicates.get(observation.row());
+                if (problem == null && original != null) {
+                    problem = SAME_AS + (original + 1) + ": matched once";
+                }
                 if (problem == null) {
                     try {
                         request(settings, collection, observation, label);
@@ -168,7 +191,7 @@ public final class MatchupRun {
                     }
                 }
                 tasks.add(new Task(observation.row(), collection, problem == null ? State.PENDING : State.SKIPPED,
-                        null, null, problem, List.of()));
+                        null, null, problem, List.of(), null));
             }
         }
         MatchupRun run = new MatchupRun(record.toAbsolutePath().normalize(), source, sha256(source), settings, label,
@@ -210,7 +233,8 @@ public final class MatchupRun {
                 JSONObject t = array.getJSONObject(i);
                 tasks.add(new Task(t.getInt("row"), t.getString("collection"), State.valueOf(t.getString("state")),
                         t.optString("jobId", null), t.optString("status", null), t.optString("message", null),
-                        t.has("files") ? strings(t.getJSONArray("files")) : List.of()));
+                        t.has("files") ? strings(t.getJSONArray("files")) : List.of(),
+                        t.has("granules") ? t.getInt("granules") : null));
             }
             SeabassFile file = SeabassFile.read(seabass);
             return new MatchupRun(path, seabass, sha, settings, json.getString("label"),
@@ -244,6 +268,9 @@ public final class MatchupRun {
             }
             if (!task.files().isEmpty()) {
                 t.put("files", new JSONArray(task.files()));
+            }
+            if (task.granules() != null) {
+                t.put("granules", task.granules().intValue());
             }
             array.put(t);
         }
@@ -370,8 +397,15 @@ public final class MatchupRun {
         if (!job.dataLinks().isEmpty() && ("successful".equals(job.status())
                 || "complete_with_errors".equals(job.status()))) {
             List<String> files = new ArrayList<>();
+            int granules = 0;
             for (Path path : client.downloadAll(job, resultsFolder())) {
                 files.add(resultsFolder().relativize(path).toString().replace('\\', '/'));
+                if (path.getFileName().toString().endsWith(".csv")) {
+                    granules += MatchupCsv.read(path).rows().size();
+                }
+            }
+            synchronized (this) {
+                tasks.set(i, tasks.get(i).withGranules(granules));
             }
             update(i, State.DONE, job.jobId(), job.status(), job.successful() ? null : job.message(), files,
                     listener);
@@ -445,7 +479,11 @@ public final class MatchupRun {
                 anyGranule.merge(task.row(), granules != null && granules > 0, Boolean::logicalOr);
                 allKnown.merge(task.row(), granules != null, Boolean::logicalAnd);
                 if (granules != null && granules == 0) {
-                    tasks.set(indexes.get(k), task.with(State.SKIPPED, null, null, NO_OVERPASS, List.of()));
+                    tasks.set(indexes.get(k), task.with(State.SKIPPED, null, null, NO_OVERPASS, List.of())
+                            .withGranules(0));
+                    changed = true;
+                } else if (granules != null) {
+                    tasks.set(indexes.get(k), task.withGranules(granules));
                     changed = true;
                 }
             }
@@ -508,6 +546,13 @@ public final class MatchupRun {
                             list.add(MatchupCsv.read(resultsFolder().resolve(name)));
                         }
                     }
+                }
+            }
+            // A row at the same place and time as an earlier one gets that row's result.
+            for (Task task : tasks) {
+                if (task.collection().equals(collection) && task.sameAs() >= 0
+                        && csvs.containsKey(task.sameAs())) {
+                    csvs.put(task.row(), csvs.get(task.sameAs()));
                 }
             }
             productRows.add(new ResultJoiner.ProductRows(product, csvs));
@@ -607,6 +652,26 @@ public final class MatchupRun {
             list.add(array.getString(i));
         }
         return list;
+    }
+
+    /**
+     * Usable observations at the same place and time as an earlier usable one:
+     * row to that earlier row. They are matched once.
+     */
+    public static Map<Integer, Integer> duplicates(List<SeabassObservation> observations) {
+        Map<String, Integer> first = new java.util.HashMap<>();
+        Map<Integer, Integer> duplicates = new LinkedHashMap<>();
+        for (SeabassObservation o : observations) {
+            if (!o.usable()) {
+                continue;
+            }
+            String key = o.lat() + "," + o.lon() + "," + o.time();
+            Integer earlier = first.putIfAbsent(key, o.row());
+            if (earlier != null) {
+                duplicates.put(o.row(), earlier);
+            }
+        }
+        return duplicates;
     }
 
     static String sha256(Path path) throws IOException {

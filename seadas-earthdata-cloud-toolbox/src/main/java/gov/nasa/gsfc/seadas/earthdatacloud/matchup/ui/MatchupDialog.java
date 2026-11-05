@@ -43,6 +43,13 @@ public final class MatchupDialog extends JDialog {
             }
         });
         pack();
+        // No bigger than the screen it opens on.
+        java.awt.Rectangle screen = (owner != null ? owner.getGraphicsConfiguration()
+                : getGraphicsConfiguration()).getBounds();
+        java.awt.Insets edges = getToolkit().getScreenInsets(owner != null ? owner.getGraphicsConfiguration()
+                : getGraphicsConfiguration());
+        setSize(Math.min(getWidth(), screen.width - edges.left - edges.right),
+                Math.min(getHeight(), screen.height - edges.top - edges.bottom));
         setLocationRelativeTo(owner);
     }
 
