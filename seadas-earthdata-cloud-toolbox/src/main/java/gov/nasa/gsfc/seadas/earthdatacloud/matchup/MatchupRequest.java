@@ -83,22 +83,53 @@ public record MatchupRequest(String collectionId, double lat, double lon, Instan
         return new MatchupRequest(collectionId, lat, lon, time, halfBoxDeg, halfWindow, newVariables, label);
     }
 
+    // The box is symmetric, so the midpoint the service reads is the observation.
+
+    public double south() {
+        return lat - Math.min(halfBoxDeg, 90.0 - Math.abs(lat));
+    }
+
+    public double north() {
+        return lat + Math.min(halfBoxDeg, 90.0 - Math.abs(lat));
+    }
+
+    public double west() {
+        return lon - Math.min(halfBoxDeg, 180.0 - Math.abs(lon));
+    }
+
+    public double east() {
+        return lon + Math.min(halfBoxDeg, 180.0 - Math.abs(lon));
+    }
+
+    /** Start of the time range, whole seconds. */
+    public Instant start() {
+        return time.minus(halfWindow).truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    /** End of the time range, whole seconds. */
+    public Instant stop() {
+        return time.plus(halfWindow).truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    /**
+     * The CMR granule search Harmony makes for this request (same box and
+     * range), asking only for the count.
+     */
+    public URI granuleSearch(URI cmr) {
+        String query = "collection_concept_id=" + encode(collectionId)
+                + "&bounding_box=" + encode(number(west()) + "," + number(south()) + "," + number(east()) + ","
+                + number(north()))
+                + "&temporal=" + encode(ISO.format(start()) + "," + ISO.format(stop()))
+                + "&page_size=0";
+        return URI.create(cmr + "/search/granules.json?" + query);
+    }
+
     /** The request's URL under a Harmony root, as harmony-py builds it (OGC Coverages, async). */
     public URI uri(URI harmony) {
-        // Symmetric, so the midpoint the service reads is the observation.
-        double halfLat = Math.min(halfBoxDeg, 90.0 - Math.abs(lat));
-        double halfLon = Math.min(halfBoxDeg, 180.0 - Math.abs(lon));
-        double south = lat - halfLat;
-        double north = lat + halfLat;
-        double west = lon - halfLon;
-        double east = lon + halfLon;
-        Instant start = time.minus(halfWindow).truncatedTo(ChronoUnit.SECONDS);
-        Instant stop = time.plus(halfWindow).truncatedTo(ChronoUnit.SECONDS);
-
         List<String> query = new ArrayList<>();
-        query.add("subset=" + encode("lat(" + number(south) + ":" + number(north) + ")"));
-        query.add("subset=" + encode("lon(" + number(west) + ":" + number(east) + ")"));
-        query.add("subset=" + encode("time(\"" + ISO.format(start) + "\":\"" + ISO.format(stop) + "\")"));
+        query.add("subset=" + encode("lat(" + number(south()) + ":" + number(north()) + ")"));
+        query.add("subset=" + encode("lon(" + number(west()) + ":" + number(east()) + ")"));
+        query.add("subset=" + encode("time(\"" + ISO.format(start()) + "\":\"" + ISO.format(stop()) + "\")"));
         query.add("format=" + encode("text/csv"));
         query.add("forceAsync=true");
         if (label != null && !label.isBlank()) {

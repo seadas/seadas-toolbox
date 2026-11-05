@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -105,6 +106,50 @@ class HarmonyJobClientUatTest {
         assertEquals("-5844.0", result.value(1, "oci_pace_tdiff"));
         assertEquals("sr^-1", result.units().get(result.fieldIndex("oci_pace_rrs_442.3")));
         System.out.println("UAT run: " + result.fields().size() + " fields, label " + run.label());
+    }
+
+    @Test
+    void theCoverageCheckFindsTheDemoGranules() throws Exception {
+        CoverageChecker checker = CoverageChecker.create(HarmonyEnvironment.UAT, () -> System.getenv("UAT_TOKEN"));
+        List<MatchupRequest> requests = new ArrayList<>();
+        for (Demo demo : DEMO) {
+            requests.add(MatchupRequest.of(demo.collection(), demo.lat(), demo.lon(), Instant.parse(demo.time())));
+        }
+        // The Baltic observation at 18:00 the day before: no PACE pass within 3 h.
+        requests.add(MatchupRequest.of("C1281448693-OB_CLOUD", 55.914, 19.015,
+                Instant.parse("2026-06-02T18:00:00Z")));
+
+        CoverageChecker.Result result = checker.check(requests, () -> false, (c, t) -> {
+        });
+        assertTrue(result.errors().isEmpty(), result.errors().toString());
+        assertEquals(2, result.granules().get(2), "the Baltic one: two PACE passes (design D2)");
+        assertTrue(result.granules().subList(0, 4).stream().allMatch(g -> g > 0), result.granules().toString());
+        assertEquals(0, result.granules().get(4));
+    }
+
+    @Test
+    void theProductTableMatchesCmr() throws Exception {
+        for (HarmonyEnvironment environment : HarmonyEnvironment.values()) {
+            List<MatchupCollections.Entry> entries = MatchupCollections.in(environment);
+            StringBuilder query = new StringBuilder("page_size=100");
+            for (MatchupCollections.Entry entry : entries) {
+                query.append("&concept_id%5B%5D=").append(entry.id(environment));
+            }
+            URI uri = URI.create(environment.cmr() + "/search/collections.json?" + query);
+            Map<String, String> names = new HashMap<>();
+            try (HttpTransport.Response response = HttpTransport.jdk().send("GET", uri,
+                    Map.of("Accept", "application/json"), null)) {
+                assertEquals(200, response.status());
+                org.json.JSONArray feed = new org.json.JSONObject(response.text()).getJSONObject("feed")
+                        .getJSONArray("entry");
+                for (int i = 0; i < feed.length(); i++) {
+                    names.put(feed.getJSONObject(i).getString("id"), feed.getJSONObject(i).getString("short_name"));
+                }
+            }
+            for (MatchupCollections.Entry entry : entries) {
+                assertEquals(entry.shortName(), names.get(entry.id(environment)), environment + " " + entry);
+            }
+        }
     }
 
     @Test

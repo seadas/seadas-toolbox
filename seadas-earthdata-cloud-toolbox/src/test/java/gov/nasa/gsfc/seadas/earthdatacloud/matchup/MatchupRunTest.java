@@ -222,4 +222,40 @@ class MatchupRunTest {
         assertFalse(Files.exists(record.resolveSibling("r.json.tmp")));
         assertTrue(harmony.calls("GET", "/" + MODISA).get(0).path().contains("/collections/chlor_a/"));
     }
+
+    @Test
+    void theCoverageCheckSkipsObservationsWithNoOverpass(@TempDir Path dir) throws Exception {
+        Path record = dir.resolve("r.json");
+        MatchupRun run = MatchupRun.create(cruise(dir), settings(MODISA, OTHER), record);
+        // OTHER has no granules anywhere; MODISA none for row 2, and CMR fails for row 4.
+        CoverageCheckerTest.FakeCmr cmr = new CoverageCheckerTest.FakeCmr(uri -> {
+            String query = java.net.URLDecoder.decode(uri.getRawQuery(), java.nio.charset.StandardCharsets.UTF_8);
+            if (query.contains(OTHER) || query.contains("bounding_box=-85.01")) {
+                return CoverageCheckerTest.FakeCmr.hits(0);
+            }
+            if (query.contains("bounding_box=-83.3018")) {
+                return CoverageCheckerTest.FakeCmr.error(400, "{\"errors\":[\"bad box\"]}");
+            }
+            return CoverageCheckerTest.FakeCmr.hits(1);
+        });
+
+        MatchupRun.Coverage coverage = run.checkCoverage(new CoverageChecker(cmr, FakeHarmony.ROOT, () -> null,
+                d -> {
+                }, 2), () -> false, (checked, total) -> assertEquals(6, total));
+
+        assertEquals(new MatchupRun.Coverage(3, 1, 1, 1, 2, List.of("CMR granule search: HTTP 400: bad box"), false),
+                coverage);
+        List<MatchupRun.Task> saved = MatchupRun.load(record).tasks();
+        assertEquals(List.of(MatchupRun.State.PENDING, MatchupRun.State.SKIPPED, MatchupRun.State.SKIPPED,
+                MatchupRun.State.PENDING), saved.subList(0, 4).stream().map(MatchupRun.Task::state).toList());
+        assertEquals(MatchupRun.NO_OVERPASS, saved.get(1).message());
+        assertTrue(saved.get(2).message().startsWith("Latitude missing"), "an earlier reason is kept");
+        assertTrue(saved.subList(4, 8).stream().allMatch(t -> t.state() == MatchupRun.State.SKIPPED));
+
+        FakeHarmony harmony = new FakeHarmony();
+        run.execute(harmony.client(), () -> false, new MatchupRun.Listener() {
+        });
+        assertEquals(2, harmony.calls("GET", "/" + MODISA).size());
+        assertEquals(0, harmony.calls("GET", "/" + OTHER).size());
+    }
 }

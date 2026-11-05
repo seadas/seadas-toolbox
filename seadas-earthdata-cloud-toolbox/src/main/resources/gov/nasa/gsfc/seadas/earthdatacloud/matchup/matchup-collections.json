@@ -1,0 +1,267 @@
+{
+  "_comment": [
+    "Products the matchup tool offers: the collections associated with the satellite-in-situ-matchup service.",
+    "Production: the 25 collections of the production service record (S4399894255-OB_CLOUD).",
+    "UAT: only the six collections with granules in UAT (service record S1283003833-OB_CLOUD).",
+    "mission: the granule name's first part, which gives the output column prefix (MatchupProduct.PREFIXES).",
+    "All concept IDs checked in CMR on 2026-11-05."
+  ],
+  "collections": [
+    {
+      "shortName": "MODISA_L2_OC",
+      "sensor": "MODIS Aqua",
+      "product": "ocean color",
+      "nrt": false,
+      "mission": "AQUA_MODIS",
+      "ids": {
+        "PRODUCTION": "C3380708980-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "MODISA_L2_OC_NRT",
+      "sensor": "MODIS Aqua",
+      "product": "ocean color",
+      "nrt": true,
+      "mission": "AQUA_MODIS",
+      "ids": {
+        "PRODUCTION": "C3380708978-OB_CLOUD",
+        "UAT": "C1272940552-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "MODIST_L2_OC",
+      "sensor": "MODIS Terra",
+      "product": "ocean color",
+      "nrt": false,
+      "mission": "TERRA_MODIS",
+      "ids": {
+        "PRODUCTION": "C3384236979-OB_CLOUD",
+        "UAT": "C1272944705-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "MODIST_L2_OC_NRT",
+      "sensor": "MODIS Terra",
+      "product": "ocean color",
+      "nrt": true,
+      "mission": "TERRA_MODIS",
+      "ids": {
+        "PRODUCTION": "C3384236977-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "VIIRSN_L2_OC",
+      "sensor": "VIIRS SNPP",
+      "product": "ocean color",
+      "nrt": false,
+      "mission": "SNPP_VIIRS",
+      "ids": {
+        "PRODUCTION": "C3388381264-OB_CLOUD",
+        "UAT": "C1272968279-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "VIIRSN_L2_OC_NRT",
+      "sensor": "VIIRS SNPP",
+      "product": "ocean color",
+      "nrt": true,
+      "mission": "SNPP_VIIRS",
+      "ids": {
+        "PRODUCTION": "C3388381281-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "VIIRSJ1_L2_OC",
+      "sensor": "VIIRS NOAA-20",
+      "product": "ocean color",
+      "nrt": false,
+      "mission": "JPSS1_VIIRS",
+      "ids": {
+        "PRODUCTION": "C3396928899-OB_CLOUD",
+        "UAT": "C1273019288-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "VIIRSJ1_L2_OC_NRT",
+      "sensor": "VIIRS NOAA-20",
+      "product": "ocean color",
+      "nrt": true,
+      "mission": "JPSS1_VIIRS",
+      "ids": {
+        "PRODUCTION": "C3396928895-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "VIIRSJ2_L2_OC",
+      "sensor": "VIIRS NOAA-21",
+      "product": "ocean color",
+      "nrt": false,
+      "mission": "JPSS2_VIIRS",
+      "ids": {
+        "PRODUCTION": "C3779578213-OB_CLOUD",
+        "UAT": "C1276697749-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "VIIRSJ2_L2_OC_NRT",
+      "sensor": "VIIRS NOAA-21",
+      "product": "ocean color",
+      "nrt": true,
+      "mission": "JPSS2_VIIRS",
+      "ids": {
+        "PRODUCTION": "C3779578158-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "PACE_OCI_L2_AOP",
+      "sensor": "PACE OCI",
+      "product": "AOP",
+      "nrt": false,
+      "mission": "PACE_OCI",
+      "ids": {
+        "PRODUCTION": "C4124887023-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "PACE_OCI_L2_AOP_NRT",
+      "sensor": "PACE OCI",
+      "product": "AOP",
+      "nrt": true,
+      "mission": "PACE_OCI",
+      "ids": {
+        "PRODUCTION": "C4124887001-OB_CLOUD",
+        "UAT": "C1281448693-OB_CLOUD"
+      }
+    },
+    {
+      "shortName": "MODISA_L2_SST",
+      "sensor": "MODIS Aqua",
+      "product": "SST",
+      "nrt": false,
+      "mission": "AQUA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1615905765-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "MODISA_L2_SST_NRT",
+      "sensor": "MODIS Aqua",
+      "product": "SST",
+      "nrt": true,
+      "mission": "AQUA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1641945527-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "MODISA_L2_SST4",
+      "sensor": "MODIS Aqua",
+      "product": "SST4",
+      "nrt": false,
+      "mission": "AQUA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1615905764-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "MODISA_L2_SST4_NRT",
+      "sensor": "MODIS Aqua",
+      "product": "SST4",
+      "nrt": true,
+      "mission": "AQUA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1641945453-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "MODIST_L2_SST",
+      "sensor": "MODIS Terra",
+      "product": "SST",
+      "nrt": false,
+      "mission": "TERRA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1615934250-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "MODIST_L2_SST_NRT",
+      "sensor": "MODIS Terra",
+      "product": "SST",
+      "nrt": true,
+      "mission": "TERRA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1641917076-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "MODIST_L2_SST4",
+      "sensor": "MODIS Terra",
+      "product": "SST4",
+      "nrt": false,
+      "mission": "TERRA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1615934239-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "MODIST_L2_SST4_NRT",
+      "sensor": "MODIS Terra",
+      "product": "SST4",
+      "nrt": true,
+      "mission": "TERRA_MODIS",
+      "ids": {
+        "PRODUCTION": "C1641918996-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "VIIRSN_L2_SST",
+      "sensor": "VIIRS SNPP",
+      "product": "SST",
+      "nrt": false,
+      "mission": "SNPP_VIIRS",
+      "ids": {
+        "PRODUCTION": "C1658475743-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "VIIRSN_L2_SST_NRT",
+      "sensor": "VIIRS SNPP",
+      "product": "SST",
+      "nrt": true,
+      "mission": "SNPP_VIIRS",
+      "ids": {
+        "PRODUCTION": "C1658475742-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "VIIRSN_L2_SST3",
+      "sensor": "VIIRS SNPP",
+      "product": "SST3",
+      "nrt": false,
+      "mission": "SNPP_VIIRS",
+      "ids": {
+        "PRODUCTION": "C1658475738-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "VIIRSN_L2_SST3_NRT",
+      "sensor": "VIIRS SNPP",
+      "product": "SST3",
+      "nrt": true,
+      "mission": "SNPP_VIIRS",
+      "ids": {
+        "PRODUCTION": "C1658475737-OB_DAAC"
+      }
+    },
+    {
+      "shortName": "VIIRSJ1_L2_SST_NRT",
+      "sensor": "VIIRS NOAA-20",
+      "product": "SST",
+      "nrt": true,
+      "mission": "JPSS1_VIIRS",
+      "ids": {
+        "PRODUCTION": "C3166805767-OB_DAAC"
+      }
+    }
+  ]
+}

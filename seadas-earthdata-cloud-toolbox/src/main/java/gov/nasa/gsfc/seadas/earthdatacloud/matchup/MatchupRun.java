@@ -50,7 +50,7 @@ public final class MatchupRun {
         DONE,
         /** No result: Harmony refused the request, or the job failed. */
         FAILED,
-        /** Not sent: the observation can't be matched (no time, bad position). */
+        /** Not sent: the observation can't be matched (no time, bad position), or has no overpass. */
         SKIPPED
     }
 
@@ -392,6 +392,79 @@ public final class MatchupRun {
         }
         save();
         listener.changed(task);
+    }
+
+    /** The message of a task skipped by the coverage check. */
+    public static final String NO_OVERPASS = "no overpass: no granule in the box and time window";
+
+    /**
+     * What a coverage check found.
+     *
+     * @param observations observations checked (those with a pending task)
+     * @param withOverpass observations with a granule for at least one product
+     * @param noOverpass   observations with no granule for any product
+     * @param unknown      observations whose searches failed or weren't made; their tasks stay pending
+     * @param requests     pending tasks after the check: the jobs a run will create
+     * @param errors       why searches failed, each message once
+     */
+    public record Coverage(int observations, int withOverpass, int noOverpass, int unknown, int requests,
+                           List<String> errors, boolean cancelled) {
+        public Coverage {
+            errors = List.copyOf(errors);
+        }
+    }
+
+    /**
+     * Searches CMR for each pending task's granules and skips the tasks with
+     * none ({@link #NO_OVERPASS}). A failed search leaves its task pending, for
+     * Harmony to decide.
+     *
+     * @throws HarmonyException when CMR rejects the token; nothing is changed
+     */
+    public Coverage checkCoverage(CoverageChecker checker, BooleanSupplier cancelled,
+                                  CoverageChecker.Progress progress) throws IOException, InterruptedException {
+        List<Integer> indexes = new ArrayList<>();
+        List<MatchupRequest> requests = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.state() == State.PENDING) {
+                indexes.add(i);
+                requests.add(request(settings, task.collection(), observations.get(task.row()), label));
+            }
+        }
+        CoverageChecker.Result result = checker.check(requests, cancelled, progress);
+
+        // Per observation: does some product have granules, and are all its counts known?
+        Map<Integer, Boolean> anyGranule = new LinkedHashMap<>();
+        Map<Integer, Boolean> allKnown = new LinkedHashMap<>();
+        boolean changed = false;
+        synchronized (this) {
+            for (int k = 0; k < indexes.size(); k++) {
+                Task task = tasks.get(indexes.get(k));
+                Integer granules = result.granules().get(k);
+                anyGranule.merge(task.row(), granules != null && granules > 0, Boolean::logicalOr);
+                allKnown.merge(task.row(), granules != null, Boolean::logicalAnd);
+                if (granules != null && granules == 0) {
+                    tasks.set(indexes.get(k), task.with(State.SKIPPED, null, null, NO_OVERPASS, List.of()));
+                    changed = true;
+                }
+            }
+        }
+        if (changed) {
+            save();
+        }
+        int with = 0;
+        int none = 0;
+        for (Map.Entry<Integer, Boolean> entry : anyGranule.entrySet()) {
+            if (entry.getValue()) {
+                with++;
+            } else if (allKnown.get(entry.getKey())) {
+                none++;
+            }
+        }
+        int checked = anyGranule.size();
+        return new Coverage(checked, with, none, checked - with - none, counts().get(State.PENDING),
+                result.errors().values().stream().distinct().toList(), result.cancelled());
     }
 
     /** Puts failed tasks back to pending, so the next {@link #execute} tries them again. */
