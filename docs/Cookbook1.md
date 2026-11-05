@@ -1,6 +1,7 @@
-# SeaDAS 12 on Windows – User Guide
+## SeaDAS Cookbook for the Science Processors<br> Composite multiple PACE-OCI level-2 scenes to produce chlor_a imagery
 
-Last updated: October 19, 2026 (SeaDAS 12.0.0)
+
+Last updated: November 5, 2026 (SeaDAS 12.0.0)
 
 ## Overview
 
