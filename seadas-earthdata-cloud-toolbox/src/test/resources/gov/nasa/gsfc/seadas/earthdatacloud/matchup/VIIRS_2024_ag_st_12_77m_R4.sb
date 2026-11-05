@@ -1,0 +1,58 @@
+/begin_header
+/received=20250730
+/identifier_product_doi=10.5067/SeaBASS/VIIRS_VALIDATION/DATA001
+/investigators=Antonio_Mannino,Kelsey_Allen,Joaquin_Chaves
+/affiliations=NASA_Goddard_Space_Flight_Center,NASA_Goddard_Space_Flight_Center,NASA_Goddard_Space_Flight_Center
+/contact=antonio.mannino@nasa.gov,joaquin.e.chavescedeno@nasa.gov,kelsey.a.mcbeain@nasa.gov
+/experiment=VIIRS_Validation
+/cruise=NF2405_VIIRS
+/station=12
+/data_file_name=VIIRS_2024_ag_st_12_77m_R4.sb
+/documents=CDOM_analysis_checklist_VIIRS_2024.docx,CDOM_protocol_document_VIIRS_2024.docx,metadata.csv
+/calibration_files=ptest.BVO
+/data_type=scan
+/start_date=20240524
+/end_date=20240524
+/start_time=16:57:00[GMT]
+/end_time=16:57:00[GMT]
+/north_latitude=24.475[DEG]
+/south_latitude=24.475[DEG]
+/east_longitude=-83.496[DEG]
+/west_longitude=-83.496[DEG]
+/delimiter=comma
+/missing=-9999
+/water_depth=-9999
+/measurement_depth=77.0
+/instrument_manufacturer=Agilent_Technologies
+/instrument_model=CARY_100
+/bincount=2
+!
+! pathlength=10cm
+! Samples were scanned on a Cary 100 dual beam spectrophotometer using a 10 cm cuvette
+! Samples were stored at 4 deg celsius in 200 ml amber glass bottles
+! No null correction was applied
+! Samples were collected by Joaquin Chaves and Kelsey Allen and analysed by Kelsey Allen
+!
+/fields=wavelength,abs_ag,abs_ag_sd,ag
+/units=nm,unitless,unitless,1/m
+/end_header
+249.902008,0.059153,0.000105,1.362292
+250.069016,0.058811,0.000053,1.354411
+250.236008,0.058404,0.000023,1.345034
+250.403015,0.058222,0.000070,1.340847
+250.570007,0.057782,0.000049,1.330716
+250.737015,0.057760,0.000032,1.330205
+250.904007,0.057390,0.000042,1.321684
+251.071014,0.057114,0.000040,1.315331
+251.238007,0.056669,0.000080,1.305094
+251.405014,0.056530,0.000041,1.301891
+251.572022,0.056251,0.000116,1.295466
+251.739014,0.055981,0.000067,1.289243
+251.906021,0.055632,0.000024,1.281198
+252.073013,0.055596,0.000037,1.280369
+252.240021,0.055277,0.000002,1.273038
+252.407013,0.054797,0.000077,1.261965
+252.574020,0.054622,0.000073,1.257945
+252.741013,0.054312,0.000056,1.250802
+252.908020,0.054155,0.000029,1.247198
+253.075012,0.053960,0.000068,1.242693
