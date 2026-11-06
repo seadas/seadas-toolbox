@@ -57,6 +57,7 @@ final class ResultsStep extends Step {
     private final JTable table = new JTable(model);
     private final JButton exportSeabass = new JButton("Export SeaBASS…");
     private final JButton exportCsv = new JButton("Export CSV…");
+    private final JButton viewCsv = new JButton("View CSV…");
     private final JButton openGranule = new JButton(RemoteGranules.TITLE);
     private final RemoteGranules remote = new RemoteGranules();
     private boolean opening;
@@ -99,7 +100,7 @@ final class ResultsStep extends Step {
         JButton scatter = later("Scatter plot…");
         JPanel buttons = Look.clear(new BorderLayout());
         buttons.add(Look.row(8, productView, openGranule, scatter), BorderLayout.WEST);
-        buttons.add(Look.row(8, exportCsv, exportSeabass), BorderLayout.EAST);
+        buttons.add(Look.row(8, viewCsv, exportCsv, exportSeabass), BorderLayout.EAST);
         JPanel south = Look.clear(null);
         south.setLayout(new BoxLayout(south, BoxLayout.Y_AXIS));
         buttons.setAlignmentX(LEFT_ALIGNMENT);
@@ -119,6 +120,9 @@ final class ResultsStep extends Step {
         });
         exportSeabass.addActionListener(e -> exportSeabass());
         exportCsv.addActionListener(e -> exportCsv());
+        viewCsv.setToolTipText("<html>The rows Export CSV writes, with all their columns, for the rows shown here."
+                + "</html>");
+        viewCsv.addActionListener(e -> viewCsv());
         refresh();
     }
 
@@ -199,6 +203,7 @@ final class ResultsStep extends Step {
         boolean have = results != null;
         exportSeabass.setEnabled(have);
         exportCsv.setEnabled(have);
+        viewCsv.setEnabled(have);
         filter();
     }
 
@@ -452,6 +457,21 @@ final class ResultsStep extends Step {
             opening = false;
             updateOpenGranule();
         });
+    }
+
+    /** The granule rows behind the rows shown: this product and status. */
+    private void viewCsv() {
+        if (results == null) {
+            return;
+        }
+        java.util.Set<String> shown = new java.util.HashSet<>();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            MatchupRun.Task task = model.item(i).task();
+            shown.add(task.row() + " " + task.collection());
+        }
+        MatchupResults.Csv csv = results.csv(row -> shown.contains(row.task().row() + " " + row.task().collection()));
+        String what = product.getSelectedItem() + (showing == null ? "" : " · " + showing.words());
+        new CsvView(this, csv, results.rows().size(), what).setVisible(true);
     }
 
     private void exportCsv() {

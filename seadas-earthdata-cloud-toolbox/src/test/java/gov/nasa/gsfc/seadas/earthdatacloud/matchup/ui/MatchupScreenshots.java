@@ -109,6 +109,17 @@ public final class MatchupScreenshots {
             product.setSelectedItem("All products");
         });
         shoot(p, out.resolve("4c-results-all.png"));
+        MatchupResults all = MatchupResults.of(session.run());
+        String pace = MatchupCollections.all().stream().filter(e -> e.shortName().equals("PACE_OCI_L2_AOP_NRT"))
+                .findFirst().orElseThrow().id(HarmonyEnvironment.UAT);
+        AtomicReference<java.awt.Container> view = new AtomicReference<>();
+        edt(() -> view.set(CsvView.content(all.csv(r -> r.task().collection().equals(pace)), all.rows().size(),
+                new javax.swing.JButton("Close"))));
+        edt(() -> {
+            view.get().setPreferredSize(new java.awt.Dimension(1100, 560));
+            view.get().addNotify();
+        });
+        shoot(view.get(), out.resolve("4d-view-csv.png"));
         MatchupResults results = MatchupResults.of(session.run());
         results.writeCsv(out.resolve("sims-demo_matchup.csv"));
         System.out.println("Summary: " + results.summary(null));

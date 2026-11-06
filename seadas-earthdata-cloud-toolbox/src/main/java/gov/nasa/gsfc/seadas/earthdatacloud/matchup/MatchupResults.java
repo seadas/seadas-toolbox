@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A run's results as the dialog shows them: every granule row the service
@@ -254,6 +255,28 @@ public final class MatchupResults {
      * in the order first seen; empty where a product has none).
      */
     public void writeCsv(Path out) throws IOException {
+        Csv csv = csv(row -> true);
+        try (Writer writer = Files.newBufferedWriter(out, StandardCharsets.UTF_8)) {
+            writer.write(csvLine(csv.header()));
+            for (List<String> values : csv.rows()) {
+                writer.write(csvLine(values));
+            }
+        }
+    }
+
+    /** The CSV export as a table: its header and rows. */
+    public record Csv(List<String> header, List<List<String>> rows) {
+        public Csv {
+            header = List.copyOf(header);
+            rows = List.copyOf(rows);
+        }
+    }
+
+    /**
+     * What {@link #writeCsv} writes, keeping only some rows. The columns are
+     * always every row's, so a filtered view lines up with the export.
+     */
+    public Csv csv(Predicate<GranuleRow> keep) {
         Set<String> columns = new LinkedHashSet<>();
         for (GranuleRow row : rows) {
             columns.addAll(row.values().keySet());
@@ -261,22 +284,24 @@ public final class MatchupResults {
         List<String> header = new ArrayList<>(List.of("seabass_row", "seabass_line", "product", "collection",
                 "chosen"));
         header.addAll(columns);
-        try (Writer writer = Files.newBufferedWriter(out, StandardCharsets.UTF_8)) {
-            writer.write(csvLine(header));
-            for (GranuleRow row : rows) {
-                List<String> values = new ArrayList<>();
-                values.add(String.valueOf(row.task().row() + 1));
-                values.add(row.observation() == null ? "" : String.valueOf(row.observation().lineNumber()));
-                values.add(MatchupCollections.byId(row.task().collection())
-                        .map(MatchupCollections.Entry::shortName).orElse(""));
-                values.add(row.task().collection());
-                values.add(row.chosen() ? "yes" : "no");
-                for (String column : columns) {
-                    values.add(row.values().getOrDefault(column, ""));
-                }
-                writer.write(csvLine(values));
+        List<List<String>> lines = new ArrayList<>();
+        for (GranuleRow row : rows) {
+            if (!keep.test(row)) {
+                continue;
             }
+            List<String> values = new ArrayList<>();
+            values.add(String.valueOf(row.task().row() + 1));
+            values.add(row.observation() == null ? "" : String.valueOf(row.observation().lineNumber()));
+            values.add(MatchupCollections.byId(row.task().collection())
+                    .map(MatchupCollections.Entry::shortName).orElse(""));
+            values.add(row.task().collection());
+            values.add(row.chosen() ? "yes" : "no");
+            for (String column : columns) {
+                values.add(row.values().getOrDefault(column, ""));
+            }
+            lines.add(values);
         }
+        return new Csv(header, lines);
     }
 
     private static String csvLine(List<String> values) {
