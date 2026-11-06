@@ -57,7 +57,9 @@ final class RunStep extends Step {
     private final JButton retryButton = new JButton("Retry failed");
     private final TaskTable model = new TaskTable();
     private final AtomicBoolean stopRequested = new AtomicBoolean();
-    private final Timer timer = new Timer(700, e -> refresh());
+    private final Timer timer = new Timer(700, e -> tick());
+    /** Requests done at the last tick, to tell the window when results first come in or grow. */
+    private int doneAtLastTick = -1;
     private final Runnable finished;
     private SwingWorker<?, ?> worker;
     private Instant startedAt;
@@ -215,6 +217,17 @@ final class RunStep extends Step {
         MatchupRun run = session.run();
         return worker == null && session.file() != null && !session.chosen().isEmpty()
                 && (run == null || !run.finished());
+    }
+
+    /** While running: this step's numbers, and the window's buttons once more requests are done. */
+    private void tick() {
+        refresh();
+        MatchupRun run = session.run();
+        int done = run == null ? 0 : run.counts().get(MatchupRun.State.DONE);
+        if (done != doneAtLastTick) {
+            doneAtLastTick = done;
+            session.changed();
+        }
     }
 
     private void refresh() {

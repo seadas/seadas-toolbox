@@ -72,6 +72,31 @@ public final class MatchupScreenshots {
         shoot(p, out.resolve("3-start.png"));
         Thread.sleep(2500);
         shoot(p, out.resolve("3a-running.png"));
+        // Once some requests are done, mid-run: is "See results so far" on?
+        for (int i = 0; i < 600; i++) {
+            var counts = session.run().counts();
+            if (session.run().finished()) {
+                System.out.println("Run finished before a mid-run check");
+                break;
+            }
+            if (counts.get(gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupRun.State.DONE) > 0) {
+                Thread.sleep(1000);
+                AtomicReference<String> next = new AtomicReference<>();
+                edt(() -> {
+                    for (int n = 0; ; n++) {
+                        javax.swing.JButton b = find(p, javax.swing.JButton.class, n);
+                        if (b.getText().startsWith("See results")) {
+                            next.set(b.getText() + " enabled=" + b.isEnabled());
+                            break;
+                        }
+                    }
+                });
+                System.out.println("Mid-run, " + counts + ": " + next.get());
+                shoot(p, out.resolve("3a2-running-some-done.png"));
+                break;
+            }
+            Thread.sleep(500);
+        }
         waitIdle(p.step(2));
         shoot(p, out.resolve("3b-run-done.png"));
 
