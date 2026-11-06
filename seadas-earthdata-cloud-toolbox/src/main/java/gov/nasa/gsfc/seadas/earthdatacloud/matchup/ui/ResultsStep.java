@@ -3,6 +3,7 @@ package gov.nasa.gsfc.seadas.earthdatacloud.matchup.ui;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.HarmonyEnvironment;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.HttpTransport;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupCollections;
+import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupPairs;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupProduct;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupResults;
 import gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupResults.Outcome;
@@ -58,6 +59,7 @@ final class ResultsStep extends Step {
     private final JButton exportSeabass = new JButton("Export SeaBASS…");
     private final JButton exportCsv = new JButton("Export CSV…");
     private final JButton viewCsv = new JButton("View CSV…");
+    private final JButton scatter = new JButton(ScatterView.TITLE + "…");
     private final JButton openGranule = new JButton(RemoteGranules.TITLE);
     private final RemoteGranules remote = new RemoteGranules();
     private boolean opening;
@@ -97,7 +99,7 @@ final class ResultsStep extends Step {
                 }
             }
         });
-        JButton scatter = later("Scatter plot…");
+        scatter.addActionListener(e -> showScatter());
         JPanel buttons = Look.clear(new BorderLayout());
         buttons.add(Look.row(8, productView, openGranule, scatter), BorderLayout.WEST);
         buttons.add(Look.row(8, viewCsv, exportCsv, exportSeabass), BorderLayout.EAST);
@@ -147,7 +149,9 @@ final class ResultsStep extends Step {
                 + "Export SeaBASS writes the input file with the matchup columns added, as mk_matchup.py does. "
                 + "Export CSV writes every granule row the service returned.\n\n"
                 + "Open granule remotely (or double-click a row) opens the row's granule in SeaDAS straight from "
-                + "the Earthdata Archive, using your Earthdata Login from ~/.netrc.";
+                + "the Earthdata Archive, using your Earthdata Login from ~/.netrc.\n\n"
+                + "Scatter plot shows the satellite value against the in-situ one for the rows shown, for each "
+                + "variable the SeaBASS file also measures (chl with chlor_a, Rrs443 with Rrs_443, wt with sst).";
     }
 
     @Override
@@ -216,6 +220,7 @@ final class ResultsStep extends Step {
         if (results == null) {
             model.set(List.of(), List.of(), false);
             rejections.setText(" ");
+            scatter.setEnabled(false);
             showChips(null);
             return;
         }
@@ -239,6 +244,11 @@ final class ResultsStep extends Step {
                 .thenComparingInt(i -> order.indexOf(i.task().collection())));
         model.set(items, columns(collection, items), collection == null);
         updateOpenGranule();
+        boolean plottable = !ScatterView.variables(items, session.file()).isEmpty();
+        scatter.setEnabled(plottable);
+        scatter.setToolTipText(plottable ? "Satellite against in situ for the results shown"
+                : "Nothing to plot here: needs matched or rejected results for a variable the SeaBASS file "
+                + "also measures (e.g. chl and chlor_a)");
 
         for (int i = 0; i < table.getColumnCount(); i++) {
             String name = model.getColumnName(i);
@@ -335,7 +345,7 @@ final class ResultsStep extends Step {
         List<Column> unpaired = new ArrayList<>();
         for (String key : variables) {
             String variable = key.substring("sat_".length(), key.length() - "_mean".length());
-            String field = file == null ? null : inSituField(file, variable);
+            String field = file == null ? null : MatchupPairs.inSituField(file, variable);
             if (field != null) {
                 columns.add(new Column(field + " in situ", field, null));
                 columns.add(new Column(variable + " sat", null, key));
@@ -345,29 +355,6 @@ final class ResultsStep extends Step {
         }
         columns.addAll(unpaired);
         return columns;
-    }
-
-    /** The SeaBASS field measuring what a satellite variable does, or null. */
-    static String inSituField(SeabassFile file, String variable) {
-        List<String> candidates = new ArrayList<>();
-        String lower = variable.toLowerCase(Locale.ROOT);
-        if (lower.equals("chlor_a")) {
-            candidates.addAll(List.of("chl", "chl_a", "chla", "tchl"));
-        } else if (lower.startsWith("sst")) {
-            candidates.addAll(List.of("wt", "sst"));
-        } else if (lower.matches("rrs_\\d+")) {
-            String band = lower.substring(4);
-            candidates.addAll(List.of("rrs" + band, "rrs_" + band));
-        }
-        candidates.add(lower);
-        for (String candidate : candidates) {
-            for (String field : file.fields()) {
-                if (field.toLowerCase(Locale.ROOT).equals(candidate)) {
-                    return field;
-                }
-            }
-        }
-        return null;
     }
 
     // ------------------------------------------------------------ exports
@@ -457,6 +444,16 @@ final class ResultsStep extends Step {
             opening = false;
             updateOpenGranule();
         });
+    }
+
+    /** Satellite against in situ for the rows shown. */
+    private void showScatter() {
+        List<MatchupResults.Item> items = new ArrayList<>();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            items.add(model.item(i));
+        }
+        String what = product.getSelectedItem() + (showing == null ? "" : " · " + showing.words());
+        new ScatterView(this, items, session.file(), what).setVisible(true);
     }
 
     /** The granule rows behind the rows shown: this product and status. */

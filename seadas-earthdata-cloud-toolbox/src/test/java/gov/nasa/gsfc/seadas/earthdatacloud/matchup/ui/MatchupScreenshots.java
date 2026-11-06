@@ -145,6 +145,24 @@ public final class MatchupScreenshots {
             view.get().addNotify();
         });
         shoot(view.get(), out.resolve("4d-view-csv.png"));
+        // Scatter plot of every result, then a made-up larger set to judge the look.
+        AtomicReference<java.awt.Container> scatter = new AtomicReference<>();
+        edt(() -> scatter.set(ScatterView.content(all.items(), session.file(), new javax.swing.JButton("Close"))));
+        edt(() -> scatter.get().addNotify());
+        shoot(scatter.get(), out.resolve("4e-scatter.png"));
+        edt(() -> scatter.set(ScatterView.content(syntheticItems(), syntheticFile(), new javax.swing.JButton("Close"))));
+        edt(() -> {
+            scatter.get().addNotify();
+            for (javax.swing.JCheckBox box : List.of(find(scatter.get(), javax.swing.JCheckBox.class, 1))) {
+                box.doClick();
+            }
+        });
+        shoot(scatter.get(), out.resolve("4f-scatter-synthetic.png"));
+        edt(() -> {
+            javax.swing.JComboBox<?> variable = find(scatter.get(), javax.swing.JComboBox.class, 0);
+            variable.setSelectedIndex(1);
+        });
+        shoot(scatter.get(), out.resolve("4g-scatter-synthetic-rrs.png"));
         MatchupResults results = MatchupResults.of(session.run());
         results.writeCsv(out.resolve("sims-demo_matchup.csv"));
         System.out.println("Summary: " + results.summary(null));
@@ -164,6 +182,46 @@ public final class MatchupScreenshots {
     }
 
     /** The {@code n}th component of a type, depth first. */
+    private static gov.nasa.gsfc.seadas.earthdatacloud.matchup.SeabassFile syntheticFile() {
+        List<String> lines = new java.util.ArrayList<>(List.of("/begin_header", "/missing=-9999",
+                "/delimiter=comma", "/fields=date,time,lat,lon,chl,Rrs443",
+                "/units=yyyymmdd,hh:mm:ss,degrees,degrees,mg/m^3,1/sr", "/end_header"));
+        java.util.Random random = new java.util.Random(7);
+        for (int i = 0; i < 40; i++) {
+            double chl = Math.pow(10, -1.5 + 3 * random.nextDouble());
+            lines.add(String.format(java.util.Locale.ROOT, "20240405,12:00:00,%.2f,-70.0,%.4f,%.6f",
+                    30 + i * 0.1, chl, 0.012 / Math.pow(chl, 0.35)));
+        }
+        try {
+            return gov.nasa.gsfc.seadas.earthdatacloud.matchup.SeabassFile.parse(lines, Path.of("synthetic.sb"));
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /** Two products; satellite about in situ with scatter, a few rejected. */
+    private static List<MatchupResults.Item> syntheticItems() {
+        gov.nasa.gsfc.seadas.earthdatacloud.matchup.SeabassFile file = syntheticFile();
+        List<String> ids = List.of("C1272944705-OB_CLOUD", "C1272968279-OB_CLOUD");
+        java.util.Random random = new java.util.Random(11);
+        List<MatchupResults.Item> items = new java.util.ArrayList<>();
+        for (int i = 0; i < 40; i++) {
+            String id = ids.get(i % 2);
+            double chl = Double.parseDouble(file.value(i, "chl"));
+            double rrs = Double.parseDouble(file.value(i, "rrs443"));
+            boolean rejected = i % 9 == 4;
+            double satChl = chl * Math.pow(10, 0.08 + 0.18 * random.nextGaussian() + (rejected ? 0.5 : 0));
+            double satRrs = rrs * (1 + 0.12 * random.nextGaussian());
+            var task = new gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupRun.Task(i, id,
+                    gov.nasa.gsfc.seadas.earthdatacloud.matchup.MatchupRun.State.DONE, "job", "successful", null,
+                    List.of(), 1);
+            items.add(new MatchupResults.Item(task, null, rejected ? MatchupResults.Outcome.REJECTED
+                    : MatchupResults.Outcome.MATCHED, java.util.Map.of("granule", "G" + i + ".nc",
+                    "sat_chlor_a_mean", String.valueOf(satChl), "sat_Rrs_443_mean", String.valueOf(satRrs)), null));
+        }
+        return items;
+    }
+
     @SuppressWarnings("unchecked")
     private static <T extends Component> T find(Container root, Class<T> type, int n) {
         List<Component> found = new java.util.ArrayList<>();
