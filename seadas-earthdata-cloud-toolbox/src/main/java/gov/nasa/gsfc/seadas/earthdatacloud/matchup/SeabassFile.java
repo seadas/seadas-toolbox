@@ -286,4 +286,31 @@ public final class SeabassFile {
             return value.strip().equals(missingText);
         }
     }
+
+    /**
+     * Whether a value is not a measurement: the {@code /missing} value, or the
+     * {@code /below_detection_limit} or {@code /above_detection_limit} flag
+     * (HPLC files write -8888 for a pigment below detection).
+     */
+    public boolean isFlagged(String value) {
+        if (isMissing(value)) {
+            return true;
+        }
+        for (String key : List.of("below_detection_limit", "above_detection_limit")) {
+            String flag = headers.get(key);
+            if (flag == null || flag.isBlank()) {
+                continue;
+            }
+            try {
+                if (Double.parseDouble(value.strip()) == Double.parseDouble(flag.strip())) {
+                    return true;
+                }
+            } catch (NumberFormatException e) {
+                if (value.strip().equals(flag.strip())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

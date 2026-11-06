@@ -43,6 +43,27 @@ class MatchupPairsTest {
     }
 
     @Test
+    void hplcTotalChlorophyllAIsPreferredAndBelowDetectionIsLeftOut() throws Exception {
+        SeabassFile hplc = SeabassFile.parse(List.of(
+                "/begin_header",
+                "/missing=-9999",
+                "/below_detection_limit=-8888",
+                "/delimiter=comma",
+                "/fields=date,time,lat,lon,Tot_Chl_b,Tot_Chl_a,Tchl",
+                "/units=yyyymmdd,hh:mm:ss,degrees,degrees,mg/m^3,mg/m^3,mg/m^3",
+                "/end_header",
+                "20240520,19:30:00,29.97,-87.16,0.02,0.407,0.513",
+                "20240521,14:17:00,29.09,-84.91,0.01,-8888.0,0.134"), Path.of("hplc.sb"));
+        assertEquals("tot_chl_a", MatchupPairs.inSituField(hplc, "chlor_a"));
+        MatchupPairs.Variable chl = new MatchupPairs.Variable("chlor_a", "tot_chl_a");
+        List<MatchupPairs.Point> points = MatchupPairs.points(List.of(
+                item(0, MatchupResults.Outcome.MATCHED, Map.of("sat_chlor_a_mean", "0.5")),
+                item(1, MatchupResults.Outcome.MATCHED, Map.of("sat_chlor_a_mean", "0.2"))), hplc, chl, false);
+        assertEquals(1, points.size());
+        assertEquals(0.407, points.get(0).inSitu());
+    }
+
+    @Test
     void pointsAreMatchedResultsWithBothValuesAndRejectedOnlyWhenAsked() throws Exception {
         MatchupPairs.Variable chl = new MatchupPairs.Variable("chlor_a", "chl");
         List<MatchupResults.Item> items = List.of(

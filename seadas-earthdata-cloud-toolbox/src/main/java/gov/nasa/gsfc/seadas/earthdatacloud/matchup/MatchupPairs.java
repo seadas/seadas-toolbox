@@ -56,7 +56,8 @@ public final class MatchupPairs {
         List<String> candidates = new ArrayList<>();
         String lower = variable.toLowerCase(Locale.ROOT);
         if (lower.equals("chlor_a")) {
-            candidates.addAll(List.of("chl", "chl_a", "chla", "tchl"));
+            // Tot_Chl_a is HPLC total chlorophyll a, what chlor_a estimates; Tchl adds b and c.
+            candidates.addAll(List.of("chl", "chl_a", "chla", "tot_chl_a", "tchl"));
         } else if (lower.startsWith("sst")) {
             candidates.addAll(List.of("wt", "sst"));
         } else if (lower.matches("rrs_\\d+")) {
@@ -109,7 +110,7 @@ public final class MatchupPairs {
                 continue;
             }
             String inSitu = file.value(item.task().row(), variable.inSitu());
-            Double x = file.isMissing(inSitu) ? null : number(inSitu);
+            Double x = file.isFlagged(inSitu) ? null : number(inSitu);
             Double y = number(item.chosen().get(variable.meanColumn()));
             if (x != null && y != null) {
                 points.add(new Point(item, x, y, matched));
