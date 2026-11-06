@@ -81,6 +81,25 @@ public final class MatchupScreenshots {
         });
         shoot(p, out.resolve("4a-results.png"));
         edt(() -> {
+            javax.swing.JTable table = find(p.step(3), javax.swing.JTable.class, 0);
+            int granuleColumn = table.getColumnModel().getColumnIndex("Granule");
+            int row0 = 0;
+            while (String.valueOf(table.getValueAt(row0, granuleColumn)).equals("—")) {
+                row0++;
+            }
+            final int row = row0;
+            table.setRowSelectionInterval(row, row);
+            for (int i = 0; ; i++) {
+                javax.swing.JButton b = find(p.step(3), javax.swing.JButton.class, i);
+                if (b.getText().equals(RemoteGranules.TITLE)) {
+                    System.out.println("Open granule remotely, obs " + table.getValueAt(row, 0) + " selected: enabled="
+                            + b.isEnabled());
+                    break;
+                }
+            }
+        });
+        shoot(p, out.resolve("4a-results-selected.png"));
+        edt(() -> {
             javax.swing.JComboBox<?> product = find(p.step(3), javax.swing.JComboBox.class, 0);
             product.setSelectedItem("PACE OCI AOP NRT");
         });

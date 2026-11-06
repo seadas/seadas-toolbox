@@ -182,13 +182,13 @@ final class ResultsStep extends Step {
             String selected = (String) product.getSelectedItem();
             product.removeAllItems();
             productIds.clear();
+            if (session.chosen().size() > 1) {
+                product.addItem(ALL_PRODUCTS);
+            }
             for (MatchupCollections.Entry entry : session.chosen()) {
                 String name = SatelliteStep.shortLabel(entry);
                 productIds.put(name, entry.id(session.options().environment()));
                 product.addItem(name);
-            }
-            if (productIds.size() > 1) {
-                product.addItem(ALL_PRODUCTS);
             }
             if (selected != null && (productIds.containsKey(selected) || ALL_PRODUCTS.equals(selected))) {
                 product.setSelectedItem(selected);
@@ -413,11 +413,25 @@ final class ResultsStep extends Step {
 
     /** The selected rows' granules: file name to product short name. */
     private Map<String, String> selectedGranules() {
-        Map<String, String> granules = new LinkedHashMap<>();
+        List<MatchupResults.Item> items = new ArrayList<>();
         for (int viewRow : table.getSelectedRows()) {
-            Map<String, String> chosen = model.item(table.convertRowIndexToModel(viewRow)).chosen();
-            if (chosen != null && chosen.get("granule") != null && chosen.get("product") != null) {
-                granules.put(chosen.get("granule"), chosen.get("product"));
+            items.add(model.item(table.convertRowIndexToModel(viewRow)));
+        }
+        return granules(items);
+    }
+
+    /**
+     * The granules of result rows that have one: file name to product short
+     * name. The service's rows name the granule only; the product comes from
+     * the request's collection.
+     */
+    static Map<String, String> granules(List<MatchupResults.Item> items) {
+        Map<String, String> granules = new LinkedHashMap<>();
+        for (MatchupResults.Item item : items) {
+            String granule = item.chosen() == null ? null : item.chosen().get("granule");
+            if (granule != null && !granule.isBlank()) {
+                MatchupCollections.byId(item.task().collection())
+                        .ifPresent(entry -> granules.put(granule, entry.shortName()));
             }
         }
         return granules;

@@ -48,7 +48,8 @@ final class RunStep extends Step {
     private final Stat running = new Stat("running");
     private final Stat queued = new Stat("queued");
     private final Stat failed = new Stat("failed");
-    private final Stat notSent = new Stat("not sent");
+    private final Stat noOverpass = new Stat("no overpass");
+    private final Stat notUsable = new Stat("not usable");
     private final JLabel savedTo = new JLabel(" ");
     private final Look.Wrap savedNote = Look.small(" ");
     private final JButton runButton = new JButton("Start");
@@ -79,7 +80,8 @@ final class RunStep extends Step {
         saved.add(savedTo, BorderLayout.NORTH);
         saved.add(savedNote, BorderLayout.CENTER);
         JPanel stats = Look.clear(new BorderLayout(10, 0));
-        stats.add(Look.row(10, done.card, running.card, queued.card, failed.card, notSent.card), BorderLayout.WEST);
+        stats.add(Look.row(10, done.card, running.card, queued.card, failed.card, noOverpass.card,
+                notUsable.card), BorderLayout.WEST);
         stats.add(saved, BorderLayout.CENTER);
 
         JPanel north = Look.clear(null);
@@ -226,7 +228,7 @@ final class RunStep extends Step {
                     + " at a time. Nothing sent yet.");
             bar.set(List.of(), List.of());
             percent.setText(" ");
-            for (Stat stat : List.of(done, running, queued, failed, notSent)) {
+            for (Stat stat : List.of(done, running, queued, failed, noOverpass, notUsable)) {
                 stat.set(0);
             }
             savedTo.setText("Not saved yet");
@@ -260,7 +262,8 @@ final class RunStep extends Step {
             running.set(counts.get(MatchupRun.State.SUBMITTED));
             queued.set(counts.get(MatchupRun.State.PENDING));
             failed.set(failedCount);
-            notSent.set(counts.get(MatchupRun.State.SKIPPED));
+            noOverpass.set(skipped(run, true));
+            notUsable.set(skipped(run, false));
             savedTo.setText("<html>Saved to <font face='monospaced'>"
                     + Text.escape(run.record().getFileName().toString()) + "</font></html>");
             savedTo.setToolTipText(run.record().toString());
@@ -355,6 +358,23 @@ final class RunStep extends Step {
         }
     }
 
+    /**
+     * Requests not sent: with no granule in the time window (no overpass), or
+     * for an observation without a usable time or position (not usable). A
+     * repeat of an earlier row's place and time is neither: it shares that
+     * row's request.
+     */
+    static int skipped(MatchupRun run, boolean noOverpass) {
+        int n = 0;
+        for (MatchupRun.Task task : run.tasks()) {
+            if (task.state() == MatchupRun.State.SKIPPED && task.sameAs() < 0) {
+                boolean overpass = task.message() != null && task.message().startsWith(MatchupRun.NO_OVERPASS);
+                n += overpass == noOverpass ? 1 : 0;
+            }
+        }
+        return n;
+    }
+
     /** A count in a small card: the number large, its meaning under it. */
     private static final class Stat {
         final Look.Card card = new Look.Card(new BorderLayout(0, 2));
@@ -442,7 +462,9 @@ final class RunStep extends Step {
                     case SUBMITTED -> "running";
                     case DONE -> "done";
                     case FAILED -> "failed";
-                    case SKIPPED -> "not sent";
+                    case SKIPPED -> t.sameAs() >= 0 ? "same as #" + (t.sameAs() + 1)
+                            : t.message() != null && t.message().startsWith(MatchupRun.NO_OVERPASS) ? "no overpass"
+                            : "not usable";
                 };
                 case 4 -> t.granules() == null ? "—" : String.valueOf(t.granules());
                 case JOB_COLUMN -> t.jobId() == null ? "—" : t.jobId().substring(0, Math.min(8, t.jobId().length()))
