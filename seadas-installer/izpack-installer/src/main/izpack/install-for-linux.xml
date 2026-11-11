@@ -93,7 +93,6 @@
 
     <dynamicvariables>
         <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre"/>
-        <variable name="dotSeaDASDirStatus" value="$dotSeaDASStatusSelection" />
         <variable name="runSeaDASAfterInstall" value="${checkSelection.1}"/>
     </dynamicvariables>
 
@@ -117,14 +116,6 @@
         <condition type="variable" id="runSeaDAS">
             <name>runSeaDASAfterInstall</name>
             <value>true</value>
-        </condition>
-        <condition type="contains" id="deleteDotSeaDAS">
-            <variable>dotSeaDASDirStatus</variable>
-            <value>delete</value>
-        </condition>
-        <condition type="contains" id="archiveDotSeaDAS">
-            <variable>dotSeaDASDirStatus</variable>
-            <value>archive</value>
         </condition>
     </conditions>
 
