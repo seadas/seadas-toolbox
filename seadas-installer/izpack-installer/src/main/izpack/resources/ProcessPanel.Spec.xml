@@ -7,24 +7,22 @@
     <!-- optional: duplicate console output to a logfile -->
     <!-- <logfiledir>$INSTALL_PATH</logfiledir> -->
 
-    <job name="Archive .seadas (unix)" condition="archiveDotSeaDAS">
+    <!-- Archives old .seadas directories and clears the cache and window layout in ~/.seadas,
+         on every install.  No condition: the user-input page that used to ask about this was
+         removed when archiving became automatic.  IzPack counts macOS as unix too, so one job
+         covers Linux and the Mac (each installs its own archiveDotSeaDAS.sh in bin). -->
+    <job name="Archive .seadas (Linux and macOS)">
         <os family="unix"/>
         <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin"/>
     </job>
 
-    <job name="Archive .seadas (mac)" condition="archiveDotSeaDAS">
-        <os family="mac"/>
-        <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS.sh" workingDir="$INSTALL_PATH/bin"/>
-    </job>
-
-    <job name="Archive .seadas (windows)" condition="archiveDotSeaDAS">
+    <job name="Archive .seadas (Windows)">
         <os family="windows"/>
         <executefile name="$INSTALL_PATH/bin/archiveDotSeaDAS_windows.bat" workingDir="$INSTALL_PATH/bin"/>
     </job>
 
     <onFail    previous="true"  next="false"/>
-    <onSuccess previous="true"  next="true"  condition="mycondition"/>
-    <onSuccess previous="false" next="true"  condition="!mycondition"/>
+    <onSuccess previous="true"  next="true"/>
 
     <job name="Create Symbolic Link (mac)" final="true">
         <os family="mac"/>
