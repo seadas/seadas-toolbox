@@ -1,0 +1,107 @@
+#!/bin/sh
+# Starts SeaDAS from inside SeaDAS.app (SeaDAS.app/Contents/app/bin/seadas).
+#
+# Based on the launcher of the folder install (izpack .../files/macosx/bin/seadas), changed so it
+# never writes into the app: a signed app must not change after signing, and a user without admin
+# rights can't write to /Applications. The launch log goes to the user folder instead, and the
+# bundled Java is used as is (no chmod).
+
+# Resolve symlinks, so a link to this script (for example in ~/SeaDAS/bin) works too.
+PRG=$0
+while [ -h "$PRG" ]; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '^.*-> \(.*\)$' 2>/dev/null`
+    if expr "$link" : '^/' 2> /dev/null >/dev/null; then
+        PRG="$link"
+    else
+        PRG="`dirname "$PRG"`/$link"
+    fi
+done
+progdir=`dirname "$PRG"`
+progdir=`cd "$progdir" && pwd`
+APPNAME=seadas
+apphome=`cd "$progdir/.." && pwd`              # SeaDAS.app/Contents/app
+contents=`cd "$apphome/.." && pwd`             # SeaDAS.app/Contents
+
+if [ -f "$apphome/etc/$APPNAME.conf" ] ; then
+    . "$apphome/etc/$APPNAME.conf"
+fi
+
+# XXX does not correctly deal with spaces in non-userdir params
+args=""
+userdir="${default_mac_userdir}"
+while [ $# -gt 0 ] ; do
+    case "$1" in
+        --userdir) shift; if [ $# -gt 0 ] ; then userdir="$1"; fi
+            ;;
+        *) args="$args \"$1\""
+            ;;
+    esac
+    shift
+done
+
+# A user's own settings, for example a different jdkhome or default_options.
+if [ -f "${userdir}/etc/$APPNAME.conf" ] ; then
+    . "${userdir}/etc/$APPNAME.conf"
+fi
+
+# jdkhome may be relative to the app folder (the bundled runtime is ../runtime/Contents/Home).
+case "$jdkhome" in
+    /*) ;;
+    "") jdkhome="$contents/runtime/Contents/Home" ;;
+    *)  jdkhome="$apphome/$jdkhome" ;;
+esac
+
+logdir="${userdir}/var/log"
+mkdir -p "$logdir" 2>/dev/null
+launchlog="$logdir/seadas_launch.log"
+{
+    echo "SeaDAS Application Launch - System Diagnostics Log"
+    echo "date=`date`"
+    echo "jdkhome=${jdkhome}"
+    echo "apphome=${apphome}"
+    echo "userdir=${userdir}"
+    echo "uname -m : `uname -m`"
+    echo "uname -r : `uname -r`"
+    echo "uname -s : `uname -s`"
+    echo "sw_vers : `sw_vers -productVersion 2>/dev/null`"
+} > "$launchlog" 2>/dev/null
+
+if [ ! -x "${jdkhome}/bin/java" ] ; then
+    echo "SeaDAS: cannot find Java in ${jdkhome}" >&2
+    echo "SeaDAS: cannot find Java in ${jdkhome}" >> "$launchlog" 2>/dev/null
+    exit 2
+fi
+
+clusters=""
+while read X || [ -n "$X" ]; do
+    if [ -n "$X" ]; then
+        if [ -d "$apphome/$X" ]; then
+            clusters="$clusters`cd "$apphome/$X" && pwd`:"
+        else
+            clusters="$clusters$apphome/$X:"
+        fi
+    fi
+done < "$apphome/etc/$APPNAME.clusters"
+if [ -n "$extra_clusters" ] ; then
+    clusters="$clusters$extra_clusters"
+fi
+
+nbexec=`echo "$apphome"/platform*/lib/nbexec`
+
+# Name and icon in the Dock and the app menu (macOS only; other JVMs reject -Xdock).
+dock=""
+case "`uname`" in
+    Darwin*)
+        dock="-J-Dcom.apple.mrj.application.apple.menu.about.name=SeaDAS -J-Xdock:name=SeaDAS"
+        dock="$dock '-J-Xdock:icon=$contents/Resources/SeaDAS.icns'"
+        ;;
+esac
+
+eval exec sh '"$nbexec"' \
+    --jdkhome '"$jdkhome"' \
+    $dock \
+    --clusters '"$clusters"' \
+    --userdir '"${userdir}"' \
+    ${default_options} \
+    "$args"

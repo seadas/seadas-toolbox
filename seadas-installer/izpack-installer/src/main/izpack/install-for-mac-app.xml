@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    macOS installer for SeaDAS.app (mvn package -P mac-app).
+
+    Unlike install-for-mac.xml, this installer carries no SeaDAS files. It runs inside
+    "Install SeaDAS.app" on the .dmg, which also holds the signed SeaDAS.app built by
+    mac-installer-files/build-mac-app.sh, and passes its location in SEADAS_APP_SOURCE.
+    The user picks /Applications or ~/Applications, and install-seadas-app.sh copies
+    SeaDAS.app there, asking for an administrator password only when the folder needs it.
+
+    The installer's own few files (the script) go to a cache folder, not next to SeaDAS:
+    SeaDAS.app must not change after it is signed.
+-->
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+    <info>
+        <appname>SeaDAS</appname>
+        <appversion>12.0.0</appversion>
+        <url>https://seadas.gsfc.nasa.gov</url>
+        <authors>
+            <author name="NASA Ocean Biology Processing Group" email=""/>
+        </authors>
+        <!-- SeaDAS.app is removed by moving it to the Trash, as other Mac apps are. -->
+        <uninstaller write="no"/>
+    </info>
+
+    <guiprefs width="800" height="600" resizable="yes">
+        <modifier key="useSplashScreen" value="1000"/>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="useButtonIcons" value="yes"/>
+        <modifier key="useLabelIcons" value="no"/>
+        <modifier key="labelGap" value="2"/>
+        <modifier key="layoutAnchor" value="NORTHWEST"/>
+        <modifier key="headingImageOnLeft" value="yes"/>
+        <modifier key="headingLineCount" value="1"/>
+        <modifier key="headingFontSize" value="1.5"/>
+        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+        <modifier key="headingPanelCounter" value="progressbar"/>
+        <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+    </guiprefs>
+
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+    <resources>
+        <res id="HTMLLicencePanel.licence" src="legal/seadas_license.html"/>
+        <res id="HTMLInfoPanel.welcome" src="about/welcome-mac-app.html"/>
+        <res id="SeaDASLogo" src="images/seadas-icon-128.png"/>
+        <res id="Installer.image" src="images/seadas-installer.png"/>
+        <res id="Splash.image" src="images/seadas-installer.png"/>
+        <res id="userInputSpec.xml" src="resources/userInputSpec-mac-app.xml"/>
+        <res id="ProcessPanel.Spec.xml" src="resources/ProcessPanel.Spec-mac-app.xml"/>
+        <res id="CustomLangPack.xml_eng" src="resources/mac-app-langpack-eng.xml"/>
+    </resources>
+
+    <variables>
+        <!-- Shown on the welcome and last pages. -->
+        <variable name="SEADAS_VERSION" value="12.0.0"/>
+        <!-- Where the installer puts its script; never where SeaDAS goes. -->
+        <variable name="INSTALL_PATH" value="$USER_HOME/Library/Caches/SeaDAS-installer"/>
+        <variable name="InstallerFrame.logfilePath" value="Default"/>
+        <!-- Set on the location page. -->
+        <variable name="appFolder" value="/Applications"/>
+        <variable name="removeOldInstall" value="true"/>
+    </variables>
+
+    <conditions>
+        <!-- A folder install of SeaDAS 12.0.0 or older in ~/SeaDAS. -->
+        <condition type="exists" id="oldFolderInstall">
+            <file>$USER_HOME/SeaDAS/bin/seadas.app</file>
+        </condition>
+    </conditions>
+
+    <panels>
+        <panel classname="HTMLInfoPanel" id="welcome"/>
+        <panel classname="HTMLLicencePanel" id="licence"/>
+        <panel classname="UserInputPanel" id="appLocation"/>
+        <panel classname="InstallPanel" id="install"/>
+        <panel classname="ProcessPanel" id="installApp"/>
+        <panel classname="SimpleFinishPanel" id="finish"/>
+    </panels>
+
+    <packs>
+        <pack name="SeaDAS" required="yes" preselected="yes">
+            <description>SeaDAS.app</description>
+            <file src="packs/files/macosx-app/install-seadas-app.sh" targetdir="$INSTALL_PATH" override="true"/>
+            <executable targetfile="$INSTALL_PATH/install-seadas-app.sh" stage="never" keep="true"/>
+        </pack>
+    </packs>
+</izpack:installation>

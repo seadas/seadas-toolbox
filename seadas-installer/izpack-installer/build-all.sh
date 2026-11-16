@@ -23,7 +23,9 @@
 # way when missing.
 #
 # Platforms: mac, linux, win, and mac-nojre, linux-nojre, win-nojre for the
-# installers without a bundled JRE.  Each is selected by Maven profiles (see
+# installers without a bundled JRE.  mac-app is the installer jar for
+# "Install SeaDAS.app" on the macOS .dmg; the app and the .dmg are then made on
+# a Mac (see ../mac-installer-files/build-mac-installer.sh).  Each is selected by Maven profiles (see
 # pom.xml): 'linux' is -P linux, 'linux-nojre' is -P linux,nojre.  Nothing is
 # copied over install.xml.  'mvn clean package' wipes target/, so every
 # artifact is moved into OUTDIR before the next platform starts.
@@ -47,14 +49,14 @@ INNO_IMAGE="${INNO_IMAGE:-amake/innosetup@sha256:e003376ba818547275fe10c95e2a29b
 if [ $# -gt 0 ]; then
     PLATFORMS="$*"
 else
-    PLATFORMS="mac linux win mac-nojre linux-nojre win-nojre"
+    PLATFORMS="mac linux win mac-nojre linux-nojre win-nojre mac-app"
 fi
 
 for p in $PLATFORMS; do
     case "$p" in
-        mac|linux|win|mac-nojre|linux-nojre|win-nojre) ;;
+        mac|linux|win|mac-nojre|linux-nojre|win-nojre|mac-app) ;;
         *)
-            echo "build-all.sh: unknown platform '$p' (expected mac, linux, win, or one of those with -nojre)" >&2
+            echo "build-all.sh: unknown platform '$p' (expected mac, linux, win, one of those with -nojre, or mac-app)" >&2
             exit 2
             ;;
     esac
@@ -161,8 +163,11 @@ for p in $PLATFORMS; do
     echo
     echo "=================== $p ==================="
 
-    # linux -> linux, linux-nojre -> linux,nojre
-    mvn clean package -P "${p/-/,}"
+    # linux -> linux, linux-nojre -> linux,nojre, mac-app -> mac-app
+    case "$p" in
+        mac-app) mvn clean package -P mac-app ;;
+        *)       mvn clean package -P "${p/-/,}" ;;
+    esac
 
     if ! ls target/seadas-installer-*.jar >/dev/null 2>&1; then
         echo "build-all.sh: the $p build produced no installer jar" >&2

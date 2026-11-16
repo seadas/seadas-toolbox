@@ -50,6 +50,17 @@
             </properties>
         </profile>
 
+        <!-- The installer inside "Install SeaDAS.app" on the macOS .dmg.  It holds no
+             SeaDAS files: it copies the signed SeaDAS.app next to it to /Applications
+             or ~/Applications.  See ../mac-installer-files/build-mac-installer.sh. -->
+        <profile>
+            <id>mac-app</id>
+            <properties>
+                <installer.source>install-for-mac-app.xml</installer.source>
+                <installer.platform>macos-app</installer.platform>
+            </properties>
+        </profile>
+
         <profile>
             <id>linux</id>
             <properties>
