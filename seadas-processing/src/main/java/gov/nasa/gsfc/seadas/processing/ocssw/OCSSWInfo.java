@@ -274,6 +274,21 @@ public class OCSSWInfo {
         return PATTERN.matcher(ip).matches();
     }
 
+    /**
+     * Where OCSSW goes when no location is set: the "ocssw" folder of the SeaDAS install.
+     * When SeaDAS runs from a macOS app bundle (SeaDAS.app/Contents/app), the install is
+     * read-only and is replaced on upgrade, so OCSSW goes to ~/SeaDAS/ocssw instead, the
+     * folder the earlier Mac installers used.
+     */
+    public static File getDefaultOcsswRootDir() {
+        File appHome = SystemUtils.getApplicationHomeDir();
+        String path = appHome.getAbsolutePath().replace('\\', '/');
+        if (path.contains(".app/Contents/")) {
+            return new File(new File(System.getProperty("user.home"), "SeaDAS"), "ocssw");
+        }
+        return new File(appHome, "ocssw");
+    }
+
     public void initializeLocalOCSSW() {
         ocsswServerUp = true;
 
@@ -305,9 +320,7 @@ public class OCSSWInfo {
 //        }
 
         if (ocsswRootString == null || ocsswRootString.length() == 0) {
-            // File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir() + File.separator + "ocssw");
-            File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir(), "ocssw");
-            ocsswRootString = ocsswRootDir.getAbsolutePath();
+            ocsswRootString = getDefaultOcsswRootDir().getAbsolutePath();
         }
 
 
