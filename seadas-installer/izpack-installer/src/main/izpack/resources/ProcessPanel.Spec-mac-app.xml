@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copies SeaDAS.app to the folder picked on the location page (install-for-mac-app.xml). -->
+<izpack:processing version="5.0"
+                   xmlns:izpack="http://izpack.org/schema/processing"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://izpack.org/schema/processing http://izpack.org/schema/5.0/izpack-processing-5.0.xsd">
+
+    <job name="Installing SeaDAS">
+        <executefile name="$INSTALL_PATH/install-seadas-app.sh" workingDir="$INSTALL_PATH">
+            <arg>$appFolder</arg>
+            <arg>$removeOldInstall</arg>
+        </executefile>
+    </job>
+
+    <!-- On failure the message says what to do; the installer is then quit and run again. -->
+    <onFail previous="false" next="false"/>
+    <onSuccess previous="false" next="true"/>
+</izpack:processing>

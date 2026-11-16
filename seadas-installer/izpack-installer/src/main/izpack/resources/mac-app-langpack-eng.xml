@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- English text of the SeaDAS.app installer (install-for-mac-app.xml), replacing IzPack's generic wording. -->
+<izpack:langpack version="5.0"
+                 xmlns:izpack="http://izpack.org/schema/langpack"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://izpack.org/schema/langpack http://izpack.org/schema/5.0/izpack-langpack-5.0.xsd">
+    <str id="installer.title" txt="Install"/>
+    <str id="installer.madewith" txt=" "/>
+    <str id="installer.quit.message" txt="SeaDAS will not be installed."/>
+    <str id="HTMLInfoPanel.headline" txt="Welcome"/>
+    <str id="HTMLInfoPanel.info" txt=" "/>
+    <str id="HTMLLicencePanel.headline" txt="License"/>
+    <str id="HTMLLicencePanel.info" txt="Please read the SeaDAS license:"/>
+    <str id="UserInputPanel.headline" txt="Location"/>
+    <str id="InstallPanel.headline" txt="Ready to Install"/>
+    <str id="InstallPanel.info" txt="Click Install to install SeaDAS."/>
+    <str id="InstallPanel.install" txt="Install"/>
+    <str id="InstallPanel.finished" txt="Ready. Click Next to copy SeaDAS."/>
+    <str id="ProcessPanel.headline" txt="Installing SeaDAS"/>
+    <str id="ProcessPanel.heading" txt="Installing SeaDAS"/>
+    <str id="SimpleFinishPanel.headline" txt="Done"/>
+    <str id="FinishPanel.headline" txt="Done"/>
+    <str id="FinishPanel.success" txt="SeaDAS is installed. Open it from Applications or Launchpad."/>
+    <str id="FinishPanel.fail" txt="SeaDAS was not installed. Details are in ~/Library/Logs/SeaDAS/install.log."/>
+</izpack:langpack>

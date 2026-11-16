@@ -169,6 +169,49 @@ hand-made `.sh` installers, which started the installer with a Java 8 JRE
 
 The macOS `.dmg` is not built here: making a disk image needs macOS tools.
 
+### 5. The macOS app and .dmg (SeaDAS.app)
+
+The `.dmg` holds **Install SeaDAS.app**, which installs a signed, self-contained
+**SeaDAS.app** in `/Applications` (for all users; macOS asks for an administrator
+password only if the user can't write there) or `~/Applications` (only this user, no
+password). It replaces an older SeaDAS.app, can remove the program files of an old
+folder install in `~/SeaDAS` (OCSSW and other files there are kept), and clears the
+module cache in `~/.seadas/var/cache`. OCSSW defaults to `~/SeaDAS/ocssw`, as before.
+The installer log is `~/Library/Logs/SeaDAS/install.log`.
+
+On the build machine (Linux or Mac):
+
+```bash
+cd <seadas>/seadas-toolbox/seadas-installer/izpack-installer
+./build-all.sh mac mac-app                    # fills packs/, builds seadas-installer-macos-app.jar
+../mac-installer-files/build-mac-app.sh       # -> dist/SeaDAS.app
+```
+
+Then on a Mac with the Developer ID Application certificate in the keychain and the
+Xcode command line tools (`xcode-select --install`):
+
+```bash
+cd <seadas>/seadas-toolbox/seadas-installer/mac-installer-files
+./build-mac-installer.sh                      # -> dist/Install SeaDAS.app (compiles the launchers)
+./sign-and-notarize.sh setup                  # once per Mac: saves the notarization login
+VOLNAME="SeaDAS <version>" ./sign-and-notarize.sh all "../izpack-installer/dist/Install SeaDAS.app" \
+    ../izpack-installer/dist/seadas_<version>_mac_aarch64_installer.dmg
+```
+
+`sign-and-notarize.sh` signs everything inside out (SeaDAS.app included), builds and
+signs the `.dmg`, has Apple notarize it and staples the ticket. Notarization needs an
+Apple ID on the same team as the certificate. `sign-and-notarize.sh check <file>` shows
+the result. The `.dmg` replaces `seadas_<version>_mac_aarch64_installer.sh` for users.
+
+| File | Purpose |
+| --- | --- |
+| `izpack-installer/src/main/izpack/install-for-mac-app.xml` | installer pages (`-P mac-app`) |
+| `izpack-installer/src/main/izpack/packs/files/macosx-app/install-seadas-app.sh` | copies SeaDAS.app, cleans up |
+| `mac-installer-files/build-mac-app.sh` | builds SeaDAS.app from `packs/` |
+| `mac-installer-files/build-mac-installer.sh` | builds Install SeaDAS.app around it |
+| `mac-installer-files/sign-and-notarize.sh` | signs, makes the `.dmg`, notarizes |
+| `mac-installer-files/app/`, `mac-installer-files/installer/` | launchers, Info.plist templates |
+
 A platform profile is required; there is deliberately no default. The
 no-JRE descriptors are generated at build time from `install-for-<os>.xml`, so
 make descriptor changes there only. See `docs/DEVELOPERS_MANUAL.md` §14.2 at

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The location page of the SeaDAS.app installer (install-for-mac-app.xml). -->
+<izpack:userinput version="5.0"
+                  xmlns:izpack="http://izpack.org/schema/userinput"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.0/izpack-userinput-5.0.xsd">
+
+    <panel id="appLocation">
+        <field type="title" txt="Where should SeaDAS be installed?" bold="true" size="1.4"/>
+        <field type="space"/>
+        <!-- install-seadas-app.sh turns "system" into /Applications and "user" into ~/Applications. -->
+        <field type="radio" variable="appFolder">
+            <spec>
+                <choice txt="For all users of this Mac, in Applications (may ask for an administrator password)"
+                        value="system" set="true"/>
+                <choice txt="Only for me, in the Applications folder of my home folder (no administrator password needed)"
+                        value="user"/>
+            </spec>
+        </field>
+        <field type="space"/>
+        <field type="staticText" align="left"
+               txt="Data processing (OCSSW) stays in SeaDAS in your home folder, as before."/>
+        <field type="space"/>
+        <field type="divider" align="top" conditionid="oldFolderInstall"/>
+        <field type="staticText" align="left" conditionid="oldFolderInstall"
+               txt="An older SeaDAS is installed in the SeaDAS folder in your home folder."/>
+        <field type="check" variable="removeOldInstall" conditionid="oldFolderInstall">
+            <spec txt="Remove the older SeaDAS program files from it. OCSSW and your own files there are kept."
+                  true="true" false="false" set="true"/>
+        </field>
+    </panel>
+
+</izpack:userinput>
