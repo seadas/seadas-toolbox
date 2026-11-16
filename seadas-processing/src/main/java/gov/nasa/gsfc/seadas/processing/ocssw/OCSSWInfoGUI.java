@@ -4,7 +4,6 @@ package gov.nasa.gsfc.seadas.processing.ocssw;
 import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.swing.binding.BindingContext;
-import org.esa.snap.core.util.SystemUtils;
 import org.esa.snap.rcp.SnapApp;
 import org.esa.snap.runtime.Config;
 import org.esa.snap.ui.AppContext;
@@ -620,8 +619,7 @@ public class OCSSWInfoGUI {
 //        }
 
         if (ocsswRootString == null || ocsswRootString.length() == 0) {
-            File ocsswRootDir = new File(SystemUtils.getApplicationHomeDir(), "ocssw");
-            ocsswRootString = ocsswRootDir.getAbsolutePath();
+            ocsswRootString = OCSSWInfo.getDefaultOcsswRootDir().getAbsolutePath();
         }
 
         JPanel panel = GridBagUtils.createPanel();
