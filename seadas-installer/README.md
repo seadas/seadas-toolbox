@@ -204,6 +204,7 @@ Apple ID on the same team as the certificate. `sign-and-notarize.sh check <file>
 the result. The `.dmg` replaces `seadas_<version>_mac_aarch64_installer.sh` for users.
 For the one-time setup (team membership, certificate, notarization login), testing and
 troubleshooting, see [`docs/MACOS_SIGNING_AND_NOTARIZATION.md`](../docs/MACOS_SIGNING_AND_NOTARIZATION.md).
+The install instructions for users are in [`docs/MACOS_INSTALL_GUIDE.md`](../docs/MACOS_INSTALL_GUIDE.md).
 
 | File | Purpose |
 | --- | --- |
