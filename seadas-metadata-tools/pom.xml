@@ -73,6 +73,16 @@
             <artifactId>org-openide-modules</artifactId> <!-- ModuleInstall -->
             <version>${netbeans.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-autoupdate-services</artifactId> <!-- disable obsolete panoply module -->
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-progress</artifactId> <!-- OperationSupport.doOperation signature -->
+            <version>${netbeans.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
