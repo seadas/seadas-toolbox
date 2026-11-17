@@ -46,7 +46,7 @@ Install the new version the same way; you don't need to uninstall first. Quit Se
 
 ## Install the processing tools (OCSSW)
 
-SeaDAS opens and displays data without OCSSW. To process data (for example with l2gen), install OCSSW from within SeaDAS: [menu path, e.g. SeaDAS-OCSSW > Install/Update OCSSW].
+SeaDAS opens and displays data without OCSSW. To process data (for example with l2gen), install OCSSW from within SeaDAS: choose **SeaDAS-Toolbox > Install/Update SeaDAS Processors**, pick the missions you need, and click **Run**.
 
 - The default location is ~/SeaDAS/ocssw. If you used OCSSW with an older SeaDAS, the new SeaDAS finds it there.
 - OCSSW needs internet access to download its files, and again when processing to fetch ancillary data.
