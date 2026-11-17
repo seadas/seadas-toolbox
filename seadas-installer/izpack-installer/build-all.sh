@@ -15,12 +15,12 @@
 # required for both; a run without arguments skips them when Docker is not
 # available.  INNO_IMAGE overrides the image.
 #
-# 'linux', 'linux-nojre', 'mac' and 'mac-nojre' likewise also build the .sh
-# installers for users: seadas_<version>_linux64_installer.sh,
-# ..._linux64_installer_no_bundled_jre.sh, seadas_<version>_mac_aarch64_installer.sh
-# and seadas_<version>_mac_installer_no_bundled_jre.sh.  These are self-extracting
-# archives made with makeself, which is required for them and skipped the same
-# way when missing.
+# 'linux' and 'linux-nojre' likewise also build the .sh installers for users:
+# seadas_<version>_linux64_installer.sh and ..._linux64_installer_no_bundled_jre.sh.
+# These are self-extracting archives made with makeself, which is required for
+# them and skipped the same way when missing.  macOS users get the .dmg instead
+# (see below), so 'mac' and 'mac-nojre' build only the IzPack jars; 'mac' also
+# fills packs/ for ../mac-installer-files/build-mac-app.sh.
 #
 # Platforms: mac, linux, win, and mac-nojre, linux-nojre, win-nojre for the
 # installers without a bundled JRE.  mac-app is the installer jar for
@@ -77,17 +77,17 @@ case " $PLATFORMS " in
         ;;
 esac
 
-# The Linux and macOS .sh installers are made with makeself, handled the same way.
+# The Linux .sh installers are made with makeself, handled the same way.
 MAKESELF="$(command -v makeself || command -v makeself.sh || true)"
 case " $PLATFORMS " in
-    *" linux "*|*" linux-nojre "*|*" mac "*|*" mac-nojre "*)
+    *" linux "*|*" linux-nojre "*)
         if [ -z "$MAKESELF" ]; then
             if [ $# -gt 0 ]; then
-                echo "build-all.sh: linux, linux-nojre, mac and mac-nojre need makeself (https://makeself.io/, e.g. 'apt install makeself' or 'brew install makeself')" >&2
+                echo "build-all.sh: linux and linux-nojre need makeself (https://makeself.io/, e.g. 'apt install makeself' or 'brew install makeself')" >&2
                 exit 1
             fi
-            echo "build-all.sh: WARNING: makeself not found, so the Linux and macOS installers are skipped; install it from https://makeself.io/" >&2
-            PLATFORMS="$(echo $PLATFORMS | tr ' ' '\n' | grep -v '^linux\|^mac' | tr '\n' ' ')"
+            echo "build-all.sh: WARNING: makeself not found, so the Linux installers are skipped; install it from https://makeself.io/" >&2
+            PLATFORMS="$(echo $PLATFORMS | tr ' ' '\n' | grep -v '^linux' | tr '\n' ' ')"
         fi
         ;;
 esac
@@ -99,7 +99,7 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-# Wraps the IzPack jar of linux, linux-nojre, mac or mac-nojre in a self-extracting
+# Wraps the IzPack jar of linux or linux-nojre in a self-extracting
 # .sh installer.  The bundled-JRE ones carry the platform's Java 21 JRE from
 # packs/jre to run the installer; the no-JRE ones run it on the machine's Java
 # (see ../sh-installer-files/start-installer.sh).
@@ -109,9 +109,6 @@ make_sh() {
         linux)       jar=seadas-installer-linux-x64.jar;          out="seadas_${VERSION}_linux64_installer.sh"
                      jre_glob="OpenJDK21U-jre_x64_linux_*.tar.gz" ;;
         linux-nojre) jar=seadas-installer-linux-x64-nojre.jar;    out="seadas_${VERSION}_linux64_installer_no_bundled_jre.sh" ;;
-        mac)         jar=seadas-installer-macos-aarch64.jar;      out="seadas_${VERSION}_mac_aarch64_installer.sh"
-                     jre_glob="OpenJDK21U-jre_aarch64_mac_*.tar.gz" ;;
-        mac-nojre)   jar=seadas-installer-macos-aarch64-nojre.jar; out="seadas_${VERSION}_mac_installer_no_bundled_jre.sh" ;;
     esac
     rm -rf "$stage"
     mkdir -p "$stage"
@@ -124,7 +121,7 @@ make_sh() {
             echo "build-all.sh: expected one $jre_glob in src/main/izpack/packs/jre, found: ${jres[*]}" >&2
             exit 1
         fi
-        # jdk-21...-jre/bin/java (Linux) or jdk-21...-jre/Contents/Home/bin/java (macOS) -> jre/...
+        # jdk-21...-jre/bin/java -> jre/bin/java
         mkdir "$stage/jre"
         tar -xzf "${jres[0]}" -C "$stage/jre" --strip-components=1
     fi
@@ -197,7 +194,7 @@ for p in $PLATFORMS; do
         done
     fi
 
-    if [ "${p%-nojre}" = linux ] || [ "${p%-nojre}" = mac ]; then
+    if [ "${p%-nojre}" = linux ]; then
         echo
         echo "=================== $p: makeself ==================="
         make_sh "$p"

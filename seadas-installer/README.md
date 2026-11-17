@@ -68,8 +68,7 @@ seadas-installer-windows-x64.jar / .exe   seadas-installer-windows-x64-nojre.jar
 seadas_<version>_windows64_installer.exe  seadas_<version>_windows64_installer_no_bundled_jre.exe
                                           (the Windows installers for users; see below)
 seadas_<version>_linux64_installer.sh     seadas_<version>_linux64_installer_no_bundled_jre.sh
-seadas_<version>_mac_aarch64_installer.sh seadas_<version>_mac_installer_no_bundled_jre.sh
-                                          (the Linux and macOS installers for users; see below)
+                                          (the Linux installers for users; see below)
 ```
 
 A rebuild overwrites the previous installer for that platform. A failed build
@@ -125,32 +124,28 @@ version installs over the old one. The installer is not code-signed yet (the
 `SignTool` line is commented out). Test it on a Windows machine before
 publishing, since it is built under Wine.
 
-### 4. The Linux and macOS installers for users
+### 4. The Linux installers for users
 
-`linux`, `linux-nojre`, `mac` and `mac-nojre` also produce the `.sh`
-installers to publish:
+`linux` and `linux-nojre` also produce the `.sh` installers to publish:
 
 | Platform      | Installer                                                |
 | ------------- | -------------------------------------------------------- |
 | `linux`       | `seadas_<version>_linux64_installer.sh`                  |
 | `linux-nojre` | `seadas_<version>_linux64_installer_no_bundled_jre.sh`   |
-| `mac`         | `seadas_<version>_mac_aarch64_installer.sh`              |
-| `mac-nojre`   | `seadas_<version>_mac_installer_no_bundled_jre.sh`       |
 
 They are self-extracting archives made with [makeself](https://makeself.io/),
 so `build-all.sh` needs `makeself` on the PATH for them (`apt install makeself`,
 or `brew install makeself` on a Mac). Without it, a run with no arguments
-skips these four with a warning, and asking for one of them by name fails.
+skips these two with a warning, and asking for one of them by name fails.
 
 Each archive holds the IzPack jar and
 `seadas-installer/sh-installer-files/start-installer.sh`, which makeself
 runs after unpacking it to `$TMPDIR` (about 1 GB):
 
-* The bundled-JRE archives also hold the platform's Java 21 JRE from
-  `packs/jre/` (x64 for Linux, aarch64 for macOS), and the installer runs on it.
-* The no-JRE archives hold no Java. The installer runs on the machine's Java:
-  `JAVA_HOME`, else on macOS the newest Java 21+ known to
-  `/usr/libexec/java_home`, else `java` on the PATH. With no Java, or one older
+* The bundled-JRE archive also holds the Linux x64 Java 21 JRE from
+  `packs/jre/`, and the installer runs on it.
+* The no-JRE archive holds no Java. The installer runs on the machine's Java:
+  `JAVA_HOME`, else `java` on the PATH. With no Java, or one older
   than 21, it stops with a message saying what it found. The installer then
   offers that Java's folder for SeaDAS to use, and asks for another if it is
   not a JDK.
@@ -164,10 +159,10 @@ sh seadas_<version>_linux64_installer.sh -- -console
 
 `sh <file> --check` verifies an archive, and `--list` shows what is in it.
 The makeself step adds about 20 seconds per installer. These replace the old
-hand-made `.sh` installers, which started the installer with a Java 8 JRE
-(an Intel one on macOS, which Apple Silicon can only run through Rosetta 2).
+hand-made `.sh` installers, which started the installer with a Java 8 JRE.
 
-The macOS `.dmg` is not built here: making a disk image needs macOS tools.
+macOS users get the `.dmg` (section 5), so `mac` and `mac-nojre` build only
+the IzPack jars; there is no macOS `.sh` installer any more.
 
 ### 5. The macOS app and .dmg (SeaDAS.app)
 
@@ -201,7 +196,7 @@ VOLNAME="SeaDAS <version>" ./sign-and-notarize.sh all "../izpack-installer/dist/
 `sign-and-notarize.sh` signs everything inside out (SeaDAS.app included), builds and
 signs the `.dmg`, has Apple notarize it and staples the ticket. Notarization needs an
 Apple ID on the same team as the certificate. `sign-and-notarize.sh check <file>` shows
-the result. The `.dmg` replaces `seadas_<version>_mac_aarch64_installer.sh` for users.
+the result. The `.dmg` is the only macOS installer for users.
 For the one-time setup (team membership, certificate, notarization login), testing and
 troubleshooting, see [`docs/MACOS_SIGNING_AND_NOTARIZATION.md`](../docs/MACOS_SIGNING_AND_NOTARIZATION.md).
 The install instructions for users are in [`docs/MACOS_INSTALL_GUIDE.md`](../docs/MACOS_INSTALL_GUIDE.md).
@@ -228,11 +223,10 @@ no-JRE ones, which need Java 21 or newer:
 ```bash
 sh seadas_<version>_linux64_installer.sh                  # Linux
 sh seadas_<version>_linux64_installer_no_bundled_jre.sh   # Linux, Java 21+ via JAVA_HOME or PATH
-sh seadas_<version>_mac_aarch64_installer.sh              # macOS (Apple Silicon)
-sh seadas_<version>_mac_installer_no_bundled_jre.sh       # macOS, Java 21+
 ```
 
-On Windows, run `seadas_<version>_windows64_installer.exe` (see above).
+On macOS, open the `.dmg` and double-click **Install SeaDAS** (section 5). On
+Windows, run `seadas_<version>_windows64_installer.exe` (see above).
 
 The IzPack jars themselves need **Java 21 or newer** to start:
 
