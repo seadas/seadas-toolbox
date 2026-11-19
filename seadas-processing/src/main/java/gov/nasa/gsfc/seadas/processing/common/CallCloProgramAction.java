@@ -10,6 +10,7 @@ import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWDockerStarter;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
+import gov.nasa.gsfc.seadas.processing.ocssw.MacPythonSetup;
 import gov.nasa.gsfc.seadas.processing.utilities.ScrolledPane;
 import org.codehaus.plexus.util.FileUtils;
 import org.esa.snap.core.dataio.ProductIO;
@@ -165,6 +166,13 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
         ocssw.setProgramName(programName);
 
         final AppContext appContext = getAppContext();
+
+        // The OCSSW installer is a Python script, and its window runs it at once to list the
+        // OCSSW versions. On a Mac, first make sure python3 and its requests library are there.
+        if (OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME.equals(programName) && ocssw instanceof OCSSWLocal
+                && !MacPythonSetup.ensurePythonForOcssw(appContext.getApplicationWindow())) {
+            return;
+        }
 
         final CloProgramUI cloProgramUI = getProgramUI(appContext);
 
