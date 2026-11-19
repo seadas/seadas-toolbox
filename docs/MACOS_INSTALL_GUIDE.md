@@ -1,8 +1,8 @@
 # Installing SeaDAS on macOS
 
-Last updated: November 17, 2026 (SeaDAS 12.0.0)
+Last updated: November 19, 2026 (SeaDAS 12.0.1)
 
-SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install Java, Xcode or Homebrew first.
+SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install Java, Xcode or Homebrew first. The processing tools (OCSSW) also need Python 3, which SeaDAS helps you set up when you install them.
 
 ## Requirements
 
@@ -12,6 +12,7 @@ SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your A
 | macOS | 12 Monterey or later |
 | Disk space | About 1 GB for the download and 1.2 GB for SeaDAS. OCSSW (processing tools) needs more, depending on the missions you install. |
 | Administrator password | Only to install for all users in /Applications. Installing only for yourself needs none. |
+| Python 3 and `requests` | Only for OCSSW. SeaDAS offers to install them when you install OCSSW. |
 
 To check your Mac, choose Apple menu > About This Mac: Chip shows Apple M1, M2 or later.
 
@@ -48,9 +49,16 @@ Install the new version the same way; you don't need to uninstall first. Quit Se
 
 SeaDAS opens and displays data without OCSSW. To process data (for example with l2gen), install OCSSW from within SeaDAS: choose **SeaDAS-Toolbox > Install/Update SeaDAS Processors**, pick the missions you need, and click **Run**.
 
+OCSSW needs Python 3 with the `requests` library. A new Mac doesn't have them, so the first time you choose Install/Update SeaDAS Processors, SeaDAS checks and offers to install what's missing:
+
+1. **Apple's Command Line Tools**, which provide Python 3. Click **Install** in SeaDAS, then click **Install** in Apple's window that opens. The download takes several minutes; SeaDAS waits and continues when it's done.
+2. **The `requests` library.** Click **Install**. SeaDAS installs it for your account only, so no administrator password is needed.
+
+Then the OCSSW installer opens as usual. If you already have Python 3 with `requests` (for example from Homebrew or conda), SeaDAS skips these steps.
+
 - The default location is ~/SeaDAS/ocssw. If you used OCSSW with an older SeaDAS, the new SeaDAS finds it there.
 - OCSSW needs internet access to download its files, and again when processing to fetch ancillary data.
-- On a Mac without Apple's developer tools, macOS may ask to “install the command line developer tools”. Click **Install** and let it finish, then continue. [To be confirmed in testing.]
+- To install the Python parts yourself instead, run `xcode-select --install` in Terminal, wait for it to finish, then run `python3 -m pip install --user requests`.
 
 ## Uninstall SeaDAS
 
