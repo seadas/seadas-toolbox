@@ -442,8 +442,17 @@ public class GetSysInfoGUI {
         String bash = System.getProperty("file.separator") + "bin" + System.getProperty("file.separator") + "bash";
 
 //        String[] commandArray = new String[]{bash, "-l", "-c", "python3 -VV"};
+        // On a Mac without Apple's Command Line Tools, python3 is only a placeholder that
+        // makes macOS ask to install them, so don't run it.
+        boolean macPythonMissing = MacPythonSetup.pythonNeedsCommandLineTools();
         String[] commandArray = new String[]{bash, "-l", "-c", "python3 --version"};
-        runCommandArray(sysInfoTextpane, "Python3 Version: " , commandArray, "Python");
+        if (macPythonMissing) {
+            currentInfoLine = "Python3 Version: not installed (macOS: Apple's Command Line Tools are not installed)\n";
+            sysInfoText += currentInfoLine;
+            appendToPane(sysInfoTextpane, currentInfoLine, WARN_COLOR);
+        } else {
+            runCommandArray(sysInfoTextpane, "Python3 Version: " , commandArray, "Python");
+        }
 
 //        commandArray = new String[]{bash, "-l", "-c", "which python3"};
 //        runCommandArray(sysInfoTextpane, "Python3 Directory: " , commandArray);
@@ -472,8 +481,10 @@ public class GetSysInfoGUI {
 //        commandArray = new String[]{bash, "-l", "-c", "type -a python3"};
 //        runCommandArray(sysInfoTextpane, "Python3 Alias Detected: " , commandArray, "alias", false);
 
-        commandArray = new String[]{bash, "-l", "-c", " python3 -m pip list"};
-        runCommandArray(sysInfoTextpane, "Python3 Requests Installed: " , commandArray, "requests ", false);
+        if (!macPythonMissing) {
+            commandArray = new String[]{bash, "-l", "-c", " python3 -m pip list"};
+            runCommandArray(sysInfoTextpane, "Python3 Requests Installed: " , commandArray, "requests ", false);
+        }
 
 
 
