@@ -1,6 +1,6 @@
 # SeaDAS Toolbox — Developer's Manual
 
-*Applies to the `SEADAS-12.0.0-SNAP-14.0.0` branch (SeaDAS Toolbox 12.0.0 on SNAP 14.0.0).*
+*Applies to the `SEADAS-12.0.1-SNAP-14.0.1` branch (SeaDAS Toolbox 12.0.1 on SNAP 14.0.1).*
 
 ---
 
@@ -125,12 +125,12 @@ then this repository:
 cd ${seadas}/snap-engine       && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
 cd ${seadas}/snap-desktop      && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
 cd ${seadas}/optical-toolbox   && git checkout <SEADAS-branch> && mvn install -Dmaven.test.skip=true
-cd ${seadas}/seadas-toolbox    && git checkout SEADAS-12.0.0-SNAP-14.0.0 && mvn install -Dmaven.test.skip=true
+cd ${seadas}/seadas-toolbox    && git checkout SEADAS-12.0.1-SNAP-14.0.1 && mvn install -Dmaven.test.skip=true
 ```
 
 If you only need to work on the toolbox and the matching SNAP artifacts are
 already published, the first three steps can be skipped — Maven will resolve
-`org.esa.snap:*:14.0.0` from the SNAP Nexus.
+`org.esa.snap:*:14.0.1` from the SNAP Nexus.
 
 ### 4.2 Everyday commands
 
@@ -231,11 +231,11 @@ Two independent version numbers are tracked, and they are **kept in sync by
 hand**:
 
 - `${seadas-toolbox.version}` and its per-module twins — the SeaDAS Toolbox
-  release, currently `12.0.0`.
-- `${snap.version}` — the SNAP platform being built against, currently `14.0.0`.
+  release, currently `12.0.1`.
+- `${snap.version}` — the SNAP platform being built against, currently `14.0.1`.
 
 Branches are named `SEADAS-<toolbox version>-SNAP-<snap version>`, e.g. the
-current `SEADAS-12.0.0-SNAP-14.0.0`. Topic branches append a suffix
+current `SEADAS-12.0.1-SNAP-14.0.1`. Topic branches append a suffix
 (`…-SNAP-13.0.0-FixZoomInIssue`) or use a bare descriptive name
 (`image-preview-fallback`, `subset-progress-ux`).
 
@@ -244,7 +244,7 @@ The root POM carries a version property per submodule — `seadas-processing.ver
 `-SNAPSHOT` twin sitting right next to it:
 
 ```xml
-<seadas-processing.version>12.0.0</seadas-processing.version>   <!-- <seadas-processing.version>12.0.0-SNAPSHOT</seadas-processing.version>-->
+<seadas-processing.version>12.0.1</seadas-processing.version>   <!-- <seadas-processing.version>12.0.1-SNAPSHOT</seadas-processing.version>-->
 ```
 
 Release cuts flip these by hand, together with the `<version>` elements in the
