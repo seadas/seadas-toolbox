@@ -85,14 +85,14 @@
         <variable name="installer:maxHeapSize" value="12G"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
         <variable name="JDKPathPanel.minVersion" value="21.0.0"/>
-        <variable name="JDKPathPanel.maxVersion" value="21.0.8"/>
+        <variable name="JDKPathPanel.maxVersion" value="21.0.13.1"/>
         <variable name="JDKPathPanel.skipIfValid" value="yes"/>
         <variable name="extra_clusters" value="seadas-toolbox"/>
 
     </variables>
 
     <dynamicvariables>
-        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.8+9-jre"/>
+        <variable name="jdkhome" value="$INSTALL_PATH/jdk-21.0.13.1+2-jre"/>
         <variable name="runSeaDASAfterInstall" value="${checkSelection.1}"/>
     </dynamicvariables>
 
@@ -193,11 +193,11 @@
         </pack>
         <pack name="JDK21 JRE" required="yes" id="pack.jdk21.jre">
             <description>JDK21 JRE</description>
-            <file src="packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz" targetdir="${INSTALL_PATH}"
+            <file src="packs/jre/OpenJDK21U-jre_x64_linux_hotspot_21.0.13.1_2.tar.gz" targetdir="${INSTALL_PATH}"
                   unpack="true" override="true"></file>
             <executable type="bin" stage="never" failure="warn" keep="true">
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/bin" includes="*"/>
-                <fileset targetdir="$INSTALL_PATH/jdk-21.0.8+9-jre/lib" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.13.1+2-jre/bin" includes="*"/>
+                <fileset targetdir="$INSTALL_PATH/jdk-21.0.13.1+2-jre/lib" includes="*"/>
             </executable>
         </pack>
     </packs>
