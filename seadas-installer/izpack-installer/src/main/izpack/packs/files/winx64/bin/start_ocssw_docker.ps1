@@ -16,7 +16,7 @@ Windows counterpart of bin/start_ocssw_docker on Linux and macOS; keep the two i
 Works in Windows PowerShell 5.1 and PowerShell 7.
 #>
 param(
-    [string]$Image = "seadas/ocssw-run:12.0.0",
+    [string]$Image = "seadas/ocssw-run:12.0.1",
     [string]$Name = "seadas-ocssw",
     [string]$OcsswDir = (Join-Path $env:USERPROFILE "ocssw-docker"),
     [string]$SharedDir = (Join-Path $env:USERPROFILE "seadasClientServerShared"),

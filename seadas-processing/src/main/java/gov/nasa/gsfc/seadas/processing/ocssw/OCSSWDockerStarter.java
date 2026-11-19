@@ -243,7 +243,7 @@ public class OCSSWDockerStarter {
     }
 
     /**
-     * seadas/ocssw-run:<installed SeaDAS Toolbox version>, e.g. seadas/ocssw-run:12.0.0,
+     * seadas/ocssw-run:<installed SeaDAS Toolbox version>, e.g. seadas/ocssw-run:12.0.1,
      * or null to let the script use its own default.
      */
     private static String defaultImage() {
