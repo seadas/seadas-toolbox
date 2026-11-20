@@ -483,10 +483,13 @@ fi
 
 # Prefer bundled macOS JRE first
 java_exec=""
-if [ -x "$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java" ]; then
-  java_exec="$app_home/jdk-21.0.8+9-jre/Contents/Home/bin/java"
-elif [ -x "$app_home/jdk-21.0.8+9-jre/bin/java" ]; then
-  java_exec="$app_home/jdk-21.0.8+9-jre/bin/java"
+if [ -x "$app_home/jdk-21.0.13.1+2-jre/Contents/Home/bin/java" ]; then
+  java_exec="$app_home/jdk-21.0.13.1+2-jre/Contents/Home/bin/java"
+elif [ -x "$app_home/jdk-21.0.13.1+2-jre/bin/java" ]; then
+  java_exec="$app_home/jdk-21.0.13.1+2-jre/bin/java"
+elif [ -x "$app_home/../runtime/Contents/Home/bin/java" ]; then
+  # SeaDAS.app: Contents/app is app_home, the JRE is Contents/runtime
+  java_exec="$app_home/../runtime/Contents/Home/bin/java"
 elif [ -n "$app_java_home" ] && [ -x "$app_java_home/bin/java" ]; then
   java_exec="$app_java_home/bin/java"
 fi
