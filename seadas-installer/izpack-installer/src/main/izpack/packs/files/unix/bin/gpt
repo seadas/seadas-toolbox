@@ -101,8 +101,8 @@ local_classpath="${SLF4J_PREFIX}$PLATFORM_LIB_JARS:$PLATFORM_MODULE_JARS:$IDE_MO
 local_classpath=${local_classpath#:}
 local_classpath=${local_classpath%:}
 
-if [ -x "$app_home/jdk-21.0.8+9-jre/bin/java" ]; then
-  java_exec="$app_home/jdk-21.0.8+9-jre/bin/java"
+if [ -x "$app_home/jdk-21.0.13.1+2-jre/bin/java" ]; then
+  java_exec="$app_home/jdk-21.0.13.1+2-jre/bin/java"
 elif [ -n "${JAVA_HOME:-}" ] && [ -x "${JAVA_HOME}/bin/java" ]; then
   java_exec="${JAVA_HOME}/bin/java"
 else
