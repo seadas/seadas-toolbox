@@ -15,8 +15,8 @@ rem Choose Java
 rem --------------------------------------------------
 set "JAVA_EXE="
 
-if exist "%SEADAS_HOME%\jdk-21.0.8+9-jre\bin\java.exe" (
-    set "JAVA_EXE=%SEADAS_HOME%\jdk-21.0.8+9-jre\bin\java.exe"
+if exist "%SEADAS_HOME%\jdk-21.0.13.1+2-jre\bin\java.exe" (
+    set "JAVA_EXE=%SEADAS_HOME%\jdk-21.0.13.1+2-jre\bin\java.exe"
 ) else if defined JAVA_HOME if exist "%JAVA_HOME%\bin\java.exe" (
     set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
 ) else (
