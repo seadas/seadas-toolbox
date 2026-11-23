@@ -99,15 +99,15 @@ Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringC
 var
   JavaPage: TInputDirWizardPage;
 
-// Major version of the Java in Dir, from its 'release' file
-// (JAVA_VERSION="21.0.8"), or 0 if Dir holds no Java.
-function JavaMajor(Dir: String): Integer;
+// Version of the Java in Dir, from its 'release' file
+// (JAVA_VERSION="21.0.13.1" gives 21.0.13.1), or '' if Dir holds no Java.
+function JavaVersion(Dir: String): String;
 var
   Lines: TArrayOfString;
   Line: String;
   I, P: Integer;
 begin
-  Result := 0;
+  Result := '';
   Dir := AddBackslash(Dir);
   if not FileExists(Dir + 'bin\java.exe') then
     Exit;
@@ -118,15 +118,65 @@ begin
     Line := Trim(Lines[I]);
     if Pos('JAVA_VERSION="', Line) = 1 then
     begin
-      P := Length('JAVA_VERSION="') + 1;
-      while (P <= Length(Line)) and (Line[P] >= '0') and (Line[P] <= '9') do
-      begin
-        Result := Result * 10 + Ord(Line[P]) - Ord('0');
-        P := P + 1;
-      end;
+      Result := Copy(Line, Length('JAVA_VERSION="') + 1, Length(Line));
+      P := Pos('"', Result);
+      if P > 0 then
+        Result := Copy(Result, 1, P - 1);
       Exit;
     end;
   end;
+end;
+
+// Number N of a dotted version (N = 0 is the major version), or 0 if the
+// version has fewer numbers: VersionPart('21.0.8', 2) = 8, VersionPart('21.0.8', 3) = 0.
+function VersionPart(Version: String; N: Integer): Integer;
+var
+  I, P: Integer;
+begin
+  Result := 0;
+  P := 1;
+  for I := 1 to N do
+  begin
+    while (P <= Length(Version)) and (Version[P] <> '.') do
+      P := P + 1;
+    if P > Length(Version) then
+      Exit;
+    P := P + 1;
+  end;
+  while (P <= Length(Version)) and (Version[P] >= '0') and (Version[P] <= '9') do
+  begin
+    Result := Result * 10 + Ord(Version[P]) - Ord('0');
+    P := P + 1;
+  end;
+end;
+
+// Major version of the Java in Dir, or 0 if Dir holds no Java.
+function JavaMajor(Dir: String): Integer;
+begin
+  Result := VersionPart(JavaVersion(Dir), 0);
+end;
+
+// True for a Java 21 older than 21.0.13.1, which has the Base64 flaw
+// CVE-2026-114938.  Other major versions aren't checked.
+function IsUnpatchedJava21(Dir: String): Boolean;
+var
+  Version: String;
+begin
+  Version := JavaVersion(Dir);
+  Result := False;
+  if VersionPart(Version, 0) <> 21 then
+    Exit;
+  if VersionPart(Version, 2) <> 13 then
+    Result := VersionPart(Version, 2) < 13
+  else
+    Result := VersionPart(Version, 3) < 1;
+end;
+
+function UnpatchedJavaWarning: String;
+begin
+  Result := 'Java ' + JavaVersion(JavaPage.Values[0]) + ' has a security flaw (CVE-2026-114938). ' +
+            'SeaDAS turns off the affected Java feature, but we recommend updating to ' +
+            'Java 21.0.13.1 or later, for example from https://adoptium.net/.';
 end;
 
 function IsJava21(Dir: String): Boolean;
@@ -199,13 +249,19 @@ begin
   begin
     MsgBox(JavaError, mbError, MB_OK);
     Result := False;
-  end;
+  end
+  else if (CurPageID = JavaPage.ID) and not WizardSilent and
+          IsUnpatchedJava21(JavaPage.Values[0]) then
+    Result := MsgBox(UnpatchedJavaWarning + #13#10#13#10 + 'Use this Java anyway?',
+                     mbConfirmation, MB_YESNO) = IDYES;
 end;
 
 // Also stops a silent install (/SILENT, /VERYSILENT) that found no Java.
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
   Result := JavaError;
+  if (Result = '') and IsUnpatchedJava21(JavaPage.Values[0]) then
+    Log('Warning: ' + UnpatchedJavaWarning);
 end;
 
 function JdkHome: String;
