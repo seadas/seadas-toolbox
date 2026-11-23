@@ -30,7 +30,7 @@ Usage: start_ocssw_docker [options]
 EOF
 }
 
-IMAGE="seadas/ocssw-run:12.0.1"
+IMAGE="seadas/ocssw-run:12.1.0"
 NAME="seadas-ocssw"
 OCSSW_DIR="$HOME/ocssw-docker"
 SHARED_DIR="$HOME/seadasClientServerShared"

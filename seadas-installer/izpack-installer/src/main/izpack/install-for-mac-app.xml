@@ -17,7 +17,7 @@
                      xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
     <info>
         <appname>SeaDAS</appname>
-        <appversion>12.0.1</appversion>
+        <appversion>12.1.0</appversion>
         <url>https://seadas.gsfc.nasa.gov</url>
         <authors>
             <author name="NASA Ocean Biology Processing Group" email=""/>
@@ -58,7 +58,7 @@
 
     <variables>
         <!-- Shown on the welcome and last pages. -->
-        <variable name="SEADAS_VERSION" value="12.0.1"/>
+        <variable name="SEADAS_VERSION" value="12.1.0"/>
         <!-- Where the installer puts its script; never where SeaDAS goes. -->
         <variable name="INSTALL_PATH" value="$USER_HOME/Library/Caches/SeaDAS-installer"/>
         <variable name="InstallerFrame.logfilePath" value="Default"/>

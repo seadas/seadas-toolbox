@@ -1,6 +1,6 @@
 # Installing SeaDAS on macOS
 
-Last updated: November 23, 2026 (SeaDAS 12.0.1)
+Last updated: November 23, 2026 (SeaDAS 12.1.0)
 
 SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install Java, Xcode or Homebrew first. The processing tools (OCSSW) also need Python 3, which SeaDAS helps you set up when you install them.
 
