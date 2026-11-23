@@ -1,6 +1,6 @@
 # Installing SeaDAS on macOS
 
-Last updated: November 19, 2026 (SeaDAS 12.0.1)
+Last updated: November 23, 2026 (SeaDAS 12.0.1)
 
 SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install Java, Xcode or Homebrew first. The processing tools (OCSSW) also need Python 3, which SeaDAS helps you set up when you install them.
 
@@ -13,6 +13,7 @@ SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your A
 | Disk space | About 1 GB for the download and 1.2 GB for SeaDAS. OCSSW (processing tools) needs more, depending on the missions you install. |
 | Administrator password | Only to install for all users in /Applications. Installing only for yourself needs none. |
 | Python 3 and `requests` | Only for OCSSW. SeaDAS offers to install them when you install OCSSW. |
+| NASA Earthdata Login | Only for OCSSW processing and Earthdata downloads. A free account, saved in a `.netrc` file (see [Earthdata Login](#earthdata-login)). |
 
 To check your Mac, choose Apple menu > About This Mac: Chip shows Apple M1, M2 or later.
 
@@ -57,8 +58,28 @@ OCSSW needs Python 3 with the `requests` library. A new Mac doesn't have them, s
 Then the OCSSW installer opens as usual. If you already have Python 3 with `requests` (for example from Homebrew or conda), SeaDAS skips these steps.
 
 - The default location is ~/SeaDAS/ocssw. If you used OCSSW with an older SeaDAS, the new SeaDAS finds it there.
-- OCSSW needs internet access to download its files, and again when processing to fetch ancillary data.
+- OCSSW needs internet access to download its files, and again when processing to fetch ancillary data. These downloads use your Earthdata Login: set it up before you process data (see [Earthdata Login](#earthdata-login)).
 - To install the Python parts yourself instead, run `xcode-select --install` in Terminal, wait for it to finish, then run `python3 -m pip install --user requests`.
+
+## Earthdata Login
+
+The processors download ancillary data (such as the attitude and ephemeris files modis_GEO needs, and the weather and ozone data l2gen needs) with your NASA Earthdata Login. They read it from a file named `.netrc` in your home folder. Logging in to a NASA website in Safari doesn't set this up.
+
+1. Create a free account at [urs.earthdata.nasa.gov](https://urs.earthdata.nasa.gov) if you don't have one.
+2. Open Terminal (in Applications > Utilities) and run:
+
+   ```
+   touch ~/.netrc && chmod 600 ~/.netrc && open -e ~/.netrc
+   ```
+
+   This creates the file, makes it readable only by you, and opens it in TextEdit.
+3. Type one line, with your own user name and password, then save and close the file:
+
+   ```
+   machine urs.earthdata.nasa.gov login YOUR_USERNAME password YOUR_PASSWORD
+   ```
+
+When you change your Earthdata password, change it in this file too.
 
 ## Uninstall SeaDAS
 
@@ -83,6 +104,7 @@ Folders starting with a dot are hidden in Finder: press Command-Shift-. (period)
 | “SeaDAS is running from … Quit SeaDAS and run the installer again” | Quit SeaDAS (SeaDAS menu > Quit SeaDAS), then run Install SeaDAS again. |
 | macOS asks to allow Install SeaDAS to update or delete other apps (App Management) | Click **Allow**, or allow it in System Settings > Privacy & Security > App Management. It's needed to replace an older SeaDAS.app. [To be confirmed in testing.] |
 | SeaDAS doesn't appear in Launchpad | Open it from ~/Applications or /Applications in Finder. |
+| A processor fails with “Authentication Failure” or “Failed to identify/retrieve attitude/ephemeris” | Your Earthdata Login is missing or out of date. Check ~/.netrc (see [Earthdata Login](#earthdata-login)). |
 
 When you ask for help, include these logs:
 
