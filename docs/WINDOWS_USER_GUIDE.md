@@ -51,7 +51,7 @@ Download one of the two Windows installers from the [SeaDAS 12.0.0 Download](htt
 | `seadas_12.0.0_windows64_installer_no_bundled_jre.exe` | you already have Java 21 or newer installed and want a smaller download |
 
 1. Close any running SeaDAS. The installer cannot replace files that are in use.
-2. Run the installer. Windows may show "Windows protected your PC" because the installer is not code-signed yet: click **More info**, then **Run anyway**.
+2. Run the installer. Windows may show "Windows protected your PC" because the installer is not code-signed yet: click **More info**, then **Run anyway**. If there is no **Run anyway** button (common on work computers), close the message, right-click the installer, choose **Properties**, tick **Unblock** at the bottom of the General tab, click **OK**, and run it again. If that is blocked too, ask your IT support to allow the installer.
 3. Accept the administrator prompt. SeaDAS installs into `C:\Program Files\SeaDAS`.
 4. Without a bundled JRE, the installer shows a **Select Java** page, filled in with the first Java 21+ it finds (`JAVA_HOME`, or the Oracle and Adoptium installs). Choose another folder if needed; anything older than Java 21 is refused. See also the [SeaDAS User Guide for Installers Without Bundled JRE](https://github.com/seadas/seadas-toolbox/wiki/SeaDAS-User-Guide-for-Installers-Without-Bundled-JRE).
 5. Keep **Create a desktop shortcut** ticked (the default) if you want one.
@@ -170,7 +170,7 @@ The **Earthdata Cloud Data Browser** (menu **Earthdata-Cloud**, or **SeaDAS-Tool
 | "Earthdata login failed" | outdated or mistyped password in `.netrc` | Fix `C:\Users\YOU\.netrc`, then try again |
 | "install_ocssw failed" with "Connection reset by peer" | the download was interrupted | Run the installer again; it continues where it stopped |
 | Disk full while installing | OCSSW is on a drive with too little space | Choose an OCSSW Docker Dir on a larger drive and install again (see the note below) |
-| "Windows protected your PC" | the installer is not code-signed yet | Click More info, then Run anyway |
+| "Windows protected your PC" | the installer is not code-signed yet | Click More info, then Run anyway. No Run anyway button: right-click the installer > Properties, tick Unblock, click OK, and run it again |
 | Processing is slow | l2gen uses one processor core | Expected on older computers; limit the area or scan lines for tests |
 
 **Moving an existing OCSSW folder.** OCSSW contains thousands of Linux links. Windows tools (Explorer, copy, robocopy) cannot copy them correctly, and a copy made that way breaks OCSSW. Install OCSSW again in the new folder instead, or ask your SeaDAS contact for the Docker-based copy steps.
