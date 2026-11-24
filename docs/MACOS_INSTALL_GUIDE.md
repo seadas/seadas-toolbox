@@ -1,18 +1,19 @@
 # Installing SeaDAS on macOS
 
-Last updated: November 23, 2026 (SeaDAS 12.1.0)
+Last updated: November 24, 2026 (SeaDAS 12.1.0)
 
-SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install Java, Xcode or Homebrew first. The processing tools (OCSSW) also need Python 3, which SeaDAS helps you set up when you install them.
+SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install anything else to view data. The processing tools (OCSSW) need macOS 26 or later and a few more components; see [Install the processing tools (OCSSW)](#install-the-processing-tools-ocssw).
 
 ## Requirements
 
 | Item | Requirement |
 | --- | --- |
 | Mac | Apple silicon (M1 or later). Intel Macs aren't supported. |
-| macOS | 12 Monterey or later |
+| macOS | 12 Monterey or later to view data. Processing with OCSSW needs macOS 26 Tahoe or later. |
 | Disk space | About 1 GB for the download and 1.2 GB for SeaDAS. OCSSW (processing tools) needs more, depending on the missions you install. |
 | Administrator password | Only to install for all users in /Applications. Installing only for yourself needs none. |
 | Python 3 and `requests` | Only for OCSSW. SeaDAS offers to install them when you install OCSSW. |
+| Homebrew packages and XQuartz | Only for OCSSW: Homebrew's `gcc`, `openssl@3` and `zstd`, and XQuartz (see [Other components](#other-components)). |
 | NASA Earthdata Login | Only for OCSSW processing and Earthdata downloads. A free account, saved in a `.netrc` file (see [Earthdata Login](#earthdata-login)). |
 
 To check your Mac, choose Apple menu > About This Mac: Chip shows Apple M1, M2 or later.
@@ -50,6 +51,8 @@ Install the new version the same way; you don't need to uninstall first. Quit Se
 
 SeaDAS opens and displays data without OCSSW. To process data (for example with l2gen), install OCSSW from within SeaDAS: choose **SeaDAS-Toolbox > Install/Update SeaDAS Processors**, pick the missions you need, and click **Run**.
 
+The current OCSSW needs **macOS 26 Tahoe or later**. On an older macOS, SeaDAS says so before installing OCSSW and before running a processor. To process data on an older Mac, update macOS, or run OCSSW in Docker: install Docker Desktop, then choose **SeaDAS-Toolbox > SeaDAS Processor Location** and select Docker. OCSSW in Docker runs more slowly on a Mac.
+
 OCSSW needs Python 3 with the `requests` library. A new Mac doesn't have them, so the first time you choose Install/Update SeaDAS Processors, SeaDAS checks and offers to install what's missing:
 
 1. **Apple's Command Line Tools**, which provide Python 3. Click **Install** in SeaDAS, then click **Install** in Apple's window that opens. The download takes several minutes; SeaDAS waits and continues when it's done.
@@ -60,6 +63,21 @@ Then the OCSSW installer opens as usual. If you already have Python 3 with `requ
 - The default location is ~/SeaDAS/ocssw. If you used OCSSW with an older SeaDAS, the new SeaDAS finds it there.
 - OCSSW needs internet access to download its files, and again when processing to fetch ancillary data. These downloads use your Earthdata Login: set it up before you process data (see [Earthdata Login](#earthdata-login)).
 - To install the Python parts yourself instead, run `xcode-select --install` in Terminal, wait for it to finish, then run `python3 -m pip install --user requests`.
+
+### Other components
+
+The OCSSW programs also use a few libraries that aren't part of macOS or OCSSW. Install them once, before you process data:
+
+1. **Homebrew**, if you don't have it: follow the instructions at [brew.sh](https://brew.sh). It needs an administrator password.
+2. **The Homebrew packages.** In Terminal, run:
+
+   ```
+   brew install gcc openssl@3 zstd
+   ```
+
+3. **XQuartz**: download and install it from [xquartz.org](https://www.xquartz.org/). l2gen needs it.
+
+OCSSW looks for the Homebrew packages in /opt/homebrew, where Homebrew installs them on Apple silicon Macs.
 
 ## Earthdata Login
 
@@ -104,6 +122,9 @@ Folders starting with a dot are hidden in Finder: press Command-Shift-. (period)
 | “SeaDAS is running from … Quit SeaDAS and run the installer again” | Quit SeaDAS (SeaDAS menu > Quit SeaDAS), then run Install SeaDAS again. |
 | macOS asks to allow Install SeaDAS to update or delete other apps (App Management) | Click **Allow**, or allow it in System Settings > Privacy & Security > App Management. It's needed to replace an older SeaDAS.app. [To be confirmed in testing.] |
 | SeaDAS doesn't appear in Launchpad | Open it from ~/Applications or /Applications in Finder. |
+| SeaDAS says the processors need a newer macOS | The installed OCSSW was made for a newer macOS than this Mac has. Update macOS, or run OCSSW in Docker (see [Install the processing tools (OCSSW)](#install-the-processing-tools-ocssw)). |
+| A processor fails with `Library not loaded: /opt/homebrew/opt/...` (for example `libgfortran.5.dylib` or `libssl.3.dylib`) | Install the Homebrew packages: `brew install gcc openssl@3 zstd` (see [Other components](#other-components)). |
+| A processor fails with `Library not loaded: /opt/X11/lib/...` | Install XQuartz from [xquartz.org](https://www.xquartz.org/). |
 | A processor fails with “Authentication Failure” or “Failed to identify/retrieve attitude/ephemeris” | Your Earthdata Login is missing or out of date. Check ~/.netrc (see [Earthdata Login](#earthdata-login)). |
 
 When you ask for help, include these logs:

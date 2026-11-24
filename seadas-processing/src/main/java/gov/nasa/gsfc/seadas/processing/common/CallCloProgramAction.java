@@ -10,6 +10,7 @@ import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWDockerStarter;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfoGUI;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWLocal;
+import gov.nasa.gsfc.seadas.processing.ocssw.MacOcsswVersionCheck;
 import gov.nasa.gsfc.seadas.processing.ocssw.MacPythonSetup;
 import gov.nasa.gsfc.seadas.processing.utilities.ScrolledPane;
 import org.codehaus.plexus.util.FileUtils;
@@ -166,6 +167,16 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
         ocssw.setProgramName(programName);
 
         final AppContext appContext = getAppContext();
+
+        // On a Mac, a local OCSSW needs a new enough macOS (SeaDAS itself runs on older ones).
+        if (ocssw instanceof OCSSWLocal) {
+            boolean macOsOk = OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME.equals(programName)
+                    ? MacOcsswVersionCheck.confirmInstall(appContext.getApplicationWindow())
+                    : MacOcsswVersionCheck.checkInstalled(appContext.getApplicationWindow(), ocsswInfo.getOcsswRoot());
+            if (!macOsOk) {
+                return;
+            }
+        }
 
         // The OCSSW installer is a Python script, and its window runs it at once to list the
         // OCSSW versions. On a Mac, first make sure python3 and its requests library are there.
