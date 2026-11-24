@@ -239,6 +239,12 @@ current `SEADAS-12.1.0-SNAP-14.0.1`. Topic branches append a suffix
 (`…-SNAP-13.0.0-FixZoomInIssue`) or use a bare descriptive name
 (`image-preview-fallback`, `subset-progress-ux`).
 
+A release uses a branch with the same name in all four repositories
+(`snap-engine`, `snap-desktop`, `optical-toolbox`, `seadas-toolbox`), for example
+`SEADAS-12.1.0-SNAP-14.0.1`. The version SeaDAS shows in its title bar and
+Help > About comes from `VERSION.txt` in **snap-engine** (for example `12.1.0`),
+not from the toolbox POMs, so set it there too when cutting a release.
+
 The root POM carries a version property per submodule — `seadas-processing.version`,
 `seadas-contour-operator.version`, and so on — each with a commented-out
 `-SNAPSHOT` twin sitting right next to it:
@@ -1150,6 +1156,19 @@ The installer copies three cluster trees into `src/main/izpack/packs/`:
 must be built and installed before packaging**. These trees are Java and
 platform-independent, so all six installers share them.
 
+The trees come from whatever branch the sibling checkouts have, so check them
+before packaging a release. If `snap-engine` or `optical-toolbox` is on a
+development branch, the installer ships that code and shows its version (the
+first SeaDAS 12.1.0 test builds came out as "13.0.0 RC1" this way). Keep a
+separate folder of checkouts per release line if you also work on the next
+one, with its own Maven repository (`-Dmaven.repo.local=…`), because both lines
+install `org.esa.snap:*:14.0.1`. Quick check from `izpack-installer/`:
+
+```bash
+for r in snap-engine snap-desktop optical-toolbox; do git -C ../../../$r branch --show-current; done
+cat ../../../snap-engine/VERSION.txt     # must print the release version
+```
+
 The installed `bin/` and `etc/` do **not** come from the SNAP tree: every
 descriptor excludes `bin/*` and `etc/*` from `packs/snap` and installs them
 from `src/main/izpack/packs/files/<os>/` instead (`unix`, `macosx`, `winx64`).
@@ -1165,8 +1184,10 @@ upstream, so a `mvn package` over an old `target/` can pick up leftovers.
 
 ### 14.3 Release checklist (as practised)
 
-1. Confirm the SNAP fork branches (`snap-engine`, `snap-desktop`,
-   `optical-toolbox`) are at the intended state and build clean.
+1. Confirm the SNAP fork checkouts (`snap-engine`, `snap-desktop`,
+   `optical-toolbox`) are on the release's `SEADAS-<toolbox>-SNAP-<snap>` branch,
+   not a development branch, and build clean. `snap-engine/VERSION.txt` must hold
+   the release version (§14.2).
 2. Flip `${seadas-toolbox.version}` and every per-module version property in the
    root POM off `-SNAPSHOT`, and the `<version>` elements in the root and child
    POMs to match.
@@ -1266,6 +1287,7 @@ are in §6, branding locations in §14.4.
 - **`VERSION.txt` at the repo root contains the literal string
   `${project.version}`** — it is a filtering template that is only substituted
   when copied by the assembly, so it is not a source of truth for the version.
+  The version SeaDAS displays comes from `snap-engine/VERSION.txt` (§6).
 - **Dead code paths in `ProcessorTypeInfo`**: `SMIGEN`, `L2BIN_AQUARIUS`,
   `L1MAPGEN`, `L2MAPGEN`, `NEXT_LEVEL_NAME_PY`, `OBPG_FILE_TYPE_PY` and
   `MULTILEVEL_PROCESSOR_PY` are commented out, but their XML descriptors and (for
