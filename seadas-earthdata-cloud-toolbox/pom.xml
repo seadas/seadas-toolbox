@@ -37,6 +37,19 @@
             <version>${snap.version}</version>
         </dependency>
         <dependency>
+            <!-- the Earthdata Login dialog -->
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-processing</artifactId>
+            <version>${seadas-processing.version}</version>
+            <exclusions>
+                <!-- NetCDF comes from snap-netcdf, as before -->
+                <exclusion>
+                    <groupId>edu.ucar</groupId>
+                    <artifactId>netcdfAll</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-ui</artifactId>
             <version>${snap.version}</version>

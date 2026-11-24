@@ -5,6 +5,7 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.earthdata.EarthdataLoginDialog;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.ocssw.OCSSWDockerStarter;
@@ -323,6 +324,11 @@ public class CallCloProgramAction extends AbstractSnapAction  implements Present
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();
                         }
+                    }
+                    if (programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+                        EarthdataLoginDialog.offerIfMissing(getAppContext().getApplicationWindow(),
+                                "The SeaDAS processors download ancillary data from NASA Earthdata while they run, "
+                                        + "which needs your Earthdata Login.");
                     }
 
                     //delete the directories that temporaraly holds install_ocssw, maifest_ocssw and etc

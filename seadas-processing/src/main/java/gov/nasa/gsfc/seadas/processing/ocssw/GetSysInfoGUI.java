@@ -693,7 +693,7 @@ public class GetSysInfoGUI {
                 String THIS_SUCCESS_MSG = "Earthdata Access Found: ~/.netrc";
                 boolean showOutput = false;
                 String THIS_WARN_MSG = "Earthdata Access NOT Found:";
-                String THIS_INDENTED_WARN_MSG = "Note: Earthdata access can be setup by adding your Earthdata Login\n credentials to the file ~/.netrc";
+                String THIS_INDENTED_WARN_MSG = "Note: set your Earthdata Login with SeaDAS-Toolbox > Earthdata Login...";
                 Color THIS_WARN_COLOR = WARN_COLOR;
 
                 runCommandArrayUpdatePane(thisCommandArray, THIS_CONTAINS_STRING, THIS_SUCCESS_MSG, showOutput, THIS_WARN_MSG, THIS_INDENTED_WARN_MSG, THIS_WARN_COLOR, THIS_LOCATION_OCSSW, sysInfoTextpane);

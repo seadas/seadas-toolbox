@@ -20,6 +20,11 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 import static gov.nasa.gsfc.seadas.processing.ocssw.OCSSWConfigData.*;
@@ -47,6 +52,11 @@ public class OCSSWDockerStarter {
     private static final int E_PULL = 4;
 
     private static final AtomicBoolean starting = new AtomicBoolean(false);
+
+    // As in the start scripts, which SeaDAS runs without --name.
+    private static final String CONTAINER_NAME = "seadas-ocssw";
+    private static final String CONTAINER_SHARED_NETRC = "/root/seadasClientServerShared/.netrc";
+    private static final String CONTAINER_NETRC = "/root/.netrc";
 
     public static boolean isDockerLocation() {
         Preferences preferences = Config.instance("seadas").load().preferences();
@@ -281,5 +291,101 @@ public class OCSSWDockerStarter {
         }
         message.append("\nDetails: ").append(logFile);
         return message.toString();
+    }
+
+    /**
+     * Gives OCSSW in Docker a newly saved ~/.netrc (Earthdata Login) without restarting the
+     * container, so a running job isn't stopped. Copies the file into the shared directory,
+     * where the start script and the server look for it, and, if the container is running,
+     * into the container too. A stopped container reads the shared copy when it starts.
+     * Does nothing unless the OCSSW location is docker. Runs docker; don't call on the UI thread.
+     *
+     * @return null if done or nothing to do, otherwise what went wrong, for the user
+     */
+    public static String updateNetrc() {
+        if (!isDockerLocation()) {
+            return null;
+        }
+        Path netrc = Paths.get(System.getProperty("user.home"), ".netrc");
+        if (!Files.isRegularFile(netrc)) {
+            return null;
+        }
+        Preferences preferences = Config.instance("seadas").load().preferences();
+        String sharedDir = preferences.get(SEADAS_CLIENT_SERVER_SHARED_DIR_PROPERTY, getSeadasClientServerSharedDirDefaultValue());
+        try {
+            Path target = Paths.get(sharedDir).resolve(".netrc");
+            Files.createDirectories(target.getParent());
+            Files.copy(netrc, target, StandardCopyOption.REPLACE_EXISTING);
+            if (target.getFileSystem().supportedFileAttributeViews().contains("posix")) {
+                Files.setPosixFilePermissions(target, PosixFilePermissions.fromString("rw-------"));
+            }
+        } catch (IOException e) {
+            return "The Earthdata Login is saved, but SeaDAS couldn't copy it to the OCSSW shared directory "
+                    + sharedDir + ": " + e.getMessage();
+        }
+
+        String docker = findDocker();
+        if (docker == null) {
+            return null;
+        }
+        String[] running = runDocker(docker, "container", "inspect", "-f", "{{.State.Running}}", CONTAINER_NAME);
+        if (running == null || !"0".equals(running[0]) || !"true".equals(running[1].trim())) {
+            return null;
+        }
+        String[] copied = runDocker(docker, "exec", CONTAINER_NAME, "sh", "-c",
+                "cp " + CONTAINER_SHARED_NETRC + " " + CONTAINER_NETRC + " && chmod 600 " + CONTAINER_NETRC);
+        if (copied == null || !"0".equals(copied[0])) {
+            return "The Earthdata Login is saved, but SeaDAS couldn't pass it to the running OCSSW Docker container"
+                    + (copied == null ? "." : ": " + copied[1].trim())
+                    + "\nRestart the container (docker restart " + CONTAINER_NAME + ") before processing.";
+        }
+        SystemUtils.LOG.info("Copied the new .netrc into the OCSSW Docker container " + CONTAINER_NAME);
+        return null;
+    }
+
+    /** The docker command, also where Docker installs it but a Dock- or menu-started SeaDAS has no PATH to it. */
+    private static String findDocker() {
+        String exe = isWindows() ? "docker.exe" : "docker";
+        List<String> dirs = new ArrayList<>();
+        String path = System.getenv("PATH");
+        if (path != null) {
+            dirs.addAll(java.util.Arrays.asList(path.split(File.pathSeparator)));
+        }
+        if (isWindows()) {
+            dirs.add(System.getenv("ProgramFiles") + "\\Docker\\Docker\\resources\\bin");
+        } else {
+            dirs.add("/usr/local/bin");
+            dirs.add("/opt/homebrew/bin");
+            dirs.add(System.getProperty("user.home") + "/.docker/bin");
+            dirs.add("/Applications/Docker.app/Contents/Resources/bin");
+        }
+        for (String dir : dirs) {
+            File file = new File(dir, exe);
+            if (!dir.isEmpty() && file.canExecute()) {
+                return file.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+
+    /** Runs docker with the arguments; returns {exit code, output}, or null if it couldn't run or took over 30 s. */
+    private static String[] runDocker(String docker, String... args) {
+        List<String> command = new ArrayList<>();
+        command.add(docker);
+        command.addAll(java.util.Arrays.asList(args));
+        try {
+            Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
+            if (!process.waitFor(30, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+                return null;
+            }
+            String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            return new String[]{String.valueOf(process.exitValue()), output};
+        } catch (IOException e) {
+            return null;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        }
     }
 }

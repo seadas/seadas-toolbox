@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.earthdatacloud.util;
 
 import gov.nasa.gsfc.seadas.earthdatacloud.auth.WebPageFetcherWithJWT;
+import gov.nasa.gsfc.seadas.processing.earthdata.EarthdataLoginDialog;
 import gov.nasa.gsfc.seadas.earthdatacloud.preferences.Earthdata_Cloud_Controller;
 import org.esa.snap.core.util.SystemUtils;
 
@@ -51,9 +52,12 @@ public class FileDownloadManager {
 
         // Check credentials
         if (earthdataCredentials == null) {
-            earthdataCredentials = WebPageFetcherWithJWT.getCredentials("urs.earthdata.nasa.gov");
+            if (!EarthdataLoginDialog.offerIfMissing(parentComponent,
+                    "Downloading from Earthdata Cloud needs your NASA Earthdata Login.")) {
+                return;
+            }
+            earthdataCredentials = WebPageFetcherWithJWT.getCredentials(EARTHDATA_HOST);
             if (earthdataCredentials == null) {
-                JOptionPane.showMessageDialog(parentComponent, "Earthdata credentials not found in ~/.netrc");
                 return;
             }
         }
@@ -169,11 +173,21 @@ public class FileDownloadManager {
                         return;
                     }
 
-                    if (result.loginError != null) {
+                    if (result.loginError != null && !result.loginError.contains("status code: 401")) {
                         JOptionPane.showMessageDialog(parentComponent,
-                                "Earthdata login failed: " + EARTHDATA_HOST + " did not accept the user name or password in\n"
-                                        + netrcPath() + "\n\nUpdate the password there and try again.\n\nDetails: " + result.loginError,
-                                "Earthdata Login", JOptionPane.ERROR_MESSAGE);
+                                "SeaDAS couldn't get an access token from " + EARTHDATA_HOST + ".\n\nDetails: " + result.loginError,
+                                EarthdataLoginDialog.TITLE, JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (result.loginError != null) {
+                        // Earthdata rejected the saved login (e.g. the password was changed): offer to fix it.
+                        earthdataCredentials = null;
+                        if (EarthdataLoginDialog.show(parentComponent,
+                                "Earthdata didn't accept the login saved in " + netrcPath() + ".")) {
+                            JOptionPane.showMessageDialog(parentComponent,
+                                    "The Earthdata Login is saved. Start the download again.",
+                                    EarthdataLoginDialog.TITLE, JOptionPane.INFORMATION_MESSAGE);
+                        }
                         return;
                     }
 
