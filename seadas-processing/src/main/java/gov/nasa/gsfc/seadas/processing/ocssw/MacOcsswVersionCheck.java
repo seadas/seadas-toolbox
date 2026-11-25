@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Checks that this Mac's macOS is new enough for a local OCSSW. SeaDAS itself runs on older
+ * Warns when this Mac's macOS is older than a local OCSSW was built for. SeaDAS itself runs on older
  * macOS versions than OCSSW does, so only the processors are checked.
  * <p>
  * Before installing, the minimum of the current OCSSW release is used. Once OCSSW is installed,
@@ -34,35 +34,30 @@ public final class MacOcsswVersionCheck {
     private MacOcsswVersionCheck() {
     }
 
+    /** Set once the user chooses Continue Anyway, so the warning shows once per session. */
+    private static volatile boolean accepted;
+
     /**
-     * Before installing OCSSW: on a Mac older than the current OCSSW release needs, says so and
-     * asks whether to go on (an older OCSSW version may still work). Returns false to stop.
+     * Before installing OCSSW: on a Mac older than the current OCSSW release was built for,
+     * warns and asks whether to go on. Returns false to stop.
      */
     public static boolean confirmInstall(Component parent) {
-        if (!MacPythonSetup.isMac()) {
+        if (!MacPythonSetup.isMac() || accepted) {
             return true;
         }
         int[] running = runningMacOS();
         if (running == null || running[0] >= CURRENT_OCSSW_MIN_MACOS) {
             return true;
         }
-        String message = "<html><body style='width: 420px'>The current SeaDAS processors (OCSSW) need macOS "
-                + CURRENT_OCSSW_MIN_MACOS + " or later. This Mac has macOS " + format(running) + ".<br><br>"
-                + "To process data on this Mac, update macOS, or set the OCSSW location to Docker "
-                + "(SeaDAS-Toolbox &gt; SeaDAS Processor Location). Viewing data works without OCSSW.<br><br>"
-                + "Continue only if you are installing an older OCSSW version made for this macOS.</body></html>";
-        Object[] options = {"Cancel", "Continue Anyway"};
-        int answer = JOptionPane.showOptionDialog(parent, message, TITLE, JOptionPane.DEFAULT_OPTION,
-                JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-        return answer == 1;
+        return warn(parent, "The current SeaDAS processors (OCSSW)", new int[]{CURRENT_OCSSW_MIN_MACOS, 0}, running);
     }
 
     /**
      * Before running a processor: if the installed OCSSW was built for a newer macOS than this
-     * Mac has, says so and returns false.
+     * Mac has, warns and asks whether to go on. Returns false to stop.
      */
     public static boolean checkInstalled(Component parent, String ocsswRoot) {
-        if (!MacPythonSetup.isMac() || ocsswRoot == null) {
+        if (!MacPythonSetup.isMac() || ocsswRoot == null || accepted) {
             return true;
         }
         int[] running = runningMacOS();
@@ -70,13 +65,20 @@ public final class MacOcsswVersionCheck {
         if (running == null || required == null || compare(running, required) >= 0) {
             return true;
         }
-        JOptionPane.showMessageDialog(parent,
-                "<html><body style='width: 420px'>The installed SeaDAS processors (OCSSW) need macOS "
-                        + format(required) + " or later. This Mac has macOS " + format(running) + ".<br><br>"
-                        + "To process data on this Mac, update macOS, or set the OCSSW location to Docker "
-                        + "(SeaDAS-Toolbox &gt; SeaDAS Processor Location).</body></html>",
-                TITLE, JOptionPane.ERROR_MESSAGE);
-        return false;
+        return warn(parent, "The installed SeaDAS processors (OCSSW)", required, running);
+    }
+
+    /** Older macOS versions often run these programs, so this is a warning the user can pass. */
+    private static boolean warn(Component parent, String what, int[] required, int[] running) {
+        String message = "<html><body style='width: 420px'>" + what + " were built for macOS "
+                + format(required) + " or later. This Mac has macOS " + format(running) + ".<br><br>"
+                + "They may still work, but if a processor fails, update macOS or set the OCSSW location "
+                + "to Docker (SeaDAS-Toolbox &gt; SeaDAS Processor Location).</body></html>";
+        Object[] options = {"Continue Anyway", "Cancel"};
+        int answer = JOptionPane.showOptionDialog(parent, message, TITLE, JOptionPane.DEFAULT_OPTION,
+                JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+        accepted = answer == 0;
+        return accepted;
     }
 
     /**

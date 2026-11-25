@@ -2,14 +2,14 @@
 
 Last updated: November 25, 2026 (SeaDAS 13.0.0)
 
-SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install anything else to view data. The processing tools (OCSSW) need macOS 26 or later and a few more components; see [Install the processing tools (OCSSW)](#install-the-processing-tools-ocssw).
+SeaDAS for macOS comes as a disk image (.dmg) that installs SeaDAS.app in your Applications folder. The installer is signed by NASA and notarized by Apple, so macOS opens it without security workarounds. SeaDAS includes its own Java, so you don't need to install anything else to view data. The processing tools (OCSSW) are built for macOS 26 and need a few more components; see [Install the processing tools (OCSSW)](#install-the-processing-tools-ocssw).
 
 ## Requirements
 
 | Item | Requirement |
 | --- | --- |
 | Mac | Apple silicon (M1 or later). Intel Macs aren't supported. |
-| macOS | 12 Monterey or later to view data. Processing with OCSSW needs macOS 26 Tahoe or later. |
+| macOS | 12 Monterey or later to view data. OCSSW is built for macOS 26 Tahoe; older versions may work. |
 | Disk space | About 1 GB for the download and 1.2 GB for SeaDAS. OCSSW (processing tools) needs more, depending on the missions you install. |
 | Administrator password | Only to install for all users in /Applications. Installing only for yourself needs none. |
 | Python 3 and `requests` | Only for OCSSW. SeaDAS offers to install them when you install OCSSW. |
@@ -51,7 +51,7 @@ Install the new version the same way; you don't need to uninstall first. Quit Se
 
 SeaDAS opens and displays data without OCSSW. To process data (for example with l2gen), install OCSSW from within SeaDAS: choose **SeaDAS-Toolbox > Install/Update SeaDAS Processors**, pick the missions you need, and click **Run**.
 
-The current OCSSW needs **macOS 26 Tahoe or later**. On an older macOS, SeaDAS says so before installing OCSSW and before running a processor. To process data on an older Mac, update macOS, or run OCSSW in Docker: install Docker Desktop, then choose **SeaDAS-Toolbox > SeaDAS Processor Location** and select Docker. OCSSW in Docker runs more slowly on a Mac.
+The current OCSSW is built for **macOS 26 Tahoe**. On an older macOS, SeaDAS warns you once before installing OCSSW or running a processor, and you can choose **Continue Anyway**. The processors often still work. If they fail, update macOS, or run OCSSW in Docker: install Docker Desktop, then choose **SeaDAS-Toolbox > SeaDAS Processor Location** and select Docker. OCSSW in Docker runs more slowly on a Mac.
 
 OCSSW needs Python 3 with the `requests` library. A new Mac doesn't have them, so the first time you choose Install/Update SeaDAS Processors, SeaDAS checks and offers to install what's missing:
 
@@ -122,7 +122,7 @@ Folders starting with a dot are hidden in Finder: press Command-Shift-. (period)
 | “SeaDAS is running from … Quit SeaDAS and run the installer again” | Quit SeaDAS (SeaDAS menu > Quit SeaDAS), then run Install SeaDAS again. |
 | macOS asks to allow Install SeaDAS to update or delete other apps (App Management) | Click **Allow**, or allow it in System Settings > Privacy & Security > App Management. It's needed to replace an older SeaDAS.app. [To be confirmed in testing.] |
 | SeaDAS doesn't appear in Launchpad | Open it from ~/Applications or /Applications in Finder. |
-| SeaDAS says the processors need a newer macOS | The installed OCSSW was made for a newer macOS than this Mac has. Update macOS, or run OCSSW in Docker (see [Install the processing tools (OCSSW)](#install-the-processing-tools-ocssw)). |
+| SeaDAS warns that the processors were built for a newer macOS | Choose **Continue Anyway**; the processors often still work. If one fails, update macOS, or run OCSSW in Docker (see [Install the processing tools (OCSSW)](#install-the-processing-tools-ocssw)). |
 | A processor fails with `Library not loaded: /opt/homebrew/opt/...` (for example `libgfortran.5.dylib` or `libssl.3.dylib`) | Install the Homebrew packages: `brew install gcc openssl@3 zstd` (see [Other components](#other-components)). |
 | A processor fails with `Library not loaded: /opt/X11/lib/...` | Install XQuartz from [xquartz.org](https://www.xquartz.org/). |
 | A processor fails with “Authentication Failure” or “Failed to identify/retrieve attitude/ephemeris” | Your Earthdata Login is missing or out of date. Check ~/.netrc (see [Earthdata Login](#earthdata-login)). |
