@@ -1,6 +1,6 @@
 # SeaDAS 12 on Windows – User Guide
 
-Last updated: October 19, 2026 (SeaDAS 12.0.0)
+Last updated: November 25, 2026 (SeaDAS 12.1.0)
 
 ## Overview
 
@@ -14,7 +14,7 @@ What you need:
 | Memory | 16 GB recommended. SeaDAS may use up to 12 GB, and processing a PACE OCI file alone takes about 5 GB inside the container |
 | Disk | about 1 GB for SeaDAS, 10 GB for OCSSW's shared data, plus each mission (PACE OCI about 5 GB, HawkEye about 0.5 GB), plus your data files. A drive with 30 GB or more free is a good start |
 | Docker | Docker Desktop for Windows with the WSL 2 engine |
-| Java | only for the installer without a bundled JRE: Java 21 or newer |
+| Java | only for the installer without a bundled JRE: Java 21.0.13.1 or newer |
 | Internet | to download the OCSSW container image (about 350 MB), the processors, ancillary data and Earthdata files |
 | Earthdata Login | a free account at urs.earthdata.nasa.gov, saved in a `.netrc` file |
 
@@ -28,7 +28,7 @@ From a fresh Windows PC to a chlorophyll image takes about an hour and a half, m
 
 1. **Install Docker Desktop** with the WSL 2 engine, restart Windows even if it does not ask, and start Docker Desktop once (see [Setting up Docker Desktop](#setting-up-docker-desktop)). If Docker Desktop says "WSL needs updating", run `wsl --update` in PowerShell and click **Try Again**. About 15 minutes.
 2. **Save your Earthdata Login** in `C:\Users\YOUR_WINDOWS_NAME\.netrc` (see [Earthdata Login](#earthdata-login)). About 5 minutes.
-3. **Install SeaDAS 12** with `seadas_12.0.0_windows64_installer.exe`, keeping all defaults. About 5 minutes.
+3. **Install SeaDAS 12** with `seadas_12.1.0_windows64_installer.exe`, keeping all defaults. About 5 minutes.
 4. **Start SeaDAS 12** from the SeaDAS 12 desktop shortcut.
 5. **Choose Docker:** SeaDAS-Toolbox > SeaDAS Processor Location... > OCSSW Location **docker**. Set OCSSW Docker Dir to a drive with at least 20 GB free, then click **OK** and wait for "OCSSW server is up". A few minutes the first time.
 6. **Install the processors:** SeaDAS-Toolbox > Install/Update SeaDAS Processors... > tick **HawkEye** > **Run**. Set Windows sleep to Never first; about 10.5 GB, 20 to 60 minutes.
@@ -43,12 +43,12 @@ If a step does not behave as described, see [Troubleshooting](#troubleshooting):
 
 ## Installing SeaDAS 12
 
-Download one of the two Windows installers from the [SeaDAS 12.0.0 Download](https://github.com/seadas/seadas-toolbox/wiki/SeaDAS-12.0.0-Download) page; most users want the one with the bundled Java:
+Download one of the two Windows installers from the [SeaDAS 12.1.0 Download](https://github.com/seadas/seadas-toolbox/wiki/SeaDAS-12.1.0-Download) page; most users want the one with the bundled Java:
 
 | Installer | Use it when |
 | --- | --- |
-| `seadas_12.0.0_windows64_installer.exe` | you want everything in one package (recommended) |
-| `seadas_12.0.0_windows64_installer_no_bundled_jre.exe` | you already have Java 21 or newer installed and want a smaller download |
+| `seadas_12.1.0_windows64_installer.exe` | you want everything in one package (recommended) |
+| `seadas_12.1.0_windows64_installer_no_bundled_jre.exe` | you already have Java 21.0.13.1 or newer installed and want a smaller download |
 
 1. Close any running SeaDAS. The installer cannot replace files that are in use.
 2. Run the installer. Windows may show "Windows protected your PC" because the installer is not code-signed yet: click **More info**, then **Run anyway**. If there is no **Run anyway** button (common on work computers), close the message, right-click the installer, choose **Properties**, tick **Unblock** at the bottom of the General tab, click **OK**, and run it again. If that is blocked too, ask your IT support to allow the installer.
@@ -58,11 +58,13 @@ Download one of the two Windows installers from the [SeaDAS 12.0.0 Download](htt
 
 Start SeaDAS from the **SeaDAS 12** shortcut on the desktop or in the Start menu.
 
-**Next to an older SeaDAS.** SeaDAS 12 installs beside SeaDAS 11 or 10 and leaves them alone; their shortcuts are named "SeaDAS", SeaDAS 12's are "SeaDAS 12". In Settings > Apps, SeaDAS 12 may appear as "SeaDAS version 12.0.0 (64-bit)" when SeaDAS 11 is also installed. All versions share your settings folders (`%USERPROFILE%\.seadas` and `%APPDATA%\.seadas`).
+**Upgrading from 12.0.0.** Run the 12.1.0 installer. It replaces SeaDAS 12.0.0 in the same folder and keeps your settings, your OCSSW folder and your processor location. It also updates the bundled Java, which fixes a security flaw (CVE-2026-114938) in 12.0.0.
 
-**Uninstalling.** Close SeaDAS 12, then use Settings > Apps > SeaDAS version 12.0.0 > Uninstall, or run `C:\Program Files\SeaDAS\unins000.exe`. Your settings folders and your OCSSW folder are kept.
+**Next to an older SeaDAS.** SeaDAS 12 installs beside SeaDAS 11 or 10 and leaves them alone; their shortcuts are named "SeaDAS", SeaDAS 12's are "SeaDAS 12". In Settings > Apps, SeaDAS 12 may appear as "SeaDAS version 12.1.0 (64-bit)" when SeaDAS 11 is also installed. All versions share your settings folders (`%USERPROFILE%\.seadas` and `%APPDATA%\.seadas`).
 
-**Unattended install (IT staff).** Run the installer with `/VERYSILENT`. Add `/MERGETASKS="!desktopicon"` to skip the desktop shortcut, and for the installer without a JRE, `/JAVAHOME="C:\path\to\jdk-21"`. A silent install stops with exit code 7 if it finds no Java 21 or newer.
+**Uninstalling.** Close SeaDAS 12, then use Settings > Apps > SeaDAS version 12.1.0 > Uninstall, or run `C:\Program Files\SeaDAS\unins000.exe`. Your settings folders and your OCSSW folder are kept.
+
+**Unattended install (IT staff).** Run the installer with `/VERYSILENT`. Add `/MERGETASKS="!desktopicon"` to skip the desktop shortcut, and for the installer without a JRE, `/JAVAHOME="C:\path\to\jdk-21"`. A silent install stops with exit code 7 if it finds no Java 21 or newer. With a Java 21 older than 21.0.13.1, it installs and logs a warning.
 
 ## Earthdata Login
 
@@ -103,7 +105,7 @@ Tell SeaDAS once that OCSSW runs in Docker; from then on it starts the container
    | OCSSW Docker Dir | the installed processors and their data, 15 GB or more | `C:\Users\YOU\ocssw-docker` |
    | OCSSW Shared Dir | your input files copied for processing, and the outputs | `C:\Users\YOU\seadasClientServerShared` |
 
-4. Click **OK**. SeaDAS runs its start script: it downloads the `seadas/ocssw-run:12.0.0` image the first time (about 350 MB), creates both folders, copies your `.netrc` into the shared folder, and starts the container. A progress window shows each step.
+4. Click **OK**. SeaDAS runs its start script: it downloads the `seadas/ocssw-run:12.1.0` image the first time (about 350 MB), creates both folders, copies your `.netrc` into the shared folder, and starts the container. A progress window shows each step.
 
 **Choose the OCSSW folder by free space.** OCSSW grows to 15 GB or more with a few missions. If C: is short of space, point OCSSW Docker Dir at another drive, for example `E:\ocssw-docker`, before installing the processors.
 
@@ -116,7 +118,7 @@ To set up the container by hand instead, see the start script `C:\Program Files\
 The container starts empty; you install OCSSW into the OCSSW Docker Dir from SeaDAS. Installed missions stay there when the container or SeaDAS is updated.
 
 1. Open **SeaDAS-Toolbox > Install/Update SeaDAS Processors...**.
-2. Keep the suggested OCSSW tag (V2026.5 for SeaDAS 12.0.0) and tick the missions you need. Missions already installed are shown as such.
+2. Keep the suggested OCSSW tag (V2026.5 for SeaDAS 12.1.0) and tick the missions you need. Missions already installed are shown as such.
 3. Click **Run** and leave SeaDAS open until it says the installation is done.
 
 Sizes measured on a V2026.5 install:
@@ -162,8 +164,8 @@ The **Earthdata Cloud Data Browser** (menu **Earthdata-Cloud**, or **SeaDAS-Tool
 | What you see | Likely cause | What to do |
 | --- | --- | --- |
 | "OCSSW Not Installed" when opening a processor | no OCSSW in the OCSSW Docker Dir | Install the processors, or set OCSSW Docker Dir to the folder that already holds OCSSW and click OK |
-| l2gen's output name stays empty | OCSSW cannot read the input; an old copy of the container image lacked the file-type tool | In PowerShell: `docker pull seadas/ocssw-run:12.0.0`, then `docker rm -f seadas-ocssw`, then restart SeaDAS |
-| geolocate_hawkeye: "/root/ocssw/var/modis/utcpole.dat not found" | A copy of the container image from before 13 October 2026, which does not fetch the time files yet, or no internet access from the container | In PowerShell: `docker pull seadas/ocssw-run:12.0.0`, then `docker rm -f seadas-ocssw`, then restart SeaDAS and run it again |
+| l2gen's output name stays empty | OCSSW cannot read the input, or the container image is damaged | In PowerShell: `docker pull seadas/ocssw-run:12.1.0`, then `docker rm -f seadas-ocssw`, then restart SeaDAS |
+| geolocate_hawkeye: "/root/ocssw/var/modis/utcpole.dat not found" | No internet access from the container, or a damaged container image | In PowerShell: `docker pull seadas/ocssw-run:12.1.0`, then `docker rm -f seadas-ocssw`, then restart SeaDAS and run it again |
 | "SeaDAS could not start the OCSSW Docker container" | Docker Desktop missing or not running, or the image could not be downloaded | Follow the reason shown under the message; check Docker Desktop is running and you are online |
 | Docker Desktop: "WSL needs updating" | the installed WSL is older than Docker Desktop needs | In PowerShell: `wsl --update`, then click **Try Again** in Docker Desktop; restart Windows if the engine still does not start |
 | "Remote server is down. OCSSW is not accessible." | the container is not answering, often because Docker Desktop is not running yet after a new install | Start Docker Desktop; then reopen SeaDAS-Toolbox > SeaDAS Processor Location... and click OK |
@@ -184,12 +186,11 @@ Where the logs are:
 | A processor run | `OCSSW_LOG_<program>.txt`, next to your input file |
 | The OCSSW server in the container | PowerShell: `docker logs seadas-ocssw` |
 
-## Known issues in 12.0.0
+## Known issues in 12.1.0
 
 - **Not code-signed:** the Windows installers show "Windows protected your PC" until they are signed.
 - **Install progress:** the processor installer reports progress per package only, so large packages look stalled.
 - **Memory on 12 GB computers:** SeaDAS may use up to 12 GB and processing PACE OCI takes about 5 GB in the container. On a 12 GB computer, close other programs while processing large files.
-- **Older container image:** a computer that downloaded `seadas/ocssw-run:12.0.0` before 13 October 2026 has a copy without the file-type tool, and l2gen gets no output name. Update it as shown in Troubleshooting.
 - **Restart after installing Docker Desktop:** a new Docker Desktop install with the WSL 2 engine may not run until Windows is restarted, and SeaDAS cannot start the OCSSW container until Docker Desktop runs. Restart Windows after installing Docker Desktop, even if it does not ask.
 - **Sentinel-2 MSI L1C in l2gen:** SeaDAS copies only the selected input file into the shared folder, not the rest of the Sentinel-2 `.SAFE` product, so l2gen in the container does not find the band images and fails. This affects processing only; opening and viewing Sentinel-2 files works. Also, l2gen takes the product's `manifest.safe` as input: selecting `MTD_MSIL1C.xml` fails with "Could not find type for file".
 - **Sentinel-2C:** the OCSSW V2026.5 science processors support Sentinel-2A and 2B only, so l2gen stops with "Unknown platform: 2C" on Sentinel-2C products (file names starting with `S2C_`). Many recent Sentinel-2 products are from Sentinel-2C.
